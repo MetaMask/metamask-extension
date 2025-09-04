@@ -1,4 +1,5 @@
 import { DefaultRootState } from 'react-redux';
+
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
@@ -6,10 +7,10 @@ import {
   MOCK_NFT1155,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as SendContext from '../../context/send';
 import { useBalance } from './useBalance';
-import { Numeric } from '../../../../../shared/modules/Numeric';
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
@@ -43,7 +44,7 @@ describe('useBalance', () => {
     expect(result.balance).toEqual('966.98798');
     expect(result.decimals).toEqual(18);
     expect(result.rawBalanceNumeric).toEqual(
-      new Numeric('0x346ba7725f412cbfdb', 16),
+      new Numeric('0x346ba7725f412cbfdb', 10),
     );
   });
 
@@ -57,7 +58,7 @@ describe('useBalance', () => {
     expect(result.balance).toEqual('966.98798');
     expect(result.decimals).toEqual(18);
     expect(result.rawBalanceNumeric).toEqual(
-      new Numeric('0x346ba7725f412cbfdb', 16),
+      new Numeric('0x346ba7725f412cbfdb', 10),
     );
   });
 
@@ -82,7 +83,7 @@ describe('useBalance', () => {
     });
     expect(result.balance).toEqual('48573');
     expect(result.decimals).toEqual(0);
-    expect(result.rawBalanceNumeric).toEqual(new Numeric('0xbdbd', 16));
+    expect(result.rawBalanceNumeric).toEqual(new Numeric('0xbdbd', 10));
   });
 
   it('return correct balance for solana assets', () => {

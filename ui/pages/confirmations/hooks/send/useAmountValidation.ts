@@ -7,7 +7,6 @@ import { Asset } from '../../types/send';
 import { fromTokenMinUnitsNumeric, isDecimal } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useBalance } from './useBalance';
-import { assetChain } from 'viem/chains';
 
 export const validateERC1155Balance = (
   asset: Asset,

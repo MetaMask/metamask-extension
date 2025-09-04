@@ -23,7 +23,7 @@ import {
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 
 export const trimTrailingZeros = (numStr: string) => {
-  return numStr.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0*$/, '');
+  return numStr.replace(/(\.\d*?[1-9])0+$/gu, '$1').replace(/\.0*$/u, '');
 };
 
 export const fromTokenMinUnitsNumeric = (

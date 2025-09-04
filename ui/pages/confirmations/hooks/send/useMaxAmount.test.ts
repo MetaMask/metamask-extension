@@ -1,15 +1,16 @@
 import { DefaultRootState } from 'react-redux';
-import mockState from '../../../../../test/data/mock-state.json';
+
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
+import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as SendContext from '../../context/send';
 import { useMaxAmount } from './useMaxAmount';
 import { useBalance } from './useBalance';
-import { Numeric } from '../../../../../shared/modules/Numeric';
 
 jest.mock('./useBalance');
 
@@ -35,6 +36,7 @@ describe('useMaxAmount', () => {
     } as unknown as SendContext.SendContextType);
     useBalanceMock.mockReturnValue({
       balance: '10.00',
+      decimals: 18,
       rawBalanceNumeric: new Numeric('1000000000000000000000', 10),
     });
     const result = renderHook({
@@ -64,6 +66,7 @@ describe('useMaxAmount', () => {
     } as unknown as SendContext.SendContextType);
     useBalanceMock.mockReturnValue({
       balance: '10.00',
+      decimals: 18,
       rawBalanceNumeric: new Numeric('100000000000000', 10),
     });
     const result = renderHook({
@@ -88,6 +91,7 @@ describe('useMaxAmount', () => {
   it('return correct max amount for ERC20 assets', () => {
     useBalanceMock.mockReturnValue({
       balance: '10.00',
+      decimals: 16,
       rawBalanceNumeric: new Numeric('485730000000000000000', 10),
     });
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
@@ -102,6 +106,7 @@ describe('useMaxAmount', () => {
   it('return correct max amount for solana assets', () => {
     useBalanceMock.mockReturnValue({
       balance: '10.00',
+      decimals: 6,
       rawBalanceNumeric: new Numeric('1007248', 10),
     });
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
