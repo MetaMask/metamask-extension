@@ -2,6 +2,7 @@ import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import { EVM_NATIVE_ASSET } from '../../../../test/data/send/assets';
 import { findNetworkClientIdByChainId } from '../../../store/actions';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
@@ -13,6 +14,14 @@ import {
   convertedCurrency,
   navigateToSendRoute,
 } from './send';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -142,12 +151,108 @@ describe('Send - utils', () => {
   });
 
   describe('navigateToSendRoute', () => {
-    it('call history.push with send route', () => {
-      const mockHistoryPush = jest.fn();
-      navigateToSendRoute({
-        push: mockHistoryPush,
+    const originalEnv = process.env.SEND_REDESIGN_ENABLED;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+      process.env.SEND_REDESIGN_ENABLED = originalEnv;
+    });
+
+    describe('when SEND_REDESIGN_ENABLED is disabled', () => {
+      beforeEach(() => {
+        delete process.env.SEND_REDESIGN_ENABLED;
       });
-      expect(mockHistoryPush).toHaveBeenCalled();
+
+      it('should navigate to legacy send route without params', () => {
+        navigateToSendRoute(mockUseNavigate);
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: SEND_ROUTE,
+        });
+      });
+
+      it('should navigate to legacy send route with params (ignores params)', () => {
+        navigateToSendRoute(mockUseNavigate, {
+          address: '0x123',
+          chainId: '0x1',
+        });
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: SEND_ROUTE,
+        });
+      });
+    });
+
+    describe('when SEND_REDESIGN_ENABLED is enabled', () => {
+      beforeEach(() => {
+        process.env.SEND_REDESIGN_ENABLED = 'true';
+      });
+
+      it('should navigate to asset selection when no params provided', () => {
+        navigateToSendRoute(mockUseNavigate);
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: `${SEND_ROUTE}/asset`,
+        });
+      });
+
+      it('should navigate to amount-recipient with address param only', () => {
+        navigateToSendRoute(mockUseNavigate, {
+          address: '0x123',
+        });
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: `${SEND_ROUTE}/amount-recipient`,
+          search: 'asset=0x123',
+        });
+      });
+
+      it('should navigate to amount-recipient with chainId param only', () => {
+        navigateToSendRoute(mockUseNavigate, {
+          chainId: '0x1',
+        });
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: `${SEND_ROUTE}/amount-recipient`,
+          search: 'chainId=0x1',
+        });
+      });
+
+      it('should navigate to amount-recipient with both address and chainId params', () => {
+        navigateToSendRoute(mockUseNavigate, {
+          address: '0x123',
+          chainId: '0x1',
+        });
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: `${SEND_ROUTE}/amount-recipient`,
+          search: 'asset=0x123&chainId=0x1',
+        });
+      });
+
+      it('should navigate to amount-recipient with empty params object', () => {
+        navigateToSendRoute(mockUseNavigate, {});
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: `${SEND_ROUTE}/amount-recipient`,
+          search: '',
+        });
+      });
+
+      it('should handle special characters in address param', () => {
+        navigateToSendRoute(mockUseNavigate, {
+          address: '0xaBcDeF123456789',
+          chainId: '0xa',
+        });
+
+        expect(mockUseNavigate).toHaveBeenCalledWith({
+          pathname: `${SEND_ROUTE}/amount-recipient`,
+          search: 'asset=0xaBcDeF123456789&chainId=0xa',
+        });
+      });
     });
   });
 

@@ -2,7 +2,7 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -17,7 +17,7 @@ import { useSendType } from './useSendType';
 
 export const useSendActions = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { asset, chainId, from, fromAccount, to, value } = useSendContext();
   const { isEvmSendType } = useSendType();
 
@@ -38,9 +38,9 @@ export const useSendActions = () => {
             value: value as string,
           }),
         );
-        history.push(CONFIRM_TRANSACTION_ROUTE);
+        navigate(CONFIRM_TRANSACTION_ROUTE);
       } else {
-        history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
+        navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
         await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,
           {
@@ -58,7 +58,7 @@ export const useSendActions = () => {
       dispatch,
       from,
       fromAccount,
-      history,
+      navigate,
       isEvmSendType,
       to,
       value,
@@ -66,12 +66,12 @@ export const useSendActions = () => {
   );
 
   const handleBack = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    navigate(-1);
+  }, [navigate]);
 
   const handleCancel = useCallback(() => {
-    history.push(DEFAULT_ROUTE);
-  }, [history]);
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   return { handleSubmit, handleCancel, handleBack };
 };

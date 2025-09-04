@@ -5,7 +5,7 @@ import {
   EVM_NATIVE_ASSET,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
 import { useMaxAmount } from './useMaxAmount';
 

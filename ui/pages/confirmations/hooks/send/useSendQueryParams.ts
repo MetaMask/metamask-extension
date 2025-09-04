@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
@@ -42,7 +42,7 @@ export const useSendQueryParams = () => {
     updateTo,
     value,
   } = useSendContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const multiChainAssets = useMultiChainAssets();
@@ -89,10 +89,13 @@ export const useSendQueryParams = () => {
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
-    history.replace(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`);
+    navigate({
+      pathname: `${SEND_ROUTE}/${subPath}`,
+      search: queryParams.toString(),
+    }, { replace: true });
   }, [
     asset,
-    history,
+    navigate,
     paramAmount,
     paramAsset,
     paramChainId,

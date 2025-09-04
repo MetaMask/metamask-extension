@@ -6,18 +6,11 @@ import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import { Asset } from './asset';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest
     .fn()
@@ -43,15 +36,16 @@ describe('Asset', () => {
     const { getByText } = render();
 
     fireEvent.click(getByText('Continue'));
-    expect(mockHistory.push).toHaveBeenCalledWith(
-      '/send/amount-recipient?searchParams=dummy',
-    );
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: '/send/amount-recipient',
+      search: 'searchParams=dummy',
+    });
   });
 
   it('go to previous page when previous button is clicked', () => {
     const { getByText } = render();
 
     fireEvent.click(getByText('Previous'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 });

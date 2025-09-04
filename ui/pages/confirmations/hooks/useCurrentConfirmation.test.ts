@@ -1,6 +1,3 @@
-// eslint-disable-next-line import/no-named-as-default
-import Router from 'react-router-dom';
-
 import { AbstractMessage } from '@metamask/message-manager';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import {
@@ -10,7 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useCurrentConfirmation from './useCurrentConfirmation';
@@ -25,8 +22,16 @@ const MESSAGE_MOCK = {
   },
 };
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useParams: () => ({ id: ID_MOCK }),
+  useLocation: () => ({
+    pathname: '/confirmation',
+    search: '',
+    hash: '',
+    state: null,
+  }),
+  useNavigate: () => jest.fn(),
 }));
 
 const APPROVAL_MOCK = {
@@ -89,10 +94,6 @@ function runHook(state: Parameters<typeof buildState>[0]) {
   return response.result.current.currentConfirmation;
 }
 
-function mockParamId(id: string) {
-  jest.spyOn(Router, 'useParams').mockReturnValue({ id });
-}
-
 describe('useCurrentConfirmation', () => {
   it('return message matching latest pending approval ID', () => {
     const currentConfirmation = runHook({
@@ -115,8 +116,6 @@ describe('useCurrentConfirmation', () => {
   });
 
   it('returns message matching ID param', () => {
-    mockParamId(ID_MOCK);
-
     const currentConfirmation = runHook({
       message: MESSAGE_MOCK,
       pendingApprovals: [
@@ -131,8 +130,6 @@ describe('useCurrentConfirmation', () => {
   });
 
   it('returns transaction matching ID param', () => {
-    mockParamId(ID_MOCK);
-
     const currentConfirmation = runHook({
       pendingApprovals: [
         { ...APPROVAL_MOCK, time: 0 },

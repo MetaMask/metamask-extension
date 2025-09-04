@@ -16,7 +16,7 @@ import {
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
-
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { formatDate, getURLHostName } from '../../helpers/utils/util';
 import {
   approvePermissionsRequest,
@@ -39,9 +39,7 @@ import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    match: {
-      params: { id: permissionsRequestId },
-    },
+    params: { id: permissionsRequestId },
     location: { pathname },
   } = ownProps;
   let permissionsRequests = getPermissionsRequests(state);
@@ -191,12 +189,12 @@ const PermissionApprovalContainer = connect(
 )(PermissionApproval);
 
 PermissionApprovalContainer.propTypes = {
-  history: PropTypes.object.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string,
-    }).isRequired,
+  params: PropTypes.shape({
+    id: PropTypes.string,
+  }).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
   }).isRequired,
 };
 
-export default PermissionApprovalContainer;
+export default withRouterHooks(PermissionApprovalContainer);

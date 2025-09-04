@@ -4,11 +4,12 @@ import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/p
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import syncConfirmPath from './syncConfirmPath';
 
-const mockHistoryReplace = jest.fn();
+const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({ replace: mockHistoryReplace }),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
+  useParams: () => ({}),
 }));
 
 const STATE_MOCK = {
@@ -33,12 +34,12 @@ describe('syncConfirmPath', () => {
     expect(result).toBeDefined();
   });
 
-  it('should replace history route', () => {
-    mockHistoryReplace.mockClear();
+  it('should navigate to confirmation route', () => {
+    mockNavigate.mockClear();
     renderHookWithConfirmContextProvider(
       () => syncConfirmPath(unapprovedPersonalSignMsg),
       STATE_MOCK,
     );
-    expect(mockHistoryReplace).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalled();
   });
 });

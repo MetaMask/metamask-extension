@@ -5,7 +5,7 @@ import {
   SOLANA_ASSET,
   SOLANA_NATIVE_ASSET,
 } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
 import { useSendType } from './useSendType';
 

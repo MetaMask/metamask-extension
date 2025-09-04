@@ -8,7 +8,7 @@ import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import {
   EIP_7702_REVOKE_ADDRESS,

@@ -1,8 +1,7 @@
-import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 import { ApprovalFlowState } from '@metamask/approval-controller';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -15,10 +14,14 @@ import {
 } from '../../../helpers/constants/routes';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../confirmation/templates', () => ({
   TEMPLATED_CONFIRMATION_APPROVAL_TYPES: ['wallet_addEthereumChain'],
@@ -62,12 +65,8 @@ function renderHook(
 }
 
 describe('useConfirmationNavigation', () => {
-  const useHistoryMock = jest.mocked(useHistory);
-  const history = { replace: jest.fn() };
-
   beforeEach(() => {
     jest.resetAllMocks();
-    useHistoryMock.mockReturnValue(history);
   });
 
   describe('navigateToId', () => {
@@ -76,9 +75,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
@@ -87,9 +87,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
@@ -98,9 +99,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(undefined);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}`,
+        { replace: true },
       );
     });
 
@@ -111,9 +113,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
@@ -122,9 +125,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONNECT_ROUTE}/${APPROVAL_ID_MOCK}`,
+        { replace: true },
       );
     });
 
@@ -133,9 +137,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`,
+        { replace: true },
       );
     });
 
@@ -146,9 +151,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`,
+        { replace: true },
       );
     });
 
@@ -157,9 +163,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+        { replace: true },
       );
     });
 
@@ -168,9 +175,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId(APPROVAL_ID_MOCK);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${DECRYPT_MESSAGE_REQUEST_PATH}`,
+        { replace: true },
       );
     });
 
@@ -179,7 +187,7 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId('invalidId');
 
-      expect(history.replace).toHaveBeenCalledTimes(0);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(0);
     });
 
     it('does not navigate if no confirmation ID provided', () => {
@@ -187,7 +195,7 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToId();
 
-      expect(history.replace).toHaveBeenCalledTimes(0);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -197,9 +205,10 @@ describe('useConfirmationNavigation', () => {
 
       result.navigateToIndex(1);
 
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}`,
+        { replace: true },
       );
     });
   });

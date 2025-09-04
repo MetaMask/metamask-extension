@@ -2,7 +2,7 @@ import React, { ReactChildren } from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import { EVM_ASSET } from '../../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { useAssetSelectionMetrics } from './useAssetSelectionMetrics';
 

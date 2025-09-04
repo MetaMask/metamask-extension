@@ -1,17 +1,14 @@
 import mockState from '../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as ConfirmContext from '../context/confirm';
 
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
+const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 jest.mock('react-redux', () => ({
@@ -51,6 +48,6 @@ describe('useConfirmSendNavigation', () => {
     } as unknown as ConfirmContext.ConfirmContextType);
     const result = renderHook();
     result.navigateBackIfSend();
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 });

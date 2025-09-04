@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -51,7 +51,24 @@ function getRequestedChainIds(permissions) {
   return getPermittedEthChainIds(requestedCaip25CaveatValue);
 }
 
-export default class PermissionConnect extends Component {
+// HOC to provide navigation functionality to class component
+function withNavigationHooks(WrappedComponent) {
+  return function NavigationWrapper(props) {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Create history-like object for backward compatibility
+    const history = {
+      push: (path) => navigate(path),
+      replace: (path) => navigate(path, { replace: true }),
+      location,
+    };
+
+    return <WrappedComponent {...props} history={history} />;
+  };
+}
+
+class PermissionConnect extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
@@ -337,11 +354,10 @@ export default class PermissionConnect extends Component {
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
-          <Switch>
+          <Routes>
             <Route
               path={connectPath}
-              exact
-              render={() =>
+              element={
                 isRequestingSnap ? (
                   <ChooseAccount
                     accounts={accounts}
@@ -380,8 +396,7 @@ export default class PermissionConnect extends Component {
             />
             <Route
               path={confirmPermissionPath}
-              exact
-              render={() => (
+              element={
                 <PermissionPageContainer
                   request={permissionsRequest || {}}
                   approvePermissionsRequest={(...args) => {
@@ -407,12 +422,11 @@ export default class PermissionConnect extends Component {
                     setSnapsInstallPrivacyWarningShownStatus
                   }
                 />
-              )}
+              }
             />
             <Route
               path={snapsConnectPath}
-              exact
-              render={() => (
+              element={
                 <SnapsConnect
                   request={permissionsRequest || {}}
                   approveConnection={this.approveConnection}
@@ -427,12 +441,11 @@ export default class PermissionConnect extends Component {
                     setSnapsInstallPrivacyWarningShownStatus
                   }
                 />
-              )}
+              }
             />
             <Route
               path={snapInstallPath}
-              exact
-              render={() => (
+              element={
                 <SnapInstall
                   request={permissionsRequest || {}}
                   requestState={requestState || {}}
@@ -453,12 +466,11 @@ export default class PermissionConnect extends Component {
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
-              )}
+              }
             />
             <Route
               path={snapUpdatePath}
-              exact
-              render={() => (
+              element={
                 <SnapUpdate
                   request={permissionsRequest || {}}
                   requestState={requestState || {}}
@@ -479,12 +491,11 @@ export default class PermissionConnect extends Component {
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
-              )}
+              }
             />
             <Route
               path={snapResultPath}
-              exact
-              render={() => (
+              element={
                 <SnapResult
                   request={permissionsRequest || {}}
                   requestState={requestState || {}}
@@ -494,11 +505,13 @@ export default class PermissionConnect extends Component {
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
-              )}
+              }
             />
-          </Switch>
+          </Routes>
         )}
       </div>
     );
   }
 }
+
+export default withNavigationHooks(PermissionConnect);

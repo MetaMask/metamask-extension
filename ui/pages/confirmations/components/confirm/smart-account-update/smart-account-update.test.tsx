@@ -21,12 +21,10 @@ jest.mock('../../../../../store/actions', () => ({
   setSmartAccountOptIn: jest.fn(),
 }));
 
-const mockReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockReplace,
-  }),
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 const mockDispatch = jest.fn();
@@ -78,7 +76,7 @@ describe('SmartAccountUpdate', () => {
     expect(getByText('Successful!')).toBeDefined();
   });
 
-  it('call history.replace when close button is clicked', () => {
+  it('call navigate with replace when close button is clicked', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
@@ -90,6 +88,6 @@ describe('SmartAccountUpdate', () => {
     );
 
     fireEvent.click(getByTestId('smart-account-update-close'));
-    expect(mockReplace).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 });

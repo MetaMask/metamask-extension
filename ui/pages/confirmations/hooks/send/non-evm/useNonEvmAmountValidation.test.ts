@@ -1,6 +1,6 @@
 import mockState from '../../../../../../test/data/mock-state.json';
 import { SOLANA_ASSET } from '../../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../../context/send';
 // eslint-disable-next-line import/no-namespace
 import * as MultichainSnapsUtils from '../../../utils/multichain-snaps';
@@ -9,15 +9,14 @@ import { useNonEvmAmountValidation } from './useNonEvmAmountValidation';
 export const ACCOUNT_ADDRESS_MOCK =
   '14grJpemFaf88c8tiVb77W7TYg2W3ir6pfkKz3YjhhZ5';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
+const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

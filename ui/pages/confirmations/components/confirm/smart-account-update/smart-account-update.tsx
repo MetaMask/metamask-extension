@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import {
   Box,
@@ -33,12 +33,12 @@ import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const closeAccountUpdatePage = useCallback(() => {
-    history.replace('/');
-  }, [history]);
+    navigate('/', { replace: true });
+  }, [navigate]);
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     dispatch(setSmartAccountOptIn(true));

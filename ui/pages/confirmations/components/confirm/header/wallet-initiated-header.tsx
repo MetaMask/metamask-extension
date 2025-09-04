@@ -4,7 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import {
   Box,
@@ -34,7 +34,7 @@ import { AdvancedDetailsButton } from './advanced-details-button';
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -63,8 +63,8 @@ export const WalletInitiatedHeader = () => {
     await dispatch(editExistingTransaction(assetType, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
-    navigateToSendRoute(history);
-  }, [currentConfirmation, dispatch, history]);
+    navigateToSendRoute(navigate);
+  }, [currentConfirmation, dispatch, navigate]);
 
   return (
     <Box

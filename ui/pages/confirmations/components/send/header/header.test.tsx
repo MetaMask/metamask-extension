@@ -6,18 +6,11 @@ import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import { Header } from './header';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest
     .fn()
@@ -43,6 +36,6 @@ describe('Header', () => {
     const { getByRole } = render();
 
     fireEvent.click(getByRole('button'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 });

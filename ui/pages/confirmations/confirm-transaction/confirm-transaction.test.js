@@ -2,12 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import ReactRouterDOM from 'react-router-dom';
-
 import * as ConfirmTransactionDucks from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import * as Actions from '../../../store/actions';
 import _mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 
 import {
@@ -17,6 +15,15 @@ import {
 } from '../../../helpers/constants/routes';
 
 import ConfirmTransaction from '.';
+
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
+  useParams: () => mockUseParams,
+}));
 
 const mockUnapprovedTx = _mockState.metamask.transactions[0];
 
@@ -52,16 +59,6 @@ jest.mock(
     }),
   }),
 );
-
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useHistory: () => ({
-      replace: jest.fn(),
-    }),
-  };
-});
 
 jest.mock('../../confirm-decrypt-message', () => {
   return {
@@ -100,10 +97,17 @@ jest.mock('../confirm-transaction-switch', () => {
 
 describe('Confirmation Transaction Page', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+
+    // Mock store actions
     jest
       .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
       .mockResolvedValue(null);
+
+    // Set up default router mocks
+    mockUseParams.mockReturnValue({ id: mockUnapprovedTx.id });
   });
+
   it('should display the Loading component when the transaction is invalid', () => {
     const mockStore = configureMockStore(middleware)({
       ...mockState,
@@ -181,9 +185,7 @@ describe('Confirmation Transaction Page', () => {
         ...mockState,
         metamask: { ...mockState.metamask, transactions: [] },
       });
-      jest.spyOn(ReactRouterDOM, 'useParams').mockImplementation(() => {
-        return { id: null };
-      });
+      mockUseParams.mockReturnValue({ id: null });
       ConfirmTransactionDucks.setTransactionToConfirm.mockClear();
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
@@ -194,17 +196,11 @@ describe('Confirmation Transaction Page', () => {
     });
 
     describe('when unapproved transactions exist or a sendTo recipient exists', () => {
-      it('should not call history.replace(mostRecentOverviewPage)', () => {
+      it('should not call navigate with replace option', () => {
         const mockStore = configureMockStore(middleware)(mockState);
-        const replaceSpy = jest.fn();
-        jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
-          return {
-            replace: replaceSpy,
-          };
-        });
 
         renderWithProvider(<ConfirmTransaction />, mockStore);
-        expect(replaceSpy).not.toHaveBeenCalled();
+        expect(mockUseNavigate).not.toHaveBeenCalled();
       });
     });
   });

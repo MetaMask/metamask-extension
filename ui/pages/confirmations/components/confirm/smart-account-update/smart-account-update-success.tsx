@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
@@ -30,11 +30,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SmartAccountUpdateSuccess() {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const closeAccountUpdatePage = useCallback(() => {
-    history.replace('/');
-  }, [history]);
+    navigate('/', { replace: true });
+  }, [navigate]);
 
   return (
     <Box

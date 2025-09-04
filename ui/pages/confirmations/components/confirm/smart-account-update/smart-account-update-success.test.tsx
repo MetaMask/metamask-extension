@@ -6,12 +6,10 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
-const mockReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockReplace,
-  }),
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 describe('SmartAccountUpdateSuccess', () => {
@@ -30,7 +28,7 @@ describe('SmartAccountUpdateSuccess', () => {
     ).toBeInTheDocument();
   });
 
-  it('call history.replace when close button is clicked', () => {
+  it('call navigate with replace when close button is clicked', () => {
     const mockStore = configureMockStore([])(mockState);
     const { getByRole } = renderWithConfirmContextProvider(
       <SmartAccountUpdateSuccess />,
@@ -38,6 +36,6 @@ describe('SmartAccountUpdateSuccess', () => {
     );
 
     fireEvent.click(getByRole('button'));
-    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 });

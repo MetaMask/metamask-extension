@@ -5,7 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { isNativeAddress } from '@metamask/bridge-controller';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
@@ -179,7 +179,7 @@ export function convertedCurrency(value: string, conversionRate?: number) {
 }
 
 export const navigateToSendRoute = (
-  history: ReturnType<typeof useHistory>,
+  navigate: ReturnType<typeof useNavigate>,
   params?: {
     address?: string;
     chainId?: string;
@@ -195,11 +195,19 @@ export const navigateToSendRoute = (
       if (chainId) {
         queryParams.append('chainId', chainId);
       }
-      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+
+      navigate({
+        pathname: `${SEND_ROUTE}/amount-recipient`,
+        search: queryParams.toString(),
+      });
     } else {
-      history.push(`${SEND_ROUTE}/asset`);
+      navigate({
+        pathname: `${SEND_ROUTE}/asset`,
+      });
     }
   } else {
-    history.push(SEND_ROUTE);
+    navigate({
+      pathname: SEND_ROUTE,
+    });
   }
 };

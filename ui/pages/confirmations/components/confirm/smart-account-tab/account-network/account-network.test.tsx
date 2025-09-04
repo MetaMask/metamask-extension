@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import { EIP7702NetworkConfiguration } from '../../../../hooks/useBatchAuthorizationRequests';
 import { AccountNetwork } from './account-network';
