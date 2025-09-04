@@ -472,6 +472,9 @@ const config = {
     aggregateTimeout: 5, // ms
     ignored: NODE_MODULES_RE, // avoid `fs.inotify.max_user_watches` issues
   },
+  ignoreWarnings: [
+    /the following module ids can't be controlled by policy and must be ignored at runtime/u,
+  ],
 } as const satisfies Configuration;
 
 export default config;
