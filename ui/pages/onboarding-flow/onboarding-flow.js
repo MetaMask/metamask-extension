@@ -46,7 +46,6 @@ import {
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-  getShowTermsOfUse,
   getIsSocialLoginFlow,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -106,7 +105,6 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
-  const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -168,7 +166,6 @@ export default function OnboardingFlow() {
     secretRecoveryPhrase,
     pathname,
     navigate,
-    showTermsOfUse,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
   ]);
