@@ -24,6 +24,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -55,6 +56,11 @@ export const AccountList = () => {
   const filteredWallets = useMemo(() => {
     return filterWalletsByGroupName(wallets, searchPattern);
   }, [wallets, searchPattern]);
+
+  const hasFilteredWallets = useMemo(
+    () => Object.keys(filteredWallets).length > 0,
+    [filteredWallets],
+  );
 
   const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
 
@@ -108,7 +114,7 @@ export const AccountList = () => {
           height={BlockSize.Full}
           flexDirection={FlexDirection.Column}
         >
-          {Object.keys(filteredWallets).length > 0 ? (
+          {hasFilteredWallets ? (
             <MultichainAccountList
               wallets={filteredWallets}
               selectedAccountGroups={[selectedAccountGroup]}
@@ -121,7 +127,12 @@ export const AccountList = () => {
               width={BlockSize.Full}
               height={BlockSize.Full}
             >
-              <Text>{t('noAccountsFound')}</Text>
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
+              >
+                {t('noAccountsFound')}
+              </Text>
             </Box>
           )}
         </Box>
