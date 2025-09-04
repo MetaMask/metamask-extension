@@ -585,7 +585,6 @@ describe('Request-queue UI changes', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-              '0x539': true,
             },
           })
           .build(),
