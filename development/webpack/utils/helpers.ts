@@ -114,13 +114,25 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   }
 
   // add content_scripts to entries
-  manifest.content_scripts?.forEach((s) =>
-    s.js
-      // browserifyOnlyScripts are only relevant for the browserify build
-      // so we need to remove them from the manifest when building with webpack
-      ?.filter((filename) => !browserifyOnlyScripts.includes(filename))
-      ?.forEach(addManifestScript),
-  );
+  manifest.content_scripts?.forEach((script) => {
+    // Check to make sure the browserifyOnlyScripts are actually in the manifest
+    if (script.run_at === 'document_start') {
+      for (const browserifyOnlyScript of browserifyOnlyScripts) {
+        if (!script.js?.includes(browserifyOnlyScript)) {
+          throw new Error(
+            `Congrats on your build failure! We expected '${browserifyOnlyScript}' to be in the manifest, but it was not found. This is a good thing. You should update ${__filename} to update or remove this check.`,
+          );
+        }
+      }
+    }
+    return (
+      script.js
+        // browserifyOnlyScripts are only relevant for the browserify build
+        // so we need to remove them from the manifest when building with webpack
+        ?.filter((filename) => !browserifyOnlyScripts.includes(filename))
+        ?.forEach(addManifestScript)
+    );
+  });
 
   if (manifest.manifest_version === 3) {
     addManifestScript(manifest.background?.service_worker);
