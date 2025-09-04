@@ -1,7 +1,5 @@
 import type {
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   NetworkConfiguration,
-  ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
@@ -44,9 +42,7 @@ import {
 } from '@metamask/account-tree-controller';
 import {
   MultichainNetworks,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps,bitcoin-swaps)
   MULTICHAIN_PROVIDER_CONFIGS,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
 import {
   getHardwareWalletType,
@@ -150,7 +146,6 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
     return uniqBy(
       [
         ...Object.values(networkConfigurationsByChainId),
-        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
         // TODO: get this from network controller, use placeholder values for now
         {
           ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
@@ -335,12 +330,18 @@ export const getAccountGroupNameByInternalAccount = createSelector(
 );
 
 export const getFromAccount = createSelector(
-  [(state) => getFromChain(state)?.chainId, (state) => state],
-  (fromChainId, state) => {
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) => state,
+    getSelectedInternalAccount,
+  ],
+  (fromChainId, state, selectedInternalAccount) => {
     if (fromChainId) {
-      return getInternalAccountBySelectedAccountGroupAndCaip(
-        state,
-        formatChainIdToCaip(fromChainId),
+      return (
+        getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          formatChainIdToCaip(fromChainId),
+        ) ?? selectedInternalAccount
       );
     }
     return null;
