@@ -49,10 +49,7 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import {
-  USER_STORAGE_FEATURE_NAMES,
-  UserProfileLineage,
-} from '@metamask/profile-sync-controller/sdk';
+import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -6661,11 +6658,6 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
           'multichain_accounts_wallets',
         ]),
       ]);
-      // const response = await submitRequestToBackground(
-      //   'deleteAccountSyncingDataFromUserStorage',
-      //   [USER_STORAGE_FEATURE_NAMES.accounts],
-      // );
-      // return response;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;

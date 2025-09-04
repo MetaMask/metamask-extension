@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -3009,8 +3008,13 @@ describe('Actions', () => {
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
-        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith(
-          USER_STORAGE_FEATURE_NAMES.accounts,
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          'multichain_accounts_groups',
+        ),
+      ).toBe(true);
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          'multichain_accounts_wallets',
         ),
       ).toBe(true);
     });
