@@ -14,13 +14,14 @@ import {
   OAuthServiceEvent,
   OAuthServiceOptions,
   SERVICE_NAME,
+  ServiceName,
   WebAuthenticator,
 } from './types';
 import { loadOAuthConfig } from './config';
 
 export default class OAuthService {
   // Required for modular initialisation.
-  name = SERVICE_NAME;
+  name: ServiceName = SERVICE_NAME;
 
   state = null;
 
