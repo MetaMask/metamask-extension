@@ -348,6 +348,7 @@ export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const FRAX_DISPLAY_NAME = 'Fraxtal';
+export const IOTEX_DISPLAY_NAME = 'IoTeX';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -1431,6 +1432,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET,
+    name: IOTEX_DISPLAY_NAME,
+    nativeCurrency: CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
+    rpcEndpoints: [
+      {
+        url: 'https://babel-api.mainnet.iotex.io',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://iotexscan.io'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
