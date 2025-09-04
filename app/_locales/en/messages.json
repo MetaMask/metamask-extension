@@ -1177,6 +1177,9 @@
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "clearFilters": {
+    "message": "Clear filters"
+  },
   "click": {
     "message": "Click"
   },
@@ -3872,6 +3875,9 @@
   "noTransactions": {
     "message": "You have no transactions"
   },
+  "noTokensMatchingYourFilters": {
+    "message": "No tokens matching your filters"
+  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
@@ -5197,6 +5203,9 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchForAnAssetToSend": {
+    "message": "Search for an asset to send"
+  },
   "searchNetworks": {
     "message": "Search networks"
   },
@@ -5352,6 +5361,9 @@
   },
   "selectHdPath": {
     "message": "Select HD path"
+  },
+  "selectNetworkToFilter": {
+    "message": "Select network to filter"
   },
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
