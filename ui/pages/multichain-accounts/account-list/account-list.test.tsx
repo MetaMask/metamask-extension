@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, within } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -16,6 +16,10 @@ jest.mock('react-router-dom', () => ({
     push: mockHistoryPush,
   }),
 }));
+
+const searchContainerTestId = 'multichain-account-list-search';
+const searchClearButtonTestId = 'text-field-search-clear-button';
+const walletHeaderTestId = 'multichain-account-tree-wallet-header';
 
 describe('AccountList', () => {
   beforeEach(() => {
@@ -38,9 +42,7 @@ describe('AccountList', () => {
     expect(screen.getByText('Accounts')).toBeInTheDocument();
     expect(screen.getByLabelText('Back')).toBeInTheDocument();
 
-    const walletHeaders = screen.getAllByTestId(
-      'multichain-account-tree-wallet-header',
-    );
+    const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
 
     expect(walletHeaders.length).toBe(5);
     expect(screen.getByText('Wallet 1')).toBeInTheDocument();
@@ -71,5 +73,86 @@ describe('AccountList', () => {
     expect(screen.getByText('Import a wallet')).toBeInTheDocument();
     expect(screen.getByText('Import an account')).toBeInTheDocument();
     expect(screen.getByText('Add a hardware wallet')).toBeInTheDocument();
+  });
+
+  it('displays the search field with correct placeholder', () => {
+    renderComponent();
+
+    const searchContainer = screen.getByTestId(searchContainerTestId);
+
+    expect(searchContainer).toBeInTheDocument();
+
+    const searchInput = within(searchContainer).getByPlaceholderText(
+      'Search your accounts',
+    );
+
+    expect(searchInput).toBeInTheDocument();
+  });
+
+  it('updates search value when typing in the search field', () => {
+    renderComponent();
+
+    const searchContainer = screen.getByTestId(searchContainerTestId);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'Account 2' } });
+
+    // @ts-expect-error Values does exist on the search input
+    expect(searchInput?.value).toBe('Account 2');
+  });
+
+  it('filters accounts when search text is entered', () => {
+    renderComponent();
+
+    // Verify all accounts are shown initially
+    const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+    expect(walletHeaders.length).toBe(5);
+    expect(screen.getByText('Account 1')).toBeInTheDocument();
+    expect(screen.getByText('Account 2')).toBeInTheDocument();
+
+    const searchContainer = screen.getByTestId(searchContainerTestId);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'Account 2' } });
+
+    expect(screen.queryByText('Account 1')).not.toBeInTheDocument();
+    expect(screen.getByText('Account 2')).toBeInTheDocument();
+  });
+
+  it('shows "No accounts found" message when no accounts match search criteria', () => {
+    renderComponent();
+
+    const searchContainer = screen.getByTestId(searchContainerTestId);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'nonexistent account' } });
+
+    expect(
+      screen.getByText('No accounts found for the given search query'),
+    ).toBeInTheDocument();
+  });
+
+  it('clears search when clear button is clicked', () => {
+    renderComponent();
+
+    const searchContainer = screen.getByTestId(searchContainerTestId);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'Account 2' } });
+
+    const clearButton = screen.getByTestId(searchClearButtonTestId);
+    fireEvent.click(clearButton);
+
+    // @ts-expect-error Value does exist on search input
+    expect(searchInput?.value).toBe('');
+    expect(screen.getByText('Account 1')).toBeInTheDocument();
+    expect(screen.getByText('Account 2')).toBeInTheDocument();
+  });
+
+  it('performs case-insensitive search', () => {
+    renderComponent();
+
+    const searchContainer = screen.getByTestId(searchContainerTestId);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'account 2' } });
+
+    expect(screen.queryByText('Account 1')).not.toBeInTheDocument();
+    expect(screen.getByText('Account 2')).toBeInTheDocument();
   });
 });
