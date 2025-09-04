@@ -41,11 +41,13 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
+  setTermsOfUseLastAgreed,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
   getShowTermsOfUse,
+  getIsSocialLoginFlow,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -68,10 +70,7 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  getIsSocialLoginUiChangesEnabled,
-} from '../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
@@ -114,7 +113,7 @@ export default function OnboardingFlow() {
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
-  const isSocialLoginUiChangesEnabled = getIsSocialLoginUiChangesEnabled();
+  const isSocialLogin = useSelector(getIsSocialLoginFlow);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -122,9 +121,7 @@ export default function OnboardingFlow() {
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
   const [welcomePageState, setWelcomePageState] = useState(
-    isSocialLoginUiChangesEnabled
-      ? WelcomePageState.Login
-      : WelcomePageState.Banner,
+    WelcomePageState.Login,
   );
 
   useEffect(() => {
@@ -161,13 +158,7 @@ export default function OnboardingFlow() {
     }
 
     if (pathname === ONBOARDING_WELCOME_ROUTE) {
-      if (isSocialLoginUiChangesEnabled) {
-        setWelcomePageState(WelcomePageState.Login);
-        return;
-      }
-      setWelcomePageState(
-        showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
-      );
+      setWelcomePageState(WelcomePageState.Login);
     } else {
       setWelcomePageState(null);
     }
@@ -180,7 +171,6 @@ export default function OnboardingFlow() {
     showTermsOfUse,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
-    isSocialLoginUiChangesEnabled,
   ]);
 
   useEffect(() => {
@@ -208,6 +198,11 @@ export default function OnboardingFlow() {
         newSecretRecoveryPhrase = await dispatch(
           createNewVaultAndGetSeedPhrase(password),
         );
+      }
+
+      // For social login, we need to agree to the terms of use
+      if (isSocialLogin) {
+        await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
       }
 
       setSecretRecoveryPhrase(newSecretRecoveryPhrase);

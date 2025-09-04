@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
@@ -19,12 +19,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
-import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  getIsSocialLoginUiChangesEnabled,
-} from '../../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -42,7 +40,7 @@ export default function WelcomeLogin({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const dispatch = useDispatch();
-  const isSocialLoginUiChangesEnabled = getIsSocialLoginUiChangesEnabled();
+  const isSocialLogin = useSelector(getIsSocialLoginFlow);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -70,13 +68,15 @@ export default function WelcomeLogin({
         return;
       }
       setShowLoginOptions(false);
-      if (isSocialLoginUiChangesEnabled) {
+
+      // For social login, we need to agree to the terms of use
+      if (isSocialLogin) {
         await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
       }
 
       await onLogin(loginType, loginOption);
     },
-    [dispatch, isSocialLoginUiChangesEnabled, loginOption, onLogin],
+    [dispatch, isSocialLogin, loginOption, onLogin],
   );
 
   return (
