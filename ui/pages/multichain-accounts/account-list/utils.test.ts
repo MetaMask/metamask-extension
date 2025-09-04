@@ -6,7 +6,7 @@ describe('filterWalletsByGroupName', () => {
   const mockWallets: AccountTreeWallets = mockState.metamask.accountTree
     .wallets as unknown as AccountTreeWallets;
 
-  it('should return original wallets when search pattern is empty', () => {
+  it('returns original wallets when search pattern is empty', () => {
     const result = filterWalletsByGroupName(mockWallets, '');
     expect(result).toBe(mockWallets);
 
@@ -14,7 +14,7 @@ describe('filterWalletsByGroupName', () => {
     expect(resultWithSpaces).toBe(mockWallets);
   });
 
-  it('should filter wallets to only include groups with matching names', () => {
+  it('filters wallets to only include groups with matching names', () => {
     const result = filterWalletsByGroupName(mockWallets, 'Account 2');
 
     expect(Object.keys(result)).toHaveLength(1);
@@ -25,13 +25,13 @@ describe('filterWalletsByGroupName', () => {
     expect(wallet.groups['entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0']).toBeDefined();
   });
 
-  it('should filter wallets to only include groups with partially matching names', () => {
+  it('filters wallets to only include groups with partially matching names', () => {
     const result = filterWalletsByGroupName(mockWallets, 'Account');
 
     expect(Object.keys(result)).toHaveLength(5);
   });
 
-  it('should handle case-insensitive search', () => {
+  it('handles case-insensitive search', () => {
     const result1 = filterWalletsByGroupName(mockWallets, 'ACCOUNT 2');
     const result2 = filterWalletsByGroupName(mockWallets, 'account 2');
 
@@ -40,20 +40,20 @@ describe('filterWalletsByGroupName', () => {
     expect(Object.keys(result1)).toHaveLength(1);
   });
 
-  it('should trim search pattern before matching', () => {
+  it('trims search pattern before matching', () => {
     const result = filterWalletsByGroupName(mockWallets, '  Account 2  ');
 
     expect(Object.keys(result)).toHaveLength(1);
     expect(result['entropy:01JKAF3PJ247KAM6C03G5Q0NP8']).toBeDefined();
   });
 
-  it('should return empty object when no matches are found', () => {
+  it('returns empty object when no matches are found', () => {
     const result = filterWalletsByGroupName(mockWallets, 'nonexistent');
 
     expect(Object.keys(result)).toHaveLength(0);
   });
 
-  it('should preserve wallet properties in filtered results', () => {
+  it('preserves wallet properties in filtered results', () => {
     const result = filterWalletsByGroupName(mockWallets, 'Account 1');
     const originalWallet = mockWallets['entropy:01JKAF3DSGM3AB87EM9N0K41AJ'];
     const filteredWallet = result['entropy:01JKAF3DSGM3AB87EM9N0K41AJ'];
