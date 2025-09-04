@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import { useSafeChainsListValidationSelector } from '../selectors';
-import {
-  getMultichainIsEvm,
-  getMultichainCurrentNetwork,
-} from '../selectors/multichain';
+import { getMultichainCurrentNetwork } from '../selectors/multichain';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -23,7 +20,7 @@ export function useIsOriginalNativeTokenSymbol(
     useSafeChainsListValidationSelector,
   );
 
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(chainId);
   const providerConfig = useSelector(getMultichainCurrentNetwork);
 
   useEffect(() => {

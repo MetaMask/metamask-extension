@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
+import { isCaipChainId } from '@metamask/utils';
 import {
   getIsMultichainAccountsState2Enabled,
   getIsTestnet,
@@ -11,7 +12,6 @@ import {
 import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
-  getMultichainIsEvm,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
@@ -29,7 +29,7 @@ export const useTokenDisplayInfo = ({
   token,
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(token.chainId);
   const tokenList = useSelector(getTokenList) || {};
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);

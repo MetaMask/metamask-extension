@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipAssetType } from '@metamask/utils';
+import { CaipAssetType, isCaipChainId } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
@@ -20,7 +20,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainConversionRate,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { getAssetsRates } from '../../../selectors/assets';
@@ -44,7 +43,7 @@ export const AssetMarketDetails = ({
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
 
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
 
   const { type, symbol, chainId } = asset;

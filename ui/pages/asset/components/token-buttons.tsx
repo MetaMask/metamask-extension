@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { CaipAssetType } from '@metamask/utils';
+import { CaipAssetType, isCaipChainId } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
@@ -44,11 +44,7 @@ import {
   IconSize,
 } from '../../../components/component-library';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainIsEvm,
-  getMultichainIsTestnet,
-} from '../../../selectors/multichain';
+import { getMultichainIsTestnet } from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
@@ -73,7 +69,7 @@ const TokenButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
-  const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(token.chainId);
 
   const account = useSelector(getSelectedInternalAccount, isEqual);
 

@@ -31,10 +31,7 @@ import {
 import { showModal } from '../../../store/actions';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
@@ -84,7 +81,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     getMultichainNetwork,
     selectedAccount,
   );
-  const isEvm = useSelector(getMultichainIsEvm) && !isCaipChainId(chainId);
+  const isEvm = !isCaipChainId(chainId);
 
   console.log('KJADHGHDKJAKJHD 3', {
     multichainNetwork,

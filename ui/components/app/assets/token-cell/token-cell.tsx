@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { isCaipChainId } from '@metamask/utils';
 import { useTokenDisplayInfo } from '../hooks';
 import {
   ButtonSecondary,
@@ -11,7 +12,6 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getSafeNativeCurrencySymbol,
@@ -51,7 +51,7 @@ export default function TokenCell({
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(token.chainId);
   const nativeCurrencySymbol = useMemo(
     () => getSafeNativeCurrencySymbol(safeChains, token.chainId),
     [safeChains, token.chainId],
@@ -70,6 +70,8 @@ export default function TokenCell({
     }),
     [token, tokenDisplayInfo],
   );
+
+  console.log('DISPLAY TOKEN', displayToken);
 
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);

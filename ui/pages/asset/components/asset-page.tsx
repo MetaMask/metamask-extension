@@ -3,6 +3,7 @@ import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type Hex,
+  isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { isEqual } from 'lodash';
@@ -58,7 +59,6 @@ import {
 } from '../../../selectors';
 import {
   getImageForChainId,
-  getMultichainIsEvm,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
@@ -89,7 +89,7 @@ const AssetPage = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(asset.chainId);
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
 
   useEffect(() => {
@@ -249,6 +249,10 @@ const AssetPage = ({
         secondary: balance ? Number(balance) : 0,
       }
     : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
+
+  console.log('TOKEN WITH FIAT AMOUNT', {
+    tokenWithFiatAmount,
+  });
 
   const { safeChains } = useSafeChains();
 

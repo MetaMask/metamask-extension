@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { type Hex } from '@metamask/utils';
+import { isCaipChainId, type Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -37,7 +37,6 @@ import {
   Text,
 } from '../../component-library';
 import { getMarketData, getCurrencyRates } from '../../../selectors';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -100,7 +99,7 @@ export const TokenListItemComponent = ({
   nativeCurrencySymbol,
 }: TokenListItemProps) => {
   const t = useI18nContext();
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(chainId);
   const trackEvent = useContext(MetaMetricsContext);
   const currencyRates = useSelector(getCurrencyRates);
 
