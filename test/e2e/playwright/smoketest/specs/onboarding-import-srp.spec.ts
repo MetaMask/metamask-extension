@@ -21,9 +21,9 @@ test('MetaMask Onboarding: Import existing SRP via new flow', async () => {
   await onboarding.clickGetStarted();
   await onboarding.clickScrollAndAgreeTermsOfUse();
   await onboarding.importExistingWallet();
-  await onboarding.stopTracing();
+  //await onboarding.stopTracing();
   await onboarding.pasteSrp(getSrp());
-  await onboarding.startTracing('post-srp');
+  //await onboarding.startTracing('post-srp');
   await onboarding.createPassword('Test123!');
   await onboarding.clickMetric();
   await onboarding.clickCompletion();
