@@ -3,12 +3,6 @@ name: Create Release Pull Request
 on:
   workflow_dispatch:
     inputs:
-      checkout-base-branch:
-        description: 'The base branch, tag, or SHA for git operations. Usually `main`'
-        required: true
-      release-pr-base-branch:
-        description: 'The base branch, tag, or SHA for the release pull request. Usually `stable`'
-        required: true
       semver-version:
         description: 'A semantic version, eg: x.x.x'
         required: true
@@ -18,12 +12,6 @@ on:
 
   workflow_call:
     inputs:
-      checkout-base-branch:
-        required: true
-        type: string
-      release-pr-base-branch:
-        required: true
-        type: string
       semver-version:
         required: true
         type: string
@@ -41,13 +29,45 @@ on:
         required: false
 
 jobs:
+  resolve-bases:
+    # Determines if the release is hotfix or not based on semver. Then sets the appropriate base branches for the checkout and release PR.
+    runs-on: ubuntu-latest
+    outputs:
+      checkout_base: ${{ steps.out.outputs.checkout_base }}
+      release_base: ${{ steps.out.outputs.release_base }}
+    steps:
+      - id: out
+        shell: bash
+        env:
+          SEMVER: ${{ inputs.semver-version }}
+        run: |
+          set -euo pipefail
+
+          # Validate semver
+          if ! [[ "${SEMVER:-}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: semver-version must be numeric X.Y.Z, got: ${SEMVER:-<empty>}" >&2
+            exit 1
+          fi
+
+          patch="${SEMVER##*.}"
+          if [ "$patch" -gt 0 ]; then
+            echo "Detected hotfix (patch=$patch): using stable for both bases."
+            echo "checkout_base=stable" >> "$GITHUB_OUTPUT"
+            echo "release_base=stable" >> "$GITHUB_OUTPUT"
+          else
+            echo "Detected non-hotfix (patch=0): using main for checkout and stable for release PR base."
+            echo "checkout_base=main" >> "$GITHUB_OUTPUT"
+            echo "release_base=stable" >> "$GITHUB_OUTPUT"
+          fi
+
   create-release-pr:
+    needs: resolve-bases
     name: Create Release Pull Request using Github Tools
     uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@ddac3ee395896ff15df6fc561ff710efbb0dd3fa
     with:
       platform: extension
-      checkout-base-branch: ${{ inputs.checkout-base-branch }}
-      release-pr-base-branch: ${{ inputs.release-pr-base-branch }}
+      checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
+      release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-ref: ${{ inputs.previous-version-ref }}
       github-tools-version: ddac3ee395896ff15df6fc561ff710efbb0dd3fa
