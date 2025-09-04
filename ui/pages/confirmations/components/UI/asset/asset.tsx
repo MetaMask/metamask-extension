@@ -80,7 +80,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
                 borderRadius: 20,
                 objectFit: 'cover',
               }}
-              onError={(e) => {
+              onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
                 target.nextElementSibling?.classList.remove('hidden');
