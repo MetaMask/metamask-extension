@@ -10,6 +10,7 @@ jobs:
     outputs:
       semver: ${{ steps.out.outputs.semver }}
       previous_ref: ${{ steps.out.outputs.previous_ref }}
+      proceed: ${{ steps.out.outputs.proceed }}
     steps:
       - id: out
         shell: bash
