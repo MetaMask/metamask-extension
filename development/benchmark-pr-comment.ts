@@ -427,17 +427,16 @@ function generateBenchmarkComment(
   benchmarkData: BenchmarkOutput,
   referenceData?: BenchmarkOutput | null,
 ): string {
-  const { summary, commit, timestamp } = benchmarkData;
+  const { summary, timestamp } = benchmarkData;
 
   if (!summary || summary.length === 0) {
     return '## 📊 Page Load Benchmark Results\n\n❌ No benchmark results available.';
   }
 
-  const shortCommit = commit.slice(0, 7);
   const date = new Date(timestamp).toLocaleDateString();
 
   let comment = `## 📊 Page Load Benchmark Results\n\n`;
-  comment += `**Current Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
+  comment += `**Date**: ${date}\n\n`;
 
   // Track significant increases for warning
   const significantIncreases: {

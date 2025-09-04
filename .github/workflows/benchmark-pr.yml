@@ -56,7 +56,6 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           REPOSITORY: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Upload benchmark results
         if: github.ref == 'refs/heads/main'
