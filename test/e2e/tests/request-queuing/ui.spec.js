@@ -363,14 +363,18 @@ describe('Request-queue UI changes', function () {
           // Start on the last joined network, whose send transaction was just confirmed
           await networkManager.openNetworkManager();
           await networkManager.selectTab('Custom');
-          await driver.clickElement('[data-testid="Localhost 7777"]');
+          await driver.clickElementAndWaitToDisappear(
+            '[data-testid="Localhost 7777"]',
+          );
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
         // Validate second network, where transaction was rejected
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8546"]',
+        );
 
         await validateBalanceAndActivity(driver, '25', 0);
 
