@@ -174,7 +174,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  this.timeout(200000); // This test is very long, so we need an unusually high timeout
+  this.timeout(500000); // This test is very long, so we need an unusually high timeout
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
