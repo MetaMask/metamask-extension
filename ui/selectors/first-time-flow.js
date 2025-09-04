@@ -1,10 +1,7 @@
 import { PLATFORM_FIREFOX } from '../../shared/constants/app';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getBrowserName } from '../../shared/modules/browser-runtime.utils';
-import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  getIsSocialLoginUiChangesEnabled,
-} from '../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -42,7 +39,7 @@ export const getIsSocialLoginFlow = (state) => {
  */
 export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
   const { firstTimeFlowType, participateInMetaMetrics } = state.metamask;
-  const hasSetMetaMetrics = getIsSocialLoginUiChangesEnabled()
+  const hasSetMetaMetrics = getIsSocialLoginFlow(state)
     ? true
     : participateInMetaMetrics !== null;
 

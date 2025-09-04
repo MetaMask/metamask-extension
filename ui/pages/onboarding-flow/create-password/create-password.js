@@ -58,10 +58,7 @@ import {
   resetOnboarding,
   setParticipateInMetaMetrics,
 } from '../../../store/actions';
-import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  getIsSocialLoginUiChangesEnabled,
-} from '../../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -106,7 +103,6 @@ export default function CreatePassword({
   const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
     analyticsIframeQuery,
   )}`;
-  const isSocialLoginUiChangesEnabled = getIsSocialLoginUiChangesEnabled();
 
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
@@ -227,7 +223,7 @@ export default function CreatePassword({
       bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
     }
 
-    if (isSocialLoginFlow && isSocialLoginUiChangesEnabled) {
+    if (isSocialLoginFlow) {
       await dispatch(setParticipateInMetaMetrics(true));
     }
 
@@ -256,12 +252,8 @@ export default function CreatePassword({
       },
     });
 
-    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
-      if (isFirefox || isSocialLoginUiChangesEnabled) {
-        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
-      } else {
-        navigate(ONBOARDING_METAMETRICS, { replace: true });
-      }
+    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow && isFirefox) {
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
     }
@@ -345,12 +337,8 @@ export default function CreatePassword({
     </a>
   );
 
-  const socialLoginCheckboxLabel = isSocialLoginUiChangesEnabled
-    ? t('createPasswordMarketing')
-    : t('passwordTermsWarningSocial');
-
   const checkboxLabel = isSocialLoginFlow
-    ? socialLoginCheckboxLabel
+    ? t('createPasswordMarketing')
     : t('passwordTermsWarning');
 
   return (
@@ -428,11 +416,17 @@ export default function CreatePassword({
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
         <Box
           className="create-password__terms-container"
-          alignItems={AlignItems.center}
+          alignItems={
+            isSocialLoginFlow ? AlignItems.center : AlignItems.flexStart
+          }
           justifyContent={JustifyContent.spaceBetween}
           marginTop={6}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          padding={3}
+          backgroundColor={
+            isSocialLoginFlow
+              ? BackgroundColor.backgroundMuted
+              : BackgroundColor.backgroundDefault
+          }
+          padding={isSocialLoginFlow ? 3 : 0}
           borderRadius={BorderRadius.LG}
         >
           <Checkbox
@@ -440,12 +434,12 @@ export default function CreatePassword({
             alignItems={AlignItems.flexStart}
             isChecked={termsChecked}
             onChange={() => {
-              !isSocialLoginUiChangesEnabled && setTermsChecked(!termsChecked);
+              !isSocialLoginFlow && setTermsChecked(!termsChecked);
             }}
             label={
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
                 {checkboxLabel} &nbsp;
-                {!isSocialLoginUiChangesEnabled && createPasswordLink}
+                {!isSocialLoginFlow && createPasswordLink}
               </Text>
             }
           />
@@ -458,9 +452,7 @@ export default function CreatePassword({
           width={BlockSize.Full}
           size={ButtonSize.Lg}
           className="create-password__form--submit-button"
-          disabled={
-            !password || (!isSocialLoginUiChangesEnabled && !termsChecked)
-          }
+          disabled={!password || (!isSocialLoginFlow && !termsChecked)}
         >
           {t('createPasswordCreate')}
         </Button>

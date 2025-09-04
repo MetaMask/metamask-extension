@@ -9,7 +9,6 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import * as Environment from '../../../../shared/modules/environment';
 import CreatePassword from './create-password';
 
 const mockUseNavigate = jest.fn();
@@ -268,11 +267,7 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should not create new wallet without terms checked when socialLoginUiChanges are disabled', () => {
-      jest
-        .spyOn(Environment, 'getIsSocialLoginUiChangesEnabled')
-        .mockReturnValue(false);
-
+    it('should not create new wallet without terms checked when its social login flow', () => {
       const mockStore = configureMockStore()(mockState);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
@@ -311,12 +306,14 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should create new wallet without marketing checked when socialLoginUiChanges are enabled', () => {
-      jest
-        .spyOn(Environment, 'getIsSocialLoginUiChangesEnabled')
-        .mockReturnValue(true);
-
-      const mockStore = configureMockStore()(mockState);
+    it('should create new wallet without marketing checked when its social login flow', () => {
+      const mockStore = configureMockStore()({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
       const { queryByTestId } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
         mockStore,
