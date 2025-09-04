@@ -43,6 +43,14 @@ type MultichainAddressRowProps = {
    * Optional className for additional styling
    */
   className?: string;
+  /**
+   * Callback for when QR code button is clicked
+   */
+  onQrClick: (
+    address: string,
+    networkName: string,
+    networkImageSrc?: string,
+  ) => void;
 };
 
 export const MultichainAddressRow = ({
@@ -50,6 +58,7 @@ export const MultichainAddressRow = ({
   networkName,
   address,
   className = '',
+  onQrClick,
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -67,7 +76,7 @@ export const MultichainAddressRow = ({
   };
 
   const handleQrClick = () => {
-    console.log('QR code clicked for address:', address);
+    onQrClick?.(address, networkName, networkImageSrc);
   };
 
   return (
