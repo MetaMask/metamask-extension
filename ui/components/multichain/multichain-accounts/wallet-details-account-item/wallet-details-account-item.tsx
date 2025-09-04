@@ -75,7 +75,7 @@ const WalletDetailsAccountItem = ({
             variant={TextVariant.bodyMdMedium}
             color={TextColor.textDefault}
           >
-            {account.metadata.name}
+            {account.metadata?.name || ''}
           </Text>
         </Box>
       </Box>

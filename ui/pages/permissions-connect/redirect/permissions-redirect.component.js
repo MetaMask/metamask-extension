@@ -71,7 +71,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
         >
           <AvatarToken
             src={cachedSubjectMetadata.iconUrl}
-            name={cachedSubjectMetadata.name}
+            name={cachedSubjectMetadata?.name || ''}
             size={AvatarTokenSize.Lg}
           />
           <Box

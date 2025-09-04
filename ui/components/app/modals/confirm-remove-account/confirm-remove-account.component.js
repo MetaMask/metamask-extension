@@ -48,7 +48,7 @@ export default class ConfirmRemoveAccount extends Component {
           <span className="confirm-remove-account__account__label">
             {t('name')}
           </span>
-          <span className="account_value">{account.metadata.name}</span>
+          <span className="account_value">{account.metadata?.name || ''}</span>
         </div>
         <div className="confirm-remove-account__account__address">
           <span className="confirm-remove-account__account__label">

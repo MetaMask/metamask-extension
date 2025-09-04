@@ -35,7 +35,7 @@ const mapStateToProps = (state, ownProps) => {
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
   const { memo } = contact || {};
   const name =
-    contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
+    contact?.name || getInternalAccountByAddress(state, address)?.metadata?.name || '';
 
   const { chainId } = getProviderConfig(state);
   const contactChainId = contact?.chainId || chainId;

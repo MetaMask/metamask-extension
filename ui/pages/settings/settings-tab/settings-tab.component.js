@@ -42,7 +42,7 @@ const currencyOptions = sortedCurrencies.map(({ code, name }) => {
 
 const localeOptions = locales.map((locale) => {
   return {
-    name: `${locale.name}`,
+    name: `${locale?.name || ''}`,
     value: locale.code,
   };
 });

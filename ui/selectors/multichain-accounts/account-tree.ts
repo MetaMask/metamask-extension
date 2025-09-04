@@ -260,7 +260,7 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
         if (account) {
           return {
             id: walletId,
-            name: wallet.metadata.name,
+            name: wallet.metadata?.name || '',
           };
         }
       }
