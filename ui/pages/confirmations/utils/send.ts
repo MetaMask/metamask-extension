@@ -4,6 +4,7 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { addHexPrefix } from 'ethereumjs-util';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useHistory } from 'react-router-dom';
 
@@ -11,6 +12,7 @@ import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
+  getLayer1GasFeeValue,
 } from '../../../store/actions';
 import { Asset } from '../types/send';
 import {
@@ -38,7 +40,10 @@ export const fromTokenMinimalUnitsNumeric = (
 export const fromTokenMinimalUnits = (
   value: string,
   decimals?: number | string,
-) => fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString();
+) =>
+  addHexPrefix(
+    fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString(),
+  );
 
 export const fromTokenMinimalUnitsHexNumeric = (
   value: string,
@@ -54,8 +59,25 @@ export const toTokenMinimalUnitNumeric = (
   return new Numeric(value, 16).divide(multiplier, 10);
 };
 
-export const toTokenMinimalUnit = (value: string, decimals?: number | string) =>
-  toTokenMinimalUnitNumeric(value, decimals).toBase(10).toString();
+export const toTokenMinimalUnit = (
+  value: string,
+  decimals?: number | string,
+) => {
+  const convertedValue = toTokenMinimalUnitNumeric(value, decimals)
+    .toBase(10)
+    .toString();
+
+  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
+  const result = String(convertedValue).replace(/^-/u, '').split('.');
+  const intPart = result[0];
+  let fracPart = result[1] ?? '';
+
+  if (fracPart.length > decimalValue) {
+    fracPart = fracPart.slice(0, decimalValue);
+  }
+
+  return fracPart ? `${intPart}.${fracPart}` : intPart;
+};
 
 export function formatToFixedDecimals(
   value: string | undefined,
@@ -161,6 +183,26 @@ export const submitEvmTransaction = async ({
     networkClientId,
     type: TransactionType.simpleSend,
   });
+};
+
+export const getLayer1GasFees = async ({
+  asset,
+  chainId,
+  from,
+  value,
+}: {
+  asset: Asset;
+  chainId: Hex;
+  from: Hex;
+  value: string;
+}): Promise<Hex | undefined> => {
+  return (await getLayer1GasFeeValue({
+    chainId,
+    transactionParams: {
+      value: fromTokenMinimalUnits(value, asset.decimals),
+      from,
+    },
+  })) as Hex | undefined;
 };
 
 export function isDecimal(value: string) {
