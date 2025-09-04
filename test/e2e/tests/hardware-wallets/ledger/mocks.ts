@@ -122,7 +122,7 @@ const LEDGER_SWAP_ETH_DAI_TRADES_MOCK = [
 export async function mockLedgerEthDaiTrade(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
         return {
           statusCode: 200,
