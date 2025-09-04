@@ -3953,3 +3953,14 @@ export function getShowUpdateModal(state) {
 
   return showUpdateModal;
 }
+
+/**
+ * Selector to get the allow list for non-zero unused approvals from remote feature flags.
+ *
+ * @param state - The MetaMask state object
+ * @returns {string[]} Array of URL strings for the allow list
+ */
+export const selectNonZeroUnusedApprovalsAllowList = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
+);

@@ -38,12 +38,12 @@ import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
-import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
+import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -122,10 +122,9 @@ export function useTransactionDisplayData(transactionGroup) {
 
   // Bridge data
   const srcTxMetaId = transactionGroup.initialTransaction.id;
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-  const bridgeHistoryItem = srcTxMetaId
-    ? bridgeHistory[srcTxMetaId]
-    : undefined;
+  const bridgeHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
+  );
   const { destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
     srcTxMeta: transactionGroup.initialTransaction,
@@ -431,7 +430,6 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('sent');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval');
     category = TransactionGroupCategory.approval;
     title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
     subtitle = origin;
