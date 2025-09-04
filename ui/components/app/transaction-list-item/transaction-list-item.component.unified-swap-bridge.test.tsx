@@ -60,7 +60,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to USDCFailed-2 USDC-$0.00 USD',
+      '?Swap USDC to USDCFailed-2 USDC-USD 0.00',
     );
     expect(getByText('Failed')).toBeInTheDocument();
   });
@@ -130,7 +130,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC-$0.00 USD',
+      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC-USD 0.00',
     );
   });
 
