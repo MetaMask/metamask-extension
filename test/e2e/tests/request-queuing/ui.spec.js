@@ -174,6 +174,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
+  this.timeout(200000); // This test is very long, so we need an unusually high timeout
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -628,7 +629,7 @@ describe('Request-queue UI changes', function () {
           driver,
           undefined,
           undefined,
-          '85,000.00'
+          '85,000.00',
         );
 
         // Open the first dapp
