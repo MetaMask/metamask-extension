@@ -327,15 +327,6 @@ describe('MultichainConnectPage', () => {
     expect(editAccountsButton).toBeDefined();
   });
 
-  it('should render empty accounts state correctly', () => {
-    const { getByTestId } = render();
-
-    // Since we have mocked connected account groups, we need to simulate empty state differently
-    // For now, let's test that the confirm button exists
-    const confirmButton = getByTestId('confirm-btn');
-    expect(confirmButton).toBeDefined();
-  });
-
   it('should render confirm and cancel buttons', () => {
     const { getByText } = render();
 
@@ -372,15 +363,6 @@ describe('MultichainConnectPage', () => {
     fireEvent.click(connectButton);
 
     expect(mockApproveConnection).toHaveBeenCalled();
-  });
-
-  it('should disable connect button when no accounts are selected', () => {
-    const { getByTestId } = render();
-
-    // Since we have mocked account groups, the button should be enabled
-    // In a real scenario with no accounts, it would be disabled
-    const confirmButton = getByTestId('confirm-btn');
-    expect(confirmButton).toBeDefined();
   });
 
   it('should render with existing permissions correctly', () => {
