@@ -31,6 +31,7 @@ describe('Settings', function () {
     // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
         driverOptions: {
