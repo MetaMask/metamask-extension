@@ -396,9 +396,6 @@ env:
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'false'
 
-  # Social login new UI changes
-  - SOCIAL_LOGIN_UI_CHANGES_ENABLED: 'true'
-
   # URL of Shield gateway
   - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
   # URL of Shield rule engine

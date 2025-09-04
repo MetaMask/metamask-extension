@@ -1,7 +1,9 @@
 import {
+  AssetListState,
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
+  selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
@@ -508,4 +510,44 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
 
     return balances[nativeAssetType];
   },
+);
+
+export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
+  ({ metamask }) => {
+    const initialState = {
+      accountTree: metamask.accountTree,
+      internalAccounts: metamask.internalAccounts,
+      allTokens: metamask.allTokens,
+      allIgnoredTokens: metamask.allIgnoredTokens,
+      tokenBalances: metamask.tokenBalances,
+      marketData: metamask.marketData,
+      currencyRates: metamask.currencyRates,
+      currentCurrency: metamask.currentCurrency,
+      networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
+      accountsByChainId: metamask.accountsByChainId,
+    };
+
+    let multichainState = {
+      accountsAssets: {},
+      assetsMetadata: {},
+      balances: {},
+      conversionRates: {},
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    multichainState = {
+      accountsAssets: metamask.accountsAssets,
+      assetsMetadata: metamask.assetsMetadata,
+      balances: metamask.balances,
+      conversionRates: metamask.conversionRates,
+    };
+    ///: END:ONLY_INCLUDE_IF
+
+    return {
+      ...initialState,
+      ...multichainState,
+    };
+  },
+  (assetListState: AssetListState) =>
+    selectAssetsBySelectedAccountGroup(assetListState),
 );

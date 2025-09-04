@@ -15,10 +15,6 @@ export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
   return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
 
-export const getIsSocialLoginUiChangesEnabled = (): boolean => {
-  return process.env.SOCIAL_LOGIN_UI_CHANGES_ENABLED?.toString() === 'true';
-};
-
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };

@@ -19,10 +19,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
-import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  getIsSocialLoginUiChangesEnabled,
-} from '../../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import LoginOptions from './login-options';
@@ -42,7 +39,6 @@ export default function WelcomeLogin({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const dispatch = useDispatch();
-  const isSocialLoginUiChangesEnabled = getIsSocialLoginUiChangesEnabled();
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -70,13 +66,12 @@ export default function WelcomeLogin({
         return;
       }
       setShowLoginOptions(false);
-      if (isSocialLoginUiChangesEnabled) {
-        await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
-      }
+
+      await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
       await onLogin(loginType, loginOption);
     },
-    [dispatch, isSocialLoginUiChangesEnabled, loginOption, onLogin],
+    [dispatch, loginOption, onLogin],
   );
 
   return (
