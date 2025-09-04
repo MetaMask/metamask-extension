@@ -4,11 +4,15 @@ import { isEVMAccountForSend, isSolanaAccountForSend } from './account';
 describe('Account Send Utils', () => {
   describe('isEVMAccountForSend', () => {
     it('returns false when account is null', () => {
-      expect(isEVMAccountForSend(null as any)).toBe(false);
+      expect(isEVMAccountForSend(null as unknown as InternalAccount)).toBe(
+        false,
+      );
     });
 
     it('returns false when account is undefined', () => {
-      expect(isEVMAccountForSend(undefined as any)).toBe(false);
+      expect(isEVMAccountForSend(undefined as unknown as InternalAccount)).toBe(
+        false,
+      );
     });
 
     it('returns true when account type starts with eip155:', () => {
@@ -77,11 +81,15 @@ describe('Account Send Utils', () => {
 
   describe('isSolanaAccountForSend', () => {
     it('returns false when account is null', () => {
-      expect(isSolanaAccountForSend(null as any)).toBe(false);
+      expect(isSolanaAccountForSend(null as unknown as InternalAccount)).toBe(
+        false,
+      );
     });
 
     it('returns false when account is undefined', () => {
-      expect(isSolanaAccountForSend(undefined as any)).toBe(false);
+      expect(
+        isSolanaAccountForSend(undefined as unknown as InternalAccount),
+      ).toBe(false);
     });
 
     it('returns true when account type starts with solana:', () => {

@@ -3872,11 +3872,11 @@
   "noThanks": {
     "message": "No thanks"
   },
-  "noTransactions": {
-    "message": "You have no transactions"
-  },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
+  },
+  "noTransactions": {
+    "message": "You have no transactions"
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -5362,11 +5362,11 @@
   "selectHdPath": {
     "message": "Select HD path"
   },
-  "selectNetworkToFilter": {
-    "message": "Select network to filter"
-  },
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
+  },
+  "selectNetworkToFilter": {
+    "message": "Select network to filter"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."

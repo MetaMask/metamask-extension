@@ -49,13 +49,21 @@ export const useSendAssetFilter = ({
 };
 
 function matchesSearchQuery(asset: Asset, query: string): boolean {
-  if (!query.trim()) return true;
+  if (!query.trim()) {
+    return true;
+  }
 
   const searchTerm = query.toLowerCase().trim();
 
-  if (asset.name?.toLowerCase().includes(searchTerm)) return true;
-  if (asset.symbol?.toLowerCase().includes(searchTerm)) return true;
-  if (asset.collection?.name?.toLowerCase().includes(searchTerm)) return true;
+  if (asset.name?.toLowerCase().includes(searchTerm)) {
+    return true;
+  }
+  if (asset.symbol?.toLowerCase().includes(searchTerm)) {
+    return true;
+  }
+  if (asset.collection?.name?.toLowerCase().includes(searchTerm)) {
+    return true;
+  }
 
   return false;
 }

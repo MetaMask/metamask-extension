@@ -33,6 +33,7 @@ export type Asset = {
   name?: string | undefined;
   networkName?: string;
   networkImage?: string;
+  shortenedBalance?: string;
   standard?: AssetStandard;
   symbol?: string | undefined;
   tokenId?: string;

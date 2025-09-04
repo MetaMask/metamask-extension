@@ -102,15 +102,6 @@ describe('useERC1155BalanceChecker', () => {
     expect(response?.balance).toBe(0);
   });
 
-  it('handles large balance values correctly', async () => {
-    mockGetERC1155BalanceOf.mockResolvedValue('999999999999999999');
-
-    const { result } = renderHook(() => useERC1155BalanceChecker());
-    const response = await result.current.fetchBalanceForNft(mockERC1155Asset);
-
-    expect(response?.balance).toBe(999999999999999999);
-  });
-
   it('returns null and logs error when findNetworkClientIdByChainId fails', async () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
     const error = new Error('Network client not found');

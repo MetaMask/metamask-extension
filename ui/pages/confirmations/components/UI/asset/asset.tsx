@@ -28,16 +28,17 @@ type AssetProps = {
   isSelected?: boolean;
 };
 
-export const Asset = ({ asset, onClick, isSelected }: AssetProps) => {
-  if (NFT_STANDARDS.includes(asset.standard as AssetStandard)) {
-    return <NFTAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
-  }
-  return <TokenAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
-};
-
-function NFTAsset({ asset, onClick, isSelected }: AssetProps) {
+const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
   const nftData = asset;
   const { collection, name, tokenId, image, standard, balance } = nftData;
+
+  // Calculate ERC1155 display text
+  let erc1155Text = null;
+  if (standard === AssetStandard.ERC1155) {
+    erc1155Text = name
+      ? `(${balance?.toString() as string}) ${name} - #${tokenId}`
+      : `(${balance?.toString() as string}) #${tokenId}`;
+  }
 
   return (
     <Box
@@ -106,20 +107,15 @@ function NFTAsset({ asset, onClick, isSelected }: AssetProps) {
           ellipsis
         >
           {standard === AssetStandard.ERC721 && name}
-          {standard === AssetStandard.ERC1155
-            ? name
-              ? `(${balance}) ${name} - #${tokenId}`
-              : `(${balance}) #${tokenId}`
-            : null}
+          {standard === AssetStandard.ERC1155 && erc1155Text}
         </Text>
       </Box>
     </Box>
   );
-}
+};
 
-function TokenAsset({ asset, onClick, isSelected }: AssetProps) {
-  // TODO: fix any
-  const tokenData = asset as any;
+const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
+  const tokenData = asset;
   const {
     balanceInSelectedCurrency,
     chainId,
@@ -152,7 +148,7 @@ function TokenAsset({ asset, onClick, isSelected }: AssetProps) {
             chainId ? (
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
-                name={tokenData.networkName}
+                name={tokenData.networkName ?? ''}
                 src={tokenData.networkImage}
               />
             ) : null
@@ -200,4 +196,11 @@ function TokenAsset({ asset, onClick, isSelected }: AssetProps) {
       </Box>
     </Box>
   );
-}
+};
+
+export const Asset = ({ asset, onClick, isSelected }: AssetProps) => {
+  if (NFT_STANDARDS.includes(asset.standard as AssetStandard)) {
+    return <NftAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
+  }
+  return <TokenAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
+};

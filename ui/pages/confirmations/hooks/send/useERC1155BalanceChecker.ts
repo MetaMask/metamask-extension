@@ -12,7 +12,9 @@ export const useERC1155BalanceChecker = () => {
 
   const fetchBalanceForNft = useCallback(
     async (nft: Asset) => {
-      if (nft.standard !== AssetStandard.ERC1155) return null;
+      if (nft.standard !== AssetStandard.ERC1155) {
+        return null;
+      }
 
       try {
         const networkClientId = await findNetworkClientIdByChainId(

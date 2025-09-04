@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getInternalAccounts } from '../../../../selectors';
+// This is fine to use it in send flow - might be removed in the future
+// eslint-disable-next-line no-restricted-syntax
 import { getNftsByChainByAccount } from '../../../../selectors/nft';
 import { AssetStandard, type Asset } from '../../types/send';
 import * as useChainNetworkNameAndImageModule from '../useChainNetworkNameAndImage';
@@ -335,7 +337,7 @@ describe('useSendNfts', () => {
   });
 
   it('only calls fetchBalanceForNft for ERC1155 NFTs', async () => {
-    const { result } = renderHookWithProvider(() => useSendNfts(), mockState);
+    renderHookWithProvider(() => useSendNfts(), mockState);
 
     await waitFor(() => {
       expect(mockFetchBalanceForNft).toHaveBeenCalledTimes(1);

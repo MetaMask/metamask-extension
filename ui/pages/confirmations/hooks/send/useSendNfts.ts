@@ -2,6 +2,8 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Nft } from '@metamask/assets-controllers';
 
+// This is fine to use it in send flow - might be removed in the future
+// eslint-disable-next-line no-restricted-syntax
 import { getNftsByChainByAccount } from '../../../../selectors/nft';
 import { getInternalAccounts } from '../../../../selectors';
 import { type Asset, AssetStandard } from '../../types/send';
@@ -82,15 +84,17 @@ export const useSendNfts = () => {
 };
 
 function transformNftsToAssets(
-  nftsOwnedByAccounts: any,
-  internalAccounts: any[],
-  chainNetworkNAmeAndImageMap: any,
+  nftsOwnedByAccounts: ReturnType<typeof getNftsByChainByAccount>,
+  internalAccounts: ReturnType<typeof getInternalAccounts>,
+  chainNetworkNAmeAndImageMap: ReturnType<
+    typeof useChainNetworkNameAndImageMap
+  >,
 ): Asset[] {
   const nftsArray: Asset[] = [];
 
   Object.keys(nftsOwnedByAccounts).forEach((accountAddress) => {
     const account = internalAccounts.find(
-      (account) => account.address === accountAddress,
+      (acc) => acc.address === accountAddress,
     );
 
     if (account) {
