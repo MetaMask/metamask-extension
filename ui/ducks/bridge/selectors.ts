@@ -157,7 +157,6 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
         } as unknown as NetworkConfiguration,
-        ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
         // TODO: get this from network controller, use placeholder values for now
         {
