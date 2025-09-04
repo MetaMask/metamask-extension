@@ -44,7 +44,7 @@ describe('useBalance', () => {
     expect(result.balance).toEqual('966.98798');
     expect(result.decimals).toEqual(18);
     expect(result.rawBalanceNumeric).toEqual(
-      new Numeric('0x346ba7725f412cbfdb', 10),
+      new Numeric('0x346ba7725f412cbfdb', 16).toBase(10),
     );
   });
 
@@ -58,7 +58,7 @@ describe('useBalance', () => {
     expect(result.balance).toEqual('966.98798');
     expect(result.decimals).toEqual(18);
     expect(result.rawBalanceNumeric).toEqual(
-      new Numeric('0x346ba7725f412cbfdb', 10),
+      new Numeric('0x346ba7725f412cbfdb', 16).toBase(10),
     );
   });
 
@@ -83,7 +83,9 @@ describe('useBalance', () => {
     });
     expect(result.balance).toEqual('48573');
     expect(result.decimals).toEqual(0);
-    expect(result.rawBalanceNumeric).toEqual(new Numeric('0xbdbd', 10));
+    expect(result.rawBalanceNumeric).toEqual(
+      new Numeric('0xbdbd', 16).toBase(10),
+    );
   });
 
   it('return correct balance for solana assets', () => {
