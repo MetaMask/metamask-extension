@@ -110,13 +110,15 @@ export default class LoadingNetworkScreen extends PureComponent {
             color={IconColor.warningDefault}
           />
         }
+        headerProps={{
+          style: { paddingBottom: 0 },
+        }}
       >
         <Box paddingInline={4}>
           <Text
             variant={TextVariant.bodyLgMedium}
             textAlign={TextAlign.Center}
-            margin={[0, 4, 4, 4]}
-            className="text-balance"
+            className="text-balance mb-4"
           >
             {message}
           </Text>
