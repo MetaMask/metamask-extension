@@ -56,6 +56,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
@@ -224,6 +225,10 @@ export default function CreatePassword({
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
       bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+    }
+
+    if (isSocialLoginFlow && isSocialLoginUiChangesEnabled) {
+      await dispatch(setParticipateInMetaMetrics(true));
     }
 
     trackEvent({
