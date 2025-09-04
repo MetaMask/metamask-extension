@@ -7114,14 +7114,14 @@ export async function openUpdateTabAndReload() {
 
 export async function getERC1155BalanceOf(
   userAddress: string,
-  tokenId: string,
   tokenAddress: string,
+  tokenId: string,
   networkClientId: string,
 ): Promise<string> {
   return await submitRequestToBackground<string>('getERC1155BalanceOf', [
     userAddress,
-    tokenId,
     tokenAddress,
+    tokenId,
     networkClientId,
   ]);
 }
