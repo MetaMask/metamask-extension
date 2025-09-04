@@ -42,7 +42,13 @@ export const useIsMultichainSwap = () => {
       !isSwapQueryParamSet
     ) {
       searchParams.set(BridgeQueryParams.SWAPS, 'true');
-      navigate(`${pathname}?${searchParams.toString()}`, { replace: true });
+      navigate(
+        {
+          pathname,
+          search: searchParams.toString(),
+        },
+        { replace: true }
+      );
     }
   }, [
     isQuoteRequestSwap,
