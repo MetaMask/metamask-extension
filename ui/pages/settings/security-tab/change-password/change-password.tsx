@@ -53,7 +53,7 @@ const ChangePassword = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const animationEventEmitter = useRef(new EventEmitter());
   const [step, setStep] = useState(ChangePasswordSteps.VerifyCurrentPassword);

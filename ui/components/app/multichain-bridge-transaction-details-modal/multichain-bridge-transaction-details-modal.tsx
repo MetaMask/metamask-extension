@@ -79,7 +79,7 @@ function MultichainBridgeTransactionDetailsModal({
   onClose,
 }: MultichainBridgeTransactionDetailsModalProps): JSX.Element {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // --- Extract data directly from transaction ---
   const { id, timestamp, from, bridgeInfo, isBridgeOriginated } = transaction;

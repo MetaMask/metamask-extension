@@ -73,7 +73,7 @@ export default function CreatePassword({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
   const currentKeyring = useSelector(getCurrentKeyring);

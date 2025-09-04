@@ -354,7 +354,7 @@ describe('NonEvmOverview', () => {
 
     const mockTrackEvent = jest.fn();
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <NonEvmOverview />
       </MetaMetricsContext.Provider>,
       storeWithBtcBuyable,
@@ -411,7 +411,7 @@ describe('NonEvmOverview', () => {
   it('sends an event when clicking the Send button', () => {
     const mockTrackEvent = jest.fn();
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <NonEvmOverview />
       </MetaMetricsContext.Provider>,
       getStore(),

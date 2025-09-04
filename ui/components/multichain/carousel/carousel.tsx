@@ -40,7 +40,7 @@ export const Carousel = React.forwardRef(
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
 
     const selectedAccount = useSelector(getSelectedAccount);
 

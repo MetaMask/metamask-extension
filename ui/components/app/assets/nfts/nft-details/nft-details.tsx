@@ -126,7 +126,7 @@ export function NftDetailsComponent({
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentNetwork = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
 

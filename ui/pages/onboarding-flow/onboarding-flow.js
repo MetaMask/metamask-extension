@@ -101,7 +101,7 @@ export default function OnboardingFlow() {
   const isFromSettingsSecurity = new URLSearchParams(search).get(
     'isFromSettingsSecurity',
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
@@ -178,6 +178,8 @@ export default function OnboardingFlow() {
       op: TraceOperation.OnboardingUserJourney,
     });
     if (onboardingParentContext) {
+      // Intentionally mutating ref object
+      // eslint-disable-next-line react-compiler/react-compiler
       onboardingParentContext.current = trace;
     }
   }, [onboardingParentContext, bufferedTrace]);

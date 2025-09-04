@@ -40,7 +40,7 @@ export type NameProps = {
 const Name = memo(
   ({ value, type, preferContractSymbol = false, variation }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
 
     const { name } = useDisplayName({
       value,

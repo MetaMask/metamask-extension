@@ -89,7 +89,7 @@ export const ViewExplorerMenuItem = ({
   account,
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const history = useHistory();
 
   const multichainNetwork = useMultichainSelector(

@@ -191,7 +191,7 @@ describe('TransactionListItem', () => {
       const store = mockStore(mockState);
       const mockTrackEvent = jest.fn();
       const { queryByTestId } = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
           <TransactionListItem transactionGroup={transactionGroup} />
         </MetaMetricsContext.Provider>,
         store,
@@ -366,7 +366,7 @@ describe('TransactionListItem', () => {
 
   it('should render confirmed unified swap tx summary', () => {
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={jest.fn()}>
+      <MetaMetricsContext.Provider value={{ trackEvent: jest.fn() }}>
         <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
       </MetaMetricsContext.Provider>,
       mockStore(mockState),
