@@ -19,6 +19,7 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
 
+// Remove once we have a new release with the action.
 type KeyringControllerAddNewKeyringAction = {
   type: 'KeyringController:addNewKeyring';
   handler: KeyringController['addNewKeyring'];
