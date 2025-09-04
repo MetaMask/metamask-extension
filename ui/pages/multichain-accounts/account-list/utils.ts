@@ -14,11 +14,11 @@ export function filterWalletsByGroupName(
   wallets: AccountTreeWallets,
   searchPattern: string,
 ): AccountTreeWallets {
-  if (!searchPattern.trim()) {
+  const normalizedSearchPattern = searchPattern.trim().toLowerCase();
+
+  if (!normalizedSearchPattern) {
     return wallets;
   }
-
-  const normalizedSearchPattern = searchPattern.trim().toLowerCase();
 
   return Object.entries(wallets).reduce((result, [walletId, wallet]) => {
     const filteredGroups = Object.entries(wallet.groups || {}).reduce(
