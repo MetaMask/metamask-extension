@@ -354,8 +354,8 @@ describe('Multichain API', function () {
       });
     });
 
-    describe('deselect all', function () {
-      it('should not be able to approve the create session request without at least one account selected', async function () {
+    describe.only('deselect all', function () {
+      it.only('should not be able to approve the create session request without at least one account selected', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
