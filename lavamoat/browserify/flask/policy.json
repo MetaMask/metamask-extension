@@ -903,14 +903,6 @@
         "immer": true
       }
     },
-    "@metamask/gator-permissions-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/smart-transactions-controller>@metamask/polling-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -1330,7 +1322,7 @@
     },
     "@metamask/gator-permissions-controller": {
       "packages": {
-        "@metamask/gator-permissions-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true
       }
