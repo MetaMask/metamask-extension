@@ -903,6 +903,14 @@
         "immer": true
       }
     },
+    "@metamask/gator-permissions-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
     "@metamask/smart-transactions-controller>@metamask/polling-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -1318,6 +1326,13 @@
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
+      }
+    },
+    "@metamask/gator-permissions-controller": {
+      "packages": {
+        "@metamask/gator-permissions-controller>@metamask/base-controller": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/jazzicon": {
