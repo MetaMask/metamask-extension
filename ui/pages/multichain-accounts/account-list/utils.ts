@@ -1,4 +1,5 @@
-import { AccountWalletId } from '@metamask/account-api';
+import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import { AccountGroupObject } from '@metamask/account-tree-controller';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 /**
@@ -18,29 +19,27 @@ export function filterWalletsByGroupName(
   }
 
   const normalizedSearchPattern = searchPattern.trim().toLowerCase();
-  const result: AccountTreeWallets = {};
 
-  Object.entries(wallets).forEach(([walletId, wallet]) => {
-    const hasMatchingGroup = Object.values(wallet.groups || {}).some(
-      (group) => {
+  return Object.entries(wallets).reduce((result, [walletId, wallet]) => {
+    const filteredGroups = Object.entries(wallet.groups || {}).reduce(
+      (groupsResult: Record<string, AccountGroupId>, [groupId, group]) => {
         const groupName = group.metadata?.name;
-        return groupName?.toLowerCase().includes(normalizedSearchPattern);
+        if (groupName?.toLowerCase().includes(normalizedSearchPattern)) {
+          groupsResult[groupId] = group;
+        }
+        return groupsResult;
       },
+      {} as Record<string, AccountGroupId>,
     );
 
-    if (hasMatchingGroup) {
-      // Recreate a new wallet with filtered groups
+    // Only include the wallet if it has any matching groups
+    if (Object.keys(filteredGroups).length > 0) {
       result[walletId as AccountWalletId] = {
         ...wallet,
-        groups: Object.fromEntries(
-          Object.entries(wallet.groups || {}).filter(([_, group]) => {
-            const groupName = group.metadata?.name;
-            return groupName?.toLowerCase().includes(normalizedSearchPattern);
-          }),
-        ),
+        groups: filteredGroups as unknown as AccountGroupObject,
       };
     }
-  });
 
-  return result;
+    return result;
+  }, {} as AccountTreeWallets);
 }
