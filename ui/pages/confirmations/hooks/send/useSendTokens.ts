@@ -11,7 +11,6 @@ import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
-import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
 
 export const useSendTokens = (): Asset[] => {
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
