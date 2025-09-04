@@ -35,6 +35,7 @@ export const OAuthServiceInit: ControllerInitFunction<
 
   return {
     controller: service,
+    memStateKey: null,
     persistedStateKey: null,
   };
 };
