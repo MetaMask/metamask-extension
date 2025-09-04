@@ -13,7 +13,7 @@ export const matchesSearchPattern = (
 ): boolean => {
   const lowercasedPattern = pattern.toLowerCase();
   return (
-    account.metadata.name.toLowerCase().includes(lowercasedPattern) ||
+    account.metadata?.name?.toLowerCase().includes(lowercasedPattern) ||
     account.address.toLowerCase().includes(lowercasedPattern)
   );
 };

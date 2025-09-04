@@ -25,7 +25,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const contact = getAddressBookEntry(state, address);
   const { memo } = contact || {};
-  const name = contact?.name || internalAccount.metadata.name;
+  const name = contact?.name || internalAccount.metadata?.name || '';
 
   return {
     name,

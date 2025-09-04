@@ -229,11 +229,11 @@ export const Connections = () => {
           className="connections-header__title"
         >
           {connectedSubjectsMetadata?.iconUrl ? (
-            <AvatarFavicon
-              name={connectedSubjectsMetadata.name}
-              size={AvatarFaviconSize.Sm}
-              src={connectedSubjectsMetadata.iconUrl}
-            />
+                          <AvatarFavicon
+                name={connectedSubjectsMetadata?.name || ''}
+                size={AvatarFaviconSize.Sm}
+                src={connectedSubjectsMetadata.iconUrl}
+              />
           ) : (
             <Icon
               name={IconName.Global}
@@ -318,7 +318,7 @@ export const Connections = () => {
                 onClose={() => setShowConnectedAccountsUpdatedToast(false)}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata?.name}
+                    name={connectedSubjectsMetadata?.name || ''}
                     size={AvatarFaviconSize.Sm}
                     src={connectedSubjectsMetadata?.iconUrl}
                   />

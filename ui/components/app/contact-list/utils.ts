@@ -7,7 +7,7 @@ export const buildDuplicateContactMap = (
 ) => {
   const contactMap = new Map<string, string[]>(
     internalAccounts.map((account) => [
-      account.metadata.name.trim().toLowerCase(),
+      account.metadata?.name?.trim().toLowerCase(),
       [`account-id-${account.id}`],
     ]),
   );
@@ -35,7 +35,7 @@ export const hasDuplicateContacts = (
   );
 
   const hasAccountNameCollision = internalAccounts.some((account) =>
-    uniqueContactNames.includes(account.metadata.name.toLowerCase().trim()),
+    uniqueContactNames.includes(account.metadata?.name?.toLowerCase().trim()),
   );
 
   return (
@@ -54,7 +54,7 @@ export const isDuplicateContact = (
 
   const nameExistsInAccountList = internalAccounts.some(
     ({ metadata }) =>
-      metadata.name.toLowerCase().trim() === newName.toLowerCase().trim(),
+      metadata?.name?.toLowerCase().trim() === newName.toLowerCase().trim(),
   );
 
   return nameExistsInAddressBook || nameExistsInAccountList;

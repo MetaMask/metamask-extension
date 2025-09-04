@@ -1122,14 +1122,14 @@ export function getAddressBookEntryOrAccountName(state, address) {
     (account) => isEqualCaseInsensitive(account.address, address),
   );
 
-  return internalAccount?.metadata.name || address;
+  return internalAccount?.metadata?.name || address;
 }
 
 export function getAccountName(accounts, accountAddress) {
   const account = accounts.find((internalAccount) =>
     isEqualCaseInsensitive(internalAccount.address, accountAddress),
   );
-  return account && account.metadata.name !== '' ? account.metadata.name : '';
+  return account && account.metadata?.name !== '' ? account.metadata?.name : '';
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
@@ -1155,14 +1155,15 @@ export function getAccountsWithLabels(state) {
       metadata: { name },
       balance,
     } = account;
+    const safeName = name || '';
     return {
       ...account,
       addressLabel: `${
-        name.length < TRUNCATED_NAME_CHAR_LIMIT
-          ? name
-          : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
+        safeName.length < TRUNCATED_NAME_CHAR_LIMIT
+          ? safeName
+          : `${safeName.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
       } (${shortenAddress(address)})`,
-      label: name,
+      label: safeName,
       balance,
     };
   });
@@ -2102,13 +2103,13 @@ export const getConnectedSitesList = createDeepEqualSelector(
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
-            internalAccount?.metadata.name || ''; // Map address to name
+            internalAccount?.metadata?.name || ''; // Map address to name
         } else {
           sitesList[siteKey] = {
             ...app,
             addresses: [connectedAddress],
             addressToNameMap: {
-              [connectedAddress]: internalAccount?.metadata.name || '',
+              [connectedAddress]: internalAccount?.metadata?.name || '',
             },
           };
         }
@@ -2451,7 +2452,7 @@ export const getCurrentNetwork = createDeepEqualSelector(
     return {
       chainId: currentNetwork.chainId,
       id: rpcEndpoint.networkClientId,
-      nickname: currentNetwork.name,
+      nickname: currentNetwork?.name || '',
       rpcUrl: rpcEndpoint.url,
       ticker: currentNetwork.nativeCurrency,
       blockExplorerUrl,
@@ -3373,7 +3374,7 @@ export function getSnapsList(state) {
         iconUrl: targetSubjectMetadata?.iconUrl,
         subjectType: targetSubjectMetadata?.subjectType,
         packageName: stripSnapPrefix(snap.id),
-        name: getSnapMetadata(state, snap.id).name,
+        name: getSnapMetadata(state, snap.id)?.name || '',
       };
     });
 }

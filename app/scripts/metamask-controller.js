@@ -7836,7 +7836,7 @@ export default class MetamaskController extends EventEmitter {
               if (keyring.type === KeyringTypes.hd) {
                 return {
                   id: keyring.metadata.id,
-                  name: keyring.metadata.name,
+                  name: keyring.metadata?.name || '',
                   type: 'mnemonic',
                   primary: index === 0,
                 };

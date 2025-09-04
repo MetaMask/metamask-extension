@@ -167,7 +167,7 @@ export const getMultichainNetworkConfigurationsByChainId =
           [toEvmCaipChainId(network.chainId)]: {
             ...toMultichainNetworkConfiguration(network),
             name:
-              network.name ||
+              network?.name ||
               network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
           },
         }),

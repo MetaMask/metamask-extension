@@ -244,7 +244,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const decimals = metadata.units[0]?.decimals || 0;
       if (!hideZeroBalanceTokens || balance.amount !== '0' || isNative) {
         allAssets.push({
-          title: metadata.name,
+          title: metadata?.name || '',
           address: assetId,
           symbol: metadata.symbol,
           image: metadata.iconUrl,
