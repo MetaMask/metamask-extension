@@ -87,10 +87,10 @@ jobs:
           jq -r '.[].name' all_versions.json || echo "No matching branches found."
 
           # Filter to those with semver strictly lower than current
-          jq --arg semver "$semver" '[ .[] | select( .semver as $v | $semver | split(".") as $c | $v | split(".") as $p | ($p[0] | tonumber) < ($c[0] | tonumber) or (($p[0] | tonumber) == ($c[0] | tonumber) and (($p[1] | tonumber) < ($c[1] | tonumber) or (($p[1] | tonumber) == ($c[1] | tonumber) and ($p[2] | tonumber) < ($c[2] | tonumber)))) ) ]' all_versions.json > filtered_versions.json
+          jq --arg semver "$semver" '[ .[] | select( .semver as $v | $semver | split(".") as $c | $v | split(".") as $p | ( ($p[0] | tonumber) < ($c[0] | tonumber) or (($p[0] | tonumber) == ($c[0] | tonumber) and (($p[1] | tonumber) < ($c[1] | tonumber) or (($p[1] | tonumber) == ($c[1] | tonumber) and ($p[2] | tonumber) < ($c[2] | tonumber)))) ) and (($p[2] | tonumber) == 0) ) ]' all_versions.json > filtered_versions.json
 
           # Print filtered versions (still sorted desc, so [0] is highest lower)
-          echo "Filtered versions (< $semver, sorted desc): $(jq '[ .[].semver ]' filtered_versions.json)"
+          echo "Filtered non-hotfix versions (< $semver, sorted desc): $(jq '[ .[].semver ]' filtered_versions.json)"
 
           # Select the highest lower: first in filtered list
           if [ "$(jq length filtered_versions.json)" -eq 0 ]; then
