@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Browser } = require('selenium-webdriver');
+const { Browser, By } = require('selenium-webdriver');
 const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const {
   default: NetworkManager,
@@ -98,6 +98,11 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
   await driver.clickElement('#sendButton');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.waitForSelector({
+    tag: 'h3',
+    text: 'Transfer request',
+  });
 }
 
 async function selectDappClickPersonalSign(driver, dappUrl) {
@@ -232,7 +237,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it.only('handles three confirmations on three confirmations concurrently', async function () {
+  it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -291,10 +296,19 @@ describe('Request-queue UI changes', function () {
 
         // Trigger a send confirmation on the second dapp, do not confirm or reject
         await selectDappClickSend(driver, DAPP_ONE_URL);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForSelector(
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
+        );
 
         if (!IS_FIREFOX) {
           // Trigger a send confirmation on the third dapp, do not confirm or reject
           await selectDappClickSend(driver, DAPP_TWO_URL);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.waitForSelector(
+            By.xpath("//p[normalize-space(.)='1 of 3']"),
+          );
         }
 
         // Switch to the Notification window, ensure first transaction still showing
@@ -353,16 +367,18 @@ describe('Request-queue UI changes', function () {
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
+        // Validate second network, where transaction was rejected
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await driver.clickElement('[data-testid="Localhost 8546"]');
 
         await validateBalanceAndActivity(driver, '25', 0);
 
+        // Validate first network, where transaction was confirmed
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
         await driver.clickElementAndWaitToDisappear(
-          '[data-testid="Localhost 8546"]',
+          '[data-testid="Localhost 8545"]',
         );
 
         await validateBalanceAndActivity(driver, '24.9998');
