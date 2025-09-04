@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { SmartAccountPage } from './smart-account-page';
+import { MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import mockState from '../../../../test/data/mock-state.json';
 
 const mockStore = configureStore([]);
@@ -15,10 +16,12 @@ interface WrapperProps {
 
 const Wrapper: React.FC<WrapperProps> = ({
   children,
-  initialEntries = ['/smart-account'],
+  initialEntries = [MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE],
 }) => (
   <MemoryRouter initialEntries={initialEntries}>
-    <Route path="/smart-account/:address">{children}</Route>
+    <Route path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}>
+      {children}
+    </Route>
   </MemoryRouter>
 );
 
@@ -40,7 +43,7 @@ export const Default: Story = {
         <Provider store={store}>
           <Wrapper
             initialEntries={[
-              `/smart-account/${encodeURIComponent(MOCK_ADDRESS)}`,
+              `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(MOCK_ADDRESS)}`,
             ]}
           >
             <Story />
