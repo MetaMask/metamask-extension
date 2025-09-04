@@ -109,6 +109,7 @@ export const createBridgeMockStore = ({
     },
     localeMessages: { currentLocale: 'es_419' },
     metamask: {
+      featureFlags: {},
       ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
       ...swapsMetamask,
       ...mockNetworkState(
