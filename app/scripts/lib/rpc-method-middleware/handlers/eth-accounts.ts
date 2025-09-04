@@ -61,78 +61,15 @@ export default ethAccounts;
  * @param res - The JSON-RPC response object.
  * @param _next - The json-rpc-engine 'next' callback.
  * @param end - The json-rpc-engine 'end' callback.
- * @param req - The JSON-RPC request object.
- * @param res - The JSON-RPC response object.
- * @param _next - The json-rpc-engine 'next' callback.
- * @param end - The json-rpc-engine 'end' callback.
  * @param options - The RPC method hooks.
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
  * @param options.requestUserApproval - A hook that requests user approval for various operations.
  * @param options.metamaskState - The MetaMask app state.
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
- * @param req.getAccounts
- * @param req.requestUserApproval
- * @param req.metamaskState
- * @param req.hasApprovalRequestsForOrigin
- * @param req.addReferralApprovedAccount
- * @param req.addReferralPassedAccount
- * @param req.addReferralDeclinedAccount
- * @param req.setAllAccountsReferralApproved
+ * @param options.hasApprovalRequestsForOrigin
+ * @param options.addReferralApprovedAccount
+ * @param options.addReferralPassedAccount
+ * @param options.addReferralDeclinedAccount
+ * @param options.setAllAccountsReferralApproved
  */
 async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
   req: JsonRpcRequest<Params>,
