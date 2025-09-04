@@ -9,15 +9,18 @@ class AnvilSeeder {
   constructor(provider) {
     this.smartContractRegistry = new ContractAddressRegistry();
     this.provider = provider;
+    this.deploymentCounts = {}; // Track deployment counts for automatic indexing
   }
 
   /**
    * Deploy initial smart contracts that can be used later within the e2e tests.
    *
    * @param contractName
+   * @param hardfork
+   * @param instanceIndex - Optional index for deploying multiple instances of the same contract
    */
 
-  async deploySmartContract(contractName, hardfork) {
+  async deploySmartContract(contractName, hardfork, instanceIndex) {
     const { publicClient, testClient, walletClient } = this.provider;
     const fromAddress = (await walletClient.getAddresses())[0];
 
@@ -83,7 +86,7 @@ class AnvilSeeder {
       await walletClient.writeContract(mintBatchOptions);
     }
 
-    this.storeSmartContractAddress(contractName, receipt.contractAddress);
+    this.storeSmartContractAddress(contractName, receipt.contractAddress, instanceIndex);
   }
 
   async transfer(to, value) {
@@ -135,12 +138,49 @@ class AnvilSeeder {
    *
    * @param contractName
    * @param contractAddress
+   * @param instanceIndex - Optional index for multiple instances
    */
-  storeSmartContractAddress(contractName, contractAddress) {
+  storeSmartContractAddress(contractName, contractAddress, instanceIndex) {
+    // Initialize deployment count for this contract type if not exists
+    if (this.deploymentCounts[contractName] === undefined) {
+      this.deploymentCounts[contractName] = 0;
+    }
+
+    // Determine the instance index automatically
+    let actualInstanceIndex = instanceIndex;
+
+    // If no explicit index provided, use deployment count as index for multiple deployments
+    if (actualInstanceIndex === undefined) {
+      // If this is the second deployment of this contract type, we need to:
+      // 1. Store the current deployment with index (deploymentCounts[contractName])
+      // 2. Migrate the first deployment to index 0 if it exists as base name
+      if (this.deploymentCounts[contractName] === 1) {
+        const firstDeploymentAddress = this.smartContractRegistry.getContractAddress(contractName);
+        if (firstDeploymentAddress) {
+          // Move first deployment to index 0
+          this.smartContractRegistry.storeNewContractAddress(
+            contractName,
+            firstDeploymentAddress,
+            0,
+          );
+        }
+      }
+
+      // For second and subsequent deployments, use the deployment count as index
+      if (this.deploymentCounts[contractName] > 0) {
+        actualInstanceIndex = this.deploymentCounts[contractName];
+      }
+    }
+
+    // Store the contract address
     this.smartContractRegistry.storeNewContractAddress(
       contractName,
       contractAddress,
+      actualInstanceIndex,
     );
+
+    // Increment deployment count
+    this.deploymentCounts[contractName]++;
   }
 
   /**
