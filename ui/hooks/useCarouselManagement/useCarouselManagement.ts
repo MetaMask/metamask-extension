@@ -202,8 +202,7 @@ export const useCarouselManagement = ({
 
     (async () => {
       try {
-        // console.log('Effect to fetch carousel slides');
-        // await maybeFetchContentful();
+        await maybeFetchContentful();
       } catch (err) {
         log.warn('Failed to load carousel slides:', err);
       }
