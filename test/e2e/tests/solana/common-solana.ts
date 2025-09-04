@@ -11,7 +11,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import WebSocketLocalServer from '../../websocket-server';
+import { DEFAULT_SOLANA_WS_MOCKS } from './mocks/websocketDefaultMocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1543,103 +1543,6 @@ const featureFlagsWithSnapConfirmation = {
   },
 };
 
-async function startWebsocketMock(mockServer: Mockttp) {
-  const port = 8088;
-  // Start a WebSocket server to handle the connection
-  const localWebSocketServer = WebSocketLocalServer.getServerInstance(port);
-  localWebSocketServer.start();
-  const wsServer = localWebSocketServer.getServer();
-  wsServer.on('connection', (socket: WebSocket) => {
-    console.log('Client connected to the local WebSocket server');
-
-    // Handle messages from the client
-    socket.addEventListener('message', (event: MessageEvent) => {
-      const message = event.data.toString();
-      console.log('Message received from client:', message);
-      if (message.includes('signatureSubscribe')) {
-        console.log('Signature subscribe message received from client');
-        setTimeout(() => {
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              result: 8648699534240963,
-              id: '1',
-            }),
-          );
-          console.log('Simulated message sent to the client');
-        }, 500); // Delay the message by 5 second
-      }
-      if (message.includes('accountSubscribe')) {
-        console.log('Account subscribe message received from client');
-        setTimeout(() => {
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              result:
-                'b07ebf7caf2238a9b604d4dfcaf1934280fcd347d6eded62bc0def6cbb767d11',
-              id: '1',
-            }),
-          );
-          console.log(
-            'Simulated message for accountSubscribe sent to the client',
-          );
-        }, 500); // Delay the message by 5 second
-      }
-      if (
-        message.includes('programSubscribe') &&
-        message.includes('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
-      ) {
-        console.log('Program subscribe message received from client');
-        setTimeout(() => {
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              result:
-                '568eafd45635c108d0d426361143de125a841628a58679f5a024cbab9a20b41c',
-              id: '1',
-            }),
-          );
-          console.log(
-            'Simulated message for programSubscribe Token2022 sent to the client',
-          );
-        }, 500); // Delay the message by 5 second
-      }
-      if (
-        message.includes('programSubscribe') &&
-        message.includes('TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb')
-      ) {
-        console.log('Program subscribe message received from client');
-        setTimeout(() => {
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              result:
-                'f33dd9975158af47bf16c7f6062a73191d4595c59cfec605d5a51e25c65ffb51',
-              id: '1',
-            }),
-          );
-          console.log(
-            'Simulated message for programSubscribe sent to the client',
-          );
-        }, 500); // Delay the message by 5 second
-      }
-    });
-
-    // Handle client disconnection
-    socket.addEventListener('close', () => {
-      console.log('Client disconnected from the local WebSocket server');
-    });
-  });
-
-  // Intercept WebSocket handshake requests
-  await mockServer
-    .forAnyWebSocket()
-    .matching((req) =>
-      /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
-    )
-    .thenForwardTo(`ws://localhost:${port}`);
-}
-
 export async function withSolanaAccountSnap(
   {
     title,
@@ -1709,6 +1612,10 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      withSolanaWebSocket: {
+        server: true,
+        mocks: DEFAULT_SOLANA_WS_MOCKS,
+      },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.
@@ -1836,7 +1743,6 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await startWebsocketMock(mockServer);
       await loginWithBalanceValidation(driver);
 
       const headerComponent = new HeaderNavbar(driver);

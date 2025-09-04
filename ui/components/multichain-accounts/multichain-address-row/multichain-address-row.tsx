@@ -1,4 +1,6 @@
 import React from 'react';
+import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+
 import {
   AlignItems,
   BlockSize,
@@ -22,6 +24,7 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 
 type MultichainAddressRowProps = {
   /**
@@ -50,7 +53,13 @@ export const MultichainAddressRow = ({
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
-  const networkImageSrc = getImageForChainId(chainId);
+  // We're mixing hex with caip chain ids so its necessary
+  // to use the hex format for EVMs and caip for non EVMs.
+  const networkImageSrc = getImageForChainId(
+    chainId.startsWith(KnownCaipNamespace.Eip155)
+      ? convertCaipToHexChainId(chainId as CaipChainId)
+      : chainId,
+  );
   const truncatedAddress = shortenAddress(address);
 
   const handleCopyClick = () => {
@@ -67,7 +76,8 @@ export const MultichainAddressRow = ({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      padding={4}
+      paddingTop={4}
+      paddingBottom={4}
       gap={4}
       data-testid="multichain-address-row"
     >

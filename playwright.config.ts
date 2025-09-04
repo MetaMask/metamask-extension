@@ -75,6 +75,16 @@ const config: PlaywrightTestConfig = {
       },
       fullyParallel: false,
     },
+    {
+      name: 'benchmark',
+      testMatch: '/benchmark/**/*.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: Boolean(process.env.CI),
+      },
+      fullyParallel: false,
+      timeout: 600 * 1000, // 10 minutes
+    },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */

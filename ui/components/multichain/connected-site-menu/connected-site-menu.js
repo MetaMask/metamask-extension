@@ -41,7 +41,7 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
   const iconElement = currentTabHasNoAccounts ? (
     <Icon
       name={IconName.Global}
-      size={IconSize.Sm}
+      size={IconSize.Lg}
       color={IconColor.iconDefault}
     />
   ) : (
