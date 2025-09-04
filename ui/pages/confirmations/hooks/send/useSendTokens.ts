@@ -11,6 +11,7 @@ import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
+import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
 
 export const useSendTokens = (): Asset[] => {
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
@@ -44,7 +45,9 @@ export const useSendTokens = (): Asset[] => {
 
       let balanceInSelectedCurrency: string;
       try {
-        balanceInSelectedCurrency = formatter(fiatBalance, { shorten: true });
+        balanceInSelectedCurrency = formatter(fiatBalance, {
+          shorten: true,
+        });
       } catch (error) {
         balanceInSelectedCurrency = `${fiatBalance.toFixed()} ${fiatCurrency}`;
       }
@@ -54,7 +57,7 @@ export const useSendTokens = (): Asset[] => {
         image: imageSource,
         networkImage: chainNetworkNameAndImage?.networkImage,
         networkName: chainNetworkNameAndImage?.networkName,
-        shortenedBalance: asset.balance?.slice(0, 5),
+        shortenedBalance: asset.balance,
         standard: asset.isNative ? AssetStandard.Native : AssetStandard.ERC20,
       };
     });

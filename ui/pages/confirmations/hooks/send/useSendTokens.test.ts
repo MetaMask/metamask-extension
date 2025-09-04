@@ -230,13 +230,6 @@ describe('useSendTokens', () => {
     expect(usdcAsset?.image).toBe('usdc.png');
   });
 
-  it('adds shortened balance property', async () => {
-    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
-
-    const asset = result.current[0];
-    expect(asset.shortenedBalance).toBe('10000');
-  });
-
   it('returns empty array when no assets exist', async () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getAssetsBySelectedAccountGroup) {
