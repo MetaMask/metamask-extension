@@ -42,7 +42,7 @@ export type MultichainAccountListProps = {
   selectedAccountGroups: AccountGroupId[];
   handleAccountClick?: (accountGroupId: AccountGroupId) => void;
   isInSearchMode?: boolean;
-  hasMultipleWallets?: boolean;
+  displayWalletHeader?: boolean;
 };
 
 export const MultichainAccountList = ({
@@ -50,7 +50,7 @@ export const MultichainAccountList = ({
   selectedAccountGroups,
   handleAccountClick,
   isInSearchMode = false,
-  hasMultipleWallets,
+  displayWalletHeader = true,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -159,7 +159,7 @@ export const MultichainAccountList = ({
 
         return [
           ...walletsAccumulator,
-          hasMultipleWallets ? walletHeader : null,
+          displayWalletHeader ? walletHeader : null,
           ...groupsItems,
         ];
       },

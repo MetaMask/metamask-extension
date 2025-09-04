@@ -124,7 +124,7 @@ export const AccountList = () => {
               wallets={filteredWallets}
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
-              hasMultipleWallets={hasMultipleWallets}
+              displayWalletHeader={hasMultipleWallets}
             />
           ) : (
             <Box
