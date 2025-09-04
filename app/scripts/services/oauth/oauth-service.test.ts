@@ -2,11 +2,7 @@ import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Messenger } from '@metamask/base-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import {
-  OAuthServiceAction,
-  OAuthServiceEvent,
-  WebAuthenticator,
-} from './types';
+import { OAuthServiceAction, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';
@@ -85,7 +81,15 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Google`', async () => {
-    const messenger = new Messenger();
+    const rootMessenger = new Messenger();
+    const messenger = rootMessenger.getRestricted<'OAuthService', never, never>(
+      {
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      },
+    );
+
     const oauthEnv = getOAuthLoginEnvs();
 
     const oauthService = new OAuthService({
@@ -117,7 +121,15 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Apple`', async () => {
-    const messenger = new Messenger();
+    const rootMessenger = new Messenger();
+    const messenger = rootMessenger.getRestricted<'OAuthService', never, never>(
+      {
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      },
+    );
+
     const oauthEnv = getOAuthLoginEnvs();
 
     const oauthService = new OAuthService({
@@ -149,7 +161,15 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should throw an error if the state validation fails - google', async () => {
-    const messenger = new Messenger();
+    const rootMessenger = new Messenger();
+    const messenger = rootMessenger.getRestricted<'OAuthService', never, never>(
+      {
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      },
+    );
+
     const oauthEnv = getOAuthLoginEnvs();
 
     const oauthService = new OAuthService({
@@ -170,7 +190,17 @@ describe('OAuthService - startOAuthLogin', () => {
 
   describe('OAuthService:startOAuthLogin action', () => {
     it('starts the OAuth login process with `Google`', async () => {
-      const messenger = new Messenger<OAuthServiceAction, OAuthServiceEvent>();
+      const rootMessenger = new Messenger<OAuthServiceAction, never>();
+      const messenger = rootMessenger.getRestricted<
+        'OAuthService',
+        never,
+        never
+      >({
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+
       const oauthEnv = getOAuthLoginEnvs();
 
       // eslint-disable-next-line no-new
@@ -182,7 +212,7 @@ describe('OAuthService - startOAuthLogin', () => {
         bufferedEndTrace: mockBufferedEndTrace,
       });
 
-      await messenger.call(
+      await rootMessenger.call(
         'OAuthService:startOAuthLogin',
         AuthConnection.Google,
       );
@@ -229,7 +259,15 @@ describe('OAuthService - getNewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = new Messenger();
+    const rootMessenger = new Messenger();
+    const messenger = rootMessenger.getRestricted<'OAuthService', never, never>(
+      {
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      },
+    );
+
     const oauthConfig = loadOAuthConfig();
 
     const oauthService = new OAuthService({
@@ -284,7 +322,15 @@ describe('OAuthService - getNewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = new Messenger();
+    const rootMessenger = new Messenger();
+    const messenger = rootMessenger.getRestricted<'OAuthService', never, never>(
+      {
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      },
+    );
+
     const oauthService = new OAuthService({
       messenger,
       env: getOAuthLoginEnvs(),
@@ -319,7 +365,17 @@ describe('OAuthService - getNewRefreshToken', () => {
         }) as jest.Mock,
       );
 
-      const messenger = new Messenger<OAuthServiceAction, OAuthServiceEvent>();
+      const rootMessenger = new Messenger<OAuthServiceAction, never>();
+      const messenger = rootMessenger.getRestricted<
+        'OAuthService',
+        never,
+        never
+      >({
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+
       const oauthEnv = getOAuthLoginEnvs();
 
       // eslint-disable-next-line no-new
@@ -365,7 +421,15 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = new Messenger();
+    const rootMessenger = new Messenger();
+    const messenger = rootMessenger.getRestricted<'OAuthService', never, never>(
+      {
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      },
+    );
+
     const oauthService = new OAuthService({
       messenger,
       env: getOAuthLoginEnvs(),
@@ -410,7 +474,15 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
       }) as jest.Mock,
     );
 
-    const messenger = new Messenger();
+    const rootMessenger = new Messenger();
+    const messenger = rootMessenger.getRestricted<'OAuthService', never, never>(
+      {
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      },
+    );
+
     const oauthService = new OAuthService({
       messenger,
       env: getOAuthLoginEnvs(),
@@ -447,7 +519,16 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
         }) as jest.Mock,
       );
 
-      const messenger = new Messenger<OAuthServiceAction, OAuthServiceEvent>();
+      const rootMessenger = new Messenger<OAuthServiceAction, never>();
+      const messenger = rootMessenger.getRestricted<
+        'OAuthService',
+        never,
+        never
+      >({
+        name: 'OAuthService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
 
       // eslint-disable-next-line no-new
       new OAuthService({
