@@ -13,6 +13,7 @@ const defaultProps = {
   chainId: '0x1',
   networkName: 'Ethereum Mainnet',
   address: '0x1234567890123456789012345678901234567890',
+  onQrClick: jest.fn(),
 };
 
 const renderComponent = (props = {}) => {
@@ -118,19 +119,18 @@ describe('MultichainAddressRow', () => {
     expect(addressRow).toHaveClass('custom-class');
   });
 
-  it('handles QR button click', () => {
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+  it('handles QR button click with onQrClick callback', () => {
+    const mockOnQrClick = jest.fn();
 
-    renderComponent();
+    renderComponent({ onQrClick: mockOnQrClick });
 
     const qrButton = screen.getByTestId('multichain-address-row-qr-button');
     fireEvent.click(qrButton);
 
-    expect(consoleSpy).toHaveBeenCalledWith(
-      'QR code clicked for address:',
+    expect(mockOnQrClick).toHaveBeenCalledWith(
       defaultProps.address,
+      defaultProps.networkName,
+      './images/eth_logo.svg',
     );
-
-    consoleSpy.mockRestore();
   });
 });
