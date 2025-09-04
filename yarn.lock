@@ -7385,10 +7385,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.3.4":
-  version: 2.3.4
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.4"
-  checksum: 10/1c453786e2cded5358d5e53761f094c91007d461399e7f17554bd88be4df680b9420ca74f4da5e92481de64c03897207c7e652985f581f03dd7e42da17be1352
+"@metamask/solana-wallet-snap@npm:^2.3.6":
+  version: 2.3.6
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.6"
+  checksum: 10/84ef57f5c570be398b3f1ea1a9e46dff3404ad3d7f1b0316d26534ef17c5a01a10b152a391457782673ddde4131cfc08750fb6d0dc3fe760c1d250f27521027d
   languageName: node
   linkType: hard
 
@@ -7509,9 +7509,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.1.0":
-  version: 60.1.0
-  resolution: "@metamask/transaction-controller@npm:60.1.0"
+"@metamask/transaction-controller@npm:^60.2.0":
+  version: 60.2.0
+  resolution: "@metamask/transaction-controller@npm:60.2.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -7541,7 +7541,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/a4d3f8b6c4e834b076f1a3700e836c7738a320c165f049038fb5fca509cd22c441ea6c24547ce9fc63ff2ab42bb22d23091470781e4c24439196b6a671f95979
+  checksum: 10/e60cfeb3893951bee5947e3aaeae4542f79a623a59f10b10270dea2ec051a28db8b24be7dc9d2f00284c97ddbf4664432f8b61cc8e5601d1a08c7e7dd2d5f519
   languageName: node
   linkType: hard
 
@@ -31767,7 +31767,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.5.1"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.5.0"
-    "@metamask/solana-wallet-snap": "npm:^2.3.4"
+    "@metamask/solana-wallet-snap": "npm:^2.3.6"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
     "@metamask/superstruct": "npm:^3.2.1"
@@ -31775,7 +31775,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/transaction-controller": "npm:^60.1.0"
+    "@metamask/transaction-controller": "npm:^60.2.0"
     "@metamask/user-operation-controller": "npm:^38.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
