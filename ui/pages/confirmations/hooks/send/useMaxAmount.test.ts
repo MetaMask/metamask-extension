@@ -43,7 +43,7 @@ describe('useBalance', () => {
       },
     });
 
-    expect(result.getMaxAmount()).toEqual('966.98755713791800405905');
+    expect(result.getMaxAmount()).toEqual('966.987557137918004059');
   });
 
   it('return correct balance for ERC20 assets', () => {

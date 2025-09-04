@@ -143,7 +143,7 @@ describe('Amount', () => {
 
     fireEvent.click(getByText('Max'));
     expect(getByRole('textbox')).toHaveValue('5');
-    expect(mockUpdateValue).toHaveBeenCalledWith('5');
+    expect(mockUpdateValue).toHaveBeenCalledWith('5', true);
   });
 
   it('capture metrics when max button is clicked', () => {
