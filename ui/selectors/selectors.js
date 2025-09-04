@@ -1152,9 +1152,9 @@ export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map((account) => {
     const {
       address,
-      metadata: { name },
       balance,
     } = account;
+    const name = account.metadata?.name || '';
     const safeName = name || '';
     return {
       ...account,
