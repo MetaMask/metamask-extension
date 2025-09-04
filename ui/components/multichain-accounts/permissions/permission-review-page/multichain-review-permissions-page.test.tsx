@@ -65,6 +65,7 @@ const mockAccountGroups = [
       pinned: false,
       hidden: false,
     },
+    walletName: 'Test Wallet 1',
   },
   {
     id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0' as const,
@@ -82,6 +83,7 @@ const mockAccountGroups = [
       pinned: false,
       hidden: false,
     },
+    walletName: 'Test Wallet 1',
   },
 ];
 
