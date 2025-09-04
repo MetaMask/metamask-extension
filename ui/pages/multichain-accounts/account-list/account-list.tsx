@@ -47,6 +47,11 @@ export const AccountList = () => {
   const { selectedAccountGroup } = accountTree;
   const [searchPattern, setSearchPattern] = useState<string>('');
 
+  const hasMultipleWallets = useMemo(
+    () => Object.keys(wallets).length > 1,
+    [wallets],
+  );
+
   const onSearchBarChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setSearchPattern(e.target.value),
@@ -118,6 +123,8 @@ export const AccountList = () => {
             <MultichainAccountList
               wallets={filteredWallets}
               selectedAccountGroups={[selectedAccountGroup]}
+              isInSearchMode={Boolean(searchPattern)}
+              hasMultipleWallets={hasMultipleWallets}
             />
           ) : (
             <Box
