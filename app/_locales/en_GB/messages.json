@@ -5720,6 +5720,9 @@
   "slippageEditAriaLabel": {
     "message": "Edit slippage"
   },
+  "smartAccount": {
+    "message": "Smart account"
+  },
   "smartAccountAccept": {
     "message": "Use smart account"
   },
