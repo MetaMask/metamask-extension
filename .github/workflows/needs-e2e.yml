@@ -40,7 +40,7 @@ jobs:
   prep-e2e:
     # For a `pull_request` event, the branch is `github.head_ref``.
     # For a `push` event, the branch is `github.ref_name`.
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'master' }}
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'stable' }}
     needs:
       - needs-e2e
     runs-on: ubuntu-latest

@@ -21,12 +21,14 @@
 @import 'snaps/snaps-list/index';
 @import 'snaps/snap-view/index';
 @import 'create-snap-account/index';
-@import 'remote-mode/setup/setup-swaps/index';
 @import 'remove-snap-account/index';
 @import 'swaps/index';
 @import 'bridge/index';
 @import 'unlock-page/index';
+@import 'multichain-accounts/account-list/account-list';
 @import 'multichain-accounts/wallet-details/wallet-details';
+@import 'multichain-accounts/wallet-details-page/index';
 @import 'multi-srp/import-srp/index';
 @import 'multichain-accounts/address-qr-code/address-qr-code';
 @import 'multichain-accounts/base-account-details/base-account-details';
+@import 'multichain-accounts/multichain-account-details-page/index';

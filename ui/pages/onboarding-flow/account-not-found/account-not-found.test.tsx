@@ -6,20 +6,20 @@ import {
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import * as Actions from '../../../store/actions';
 import AccountNotFound from './account-not-found';
 
-const mockHistoryReplace = jest.fn();
+const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('Account Not Found Seedless Onboarding View', () => {
   afterEach(() => {
@@ -69,8 +69,11 @@ describe('Account Not Found Seedless Onboarding View', () => {
       expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(
         FirstTimeFlowType.socialCreate,
       );
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
+        {
+          replace: true,
+        },
       );
     });
   });
@@ -86,15 +89,14 @@ describe('Account Not Found Seedless Onboarding View', () => {
 
     renderWithProvider(<AccountNotFound />, store);
 
-    expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+      replace: true,
+    });
   });
 
   it('should reset login state and navigate to the welcome page when the button is clicked', async () => {
-    const resetOAuthLoginStateSpy = jest
-      .spyOn(Actions, 'resetOAuthLoginState')
-      .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
-    const setFirstTimeFlowTypeSpy = jest
-      .spyOn(Actions, 'setFirstTimeFlowType')
+    const resetOnboardingSpy = jest
+      .spyOn(Actions, 'resetOnboarding')
       .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
 
     const { getByTestId } = renderWithProvider(
@@ -107,9 +109,10 @@ describe('Account Not Found Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockHistoryReplace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
-      expect(resetOAuthLoginStateSpy).toHaveBeenCalled();
-      expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(null);
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+        replace: true,
+      });
+      expect(resetOnboardingSpy).toHaveBeenCalled();
     });
   });
 });

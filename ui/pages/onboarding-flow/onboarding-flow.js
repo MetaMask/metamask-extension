@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import {
+  Routes as Switch,
+  Route,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import Unlock from '../unlock-page';
@@ -23,7 +28,7 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
-  ONBOARDING_ERROR_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -40,28 +45,14 @@ import {
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-  getOnboardingErrorReport,
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-import { getHDEntropyIndex } from '../../selectors/selectors';
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../components/component-library';
+import { Box } from '../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -72,7 +63,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextVariant,
 } from '../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -97,18 +87,14 @@ import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
-import OnboardingError from './onboarding-error/onboarding-error';
-
-const TWITTER_URL = 'https://twitter.com/MetaMask';
+import OnboardingDownloadApp from './download-app/download-app';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
-  const history = useHistory();
-  const t = useI18nContext();
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const navigate = useNavigate();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
@@ -125,7 +111,6 @@ export default function OnboardingFlow() {
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
-  const onboardingErrorReport = useSelector(getOnboardingErrorReport);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -141,16 +126,10 @@ export default function OnboardingFlow() {
   }, []);
 
   useEffect(() => {
-    if (onboardingErrorReport !== null) {
-      history.push(ONBOARDING_ERROR_ROUTE);
-    }
-  }, [history, onboardingErrorReport]);
-
-  useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
-  }, [history, completedOnboarding, isFromReminder]);
+  }, [navigate, completedOnboarding, isFromReminder]);
 
   useEffect(() => {
     const isSRPBackupRoute = [
@@ -161,7 +140,7 @@ export default function OnboardingFlow() {
 
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
       if (isSRPBackupRoute) {
-        history.push(ONBOARDING_UNLOCK_ROUTE);
+        navigate(ONBOARDING_UNLOCK_ROUTE);
       }
     }
 
@@ -170,7 +149,9 @@ export default function OnboardingFlow() {
       isSRPBackupRoute &&
       completedOnboarding
     ) {
-      history.replace(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE, {
+        replace: true,
+      });
     }
 
     if (pathname === ONBOARDING_WELCOME_ROUTE) {
@@ -185,7 +166,7 @@ export default function OnboardingFlow() {
     completedOnboarding,
     secretRecoveryPhrase,
     pathname,
-    history,
+    navigate,
     showTermsOfUse,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
@@ -243,7 +224,7 @@ export default function OnboardingFlow() {
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-      history.replace(nextRoute);
+      navigate(nextRoute, { replace: true });
     } finally {
       setIsLoading(false);
     }
@@ -255,8 +236,7 @@ export default function OnboardingFlow() {
 
   let isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
-    pathname === ONBOARDING_UNLOCK_ROUTE ||
-    pathname === ONBOARDING_ERROR_ROUTE;
+    pathname === ONBOARDING_UNLOCK_ROUTE;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
@@ -301,145 +281,101 @@ export default function OnboardingFlow() {
         borderColor={BorderColor.borderMuted}
       >
         <Switch>
-          <Route path={ONBOARDING_ERROR_ROUTE} component={OnboardingError} />
-          <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
+          <Route path={ONBOARDING_ACCOUNT_EXIST} element={<AccountExist />} />
           <Route
             path={ONBOARDING_ACCOUNT_NOT_FOUND}
-            component={AccountNotFound}
+            element={<AccountNotFound />}
           />
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
-            render={(routeProps) => (
+            element={
               <CreatePassword
-                {...routeProps}
                 createNewAccount={handleCreateNewAccount}
                 importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
                 secretRecoveryPhrase={secretRecoveryPhrase}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
-            component={SecureYourWallet}
+            element={<SecureYourWallet />}
           />
           <Route
             path={ONBOARDING_REVEAL_SRP_ROUTE}
-            render={() => (
+            element={
               <RevealRecoveryPhrase
                 setSecretRecoveryPhrase={setSecretRecoveryPhrase}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_REVIEW_SRP_ROUTE}
-            render={() => (
+            element={
               <ReviewRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_CONFIRM_SRP_ROUTE}
-            render={() => (
+            element={
               <ConfirmRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_IMPORT_WITH_SRP_ROUTE}
-            render={(routeProps) => (
-              <ImportSRP
-                {...routeProps}
-                submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
-              />
-            )}
+            element={
+              <ImportSRP submitSecretRecoveryPhrase={setSecretRecoveryPhrase} />
+            }
           />
           <Route
             path={ONBOARDING_UNLOCK_ROUTE}
-            render={(routeProps) => (
-              <Unlock {...routeProps} onSubmit={handleUnlock} />
-            )}
+            element={<Unlock onSubmit={handleUnlock} />}
           />
           <Route
             path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
-            component={PrivacySettings}
+            element={<PrivacySettings />}
           />
           <Route
             path={ONBOARDING_COMPLETION_ROUTE}
-            component={CreationSuccessful}
+            element={<CreationSuccessful />}
           />
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
-            render={(routeProps) => (
+            element={
               <OnboardingWelcome
-                {...routeProps}
                 pageState={welcomePageState}
                 setPageState={setWelcomePageState}
               />
-            )}
+            }
           />
           <Route
             path={ONBOARDING_PIN_EXTENSION_ROUTE}
-            component={OnboardingPinExtension}
+            element={<OnboardingPinExtension />}
           />
           <Route
             path={ONBOARDING_METAMETRICS}
-            component={MetaMetricsComponent}
+            element={<MetaMetricsComponent />}
+          />
+          <Route
+            path={ONBOARDING_DOWNLOAD_APP_ROUTE}
+            element={<OnboardingDownloadApp />}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           }
           <Route
             path={ONBOARDING_EXPERIMENTAL_AREA}
-            render={(routeProps) => (
-              <ExperimentalArea
-                {...routeProps}
-                redirectTo={ONBOARDING_WELCOME_ROUTE}
-              />
-            )}
+            element={<ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />}
           />
           {
             ///: END:ONLY_INCLUDE_IF
           }
-          <Route exact path="*" component={OnboardingFlowSwitch} />
+          <Route path="*" element={<OnboardingFlowSwitch />} />
         </Switch>
       </Box>
-      {pathname === ONBOARDING_COMPLETION_ROUTE && (
-        <Button
-          variant={ButtonVariant.Link}
-          href={TWITTER_URL}
-          marginInline="auto"
-          marginTop={isPopup ? 0 : 4}
-          marginBottom={isPopup ? 4 : 0}
-          target="_blank"
-          rel="noopener noreferrer"
-          textProps={{
-            variant: TextVariant.bodyLgMedium,
-          }}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingTwitterClick,
-              properties: {
-                text: t('followUsOnX', ['X']),
-                location: MetaMetricsEventName.WalletCreated,
-                url: TWITTER_URL,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-          }}
-        >
-          {t('followUsOnX', [
-            <Icon
-              key="x-icon"
-              className="onboarding-flow__x-button__icon"
-              name={IconName.X}
-              size={IconSize.Lg}
-            />,
-          ])}
-        </Button>
-      )}
       {isLoading && <LoadingScreen />}
     </Box>
   );

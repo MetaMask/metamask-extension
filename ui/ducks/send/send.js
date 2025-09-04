@@ -31,13 +31,13 @@ import {
   SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
   INVALID_HEX_DATA_ERROR,
-} from '../../pages/confirmations/send/send.constants';
+} from '../../pages/confirmations/send-legacy/send.constants';
 
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
-} from '../../pages/confirmations/send/send.utils';
+} from '../../pages/confirmations/send-legacy/send.utils';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
@@ -1897,20 +1897,6 @@ const slice = createSlice({
         if (draftTransaction) {
           draftTransaction.gas.gasLimit = action.payload.gasLimit;
           draftTransaction.gas.gasTotal = action.payload.gasTotal;
-          if (action.payload.chainHasChanged) {
-            // If the state was reinitialized as a result of the user changing
-            // the network from the network dropdown, then the selected asset is
-            // no longer valid and should be set to the native asset for the
-            // network.
-            draftTransaction.sendAsset.type = AssetType.native;
-            draftTransaction.sendAsset.balance =
-              draftTransaction.fromAccount?.balance ??
-              state.selectedAccount.balance;
-            draftTransaction.sendAsset.details = null;
-
-            draftTransaction.receiveAsset =
-              draftTransactionInitialState.receiveAsset;
-          }
         }
         slice.caseReducers.updateGasFeeEstimates(state, {
           payload: {

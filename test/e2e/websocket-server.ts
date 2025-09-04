@@ -1,29 +1,25 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { WebSocket, WebSocketServer } from 'ws';
 
-class WebSocketLocalServer {
-  private static instance: WebSocketLocalServer; // Singleton instance
+class LocalWebSocketServer {
+  private static instance: LocalWebSocketServer; // Singleton instance
 
   private server: WebSocketServer | null = null; // WebSocket server instance
 
-  private port: number;
+  private static readonly port = 8088;
 
-  private constructor(port: number) {
-    this.port = port;
-  }
+  private websocketConnections: WebSocket[] = []; // Track active connections
 
   /**
-   * Get the singleton instance of the WebSocketLocalServer
+   * Get the singleton instance of the LocalWebSocketServer
    *
-   * @param port - The port to run the WebSocket server on
-   * @returns The singleton instance of WebSocketLocalServer
+   * @returns The singleton instance of LocalWebSocketServer
    */
-  public static getServerInstance(port: number): WebSocketLocalServer {
-    if (!WebSocketLocalServer.instance) {
-      WebSocketLocalServer.instance = new WebSocketLocalServer(port);
+  public static getServerInstance(): LocalWebSocketServer {
+    if (!LocalWebSocketServer.instance) {
+      LocalWebSocketServer.instance = new LocalWebSocketServer();
     }
-    WebSocketLocalServer.instance.start();
-    return WebSocketLocalServer.instance;
+    return LocalWebSocketServer.instance;
   }
 
   public getServer(): WebSocketServer {
@@ -39,71 +35,36 @@ class WebSocketLocalServer {
   public start(): void {
     if (this.server) {
       console.log(
-        `WebSocket server is already running on ws://localhost:${this.port}`,
+        `WebSocket server is already running on ws://localhost:${LocalWebSocketServer.port}`,
       );
       return; // Do nothing if the server is already running
     }
 
-    this.server = new WebSocketServer({ port: this.port });
+    this.server = new WebSocketServer({ port: LocalWebSocketServer.port });
 
     this.server.on('connection', (socket: WebSocket) => {
       console.log('Client connected to the WebSocket server');
+      this.websocketConnections.push(socket);
+
+      // Handle client disconnection
+      socket.addEventListener('close', () => {
+        console.log('Client disconnected from the WebSocket server');
+        const index = this.websocketConnections.indexOf(socket);
+        if (index > -1) {
+          this.websocketConnections.splice(index, 1);
+        }
+      });
 
       socket.on('message', (data) => {
         console.log('Message received from client:', data.toString());
-        // Parse the incoming message
-        const parsedMessage = JSON.parse(data.toString());
-
-        // Check the content of the message and respond accordingly
-        if (parsedMessage.method === 'signatureSubscribe') {
-          console.log('Intercepted "signatureSubscribe" method');
-
-          // Send the mocked response to the client
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              result: 8648699534240963, // Mocked subscription ID
-              id: parsedMessage.id, // Use the same ID from the client's request
-            }),
-          );
-
-          // Simulate a notification for the subscription
-          setTimeout(() => {
-            socket.send(
-              JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'signatureNotification',
-                params: {
-                  subscription: 8648699534240963,
-                  result: {
-                    context: { slot: 12345678 },
-                    value: { err: null }, // Mock success response
-                  },
-                },
-              }),
-            );
-          }, 2000); // Delay the notification to simulate real-world behavior
-        } else {
-          // Default response for other messages
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              error: {
-                code: -32601,
-                message: 'Method not mocked',
-              },
-              id: parsedMessage.id,
-            }),
-          );
-        }
+        // Echo the message back to the client (pure WebSocket server behavior)
+        socket.send(data.toString());
       });
     });
-    // Handle client disconnection
-    this.server.on('close', () => {
-      console.log('Client disconnected from the WebSocket server');
-    });
 
-    console.log(`WebSocket server running on ws://localhost:${this.port}`);
+    console.log(
+      `WebSocket server running on ws://localhost:${LocalWebSocketServer.port}`,
+    );
   }
 
   /**
@@ -112,7 +73,9 @@ class WebSocketLocalServer {
   public stop(): void {
     if (this.server) {
       this.server.close(() => {
-        console.log(`WebSocket server stopped on ws://localhost:${this.port}`);
+        console.log(
+          `WebSocket server stopped on ws://localhost:${LocalWebSocketServer.port}`,
+        );
       });
       this.server = null;
     } else {
@@ -130,6 +93,75 @@ class WebSocketLocalServer {
       });
     }
   }
+
+  /**
+   * Get the count of active WebSocket connections
+   *
+   * @returns The number of active connections
+   */
+  public getWebsocketConnectionCount(): number {
+    if (!this.server) {
+      return 0;
+    }
+    const serverClientCount = this.server.clients.size;
+    console.log(
+      `Server has ${serverClientCount} clients, tracked array has ${this.websocketConnections.length}`,
+    );
+    return serverClientCount;
+  }
+
+  /**
+   * Stop the WebSocket server and close all connections
+   */
+  public async stopAndCleanup(): Promise<void> {
+    if (!this.server) {
+      console.log('WebSocket server is not running');
+      return;
+    }
+
+    const serverClients = Array.from(this.server.clients);
+    console.log(`Found ${serverClients.length} active server clients`);
+
+    // Close all client connections
+    for (const client of serverClients) {
+      try {
+        if (
+          client.readyState === client.OPEN ||
+          client.readyState === client.CONNECTING
+        ) {
+          client.close();
+        }
+      } catch (error) {
+        console.warn('Error closing server client:', error);
+      }
+    }
+
+    // Clean up tracked connections
+    for (const socket of this.websocketConnections) {
+      try {
+        if (
+          socket.readyState === socket.OPEN ||
+          socket.readyState === socket.CONNECTING
+        ) {
+          socket.close();
+        }
+      } catch (error) {
+        console.warn('Error closing tracked websocket connection:', error);
+      }
+    }
+
+    this.websocketConnections = [];
+
+    // Stop the server
+    this.stop();
+
+    // Force reset the singleton instance to ensure fresh server for next test
+    // @ts-expect-error - accessing private static property for cleanup
+    LocalWebSocketServer.instance = undefined;
+
+    // Give a delay to ensure all connections are fully closed
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
 }
 
-export default WebSocketLocalServer;
+export default LocalWebSocketServer;

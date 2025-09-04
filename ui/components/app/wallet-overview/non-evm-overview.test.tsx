@@ -76,7 +76,7 @@ const mockNonEvmAccount = {
     },
   },
   options: {},
-  methods: [BtcMethod.SendBitcoin],
+  methods: Object.values(BtcMethod),
   type: BtcAccountType.P2wpkh,
 };
 
@@ -463,7 +463,6 @@ describe('NonEvmOverview', () => {
     const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
     expect(sendButton).toBeInTheDocument();
     expect(sendButton).toBeDisabled();
-    expect(bridgeButton).toBeInTheDocument();
-    expect(bridgeButton).toBeDisabled();
+    expect(bridgeButton).not.toBeInTheDocument();
   });
 });

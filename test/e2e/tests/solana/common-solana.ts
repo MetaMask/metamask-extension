@@ -11,7 +11,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import WebSocketLocalServer from '../../websocket-server';
+import { DEFAULT_SOLANA_WS_MOCKS } from './mocks/websocketDefaultMocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1130,8 +1130,8 @@ export async function mockGetTokenAccountsTokenProgram2022Swaps(
 
 export async function mockGetTokenAccountsByOwner(
   mockServer: Mockttp,
-  account: string,
-  programId: string,
+  account: string = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+  programId: string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
 ) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
@@ -1261,30 +1261,12 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
           slot: 317161313,
         },
         value: {
-          data: {
-            parsed: {
-              info: {
-                isNative: false,
-                mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-                owner: '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c',
-                state: 'initialized',
-                tokenAmount: {
-                  amount: '3610951',
-                  decimals: 6,
-                  uiAmount: 3.610951,
-                  uiAmountString: '3.610951',
-                },
-              },
-              type: 'account',
-            },
-            program: 'spl-token',
-            space: 165,
-          },
+          data: ['', 'base58'],
           executable: false,
-          lamports: 2039280,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          rentEpoch: 18446744073709552000,
-          space: 165,
+          lamports: 5312114,
+          owner: '11111111111111111111111111111111',
+          rentEpoch: 18446744073709551615,
+          space: 0,
         },
       },
     },
@@ -1294,15 +1276,15 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
-    .withJsonBodyIncluding({
+    /* .withJsonBodyIncluding({
       params: [
-        '4Dt7hvLAzSXGvxvpqFU7cRdQXXhU3orACV6ujY4KPv9D',
+        '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
         {
           encoding: 'jsonParsed',
           commitment: 'confirmed',
         },
       ],
-    })
+    })*/
     .thenCallback(() => {
       return response;
     });
@@ -1561,49 +1543,6 @@ const featureFlagsWithSnapConfirmation = {
   },
 };
 
-async function startWebsocketMock(mockServer: Mockttp) {
-  const port = 8088;
-  // Start a WebSocket server to handle the connection
-  const localWebSocketServer = WebSocketLocalServer.getServerInstance(port);
-  localWebSocketServer.start();
-  const wsServer = localWebSocketServer.getServer();
-  wsServer.on('connection', (socket: WebSocket) => {
-    console.log('Client connected to the local WebSocket server');
-
-    // Handle messages from the client
-    socket.addEventListener('message', (event: MessageEvent) => {
-      const message = event.data.toString();
-      console.log('Message received from client:', message);
-      if (message.includes('signatureSubscribe')) {
-        console.log('Signature subscribe message received from client');
-        setTimeout(() => {
-          socket.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              result: 8648699534240963,
-              id: '1',
-            }),
-          );
-          console.log('Simulated message sent to the client');
-        }, 2000); // Delay the message by 5 second
-      }
-    });
-
-    // Handle client disconnection
-    socket.addEventListener('close', () => {
-      console.log('Client disconnected from the local WebSocket server');
-    });
-  });
-
-  // Intercept WebSocket handshake requests
-  await mockServer
-    .forAnyWebSocket()
-    .matching((req) =>
-      /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
-    )
-    .thenForwardTo(`ws://localhost:${port}`);
-}
-
 export async function withSolanaAccountSnap(
   {
     title,
@@ -1673,6 +1612,10 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      withSolanaWebSocket: {
+        server: true,
+        mocks: DEFAULT_SOLANA_WS_MOCKS,
+      },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.
@@ -1693,12 +1636,13 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
           mockList.push(await mockGetAccountInfoDevnet(mockServer));
         } else {
-          mockList.push(
+          console.log('Entra aqui no?');
+          /* mockList.push(
             await mockGetTokenAccountsTokenProgramSwaps(mockServer),
           );
           mockList.push(
             await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-          );
+          );*/
         }
         mockList.push(await mockGetMultipleAccounts(mockServer));
         if (mockGetTransactionSuccess) {
@@ -1714,9 +1658,11 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetFailedTransaction(mockServer));
         }
 
+        mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
         mockList.push(
           await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
         );
+
         mockList.push(
           await mockGetMinimumBalanceForRentExemption(mockServer),
           await mockMultiCoinPrice(mockServer),
@@ -1797,7 +1743,6 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await startWebsocketMock(mockServer);
       await loginWithBalanceValidation(driver);
 
       const headerComponent = new HeaderNavbar(driver);
@@ -1810,13 +1755,13 @@ export async function withSolanaAccountSnap(
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
-        await new NonEvmHomepage(driver).check_pageIsLoaded();
-        await headerComponent.check_accountLabel(`Solana ${i}`);
-        await assetList.check_networkFilterText('Solana');
+        await new NonEvmHomepage(driver).checkPageIsLoaded();
+        await headerComponent.checkAccountLabel(`Solana ${i}`);
+        await assetList.checkNetworkFilterText('Solana');
       }
 
       if (numberOfAccounts > 0) {
-        await headerComponent.check_accountLabel(`Solana ${numberOfAccounts}`);
+        await headerComponent.checkAccountLabel(`Solana ${numberOfAccounts}`);
       }
 
       await driver.delay(regularDelayMs); // workaround to avoid flakiness

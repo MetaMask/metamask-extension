@@ -88,6 +88,7 @@ export const GET_QUOTE_INVALID_RESPONSE = [
       },
       destChainId: 1,
       destTokenAmount: '387773599373699',
+      minDestTokenAmount: '317773599373699',
       destAsset: {
         address: '0x0000000000000000000000000000000000000000',
         chainId: 1,
@@ -570,6 +571,7 @@ export const MOCK_BRIDGE_ETH_TO_ETH_LINEA = [
       },
       destChainId: 59144,
       destTokenAmount: '991164565855146762',
+      minDestTokenAmount: '991144565855146762',
       destAsset: {
         address: '0x0000000000000000000000000000000000000000',
         assetId: 'eip155:59144/slip44:60',
@@ -713,6 +715,7 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_MAINNET = [
       },
       destChainId: 1,
       destTokenAmount: '990933440686599409',
+      minDestTokenAmount: '970933440686599409',
       destAsset: {
         address: '0x0000000000000000000000000000000000000000',
         chainId: 1,
@@ -860,6 +863,7 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_L2 = [
       },
       destChainId: 42161,
       destTokenAmount: '991144603594270178',
+      minDestTokenAmount: '970933440686599409',
       destAsset: {
         address: '0x0000000000000000000000000000000000000000',
         chainId: 42161,
@@ -1023,6 +1027,7 @@ export const MOCK_BRIDGE_DAI_L2_TO_L2 = [
       },
       destChainId: 42161,
       destTokenAmount: '9904599265963515167',
+      minDestTokenAmount: '970933440686599409',
       destAsset: {
         address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
         chainId: 42161,
@@ -1270,6 +1275,7 @@ export const MOCK_BRIDGE_DAI_L2_TO_MAINNET = [
       },
       destChainId: 1,
       destTokenAmount: '9669794399261320507',
+      minDestTokenAmount: '970933440686599409',
       destAsset: {
         address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         chainId: 1,
@@ -1517,6 +1523,7 @@ export const MOCK_BRIDGE_ETH_TO_WETH_LINEA = [
       },
       destChainId: 59144,
       destTokenAmount: '24777037000000000000',
+      minDestTokenAmount: '24277037000000000000',
       destAsset: {
         address: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
         chainId: 59144,
@@ -1680,6 +1687,7 @@ export const MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM = [
       },
       destChainId: 42161,
       destTokenAmount: '1642004253',
+      minDestTokenAmount: '1612004253',
       destAsset: {
         address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
         chainId: 42161,
@@ -1987,6 +1995,7 @@ export const MOCK_BRIDGE_DAI_TO_ETH_LINEA = [
       },
       destChainId: 59144,
       destTokenAmount: '15668702841431844',
+      minDestTokenAmount: '12668702841431844',
       destAsset: {
         address: '0x0000000000000000000000000000000000000000',
         chainId: 59144,
@@ -2278,6 +2287,7 @@ export const MOCK_BRIDGE_USDC_TO_DAI_LINEA = [
       },
       destChainId: 59144,
       destTokenAmount: '9899595568570427284',
+      minDestTokenAmount: '899595568570427284',
       destAsset: {
         address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
         chainId: 59144,

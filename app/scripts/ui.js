@@ -1,4 +1,7 @@
-// Disabled to allow setting up initial state hooks first
+// ESLint complains that we are mixing imports and runtime code, which we are,
+// but we need to initialize React Devtools before importing React (which
+// happens in the UI code).
+/* eslint-disable import/first */
 
 // This import sets up safe intrinsics required for LavaDome to function securely.
 // It must be run before any less trusted code so that no such code can undermine it.
@@ -9,8 +12,13 @@ import '@lavamoat/lavadome-react';
 import './lib/setup-initial-state-hooks';
 import '../../development/wdyr';
 
-// dev only, "react-devtools" import is skipped in prod builds
-import 'react-devtools';
+import * as reactDevtoolsCore from 'react-devtools-core';
+
+if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
+  const { initialize, connectToDevTools } = reactDevtoolsCore;
+  initialize();
+  connectToDevTools();
+}
 
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
@@ -21,6 +29,8 @@ import log from 'loglevel';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
+  displayCriticalError,
+  CriticalErrorTranslationKey,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui';
@@ -31,8 +41,6 @@ import {
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -241,8 +249,12 @@ async function initializeUiWithTab(
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
       global.platform.openExtensionInBrowser();
     }
-  } catch (err) {
-    displayCriticalError('troubleStarting', err);
+  } catch (error) {
+    await displayCriticalError(
+      container,
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+    );
   }
 }
 
@@ -297,21 +309,6 @@ async function initializeUi(activeTab, backgroundConnection, traceContext) {
   });
 }
 
-async function displayCriticalError(errorKey, err, metamaskState) {
-  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
-
-  container.innerHTML = html;
-
-  const button = document.getElementById('critical-error-button');
-
-  button?.addEventListener('click', (_) => {
-    browser.runtime.reload();
-  });
-
-  log.error(err.stack);
-  throw err;
-}
-
 /**
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
@@ -324,6 +321,7 @@ function connectSubstreams(connectionStream) {
 
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
+  mx.ignoreStream('background-liveness');
 
   return {
     controller: controllerSubstream,

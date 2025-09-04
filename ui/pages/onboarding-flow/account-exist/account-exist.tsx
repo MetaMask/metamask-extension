@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -27,7 +27,8 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  resetOAuthLoginState,
+  forceUpdateMetamaskState,
+  resetOnboarding,
   setFirstTimeFlowType,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -41,7 +42,7 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountExist() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -51,12 +52,14 @@ export default function AccountExist() {
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
 
-  const onLoginWithDifferentMethod = async () => {
-    // clear the social login state
-    await dispatch(resetOAuthLoginState());
-    // reset the first time flow type
-    await dispatch(setFirstTimeFlowType(null));
-    history.replace(ONBOARDING_WELCOME_ROUTE);
+  const onLoginWithDifferentMethod = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.preventDefault();
+    // reset onboarding flow
+    await dispatch(resetOnboarding());
+    await forceUpdateMetamaskState(dispatch);
+    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
   };
 
   const onDone = async () => {
@@ -76,12 +79,12 @@ export default function AccountExist() {
       parentContext: onboardingParentContext?.current,
     });
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-    history.replace(ONBOARDING_UNLOCK_ROUTE);
+    navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
   };
 
   useEffect(() => {
     if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
     if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
       bufferedTrace?.({
@@ -99,7 +102,7 @@ export default function AccountExist() {
     };
   }, [
     firstTimeFlowType,
-    history,
+    navigate,
     onboardingParentContext,
     bufferedTrace,
     bufferedEndTrace,
@@ -152,7 +155,9 @@ export default function AccountExist() {
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {t('accountAlreadyExistsLoginDescription', [userSocialLoginEmail])}
+            {t('accountAlreadyExistsLoginDescription', [
+              userSocialLoginEmail || '-',
+            ])}
           </Text>
         </Box>
       </Box>

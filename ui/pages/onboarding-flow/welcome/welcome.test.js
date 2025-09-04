@@ -1,16 +1,19 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { waitFor, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import * as Actions from '../../../store/actions';
 import Welcome from './welcome';
 import { WelcomePageState } from './types';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
@@ -57,5 +60,28 @@ describe('Welcome Page', () => {
     const agreeButton = getByTestId('terms-of-use-agree-button');
     expect(agreeButton).toBeInTheDocument();
     expect(agreeButton).toBeDisabled();
+  });
+
+  it('should show the error modal when the error thrown in login', async () => {
+    jest
+      .spyOn(Actions, 'startOAuthLogin')
+      .mockRejectedValue(new Error('login error'));
+
+    const { getByText, getByTestId } = renderWithProvider(
+      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
+      mockStore,
+    );
+
+    const createButton = getByText('Create a new wallet');
+    fireEvent.click(createButton);
+
+    const createWithGoogleButton = getByTestId(
+      'onboarding-create-with-google-button',
+    );
+    fireEvent.click(createWithGoogleButton);
+
+    await waitFor(() => {
+      expect(getByTestId('login-error-modal')).toBeInTheDocument();
+    });
   });
 });
