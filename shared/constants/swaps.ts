@@ -221,7 +221,6 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
   MultichainNetworks.SOLANA,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
   ///: END:ONLY_INCLUDE_IF
