@@ -8,6 +8,7 @@ import {
   MOCK_NFT721,
   SOLANA_ASSET,
 } from '../../../../../../test/data/send/assets';
+import { Numeric } from '../../../../../../shared/modules/Numeric';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
@@ -124,6 +125,7 @@ describe('Amount', () => {
     });
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '10.023',
+      rawBalanceNumeric: new Numeric('10.023', 10),
     });
     const { getByText } = render();
 
@@ -173,6 +175,7 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
+      rawBalanceNumeric: new Numeric('1', 10),
     });
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
@@ -192,6 +195,7 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
+      rawBalanceNumeric: new Numeric('1', 10),
     });
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
@@ -215,6 +219,7 @@ describe('Amount', () => {
     } as ReturnType<typeof SendType.useSendType>);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
+      rawBalanceNumeric: new Numeric('1', 10),
     });
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',

@@ -22,6 +22,10 @@ import {
 } from '../send-legacy/send.utils';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 
+export const trimTrailingZeros = (numStr: string) => {
+  return numStr.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0*$/, '');
+};
+
 export const fromTokenMinUnitsNumeric = (
   value: string,
   base: NumericBase,
@@ -52,18 +56,20 @@ export const fromTokenMinimalUnitsHexNumeric = (
 
 export const toTokenMinimalUnitNumeric = (
   value: string,
-  decimals?: number | string,
+  decimals: number | string = 0,
+  base?: NumericBase,
 ) => {
   const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
   const multiplier = Math.pow(10, Number(decimalValue));
-  return new Numeric(value, 16).divide(multiplier, 10);
+  return new Numeric(value, base ?? 16).divide(multiplier, 10);
 };
 
 export const toTokenMinimalUnit = (
   value: string,
-  decimals?: number | string,
+  decimals: number | string = 0,
+  base?: NumericBase,
 ) => {
-  const convertedValue = toTokenMinimalUnitNumeric(value, decimals)
+  const convertedValue = toTokenMinimalUnitNumeric(value, decimals, base)
     .toBase(10)
     .toString();
 
@@ -103,9 +109,8 @@ export function formatToFixedDecimals(
     return strValueArr[0];
   }
 
-  return `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`.replace(
-    /\.?0+$/u,
-    '',
+  return trimTrailingZeros(
+    `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`,
   );
 }
 
@@ -213,11 +218,10 @@ export function convertedCurrency(value: string, conversionRate?: number) {
   if (!isDecimal(value) || parseFloat(value) < 0) {
     return undefined;
   }
-  return new Numeric(value, 10)
-    .applyConversionRate(conversionRate)
-    .toBase(10)
-    .toString()
-    .replace(/\.?0+$/u, '');
+
+  return trimTrailingZeros(
+    new Numeric(value, 10).applyConversionRate(conversionRate).toString(),
+  );
 }
 
 export const navigateToSendRoute = (
