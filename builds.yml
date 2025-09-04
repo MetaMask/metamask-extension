@@ -401,6 +401,8 @@ env:
 
   # URL of Shield gateway
   - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
+  # URL of Shield rule engine
+  - SHIELD_RULE_ENGINE_URL: 'https://shield-rule-engine.dev-api.cx.metamask.io'
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
