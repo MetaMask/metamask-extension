@@ -533,7 +533,7 @@ describe(`migration #${newVersion}`, () => {
     expect(newState.data).toStrictEqual(oldState.data);
     expect(global.sentry.captureException).toHaveBeenCalledWith(
       new Error(
-        `Migration ${newVersion}: Failed to update bridge txHistory for solana to use txHash as key and txMetaId. Error: TypeError: Cannot read properties of undefined (reading 'toString')`,
+        `Migration ${newVersion}: Failed to update bridge txHistory for solana to use txHash as key and txMetaId. Error: Cannot read properties of undefined (reading 'toString')`,
       ),
     );
   });
