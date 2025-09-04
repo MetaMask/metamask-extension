@@ -1,6 +1,8 @@
 import { isSolanaChainId } from '@metamask/bridge-controller';
+import { isObject } from '@metamask/utils';
 import { type BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import { cloneDeep } from 'lodash';
+import { captureException } from '../../../shared/lib/sentry';
 
 export const version = 174;
 
@@ -29,46 +31,36 @@ export async function migrate(originalVersionedData: {
 
 function transformState(state: Record<string, unknown>) {
   const bridgeStatusControllerState = state?.BridgeStatusController;
-
-  if (
-    !bridgeStatusControllerState ||
-    typeof bridgeStatusControllerState !== 'object'
-  ) {
+  if (!isObject(bridgeStatusControllerState)) {
     return state;
   }
 
   const { txHistory } =
     bridgeStatusControllerState as BridgeStatusControllerState;
-
-  if (!txHistory || Object.keys(txHistory).length === 0) {
+  if (!isObject(txHistory)) {
     return state;
   }
 
-  const newTxHistory = Object.entries<
-    BridgeStatusControllerState['txHistory'][string]
-  >(txHistory as unknown as BridgeStatusControllerState['txHistory']).reduce<
-    Record<string, BridgeStatusControllerState['txHistory'][string]>
-  >((acc, [key, historyItem]) => {
-    // Check if src chain is solana
-    const srcChainId =
-      historyItem.status?.srcChain?.chainId ?? historyItem.quote?.srcChainId;
-    const isSolanaTx = isSolanaChainId(srcChainId);
-    // If solana tx, use the src chain tx hash as the key
-    const newKey = isSolanaTx ? historyItem.status?.srcChain?.txHash : key;
+  try {
+    Object.entries(txHistory).forEach(([key, historyItem]) => {
+      const isSolanaTx = isSolanaChainId(historyItem.status?.srcChain?.chainId);
+      const newId = historyItem.status?.srcChain?.txHash;
+      if (isSolanaTx && newId) {
+        txHistory[newId] = {
+          ...historyItem,
+          txMetaId: newId,
+        };
+        delete txHistory[key];
+      }
+    });
 
-    return {
-      ...acc,
-      [newKey ?? key]: { ...historyItem },
-    };
-  }, {});
-
-  const newState = {
-    ...state,
-    BridgeStatusController: {
-      ...bridgeStatusControllerState,
-      txHistory: newTxHistory,
-    },
-  };
-
-  return newState;
+    return state;
+  } catch (error) {
+    captureException(
+      new Error(
+        `Migration ${version}: Failed to update bridge txHistory for solana to use txHash as key and txMetaId. Error: ${(error as Error).message}`,
+      ),
+    );
+    return state;
+  }
 }

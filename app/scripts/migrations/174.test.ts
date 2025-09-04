@@ -442,7 +442,11 @@ describe(`migration #${newVersion}`, () => {
         txHistory: {
           '4ad572c0-5817-11f0-9a9f-65cbc1ba7703': evmTxHistoryItem,
           '5Cs9btTX3G7a4H4mmbuYLPpEzyyj2t64aSnCCMyy1AKQZvBrLprbmcT7TF2mcTQNKGik9JTLRkqHTtkKjHUUi4af':
-            solanaTxHistoryItem,
+            {
+              ...solanaTxHistoryItem,
+              txMetaId:
+                '5Cs9btTX3G7a4H4mmbuYLPpEzyyj2t64aSnCCMyy1AKQZvBrLprbmcT7TF2mcTQNKGik9JTLRkqHTtkKjHUUi4af',
+            },
         },
       });
 
@@ -480,18 +484,57 @@ describe(`migration #${newVersion}`, () => {
     });
   });
 
-  describe('when BridgeStatusController does not exist', () => {
-    it('should not update state', async () => {
+  [
+    undefined,
+    null,
+    {},
+    { BridgeStatusController: {} },
+    { BridgeStatusController: null },
+    { BridgeStatusController: 'abc' },
+    { BridgeStatusController: { txHistory: {} } },
+    { BridgeStatusController: { txHistory: null } },
+    { BridgeStatusController: { txHistory: 'abc' } },
+  ].forEach((bridgeStatusControllerState) => {
+    it(`does not change the state if BridgeStatusController state is ${bridgeStatusControllerState?.toString()}`, async () => {
       const oldState = {
         meta: {
           version: oldVersion,
         },
-        data: {},
+        data: bridgeStatusControllerState,
       };
 
-      const newState = await migrate(oldState);
+      const newState = await migrate(oldState as never);
 
       expect(newState.data).toStrictEqual(oldState.data);
+      expect(global.sentry.captureException).toHaveBeenCalledTimes(0);
     });
+  });
+
+  it('captures an exception if an error occurs', async () => {
+    const oldState = {
+      meta: {
+        version: oldVersion,
+      },
+      data: {
+        BridgeStatusController: {
+          txHistory: {
+            '4ad572c0-5817-11f0-9a9f-65cbc1ba7703': evmTxHistoryItem,
+            '4731011b-c021-46c8-9dbd-706d21ef6709': {
+              ...solanaTxHistoryItem,
+              status: { srcChain: { txHash: {} } },
+            },
+          },
+        },
+      },
+    };
+
+    const newState = await migrate(oldState as never);
+
+    expect(newState.data).toStrictEqual(oldState.data);
+    expect(global.sentry.captureException).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${newVersion}: Failed to update bridge txHistory for solana to use txHash as key and txMetaId. Error: TypeError: Cannot read properties of undefined (reading 'toString')`,
+      ),
+    );
   });
 });
