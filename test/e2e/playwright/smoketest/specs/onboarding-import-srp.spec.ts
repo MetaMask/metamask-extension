@@ -6,7 +6,7 @@ import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
 import { OnboardingPage } from '../../page-objects/onboarding-page.ts';
 
 function getSrp(): string {
-  const srp = 'process.env.SMOKE_TEST_SRP';
+  const srp = process.env.SMOKE_TEST_SRP;
   if (!srp) {
     throw new Error('Missing SMOKE_TEST_SRP env var');
   }
