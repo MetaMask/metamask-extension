@@ -2,6 +2,7 @@ import { SolScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
+import { selectAssetsBySelectedAccountGroup } from '@metamask/assets-controllers';
 import {
   AssetsRatesState,
   AssetsState,
@@ -13,7 +14,10 @@ import {
   getMultichainNativeAssetType,
   getTokenByAccountAndAddressAndChainId,
   getHistoricalMultichainAggregatedBalance,
+  getAssetsBySelectedAccountGroup,
 } from './assets';
+
+jest.mock('@metamask/assets-controllers');
 
 const mockRatesState = {
   metamask: {
@@ -614,5 +618,37 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
 
     expect(result.P1D.percentChange).toBe(5.123457); // max 8 decimal places
     expect(result.P1D.amountChange).toBe(49.33922174); // max 8 decimal places
+  });
+});
+
+describe('getAssetsBySelectedAccountGroup', () => {
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls the imported selector with the prepared initial state', () => {
+    const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
+    const expectedResult = {};
+    selectorMock.mockReturnValue(expectedResult);
+
+    const result = getAssetsBySelectedAccountGroup(mockState);
+
+    expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
+    expect(result).toBe(expectedResult);
   });
 });
