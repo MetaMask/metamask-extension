@@ -5,21 +5,17 @@ import {
   OAuthServiceMessenger,
 } from '../messengers/seedless-onboarding';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { OAuthServiceInit } from './oauth-service-init';
 import OAuthService from '../../services/oauth/oauth-service';
+import { OAuthServiceInit } from './oauth-service-init';
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
-    OAuthServiceMessenger
-  >
+  ControllerInitRequest<OAuthServiceMessenger>
 > {
   const baseControllerMessenger = new Messenger<never, never>();
 
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getOAuthServiceMessenger(
-      baseControllerMessenger,
-    ),
+    controllerMessenger: getOAuthServiceMessenger(baseControllerMessenger),
     initMessenger: undefined,
   };
 }
@@ -33,11 +29,11 @@ describe('OAuthServiceInit', () => {
       return {
         bufferedTrace: jest.fn(),
         bufferedEndTrace: jest.fn(),
-      }
-    })
+      };
+    });
 
-    expect(
-      OAuthServiceInit(requestMock).controller,
-    ).toBeInstanceOf(OAuthService);
+    expect(OAuthServiceInit(requestMock).controller).toBeInstanceOf(
+      OAuthService,
+    );
   });
 });
