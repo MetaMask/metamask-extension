@@ -12,8 +12,7 @@ const accountDetailsRowNetworksTestId = 'account-details-row-networks';
 const accountDetailsRowPrivateKeysTestId = 'account-details-row-private-keys';
 const accountDetailsRowSmartAccountTestId = 'account-details-row-smart-account';
 const accountDetailsRowWalletTestId = 'account-details-row-wallet';
-const accountDetailsRowSecretRecoveryPhraseTestId =
-  'account-details-row-secret-recovery-phrase';
+const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
 
 const mockHistoryPush = jest.fn();
 const mockHistoryGoBack = jest.fn();
@@ -76,7 +75,7 @@ describe('MultichainAccountDetailsPage', () => {
   it('displays the address count from the selector', () => {
     renderComponent();
 
-    expect(screen.getByText(/2 addresses/iu)).toBeInTheDocument();
+    expect(screen.getByText(/10 addresses/iu)).toBeInTheDocument();
   });
 
   it('calls history.goBack when back button is clicked', () => {
