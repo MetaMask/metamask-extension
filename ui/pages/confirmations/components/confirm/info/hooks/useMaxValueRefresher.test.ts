@@ -1,5 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
+import { useSearchParams } from 'react-router-dom-v5-compat';
+
 import { updateEditableParams } from '../../../../../../store/actions';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
@@ -9,6 +11,12 @@ import {
 } from '../../../../../../selectors';
 import { useMaxValueRefresher } from './useMaxValueRefresher';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useLocation: () => ({ pathname: '/send/asset' }),
+  useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
+}));
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
@@ -51,6 +59,7 @@ describe('useMaxValueRefresher', () => {
     selectMaxValueModeForTransaction,
   );
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
+  const mockUseSearchParams = jest.mocked(useSearchParams);
 
   const baseTransactionMeta = {
     id: 'test-transaction-id',
@@ -182,6 +191,26 @@ describe('useMaxValueRefresher', () => {
     renderHook(() => useMaxValueRefresher());
 
     expect(updateEditableParamsMock).not.toHaveBeenCalled();
+  });
+
+  it('updates transaction event fragment with max amount mode status from url params', () => {
+    selectMaxValueModeForTransactionMock.mockReturnValue(false);
+    mockUseSearchParams.mockReturnValue([
+      { get: () => 'true' },
+    ] as unknown as ReturnType<typeof useSearchParams>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
+      {
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_send_max: true,
+        },
+      },
+      baseTransactionMeta.id,
+    );
   });
 
   describe('Transaction Value Updates - Edge Cases', () => {
