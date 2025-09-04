@@ -22,8 +22,9 @@ describe('./utils/cli.ts', () => {
     manifest_version: 2,
     type: 'main',
     lavamoat: false,
-    snow: false,
+    lavamoatDebug: false,
     generatePolicy: false,
+    snow: false,
     dryRun: false,
     stats: false,
   };
