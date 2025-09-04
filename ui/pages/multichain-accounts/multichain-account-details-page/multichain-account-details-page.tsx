@@ -27,6 +27,7 @@ import {
   getMultichainAccountGroupById,
   getNetworkAddressCount,
   getWallet,
+  getInternalAccountsFromGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
@@ -55,6 +56,9 @@ export const MultichainAccountDetailsPage = () => {
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
+  const accountsWithAddresses = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, accountGroupId),
+  );
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
@@ -66,12 +70,8 @@ export const MultichainAccountDetailsPage = () => {
   };
 
   const handleSmartAccountClick = () => {
-    console.log('handleSmartAccountClick');
-    console.log('multichainAccount', multichainAccount);
-    // Use the first account address from the group for the smart account page
-    const firstAccountAddress = multichainAccount.accounts[0]?.address;
+    const firstAccountAddress = accountsWithAddresses[0]?.address;
     if (firstAccountAddress) {
-      console.log('firstAccountAddress', firstAccountAddress);
       history.push(
         `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(firstAccountAddress)}`,
       );
