@@ -1,5 +1,2 @@
-export {
-  getGatorPermissionsControllerMessenger,
-  getGatorPermissionsControllerInitMessenger,
-} from './gator-permissions-controller-messenger';
-export type { GatorPermissionsControllerInitMessenger } from './gator-permissions-controller-messenger';
+export { getGatorPermissionsControllerMessenger } from './gator-permissions-controller-messenger';
+export type { GatorPermissionsControllerMessenger } from './gator-permissions-controller-messenger';
