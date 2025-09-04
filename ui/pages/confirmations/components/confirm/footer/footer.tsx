@@ -24,10 +24,11 @@ import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors'
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useConfirmContext } from '../../../context/confirm';
+import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
-import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
-import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useBalanceChanges } from '../../simulation-details/useBalanceChanges';
 import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
 
@@ -175,10 +176,17 @@ const Footer = () => {
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
 
+  const balanceChangesResult = useBalanceChanges({
+    chainId: currentConfirmation.chainId,
+    simulationData: currentConfirmation.simulationData
+  });
+  const isSimulationLoading = !currentConfirmation.simulationData || balanceChangesResult.pending;
+
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection ||
-    isGaslessLoading;
+    isGaslessLoading ||
+    isSimulationLoading;
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {
