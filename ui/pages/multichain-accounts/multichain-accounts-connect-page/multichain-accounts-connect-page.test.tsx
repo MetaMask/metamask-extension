@@ -97,7 +97,7 @@ const mockAccountTreeState = {
       },
     },
   },
-  selectedAccountGroup: 'test-group-1' as any,
+  selectedAccountGroup: 'test-group-1',
 };
 
 const mockInternalAccountsState = {

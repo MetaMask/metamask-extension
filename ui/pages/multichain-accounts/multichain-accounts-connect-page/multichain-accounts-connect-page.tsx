@@ -13,7 +13,6 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import {
-  CaipAccountId,
   CaipChainId,
   KnownCaipNamespace,
   parseCaipChainId,
@@ -88,7 +87,6 @@ export type MultichainAccountsConnectPageRequest = {
     id: string;
     origin: string;
     isEip1193Request?: boolean;
-    promptToCreateSolanaAccount?: boolean;
   };
 };
 
@@ -195,45 +193,40 @@ export const MultichainAccountsConnectPage: React.FC<
     return namespace !== KnownCaipNamespace.Wallet;
   });
 
-  const requestedCaipChainIdsWithDefault = useMemo(
-    () => [
-      ...new Set([
-        ...requestedCaipChainIds,
-        ...nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId),
-        ...testNetworkConfigurations.map(({ caipChainId }) => caipChainId),
-      ]),
-    ],
+  const requestedCaipChainIdsOrDefault = useMemo(
+    () =>
+      requestedCaipChainIds.length > 0
+        ? requestedCaipChainIds
+        : [
+            ...new Set([
+              ...nonTestNetworkConfigurations.map(
+                ({ caipChainId }) => caipChainId,
+              ),
+              ...testNetworkConfigurations.map(
+                ({ caipChainId }) => caipChainId,
+              ),
+            ]),
+          ],
     [
-      requestedCaipChainIds,
       nonTestNetworkConfigurations,
+      requestedCaipChainIds,
       testNetworkConfigurations,
     ],
   );
 
-  console.log(
-    'requestedCaipChainIdsWithDefault',
-    requestedCaipChainIdsWithDefault,
-  );
-  console.log('requestedCaipChainIds', requestedCaipChainIds);
-  console.log('nonTestNetworkConfigurations', nonTestNetworkConfigurations);
-  console.log('testNetworkConfigurations', testNetworkConfigurations);
-
-  const {
-    connectedAccountGroups,
-    supportedAccountGroups,
-    existingConnectedCaipAccountIds,
-  } = useAccountGroupsForPermissions(
-    requestedCaip25CaveatValueWithExistingPermissions,
-    requestedCaipAccountIds,
-    requestedCaipChainIdsWithDefault,
-    requestedNamespacesWithoutWallet,
-  );
+  const { connectedAccountGroups, supportedAccountGroups } =
+    useAccountGroupsForPermissions(
+      requestedCaip25CaveatValueWithExistingPermissions,
+      requestedCaipAccountIds,
+      requestedCaipChainIdsOrDefault,
+      requestedNamespacesWithoutWallet,
+    );
 
   const [userHasModifiedSelection, setUserHasModifiedSelection] =
     useState(false);
 
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
-    requestedCaipChainIdsWithDefault,
+    requestedCaipChainIdsOrDefault,
   );
 
   const handleChainIdsSelected = useCallback(
@@ -246,45 +239,36 @@ export const MultichainAccountsConnectPage: React.FC<
     [setUserHasModifiedSelection, setSelectedChainIds],
   );
 
-  const { defaultAccountGroupIds, defaultCaipAccountAddresses } =
-    useMemo(() => {
-      const connectedAccountGroupIds = Array.from(connectedAccountGroups).map(
-        (group) => group.id,
-      );
+  const defaultAccountGroupIds = useMemo(() => {
+    const connectedAccountGroupIds = Array.from(connectedAccountGroups).map(
+      (group) => group.id,
+    );
 
-      if (connectedAccountGroupIds.length) {
-        return {
-          defaultAccountGroupIds: connectedAccountGroupIds,
-          defaultCaipAccountAddresses: existingConnectedCaipAccountIds,
-        };
-      }
+    if (connectedAccountGroupIds.length) {
+      return connectedAccountGroupIds;
+    }
 
-      if (supportedAccountGroups.length > 0) {
-        return {
-          defaultAccountGroupIds: [supportedAccountGroups[0].id],
-          defaultCaipAccountAddresses: getCaip25AccountFromAccountGroupAndScope(
-            supportedAccountGroups,
-            requestedCaipChainIdsWithDefault,
-          ),
-        };
-      }
+    if (supportedAccountGroups.length > 0) {
+      return [supportedAccountGroups[0].id];
+    }
 
-      return {
-        defaultAccountGroupIds: [],
-        defaultCaipAccountAddresses: [],
-      };
-    }, [
-      connectedAccountGroups,
-      supportedAccountGroups,
-      existingConnectedCaipAccountIds,
-    ]);
+    return [];
+  }, [connectedAccountGroups, supportedAccountGroups]);
 
   const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(
     defaultAccountGroupIds,
   );
 
-  const [selectedCaipAccountAddresses, setSelectedCaipAccountAddresses] =
-    useState<CaipAccountId[]>(defaultCaipAccountAddresses);
+  const selectedCaipAccountAddresses = useMemo(() => {
+    const selectedAccountGroups = supportedAccountGroups.filter((group) =>
+      selectedAccountGroupIds.includes(group.id),
+    );
+
+    return getCaip25AccountFromAccountGroupAndScope(
+      selectedAccountGroups,
+      selectedChainIds,
+    );
+  }, [selectedAccountGroupIds, selectedChainIds, supportedAccountGroups]);
 
   const handleAccountGroupIdsSelected = useCallback(
     (
@@ -296,30 +280,14 @@ export const MultichainAccountsConnectPage: React.FC<
       }
       const updatedSelectedChains = [...selectedChainIds];
 
-      const updatedSelectedCaipAccountAddresses =
-        getCaip25AccountFromAccountGroupAndScope(
-          supportedAccountGroups,
-          selectedChainIds,
-        );
-
-      console.log(
-        'updatedSelectedCaipAccountAddresses',
-        updatedSelectedCaipAccountAddresses,
-      );
-
       handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
-      setSelectedCaipAccountAddresses(
-        Array.from(updatedSelectedCaipAccountAddresses),
-      );
     },
     [
       selectedChainIds,
       handleChainIdsSelected,
-      supportedAccountGroups,
       setUserHasModifiedSelection,
       setSelectedAccountGroupIds,
-      setSelectedCaipAccountAddresses,
     ],
   );
 
@@ -595,7 +563,6 @@ export const MultichainAccountsConnectPage: React.FC<
     </Page>
   ) : (
     <MultichainEditAccountsPage
-      displayChooseAccountPage={false}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
