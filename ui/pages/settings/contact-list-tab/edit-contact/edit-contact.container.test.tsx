@@ -4,8 +4,8 @@ import { Store } from 'redux';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
+import { CONTACT_EDIT_ROUTE } from '../../../../helpers/constants/routes';
 import EditContactContainer from './edit-contact.container';
-import {CONTACT_EDIT_ROUTE} from "../../../../helpers/constants/routes";
 
 const TEST_IDS = {
   NAME: 'address-book-edit-contact-name',
@@ -28,10 +28,6 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useParams: () => mockUseParams(),
 }));
 
-interface MockState {
-  [key: string]: unknown;
-}
-
 describe('Edit Contact Container', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -45,7 +41,7 @@ describe('Edit Contact Container', () => {
     mockUseParams.mockReturnValue({});
   });
 
-  const mockStore: Store = configureMockStore([thunk])(mockState as MockState);
+  const mockStore: Store = configureMockStore([thunk])(mockState);
 
   describe('Address extraction scenarios', () => {
     it('should extract address from pathname with provided address', () => {
@@ -62,15 +58,13 @@ describe('Edit Contact Container', () => {
         mockStore,
       );
 
-      expect((getByTestId(TEST_IDS.NAME) as HTMLInputElement).value).toStrictEqual(
-        MOCK_ADDRESS_NAME,
-      );
+      expect(
+        (getByTestId(TEST_IDS.NAME) as HTMLInputElement).value,
+      ).toStrictEqual(MOCK_ADDRESS_NAME);
       expect(
         (getByTestId(TEST_IDS.ADDRESS) as HTMLInputElement).value,
       ).toStrictEqual(MOCK_ADDRESS);
-      expect(getByTestId(TEST_IDS.NETWORK)).toHaveTextContent(
-        'Goerli',
-      );
+      expect(getByTestId(TEST_IDS.NETWORK)).toHaveTextContent('Goerli');
     });
 
     it('should use params.id when pathname does not contain address', () => {
@@ -89,15 +83,13 @@ describe('Edit Contact Container', () => {
         mockStore,
       );
 
-      expect((getByTestId(TEST_IDS.NAME) as HTMLInputElement).value).toStrictEqual(
-        MOCK_ADDRESS_NAME,
-      );
+      expect(
+        (getByTestId(TEST_IDS.NAME) as HTMLInputElement).value,
+      ).toStrictEqual(MOCK_ADDRESS_NAME);
       expect(
         (getByTestId(TEST_IDS.ADDRESS) as HTMLInputElement).value,
       ).toStrictEqual(MOCK_ADDRESS);
-      expect(getByTestId(TEST_IDS.NETWORK)).toHaveTextContent(
-        'Goerli',
-      );
+      expect(getByTestId(TEST_IDS.NETWORK)).toHaveTextContent('Goerli');
     });
 
     it('should lowercase address when extracted from pathname', () => {

@@ -4,8 +4,8 @@ import { Store } from 'redux';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import ViewContactContainer from './view-contact.container';
 import { CONTACT_VIEW_ROUTE } from '../../../../helpers/constants/routes';
+import ViewContactContainer from './view-contact.container';
 
 const TEST_IDS = {
   NAME: 'address-book-name',
@@ -27,10 +27,6 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useParams: () => mockUseParams(),
 }));
 
-interface MockState {
-  [key: string]: unknown;
-}
-
 describe('View Contact Container', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -43,7 +39,7 @@ describe('View Contact Container', () => {
     mockUseParams.mockReturnValue({});
   });
 
-  const mockStore: Store = configureMockStore([thunk])(mockState as MockState);
+  const mockStore: Store = configureMockStore([thunk])(mockState);
 
   describe('Address extraction scenarios', () => {
     it('should extract address from pathname when pathname tail contains 0x', () => {
@@ -70,9 +66,8 @@ describe('View Contact Container', () => {
     });
 
     it('should use params.id when pathname tail does not contain 0x', () => {
-      // Mock location with non-address pathname and address in params
       mockUseLocation.mockReturnValue({
-        pathname: '/settings/contacts/view/contact-name',
+        pathname: `${CONTACT_VIEW_ROUTE}/contact-name`,
         search: '',
         hash: '',
         state: null,
@@ -97,9 +92,8 @@ describe('View Contact Container', () => {
     it('should lowercase address when extracted from pathname', () => {
       const upperCaseAddress = '0xC42EDFCC21ED14DDA456AA0756C153F7985D8813';
 
-      // Mock location with uppercase address in pathname
       mockUseLocation.mockReturnValue({
-        pathname: `/settings/contacts/view/${upperCaseAddress}`,
+        pathname: `${CONTACT_VIEW_ROUTE}/${upperCaseAddress}`,
         search: '',
         hash: '',
         state: null,
