@@ -5,7 +5,9 @@ const {
   default: NetworkManager,
   NetworkId,
 } = require('../../page-objects/pages/network-manager');
-const { loginWithBalanceValidation } = require('../../page-objects/flows/login.flow');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -622,7 +624,12 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '85,000.00'
+        );
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
