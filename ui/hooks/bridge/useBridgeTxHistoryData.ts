@@ -56,9 +56,14 @@ export function useBridgeTxHistoryData({
   )
     ? undefined
     : () => {
-        navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`, {
-          state: { transactionGroup, isEarliestNonce },
-        });
+        navigate(
+          {
+            pathname: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
+          },
+          {
+            state: { transactionGroup, isEarliestNonce },
+          },
+        );
       };
 
   return {

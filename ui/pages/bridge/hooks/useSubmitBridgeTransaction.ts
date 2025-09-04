@@ -75,7 +75,10 @@ export default function useSubmitBridgeTransaction() {
     try {
       if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+        navigate(
+          { pathname: DEFAULT_ROUTE },
+          { state: { stayOnHomePage: true } }
+        );
         await dispatch(submitBridgeTx(quoteResponse, false));
         return;
       }
@@ -101,7 +104,7 @@ export default function useSubmitBridgeTransaction() {
     }
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+    navigate({ pathname: DEFAULT_ROUTE }, { state: { stayOnHomePage: true } });
   };
 
   return {
