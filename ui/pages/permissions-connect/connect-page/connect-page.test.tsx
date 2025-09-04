@@ -129,7 +129,7 @@ describe('ConnectPage', () => {
     });
 
     const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('g');
+    expect(divElement).toHaveTextContent('m');
   });
 
   it('should render fallback icon correctly for IP address as an origin', () => {

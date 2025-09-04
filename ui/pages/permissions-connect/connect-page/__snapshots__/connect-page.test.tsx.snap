@@ -50,7 +50,7 @@ exports[`ConnectPage should render correctly 1`] = `
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
             >
-              github.io
+              metamask.github.io
             </h2>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
@@ -391,7 +391,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
             >
-              github.io
+              metamask.github.io
             </h2>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
