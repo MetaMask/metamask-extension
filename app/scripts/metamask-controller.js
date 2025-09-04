@@ -3504,18 +3504,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
-      enableGatorPermissions:
-        gatorPermissionsController.enableGatorPermissions.bind(
-          gatorPermissionsController,
-        ),
-      disableGatorPermissions:
-        gatorPermissionsController.disableGatorPermissions.bind(
-          gatorPermissionsController,
-        ),
-      fetchAndUpdateGatorPermissions:
-        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
-          gatorPermissionsController,
-        ),
       ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
@@ -3875,6 +3863,20 @@ export default class MetamaskController extends EventEmitter {
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
       changePassword: this.changePassword.bind(this),
+
+      // GatorPermissionsController
+      enableGatorPermissions:
+        gatorPermissionsController.enableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      disableGatorPermissions:
+        gatorPermissionsController.disableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      fetchAndUpdateGatorPermissions:
+        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
