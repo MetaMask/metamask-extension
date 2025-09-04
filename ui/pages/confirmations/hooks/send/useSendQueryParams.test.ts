@@ -86,7 +86,7 @@ describe('useSendQueryParams', () => {
     expect(mockGetNativeAssetForChainId).toHaveBeenCalledWith('0x1');
   });
 
-  it('get asset details from state of ERC20 token if passed', () => {
+  it('get asset details from state for ERC20 token if passed', () => {
     const mockUpdateAsset = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateAsset: mockUpdateAsset,
@@ -155,12 +155,18 @@ describe('useSendQueryParams', () => {
     mockUseSearchParams.mockReturnValue([
       {
         get: (param: string) => {
-          return param === 'amount' ? '10' : undefined;
+          if (param === 'amount') {
+            return '10';
+          }
+          if (param === 'maxValueMode') {
+            return 'true';
+          }
+          return undefined;
         },
       },
     ] as unknown as [URLSearchParams, SetURLSearchParams]);
     renderHook();
-    expect(mockUpdateValue).toHaveBeenCalledWith('10');
+    expect(mockUpdateValue).toHaveBeenCalledWith('10', true);
   });
 
   it('does not update amount if it is already defined in send context', () => {
@@ -174,7 +180,7 @@ describe('useSendQueryParams', () => {
     expect(mockUpdateValue).not.toHaveBeenCalled();
   });
 
-  it('update amount if it is present in the params', () => {
+  it('update recipient if it is present in the params', () => {
     const mockUpdateTo = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateTo: mockUpdateTo,

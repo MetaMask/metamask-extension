@@ -156,6 +156,12 @@ import {
 } from '@metamask/multichain-api-middleware';
 
 import {
+  getCallsStatus,
+  getCapabilities,
+  processSendCalls,
+} from '@metamask/eip-5792-middleware';
+
+import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -407,11 +413,6 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import {
-  getCallsStatus,
-  getCapabilities,
-  processSendCalls,
-} from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
@@ -433,6 +434,7 @@ import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
+import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1968,6 +1970,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
+      ShieldController: ShieldControllerInit,
     };
 
     const {
@@ -2026,6 +2029,7 @@ export default class MetamaskController extends EventEmitter {
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
+    this.shieldController = controllersByName.ShieldController;
 
     this.getSecurityAlertsConfig = () => {
       return async (url) => {
@@ -2303,6 +2307,7 @@ export default class MetamaskController extends EventEmitter {
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
         PhishingController: this.phishingController,
+        ShieldController: this.shieldController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
