@@ -54,6 +54,7 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
 }));
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
+  ...jest.requireActual('../../../../shared/modules/selectors/networks'),
   getAllNetworkConfigurationsByCaipChainId: () => ({
     'eip155:1': {
       chainId: 'eip155:1',
@@ -66,6 +67,7 @@ jest.mock('../../../../shared/modules/selectors/networks', () => ({
 }));
 
 jest.mock('../../../selectors/multichain', () => ({
+  ...jest.requireActual('../../../selectors/multichain'),
   getMultichainNetwork: () => ({
     chainId: 'eip155:1',
     name: 'Ethereum Mainnet',
@@ -183,6 +185,7 @@ const render = (
   };
 
   const mockMultichainState = createMockMultichainAccountsState(
+    // @ts-expect-error - TODO: fix to match type
     mockAccountTreeState,
     mockInternalAccountsState,
     mockNetworkConfigurations,
