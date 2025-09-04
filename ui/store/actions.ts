@@ -7143,3 +7143,17 @@ export async function applyTransactionContainersExisting(
     [transactionId, containerTypes],
   );
 }
+
+export async function getLayer1GasFeeValue({
+  chainId,
+  networkClientId,
+  transactionParams,
+}: {
+  transactionParams: TransactionParams;
+  chainId?: Hex;
+  networkClientId?: NetworkClientId;
+}) {
+  return await submitRequestToBackground('getLayer1GasFee', [
+    { chainId, networkClientId, transactionParams },
+  ]);
+}
