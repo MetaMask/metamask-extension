@@ -77,7 +77,7 @@ export const useCurrencyConversions = () => {
     }
     const { nativeCurrency } = allNetworks[chainId as Hex];
     return currencyRates[nativeCurrency]?.conversionRate;
-  }, [allNetworks, asset, currencyRates]);
+  }, [allNetworks, asset, chainId, currencyRates]);
 
   const contractExchangeRates = useSelector(
     getCrossChainTokenExchangeRates,
@@ -88,6 +88,9 @@ export const useCurrencyConversions = () => {
   const conversionRate = useMemo(() => {
     if (!asset?.address) {
       return 0;
+    }
+    if ((asset as Asset)?.fiat?.conversionRate) {
+      return (asset as Asset)?.fiat?.conversionRate ?? 0;
     }
     if (isEvmAddress(asset?.address)) {
       if (isNativeAddress(asset?.address)) {

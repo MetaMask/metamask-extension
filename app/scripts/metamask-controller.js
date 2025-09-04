@@ -433,6 +433,7 @@ import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
+import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1969,6 +1970,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
+      ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
     };
 
@@ -2028,6 +2030,7 @@ export default class MetamaskController extends EventEmitter {
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
+    this.shieldController = controllersByName.ShieldController;
     this.gatorPermissionsController =
       controllersByName.GatorPermissionsController;
 
@@ -2308,6 +2311,7 @@ export default class MetamaskController extends EventEmitter {
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
         PhishingController: this.phishingController,
+        ShieldController: this.shieldController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },

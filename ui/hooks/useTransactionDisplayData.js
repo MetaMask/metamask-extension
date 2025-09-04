@@ -261,6 +261,8 @@ export function useTransactionDisplayData(transactionGroup) {
     token?.address,
     tokenDisplayValue,
     token?.symbol,
+    undefined,
+    true,
   );
 
   const origin = stripHttpSchemes(
