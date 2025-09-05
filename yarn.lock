@@ -7419,10 +7419,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.3.6":
-  version: 2.3.6
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.6"
-  checksum: 10/84ef57f5c570be398b3f1ea1a9e46dff3404ad3d7f1b0316d26534ef17c5a01a10b152a391457782673ddde4131cfc08750fb6d0dc3fe760c1d250f27521027d
+"@metamask/solana-wallet-snap@npm:^2.3.7":
+  version: 2.3.7
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.7"
+  checksum: 10/f063baf8eba5228affd496d0cfd0e35d123e2e587e25348b92a3e6e19ccbd5de8d980b59f8543fc23b92611d487bc5ef3ff3b25b3216c248619f94c3f1b49d3b
   languageName: node
   linkType: hard
 
@@ -31711,7 +31711,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A74.3.1#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.1-900afb3754.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
-    "@metamask/base-controller": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
     "@metamask/bridge-controller": "npm:^41.4.0"
     "@metamask/bridge-status-controller": "npm:^41.0.0"
@@ -31803,7 +31803,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.5.1"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.5.0"
-    "@metamask/solana-wallet-snap": "npm:^2.3.6"
+    "@metamask/solana-wallet-snap": "npm:^2.3.7"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
     "@metamask/superstruct": "npm:^3.2.1"
@@ -32046,6 +32046,7 @@ __metadata:
     postcss-loader: "npm:^8.1.1"
     postcss-rtlcss: "npm:^4.0.9"
     prettier: "npm:^3.6.2"
+    prettier-2: "npm:prettier@^2.8.8"
     prettier-eslint: "npm:^16.4.2"
     prettier-plugin-sort-json: "npm:^4.1.1"
     process: "npm:^0.11.10"
@@ -35477,6 +35478,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier-2@npm:prettier@^2.8.8, prettier@npm:^2.8.0":
+  version: 2.8.8
+  resolution: "prettier@npm:2.8.8"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 10/00cdb6ab0281f98306cd1847425c24cbaaa48a5ff03633945ab4c701901b8e96ad558eb0777364ffc312f437af9b5a07d0f45346266e8245beaf6247b9c62b24
+  languageName: node
+  linkType: hard
+
 "prettier-eslint@npm:^16.4.2":
   version: 16.4.2
   resolution: "prettier-eslint@npm:16.4.2"
@@ -35520,15 +35530,6 @@ __metadata:
   peerDependencies:
     prettier: ^3.0.0
   checksum: 10/ac39fcf1ed5aedb93d92609c07832c2fb787431dc29ff5d9d1b4ff59cd00bbeabc753867500ce38f2d45200be0c411623ebca95f983e938b20da00e2717c5336
-  languageName: node
-  linkType: hard
-
-"prettier@npm:^2.8.0":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
-  bin:
-    prettier: bin-prettier.js
-  checksum: 10/00cdb6ab0281f98306cd1847425c24cbaaa48a5ff03633945ab4c701901b8e96ad558eb0777364ffc312f437af9b5a07d0f45346266e8245beaf6247b9c62b24
   languageName: node
   linkType: hard
 

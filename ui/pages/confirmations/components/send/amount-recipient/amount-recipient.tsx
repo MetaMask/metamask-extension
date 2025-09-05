@@ -43,6 +43,7 @@ export const AmountRecipient = () => {
             flexDirection={FlexDirection.Column}
             justifyContent={JustifyContent.spaceBetween}
             className="send__body"
+            padding={4}
           >
             <Box>
               <Recipient setTo={setTo} />
