@@ -11,14 +11,14 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 import {
   Box,
   Icon,
   IconName,
   IconSize,
   Text,
-} from '../../../component-library';
+} from '../../../../component-library';
 
 export const PermissionListItem = ({ total, name, onClick }) => {
   return (

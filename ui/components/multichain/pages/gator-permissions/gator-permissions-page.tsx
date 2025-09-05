@@ -116,12 +116,12 @@ export const GatorPermissionsPage = () => {
         <PermissionListItem
           total={totalTokenStreamsPermissions}
           name={t('tokenStreams')}
-          onClick={() => handleAssetClick('token-streams')}
+          onClick={() => handleAssetClick('token-transfers')}
         />
         <PermissionListItem
           total={totalTokenSubscriptionsPermissions}
           name={t('tokenSubscriptions')}
-          onClick={() => handleAssetClick('token-subscriptions')}
+          onClick={() => handleAssetClick('token-transfers')}
         />
       </Box>
     );
