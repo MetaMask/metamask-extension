@@ -1,0 +1,241 @@
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { type AccountGroupId } from '@metamask/account-api';
+import { CaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  Display,
+  FlexDirection,
+  TextVariant,
+  TextColor,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
+import {
+  Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Text,
+  TextField,
+  TextFieldSize,
+  TextFieldType,
+} from '../../component-library';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
+import {
+  getInternalAccountListSpreadByScopesByGroupId,
+  getInternalAccountsFromGroupById,
+} from '../../../selectors/multichain-accounts/account-tree';
+import { verifyPassword, exportAccounts } from '../../../store/actions';
+
+/**
+ * Check if the account has the private key available according to its keyring type.
+ * TODO: Add support for KeyringTypes.snap
+ *
+ * @param account - The internal account to check.
+ * @returns True if the private key is available, false otherwise.
+ */
+const hasPrivateKeyAvailable = (account: InternalAccount) =>
+  account.metadata.keyring.type === KeyringTypes.hd ||
+  account.metadata.keyring.type === KeyringTypes.simple;
+
+export type MultichainPrivateKeyListProps = {
+  /**
+   * The account group ID.
+   */
+  groupId: AccountGroupId;
+};
+
+const MultichainPrivateKeyList = ({
+  groupId,
+}: MultichainPrivateKeyListProps) => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const [password, setPassword] = useState<string>('');
+  const [wrongPassword, setWrongPassword] = useState<boolean>(false);
+  const [reveal, setReveal] = useState<boolean>(false);
+  const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
+
+  useEffect(
+    () => () => {
+      console.log('unmounting');
+      // Clean state variables on unmount
+      setPrivateKeys({});
+      setPassword('');
+      setWrongPassword(false);
+      setReveal(false);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    console.log('Password changed:', password);
+  }, [password]);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, handleCopy] = useCopyToClipboard();
+
+  const accountsSpreadByNetworkByGroupId = useSelector((state) =>
+    getInternalAccountListSpreadByScopesByGroupId(state, groupId),
+  );
+
+  const accounts = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, groupId),
+  );
+
+  const handlePasswordChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log({ password });
+      console.log(e.target.value);
+      setPassword(e.target.value);
+      console.log({ password });
+    },
+    [setPassword, password],
+  );
+
+  const validatePassword = useCallback(async () => {
+    console.log('Password in validatePassword:', password); // Add this log
+    try {
+      await verifyPassword(password);
+      setWrongPassword(false);
+      setReveal(true);
+    } catch (error) {
+      setWrongPassword(true);
+      setReveal(false);
+    }
+  }, [password]);
+
+  const unlockPrivateKeys = useCallback(async () => {
+    const pkAccounts = accounts.filter((account: InternalAccount) =>
+      hasPrivateKeyAvailable(account),
+    );
+
+    const addresses = pkAccounts.map((account) => account.address);
+
+    const pks = (await dispatch(
+      exportAccounts(password, addresses),
+    )) as unknown as string[];
+
+    const privateKeyMap = await addresses.reduce(
+      (acc, address, index) => {
+        acc[address] = pks[index];
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+    console.log(privateKeyMap);
+
+    setPrivateKeys(privateKeyMap);
+  }, [accounts, dispatch, password]);
+
+  const onSubmit = useCallback(() => {
+    validatePassword();
+    unlockPrivateKeys();
+  }, [validatePassword, unlockPrivateKeys]);
+
+  const renderPasswordInput = useMemo(() => {
+    console.log('renderPasswordInput');
+    return (
+      <Box paddingTop={8} paddingBottom={4}>
+        <Box>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+            {t('enterYourPassword')}
+          </Text>
+          <TextField
+            type={TextFieldType.Password}
+            placeholder={t('password')}
+            size={TextFieldSize.Lg}
+            value={password}
+            onChange={handlePasswordChange}
+            error={wrongPassword}
+            width={BlockSize.Full}
+          />
+          {wrongPassword ? (
+            <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+              {t('wrongPassword')}
+            </Text>
+          ) : null}
+        </Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          gap={4}
+          paddingBottom={2}
+          paddingTop={8}
+        >
+          <Button
+            block
+            data-testid="confirm-footer-cancel-button"
+            onClick={() => console.log('what')}
+            size={ButtonSize.Lg}
+            variant={ButtonVariant.Secondary}
+          >
+            {t('cancel')}
+          </Button>
+          <Button
+            block
+            data-testid="confirm-footer-cancel-button"
+            onClick={onSubmit}
+            size={ButtonSize.Lg}
+            variant={ButtonVariant.Primary}
+          >
+            {t('confirm')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }, [handlePasswordChange, onSubmit, password, t, wrongPassword]);
+
+  const renderAddressItem = useCallback(
+    (
+      item: {
+        scope: CaipChainId;
+        account: InternalAccount;
+        networkName: string;
+      },
+      index: number,
+    ): React.JSX.Element => {
+      const privatekey = privateKeys[item.account.address];
+      if (!privatekey) {
+        return <></>;
+      }
+      const handleCopyClick = () => {
+        handleCopy(privatekey);
+      };
+
+      return (
+        <MultichainAddressRow
+          key={`${item.account.address}-${item.scope}-${index}`}
+          chainId={item.scope}
+          networkName={item.networkName}
+          address={item.account.address}
+          copyActionParams={{
+            message: t('multichainAccountPrivateKeyCopied'),
+            callback: handleCopyClick,
+          }}
+        />
+      );
+    },
+    [handleCopy, privateKeys, t],
+  );
+
+  const renderedRows = useMemo(() => {
+    return accountsSpreadByNetworkByGroupId.map((item, index) =>
+      renderAddressItem(item, index),
+    );
+  }, [accountsSpreadByNetworkByGroupId, renderAddressItem]);
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      data-testid="multichain-private-keyring-list"
+    >
+      {reveal ? renderedRows : renderPasswordInput}
+    </Box>
+  );
+};
+
+export { MultichainPrivateKeyList };

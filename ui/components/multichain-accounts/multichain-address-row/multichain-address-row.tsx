@@ -22,9 +22,30 @@ import {
   Text,
 } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+
+type CopyParams = {
+  /**
+   * Message to display when the copy callback is executed
+   */
+  message: string;
+  /**
+   * Callback function to execute when the copy action is triggered
+   */
+  callback: () => void;
+};
+
+type QrParams = {
+  /**
+   * Callback function to execute when the QR code action is triggered
+   */
+  callback: (
+    address: string,
+    networkName: string,
+    networkImageSrc?: string,
+  ) => void;
+};
 
 type MultichainAddressRowProps = {
   /**
@@ -40,28 +61,27 @@ type MultichainAddressRowProps = {
    */
   address: string;
   /**
+   * Copy parameters for the address
+   */
+  copyActionParams: CopyParams;
+  /**
+   * QR code parameters for the address
+   */
+  qrActionParams?: QrParams;
+  /**
    * Optional className for additional styling
    */
   className?: string;
-  /**
-   * Callback for when QR code button is clicked
-   */
-  onQrClick: (
-    address: string,
-    networkName: string,
-    networkImageSrc?: string,
-  ) => void;
 };
 
 export const MultichainAddressRow = ({
   chainId,
   networkName,
   address,
+  copyActionParams,
+  qrActionParams,
   className = '',
-  onQrClick,
 }: MultichainAddressRowProps) => {
-  const [copied, handleCopy] = useCopyToClipboard();
-
   // We're mixing hex with caip chain ids so its necessary
   // to use the hex format for EVMs and caip for non EVMs.
   const networkImageSrc = getImageForChainId(
@@ -71,12 +91,8 @@ export const MultichainAddressRow = ({
   );
   const truncatedAddress = shortenAddress(address);
 
-  const handleCopyClick = () => {
-    handleCopy(address);
-  };
-
   const handleQrClick = () => {
-    onQrClick?.(address, networkName, networkImageSrc);
+    qrActionParams?.callback(address, networkName, networkImageSrc);
   };
 
   return (
@@ -128,22 +144,24 @@ export const MultichainAddressRow = ({
       {/* Action buttons */}
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={4}>
         <ButtonIcon
-          iconName={copied ? IconName.CopySuccess : IconName.Copy}
+          iconName={IconName.Copy}
           size={ButtonIconSize.Md}
-          onClick={handleCopyClick}
+          onClick={copyActionParams.callback}
           ariaLabel="Copy address"
           color={IconColor.iconDefault}
           data-testid="multichain-address-row-copy-button"
         />
 
-        <ButtonIcon
-          iconName={IconName.QrCode}
-          size={ButtonIconSize.Md}
-          onClick={handleQrClick}
-          ariaLabel="Show QR code"
-          color={IconColor.iconDefault}
-          data-testid="multichain-address-row-qr-button"
-        />
+        {qrActionParams ? (
+          <ButtonIcon
+            iconName={IconName.QrCode}
+            size={ButtonIconSize.Md}
+            onClick={handleQrClick}
+            ariaLabel="Show QR code"
+            color={IconColor.iconDefault}
+            data-testid="multichain-address-row-qr-button"
+          />
+        ) : null}
       </Box>
     </Box>
   );

@@ -32,6 +32,7 @@ import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accoun
 import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
@@ -61,6 +62,12 @@ export const MultichainAccountDetailsPage = () => {
   const handleAddressesClick = () => {
     history.push(
       `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+    );
+  };
+
+  const handlePrivateKeysClick = () => {
+    history.push(
+      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );
   };
 
@@ -125,6 +132,7 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('privateKeys')}
             value={t('unlockToReveal')}
+            onClick={handlePrivateKeysClick}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
