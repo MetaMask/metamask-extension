@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   TextField,
@@ -19,28 +19,33 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../shared/lib/translate';
-import { getToAccounts, getToChain } from '../../../../ducks/bridge/selectors';
+import { setToAccount } from '../../../../ducks/bridge/actions';
+import {
+  getToAccount,
+  getToAccounts,
+  getToChain,
+} from '../../../../ducks/bridge/selectors';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
-import type { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
+import { DestinationAccount } from '../../../../ducks/bridge/types';
 
-type DestinationAccountPickerProps = {
-  onAccountSelect: (account: DestinationAccount | null) => void;
-  selectedSwapToAccount: DestinationAccount | null;
-};
+export const DestinationAccountPicker = () => {
+  const dispatch = useDispatch();
 
-export const DestinationAccountPicker = ({
-  onAccountSelect,
-  selectedSwapToAccount,
-}: DestinationAccountPickerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const accounts = useSelector(getToAccounts);
+  const selectedSwapToAccount: DestinationAccount | null =
+    useSelector(getToAccount);
+
   const toChain = useSelector(getToChain);
-  const isDestinationSolana = toChain?.chainId
-    ? isSolanaChainId(toChain.chainId)
-    : false;
+  const isDestinationSolana = useMemo(() => {
+    if (!toChain?.chainId) {
+      return false;
+    }
+    return isSolanaChainId(toChain.chainId);
+  }, [toChain?.chainId]);
 
   const externalAccount = useExternalAccountResolution({
     searchQuery,
@@ -90,7 +95,7 @@ export const DestinationAccountPicker = ({
         </Box>
         <Box className="deselect-button-container" paddingRight={5}>
           <Button
-            onClick={() => onAccountSelect(null)}
+            onClick={() => dispatch(setToAccount(null))}
             aria-label="Deselect account"
             variant={ButtonVariant.Link}
             size={ButtonSize.Sm}
@@ -175,13 +180,11 @@ export const DestinationAccountPicker = ({
           <DestinationAccountListItem
             key={account.id}
             account={account}
-            onClick={() => onAccountSelect(account)}
+            onClick={() => dispatch(setToAccount(account))}
             selected={
               selectedSwapToAccount
                 ? account.address.toLowerCase() ===
-                  (
-                    selectedSwapToAccount as DestinationAccount
-                  ).address.toLowerCase()
+                  selectedSwapToAccount?.address.toLowerCase()
                 : false
             }
           />
@@ -190,7 +193,12 @@ export const DestinationAccountPicker = ({
           <ExternalAccountListItem
             key="external-account"
             account={externalAccount}
-            onClick={() => onAccountSelect(externalAccount)}
+            selected={Boolean(
+              selectedSwapToAccount &&
+                selectedSwapToAccount?.address.toLowerCase() ===
+                  externalAccount.address.toLowerCase(),
+            )}
+            onClick={() => dispatch(setToAccount(externalAccount))}
           />
         )}
 

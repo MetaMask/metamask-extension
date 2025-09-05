@@ -25,6 +25,7 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isTxAlertPresent,
+    isToAccountValid,
   } = useSelector(getValidationErrors);
 
   return Boolean(
@@ -34,6 +35,7 @@ export const useIsTxSubmittable = () => {
       (isSwap || toChain) &&
       fromAmount &&
       activeQuote &&
+      !isToAccountValid &&
       !isInsufficientBalance &&
       !isInsufficientGasBalance &&
       !isInsufficientGasForQuote &&

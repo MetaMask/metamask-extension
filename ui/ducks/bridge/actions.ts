@@ -43,6 +43,7 @@ const {
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
+  setToAccount,
 } = bridgeSlice.actions;
 
 export {
@@ -59,6 +60,7 @@ export {
   setWasTxDeclined,
   setSlippage,
   setTxAlerts,
+  setToAccount,
   setEVMSrcNativeBalance,
 };
 

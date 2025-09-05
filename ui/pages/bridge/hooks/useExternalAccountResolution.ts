@@ -1,8 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// eslint-disable-next-line import/no-restricted-paths
-import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
-import type { ExternalDestinationAccount } from '../prepare/types';
+import { Hex, isValidHexAddress } from '@metamask/utils';
 import {
   getDomainResolutions,
   initializeDomainSlice,
@@ -20,7 +18,7 @@ type UseExternalAccountResolutionProps = {
 export const useExternalAccountResolution = ({
   searchQuery,
   isDestinationSolana,
-}: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
+}: UseExternalAccountResolutionProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
 
@@ -34,7 +32,7 @@ export const useExternalAccountResolution = ({
     if (
       isDestinationSolana
         ? isSolanaAddress(trimmedQuery)
-        : isEthAddress(trimmedQuery)
+        : isValidHexAddress(trimmedQuery as Hex)
     ) {
       return trimmedQuery;
     }
@@ -64,11 +62,14 @@ export const useExternalAccountResolution = ({
     if (!resolvedAddress || internalAccount) {
       return null;
     }
-    return {
+
+    const externalAccount = {
       address: resolvedAddress,
       isExternal: true,
-      type: 'any:account' as const,
+      type: 'eip155:eoa' as const,
       displayName: validEnsName ?? t('externalAccount'),
     };
+
+    return externalAccount;
   }, [validEnsName, resolvedAddress, internalAccount]);
 };

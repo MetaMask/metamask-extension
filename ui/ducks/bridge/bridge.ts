@@ -14,7 +14,12 @@ import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import type {
+  BridgeState,
+  ChainIdPayload,
+  TokenPayload,
+  DestinationAccount,
+} from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -31,6 +36,7 @@ const initialState: BridgeState = {
   wasTxDeclined: false,
   slippage: BRIDGE_DEFAULT_SLIPPAGE,
   txAlert: null,
+  toAccount: null,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -95,14 +101,25 @@ export const setEVMSrcTokenBalance = createAsyncThunk(
 
 const bridgeSlice = createSlice({
   name: 'bridge',
-  initialState: { ...initialState },
+  initialState,
   reducers: {
-    setToChainId: (state, { payload }: ChainIdPayload) => {
-      state.toChainId = payload ? formatChainIdToCaip(payload) : null;
+    setToChainId: (state, action: ChainIdPayload) => {
+      const newToChainIdInCaip = action.payload
+        ? formatChainIdToCaip(action.payload)
+        : null;
+      state.toChainId = newToChainIdInCaip;
       state.toToken = null;
+      // If there is a toAccount selection, unset if it's not compatible with the new toChain
+      const isToAccountCompatibleWithToChain =
+        newToChainIdInCaip &&
+        state.toAccount &&
+        state.toAccount.type.split(':')[0] === newToChainIdInCaip.split(':')[0];
+      if (!isToAccountCompatibleWithToChain) {
+        state.toAccount = null;
+      }
     },
-    setFromToken: (state, { payload }: TokenPayload) => {
-      state.fromToken = toBridgeToken(payload);
+    setFromToken: (state, action: TokenPayload) => {
+      state.fromToken = toBridgeToken(action.payload);
       state.fromTokenBalance = null;
       // Unset toToken if it's the same as the fromToken
       if (
@@ -114,8 +131,8 @@ const bridgeSlice = createSlice({
         state.toToken = null;
       }
     },
-    setToToken: (state, { payload }: TokenPayload) => {
-      const toToken = toBridgeToken(payload);
+    setToToken: (state, action: TokenPayload) => {
+      const toToken = toBridgeToken(action.payload);
       state.toToken = toToken
         ? {
             ...toToken,
@@ -133,13 +150,11 @@ const bridgeSlice = createSlice({
           : true)
       ) {
         state.toChainId = formatChainIdToCaip(toToken.chainId);
+        state.toAccount = null;
       }
     },
-    setFromTokenInputValue: (
-      state,
-      { payload }: { payload: string | null },
-    ) => {
-      state.fromTokenInputValue = payload;
+    setFromTokenInputValue: (state, action: { payload: string | null }) => {
+      state.fromTokenInputValue = action.payload;
     },
     resetInputFields: () => ({
       ...initialState,
@@ -155,6 +170,9 @@ const bridgeSlice = createSlice({
     },
     setSlippage: (state, action) => {
       state.slippage = action.payload;
+    },
+    setToAccount: (state, action: { payload: DestinationAccount | null }) => {
+      state.toAccount = action.payload;
     },
   },
   extraReducers: (builder) => {

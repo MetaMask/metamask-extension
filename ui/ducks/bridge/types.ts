@@ -1,4 +1,5 @@
 import type { Hex, CaipChainId, CaipAssetType } from '@metamask/utils';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type QuoteMetadata,
   type QuoteResponse,
@@ -16,11 +17,35 @@ export type BridgeToken = {
   decimals: number;
   chainId: number | Hex | ChainId | CaipChainId;
   balance: string; // raw balance
-  // TODO deprecate this field and use balance instead
-  string: string | undefined; // normalized balance as a stringified number
+  /**
+   * @deprecated Use balance property instead
+   *
+   * normalized balance as a stringified number
+   */
+  string: string | undefined;
   tokenFiatAmount?: number | null;
   occurrences?: number;
   aggregators?: string[];
+};
+
+/**
+ * Destination accounts are the accounts that the user can select to swap to
+ * These can be either
+ *   - Internal destination accounts are part of the user's internal account tree. This is populated by the getToAccount selector
+ *   - External destination accounts are not part of the user's internal account tree,
+ *     and are typically ENS domains or other external accounts. This is populated by the
+ *     useExternalAccountResolution hook
+ */
+export type DestinationAccount = {
+  address: InternalAccount['address'];
+  type: InternalAccount['type'];
+  isExternal: boolean;
+  /**
+   * This is used to display the account name in the account picker
+   * If the account is external, this is the ENS domain name, or a placeholder label
+   * If the account is internal, this is the name of the account group that the account belongs to
+   */
+  displayName: string;
 };
 
 export type BridgeState = {
@@ -43,6 +68,7 @@ export type BridgeState = {
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
   txAlert: TxAlert | null;
+  toAccount: DestinationAccount | null;
 };
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };

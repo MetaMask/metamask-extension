@@ -54,6 +54,7 @@ import {
   getIsSwap,
   BridgeAppState,
   getTxAlerts,
+  getToAccount,
   getFromAccount,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -109,7 +110,6 @@ import {
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
-import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
@@ -258,8 +258,7 @@ const PrepareBridgePage = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { tokenAlert } = useTokenAlerts();
-  const { selectedDestinationAccount, setSelectedDestinationAccount } =
-    useDestinationAccount();
+  const selectedDestinationAccount = useSelector(getToAccount);
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
@@ -737,10 +736,7 @@ const PrepareBridgePage = ({
 
           {isToOrFromSolana && (
             <Box padding={6} paddingBottom={3} paddingTop={3}>
-              <DestinationAccountPicker
-                onAccountSelect={setSelectedDestinationAccount}
-                selectedSwapToAccount={selectedDestinationAccount}
-              />
+              <DestinationAccountPicker />
             </Box>
           )}
 
@@ -818,9 +814,6 @@ const PrepareBridgePage = ({
                       security_warnings: [], // TODO populate security warnings
                     });
                   }}
-                  needsDestinationAddress={
-                    isToOrFromSolana && !selectedDestinationAccount
-                  }
                 />
                 {activeQuote &&
                 activeQuote.approval &&
