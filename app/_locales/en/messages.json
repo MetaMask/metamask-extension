@@ -5203,6 +5203,9 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchAnAcccountOrContact": {
+    "message": "Search an account or contact"
+  },
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
   },
@@ -5374,6 +5377,9 @@
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
+  },
+  "selectRecipient": {
+    "message": "Select recipient"
   },
   "selectRpcUrl": {
     "message": "Select RPC URL"
