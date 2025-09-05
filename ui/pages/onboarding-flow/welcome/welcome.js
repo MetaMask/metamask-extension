@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
@@ -34,19 +33,10 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import WelcomeLogin from './welcome-login';
-import WelcomeBanner from './welcome-banner';
-import {
-  LOGIN_ERROR,
-  LOGIN_OPTION,
-  LOGIN_TYPE,
-  WelcomePageState,
-} from './types';
+import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
 
-export default function OnboardingWelcome({
-  pageState = WelcomePageState.Banner,
-  setPageState,
-}) {
+export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -365,13 +355,7 @@ export default function OnboardingWelcome({
 
   return (
     <>
-      {pageState === WelcomePageState.Banner && (
-        <WelcomeBanner onAccept={() => setPageState(WelcomePageState.Login)} />
-      )}
-
-      {pageState === WelcomePageState.Login && (
-        <WelcomeLogin onLogin={handleLogin} />
-      )}
+      <WelcomeLogin onLogin={handleLogin} />
 
       {isLoggingIn && <LoadingScreen />}
 
@@ -384,8 +368,3 @@ export default function OnboardingWelcome({
     </>
   );
 }
-
-OnboardingWelcome.propTypes = {
-  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
-  setPageState: PropTypes.func.isRequired,
-};
