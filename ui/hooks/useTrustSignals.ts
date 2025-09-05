@@ -11,6 +11,7 @@ export type UseTrustSignalRequest = {
 };
 
 export enum TrustSignalDisplayState {
+  Loading = 'loading',
   Malicious = 'malicious',
   Petname = 'petname',
   Verified = 'verified',
@@ -37,6 +38,14 @@ export function useTrustSignals(
   return useSelector((state) =>
     requests.map(({ value, type }) => {
       if (type !== NameType.ETHEREUM_ADDRESS) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      // If no value/address provided, return Unknown (nothing to check)
+      if (!value) {
         return {
           state: TrustSignalDisplayState.Unknown,
           label: null,
@@ -74,6 +83,8 @@ function getTrustState(
   }
 
   switch (securityAlertResponse.result_type) {
+    case ResultType.Loading:
+      return TrustSignalDisplayState.Loading;
     case ResultType.Malicious:
       return TrustSignalDisplayState.Malicious;
     case ResultType.Warning:

@@ -3,6 +3,7 @@ import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
   AddAddressSecurityAlertResponse,
   GetAddressSecurityAlertResponse,
+  ResultType,
   ScanAddressRequest,
   ScanAddressResponse,
   SupportedEVMChain,
@@ -53,11 +54,30 @@ export async function scanAddressAndAddToCache(
   chainId: SupportedEVMChain,
 ): Promise<ScanAddressResponse> {
   const cachedResponse = getAddressSecurityAlertResponse(address);
-  if (cachedResponse) {
+  if (cachedResponse && cachedResponse.result_type !== ResultType.Loading) {
     return cachedResponse;
   }
 
-  const result = await scanAddress(chainId, address);
-  addAddressSecurityAlertResponse(address, result);
-  return result;
+  const loadingResponse: ScanAddressResponse = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: ResultType.Loading,
+    label: '',
+  };
+  addAddressSecurityAlertResponse(address, loadingResponse);
+
+  try {
+    const result = await scanAddress(chainId, address);
+    addAddressSecurityAlertResponse(address, result);
+    return result;
+  } catch (error) {
+    const errorResponse: ScanAddressResponse = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.ErrorResult,
+      label: '',
+    };
+    addAddressSecurityAlertResponse(address, errorResponse);
+    throw error;
+  }
 }
