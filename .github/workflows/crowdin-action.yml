@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
