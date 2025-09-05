@@ -510,6 +510,9 @@
   "alertReasonOriginTrustSignalMalicious": {
     "message": "Malicious site"
   },
+  "alertReasonOriginTrustSignalVerified": {
+    "message": "Verified site"
+  },
   "alertReasonOriginTrustSignalWarning": {
     "message": "Suspicious site"
   },
