@@ -65,6 +65,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     },
     accounts: [mockEvmAccount1, mockSolAccount1],
+    walletName: 'Test Wallet 1',
   },
   {
     id: MOCK_GROUP_ID_2,
@@ -78,6 +79,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     },
     accounts: [mockEvmAccount2, mockSolAccount2],
+    walletName: 'Test Wallet 1',
   },
 ];
 
