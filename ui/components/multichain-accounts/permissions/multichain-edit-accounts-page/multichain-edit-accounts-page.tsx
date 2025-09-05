@@ -39,7 +39,7 @@ type MultichainEditAccountsPageProps = {
 export const MultichainEditAccountsPage: React.FC<
   MultichainEditAccountsPageProps
 > = ({
-  title = 'editAccounts',
+  title,
   defaultSelectedAccountGroups,
   supportedAccountGroups,
   onSubmit,
@@ -145,7 +145,7 @@ export const MultichainEditAccountsPage: React.FC<
           variant: TextVariant.headingSm,
         }}
       >
-        {t(title)}
+        {title ?? t('editAccounts')}
       </Header>
       <Content
         paddingLeft={4}
