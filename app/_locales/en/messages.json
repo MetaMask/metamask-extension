@@ -1595,7 +1595,13 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Use this for wallet recovery on all devices."
+    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
+  },
+  "createPasswordDetailsSocialReset": {
+    "message": "MetaMask can't reset it."
+  },
+  "createPasswordMarketing": {
+    "message": "Get product updates, tips, and news including by email. We may use your interactions to improve what we share."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."

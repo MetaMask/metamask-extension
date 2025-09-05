@@ -41,7 +41,9 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
+  setParticipateInMetaMetrics,
   setTermsOfUseLastAgreed,
+  setDataCollectionForMarketing,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -221,6 +223,11 @@ export default function OnboardingFlow() {
         retrievedSecretRecoveryPhrase = await dispatch(
           unlockAndGetSeedPhrase(password),
         );
+      }
+
+      if (isSocialLogin) {
+        await dispatch(setParticipateInMetaMetrics(true));
+        await dispatch(setDataCollectionForMarketing(true));
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
