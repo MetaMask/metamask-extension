@@ -35,6 +35,9 @@ class SwapPage {
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
+  private readonly bridgeSourceTokenButton =
+    '[data-testid="prepare-swap-page-swap-from"]';
+
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
 
@@ -141,6 +144,20 @@ class SwapPage {
     console.log('Entering swap amount');
     const stxToggle = await this.driver.findElement(this.swapAmount);
     stxToggle.sendKeys(amount);
+  }
+
+  async selectSourceToken(sourceToken: string): Promise<void> {
+    console.log('Click source token button');
+    await this.driver.clickElement(this.bridgeSourceTokenButton);
+    // click element wth test-id searchable-item-list-primary-label and text sourceToken
+    await this.driver.waitForSelector({
+      css: '[data-testid="searchable-item-list-primary-label"]',
+      text: sourceToken,
+    });
+    await this.driver.clickElement({
+      css: '[data-testid="searchable-item-list-primary-label"]',
+      text: sourceToken,
+    });
   }
 
   async selectDestinationToken(destinationToken: string): Promise<void> {
