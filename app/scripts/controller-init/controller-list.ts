@@ -46,10 +46,12 @@ import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-contr
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
+import { ShieldController } from '@metamask/shield-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
+import { NetworkOrderController } from '../controllers/network-order';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -69,6 +71,7 @@ export type Controller =
   | MultichainTransactionsController
   | MultichainNetworkController
   | NetworkController
+  | NetworkOrderController
   | NotificationServicesController
   | NotificationServicesPushController
   | OnboardingController
@@ -80,6 +83,7 @@ export type Controller =
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
   | SeedlessOnboardingController<EncryptionKey>
+  | ShieldController
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
@@ -114,6 +118,7 @@ export type ControllerFlatState = AccountsController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
   NetworkController['state'] &
+  NetworkOrderController['state'] &
   OnboardingController['state'] &
   PermissionController<
     PermissionSpecificationConstraint,
@@ -122,6 +127,7 @@ export type ControllerFlatState = AccountsController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
+  ShieldController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &

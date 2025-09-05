@@ -10,11 +10,6 @@ import {
   ButtonVariant,
 } from '../../../../components/component-library';
 import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  isSolanaAccount,
-} from '../../../../selectors';
-import {
   BlockSize,
   Display,
   FlexDirection,
@@ -25,19 +20,24 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../shared/lib/translate';
 import { setToAccount } from '../../../../ducks/bridge/actions';
-import { getToAccount, getToChain } from '../../../../ducks/bridge/selectors';
+import {
+  getToAccount,
+  getToAccounts,
+  getToChain,
+} from '../../../../ducks/bridge/selectors';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
+import { DestinationAccount } from '../../../../ducks/bridge/types';
 
 export const DestinationAccountPicker = () => {
   const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const accounts = useSelector(getInternalAccounts);
-  const selectedSwapToAccount = useSelector(getToAccount);
+  const accounts = useSelector(getToAccounts);
+  const selectedSwapToAccount: DestinationAccount | null =
+    useSelector(getToAccount);
 
   const toChain = useSelector(getToChain);
   const isDestinationSolana = useMemo(() => {
@@ -47,32 +47,27 @@ export const DestinationAccountPicker = () => {
     return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
-  const { externalAccount } = useExternalAccountResolution({
+  const externalAccount = useExternalAccountResolution({
     searchQuery,
     isDestinationSolana,
-    accounts,
   });
 
   const filteredAccounts = useMemo(
     () =>
       accounts.filter((account) => {
-        const matchesSearchByName = account.metadata.name
+        const matchesSearchByName = account.displayName
           .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+          .includes(searchQuery.trim().toLowerCase());
 
         const matchesSearchByAddress = account.address
           .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+          .includes(searchQuery.trim().toLowerCase());
 
         const matchesSearch = matchesSearchByName || matchesSearchByAddress;
 
-        const matchesChain = isDestinationSolana
-          ? isSolanaAccount(account)
-          : !isSolanaAccount(account);
-
-        return matchesSearch && matchesChain;
+        return matchesSearch;
       }),
-    [accounts, isDestinationSolana, searchQuery],
+    [accounts, searchQuery],
   );
 
   if (selectedSwapToAccount) {
@@ -96,13 +91,7 @@ export const DestinationAccountPicker = () => {
           width={BlockSize.Full}
           style={{ flex: 1, minWidth: 0 }}
         >
-          <DestinationSelectedAccountListItem
-            account={selectedSwapToAccount}
-            // @ts-expect-error: Type mismatch between InternalAccount and expected account type - functionality works but needs type alignment
-            isSelected={selectedSwapToAccount.id === selectedAccount?.id}
-            showOptions={false}
-            disableHover
-          />
+          <DestinationSelectedAccountListItem account={selectedSwapToAccount} />
         </Box>
         <Box className="deselect-button-container" paddingRight={5}>
           <Button
@@ -153,15 +142,14 @@ export const DestinationAccountPicker = () => {
         }}
       >
         <TextField
-          // @ts-expect-error: TextField component expects different props than provided - works but needs type update
           placeholder={
-            isDestinationSolana
+            (isDestinationSolana
               ? t('destinationAccountPickerSearchPlaceholderToSolana')
-              : t('destinationAccountPickerSearchPlaceholderToMainnet')
+              : t('destinationAccountPickerSearchPlaceholderToMainnet')) ??
+            undefined
           }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          clearButtonOnClick={() => setSearchQuery('')}
           className="text-field-search"
           style={{
             width: '98%',
@@ -193,9 +181,12 @@ export const DestinationAccountPicker = () => {
             key={account.id}
             account={account}
             onClick={() => dispatch(setToAccount(account))}
-            // @ts-expect-error: Type mismatch in isSelected prop between InternalAccount and component expectations
-            isSelected={account.id === selectedSwapToAccount?.id}
-            showOptions={false}
+            selected={
+              selectedSwapToAccount
+                ? account.address.toLowerCase() ===
+                  selectedSwapToAccount?.address.toLowerCase()
+                : false
+            }
           />
         ))}
         {externalAccount && (
@@ -204,7 +195,8 @@ export const DestinationAccountPicker = () => {
             account={externalAccount}
             selected={Boolean(
               selectedSwapToAccount &&
-                selectedSwapToAccount.address === externalAccount.address,
+                selectedSwapToAccount?.address.toLowerCase() ===
+                  externalAccount.address.toLowerCase(),
             )}
             onClick={() => dispatch(setToAccount(externalAccount))}
           />

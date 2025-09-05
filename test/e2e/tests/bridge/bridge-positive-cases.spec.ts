@@ -5,11 +5,8 @@ import {
   switchToNetworkFromSendFlow,
   searchAndSwitchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
-import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import NetworkManager, {
-  NetworkId,
-} from '../../page-objects/pages/network-manager';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
@@ -24,10 +21,6 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // disable smart transactions step by step for all bridge flows
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
 
@@ -104,17 +97,7 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // disable Linea network
         const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        try {
-          await networkManager.deselectNetwork(NetworkId.LINEA);
-        } catch (error) {
-          console.log('Linea network is not selected');
-          return;
-        }
-        await networkManager.closeNetworkManager();
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
@@ -135,13 +118,7 @@ describe('Bridge tests', function (this: Suite) {
         await networkManager.openNetworkManager();
         await driver.delay(veryLargeDelayMs);
 
-        try {
-          await networkManager.checkNetworkIsSelected('Linea Mainnet');
-        } catch (error) {
-          console.log('Linea network is not selected');
-        }
-
-        await networkManager.closeNetworkManager();
+        await networkManager.checkAllPopularNetworksIsSelected();
       },
     );
   });

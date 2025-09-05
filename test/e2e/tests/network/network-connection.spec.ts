@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Hex } from '@metamask/utils';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -15,6 +16,7 @@ type NetworkConfig = {
   tokenSymbol: string;
   fixtureMethod: (builder: FixtureBuilder) => FixtureBuilder;
   testTitle: string;
+  chainId: Hex;
 };
 
 // Network configurations
@@ -24,12 +26,21 @@ const networkConfigs: NetworkConfig[] = [
     tokenSymbol: 'MON',
     fixtureMethod: (builder) => builder.withNetworkControllerOnMonad(),
     testTitle: 'Monad Network Connection Tests',
+    chainId: CHAIN_IDS.MONAD_TESTNET,
   },
   {
     name: 'Mega Testnet',
     tokenSymbol: 'ETH',
     fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
     testTitle: 'MegaETH Network Connection Tests',
+    chainId: CHAIN_IDS.MEGAETH_TESTNET,
+  },
+  {
+    name: 'Sei',
+    tokenSymbol: 'SEI',
+    fixtureMethod: (builder) => builder.withNetworkControllerOnSei(),
+    testTitle: 'Sei Network Connection Tests',
+    chainId: CHAIN_IDS.SEI,
   },
 ];
 
@@ -57,8 +68,7 @@ networkConfigs.forEach((config) => {
             .withPermissionControllerConnectedToTestDapp()
             .withEnabledNetworks({
               eip155: {
-                [CHAIN_IDS.MONAD_TESTNET]: true,
-                [CHAIN_IDS.MEGAETH_TESTNET]: true,
+                [config.chainId]: true,
               },
             })
             .build(),
@@ -94,7 +104,7 @@ networkConfigs.forEach((config) => {
 
           await performDappActionAndVerify(
             driver,
-            () => testDapp.findAndClickCreateToken(),
+            () => testDapp.clickCreateToken(),
             config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

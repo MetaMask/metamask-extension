@@ -6,12 +6,12 @@ import {
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { getValidUrl } from '../../util';
 
 export function validateChainId(chainId) {
@@ -229,7 +229,11 @@ export async function switchChain(
           autoApprove,
           metadata,
         });
-      } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow) {
+      } else if (
+        hasApprovalRequestsForOrigin?.() &&
+        !isAddFlow &&
+        !autoApprove
+      ) {
         await requestUserApproval({
           origin,
           type: ApprovalType.SwitchEthereumChain,
@@ -246,41 +250,36 @@ export async function switchChain(
       });
     }
 
-    rejectApprovalRequestsForOrigin?.();
+    if (!isSnapId(origin)) {
+      rejectApprovalRequestsForOrigin?.();
+    }
 
     await setActiveNetwork(networkClientId);
 
-    // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
-    // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
-    setTokenNetworkFilter(chainId);
+    // FIXME: `setTokenNetworkFilter` and `getEnabledNetworks` is currently breaking Snaps flow when ENS Snap
+    // calls `wallet_switchEthereumChain` to auto-adjusts its network if necessary. For now we add this guard
+    // but we want to come back and add remove the bandaid in favour of a more future proof solution for
+    // this edge case. issue: https://github.com/MetaMask/metamask-extension/issues/35409
+    if (!isSnapId(origin)) {
+      // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
+      // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
+      setTokenNetworkFilter(chainId);
 
-    if (isPrefixedFormattedHexString(chainId)) {
-      const existingEnabledNetworks = getEnabledNetworks(
-        KnownCaipNamespace.Eip155,
-      );
-      const existingChainIds = Object.keys(existingEnabledNetworks);
-
-      if (!existingChainIds.includes(chainId)) {
-        const isFeaturedNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(chainId);
-
-        if (isFeaturedNetwork) {
-          const featuredExistingChainIds = existingChainIds.filter((id) =>
-            FEATURED_NETWORK_CHAIN_IDS.includes(id),
-          );
-          setEnabledNetworks(
-            [...featuredExistingChainIds, chainId],
-            KnownCaipNamespace.Eip155,
-          );
-        } else {
+      if (isPrefixedFormattedHexString(chainId)) {
+        const existingEnabledNetworks = getEnabledNetworks(
+          KnownCaipNamespace.Eip155,
+        );
+        const existingChainIds = Object.keys(existingEnabledNetworks);
+        if (!existingChainIds.includes(chainId)) {
           setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
         }
-      }
-    } else {
-      const { namespace } = parseCaipChainId(chainId);
-      const existingEnabledNetworks = getEnabledNetworks(namespace);
-      const existingChainIds = Object.keys(existingEnabledNetworks);
-      if (!existingChainIds.includes(chainId)) {
-        setEnabledNetworks([...existingChainIds, chainId], namespace);
+      } else {
+        const { namespace } = parseCaipChainId(chainId);
+        const existingEnabledNetworks = getEnabledNetworks(namespace);
+        const existingChainIds = Object.keys(existingEnabledNetworks);
+        if (!existingChainIds.includes(chainId)) {
+          setEnabledNetworks([chainId], namespace);
+        }
       }
     }
 
