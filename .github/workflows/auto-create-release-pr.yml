@@ -10,7 +10,6 @@ jobs:
     outputs:
       semver: ${{ steps.out.outputs.semver }}
       previous_ref: ${{ steps.out.outputs.previous_ref }}
-      proceed: ${{ steps.out.outputs.proceed }}
     steps:
       - id: out
         shell: bash
@@ -37,16 +36,6 @@ jobs:
             echo "Error: Invalid semver in branch name: $ref_name (extracted: $semver; must be numeric X.Y.Z)" >&2
             exit 1
           fi
-
-          # Check if release X.Y.Z is hotfix: if patch (aka Z) > 0, skip
-          patch="${semver##*.}"
-          if [ "$patch" -gt 0 ]; then
-            echo "Hotfix detected (patch $patch > 0), skipping auto-create-release-pr."
-            echo "proceed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Not a hotfix (patch=0), proceeding."
 
           # Function to paginate and collect refs for a prefix
           fetch_matching_refs() {
@@ -112,10 +101,8 @@ jobs:
           echo "  semver-version: ${semver}"
           echo "  previous-version-ref: ${previous_ref}"
 
-          echo "proceed=true" >> "$GITHUB_OUTPUT"
-
   call-create-release-pr:
-    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) && needs.extract.outputs.proceed == 'true' }}
+    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) }}
     needs: extract
     permissions:
       contents: write
