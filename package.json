@@ -316,7 +316,7 @@
     "@metamask/message-manager": "^12.0.1",
     "@metamask/message-signing-snap": "1.1.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain-account-service": "^0.6.0",
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@0.6.0-preview-cfa64945",
     "@metamask/multichain-api-client": "^0.6.5",
     "@metamask/multichain-api-middleware": "1.0.0",
     "@metamask/multichain-network-controller": "^0.11.1",
