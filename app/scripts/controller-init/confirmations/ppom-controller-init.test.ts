@@ -39,7 +39,6 @@ function buildControllerMock(
 }
 
 function buildInitRequestMock(): jest.Mocked<
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   ControllerInitRequest<PPOMControllerMessenger, PPOMControllerInitMessenger>
 > {
   const baseControllerMessenger = new Messenger();
