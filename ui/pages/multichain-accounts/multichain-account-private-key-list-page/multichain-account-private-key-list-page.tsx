@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-
 import {
   Box,
   BoxFlexDirection,
@@ -29,19 +28,20 @@ export const MultichainAccountPrivateKeyListPage = () => {
   const history = useHistory();
   const { accountGroupId } = useParams<{ accountGroupId: string }>();
 
-  const decodedAccountGroupId = accountGroupId
+  const decodedAccountGroupId: AccountGroupId | null = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
     : null;
 
-  const getAccountGroupName = useCallback(() => {
-    if (decodedAccountGroupId) {
-      const account = useSelector((state) =>
-        getMultichainAccountGroupById(state, decodedAccountGroupId),
-      );
-      return account.metadata.name;
-    }
-    return t('account');
-  }, [decodedAccountGroupId, t]);
+  const account = useSelector((state) =>
+    decodedAccountGroupId
+      ? getMultichainAccountGroupById(state, decodedAccountGroupId)
+      : null,
+  );
+
+  // Compute the account group name using `useMemo`
+  const accountGroupName = useMemo(() => {
+    return account ? account.metadata.name : t('account');
+  }, [account, t]);
 
   return (
     <Page className="max-w-[600px]">
@@ -59,7 +59,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
           />
         }
       >
-        {getAccountGroupName()} / {t('privateKeys')}
+        {accountGroupName} / {t('privateKeys')}
       </Header>
       <Content>
         <BannerAlert

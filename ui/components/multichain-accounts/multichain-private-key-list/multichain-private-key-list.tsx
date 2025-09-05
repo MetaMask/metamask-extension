@@ -58,21 +58,20 @@ const MultichainPrivateKeyList = ({
   const [reveal, setReveal] = useState<boolean>(false);
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
 
+  const cleanStateVariables = () => {
+    setPrivateKeys({});
+    setPassword('');
+    setWrongPassword(false);
+    setReveal(false);
+  };
+
   useEffect(
     () => () => {
-      console.log('unmounting');
       // Clean state variables on unmount
-      setPrivateKeys({});
-      setPassword('');
-      setWrongPassword(false);
-      setReveal(false);
+      cleanStateVariables();
     },
     [],
   );
-
-  useEffect(() => {
-    console.log('Password changed:', password);
-  }, [password]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, handleCopy] = useCopyToClipboard();
@@ -87,16 +86,12 @@ const MultichainPrivateKeyList = ({
 
   const handlePasswordChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log({ password });
-      console.log(e.target.value);
       setPassword(e.target.value);
-      console.log({ password });
     },
-    [setPassword, password],
+    [setPassword],
   );
 
   const validatePassword = useCallback(async () => {
-    console.log('Password in validatePassword:', password); // Add this log
     try {
       await verifyPassword(password);
       setWrongPassword(false);
@@ -125,7 +120,6 @@ const MultichainPrivateKeyList = ({
       },
       {} as Record<string, string>,
     );
-    console.log(privateKeyMap);
 
     setPrivateKeys(privateKeyMap);
   }, [accounts, dispatch, password]);
@@ -135,9 +129,12 @@ const MultichainPrivateKeyList = ({
     unlockPrivateKeys();
   }, [validatePassword, unlockPrivateKeys]);
 
-  const renderPasswordInput = useMemo(() => {
-    console.log('renderPasswordInput');
-    return (
+  const onCancel = useCallback(() => {
+    cleanStateVariables();
+  }, []);
+
+  const renderPasswordInput = useMemo(
+    () => (
       <Box paddingTop={8} paddingBottom={4}>
         <Box>
           <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
@@ -168,7 +165,7 @@ const MultichainPrivateKeyList = ({
           <Button
             block
             data-testid="confirm-footer-cancel-button"
-            onClick={() => console.log('what')}
+            onClick={onCancel}
             size={ButtonSize.Lg}
             variant={ButtonVariant.Secondary}
           >
@@ -185,8 +182,9 @@ const MultichainPrivateKeyList = ({
           </Button>
         </Box>
       </Box>
-    );
-  }, [handlePasswordChange, onSubmit, password, t, wrongPassword]);
+    ),
+    [handlePasswordChange, onCancel, onSubmit, password, t, wrongPassword],
+  );
 
   const renderAddressItem = useCallback(
     (

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
-
 import {
   AlignItems,
   BlockSize,
@@ -11,6 +10,7 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -89,7 +89,27 @@ export const MultichainAddressRow = ({
       ? convertCaipToHexChainId(chainId as CaipChainId)
       : chainId,
   );
+
   const truncatedAddress = shortenAddress(address);
+
+  // State for managing blinking effect and temporary message
+  const [subText, setSubText] = useState(truncatedAddress);
+  const [copyIcon, setCopyIcon] = useState(IconName.Copy);
+
+  const handleCopyClick = () => {
+    // Execute the copy callback
+    copyActionParams.callback();
+
+    // Update state for the blinking effect
+    setSubText(copyActionParams.message); // Show the copy message
+    setCopyIcon(IconName.CopySuccess); // Change background to success
+
+    // Reset back to default after 1 second
+    setTimeout(() => {
+      setSubText(truncatedAddress); // Reset display address
+      setCopyIcon(IconName.Copy); // Reset background
+    }, 1000); // Blinking duration is 1 second
+  };
 
   const handleQrClick = () => {
     qrActionParams?.callback(address, networkName, networkImageSrc);
@@ -105,6 +125,7 @@ export const MultichainAddressRow = ({
       paddingBottom={4}
       gap={4}
       data-testid="multichain-address-row"
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <AvatarNetwork
         size={AvatarNetworkSize.Md}
@@ -113,7 +134,6 @@ export const MultichainAddressRow = ({
         borderRadius={BorderRadius.LG}
         data-testid="multichain-address-row-network-icon"
       />
-
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -137,21 +157,19 @@ export const MultichainAddressRow = ({
           color={TextColor.textAlternative}
           data-testid="multichain-address-row-address"
         >
-          {truncatedAddress}
+          {subText} {/* Use dynamic address content */}
         </Text>
       </Box>
-
       {/* Action buttons */}
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={4}>
         <ButtonIcon
-          iconName={IconName.Copy}
+          iconName={copyIcon}
           size={ButtonIconSize.Md}
-          onClick={copyActionParams.callback}
+          onClick={handleCopyClick} // Trigger blinking on copy
           ariaLabel="Copy address"
           color={IconColor.iconDefault}
           data-testid="multichain-address-row-copy-button"
         />
-
         {qrActionParams ? (
           <ButtonIcon
             iconName={IconName.QrCode}
