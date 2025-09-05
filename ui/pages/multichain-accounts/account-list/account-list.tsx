@@ -103,13 +103,6 @@ export const AccountList = () => {
           paddingRight={4}
           paddingBottom={2}
         >
-          <MultichainAccountList
-            wallets={wallets}
-            selectedAccountGroups={[selectedAccountGroup]}
-            formattedAccountGroupBalancesByWallet={
-              formattedAccountGroupBalancesByWallet
-            }
-          />
           <TextFieldSearch
             size={TextFieldSearchSize.Lg}
             placeholder={t('searchYourAccounts')}
@@ -123,6 +116,13 @@ export const AccountList = () => {
             data-testid="multichain-account-list-search"
           />
         </Box>
+        <MultichainAccountList
+          wallets={wallets}
+          selectedAccountGroups={[selectedAccountGroup]}
+          formattedAccountGroupBalancesByWallet={
+            formattedAccountGroupBalancesByWallet
+          }
+        />
         <Box
           display={Display.Flex}
           height={BlockSize.Full}
