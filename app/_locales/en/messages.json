@@ -510,11 +510,11 @@
   "alertReasonOriginTrustSignalMalicious": {
     "message": "Malicious site"
   },
-  "alertReasonOriginTrustSignalWarning": {
-    "message": "Suspicious site"
-  },
   "alertReasonOriginTrustSignalVerified": {
     "message": "Verified site"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Suspicious site"
   },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
