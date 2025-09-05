@@ -58,13 +58,19 @@ export class DeepLinkRouter extends EventEmitter<{
 
   /**
    * Returns the URL to the 404 error page for deep links.
+   *
+   * @param url
    */
-  private get404ErrorURL() {
+  private get404ErrorURL(url?: URL) {
+    const params: { errorCode: '404'; u?: string } = {
+      errorCode: '404',
+    };
+    if (url) {
+      params.u = url.pathname + url.search;
+    }
     return this.getExtensionURL(
       TRIMMED_DEEP_LINK_ROUTE,
-      new URLSearchParams({
-        errorCode: '404',
-      }).toString(),
+      new URLSearchParams(params).toString(),
     );
   }
 
@@ -174,7 +180,7 @@ export class DeepLinkRouter extends EventEmitter<{
         }
       } else {
         // unable to parse, show error page
-        link = this.get404ErrorURL();
+        link = this.get404ErrorURL(url);
       }
     } catch (error) {
       log.error('Invalid URL:', urlStr, error);
