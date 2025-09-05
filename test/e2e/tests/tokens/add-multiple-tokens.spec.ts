@@ -20,11 +20,7 @@ describe('Multiple ERC20 Watch Asset', function () {
       },
       async ({ driver, localNodes, contractRegistry }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        const contracts = [
-          contractRegistry.getContractAddress(tokenContract, 0),
-          contractRegistry.getContractAddress(tokenContract, 1),
-          contractRegistry.getContractAddress(tokenContract, 2),
-        ];
+        const contracts = contractRegistry.getAllDeployedContractAddresses();
 
         await openDapp(driver, undefined, DAPP_URL);
         const testDapp = new TestDapp(driver);
