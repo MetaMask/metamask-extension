@@ -1,6 +1,5 @@
 import React, { CSSProperties } from 'react';
 import { useSelector } from 'react-redux';
-import { isCaipChainId } from '@metamask/utils';
 import {
   BackgroundColor,
   FontWeight,
@@ -20,6 +19,7 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -39,7 +39,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
     const t = useI18nContext();
-    const isEvm = !isCaipChainId(token.chainId);
+    const isEvm = isEvmChainId(token.chainId);
     const { type, rpcUrl } = useSelector(getProviderConfig);
 
     const isOriginalNativeToken = useIsOriginalNativeTokenSymbol(

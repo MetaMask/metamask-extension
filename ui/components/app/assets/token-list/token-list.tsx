@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { isCaipChainId, type Hex } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -33,6 +33,7 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -161,7 +162,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     }
 
     const tokenAddress =
-      !isCaipChainId(token.chainId) && token.isNative ? '' : token.address;
+      isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
 
     onTokenClick(token.chainId, tokenAddress);
 
