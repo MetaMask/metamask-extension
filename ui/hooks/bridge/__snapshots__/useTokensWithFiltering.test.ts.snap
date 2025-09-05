@@ -268,7 +268,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
     "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
     "decimals": 18,
     "iconUrl": "",
-    "image": "",
+    "image": "./images/solana-logo.svg",
     "name": "Ether",
     "string": "0",
     "symbol": "ETH",
