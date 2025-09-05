@@ -45,7 +45,7 @@ function transformState(state: Record<string, unknown>) {
     Object.entries(txHistory).forEach(([key, historyItem]) => {
       const isSolanaTx = isSolanaChainId(historyItem.status?.srcChain?.chainId);
       const newId = historyItem.status?.srcChain?.txHash;
-      if (isSolanaTx && newId) {
+      if (isSolanaTx && newId && newId !== key) {
         txHistory[newId] = {
           ...historyItem,
           txMetaId: newId,
