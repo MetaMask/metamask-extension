@@ -55,7 +55,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  OverflowWrap,
   TextAlign,
   TextColor,
   TextVariant,
