@@ -55,6 +55,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  OverflowWrap,
   TextAlign,
   TextColor,
   TextVariant,
@@ -491,26 +492,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          width={BlockSize.Full}
-          paddingLeft={4}
-          paddingRight={4}
+        <Text
+          variant={TextVariant.headingLg}
+          marginBottom={1}
+          textAlign={TextAlign.Center}
+          style={{
+            wordBreak: 'break-word',
+            whiteSpace: 'normal',
+          }}
         >
-          <Text
-            variant={TextVariant.headingLg}
-            marginBottom={1}
-            textAlign={TextAlign.Center}
-            style={{
-              wordBreak: 'break-word',
-              whiteSpace: 'normal',
-              maxWidth: '280px',
-            }}
-          >
-            {title}
-          </Text>
-        </Box>
+          {title}
+        </Text>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
