@@ -88,9 +88,6 @@ const AssetPage = ({
   asset: Asset;
   optionsButton: React.ReactNode;
 }) => {
-  console.log('ASSET PAGE XXXX', {
-    asset,
-  });
   const t = useI18nContext();
   const history = useHistory();
   const selectedAccount = useSelector(getSelectedAccount);
@@ -141,43 +138,46 @@ const AssetPage = ({
     tokenBalances[selectedAccount.address];
 
   const multiChainAssets = useMultiChainAssets();
-  const mutichainTokenWithFiatAmount = multiChainAssets
-    .filter((item) => item.chainId === chainId && item.address !== undefined)
-    .find((item) => {
-      switch (type) {
-        case AssetType.native:
-          return item.isNative;
-        case AssetType.token:
-          return item.address === asset.address;
-        default:
-          return false;
-      }
-    }) ?? {
-    // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
-    // Root cause: There is a race condition where when switching from a non-EVM network
-    // to an EVM network, the mutichainTokenWithFiatAmount is undefined
-    // This is a workaround to avoid the error
-    // Look into the isEvm selector
-    // We might be switching network before account.
-    address: '',
-    chainId: '',
-    symbol: '',
-    title: '',
-    image: '',
-    tokenFiatAmount: 0,
-    string: '',
-    decimals: 0,
-    aggregators: [],
-    isNative: false,
-    primary: '',
-    secondary: 0,
-  };
+  let mutichainTokenWithFiatAmount;
+  if (!isMultichainAccountsState2Enabled) {
+    mutichainTokenWithFiatAmount = multiChainAssets
+      .filter((item) => item.chainId === chainId && item.address !== undefined)
+      .find((item) => {
+        switch (type) {
+          case AssetType.native:
+            return item.isNative;
+          case AssetType.token:
+            return item.address === asset.address;
+          default:
+            return false;
+        }
+      }) ?? {
+      // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
+      // Root cause: There is a race condition where when switching from a non-EVM network
+      // to an EVM network, the mutichainTokenWithFiatAmount is undefined
+      // This is a workaround to avoid the error
+      // Look into the isEvm selector
+      // We might be switching network before account.
+      address: '',
+      chainId: '',
+      symbol: '',
+      title: '',
+      image: '',
+      tokenFiatAmount: 0,
+      string: '',
+      decimals: 0,
+      aggregators: [],
+      isNative: false,
+      primary: '',
+      secondary: 0,
+    };
+  }
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const address =
+  let address =
     (() => {
       if (type === AssetType.token) {
         return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
@@ -197,24 +197,26 @@ const AssetPage = ({
 
   const { currentPrice } = useCurrentPrice(asset);
 
-  let balance, tokenFiatAmount;
+  console.log('ASSET PAGE CURRENT PRICE', {
+    currentPrice,
+    asset,
+  });
+
+  let balance, tokenFiatAmount, assetId;
   if (isMultichainAccountsState2Enabled) {
     const assetWithBalance = accountGroupIdAssets[chainId]?.find(
-      (item) => item.assetId.toLowerCase() === address.toLowerCase(),
+      (item) =>
+        item.assetId.toLowerCase() === address.toLowerCase() ||
+        // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
+        (!address && !isEvm && item.isNative),
     );
 
+    address = assetWithBalance?.assetId as string;
+
+    assetId = assetWithBalance?.assetId;
     balance = assetWithBalance?.balance as string;
     tokenFiatAmount = assetWithBalance?.fiat?.balance as number;
     const tokenHexBalance = assetWithBalance?.rawBalance as string;
-
-    console.log('KEKEKEKKEKE', {
-      address,
-      chainId,
-      assetWithBalance,
-      balance,
-      tokenFiatAmount,
-      tokenHexBalance,
-    });
 
     asset.balance = {
       value: hexToDecimal(tokenHexBalance),
@@ -267,27 +269,28 @@ const AssetPage = ({
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
-  const tokenWithFiatAmount = isEvm
-    ? {
-        address: address as Hex,
-        chainId,
-        symbol,
-        image,
-        title: name ?? symbol,
-        tokenFiatAmount: showFiat ? tokenFiatAmount : null,
-        string: balance ? balance.toString() : '',
-        decimals: asset.decimals,
-        aggregators:
-          type === AssetType.token && asset.aggregators
-            ? asset.aggregators
-            : [],
-        isNative: type === AssetType.native,
-        primary: balance ? balance.toString() : '',
-        secondary: balance ? Number(balance) : 0,
-      }
-    : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
+  const tokenWithFiatAmount =
+    isEvm || isMultichainAccountsState2Enabled
+      ? {
+          address: isEvm ? address : assetId,
+          chainId,
+          symbol,
+          image,
+          title: name ?? symbol,
+          tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+          string: balance ? balance.toString() : '',
+          decimals: asset.decimals,
+          aggregators:
+            type === AssetType.token && asset.aggregators
+              ? asset.aggregators
+              : [],
+          isNative: type === AssetType.native,
+          primary: balance ? balance.toString() : '',
+          secondary: balance ? Number(balance) : 0,
+        }
+      : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
 
-  console.log('TOKEN WITH FIAT AMOUNT', {
+  console.log('ASSET PAGE TOKEN WITH FIAT AMOUNT', {
     tokenWithFiatAmount,
   });
 

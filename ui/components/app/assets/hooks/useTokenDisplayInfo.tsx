@@ -68,7 +68,7 @@ export const useTokenDisplayInfo = ({
       : null;
 
   const formattedPrimary = formatWithThreshold(
-    Number((isEvm ? token.string : token.primary) ?? token.balance),
+    Number((isEvm ? token.string : token.primary) || token.balance),
     0.00001,
     locale,
     {

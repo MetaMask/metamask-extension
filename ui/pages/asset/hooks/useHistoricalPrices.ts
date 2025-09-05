@@ -13,7 +13,6 @@ import { MINUTE } from '../../../../shared/constants/time';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { getShouldShowFiat } from '../../../selectors';
 import { getHistoricalPrices } from '../../../selectors/assets';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
 import {
   chainSupportsPricing,
   fromIso8601DurationToPriceApiTimePeriod,
@@ -96,7 +95,7 @@ const useHistoricalPricesEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(chainId);
   const showFiat: boolean = useSelector(getShouldShowFiat);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -180,7 +179,7 @@ const useHistoricalPricesNonEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(chainId);
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
   const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
@@ -206,6 +205,10 @@ const useHistoricalPricesNonEvm = ({
     const fetchPrices = async () => {
       setLoading(true);
       try {
+        console.log('FETCHING HISTORICAL PRICES FOR NON-EVM', {
+          address,
+          chainId,
+        });
         await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
       } catch (error) {
         console.error(

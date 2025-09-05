@@ -33,10 +33,6 @@ const Asset = () => {
     ),
   );
 
-  console.log('ASSET PAGE', {
-    token,
-  });
-
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
       // @ts-expect-error TODO: Fix this type error by handling undefined parameters

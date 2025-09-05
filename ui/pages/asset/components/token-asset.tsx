@@ -74,12 +74,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   );
   const isEvm = !isCaipChainId(chainId);
 
-  console.log('KJADHGHDKJAKJHD 3', {
-    multichainNetwork,
-    isEvm,
-    token,
-  });
-
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
