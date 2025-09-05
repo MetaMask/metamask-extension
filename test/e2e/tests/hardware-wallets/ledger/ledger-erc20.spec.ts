@@ -86,6 +86,9 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        await homePage.checkPageIsLoaded();
+
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
           `Approve ${symbol} spending cap`,
@@ -100,6 +103,9 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        await homePage.checkPageIsLoaded();
+
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
           `Increase ${symbol} spending cap`,
