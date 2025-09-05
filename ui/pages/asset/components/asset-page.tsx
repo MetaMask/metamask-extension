@@ -3,7 +3,6 @@ import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type Hex,
-  isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { isEqual } from 'lodash';
@@ -79,6 +78,7 @@ import {
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { AssetMarketDetails } from './asset-market-details';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 // A page representing a native or token asset
 const AssetPage = ({
@@ -93,7 +93,7 @@ const AssetPage = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const isEvm = !isCaipChainId(asset.chainId);
+  const isEvm = isEvmChainId(asset.chainId);
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,

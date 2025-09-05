@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { useSafeChainsListValidationSelector } from '../selectors';
 import { getMultichainCurrentNetwork } from '../selectors/multichain';
 
@@ -8,6 +8,7 @@ import { getMultichainCurrentNetwork } from '../selectors/multichain';
 // eslint-disable-next-line import/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId: Hex | CaipChainId,
@@ -20,7 +21,7 @@ export function useIsOriginalNativeTokenSymbol(
     useSafeChainsListValidationSelector,
   );
 
-  const isEvm = !isCaipChainId(chainId);
+  const isEvm = isEvmChainId(chainId);
   const providerConfig = useSelector(getMultichainCurrentNetwork);
 
   useEffect(() => {

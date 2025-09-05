@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import { getMarketData } from '../../../../../selectors';
 import { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
 import { getAssetsRates } from '../../../../../selectors/assets';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type TokenCellPercentChangeProps = {
   token: TokenFiatDisplayInfo;
@@ -13,7 +14,7 @@ type TokenCellPercentChangeProps = {
 
 export const TokenCellPercentChange = React.memo(
   ({ token }: TokenCellPercentChangeProps) => {
-    const isEvm = !isCaipChainId(token.chainId);
+    const isEvm = isEvmChainId(token.chainId);
     const multiChainMarketData = useSelector(getMarketData);
     const nonEvmConversionRates = useSelector(getAssetsRates);
 

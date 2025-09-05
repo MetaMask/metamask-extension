@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react';
 import { HistoricalPriceValue } from '@metamask/snaps-sdk';
-import {
-  CaipAssetType,
-  CaipChainId,
-  Hex,
-  isCaipChainId,
-} from '@metamask/utils';
+import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,6 +14,7 @@ import {
 } from '../util';
 import { fetchHistoricalPricesForAsset } from '../../../store/actions';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -95,7 +91,7 @@ const useHistoricalPricesEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = !isCaipChainId(chainId);
+  const isEvm = isEvmChainId(chainId);
   const showFiat: boolean = useSelector(getShouldShowFiat);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -179,7 +175,7 @@ const useHistoricalPricesNonEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = !isCaipChainId(chainId);
+  const isEvm = isEvmChainId(chainId);
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
   const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
@@ -275,7 +271,7 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = !isCaipChainId(chainId);
+  const isEvm = isEvmChainId(chainId);
 
   const historicalPricesEvm = useHistoricalPricesEvm({
     chainId,

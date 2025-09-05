@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { Hex, isCaipChainId } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import {
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
@@ -18,8 +18,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import AssetOptions from './asset-options';
-
 import AssetPage from './asset-page';
 
 const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
@@ -34,7 +34,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     getMultichainNetwork,
     selectedAccount,
   );
-  const isEvm = !isCaipChainId(chainId);
+  const isEvm = isEvmChainId(chainId);
   const addressLink = getMultichainAccountUrl(
     selectedAccount.address,
     multichainNetworkForSelectedAccount,

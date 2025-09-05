@@ -33,6 +33,7 @@ import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/block
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -72,7 +73,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     getMultichainNetwork,
     selectedAccount,
   );
-  const isEvm = !isCaipChainId(chainId);
+  const isEvm = isEvmChainId(chainId);
 
   const history = useHistory();
   const dispatch = useDispatch();

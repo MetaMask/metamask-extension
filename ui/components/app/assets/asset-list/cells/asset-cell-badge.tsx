@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Hex, isCaipChainId } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -11,6 +11,7 @@ import {
 import { getNativeCurrencyForChain } from '../../../../../selectors';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
@@ -21,7 +22,7 @@ type AssetCellBadgeProps = {
 
 export const AssetCellBadge = React.memo(
   ({ chainId, isNative, tokenImage, symbol }: AssetCellBadgeProps) => {
-    const isEvm = !isCaipChainId(chainId);
+    const isEvm = isEvmChainId(chainId);
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
     const avatarTokenSrc =

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipAssetType, isCaipChainId } from '@metamask/utils';
+import { CaipAssetType } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
@@ -28,6 +28,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 export const AssetMarketDetails = ({
   asset,
@@ -43,7 +44,7 @@ export const AssetMarketDetails = ({
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
 
-  const isEvm = !isCaipChainId(asset.chainId);
+  const isEvm = isEvmChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
 
   const { type, symbol, chainId } = asset;

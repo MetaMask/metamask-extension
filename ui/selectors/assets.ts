@@ -10,7 +10,6 @@ import {
   CaipAssetType,
   CaipChainId,
   Hex,
-  isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
@@ -23,6 +22,7 @@ import { calculateTokenBalance } from '../components/app/assets/util/calculateTo
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import {
@@ -297,7 +297,7 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
     tokenAddress: Hex | CaipAssetType | string | undefined,
     chainId: Hex | CaipChainId,
   ) => {
-    const isEvm = !isCaipChainId(chainId);
+    const isEvm = isEvmChainId(chainId);
     if (!tokenAddress && !isEvm) {
       return null;
     }
@@ -306,7 +306,10 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
       account ??
       (isEvm
         ? getSelectedInternalAccount(state)
-        : getInternalAccountBySelectedAccountGroupAndCaip(state, chainId));
+        : getInternalAccountBySelectedAccountGroupAndCaip(
+            state,
+            chainId as CaipChainId,
+          ));
 
     const assetsToSearch = isEvm
       ? (getSelectedAccountTokensAcrossChains(state) as Record<

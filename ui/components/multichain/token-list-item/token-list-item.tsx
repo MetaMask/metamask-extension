@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { isCaipChainId, type Hex } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -54,6 +54,7 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 type TokenListItemProps = {
   className?: string;
@@ -99,7 +100,7 @@ export const TokenListItemComponent = ({
   nativeCurrencySymbol,
 }: TokenListItemProps) => {
   const t = useI18nContext();
-  const isEvm = !isCaipChainId(chainId);
+  const isEvm = isEvmChainId(chainId);
   const trackEvent = useContext(MetaMetricsContext);
   const currencyRates = useSelector(getCurrencyRates);
 

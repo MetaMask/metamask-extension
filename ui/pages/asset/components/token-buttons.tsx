@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { CaipAssetType, isCaipChainId } from '@metamask/utils';
+import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
@@ -56,6 +56,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 const TokenButtons = ({
   token,
@@ -69,7 +70,7 @@ const TokenButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
-  const isEvm = !isCaipChainId(token.chainId);
+  const isEvm = isEvmChainId(token.chainId);
 
   const account = useSelector(getSelectedInternalAccount, isEqual);
 

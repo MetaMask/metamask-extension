@@ -2,12 +2,13 @@ import {
   AssetType,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { CaipAssetType, isCaipChainId } from '@metamask/utils';
+import { CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getCurrencyRates, getMarketData } from '../../../selectors';
 import { getAssetsRates } from '../../../selectors/assets';
 import { Asset } from '../types/asset';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 /**
  * Get the current price of an asset.
@@ -16,7 +17,7 @@ import { Asset } from '../types/asset';
  * @returns The current price of the asset. If the asset is not found, or the price is not found, returns null.
  */
 export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
-  const isEvm = !isCaipChainId(asset.chainId);
+  const isEvm = isEvmChainId(asset.chainId);
   const evmMarketData = useSelector(getMarketData);
   const evmCurrencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);

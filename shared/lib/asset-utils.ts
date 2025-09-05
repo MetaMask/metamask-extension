@@ -8,9 +8,13 @@ import {
   isCaipChainId,
   isStrictHexString,
   parseCaipAssetType,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import {
+  toEvmCaipChainId,
+  isEvmCaipChainId,
+} from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import {
   getNativeAssetForChainId,
@@ -192,4 +196,14 @@ export const fetchAssetMetadataForAssetIds = async (
   } catch (error) {
     return null;
   }
+};
+
+export const isEvmChainId = (chainId: CaipChainId | Hex) => {
+  const chainIdInCaip = isCaipChainId(chainId)
+    ? chainId
+    : toEvmCaipChainId(chainId);
+
+  // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
+  const { namespace } = parseCaipChainId(chainIdInCaip);
+  return namespace === KnownCaipNamespace.Eip155;
 };
