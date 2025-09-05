@@ -1067,6 +1067,16 @@
         "@metamask/design-system-react>tailwind-merge": true
       }
     },
+    "@metamask/eip-5792-middleware": {
+      "packages": {
+        "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
+        "uuid": true
+      }
+    },
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
@@ -1527,18 +1537,6 @@
         "@metamask/account-api": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true
-      }
-    },
-    "@metamask/multichain-api-client": {
-      "globals": {
-        "addEventListener": true,
-        "chrome": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "location.origin": true,
-        "postMessage": true,
-        "removeEventListener": true,
-        "setTimeout": true
       }
     },
     "@metamask/multichain-api-middleware": {
@@ -2094,23 +2092,6 @@
         "@metamask/snaps-utils>rfdc": true,
         "semver": true,
         "@metamask/snaps-utils>validate-npm-package-name": true
-      }
-    },
-    "@metamask/solana-wallet-standard": {
-      "globals": {
-        "Buffer.from": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "location.host": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/test-dapp-solana>@solana/wallet-standard-chains": true,
-        "@metamask/solana-wallet-standard>@solana/wallet-standard-features": true,
-        "@metamask/solana-wallet-standard>@wallet-standard/features": true,
-        "@metamask/solana-wallet-standard>@wallet-standard/wallet": true,
-        "bs58": true,
-        "buffer": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2886,15 +2867,6 @@
         "tslib": true
       }
     },
-    "@metamask/solana-wallet-standard>@wallet-standard/wallet": {
-      "globals": {
-        "Event": true,
-        "addEventListener": true,
-        "console.error": true,
-        "dispatchEvent": true,
-        "navigator": true
-      }
-    },
     "@zxing/browser": {
       "globals": {
         "HTMLElement": true,
@@ -3231,11 +3203,6 @@
         "crypto-browserify>public-encrypt>parse-asn1": true,
         "crypto-browserify>browserify-sign>readable-stream": true,
         "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "bs58": {
-      "packages": {
-        "bs58>base-x": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>bs58check>bs58": {
