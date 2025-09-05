@@ -148,7 +148,7 @@ export default function LoginOptions({
               backgroundColor={BackgroundColor.backgroundDefault}
               paddingInline={2}
               marginInline="auto"
-              textTransform={TextTransform.Uppercase}
+              textTransform={TextTransform.Lowercase}
               as="div"
               style={{
                 position: 'relative',
@@ -178,7 +178,7 @@ export default function LoginOptions({
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Center}
             paddingTop={8}
-            width={BlockSize.FiveSixths}
+            width={BlockSize.Full}
             margin={'auto'}
           >
             {t('onboardingLoginFooter')}{' '}
