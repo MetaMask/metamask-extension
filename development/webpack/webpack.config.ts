@@ -20,6 +20,7 @@ import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
+import { exclude as LavamoatExcludeLoader } from '../../../LavaMoat/packages/webpack/src/plugin.js';
 import {
   type Manifest,
   collectEntries,
@@ -180,8 +181,11 @@ if (MANIFEST_VERSION === 2) {
   plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
 }
 if (args.lavamoat) {
-  const { lavamoatPlugin } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin(args));
+  const {
+    lavamoatPlugin,
+    lavamoatUnsafeLayerPlugin,
+  } = require('./utils/plugins/LavamoatPlugin');
+  plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
 }
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
@@ -295,6 +299,11 @@ const config = {
       /^lodash$/u,
     ],
     rules: [
+      // unsafe layer that runs code without LavaMoat
+      {
+        issuerLayer: 'unsafe',
+        use: LavamoatExcludeLoader,
+      },
       // json
       { test: /\.json$/u, type: 'json' },
       // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
@@ -475,6 +484,7 @@ const config = {
   ignoreWarnings: [
     /the following module ids can't be controlled by policy and must be ignored at runtime/u,
   ],
+  experiments: { layers: true },
 } as const satisfies Configuration;
 
 export default config;
