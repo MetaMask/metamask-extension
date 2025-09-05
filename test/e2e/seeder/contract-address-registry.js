@@ -19,8 +19,7 @@ class ContractAddressRegistry {
   }
 
   /**
-   * Get deployed contract address by its name (key).
-   * Returns the most recently deployed contract of this type.
+   * Get the most recently deployed contract address by its name (key).
    *
    * @param contractName
    */
