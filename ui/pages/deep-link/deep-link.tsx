@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +32,7 @@ import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
-import { VALID } from '../../../shared/lib/deep-links/verify';
+import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 
 type TranslateFunction = (
   key: string,
@@ -48,21 +48,10 @@ const { getExtensionURL } = globalThis.platform;
 
 function set404(
   setDescription: React.Dispatch<React.SetStateAction<string | null>>,
-  setExtraDescription: React.Dispatch<React.SetStateAction<string | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
   t: TranslateFunction,
 ) {
   setDescription(t('deepLink_Error404Description'));
-  setExtraDescription(
-    t('deepLink_Error404_CTA', [
-      <ButtonLink
-        as="a"
-        href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
-      >
-        {t('deepLink_Error404_CTA_LinkText')}
-      </ButtonLink>,
-    ]),
-  );
   setTitle(t('deepLink_Error404Title'));
 }
 
@@ -119,8 +108,22 @@ async function updateStateFromUrl(
       setCta(t('deepLink_Continue', [t(title)]));
     } else {
       setRoute(null);
-      set404(setDescription, setExtraDescription, setTitle, t);
+      set404(setDescription, setTitle, t);
       setCta(t('deepLink_GoToTheHomePageButton'));
+
+      const signature = await verify(url);
+      if (signature === VALID) {
+        setExtraDescription(
+          t('deepLink_Error404_CTA', [
+            <ButtonLink
+              as="a"
+              href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+            >
+              {t('deepLink_Error404_CTA_LinkText')}
+            </ButtonLink>,
+          ]),
+        );
+      }
     }
   } catch (e) {
     log.error('Error parsing deep link:', e);
@@ -156,34 +159,85 @@ export const DeepLink = () => {
     useState(skipDeepLinkInterstitial);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const urlStr = params.get('u');
-    if (!urlStr) {
-      const errorCode = params.get('errorCode');
-      setRoute(null);
-      setIsLoading(false);
-      if (errorCode === '404') {
-        set404(setDescription, setExtraDescription, setTitle, t);
-      } else {
-        setDescription(null);
-        setTitle(t('deepLink_ErrorMissingUrl'));
-      }
-      setCta(t('deepLink_GoToTheHomePageButton'));
-      return;
-    }
+  // Use ref to track current abort controller
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-    updateStateFromUrl(
-      urlStr,
-      setDescription,
-      setExtraDescription,
-      setIsLoading,
-      setRoute,
-      setTitle,
-      setCta,
-      t,
-    );
-  }, [location.search]);
+  useEffect(() => {
+    // Cancel any previous operation
+    abortControllerRef.current?.abort();
+
+    // Create new abort controller for this operation
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const processDeepLink = async () => {
+      const params = new URLSearchParams(location.search);
+      const urlStr = params.get('u');
+      const errorCode = params.get('errorCode');
+
+      if (!urlStr || errorCode) {
+        setRoute(null);
+        setIsLoading(false);
+        setExtraDescription(null);
+        if (errorCode === '404') {
+          set404(setDescription, setTitle, t);
+
+          if (urlStr) {
+            try {
+              const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
+              const url = new URL(fullUrlStr);
+              const signature = await verify(url);
+
+              // Check if aborted after async operation
+              if (abortController.signal.aborted) return;
+
+              if (signature === VALID) {
+                setExtraDescription(
+                  t('deepLink_Error404_CTA', [
+                    <ButtonLink
+                      as="a"
+                      href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+                    >
+                      {t('deepLink_Error404_CTA_LinkText')}
+                    </ButtonLink>,
+                  ]),
+                );
+              }
+            } catch (e) {
+              if (abortController.signal.aborted) return;
+              setExtraDescription(null);
+            }
+          } else {
+            setExtraDescription(null);
+          }
+        } else {
+          setDescription(null);
+          setTitle(t('deepLink_ErrorMissingUrl'));
+        }
+        setCta(t('deepLink_GoToTheHomePageButton'));
+        return;
+      }
+
+      updateStateFromUrl(
+        urlStr,
+        setDescription,
+        setExtraDescription,
+        setIsLoading,
+        setRoute,
+        setTitle,
+        setCta,
+        t,
+      );
+    };
+
+    processDeepLink();
+
+    // Cleanup function
+    return () => abortController.abort();
+  }, [location.search, t]);
+
+  // Cleanup on unmount
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 
   function onRemindMeStateChanged() {
     const newValue = !skipDeepLinkInterstitialChecked;
@@ -226,13 +280,17 @@ export const DeepLink = () => {
             )}
             {description && (
               <Box
-                as="p"
+                as="div"
                 data-testid="deep-link-description"
                 paddingBottom={12}
               >
-                {description}
+                <Box as="div" key="description">
+                  {description}
+                </Box>
                 {extraDescription ? (
-                  <Box paddingTop={4}>{extraDescription}</Box>
+                  <Box key="extra-description" paddingTop={4}>
+                    {extraDescription}
+                  </Box>
                 ) : (
                   ''
                 )}
