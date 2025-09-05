@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../ducks/locale/locale';
 
@@ -14,6 +15,11 @@ const compactTwoDecimals: Intl.NumberFormatOptions = {
   notation: 'compact',
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
+};
+
+const fourDecimals = {
+  minimumFractionDigits: 4,
+  maximumFractionDigits: 4,
 };
 
 const numberFormatCache: Record<string, Intl.NumberFormat> = {};
@@ -97,6 +103,52 @@ function formatCurrencyWithMinThreshold(
   return formatCurrency(config, number, currency);
 }
 
+function formatToken(
+  config: { locale: string },
+  value: number | bigint | `${number}`,
+  symbol?: string,
+  options: Intl.NumberFormatOptions = {},
+) {
+  if (!Number.isFinite(Number(value))) {
+    return '';
+  }
+
+  const numberFormat = getCachedNumberFormat(config.locale, {
+    style: 'decimal',
+    ...twoDecimals,
+    ...options,
+  });
+
+  // @ts-expect-error Remove this comment once TypeScript is updated to 5.5+
+  const formattedValue = numberFormat.format(value);
+
+  return symbol ? `${formattedValue} ${symbol}` : formattedValue;
+}
+
+function formatTokenWithMinThreshold(
+  config: { locale: string },
+  value: number | bigint | `${number}`,
+  symbol?: string,
+) {
+  if (!Number.isFinite(Number(value))) {
+    return '';
+  }
+
+  const number = Number(value);
+  const minThreshold = 0.0001;
+
+  if (number === 0) {
+    return formatToken(config, 0, symbol);
+  }
+
+  if (number < minThreshold) {
+    const formattedMin = formatToken(config, value, symbol);
+    return `<${formattedMin}`;
+  }
+
+  return formatToken(config, number, symbol, fourDecimals);
+}
+
 export function createFormatters({ locale = FALLBACK_LOCALE }) {
   return {
     /**
@@ -123,11 +175,27 @@ export function createFormatters({ locale = FALLBACK_LOCALE }) {
     formatCurrencyWithMinThreshold: formatCurrencyWithMinThreshold.bind(null, {
       locale,
     }),
+    /**
+     * Format a value as a token string.
+     *
+     * @param value - Numeric value to format.
+     * @param symbol - Optional token symbol.
+     */
+    formatToken: formatToken.bind(null, { locale }),
+    /**
+     * Token with thresholds for small values.
+     *
+     * @param value - Numeric value to format.
+     * @param symbol - Optional token symbol.
+     */
+    formatTokenWithMinThreshold: formatTokenWithMinThreshold.bind(null, {
+      locale,
+    }),
   };
 }
 
 export function useFormatters() {
   const locale = useSelector(getIntlLocale);
 
-  return createFormatters({ locale });
+  return useMemo(() => createFormatters({ locale }), [locale]);
 }

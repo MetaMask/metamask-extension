@@ -9,6 +9,7 @@ import {
   SensitiveTextLength,
 } from '../../../../component-library';
 import { TokenFiatDisplayInfo } from '../../types';
+import { useFormatters } from '../../../../../helpers/formatters';
 
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -17,6 +18,8 @@ type TokenCellPrimaryDisplayProps = {
 
 export const TokenCellPrimaryDisplay = React.memo(
   ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+    const { formatTokenWithMinThreshold } = useFormatters();
+
     return (
       <SensitiveText
         data-testid="multichain-token-list-item-value"
@@ -26,7 +29,7 @@ export const TokenCellPrimaryDisplay = React.memo(
         isHidden={privacyMode}
         length={SensitiveTextLength.Short}
       >
-        {token.primary} {token.symbol}
+        {formatTokenWithMinThreshold(token.balance ?? 0, token.symbol)}
       </SensitiveText>
     );
   },
