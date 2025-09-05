@@ -495,7 +495,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <Text
           variant={TextVariant.headingLg}
           marginBottom={1}
-          textAlign={TextAlign.Center}
           style={{
             wordBreak: 'break-word',
             whiteSpace: 'normal',
