@@ -17,8 +17,13 @@
   }
 
   &__content {
+    height: 100%;
     max-width: 650px;
     width: 100%;
+  }
+
+  &__body {
+    height: calc(100% - 64px);
   }
 
   @include design-system.screen-sm-min {

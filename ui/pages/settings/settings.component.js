@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
+import {
+  Routes as RouterRoutes,
+  Route,
+  matchPath,
+  Navigate,
+} from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
@@ -25,6 +30,7 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -64,6 +70,20 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
+import { TransactionShield } from './transaction-shield-tab';
+
+// Helper component for network routes that need side effects
+const NetworkRouteHandler = ({ onMount }) => {
+  React.useEffect(() => {
+    onMount();
+  }, [onMount]);
+
+  return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+};
+
+NetworkRouteHandler.propTypes = {
+  onMount: PropTypes.func.isRequired,
+};
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -73,15 +93,17 @@ class SettingsPage extends PureComponent {
     breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    history: PropTypes.object,
     initialBreadCrumbKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
+    isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
     isRevealSrpListPage: PropTypes.bool,
     isSeedlessPasswordOutdated: PropTypes.bool,
+    isTransactionShieldPage: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
     snapSettingsTitle: PropTypes.string,
@@ -116,8 +138,8 @@ class SettingsPage extends PureComponent {
   }
 
   handleClickSetting(setting) {
-    const { history } = this.props;
-    history.push(setting.route);
+    const { navigate } = this.props;
+    navigate(setting.route);
     this.setState({
       isSearchList: '',
       searchResults: '',
@@ -126,7 +148,7 @@ class SettingsPage extends PureComponent {
 
   render() {
     const {
-      history,
+      navigate,
       backRoute,
       currentPath,
       mostRecentOverviewPage,
@@ -134,11 +156,13 @@ class SettingsPage extends PureComponent {
       isPasswordChangePage,
       isRevealSrpListPage,
       isSeedlessPasswordOutdated,
+      isTransactionShieldPage,
     } = this.props;
 
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-    const isSearchHidden = isRevealSrpListPage || isPasswordChangePage;
+    const isSearchHidden =
+      isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
     return (
       <div
@@ -167,7 +191,7 @@ class SettingsPage extends PureComponent {
                   <MetafoxLogo
                     className="settings-page__header__title-container__metamask-logo"
                     unsetIconHeight
-                    onClick={async () => history.push(DEFAULT_ROUTE)}
+                    onClick={() => navigate(DEFAULT_ROUTE)}
                     display={[Display.Flex, Display.None]}
                   />
                 ) : (
@@ -176,7 +200,7 @@ class SettingsPage extends PureComponent {
                     iconName={IconName.ArrowLeft}
                     className="settings-page__header__title-container__back-button"
                     color={Color.iconDefault}
-                    onClick={() => history.push(backRoute)}
+                    onClick={() => navigate(backRoute)}
                     display={[Display.Flex, Display.None]}
                     size={ButtonIconSize.Sm}
                   />
@@ -191,9 +215,9 @@ class SettingsPage extends PureComponent {
               ariaLabel={t('close')}
               onClick={() => {
                 if (addNewNetwork) {
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 } else {
-                  history.push(mostRecentOverviewPage);
+                  navigate(mostRecentOverviewPage);
                 }
               }}
               size={ButtonIconSize.Sm}
@@ -241,9 +265,17 @@ class SettingsPage extends PureComponent {
 
   renderSearch() {
     const { isSearchList, searchText, searchResults } = this.state;
-    const { isRevealSrpListPage, isPasswordChangePage } = this.props;
+    const {
+      isRevealSrpListPage,
+      isPasswordChangePage,
+      isTransactionShieldPage,
+    } = this.props;
 
-    if (isRevealSrpListPage || isPasswordChangePage) {
+    if (
+      isRevealSrpListPage ||
+      isPasswordChangePage ||
+      isTransactionShieldPage
+    ) {
       return null;
     }
 
@@ -282,10 +314,9 @@ class SettingsPage extends PureComponent {
       addressName,
       initialBreadCrumbRoute,
       breadCrumbTextKey,
-      history,
+      navigate,
       initialBreadCrumbKey,
     } = this.props;
-
     let subheaderText;
 
     if (isPopup && isAddressEntryPage) {
@@ -315,7 +346,7 @@ class SettingsPage extends PureComponent {
             })}
             variant={TextVariant.headingSm}
             onClick={() =>
-              initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)
+              initialBreadCrumbRoute && navigate(initialBreadCrumbRoute)
             }
           >
             {subheaderText}
@@ -338,8 +369,13 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath, useExternalServices, settingsPageSnaps } =
-      this.props;
+    const {
+      navigate,
+      currentPath,
+      useExternalServices,
+      settingsPageSnaps,
+      isMetaMaskShieldFeatureEnabled,
+    } = this.props;
     const { t } = this.context;
 
     const snapsSettings = settingsPageSnaps.map(({ id, name }) => {
@@ -403,6 +439,14 @@ class SettingsPage extends PureComponent {
       });
     }
 
+    if (isMetaMaskShieldFeatureEnabled) {
+      tabs.splice(-4, 0, {
+        content: t('shieldTx'),
+        icon: <Icon name={IconName.ShieldLock} />,
+        key: TRANSACTION_SHIELD_ROUTE,
+      });
+    }
+
     if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
       tabs.splice(-1, 0, {
         content: t('developerOptions'),
@@ -424,11 +468,10 @@ class SettingsPage extends PureComponent {
           ) {
             return true;
           }
-          return matchPath(currentPath, { exact: true, path: key });
+          return matchPath(key, currentPath);
         }}
         onSelect={(key) =>
-          history.push({
-            pathname: key,
+          navigate(key, {
             state: { fromPage: currentPath },
           })
         }
@@ -438,85 +481,85 @@ class SettingsPage extends PureComponent {
 
   renderContent() {
     return (
-      <Switch>
+      <RouterRoutes>
         <Route
-          exact
           path={GENERAL_ROUTE}
-          render={(routeProps) => (
+          element={
             <SettingsTab
-              {...routeProps}
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
-          )}
+          }
         />
-        <Route exact path={ABOUT_US_ROUTE} render={() => <InfoTab />} />
+        <Route path={ABOUT_US_ROUTE} element={<InfoTab />} />
         <Route
           path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
-          component={SnapSettingsRenderer}
+          element={<SnapSettingsRenderer />}
         />
-        <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
-        <Route exact path={BACKUPANDSYNC_ROUTE} component={BackupAndSyncTab} />
+        <Route path={ADVANCED_ROUTE} element={<AdvancedTab />} />
+        <Route path={BACKUPANDSYNC_ROUTE} element={<BackupAndSyncTab />} />
         <Route
-          exact
           path={ADD_NETWORK_ROUTE}
-          render={() => {
-            this.props.toggleNetworkMenu({ isAddingNewNetwork: true });
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          element={
+            <NetworkRouteHandler
+              onMount={() =>
+                this.props.toggleNetworkMenu({ isAddingNewNetwork: true })
+              }
+            />
+          }
         />
         <Route
-          exact
           path={NETWORKS_ROUTE}
-          render={() => {
-            this.props.toggleNetworkMenu();
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          element={
+            <NetworkRouteHandler
+              onMount={() => this.props.toggleNetworkMenu()}
+            />
+          }
         />
         <Route
-          exact
           path={ADD_POPULAR_CUSTOM_NETWORK}
-          render={() => {
-            this.props.toggleNetworkMenu();
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          element={
+            <NetworkRouteHandler
+              onMount={() => this.props.toggleNetworkMenu()}
+            />
+          }
         />
-        <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
-        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        <Route path={SECURITY_ROUTE} element={<SecurityTab />} />
+        <Route
+          path={TRANSACTION_SHIELD_ROUTE}
+          element={<TransactionShield />}
+        />
+        <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
           <Route
-            exact
             path={DEVELOPER_OPTIONS_ROUTE}
-            component={DeveloperOptionsTab}
+            element={<DeveloperOptionsTab />}
           />
         )}
-        <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
-        <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
+        <Route path={CONTACT_LIST_ROUTE} element={<ContactListTab />} />
+        <Route path={CONTACT_ADD_ROUTE} element={<ContactListTab />} />
         <Route
-          exact
           path={`${CONTACT_EDIT_ROUTE}/:id`}
-          component={ContactListTab}
+          element={<ContactListTab />}
         />
         <Route
-          exact
           path={`${CONTACT_VIEW_ROUTE}/:id`}
-          component={ContactListTab}
+          element={<ContactListTab />}
         />
-        <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
+        <Route path={REVEAL_SRP_LIST_ROUTE} element={<RevealSrpList />} />
         <Route
-          exact
           path={SECURITY_PASSWORD_CHANGE_ROUTE}
-          component={ChangePassword}
+          element={<ChangePassword />}
         />
         <Route
-          render={(routeProps) => (
+          path="*"
+          element={
             <SettingsTab
-              {...routeProps}
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
-          )}
+          }
         />
-      </Switch>
+      </RouterRoutes>
     );
   }
 }

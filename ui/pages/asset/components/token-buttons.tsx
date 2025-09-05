@@ -54,9 +54,7 @@ import {
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
@@ -193,7 +191,10 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      navigateToSendRoute(history, { address: token.address });
+      navigateToSendRoute(history, {
+        address: token.address,
+        chainId: token.chainId,
+      });
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -230,12 +231,10 @@ const TokenButtons = ({
   );
 
   const handleSwapOnClick = useCallback(async () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
       return;
     }
-    ///: END:ONLY_INCLUDE_IF
 
     // Check if unified UI is enabled and route to bridge page for swaps
     if (isUnifiedUIEnabled) {

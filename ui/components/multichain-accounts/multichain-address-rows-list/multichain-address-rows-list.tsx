@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { CaipChainId } from '@metamask/utils';
+import { type AccountGroupId } from '@metamask/account-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -20,79 +19,51 @@ import {
   TextFieldSearchSize,
 } from '../../component-library';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain/networks';
-import {
-  NetworkAddressItem,
-  sortNetworkAddressItems,
-  getCompatibleNetworksForAccount,
-} from './utils';
+import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 
 export type MultichainAddressRowsListProps = {
   /**
-   * Array of InternalAccount objects to determine compatible networks for
+   * The account group ID.
    */
-  accounts?: InternalAccount[];
+  groupId: AccountGroupId;
+  /**
+   * Callback for when QR code button is clicked
+   */
+  onQrClick: (
+    address: string,
+    networkName: string,
+    networkImageSrc?: string,
+  ) => void;
 };
 
 export const MultichainAddressRowsList = ({
-  accounts = [],
+  groupId,
+  onQrClick,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
 
-  const [multichainNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
+  const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
+    getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
-
-  const allNetworks = useMemo(() => {
-    const networks: Record<string, { name: string; chainId: CaipChainId }> = {};
-
-    if (!multichainNetworks) {
-      return networks;
-    }
-
-    Object.entries(multichainNetworks).forEach(([chainId, networkConfig]) => {
-      if (networkConfig && networkConfig.name) {
-        networks[chainId] = {
-          name: networkConfig.name,
-          chainId: chainId as CaipChainId,
-        };
-      }
-    });
-
-    return networks;
-  }, [multichainNetworks]);
-
-  // Generate network address items for all accounts and their compatible networks
-  const networkAddressItems = useMemo(() => {
-    const items: NetworkAddressItem[] = [];
-
-    accounts.forEach((account) => {
-      const compatibleItems = getCompatibleNetworksForAccount(
-        account,
-        allNetworks,
-      );
-      items.push(...compatibleItems);
-    });
-
-    return items;
-  }, [accounts, allNetworks]);
 
   const filteredItems = useMemo(() => {
     if (!searchPattern.trim()) {
-      return sortNetworkAddressItems(networkAddressItems);
+      return getAccountsSpreadByNetworkByGroupId;
     }
 
     const pattern = searchPattern.toLowerCase();
-    const filtered = networkAddressItems.filter((item) => {
-      return (
-        item.networkName.toLowerCase().includes(pattern) ||
-        item.address.toLowerCase().includes(pattern)
-      );
-    });
+    const filtered = getAccountsSpreadByNetworkByGroupId.filter(
+      ({ networkName, account }) => {
+        return (
+          networkName.toLowerCase().includes(pattern) ||
+          account.address.toLowerCase().includes(pattern)
+        );
+      },
+    );
 
-    return sortNetworkAddressItems(filtered);
-  }, [networkAddressItems, searchPattern]);
+    return filtered;
+  }, [getAccountsSpreadByNetworkByGroupId, searchPattern]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPattern(event.target.value);
@@ -105,13 +76,14 @@ export const MultichainAddressRowsList = ({
   const renderedRows = useMemo(() => {
     return filteredItems.map((item, index) => (
       <MultichainAddressRow
-        key={`${item.address}-${item.chainId}-${index}`}
-        chainId={item.chainId}
+        key={`${item.account.address}-${item.scope}-${index}`}
+        chainId={item.scope}
         networkName={item.networkName}
-        address={item.address}
+        address={item.account.address}
+        onQrClick={onQrClick}
       />
     ));
-  }, [filteredItems]);
+  }, [filteredItems, onQrClick]);
 
   return (
     <Box

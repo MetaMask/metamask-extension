@@ -1,17 +1,16 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 
 import { Numeric } from '../../../../../shared/modules/Numeric';
-import {
-  getGasFeeEstimatesByChainId,
-  getTokenBalances,
-} from '../../../../ducks/metamask/metamask';
+import { getGasFeeEstimatesByChainId } from '../../../../ducks/metamask/metamask';
+import { useAsyncResult } from '../../../../hooks/useAsync';
 import { Asset } from '../../types/send';
-import { toTokenMinimalUnit } from '../../utils/send';
+import { getLayer1GasFees, toTokenMinimalUnit } from '../../utils/send';
 import { useSendContext } from '../../context/send';
+import { useBalance } from './useBalance';
 import { useSendType } from './useSendType';
 
 const NATIVE_TRANSFER_GAS_LIMIT = 21000;
@@ -23,7 +22,10 @@ export type GasFeeEstimatesType = {
   };
 };
 
-export const getEstimatedTotalGas = (gasFeeEstimates?: GasFeeEstimatesType) => {
+export const getEstimatedTotalGas = (
+  layer1GasFees: Hex,
+  gasFeeEstimates?: GasFeeEstimatesType,
+) => {
   if (!gasFeeEstimates) {
     return new Numeric('0', 10);
   }
@@ -35,73 +37,54 @@ export const getEstimatedTotalGas = (gasFeeEstimates?: GasFeeEstimatesType) => {
     10,
   );
   const conversionrate = new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10);
-  return totalGas.times(conversionrate);
+  return totalGas.times(conversionrate).add(new Numeric(layer1GasFees, 16));
 };
 
-type AccountWithBalances = Record<Hex, { balance: Hex }>;
-type TokenBalances = Record<Hex, Record<Hex, Record<Hex, Hex>>>;
-type MetamaskSendState = {
-  metamask: { accountsByChainId: Record<Hex, AccountWithBalances> };
-};
-type GetEvmMaxAmountArgs = {
-  accountsWithBalances?: AccountWithBalances;
+type GetMaxAmountArgs = {
   asset?: Asset;
   from: string;
-  tokenBalances: TokenBalances;
+  layer1GasFees: Hex;
+  isEvmSendType?: boolean;
   gasFeeEstimates?: GasFeeEstimatesType;
+  rawBalanceNumeric: Numeric;
 };
 
-const getEvmMaxAmount = ({
-  accountsWithBalances,
+const getMaxAmountFn = ({
   asset,
-  from,
-  tokenBalances,
+  layer1GasFees,
   gasFeeEstimates,
-}: GetEvmMaxAmountArgs) => {
+  isEvmSendType,
+  rawBalanceNumeric,
+}: GetMaxAmountArgs) => {
   if (!asset) {
     return '0';
   }
-  const nativeTokenAddressForChainId = getNativeTokenAddress(
-    asset.chainId as Hex,
-  );
-  if (
-    nativeTokenAddressForChainId.toLowerCase() === asset.address?.toLowerCase()
-  ) {
-    if (!accountsWithBalances) {
-      return '0';
+
+  let estimatedTotalGas = new Numeric('0', 10);
+  if (isEvmSendType) {
+    const nativeTokenAddressForChainId = getNativeTokenAddress(
+      asset.chainId as Hex,
+    );
+    if (
+      nativeTokenAddressForChainId.toLowerCase() ===
+      asset.address?.toLowerCase()
+    ) {
+      estimatedTotalGas = getEstimatedTotalGas(layer1GasFees, gasFeeEstimates);
     }
-    const accountAddress = Object.keys(accountsWithBalances).find(
-      (address) => address.toLowerCase() === from.toLowerCase(),
-    ) as Hex;
-    const account = accountsWithBalances[accountAddress];
-    const estimatedTotalGas = getEstimatedTotalGas(gasFeeEstimates);
-    const balance = new Numeric(account.balance, 16).minus(estimatedTotalGas);
-    return balance.isZero() || balance.isNegative()
-      ? '0'
-      : toTokenMinimalUnit(balance.toBase(16).toString(), asset.decimals);
-  }
-  const tokenBalance = (
-    Object.values(tokenBalances[from as Hex]).find(
-      (chainTokenBalances: Record<Hex, Hex>) =>
-        chainTokenBalances?.[asset?.address as Hex],
-    ) as Record<Hex, Hex>
-  )?.[asset?.address as Hex];
-
-  return toTokenMinimalUnit(tokenBalance, asset.decimals);
-};
-
-const getNonEvmMaxAmount = (asset?: Asset) => {
-  if (!asset) {
-    return '0';
   }
 
-  return asset.primary;
+  const balance = rawBalanceNumeric.minus(estimatedTotalGas);
+
+  return balance.isZero() || balance.isNegative()
+    ? '0'
+    : toTokenMinimalUnit(balance.toString(), asset.decimals, 10);
 };
 
 export const useMaxAmount = () => {
-  const { asset, chainId, from } = useSendContext();
-  const tokenBalances = useSelector(getTokenBalances);
-  const { isEvmSendType } = useSendType();
+  const { asset, chainId, from, value } = useSendContext();
+  const { isEvmSendType, isEvmNativeSendType } = useSendType();
+  const { rawBalanceNumeric } = useBalance();
+
   const gasFeeEstimates = useSelector((state) => {
     if (chainId && isEvmSendType) {
       return (
@@ -113,34 +96,35 @@ export const useMaxAmount = () => {
     }
     return undefined;
   });
-  const accountsByChainId = useSelector(
-    (state: MetamaskSendState) => state.metamask.accountsByChainId,
-  ) as AccountWithBalances;
-  const accountsWithBalances = useMemo(() => {
-    if (chainId && asset?.address && isEvmAddress(asset?.address)) {
-      return accountsByChainId[chainId as Hex];
+
+  const { value: layer1GasFees } = useAsyncResult(async () => {
+    if (!isEvmNativeSendType || asset?.chainId === CHAIN_IDS.MAINNET || !from) {
+      return '0x0';
     }
-    return undefined;
-  }, [accountsByChainId, asset?.address, chainId]);
+    return await getLayer1GasFees({
+      asset: asset as Asset,
+      chainId: chainId as Hex,
+      from: from as Hex,
+      value: (value ?? '0') as string,
+    });
+  }, [asset, chainId, from, value]);
 
   const getMaxAmount = useCallback(() => {
-    if (isEvmSendType) {
-      return getEvmMaxAmount({
-        accountsWithBalances,
-        asset,
-        from,
-        tokenBalances,
-        gasFeeEstimates,
-      });
-    }
-    return getNonEvmMaxAmount(asset);
+    return getMaxAmountFn({
+      asset,
+      from,
+      gasFeeEstimates,
+      isEvmSendType,
+      layer1GasFees: layer1GasFees ?? '0x0',
+      rawBalanceNumeric,
+    });
   }, [
-    accountsWithBalances,
     asset,
     from,
     gasFeeEstimates,
     isEvmSendType,
-    tokenBalances,
+    layer1GasFees,
+    rawBalanceNumeric,
   ]);
 
   return {

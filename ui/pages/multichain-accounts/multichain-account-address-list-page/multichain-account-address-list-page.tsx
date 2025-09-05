@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -18,10 +18,8 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
-import {
-  getInternalAccountsFromGroupById,
-  getMultichainAccountGroupById,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import {
   AddressListQueryParams,
   AddressListSource,
@@ -37,12 +35,6 @@ export const MultichainAccountAddressListPage = () => {
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
     : null;
 
-  const accounts = useSelector((state) =>
-    decodedAccountGroupId
-      ? getInternalAccountsFromGroupById(state, decodedAccountGroupId)
-      : [],
-  );
-
   const accountGroup = useSelector((state) =>
     decodedAccountGroupId
       ? getMultichainAccountGroupById(state, decodedAccountGroupId)
@@ -57,6 +49,28 @@ export const MultichainAccountAddressListPage = () => {
   const pageTitle = isReceiveMode
     ? t('receivingAddress')
     : `${accountGroup?.metadata?.name || t('account')} / ${t('addresses')}`;
+
+  // QR Modal state
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+  const [selectedQRData, setSelectedQRData] = useState<{
+    address: string;
+    networkName: string;
+    networkImageSrc?: string;
+  } | null>(null);
+
+  // QR Modal handlers
+  const handleShowQR = useCallback(
+    (address: string, networkName: string, networkImageSrc?: string) => {
+      setSelectedQRData({ address, networkName, networkImageSrc });
+      setIsQRModalOpen(true);
+    },
+    [],
+  );
+
+  const handleCloseQR = useCallback(() => {
+    setIsQRModalOpen(false);
+    setSelectedQRData(null);
+  }, []);
 
   return (
     <Page className="max-w-[600px]">
@@ -78,9 +92,26 @@ export const MultichainAccountAddressListPage = () => {
       </Header>
       <Content>
         <Box flexDirection={BoxFlexDirection.Column}>
-          <MultichainAddressRowsList accounts={accounts} />
+          {decodedAccountGroupId ? (
+            <MultichainAddressRowsList
+              groupId={decodedAccountGroupId}
+              onQrClick={handleShowQR}
+            />
+          ) : null}
         </Box>
       </Content>
+
+      {/* QR Code Modal */}
+      {selectedQRData && (
+        <AddressQRCodeModal
+          isOpen={isQRModalOpen}
+          onClose={handleCloseQR}
+          address={selectedQRData.address}
+          accountName={accountGroup?.metadata?.name || t('account')}
+          networkName={selectedQRData.networkName}
+          networkImageSrc={selectedQRData.networkImageSrc}
+        />
+      )}
     </Page>
   );
 };

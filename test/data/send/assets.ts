@@ -3,6 +3,8 @@ export const EVM_ASSET = {
   address: '0xeDd1935e28b253C7905Cf5a944f0B5830FFA916a',
   chainId: 5,
   metadata: {},
+  symbol: 'NEU',
+  decimals: 0,
 };
 
 export const EVM_NATIVE_ASSET = {
@@ -16,7 +18,8 @@ export const EVM_NATIVE_ASSET = {
 };
 
 export const SOLANA_NATIVE_ASSET = {
-  address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+  address: '0x0000000000000000000000000000000000000000',
+  assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
   aggregators: [],
   balance: '400',
   balanceFiat: '1500',
