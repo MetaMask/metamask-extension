@@ -133,7 +133,7 @@ describe('Dapp interactions', function () {
 
         // Attempt interaction with DApp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.findAndClickCreateToken();
+        await testDapp.clickCreateToken();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const loginPage = new LoginPage(driver);

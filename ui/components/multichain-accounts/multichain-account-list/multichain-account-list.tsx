@@ -46,6 +46,8 @@ export type MultichainAccountListProps = {
       [groupId: string]: string; // display balance
     }>;
   }>;
+  isInSearchMode?: boolean;
+  displayWalletHeader?: boolean;
 };
 
 export const MultichainAccountList = ({
@@ -53,6 +55,8 @@ export const MultichainAccountList = ({
   selectedAccountGroups,
   handleAccountClick,
   formattedAccountGroupBalancesByWallet,
+  isInSearchMode = false,
+  displayWalletHeader = true,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -156,7 +160,7 @@ export const MultichainAccountList = ({
           },
         );
 
-        if (walletData.type === AccountWalletType.Entropy) {
+        if (!isInSearchMode && walletData.type === AccountWalletType.Entropy) {
           groupsItems.push(
             <AddMultichainAccount
               walletId={walletId as AccountWalletId}
@@ -165,7 +169,11 @@ export const MultichainAccountList = ({
           );
         }
 
-        return [...walletsAccumulator, walletHeader, ...groupsItems];
+        return [
+          ...walletsAccumulator,
+          displayWalletHeader ? walletHeader : null,
+          ...groupsItems,
+        ];
       },
       [] as React.ReactNode[],
     );
@@ -178,6 +186,8 @@ export const MultichainAccountList = ({
     dispatch,
     history,
     formattedAccountGroupBalancesByWallet,
+    isInSearchMode,
+    displayWalletHeader,
     selectedAccountGroupsSet,
   ]);
 
