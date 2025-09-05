@@ -113,6 +113,7 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
+  // TODO BIP 44: How is this going to work with BIP44 given that there is no selected chain?
   const setCorrectChain = useCallback(async () => {
     // If we aren't presently on the chain of the asset, change to it
     if (

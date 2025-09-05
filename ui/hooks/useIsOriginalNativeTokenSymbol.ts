@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { CaipChainId, Hex } from '@metamask/utils';
 import { useSafeChainsListValidationSelector } from '../selectors';
 import { getMultichainCurrentNetwork } from '../selectors/multichain';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
-import { isEvmChainId } from '../../shared/lib/asset-utils';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId: Hex | CaipChainId,
