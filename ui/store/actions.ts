@@ -2541,6 +2541,10 @@ export function setShowSupportDataConsentModal(show: boolean) {
     payload: show,
   };
 }
+
+export function setShowAccountIconTour(show: boolean) {
+  return submitRequestToBackground('setShowAccountIconTour', [show]);
+}
 export function addToken(
   {
     address,

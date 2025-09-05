@@ -2,6 +2,11 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
+  Button,
+  ButtonBaseSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -9,15 +14,14 @@ import {
   Display,
   IconColor,
   JustifyContent,
-  Size,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
-  ButtonBase,
   ButtonIcon,
+  ButtonIconSize,
   IconName,
   Text,
 } from '../../component-library';
@@ -25,18 +29,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
 
 export const ProductTour = ({
-  className,
-  prevIcon,
+  className = '',
+  prevIcon = undefined,
   title,
   description,
-  currentStep,
-  totalSteps,
-  positionObj = '5%',
+  currentStep = '',
+  totalSteps = '',
+  arrowPosition = '20px',
   closeMenu,
   anchorElement,
   onClick,
-  prevClick,
-  productTourDirection,
+  prevClick = () => undefined,
+  productTourDirection = 'ltr',
   ...props
 }) => {
   const t = useI18nContext();
@@ -66,7 +70,9 @@ export const ProductTour = ({
           display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          style={{ right: positionObj }}
+          style={{
+            '--arrow-position': arrowPosition,
+          }}
         />
         <Box
           display={Display.Flex}
@@ -76,7 +82,7 @@ export const ProductTour = ({
           {prevIcon ? (
             <ButtonIcon
               iconName={IconName.ArrowLeft}
-              size={Size.SM}
+              size={ButtonIconSize.Sm}
               color={IconColor.infoInverse}
               onClick={prevClick}
               className="multichain-product-tour-menu__previous-icon"
@@ -116,14 +122,14 @@ export const ProductTour = ({
               ? `${currentStep} / ${totalSteps}`
               : null}
           </Text>
-          <ButtonBase
-            backgroundColor={BackgroundColor.primaryInverse}
-            color={TextColor.primaryDefault}
-            className="multichain-product-tour-menu__button"
+          <Button
+            isInverse
+            variant={ButtonVariant.Primary}
+            size={ButtonBaseSize.Sm}
             onClick={onClick}
           >
-            {t('recoveryPhraseReminderConfirm')}
-          </ButtonBase>
+            {t('gotIt')}
+          </Button>
         </Box>
       </Box>
     </Menu>
@@ -154,7 +160,7 @@ ProductTour.propTypes = {
   /**
    * Description of the popover
    */
-  description: PropTypes.string,
+  description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
    * Current step in the product tour
    */
@@ -164,9 +170,9 @@ ProductTour.propTypes = {
    */
   totalSteps: PropTypes.string,
   /**
-   * PositionObj to decide the position of the popover tip
+   * Arrow position from left edge (e.g., '20px', '50%')
    */
-  positionObj: PropTypes.string,
+  arrowPosition: PropTypes.string,
   /**
    * The onClick handler to be passed
    */
