@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import type { WebpackPluginInstance } from 'webpack';
 import LavamoatPlugin from '../../../../../../LavaMoat/packages/webpack/src/plugin.js';
 import type { Args } from '../../cli';
+
 // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const rootDir = join(__dirname, '../../../../../');
