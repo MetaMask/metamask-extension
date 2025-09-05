@@ -50,6 +50,10 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     type,
   );
 
+  console.log('NATIVE ASSET', {
+    token,
+  });
+
   return (
     <AssetPage
       asset={{

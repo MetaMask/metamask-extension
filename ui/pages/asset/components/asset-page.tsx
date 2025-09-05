@@ -49,6 +49,7 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
+  getIsMultichainAccountsState2Enabled,
   getIsSwapsChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
@@ -71,7 +72,10 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { getMultichainNativeAssetType } from '../../../selectors/assets';
+import {
+  getAssetsBySelectedAccountGroup,
+  getMultichainNativeAssetType,
+} from '../../../selectors/assets';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { AssetMarketDetails } from './asset-market-details';
@@ -94,6 +98,10 @@ const AssetPage = ({
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = !isCaipChainId(asset.chainId);
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -187,30 +195,56 @@ const AssetPage = ({
     return '';
   })();
 
-  const tokenHexBalance =
-    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
-
-  const balance = calculateTokenBalance({
-    isNative,
-    chainId,
-    address: address as Hex,
-    decimals,
-    nativeBalances,
-    selectedAccountTokenBalancesAcrossChains,
-  });
-
   const { currentPrice } = useCurrentPrice(asset);
 
-  const tokenFiatAmount = currentPrice
-    ? currentPrice * parseFloat(String(balance))
-    : 0;
+  let balance, tokenFiatAmount;
+  if (isMultichainAccountsState2Enabled) {
+    const assetWithBalance = accountGroupIdAssets[chainId]?.find(
+      (item) => item.assetId.toLowerCase() === address.toLowerCase(),
+    );
 
-  // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
-  asset.balance = {
-    value: hexToDecimal(tokenHexBalance),
-    display: String(balance),
-    fiat: String(tokenFiatAmount),
-  };
+    balance = assetWithBalance?.balance as string;
+    tokenFiatAmount = assetWithBalance?.fiat?.balance as number;
+    const tokenHexBalance = assetWithBalance?.rawBalance as string;
+
+    console.log('KEKEKEKKEKE', {
+      address,
+      chainId,
+      assetWithBalance,
+      balance,
+      tokenFiatAmount,
+      tokenHexBalance,
+    });
+
+    asset.balance = {
+      value: hexToDecimal(tokenHexBalance),
+      display: balance,
+      fiat: String(tokenFiatAmount),
+    };
+  } else {
+    const tokenHexBalance =
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
+
+    balance = calculateTokenBalance({
+      isNative,
+      chainId,
+      address: address as Hex,
+      decimals,
+      nativeBalances,
+      selectedAccountTokenBalancesAcrossChains,
+    });
+
+    tokenFiatAmount = currentPrice
+      ? currentPrice * parseFloat(String(balance))
+      : 0;
+
+    // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
+    asset.balance = {
+      value: hexToDecimal(tokenHexBalance),
+      display: String(balance),
+      fiat: String(tokenFiatAmount),
+    };
+  }
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(

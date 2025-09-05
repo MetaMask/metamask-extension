@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { HistoricalPriceValue } from '@metamask/snaps-sdk';
-import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import {
+  CaipAssetType,
+  CaipChainId,
+  Hex,
+  isCaipChainId,
+} from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -267,7 +272,7 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = !isCaipChainId(chainId);
 
   const historicalPricesEvm = useHistoricalPricesEvm({
     chainId,
