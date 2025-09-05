@@ -77,7 +77,7 @@ export default function useSubmitBridgeTransaction() {
         await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(
           { pathname: DEFAULT_ROUTE },
-          { state: { stayOnHomePage: true } }
+          { state: { stayOnHomePage: true } },
         );
         await dispatch(submitBridgeTx(quoteResponse, false));
         return;

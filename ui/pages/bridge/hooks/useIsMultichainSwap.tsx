@@ -47,7 +47,7 @@ export const useIsMultichainSwap = () => {
           pathname,
           search: searchParams.toString(),
         },
-        { replace: true }
+        { replace: true },
       );
     }
   }, [
