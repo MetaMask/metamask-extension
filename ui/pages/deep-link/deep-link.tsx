@@ -178,7 +178,6 @@ export const DeepLink = () => {
       if (!urlStr || errorCode) {
         setRoute(null);
         setIsLoading(false);
-        setExtraDescription(null);
         if (errorCode === '404') {
           set404(setDescription, setTitle, t);
 
@@ -202,8 +201,11 @@ export const DeepLink = () => {
                     </ButtonLink>,
                   ]),
                 );
+              } else {
+                setExtraDescription(null);
               }
             } catch (e) {
+              // probably a gibberish url, ignore
               if (abortController.signal.aborted) return;
               setExtraDescription(null);
             }
@@ -212,6 +214,7 @@ export const DeepLink = () => {
           }
         } else {
           setDescription(null);
+          setExtraDescription(null);
           setTitle(t('deepLink_ErrorMissingUrl'));
         }
         setCta(t('deepLink_GoToTheHomePageButton'));
