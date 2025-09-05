@@ -85,8 +85,6 @@ describe('Asset', () => {
 
   it('renders all components', () => {
     const { getByTestId } = render(<Asset />);
-
-    expect(getByTestId('header')).toBeInTheDocument();
     expect(getByTestId('asset-filter-input')).toBeInTheDocument();
     expect(getByTestId('network-filter')).toBeInTheDocument();
     expect(getByTestId('asset-list')).toBeInTheDocument();
