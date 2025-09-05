@@ -2,7 +2,7 @@ import React from 'react';
 import SnapResult from '.';
 
 export default {
-  title: 'Pages/Snaps/SnapResult',
+  title: 'Pages/PermissionsConnect/Snaps/SnapResult',
 
   component: SnapResult,
   argTypes: {},

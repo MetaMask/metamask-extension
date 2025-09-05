@@ -13,7 +13,7 @@ const store = configureStore(
 );
 
 const Story = {
-  title: 'Components/App/Confirm/info/SIWESignInfo',
+  title: 'Pages/Confirmations/Components/Confirm/Info/PersonalSign/SiweSign',
   component: SIWESignInfo,
   decorators: [
     (story: () => any) => (

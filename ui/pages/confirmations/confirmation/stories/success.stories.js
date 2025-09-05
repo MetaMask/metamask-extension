@@ -12,7 +12,7 @@ import { PendingApproval } from './util';
  * The below arguments are properties in the `ApprovalController.success` request.
  */
 export default {
-  title: 'Pages/ConfirmationPage/ResultSuccess',
+  title: 'Pages/Confirmations/Confirmation/Stories/ResultSuccess',
   component: ConfirmationPage,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {

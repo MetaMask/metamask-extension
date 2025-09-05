@@ -7,7 +7,7 @@ import { SortOrder } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 const storybook = {
-  title: 'Pages/Bridge/BridgeQuotesModal',
+  title: 'Pages/Bridge/Quotes/BridgeQuotesModal',
   component: BridgeQuotesModal,
 };
 

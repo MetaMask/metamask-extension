@@ -18,7 +18,7 @@ const store = configureStore({
 });
 
 const ConfirmInfoRowCurrencyStory = {
-  title: 'Components/App/Confirm/InfoRowCurrency',
+  title: 'Components/App/Confirm/Info/Row/ConfirmInfoRowCurrency',
   component: ConfirmInfoRowCurrency,
   argTypes: {
     variant: {

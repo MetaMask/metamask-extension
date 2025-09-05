@@ -8,7 +8,7 @@ import SnapInstall from '.';
 const store = configureStore(mockState);
 
 export default {
-  title: 'Pages/Snaps/SnapInstall',
+  title: 'Pages/PermissionsConnect/Snaps/SnapInstall',
 
   component: SnapInstall,
   argTypes: {},

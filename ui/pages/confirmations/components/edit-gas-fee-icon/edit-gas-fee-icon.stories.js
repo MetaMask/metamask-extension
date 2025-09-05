@@ -2,7 +2,7 @@ import React from 'react';
 import EditGasFeeIcon from '.';
 
 export default {
-  title: 'Confirmations/Components/EditGasFeeIcon',
+  title: 'Pages/Confirmations/Components/EditGasFeeIcon',
   argTypes: {
     userAcknowledgedGasMissing: {
       control: 'boolean',

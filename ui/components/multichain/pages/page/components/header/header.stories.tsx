@@ -7,7 +7,7 @@ import {
 import { Header } from '.';
 
 const story = {
-  title: 'Components/Multichain/Page/Header',
+  title: 'Components/Multichain/Pages/Page/Components/Header',
   component: Header,
   argTypes: {
     endAdornment: {

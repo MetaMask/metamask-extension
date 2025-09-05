@@ -8,7 +8,7 @@ import { NotificationsPage } from './notifications-page';
 const store = configureStore(testData);
 
 export default {
-  title: 'Components/Multichain/Notification/NotificationsPage',
+  title: 'Components/Multichain/NotificationsPage',
   component: NotificationsPage,
   decorators: [
     (Story) => (

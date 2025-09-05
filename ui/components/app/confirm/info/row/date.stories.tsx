@@ -4,7 +4,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowDate } from './date';
 
 const ConfirmInfoRowDateStory = {
-  title: 'Components/App/Confirm/InfoRowDate',
+  title: 'Components/App/Confirm/Info/Row/ConfirmInfoRowDate',
   component: ConfirmInfoRowDate,
 
   decorators: [
@@ -18,7 +18,9 @@ const ConfirmInfoRowDateStory = {
   },
 };
 
-export const DefaultStory = ({ date }) => <ConfirmInfoRowDate unixTimestamp={date} />;
+export const DefaultStory = ({ date }) => (
+  <ConfirmInfoRowDate unixTimestamp={date} />
+);
 DefaultStory.args = {
   date: 1633019124,
 };

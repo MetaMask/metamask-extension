@@ -3,7 +3,7 @@ import React from 'react';
 import SnapUpdateAlert from '.';
 
 export default {
-  title: 'Components/App/snaps/SnapUpdateAlert',
+  title: 'Components/App/Snaps/SnapUpdateAlert',
   component: SnapUpdateAlert,
   argTypes: {
     onUpdateClick: {

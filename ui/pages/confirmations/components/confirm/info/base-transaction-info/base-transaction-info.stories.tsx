@@ -9,7 +9,7 @@ import BaseTransactionInfo from './base-transaction-info';
 const store = configureStore(getMockContractInteractionConfirmState());
 
 const Story = {
-  title: 'Components/App/Confirm/info/BaseTransactionInfo',
+  title: 'Pages/Confirmations/Components/Confirm/Info/BaseTransactionInfo',
   component: BaseTransactionInfo,
   decorators: [
     (story: () => Meta<typeof BaseTransactionInfo>) => (

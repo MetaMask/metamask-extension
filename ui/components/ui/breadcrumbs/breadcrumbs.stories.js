@@ -3,7 +3,7 @@ import README from './README.mdx';
 import Breadcrumbs from './breadcrumbs.component';
 
 export default {
-  title: 'Components/UI/Breadcrumbs ',
+  title: 'Components/UI/Breadcrumbs',
 
   component: Breadcrumbs,
   parameters: {

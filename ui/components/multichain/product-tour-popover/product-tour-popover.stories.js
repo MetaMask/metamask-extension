@@ -2,7 +2,7 @@ import React from 'react';
 import { ProductTour } from '.';
 
 export default {
-  title: 'Components/Multichain/ProductTour',
+  title: 'Components/Multichain/ProductTourPopover',
   component: ProductTour,
   argTypes: {
     prevIcon: {

@@ -5,7 +5,7 @@ import { Button } from '../../../component-library';
 import HoldToRevealModal from './hold-to-reveal-modal';
 
 export default {
-  title: 'Components/App/HoldToRevealModal',
+  title: 'Components/App/Modals/HoldToRevealModal',
   component: HoldToRevealModal,
   argTypes: {
     isShowingModal: {

@@ -10,7 +10,7 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { TokenListItem } from '.';
 
 export default {
-  title: 'Components/Multichain/MultichainTokenListItem',
+  title: 'Components/Multichain/TokenListItem',
   component: TokenListItem,
   argTypes: {
     tokenSymbol: {

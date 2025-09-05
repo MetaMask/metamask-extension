@@ -36,7 +36,7 @@ const storeMock = configureStore({
 });
 
 const ConfirmInfoRowStory = {
-  title: 'Components/App/Confirm/AlertRow',
+  title: 'Components/App/Confirm/Info/Row/AlertRow',
 
   component: ConfirmInfoAlertRow,
   argTypes: {

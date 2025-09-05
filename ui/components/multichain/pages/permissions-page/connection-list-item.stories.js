@@ -9,7 +9,7 @@ import { ConnectionListItem } from './connection-list-item';
 const store = configureStore(mockState);
 
 export default {
-  title: 'Components/Multichain/ConnectionListItem',
+  title: 'Components/Multichain/Pages/PermissionsPage/ConnectionListItem',
   component: ConnectionListItem,
   parameters: {
     docs: {
