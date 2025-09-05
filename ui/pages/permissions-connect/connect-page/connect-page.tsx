@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   generateCaip25Caveat,
   getAllNamespacesFromCaip25CaveatValue,
@@ -38,16 +38,9 @@ import {
   ButtonLink,
   ButtonSize,
   ButtonVariant,
-  Checkbox,
   Icon,
   IconName,
   IconSize,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
 } from '../../../components/component-library';
 import {
@@ -66,6 +59,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  Severity,
   TextAlign,
   TextColor,
   TextVariant,
@@ -96,6 +90,18 @@ import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-me
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import Tooltip from '../../../components/ui/tooltip';
+import {
+  AlertModal,
+  AcknowledgeCheckboxBase,
+} from '../../../components/app/alert-system/alert-modal/alert-modal';
+import { AlertMetricsProvider } from '../../../components/app/alert-system/contexts/alertMetricsContext';
+import { AlertActionHandlerProvider } from '../../../components/app/alert-system/contexts/alertActionHandler';
+import useAlerts from '../../../hooks/useAlerts';
+import {
+  updateAlerts,
+  clearAlerts,
+  Alert,
+} from '../../../ducks/confirm-alerts/confirm-alerts';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
@@ -135,6 +141,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const dispatch = useDispatch();
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),
@@ -209,9 +216,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
-  const [showMaliciousSiteModal, setShowMaliciousSiteModal] = useState(false);
-  const [maliciousSiteAcknowledged, setMaliciousSiteAcknowledged] =
+
+  // Alert system setup
+  const alertOwnerId = `connect-${permissionsRequestId}`;
+  const { hasUnconfirmedDangerAlerts, alerts } = useAlerts(alertOwnerId);
+
+  // Track whether user has acknowledged malicious site warning this session
+  const [maliciousAlertAcknowledged, setMaliciousAlertAcknowledged] =
     useState(false);
+
+  // Local checkbox state for the modal (separate from alert system)
+  const [modalCheckboxChecked, setModalCheckboxChecked] = useState(false);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
   const originTrustSignals = useOriginTrustSignals(
@@ -219,6 +234,29 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
   const isMaliciousSite =
     originTrustSignals.state === TrustSignalDisplayState.Malicious;
+
+  // Function to create malicious site alert
+  const createMaliciousAlert = useCallback(() => {
+    const maliciousAlert: Alert = {
+      key: 'maliciousSiteWarning',
+      severity: Severity.Danger,
+      reason: t('alertReasonOriginTrustSignalMalicious') || 'Malicious site',
+      message:
+        t('alertMessageOriginTrustSignalMalicious') ||
+        'This has been identified as malicious. We recommend not interacting with this site.',
+      alertDetails: [targetSubjectMetadata.origin],
+    };
+    dispatch(updateAlerts(alertOwnerId, [maliciousAlert]));
+    // Reset checkbox state when modal opens
+    setModalCheckboxChecked(false);
+  }, [t, targetSubjectMetadata.origin, alertOwnerId, dispatch]);
+
+  // Clear alerts on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(clearAlerts(alertOwnerId));
+    };
+  }, [alertOwnerId, dispatch]);
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
@@ -434,40 +472,25 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     setShowCreateSolanaAccountModal(false);
   }, []);
 
-  const handleMaliciousSiteCheckbox = useCallback(() => {
-    setMaliciousSiteAcknowledged(!maliciousSiteAcknowledged);
-  }, [maliciousSiteAcknowledged]);
+  const handleAlertAcknowledge = useCallback(() => {
+    // Mark that user has acknowledged the malicious site warning
+    setMaliciousAlertAcknowledged(true);
+    // Clear the alerts, don't approve connection yet
+    // The user will need to click the Connect button again
+    dispatch(clearAlerts(alertOwnerId));
+  }, [dispatch, alertOwnerId]);
 
-  const handleOpenMaliciousSiteModal = useCallback(() => {
-    setShowMaliciousSiteModal(true);
+  const handleModalCheckboxClick = useCallback(() => {
+    setModalCheckboxChecked(!modalCheckboxChecked);
+  }, [modalCheckboxChecked]);
+
+  // No-op functions for alert metrics (we don't need tracking for connect page)
+  const noOpFunction = useCallback(() => {
+    // No-op function for alert metrics
   }, []);
-
-  const handleCloseMaliciousSiteModal = useCallback(() => {
-    setShowMaliciousSiteModal(false);
-    setMaliciousSiteAcknowledged(false);
+  const handleProcessAction = useCallback(() => {
+    // No-op function for action processing
   }, []);
-
-  const handleContinueAnywayFromModal = useCallback(() => {
-    setShowMaliciousSiteModal(false);
-    const _request = {
-      ...request,
-      permissions: {
-        ...request.permissions,
-        ...generateCaip25Caveat(
-          requestedCaip25CaveatValueWithExistingPermissions,
-          selectedCaipAccountAddresses,
-          selectedChainIds,
-        ),
-      },
-    };
-    approveConnection(_request);
-  }, [
-    request,
-    requestedCaip25CaveatValueWithExistingPermissions,
-    selectedCaipAccountAddresses,
-    selectedChainIds,
-    approveConnection,
-  ]);
 
   const handleCloseEditAccountsModal = useCallback(() => {
     setShowEditAccountsModal(false);
@@ -478,12 +501,22 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(() => {
-    // If it's a malicious site and user hasn't acknowledged, show modal first
-    if (isMaliciousSite && !maliciousSiteAcknowledged) {
-      handleOpenMaliciousSiteModal();
+    // If it's a malicious site and user hasn't acknowledged yet, show the alert modal
+    if (
+      isMaliciousSite &&
+      !maliciousAlertAcknowledged &&
+      !hasUnconfirmedDangerAlerts
+    ) {
+      createMaliciousAlert();
       return;
     }
 
+    // If there are unconfirmed alerts, don't proceed (modal should be open)
+    if (hasUnconfirmedDangerAlerts) {
+      return;
+    }
+
+    // Proceed with connection (safe to connect)
     const _request = {
       ...request,
       permissions: {
@@ -503,8 +536,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     selectedChainIds,
     approveConnection,
     isMaliciousSite,
-    maliciousSiteAcknowledged,
-    handleOpenMaliciousSiteModal,
+    maliciousAlertAcknowledged,
+    hasUnconfirmedDangerAlerts,
+    createMaliciousAlert,
   ]);
 
   return (
@@ -761,91 +795,61 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             danger={isMaliciousSite}
             startIconName={isMaliciousSite ? IconName.Danger : undefined}
           >
-            {t('connect')}
+            {hasUnconfirmedDangerAlerts ||
+            (isMaliciousSite && !maliciousAlertAcknowledged)
+              ? t('reviewAlerts') || 'Review alerts'
+              : t('connect')}
           </Button>
         </Box>
       </Footer>
-      {showMaliciousSiteModal && (
-        <Modal isOpen onClose={handleCloseMaliciousSiteModal}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader onClose={handleCloseMaliciousSiteModal}>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
-                gap={2}
-              >
-                <Icon
-                  name={IconName.Danger}
-                  color={IconColor.errorDefault}
-                  size={IconSize.Xl}
-                />
-                <Text variant={TextVariant.headingSm}>
-                  {t('maliciousSiteDetected') || 'Malicious site detected'}
-                </Text>
-              </Box>
-            </ModalHeader>
-            <ModalBody>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-                alignItems={AlignItems.flexStart}
-                marginBottom={4}
-                gap={2}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                >
-                  {t('site') || 'Site'}
-                </Text>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={IconColor.errorDefault}
-                  textAlign={TextAlign.Right}
-                  style={{
-                    wordBreak: 'break-all',
-                    overflowWrap: 'break-word',
-                    flex: 1,
-                  }}
-                >
-                  {targetSubjectMetadata.origin}
-                </Text>
-              </Box>
-              <Text variant={TextVariant.bodyMd} marginBottom={4}>
-                {t('maliciousSiteModalDescription') ||
-                  'If you connect to this site, you could lose all your assets.'}{' '}
-              </Text>
-              <Box
-                backgroundColor={BackgroundColor.errorMuted}
-                borderRadius={BorderRadius.LG}
-                padding={4}
-              >
-                <Checkbox
-                  label={
-                    t('maliciousSiteModalCheckbox') ||
-                    'I understand this site has been flagged as malicious and still want to connect.'
-                  }
-                  data-testid="malicious-site-modal-checkbox"
-                  isChecked={maliciousSiteAcknowledged}
-                  onChange={handleMaliciousSiteCheckbox}
-                  alignItems={AlignItems.flexStart}
-                />
-              </Box>
-            </ModalBody>
-            <ModalFooter
-              onSubmit={handleContinueAnywayFromModal}
-              submitButtonProps={{
-                disabled: !maliciousSiteAcknowledged,
-                danger: true,
-                children: t('continueAnyway') || 'Continue anyway',
-                'data-testid': 'continue-anyway-btn',
+      {hasUnconfirmedDangerAlerts && alerts.length > 0 && (
+        <AlertMetricsProvider
+          metrics={{
+            trackAlertActionClicked: noOpFunction,
+            trackAlertRender: noOpFunction,
+            trackInlineAlertClicked: noOpFunction,
+          }}
+        >
+          <AlertActionHandlerProvider onProcessAction={handleProcessAction}>
+            <AlertModal
+              ownerId={alertOwnerId}
+              alertKey={alerts[0].key}
+              onAcknowledgeClick={handleAlertAcknowledge}
+              onClose={() => {
+                // Clear alerts when modal is closed without acknowledging
+                dispatch(clearAlerts(alertOwnerId));
               }}
+              customDetails={
+                <Box textAlign={TextAlign.Center}>
+                  <Text variant={TextVariant.bodyMd} marginBottom={4}>
+                    {t('alertMessageOriginTrustSignalMalicious')}
+                  </Text>
+                </Box>
+              }
+              customAcknowledgeCheckbox={
+                <AcknowledgeCheckboxBase
+                  selectedAlert={alerts[0]}
+                  isConfirmed={modalCheckboxChecked}
+                  onCheckboxClick={handleModalCheckboxClick}
+                  label={t('confirmAlertModalAcknowledgeSingle')}
+                />
+              }
+              customAcknowledgeButton={
+                <Button
+                  block
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  disabled={!modalCheckboxChecked}
+                  onClick={handleAlertAcknowledge}
+                  danger
+                  data-testid="continue-anyway-btn"
+                >
+                  {t('gotIt') || 'Got it'}
+                </Button>
+              }
             />
-          </ModalContent>
-        </Modal>
+          </AlertActionHandlerProvider>
+        </AlertMetricsProvider>
       )}
     </Page>
   );
