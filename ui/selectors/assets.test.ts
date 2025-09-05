@@ -45,10 +45,9 @@ jest.mock('@metamask/assets-controllers', () => {
       percentChange: 0,
       userCurrency: 'usd',
     })),
+    selectAssetsBySelectedAccountGroup: jest.fn(),
   };
 });
-
-jest.mock('@metamask/assets-controllers');
 
 const mockRatesState = {
   metamask: {
