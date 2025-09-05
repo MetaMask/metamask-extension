@@ -3,6 +3,7 @@ import { Hex } from '@metamask/utils';
 
 export type Asset = {
   address?: string;
+  assetId?: string;
   balance?: BN | string | undefined;
   chainId?: string | number;
   decimals?: number | undefined;
