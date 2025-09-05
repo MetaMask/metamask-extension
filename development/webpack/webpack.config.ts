@@ -20,7 +20,6 @@ import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
-import { exclude as LavamoatExcludeLoader } from '../../../LavaMoat/packages/webpack/src/plugin.js';
 import {
   type Manifest,
   collectEntries,
@@ -296,11 +295,6 @@ const config = {
       /^lodash$/u,
     ],
     rules: [
-      // unsafe layer that runs code without LavaMoat
-      {
-        issuerLayer: 'unsafe',
-        use: LavamoatExcludeLoader,
-      },
       // json
       { test: /\.json$/u, type: 'json' },
       // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
@@ -481,7 +475,6 @@ const config = {
   ignoreWarnings: [
     /the following module ids can't be controlled by policy and must be ignored at runtime/u,
   ],
-  experiments: { layers: true },
 } as const satisfies Configuration;
 
 export default config;

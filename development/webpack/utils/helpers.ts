@@ -92,14 +92,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     // Snow shouldn't be chunked
     'snow.prod',
     'use-snow',
-  ]);
-
-  /**
-   * Entries that need to be included in the unsafe layer to run without LavaMoat.
-   */
-  const unsafeEntries: Set<string> = new Set([
-    'scripts/inpage.js',
-    'scripts/bootstrap.js',
+    'bootstrap',
   ]);
 
   function addManifestScript(filename?: string) {
@@ -110,9 +103,6 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
         filename, // output filename
         import: join(appRoot, filename), // the path to the file to use as an entry
       };
-      if (unsafeEntries.has(filename)) {
-        entry[filename].layer = 'unsafe';
-      }
     }
   }
 

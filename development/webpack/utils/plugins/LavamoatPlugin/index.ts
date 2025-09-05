@@ -39,8 +39,9 @@ export const lavamoatPlugin = (args: Args) =>
             },
           };
         case 'scripts/inpage.js':
-        case 'scripts/bootstrap.js':
-          return { mode: 'null_unsafe' };
+          return { mode: 'unlocked_unsafe' };
+        case 'bootstrap':
+          return { mode: 'unlocked_unsafe' };
         case 'runtime':
           return {
             mode: 'safe',
