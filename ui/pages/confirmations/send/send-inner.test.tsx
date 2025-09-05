@@ -13,6 +13,10 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useSearchParams: () => [{ get: () => null }],
 }));
 
+jest.mock('../components/send/asset', () => ({
+  Asset: () => <div data-testid="asset-page">Asset page</div>,
+}));
+
 const mockStore = configureMockStore([])(mockState);
 
 const render = () => {
@@ -26,8 +30,8 @@ describe('SendInner', () => {
       updateCurrentPage: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
-    const { getByText } = render();
-    expect(getByText('asset')).toBeInTheDocument();
+    const { getByTestId } = render();
+    expect(getByTestId('asset-page')).toBeInTheDocument();
   });
 
   it('render AmountRecipient page when current page in path is amount-recipient', () => {

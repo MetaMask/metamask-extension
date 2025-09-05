@@ -6,11 +6,6 @@ export const LOGIN_TYPE = {
 
 export type LoginType = (typeof LOGIN_TYPE)[keyof typeof LOGIN_TYPE];
 
-export const WelcomePageState = {
-  Banner: 'Banner',
-  Login: 'Login',
-} as const;
-
 export const LOGIN_OPTION = {
   NEW: 'new',
   EXISTING: 'existing',

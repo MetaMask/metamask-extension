@@ -19,7 +19,6 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { WelcomePageState } from '../welcome/types';
 import { ThemeType } from '../../../../shared/constants/preferences';
 
 export default function OnboardingAppHeader({ pageState }) {
@@ -60,10 +59,7 @@ export default function OnboardingAppHeader({ pageState }) {
         <Dropdown
           data-testid="select-locale"
           className={classnames('onboarding-app-header__dropdown', {
-            'onboarding-app-header__dropdown--welcome--banner':
-              pageState === WelcomePageState.Banner,
-            'onboarding-app-header__dropdown--welcome--login':
-              pageState === WelcomePageState.Login,
+            'onboarding-app-header__dropdown--welcome--login': pageState,
           })}
           options={localeOptions}
           selectedOption={currentLocale}
@@ -77,5 +73,5 @@ export default function OnboardingAppHeader({ pageState }) {
 }
 
 OnboardingAppHeader.propTypes = {
-  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
+  pageState: PropTypes.bool,
 };

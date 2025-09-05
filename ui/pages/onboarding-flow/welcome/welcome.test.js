@@ -6,7 +6,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import * as Actions from '../../../store/actions';
 import * as Environment from '../../../../shared/modules/environment';
 import Welcome from './welcome';
-import { WelcomePageState } from './types';
 
 const mockUseNavigate = jest.fn();
 
@@ -38,10 +37,7 @@ describe('Welcome Page', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   it('should render', () => {
-    const { getByText } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<Welcome />, mockStore);
 
     expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
@@ -57,10 +53,7 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(false);
 
-    const { getByText } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<Welcome />, mockStore);
 
     expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
@@ -83,7 +76,7 @@ describe('Welcome Page', () => {
       });
 
     const { getByText, getByTestId } = renderWithProvider(
-      <Welcome pageState={WelcomePageState.Login} setPageState={jest.fn()} />,
+      <Welcome />,
       mockStore,
     );
 

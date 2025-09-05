@@ -7112,6 +7112,20 @@ export async function openUpdateTabAndReload() {
   return await submitRequestToBackground('openUpdateTabAndReload');
 }
 
+export async function getERC1155BalanceOf(
+  userAddress: string,
+  tokenAddress: string,
+  tokenId: string,
+  networkClientId: string,
+): Promise<string> {
+  return await submitRequestToBackground<string>('getERC1155BalanceOf', [
+    userAddress,
+    tokenAddress,
+    tokenId,
+    networkClientId,
+  ]);
+}
+
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
