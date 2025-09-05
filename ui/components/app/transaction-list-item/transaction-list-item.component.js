@@ -345,7 +345,7 @@ function TransactionListItemInner({
                 alignItems={AlignItems.center}
               >
                 <Text
-                  variant={TextVariant.bodyLgMedium}
+                  variant={TextVariant.bodyMdMedium}
                   fontWeight={FontWeight.Medium}
                   color={Color.textDefault}
                   title={primaryCurrency}
@@ -358,7 +358,7 @@ function TransactionListItemInner({
                 </Text>
               </Box>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySm}
                 color={Color.textAlternative}
                 textAlign={TextAlign.Right}
                 data-testid="transaction-list-item-secondary-currency"
