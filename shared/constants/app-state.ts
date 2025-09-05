@@ -33,6 +33,8 @@ export type CarouselSlide = {
   startDate?: string;
   endDate?: string;
   priorityPlacement?: boolean;
+  variableName?: string;
+  cardPlacement?: string;
 };
 
 export enum PasswordChangeToastType {

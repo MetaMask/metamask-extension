@@ -16,6 +16,11 @@ class SelectHardwareWalletAccountPage {
 
   protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
 
+  protected readonly forgetDeviceButton = {
+    text: 'Forget this device',
+    tag: 'a',
+  };
+
   protected readonly unlockButton = { text: 'Unlock', tag: 'button' };
 
   constructor(driver: Driver) {
@@ -41,6 +46,11 @@ class SelectHardwareWalletAccountPage {
   async clickUnlockButton(): Promise<void> {
     console.log(`Click unlock button on select account page`);
     await this.driver.clickElement(this.unlockButton);
+  }
+
+  async clickForgetDeviceButton(): Promise<void> {
+    console.log(`Click forget device button on select account page`);
+    await this.driver.clickElement(this.forgetDeviceButton);
   }
 
   async selectAccount(accountIndex: number): Promise<void> {

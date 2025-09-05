@@ -42,7 +42,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: `${context.repo.owner}:${process.env.BRANCH}`,
-              base: 'master',
+              base: 'stable',
             });
             if (prs.data.length > 0) {
               core.exportVariable("PR_NUMBER", prs.data[0].number);

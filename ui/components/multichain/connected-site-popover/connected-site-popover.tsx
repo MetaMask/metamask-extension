@@ -178,7 +178,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
                 onClick();
               } else {
                 global.platform.openTab({
-                  url: 'https://portfolio.metamask.io/explore/dapps',
+                  url: 'https://app.metamask.io/explore/dapps',
                 });
               }
             }}

@@ -11,7 +11,7 @@ import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/n
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
-    .forGet(`https://portfolio.metamask.io/explore/networks/linea`)
+    .forGet(`https://app.metamask.io/explore/networks/linea`)
     .always()
     .thenCallback(() => {
       return {
@@ -59,7 +59,7 @@ describe('Linea Network Discover Button', function (this: Suite) {
 
         // Verify the URL is correct
         await driver.waitForUrlContaining({
-          url: 'portfolio.metamask.io/explore/networks/linea',
+          url: 'app.metamask.io/explore/networks/linea',
         });
       },
     );

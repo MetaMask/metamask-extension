@@ -10,13 +10,9 @@ permissions:
 
 jobs:
   automated-rca:
-    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@727c028d5fdb2b86f6b1cf205b97fa8e79f7de61
+    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@5da154078ddf6c022ed89dc3dbf378594afb8266
     with:
-      google-form-base-url: 'https://docs.google.com/forms/d/e/1FAIpQLSfnfEWH7JCFFtvjCHixgyqJdTU3LW3BmTwdF1dDezTNf7m4ig/viewform'
       repo-owner: ${{ github.repository_owner }}
       repo-name: ${{ github.event.repository.name }}
       issue-number: ${{ github.event.issue.number }}
       issue-labels: '["Sev0-urgent", "Sev1-high"]'
-      entry-issue: 'entry.340898780'
-      entry-team: 'entry.765806202'
-      entry-regression: 'entry.1756851972'

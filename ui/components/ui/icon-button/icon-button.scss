@@ -4,12 +4,12 @@
   height: auto;
 
   &:hover:not([disabled]) {
-    background-color: var(--color-background-subsection);
+    background-color: var(--color-background-muted-hover);
     transition: background 200ms ease;
   }
 
   &:active:not([disabled]) {
-    background-color: var(--color-background-default-pressed);
+    background-color: var(--color-background-muted-pressed);
   }
 
   &__label {

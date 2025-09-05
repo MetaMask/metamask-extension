@@ -102,47 +102,49 @@ export const MultichainAddressRowsList = ({
     setSearchPattern('');
   };
 
+  const renderedRows = useMemo(() => {
+    return filteredItems.map((item, index) => (
+      <MultichainAddressRow
+        key={`${item.address}-${item.chainId}-${index}`}
+        chainId={item.chainId}
+        networkName={item.networkName}
+        address={item.address}
+      />
+    ));
+  }, [filteredItems]);
+
   return (
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
-      <Box padding={4}>
-        <TextFieldSearch
-          size={TextFieldSearchSize.Lg}
-          placeholder={t('searchNetworks')}
-          value={searchPattern}
-          onChange={handleSearchChange}
-          clearButtonOnClick={handleClearSearch}
-          width={BlockSize.Full}
-          borderWidth={0}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.LG}
-          data-testid="multichain-address-rows-list-search"
-        />
-      </Box>
+      <TextFieldSearch
+        size={TextFieldSearchSize.Lg}
+        placeholder={t('searchNetworks')}
+        value={searchPattern}
+        onChange={handleSearchChange}
+        clearButtonOnClick={handleClearSearch}
+        width={BlockSize.Full}
+        borderWidth={0}
+        backgroundColor={BackgroundColor.backgroundMuted}
+        borderRadius={BorderRadius.LG}
+        data-testid="multichain-address-rows-list-search"
+      />
 
       <Box>
         {filteredItems.length > 0 ? (
-          filteredItems.map((item, index) => (
-            <MultichainAddressRow
-              key={`${item.address}-${item.chainId}-${index}`}
-              chainId={item.chainId}
-              networkName={item.networkName}
-              address={item.address}
-            />
-          ))
+          renderedRows
         ) : (
-          <Box padding={6} textAlign={TextAlign.Center}>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              data-testid="multichain-address-rows-list-empty-message"
-            >
-              {searchPattern ? t('noNetworksFound') : t('noNetworksAvailable')}
-            </Text>
-          </Box>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            textAlign={TextAlign.Center}
+            paddingTop={8}
+            data-testid="multichain-address-rows-list-empty-message"
+          >
+            {searchPattern ? t('noNetworksFound') : t('noNetworksAvailable')}
+          </Text>
         )}
       </Box>
     </Box>

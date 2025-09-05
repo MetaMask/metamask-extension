@@ -1,0 +1,161 @@
+name: Tag Release Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-branch:
+        description: 'Release branch including version (e.g., Version-v12.0.0)'
+        required: true
+        type: string
+      force-retag:
+        description: 'Force re-tag if tag already exists (only if no GitHub release)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  statuses: write
+
+jobs:
+  tag-release-branch:
+    name: Tag Release Branch HEAD
+    runs-on: ubuntu-latest
+    # Restrict to users with write access (release team members)
+    if: github.actor != 'dependabot[bot]' && github.actor != 'github-actions[bot]'
+    outputs:
+      release-branch: ${{ steps.determine-branch.outputs.branch }}
+      tag-name: ${{ steps.tag-release.outputs.tag }}
+      tag-sha: ${{ steps.tag-release.outputs.sha }}
+    steps:
+      - name: Determine release branch
+        id: determine-branch
+        env:
+          PROVIDED_BRANCH: ${{ inputs.release-branch }}
+        run: |
+          # Set working branch variable
+          BRANCH="${PROVIDED_BRANCH}"
+
+          # Extract version from branch name (supports Version-vX.Y.Z or release/X.Y.Z)
+          SEMVER_PATTERN='[0-9]+\.[0-9]+\.[0-9]+'
+          if [[ "${BRANCH}" =~ ^Version-v(${SEMVER_PATTERN})$ ]] || [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+          else
+            echo "::error::Could not extract version from branch name: ${BRANCH}"
+            echo "::error::Expected 'Version-vX.Y.Z' or 'release/X.Y.Z'"
+            exit 1
+          fi
+
+          echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "Using release branch: ${BRANCH}"
+          echo "Using version: ${VERSION}"
+
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.determine-branch.outputs.branch }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Handle existing tag
+        id: check-existing-tag
+        env:
+          VERSION: ${{ steps.determine-branch.outputs.version }}
+          FORCE_RETAG: ${{ inputs.force-retag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${VERSION}"
+
+          # Check if tag already exists
+          if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "Tag ${TAG_NAME} already exists"
+
+            # Check if there's a GitHub release for this tag
+            if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+              echo "::error::Tag ${TAG_NAME} has an associated GitHub release and cannot be moved."
+              echo "::error::This release appears to be finalized. Create a new patch version instead."
+              exit 1
+            fi
+
+            # Get existing tag SHA and current HEAD SHA
+            TAG_SHA=$(git rev-parse "${TAG_NAME}")
+            HEAD_SHA=$(git rev-parse HEAD)
+
+            if [[ "${TAG_SHA}" == "${HEAD_SHA}" ]]; then
+              echo "Tag already points to current HEAD. No action needed."
+              echo "needs_retag=false" >> "${GITHUB_OUTPUT}"
+            elif [[ "${FORCE_RETAG}" == "true" ]]; then
+              echo "Tag exists at different commit. Force re-tag is enabled."
+              echo "Will move tag from ${TAG_SHA:0:7} to ${HEAD_SHA:0:7}"
+
+              # Delete the old tag (local and remote)
+              git tag -d "${TAG_NAME}"
+              git push origin ":refs/tags/${TAG_NAME}"
+
+              echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
+              echo "Old tag deleted. Will create new tag at HEAD."
+            else
+              echo "::error::Tag ${TAG_NAME} exists but not at HEAD."
+              echo "::error::To move the tag, run this workflow again with 'force-retag' enabled."
+              # Log full details only to GitHub logs, not to error output
+              echo "Debug: Tag is at ${TAG_SHA:0:7}, HEAD is at ${HEAD_SHA:0:7}" >&2
+              exit 1
+            fi
+          else
+            echo "Tag does not exist yet. Will create it."
+            echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Create or update release tag
+        id: tag-release
+        if: steps.check-existing-tag.outputs.needs_retag != 'false'
+        env:
+          VERSION: ${{ steps.determine-branch.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${VERSION}"
+
+          # Configure git
+          git config user.email "metamaskbot@users.noreply.github.com"
+          git config user.name "MetaMask Bot"
+
+          # Get the current SHA
+          SHA=$(git rev-parse HEAD)
+
+          # Create annotated tag at HEAD
+          git tag -a "${TAG_NAME}" -m "Release ${VERSION}"
+
+          # Push the tag
+          git push origin "${TAG_NAME}"
+
+          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
+          echo "Created and pushed tag: ${TAG_NAME} at ${SHA}"
+
+      - name: Set output for existing tag
+        id: existing-tag-output
+        if: steps.check-existing-tag.outputs.needs_retag == 'false'
+        env:
+          VERSION: ${{ steps.determine-branch.outputs.version }}
+        run: |
+          TAG_NAME="v${VERSION}"
+          SHA=$(git rev-parse HEAD)
+          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
+
+      - name: Set status check on release branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_SHA: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
+          TAG_NAME: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
+        run: |
+          # Set a successful status check to indicate the release has been tagged
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            "/repos/${{ github.repository }}/statuses/${TAG_SHA}" \
+            -f state='success' \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/releases/tag/${TAG_NAME}" \
+            -f description='Release has been tagged' \
+            -f context='release/tagged'

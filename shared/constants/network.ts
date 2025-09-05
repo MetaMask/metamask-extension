@@ -1159,11 +1159,10 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   Hex | `${string}:${string}`,
   string
 > = {
-  [CHAIN_IDS.LINEA_MAINNET]:
-    'https://portfolio.metamask.io/explore/networks/linea',
-  [CHAIN_IDS.SEI]: 'https://portfolio.metamask.io/explore/networks/sei',
+  [CHAIN_IDS.LINEA_MAINNET]: 'https://app.metamask.io/explore/networks/linea',
+  [CHAIN_IDS.SEI]: 'https://app.metamask.io/explore/networks/sei',
   [MultichainNetworks.SOLANA]:
-    'https://portfolio.metamask.io/explore/networks/solana',
+    'https://app.metamask.io/explore/networks/solana',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

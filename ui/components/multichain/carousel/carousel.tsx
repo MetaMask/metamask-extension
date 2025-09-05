@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { useSelector } from 'react-redux';
 import { SolAccountType } from '@metamask/keyring-api';
-///: END:ONLY_INCLUDE_IF
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, BoxProps, BannerBase } from '../../component-library';
@@ -19,16 +17,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { getSelectedAccount, getUseExternalServices } from '../../../selectors';
+import { getSelectedAccount } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  BASIC_FUNCTIONALITY_SLIDE,
-  getSweepstakesCampaignActive,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../hooks/useCarouselManagement';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -52,7 +43,6 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
-    const useExternalServices = useSelector(getUseExternalServices);
 
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     const selectedAccount = useSelector(getSelectedAccount);
@@ -60,66 +50,14 @@ export const Carousel = React.forwardRef(
 
     const visibleSlides = slides
       .filter((slide) => {
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
         if (
-          slide.id === SOLANA_SLIDE.id &&
+          slide.variableName === 'solana' &&
           selectedAccount?.type === SolAccountType.DataAccount
         ) {
           return false;
         }
-        ///: END:ONLY_INCLUDE_IF
-        if (slide.id === BASIC_FUNCTIONALITY_SLIDE.id && useExternalServices) {
-          return false;
-        }
+
         return !slide.dismissed || slide.undismissable;
-      })
-      .sort((a, b) => {
-        // Prioritize Contentful Priority slides
-        if (a.priorityPlacement === true && b.priorityPlacement !== true) {
-          return -1;
-        }
-        if (a.priorityPlacement !== true && b.priorityPlacement === true) {
-          return 1;
-        }
-
-        if (!useExternalServices) {
-          if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
-            return -1;
-          }
-          if (b.id === BASIC_FUNCTIONALITY_SLIDE.id) {
-            return 1;
-          }
-        }
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        // prioritize Solana slide
-        if (a.id === SOLANA_SLIDE.id) {
-          return -1;
-        }
-        if (b.id === SOLANA_SLIDE.id) {
-          return 1;
-        }
-        ///: END:ONLY_INCLUDE_IF
-
-        const isSweepstakesActive = getSweepstakesCampaignActive(
-          new Date(new Date().toISOString()),
-        );
-        if (isSweepstakesActive) {
-          if (a.id === 'sweepStake') {
-            return -1;
-          }
-          if (b.id === 'sweepStake') {
-            return 1;
-          }
-        }
-
-        if (a.undismissable && !b.undismissable) {
-          return -1;
-        }
-        if (!a.undismissable && b.undismissable) {
-          return 1;
-        }
-
-        return 0;
       })
       .slice(0, MAX_SLIDES);
 

@@ -152,7 +152,7 @@ export default function AccountNotFound() {
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {t('accountNotFoundDescription', [userSocialLoginEmail])}
+            {t('accountNotFoundDescription', [userSocialLoginEmail || '-'])}
           </Text>
         </Box>
       </Box>

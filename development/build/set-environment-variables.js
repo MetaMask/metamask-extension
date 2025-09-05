@@ -88,6 +88,9 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     SEEDLESS_ONBOARDING_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('SEEDLESS_ONBOARDING_ENABLED'),
+    METAMASK_SHIELD_ENABLED: isTestBuild
+      ? 'false'
+      : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
   });

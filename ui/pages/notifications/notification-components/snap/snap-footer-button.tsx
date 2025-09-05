@@ -12,7 +12,7 @@ import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const trackEvent = useContext(MetaMetricsContext);
-  const { navigate } = useSnapNavigation();
+  const { useSnapNavigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;
   const footer = data?.detailedView?.footerLink;
@@ -44,10 +44,15 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
       if (isExternal) {
         setIsOpen(true);
       } else {
-        navigate(href);
+        useSnapNavigate(href);
       }
     },
-    [navigate, props.notification.id, props.notification.type, trackEvent],
+    [
+      useSnapNavigate,
+      props.notification.id,
+      props.notification.type,
+      trackEvent,
+    ],
   );
 
   if (!footer) {
