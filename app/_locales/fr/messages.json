@@ -2675,12 +2675,6 @@
   "honeypotTitle": {
     "message": "Pot de miel"
   },
-  "howQuotesWork": {
-    "message": "Comment fonctionnent les cotations"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Cette cotation a le meilleur rendement parmi toutes celles que nous avons recherchées. Ce rendement est basé sur le taux de swap, qui comprend les frais d’établissement de passerelles et une commission MetaMask de $1 %, moins les frais de gaz. Les frais de gaz dépendent de l’activité du réseau et de la complexité de la transaction."
-  },
   "id": {
     "message": "ID"
   },
@@ -3350,12 +3344,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Vous allez ajouter ce réseau à MetaMask et donner à ce site l’autorisation de l’utiliser."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Établissement d’une passerelle"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Cotation"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Temps"

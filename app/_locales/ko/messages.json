@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
-  "howQuotesWork": {
-    "message": "견적 방식"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "이 견적은 검색한 견적 중 최고의 수익률을 제공합니다. 이는 브릿지 수수료와 $1% MetaMask 수수료를 포함한 스왑 비율에서 가스비를 뺀 것을 기준으로 합니다. 가스비는 네트워크 혼잡도와 트랜잭션의 복잡성에 따라 달라집니다."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "MetaMask에 이 네트워크를 추가하고 이 사이트에 사용 권한을 허용합니다."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "브릿징"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "견적"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "시간"

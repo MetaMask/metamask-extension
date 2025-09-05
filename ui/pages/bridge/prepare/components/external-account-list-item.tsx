@@ -40,7 +40,7 @@ export const ExternalAccountListItem: React.FC<
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
-      <Box display={Display.Flex} alignItems={AlignItems.center}>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
         <PreferredAvatar address={account.address} />
         <Box
           display={Display.Flex}

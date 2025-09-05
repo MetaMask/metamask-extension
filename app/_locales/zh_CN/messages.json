@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "howQuotesWork": {
-    "message": "报价如何运作"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 MetaMask 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "桥接"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "报价"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "时间"

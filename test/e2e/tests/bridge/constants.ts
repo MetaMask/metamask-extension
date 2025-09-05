@@ -87,6 +87,7 @@ export const GET_QUOTE_INVALID_RESPONSE = [
         price: '0',
       },
       destChainId: 1,
+      minDestTokenAmount: '317773599373699',
       destTokenAmount: '387773599373699',
       minDestTokenAmount: '317773599373699',
       destAsset: {
@@ -570,6 +571,7 @@ export const MOCK_BRIDGE_ETH_TO_ETH_LINEA = [
         price: '2074.06',
       },
       destChainId: 59144,
+      minDestTokenAmount: '991144565855146762',
       destTokenAmount: '991164565855146762',
       minDestTokenAmount: '991144565855146762',
       destAsset: {
@@ -714,6 +716,7 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_MAINNET = [
         price: '1574.78',
       },
       destChainId: 1,
+      minDestTokenAmount: '970933440686599409',
       destTokenAmount: '990933440686599409',
       minDestTokenAmount: '970933440686599409',
       destAsset: {
@@ -862,6 +865,7 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_L2 = [
         price: '1575.62',
       },
       destChainId: 42161,
+      minDestTokenAmount: '970933440686599409',
       destTokenAmount: '991144603594270178',
       minDestTokenAmount: '970933440686599409',
       destAsset: {
@@ -1026,6 +1030,7 @@ export const MOCK_BRIDGE_DAI_L2_TO_L2 = [
         price: '0.99995',
       },
       destChainId: 42161,
+      minDestTokenAmount: '970933440686599409',
       destTokenAmount: '9904599265963515167',
       minDestTokenAmount: '970933440686599409',
       destAsset: {
@@ -1274,6 +1279,7 @@ export const MOCK_BRIDGE_DAI_L2_TO_MAINNET = [
         price: '0.99995',
       },
       destChainId: 1,
+      minDestTokenAmount: '9669794399261320507',
       destTokenAmount: '9669794399261320507',
       minDestTokenAmount: '970933440686599409',
       destAsset: {
@@ -1522,6 +1528,7 @@ export const MOCK_BRIDGE_ETH_TO_WETH_LINEA = [
         price: '1794.0077881',
       },
       destChainId: 59144,
+      minDestTokenAmount: '24277037000000000000',
       destTokenAmount: '24777037000000000000',
       minDestTokenAmount: '24277037000000000000',
       destAsset: {
@@ -1686,6 +1693,7 @@ export const MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM = [
         price: '1657.94',
       },
       destChainId: 42161,
+      minDestTokenAmount: '1612004253',
       destTokenAmount: '1642004253',
       minDestTokenAmount: '1612004253',
       destAsset: {
@@ -1994,6 +2002,7 @@ export const MOCK_BRIDGE_DAI_TO_ETH_LINEA = [
         price: '1',
       },
       destChainId: 59144,
+      minDestTokenAmount: '12668702841431844',
       destTokenAmount: '15668702841431844',
       minDestTokenAmount: '12668702841431844',
       destAsset: {
@@ -2286,6 +2295,7 @@ export const MOCK_BRIDGE_USDC_TO_DAI_LINEA = [
         price: '0.99999445',
       },
       destChainId: 59144,
+      minDestTokenAmount: '899595568570427284',
       destTokenAmount: '9899595568570427284',
       minDestTokenAmount: '899595568570427284',
       destAsset: {

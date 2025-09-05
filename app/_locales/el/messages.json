@@ -2708,12 +2708,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howQuotesWork": {
-    "message": "Πώς λειτουργει η παράθεση προσφοράς"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Η προσφορά αυτή έχει την καλύτερη απόδοση από τις προσφορές που αναζητήσαμε. Βασίζεται στο κόστος ανταλλαγής, το οποίο περιλαμβάνει τα τέλη διασύνδεσης και $1% τέλη στο MetaMask μείον τα τέλη συναλλαγών. Τα τέλη συναλλαγών εξαρτώνται από το πόσο απασχολημένο είναι το δίκτυο και πόσο περίπλοκη είναι η συναλλαγή."
-  },
   "id": {
     "message": "Αναγνωριστικό"
   },
@@ -3383,12 +3377,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Προσθέτετε αυτό το δίκτυο στο MetaMask και δίνετε σε αυτόν τον ιστότοπο την άδεια να το χρησιμοποιεί."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Διασύνδεση"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Προσφορά"
   },
   "multichainQuoteCardTimeLabel": {
     "message": "Ώρα"
