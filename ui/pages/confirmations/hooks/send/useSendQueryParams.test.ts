@@ -11,11 +11,11 @@ import {
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import * as SendContext from '../../context/send';
 import { useSendQueryParams } from './useSendQueryParams';
 import { useSendAssets } from './useSendAssets';
-import { Asset } from '../../types/send';
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
