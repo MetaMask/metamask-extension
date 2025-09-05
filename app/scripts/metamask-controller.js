@@ -435,6 +435,7 @@ import {
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
+import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1971,6 +1972,7 @@ export default class MetamaskController extends EventEmitter {
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
+      GatorPermissionsController: GatorPermissionsControllerInit,
     };
 
     const {
@@ -2030,6 +2032,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
     this.shieldController = controllersByName.ShieldController;
+    this.gatorPermissionsController =
+      controllersByName.GatorPermissionsController;
 
     this.getSecurityAlertsConfig = () => {
       return async (url) => {
@@ -2229,6 +2233,7 @@ export default class MetamaskController extends EventEmitter {
       NetworkOrderController: this.networkOrderController,
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
+      GatorPermissionsController: this.gatorPermissionsController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       TokenBalancesController: this.tokenBalancesController,
@@ -3413,6 +3418,7 @@ export default class MetamaskController extends EventEmitter {
       ensController,
       tokenListController,
       gasFeeController,
+      gatorPermissionsController,
       metaMetricsController,
       networkController,
       multichainNetworkController,
@@ -3861,6 +3867,20 @@ export default class MetamaskController extends EventEmitter {
         this.restoreSocialBackupAndGetSeedPhrase.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
       changePassword: this.changePassword.bind(this),
+
+      // GatorPermissionsController
+      enableGatorPermissions:
+        gatorPermissionsController.enableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      disableGatorPermissions:
+        gatorPermissionsController.disableGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
+      fetchAndUpdateGatorPermissions:
+        gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
+          gatorPermissionsController,
+        ),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
