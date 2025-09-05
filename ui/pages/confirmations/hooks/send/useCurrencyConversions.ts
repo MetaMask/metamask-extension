@@ -89,6 +89,9 @@ export const useCurrencyConversions = () => {
     if (!asset?.address) {
       return 0;
     }
+    if ((asset as Asset)?.fiat?.conversionRate) {
+      return (asset as Asset)?.fiat?.conversionRate ?? 0;
+    }
     if (isEvmAddress(asset?.address)) {
       if (isNativeAddress(asset?.address)) {
         return conversionRateEvm;

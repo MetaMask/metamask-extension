@@ -4,6 +4,7 @@ export const EVM_ASSET = {
   chainId: 5,
   metadata: {},
   symbol: 'NEU',
+  decimals: 0,
 };
 
 export const EVM_NATIVE_ASSET = {
