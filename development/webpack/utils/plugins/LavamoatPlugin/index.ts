@@ -2,9 +2,13 @@ import { join } from 'node:path';
 import LavamoatPlugin from '../../../../../../LavaMoat/packages/webpack/src/plugin.js';
 import type { Args } from '../../cli';
 
+// While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
+// This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
+const rootDir = join(__dirname, '../../../../../');
+
 export const lavamoatPlugin = (args: Args) =>
   new LavamoatPlugin({
-    rootDir: join(__dirname, '../../../../../'), // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up. This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
+    rootDir,
     diagnosticsVerbosity: 0,
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
@@ -44,11 +48,8 @@ export const lavamoatPlugin = (args: Args) =>
             // If snow is enabled, it needs to run outside of LavaMoat
             staticShims: args.snow
               ? [
-                  join(
-                    __dirname,
-                    '../../../../../node_modules/@lavamoat/snow/snow.prod.js',
-                  ),
-                  join(__dirname, '../../../../../app/scripts/use-snow.js'),
+                  require.resolve('@lavamoat/snow/snow.prod.js'),
+                  join(rootDir, 'app/scripts/use-snow.js'),
                 ]
               : [],
           };
