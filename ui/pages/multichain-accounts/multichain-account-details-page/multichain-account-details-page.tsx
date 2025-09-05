@@ -27,11 +27,13 @@ import {
   getMultichainAccountGroupById,
   getNetworkAddressCount,
   getWallet,
+  getInternalAccountsFromGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
@@ -54,6 +56,9 @@ export const MultichainAccountDetailsPage = () => {
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
+  const accountsWithAddresses = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, accountGroupId),
+  );
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
@@ -62,6 +67,15 @@ export const MultichainAccountDetailsPage = () => {
     history.push(
       `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );
+  };
+
+  const handleSmartAccountClick = () => {
+    const firstAccountAddress = accountsWithAddresses[0]?.address;
+    if (firstAccountAddress) {
+      history.push(
+        `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(firstAccountAddress)}`,
+      );
+    }
   };
 
   return (
@@ -110,7 +124,6 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('networks')}
             value={`${addressCount} ${addressCount > 1 ? t('addressesLabel') : t('addressLabel')}`}
-            onClick={handleAddressesClick}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
@@ -119,6 +132,7 @@ export const MultichainAccountDetailsPage = () => {
                 ariaLabel={t('addresses')}
                 marginLeft={2}
                 data-testid="network-addresses-link"
+                onClick={handleAddressesClick}
               />
             }
           />
@@ -147,6 +161,7 @@ export const MultichainAccountDetailsPage = () => {
                 ariaLabel={t('smartAccountLabel')}
                 marginLeft={2}
                 data-testid="smart-account-action"
+                onClick={handleSmartAccountClick}
               />
             }
           />

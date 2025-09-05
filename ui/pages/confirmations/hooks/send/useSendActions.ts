@@ -18,7 +18,8 @@ import { useSendType } from './useSendType';
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { asset, chainId, from, fromAccount, to, value } = useSendContext();
+  const { asset, chainId, from, fromAccount, maxValueMode, to, value } =
+    useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(
@@ -27,7 +28,6 @@ export const useSendActions = () => {
         return;
       }
       const toAddress = recipientAddress || to;
-
       if (isEvmSendType) {
         dispatch(
           await submitEvmTransaction({
@@ -38,7 +38,10 @@ export const useSendActions = () => {
             value: value as string,
           }),
         );
-        history.push(CONFIRM_TRANSACTION_ROUTE);
+        const route = maxValueMode
+          ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
+          : CONFIRM_TRANSACTION_ROUTE;
+        history.push(route);
       } else {
         history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
         await sendMultichainTransactionForReview(
@@ -46,7 +49,7 @@ export const useSendActions = () => {
           {
             fromAccountId: fromAccount?.id as string,
             toAddress: toAddress as string,
-            assetId: asset.address as CaipAssetType,
+            assetId: asset.assetId as CaipAssetType,
             amount: value as string,
           },
         );
@@ -60,6 +63,7 @@ export const useSendActions = () => {
       fromAccount,
       history,
       isEvmSendType,
+      maxValueMode,
       to,
       value,
     ],
