@@ -1,6 +1,4 @@
-import { PLATFORM_FIREFOX } from '../../shared/constants/app';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import { getBrowserName } from '../../shared/modules/browser-runtime.utils';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import {
   DEFAULT_ROUTE,
@@ -38,10 +36,7 @@ export const getIsSocialLoginFlow = (state) => {
  * @returns {string} Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
-  const { firstTimeFlowType, participateInMetaMetrics } = state.metamask;
-  const hasSetMetaMetrics = getIsSocialLoginFlow(state)
-    ? true
-    : participateInMetaMetrics !== null;
+  const { firstTimeFlowType } = state.metamask;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
@@ -49,17 +44,11 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
-  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-    return hasSetMetaMetrics
-      ? ONBOARDING_COMPLETION_ROUTE
-      : ONBOARDING_METAMETRICS;
-  } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-    if (getBrowserName() === PLATFORM_FIREFOX) {
-      return ONBOARDING_DOWNLOAD_APP_ROUTE;
-    }
-    return hasSetMetaMetrics
-      ? ONBOARDING_DOWNLOAD_APP_ROUTE
-      : ONBOARDING_METAMETRICS;
+  } else if (
+    firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+    firstTimeFlowType === FirstTimeFlowType.socialImport
+  ) {
+    return ONBOARDING_DOWNLOAD_APP_ROUTE;
   }
   return DEFAULT_ROUTE;
 }

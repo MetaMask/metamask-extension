@@ -252,7 +252,7 @@ export default function CreatePassword({
       },
     });
 
-    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow && isFirefox) {
+    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
