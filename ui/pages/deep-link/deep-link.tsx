@@ -46,6 +46,13 @@ type Route = {
 
 const { getExtensionURL } = globalThis.platform;
 
+/**
+ * Sets the description and title state for a 404 error.
+ *
+ * @param setDescription - The function to call to set the description state.
+ * @param setTitle - The function to call to set the title state.
+ * @param t - The translation function.
+ */
 function set404(
   setDescription: React.Dispatch<React.SetStateAction<string | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
@@ -60,6 +67,7 @@ function set404(
  * URL, retrieves the route, and sets the route and error state accordingly.
  *
  * @param urlPathAndQuery - The URL path and query string to parse. (relative to its origin, i.e., /home?utm_source=foo)
+ * @param setExtraDescription - The function to call to set the extra description state.
  * @param setDescription - The function to call to set the description state.
  * @param setIsLoading - The function to call to set the loading state.
  * @param setRoute - The function to call to set the route state.
@@ -116,6 +124,7 @@ async function updateStateFromUrl(
         setExtraDescription(
           t('deepLink_Error404_CTA', [
             <ButtonLink
+              key="update-metamask-link"
               as="a"
               href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
             >
@@ -188,12 +197,15 @@ export const DeepLink = () => {
               const signature = await verify(url);
 
               // Check if aborted after async operation
-              if (abortController.signal.aborted) return;
+              if (abortController.signal.aborted) {
+                return;
+              }
 
               if (signature === VALID) {
                 setExtraDescription(
                   t('deepLink_Error404_CTA', [
                     <ButtonLink
+                      key="update-metamask-link"
                       as="a"
                       href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
                     >
@@ -206,7 +218,9 @@ export const DeepLink = () => {
               }
             } catch (e) {
               // probably a gibberish url, ignore
-              if (abortController.signal.aborted) return;
+              if (abortController.signal.aborted) {
+                return;
+              }
               setExtraDescription(null);
             }
           } else {
