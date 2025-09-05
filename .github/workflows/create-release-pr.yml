@@ -3,30 +3,60 @@ name: Create Release Pull Request
 on:
   workflow_dispatch:
     inputs:
-      base-branch:
-        description: 'The base branch, tag, or SHA for git operations and the pull request. Usually `main`'
+      checkout-base-branch:
+        description: 'The base branch, tag, or SHA for git operations. Usually `main`'
+        required: true
+      release-pr-base-branch:
+        description: 'The base branch, tag, or SHA for the release pull request. Usually `stable`'
         required: true
       semver-version:
         description: 'A semantic version, eg: x.x.x'
         required: true
       previous-version-ref:
-        description: 'Previous release version reference (tag or commit hash). eg: v7.7.0'
+        description: 'Previous release version branch name, tag or commit hash (e.g., Version-vx.y.z, v7.7.0, or 76fbc500034db9779e9ff7ce637ac5be1da0493d)'
         required: true
+
+  workflow_call:
+    inputs:
+      checkout-base-branch:
+        required: true
+        type: string
+      release-pr-base-branch:
+        required: true
+        type: string
+      semver-version:
+        required: true
+        type: string
+      previous-version-ref:
+        required: true
+        type: string
+    secrets:
+      github-token:
+        required: false
+      google-application-creds-base64:
+        required: false
+      PR_TOKEN:
+        required: false
+      GCP_RLS_SHEET_ACCOUNT_BASE64:
+        required: false
 
 jobs:
   create-release-pr:
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@dde6d530bebae07d1e50180894ab2cac64170a2c
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@ddac3ee395896ff15df6fc561ff710efbb0dd3fa
     with:
       platform: extension
-      base-branch: ${{ inputs.base-branch }}
+      checkout-base-branch: ${{ inputs.checkout-base-branch }}
+      release-pr-base-branch: ${{ inputs.release-pr-base-branch }}
       semver-version: ${{ inputs.semver-version }}
-      previous-version-tag: ${{ inputs.previous-version-ref }}
-      github-tools-version: dde6d530bebae07d1e50180894ab2cac64170a2c
+      previous-version-ref: ${{ inputs.previous-version-ref }}
+      github-tools-version: ddac3ee395896ff15df6fc561ff710efbb0dd3fa
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
-      github-token: ${{ secrets.PR_TOKEN }}
-      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+      # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values
+      # (this is due to github limitations on fetching secrets from called workflows).
+      github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
+      google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}
     permissions:
       contents: write
       pull-requests: write
