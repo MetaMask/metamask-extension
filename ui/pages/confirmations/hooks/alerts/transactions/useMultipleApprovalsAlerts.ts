@@ -18,7 +18,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import { useBatchApproveBalanceChanges } from '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges';
 import { useConfirmContext } from '../../../context/confirm';
-import { getUseTransactionSimulations } from '../../../../../selectors';
+import {
+  getUseTransactionSimulations,
+  selectNonZeroUnusedApprovalsAllowList,
+} from '../../../../../selectors';
 
 type ApprovalInfo = {
   tokenAddress: Hex;
@@ -234,6 +237,9 @@ export function useMultipleApprovalsAlerts(): Alert[] {
     useBatchApproveBalanceChanges() ?? {};
 
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
+  const nonZeroUnusedApprovalsAllowList = useSelector(
+    selectNonZeroUnusedApprovalsAllowList,
+  ) as string[] | undefined;
 
   const nestedTransactions = currentConfirmation?.nestedTransactions;
   const simulationData = currentConfirmation?.simulationData;
@@ -244,6 +250,9 @@ export function useMultipleApprovalsAlerts(): Alert[] {
       SimulationErrorCode.ChainNotSupported,
       SimulationErrorCode.Disabled,
     ].includes(simulationData?.error?.code as SimulationErrorCode);
+  const skipAlertOriginAllowed = nonZeroUnusedApprovalsAllowList?.includes(
+    currentConfirmation?.origin ?? '',
+  );
 
   const tokenAddresses = useMemo(() => {
     if (!nestedTransactions?.length) {
@@ -292,7 +301,8 @@ export function useMultipleApprovalsAlerts(): Alert[] {
   const shouldShowAlert =
     unusedApprovals.length > 0 &&
     Boolean(currentConfirmation?.simulationData) &&
-    isSimulationSupported;
+    isSimulationSupported &&
+    !skipAlertOriginAllowed;
 
   return useMemo(() => {
     if (!shouldShowAlert) {

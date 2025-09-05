@@ -19,6 +19,7 @@ import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { useFormatters } from '../../../../helpers/formatters';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -33,6 +34,7 @@ export const useTokenDisplayInfo = ({
   const tokenList = useSelector(getTokenList) || {};
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -54,21 +56,14 @@ export const useTokenDisplayInfo = ({
   const shouldShowFiat =
     showFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const secondaryThreshold = 0.01;
-
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat &&
     token.tokenFiatAmount !== null &&
     token.tokenFiatAmount !== undefined
-      ? formatWithThreshold(
-          Number(token.tokenFiatAmount),
-          secondaryThreshold,
-          locale,
-          {
-            style: 'currency',
-            currency: fixCurrencyToUSD ? 'USD' : currentCurrency.toUpperCase(),
-          },
+      ? formatCurrencyWithMinThreshold(
+          token.tokenFiatAmount,
+          fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
       : null;
 

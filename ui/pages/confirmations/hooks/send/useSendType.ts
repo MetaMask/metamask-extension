@@ -7,9 +7,13 @@ import { useSendContext } from '../../context/send';
 export const useSendType = () => {
   const { asset, chainId } = useSendContext();
 
+  // isSolanaChainId is added here for evmCheck as native sol token has valid evm address in extension
   const isEvmSendType = useMemo(
-    () => (asset?.address ? isEvmAddress(asset.address) : undefined),
-    [asset?.address],
+    () =>
+      asset?.address && asset?.chainId
+        ? isEvmAddress(asset.address) && !isSolanaChainId(asset?.chainId)
+        : undefined,
+    [asset?.address, asset?.chainId],
   );
   const isSolanaSendType = useMemo(
     () => (chainId ? isSolanaChainId(chainId) : undefined),
