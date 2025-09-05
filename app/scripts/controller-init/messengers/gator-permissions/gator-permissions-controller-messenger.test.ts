@@ -7,6 +7,8 @@ describe('getGatorPermissionsControllerMessenger', () => {
     const gatorPermissionsControllerMessenger =
       getGatorPermissionsControllerMessenger(messenger);
 
-    expect(gatorPermissionsControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(gatorPermissionsControllerMessenger).toBeInstanceOf(
+      RestrictedMessenger,
+    );
   });
 });

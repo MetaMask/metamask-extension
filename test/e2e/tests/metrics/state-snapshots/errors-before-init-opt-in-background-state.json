@@ -68,7 +68,6 @@
       "gasEstimateType": "none",
       "gasFeeEstimates": {}
     },
-    "GatorPermissionsController": "object",
     "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
