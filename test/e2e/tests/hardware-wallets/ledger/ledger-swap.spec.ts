@@ -77,6 +77,7 @@ describe('Ledger Swap', function () {
 
         await swapPage.waitForTransactionToComplete();
 
+        await homePage.checkPageIsLoaded();
         // check activity list
         await homePage.goToActivityList();
 
