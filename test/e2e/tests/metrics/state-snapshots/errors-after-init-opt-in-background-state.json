@@ -59,7 +59,7 @@
     "enableEnforcedSimulationsForTransactions": "object",
     "enforcedSimulationsSlippage": "number",
     "enforcedSimulationsSlippageForTransactions": "object",
-    "qrHardware": {},
+    "activeQrCodeScanRequest": null,
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",
@@ -283,6 +283,7 @@
   },
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
+  "ShieldController": "object",
   "SignatureController": {
     "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",

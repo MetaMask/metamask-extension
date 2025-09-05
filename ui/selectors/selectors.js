@@ -32,6 +32,7 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -296,13 +297,16 @@ export function isCurrentProviderCustom(state) {
   );
 }
 
-export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
-  return qrHardware || {};
+export function getActiveQrCodeScanRequest(state) {
+  return state.metamask.activeQrCodeScanRequest;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
-  return state.metamask.qrHardware?.sign?.request !== undefined;
+  const activeQrCodeScanRequest = getActiveQrCodeScanRequest(state);
+  return (
+    activeQrCodeScanRequest &&
+    activeQrCodeScanRequest.type === QrScanRequestType.SIGN
+  );
 }
 
 export function getCurrentKeyring(state) {
@@ -2259,6 +2263,19 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
+export const getNameLookupSnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps)
+      .filter(({ id }) => subjects[id]?.permissions['endowment:name-lookup'])
+      .map((snap) => ({
+        id: snap.id,
+        permission: subjects[snap.id]?.permissions['endowment:name-lookup'],
+      }));
+  },
+);
+
 export const getSettingsPageSnapsIds = createDeepEqualSelector(
   getSettingsPageSnaps,
   (snaps) => snaps.map((snap) => snap.id),
@@ -3936,3 +3953,14 @@ export function getShowUpdateModal(state) {
 
   return showUpdateModal;
 }
+
+/**
+ * Selector to get the allow list for non-zero unused approvals from remote feature flags.
+ *
+ * @param state - The MetaMask state object
+ * @returns {string[]} Array of URL strings for the allow list
+ */
+export const selectNonZeroUnusedApprovalsAllowList = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
+);

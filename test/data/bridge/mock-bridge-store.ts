@@ -5,7 +5,7 @@ import {
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
+import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
 import { mockTokenData } from './mock-token-data';
@@ -16,6 +16,7 @@ export const createBridgeMockStore = ({
   bridgeStateOverrides = {},
   bridgeStatusStateOverrides = {},
   metamaskStateOverrides = {},
+  stateOverrides = {},
 }: {
   // featureFlagOverrides?: Partial<BridgeControllerState['bridgeFeatureFlags']>;
   // bridgeSliceOverrides?: Partial<BridgeState>;
@@ -33,13 +34,72 @@ export const createBridgeMockStore = ({
   bridgeStatusStateOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskStateOverrides?: Record<string, any>;
-} = {}) => {
-  const swapsStore = createSwapsMockStore();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  stateOverrides?: Record<string, any>;
+} = {}): BridgeAppState => {
+  const {
+    metamask: swapsMetamask,
+    swaps,
+    ...swapsStore
+  } = createSwapsMockStore();
+  const { internalAccounts: tokenInternalAccounts, ...tokenData } =
+    mockTokenData;
+  const {
+    internalAccounts: internalAccountsOverrides,
+    accountTree: accountTreeOverrides,
+    ...metamaskStateOverridesWithoutAccounts
+  } = metamaskStateOverrides;
+  const internalAccounts = {
+    selectedAccount:
+      internalAccountsOverrides?.selectedAccount ??
+      swapsMetamask.internalAccounts.selectedAccount,
+    accounts: {
+      ...swapsMetamask.internalAccounts.accounts,
+      ...tokenInternalAccounts.accounts,
+      ...(internalAccountsOverrides?.accounts ?? {}),
+      'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+        type: 'solana:data-account',
+        id: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+        address: 'ABCDEu4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+        options: {
+          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          derivationPath: "m/44'/501'/0'/0'",
+          entropySource: '01K2FF18CTTXJYD34R78X4N1N1',
+          synchronize: true,
+          index: 0,
+          entropy: {
+            type: 'mnemonic',
+            id: '01K2FF18CTTXJYD34R78X4N1N1',
+            groupIndex: 0,
+            derivationPath: "m/44'/501'/0'/0'",
+          },
+        },
+        scopes: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        ],
+        metadata: {
+          name: 'Solana Account 1',
+          importTime: 1755013234384,
+          keyring: {
+            type: 'Snap Keyring',
+          },
+          snap: {
+            id: 'npm:@metamask/solana-wallet-snap',
+            name: 'Solana',
+            enabled: true,
+          },
+          lastSelected: 1755717637857,
+        },
+      },
+    },
+  };
   return {
     ...swapsStore,
     // For initial state of dest asset picker
     swaps: {
-      ...swapsStore.swaps,
+      ...swaps,
       topAssets: [],
     },
     bridge: {
@@ -49,8 +109,9 @@ export const createBridgeMockStore = ({
     },
     localeMessages: { currentLocale: 'es_419' },
     metamask: {
+      featureFlags: {},
       ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
-      ...swapsStore.metamask,
+      ...swapsMetamask,
       ...mockNetworkState(
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
@@ -84,8 +145,73 @@ export const createBridgeMockStore = ({
         },
       },
       slides: [],
-      ...mockTokenData,
-      ...metamaskStateOverrides,
+      accountTree: {
+        wallets: {
+          'entropy:01K2FF18CTTXJYD34R78X4N1N1': {
+            type: 'entropy',
+            id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1',
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01K2FF18CTTXJYD34R78X4N1N1',
+              },
+            },
+            groups: {
+              'entropy:01K2FF18CTTXJYD34R78X4N1N1/0': {
+                type: 'multichain-account',
+                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+                metadata: {
+                  name: 'Account 1',
+                  pinned: false,
+                  hidden: false,
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                },
+                accounts: [
+                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+                  'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+                  'account-1',
+                ],
+              },
+              'entropy:01K2FF18CTTXJYD34R78X4N1N1/1': {
+                type: 'multichain-account',
+                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/1',
+                metadata: {
+                  name: 'Account 2',
+                  pinned: false,
+                  hidden: false,
+                  entropy: {
+                    groupIndex: 1,
+                  },
+                },
+                accounts: ['15e69915-2a1a-4019-93b3-916e11fd432f'],
+              },
+              // Account group with only 1 solana account (edge case)
+              'entropy:01K2FF18CTTXJYD34R78X4N1N1/2': {
+                type: 'multichain-account',
+                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
+                metadata: {
+                  name: 'Account 1',
+                  pinned: false,
+                  hidden: false,
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                },
+                accounts: ['bf13d52c-d6e8-40ea-9726-07d7149a3ca5'],
+              },
+            },
+          },
+        },
+        selectedAccountGroup:
+          accountTreeOverrides?.selectedAccountGroup ??
+          'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+      },
+      ...tokenData,
+      ...metamaskStateOverridesWithoutAccounts,
+      internalAccounts,
       ...{
         ...getDefaultBridgeControllerState(),
         remoteFeatureFlags: {
@@ -122,6 +248,7 @@ export const createBridgeMockStore = ({
     send: {
       swapsBlockedTokens: [],
     },
+    ...stateOverrides,
     // TODO fix types
   } as unknown as BridgeAppState;
 };
