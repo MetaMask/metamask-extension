@@ -491,9 +491,26 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
-          {title}
-        </Text>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          width={BlockSize.Full}
+          paddingLeft={4}
+          paddingRight={4}
+        >
+          <Text
+            variant={TextVariant.headingLg}
+            marginBottom={1}
+            textAlign={TextAlign.Center}
+            style={{
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
+              maxWidth: '280px',
+            }}
+          >
+            {title}
+          </Text>
+        </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
