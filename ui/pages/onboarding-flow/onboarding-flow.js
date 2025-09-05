@@ -43,6 +43,7 @@ import {
   createNewVaultAndSyncWithSocial,
   setParticipateInMetaMetrics,
   setTermsOfUseLastAgreed,
+  setDataCollectionForMarketing,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -226,6 +227,7 @@ export default function OnboardingFlow() {
 
       if (isSocialLogin) {
         await dispatch(setParticipateInMetaMetrics(true));
+        await dispatch(setDataCollectionForMarketing(true));
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);

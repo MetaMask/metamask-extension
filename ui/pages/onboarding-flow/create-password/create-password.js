@@ -57,6 +57,7 @@ import {
   forceUpdateMetamaskState,
   resetOnboarding,
   setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
 } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -225,6 +226,7 @@ export default function CreatePassword({
 
     if (isSocialLoginFlow) {
       await dispatch(setParticipateInMetaMetrics(true));
+      await dispatch(setDataCollectionForMarketing(true));
     }
 
     trackEvent({
