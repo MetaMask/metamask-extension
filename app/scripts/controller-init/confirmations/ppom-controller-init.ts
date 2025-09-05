@@ -9,7 +9,6 @@ import { PPOMControllerInitMessenger } from '../messengers/ppom-controller-messe
 
 export const PPOMControllerInit: ControllerInitFunction<
   PPOMController,
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   PPOMControllerMessenger,
   PPOMControllerInitMessenger
 > = (request) => {
