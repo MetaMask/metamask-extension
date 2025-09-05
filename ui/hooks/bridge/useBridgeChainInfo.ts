@@ -87,7 +87,7 @@ export default function useBridgeChainInfo({
 
   // Source chain info
   const normalizedSrcChainId =
-    isSolanaChainId(srcChainId) || isBitcoinChainId(srcChainId)
+    isSolanaChainId(srcChainId) || isBitcoinChainId(srcChainIdInCaip)
       ? srcChainIdInCaip
       : formatChainIdToHex(srcChainId);
 
@@ -100,7 +100,7 @@ export default function useBridgeChainInfo({
 
   const srcNetwork = {
     ...commonSrcNetworkFields,
-    ...(isSolanaChainId(srcChainIdInCaip) || isBitcoinChainId(srcChainId)
+    ...(isSolanaChainId(srcChainIdInCaip) || isBitcoinChainId(srcChainIdInCaip)
       ? ({
           isEvm: false,
           nativeCurrency: srcNativeAsset?.assetId,
@@ -122,7 +122,7 @@ export default function useBridgeChainInfo({
 
   // Dest chain info
   const normalizedDestChainId =
-    isSolanaChainId(destChainId) || isBitcoinChainId(destChainId)
+    isSolanaChainId(destChainId) || isBitcoinChainId(destChainIdInCaip)
       ? destChainIdInCaip
       : formatChainIdToHex(destChainId);
 
@@ -135,7 +135,8 @@ export default function useBridgeChainInfo({
 
   const destNetwork = {
     ...commonDestNetworkFields,
-    ...(isSolanaChainId(destChainIdInCaip) || isBitcoinChainId(destChainId)
+    ...(isSolanaChainId(destChainIdInCaip) ||
+    isBitcoinChainId(destChainIdInCaip)
       ? ({
           isEvm: false,
           nativeCurrency: destNativeAsset?.assetId,
