@@ -38,6 +38,16 @@ import {
   ButtonLink,
   ButtonSize,
   ButtonVariant,
+  Checkbox,
+  Icon,
+  IconName,
+  IconSize,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
 } from '../../../components/component-library';
 import {
@@ -54,6 +64,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -82,6 +93,9 @@ import {
 } from '../../../selectors/selectors.types';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
+import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
+import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
+import Tooltip from '../../../components/ui/tooltip';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
@@ -103,7 +117,6 @@ export type ConnectPageProps = {
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: ConnectPageRequest) => void;
-  activeTabOrigin: string;
   targetSubjectMetadata: {
     extensionId: string | null;
     iconUrl: string | null;
@@ -196,6 +209,16 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
+  const [showMaliciousSiteModal, setShowMaliciousSiteModal] = useState(false);
+  const [maliciousSiteAcknowledged, setMaliciousSiteAcknowledged] =
+    useState(false);
+
+  const title = transformOriginToTitle(targetSubjectMetadata.origin);
+  const originTrustSignals = useOriginTrustSignals(
+    targetSubjectMetadata.origin,
+  );
+  const isMaliciousSite =
+    originTrustSignals.state === TrustSignalDisplayState.Malicious;
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
@@ -375,7 +398,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     userHasModifiedSelection,
     handleCaipAccountAddressesSelected,
     selectedCaipAccountAddresses,
-    JSON.stringify(defaultCaipAccountAddresses),
+    defaultCaipAccountAddresses,
   ]);
 
   const selectedAccounts = allAccounts.filter(({ caipAccountId }) => {
@@ -411,15 +434,21 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     setShowCreateSolanaAccountModal(false);
   }, []);
 
-  const handleCloseEditAccountsModal = useCallback(() => {
-    setShowEditAccountsModal(false);
+  const handleMaliciousSiteCheckbox = useCallback(() => {
+    setMaliciousSiteAcknowledged(!maliciousSiteAcknowledged);
+  }, [maliciousSiteAcknowledged]);
+
+  const handleOpenMaliciousSiteModal = useCallback(() => {
+    setShowMaliciousSiteModal(true);
   }, []);
 
-  const handleCancelConnection = useCallback(() => {
-    rejectPermissionsRequest(permissionsRequestId);
-  }, [permissionsRequestId, rejectPermissionsRequest]);
+  const handleCloseMaliciousSiteModal = useCallback(() => {
+    setShowMaliciousSiteModal(false);
+    setMaliciousSiteAcknowledged(false);
+  }, []);
 
-  const onConfirm = useCallback(() => {
+  const handleContinueAnywayFromModal = useCallback(() => {
+    setShowMaliciousSiteModal(false);
     const _request = {
       ...request,
       permissions: {
@@ -440,7 +469,43 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     approveConnection,
   ]);
 
-  const title = transformOriginToTitle(targetSubjectMetadata.origin);
+  const handleCloseEditAccountsModal = useCallback(() => {
+    setShowEditAccountsModal(false);
+  }, []);
+
+  const handleCancelConnection = useCallback(() => {
+    rejectPermissionsRequest(permissionsRequestId);
+  }, [permissionsRequestId, rejectPermissionsRequest]);
+
+  const onConfirm = useCallback(() => {
+    // If it's a malicious site and user hasn't acknowledged, show modal first
+    if (isMaliciousSite && !maliciousSiteAcknowledged) {
+      handleOpenMaliciousSiteModal();
+      return;
+    }
+
+    const _request = {
+      ...request,
+      permissions: {
+        ...request.permissions,
+        ...generateCaip25Caveat(
+          requestedCaip25CaveatValueWithExistingPermissions,
+          selectedCaipAccountAddresses,
+          selectedChainIds,
+        ),
+      },
+    };
+    approveConnection(_request);
+  }, [
+    request,
+    requestedCaip25CaveatValueWithExistingPermissions,
+    selectedCaipAccountAddresses,
+    selectedChainIds,
+    approveConnection,
+    isMaliciousSite,
+    maliciousSiteAcknowledged,
+    handleOpenMaliciousSiteModal,
+  ]);
 
   return (
     <Page
@@ -491,9 +556,42 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
-          {title}
-        </Text>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          gap={2}
+          marginBottom={1}
+        >
+          <Text variant={TextVariant.headingLg}>{title}</Text>
+          {originTrustSignals.state === TrustSignalDisplayState.Malicious && (
+            <Tooltip title="Malicious site" position="bottom">
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.errorDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+          {originTrustSignals.state === TrustSignalDisplayState.Warning && (
+            <Tooltip title="Suspicious site" position="bottom">
+              <Icon
+                name={IconName.Danger}
+                color={IconColor.warningDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+            <Tooltip title="Verified site" position="bottom">
+              <Icon
+                name={IconName.VerifiedFilled}
+                color={IconColor.infoDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+        </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
@@ -641,37 +739,114 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         </Tabs>
       </Content>
       <Footer>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={4}
-          width={BlockSize.Full}
-        >
-          <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
-            <Button
-              block
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              data-testid="cancel-btn"
-              onClick={handleCancelConnection}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              block
-              data-testid="confirm-btn"
-              size={ButtonSize.Lg}
-              onClick={onConfirm}
-              disabled={
-                selectedCaipAccountAddresses.length === 0 ||
-                selectedChainIds.length === 0
-              }
-            >
-              {t('connect')}
-            </Button>
-          </Box>
+        <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
+          <Button
+            block
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            data-testid="cancel-btn"
+            onClick={handleCancelConnection}
+          >
+            {t('cancel')}
+          </Button>
+          <Button
+            block
+            data-testid="confirm-btn"
+            size={ButtonSize.Lg}
+            onClick={onConfirm}
+            disabled={
+              selectedCaipAccountAddresses.length === 0 ||
+              selectedChainIds.length === 0
+            }
+            danger={isMaliciousSite}
+            startIconName={isMaliciousSite ? IconName.Danger : undefined}
+          >
+            {t('connect')}
+          </Button>
         </Box>
       </Footer>
+      {showMaliciousSiteModal && (
+        <Modal isOpen onClose={handleCloseMaliciousSiteModal}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={handleCloseMaliciousSiteModal}>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                gap={2}
+              >
+                <Icon
+                  name={IconName.Danger}
+                  color={IconColor.errorDefault}
+                  size={IconSize.Xl}
+                />
+                <Text variant={TextVariant.headingSm}>
+                  {t('maliciousSiteDetected') || 'Malicious site detected'}
+                </Text>
+              </Box>
+            </ModalHeader>
+            <ModalBody>
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                alignItems={AlignItems.flexStart}
+                marginBottom={4}
+                gap={2}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('site') || 'Site'}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={IconColor.errorDefault}
+                  textAlign={TextAlign.Right}
+                  style={{
+                    wordBreak: 'break-all',
+                    overflowWrap: 'break-word',
+                    flex: 1,
+                  }}
+                >
+                  {targetSubjectMetadata.origin}
+                </Text>
+              </Box>
+              <Text variant={TextVariant.bodyMd} marginBottom={4}>
+                {t('maliciousSiteModalDescription') ||
+                  'If you connect to this site, you could lose all your assets.'}{' '}
+              </Text>
+              <Box
+                backgroundColor={BackgroundColor.errorMuted}
+                borderRadius={BorderRadius.LG}
+                padding={4}
+              >
+                <Checkbox
+                  label={
+                    t('maliciousSiteModalCheckbox') ||
+                    'I understand this site has been flagged as malicious and still want to connect.'
+                  }
+                  data-testid="malicious-site-modal-checkbox"
+                  isChecked={maliciousSiteAcknowledged}
+                  onChange={handleMaliciousSiteCheckbox}
+                  alignItems={AlignItems.flexStart}
+                />
+              </Box>
+            </ModalBody>
+            <ModalFooter
+              onSubmit={handleContinueAnywayFromModal}
+              submitButtonProps={{
+                disabled: !maliciousSiteAcknowledged,
+                danger: true,
+                children: t('continueAnyway') || 'Continue anyway',
+                'data-testid': 'continue-anyway-btn',
+              }}
+            />
+          </ModalContent>
+        </Modal>
+      )}
     </Page>
   );
 };
