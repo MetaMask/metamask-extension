@@ -1,9 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { CompatRouter } from 'react-router-dom-v5-compat';
 import { TransactionType } from '@metamask/transaction-controller';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -25,30 +22,9 @@ import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  startIncomingTransactionPolling,
-  stopIncomingTransactionPolling,
-} from '../../../store/controller-actions/transaction-controller';
 import TransactionList, {
   filterTransactionsByToken,
 } from './transaction-list.component';
-
-jest.mock('../../../store/controller-actions/transaction-controller');
-// Mock FEATURED_NETWORK_CHAIN_IDS to include Goerli
-jest.mock('../../../../shared/constants/network', () => ({
-  ...jest.requireActual('../../../../shared/constants/network'),
-  FEATURED_NETWORK_CHAIN_IDS: [
-    '0x1',
-    '0x5',
-    '0x89',
-    '0xa',
-    '0xa4b1',
-    '0xa86a',
-    '0x38',
-    '0x144',
-    '0x324',
-  ],
-}));
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: '0xefga64466f257793eaa52fcfff5066894b76a149',
@@ -59,19 +35,13 @@ const defaultState = {
   metamask: {
     ...mockState.metamask,
     enabledNetworkMap: {
-      eip155: {
-        [CHAIN_IDS.GOERLI]: true,
-      },
+      [CHAIN_IDS.GOERLI]: true,
     },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {
       accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
       selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
     },
-    multichainNetworkConfigurationsByChainId:
-      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-    selectedMultichainNetworkChainId: 'eip155:5',
-    isEvmSelected: true,
   },
 };
 
@@ -80,40 +50,42 @@ const btcState = {
     ...mockState.metamask,
     nonEvmTransactions: {
       [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
-        transactions: [
-          {
-            timestamp: 1733736433,
-            chain: MultichainNetworks.BITCOIN,
-            status: 'confirmed',
-            type: 'send',
-            account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-            from: [],
-            to: [
-              {
-                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'BTC',
-                  amount: '1.1',
+        [MultichainNetworks.BITCOIN]: {
+          transactions: [
+            {
+              timestamp: 1733736433,
+              chain: MultichainNetworks.BITCOIN,
+              status: 'confirmed',
+              type: 'send',
+              account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+              from: [],
+              to: [
+                {
+                  address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'BTC',
+                    amount: '1.1',
+                  },
                 },
-              },
-              {
-                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'BTC',
-                  amount: '0.1',
+                {
+                  address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'BTC',
+                    amount: '0.1',
+                  },
                 },
-              },
-            ],
-            fees: [],
-            events: [],
-          },
-        ],
-        next: null,
-        lastUpdated: expect.any(Number),
+              ],
+              fees: [],
+              events: [],
+            },
+          ],
+          next: null,
+          lastUpdated: expect.any(Number),
+        },
       },
     },
     internalAccounts: {
@@ -135,60 +107,62 @@ const solanaSwapState = {
     ...mockState.metamask,
     nonEvmTransactions: {
       [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
-        transactions: [
-          {
-            id: '2pfnv4drhnitfzCFKxiRoJMzFQpG7wZ9mpRQVk7xm5TQ27g6FZH95HVF6KgwQBS872yGtyhuq57jXXS1y29ub11',
-            timestamp: 1740480781,
-            chain: MultichainNetworks.SOLANA,
-            status: 'confirmed',
-            type: 'swap',
-            from: [
-              {
-                address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-                asset: {
-                  fungible: true,
-                  type: 'solCaip19',
-                  unit: 'SOL',
-                  amount: '0.01',
+        [MultichainNetworks.SOLANA]: {
+          transactions: [
+            {
+              id: '2pfnv4drhnitfzCFKxiRoJMzFQpG7wZ9mpRQVk7xm5TQ27g6FZH95HVF6KgwQBS872yGtyhuq57jXXS1y29ub11',
+              timestamp: 1740480781,
+              chain: MultichainNetworks.SOLANA,
+              status: 'confirmed',
+              type: 'swap',
+              from: [
+                {
+                  address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+                  asset: {
+                    fungible: true,
+                    type: 'solCaip19',
+                    unit: 'SOL',
+                    amount: '0.01',
+                  },
                 },
-              },
-            ],
-            to: [
-              {
-                address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-                asset: {
-                  fungible: true,
-                  type: 'bonkCaip19',
-                  unit: 'BONK',
-                  amount: '0.00000001', // Test extremely small amounts
+              ],
+              to: [
+                {
+                  address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+                  asset: {
+                    fungible: true,
+                    type: 'bonkCaip19',
+                    unit: 'BONK',
+                    amount: '0.00000001', // Test extremely small amounts
+                  },
                 },
-              },
-            ],
-            fees: [
-              {
-                type: 'base',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000005',
+              ],
+              fees: [
+                {
+                  type: 'base',
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'SOL',
+                    amount: '0.000005',
+                  },
                 },
-              },
-              {
-                type: 'priority',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000069798',
+                {
+                  type: 'priority',
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'SOL',
+                    amount: '0.000069798',
+                  },
                 },
-              },
-            ],
-            events: [{ status: 'confirmed', timestamp: 1740480781 }],
-          },
-        ],
-        next: null,
-        lastUpdated: expect.any(Number),
+              ],
+              events: [{ status: 'confirmed', timestamp: 1740480781 }],
+            },
+          ],
+          next: null,
+          lastUpdated: expect.any(Number),
+        },
       },
     },
     internalAccounts: {
@@ -202,6 +176,7 @@ const solanaSwapState = {
     selectedAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
     completedOnboarding: true,
     transactions: [],
+    selectedMultichainNetworkChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   },
 };
 
@@ -210,26 +185,14 @@ const mockTrackEvent = jest.fn();
 const render = (state = defaultState) => {
   const store = configureStore(state);
   return renderWithProvider(
-    <MemoryRouter>
-      <CompatRouter>
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
-          <TransactionList />
-        </MetaMetricsContext.Provider>
-      </CompatRouter>
-    </MemoryRouter>,
+    <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <TransactionList />
+    </MetaMetricsContext.Provider>,
     store,
   );
 };
 
 describe('TransactionList', () => {
-  const startIncomingTransactionPollingMock = jest.mocked(
-    startIncomingTransactionPolling,
-  );
-
-  const stopIncomingTransactionPollingMock = jest.mocked(
-    stopIncomingTransactionPolling,
-  );
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -242,13 +205,9 @@ describe('TransactionList', () => {
   it('renders TransactionList component with props hideNetworkFilter correctly', () => {
     const store = configureStore(defaultState);
     const { container } = renderWithProvider(
-      <MemoryRouter>
-        <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <TransactionList hideNetworkFilter />
-          </MetaMetricsContext.Provider>
-        </CompatRouter>
-      </MemoryRouter>,
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList hideNetworkFilter />
+      </MetaMetricsContext.Provider>,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -264,13 +223,9 @@ describe('TransactionList', () => {
     };
     const store = configureStore(defaultState2);
     const { container } = renderWithProvider(
-      <MemoryRouter>
-        <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <TransactionList hideTokenTransactions />
-          </MetaMetricsContext.Provider>
-        </CompatRouter>
-      </MemoryRouter>,
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList hideTokenTransactions />
+      </MetaMetricsContext.Provider>,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -320,13 +275,9 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState);
 
     const { queryByText } = renderWithProvider(
-      <MemoryRouter>
-        <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <TransactionList tokenChainId="0x89" />
-          </MetaMetricsContext.Provider>
-        </CompatRouter>
-      </MemoryRouter>,
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList tokenChainId="0x89" />
+      </MetaMetricsContext.Provider>,
       store,
     );
     expect(
@@ -375,13 +326,9 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState2);
 
     const { queryByText } = renderWithProvider(
-      <MemoryRouter>
-        <CompatRouter>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <TransactionList tokenChainId="0xe708" />
-          </MetaMetricsContext.Provider>
-        </CompatRouter>
-      </MemoryRouter>,
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList tokenChainId="0xe708" />
+      </MetaMetricsContext.Provider>,
       store,
     );
     expect(
@@ -405,26 +352,6 @@ describe('TransactionList', () => {
       name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
-  });
-
-  it('starts incoming transaction polling on mount', () => {
-    render();
-    expect(startIncomingTransactionPollingMock).toHaveBeenCalled();
-  });
-
-  it('stops incoming transaction polling on mount', () => {
-    render();
-    expect(stopIncomingTransactionPollingMock).toHaveBeenCalled();
-  });
-
-  it('stops incoming transaction polling on unmount', () => {
-    const { unmount } = render();
-
-    const count = stopIncomingTransactionPollingMock.mock.calls.length;
-
-    unmount();
-
-    expect(stopIncomingTransactionPollingMock).toHaveBeenCalledTimes(count + 1);
   });
 
   describe('keepOnlyNonEvmTransactionsForToken', () => {
@@ -483,11 +410,17 @@ describe('TransactionList', () => {
     };
 
     const nonEvmTransactions = {
-      transactions: [
-        transactionWithSolAndToken,
-        transactionWithOnlySol,
-        transactionWithOnlyToken,
-      ],
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        [MultichainNetworks.SOLANA]: {
+          transactions: [
+            transactionWithSolAndToken,
+            transactionWithOnlySol,
+            transactionWithOnlyToken,
+          ],
+          next: null,
+          lastUpdated: expect.any(Number),
+        },
+      },
     };
 
     it('filters out transactions that do not involve the token address', () => {
@@ -495,12 +428,16 @@ describe('TransactionList', () => {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
       const result = filterTransactionsByToken(
-        nonEvmTransactions,
+        nonEvmTransactions[MOCK_ACCOUNT_SOLANA_MAINNET.id][
+          MultichainNetworks.SOLANA
+        ],
         tokenAddress,
       );
 
       expect(result).toStrictEqual({
         transactions: [transactionWithSolAndToken, transactionWithOnlyToken],
+        next: null,
+        lastUpdated: expect.any(Number),
       });
     });
 
@@ -508,11 +445,21 @@ describe('TransactionList', () => {
       const tokenAddress = undefined;
 
       const result = filterTransactionsByToken(
-        nonEvmTransactions,
+        nonEvmTransactions[MOCK_ACCOUNT_SOLANA_MAINNET.id][
+          MultichainNetworks.SOLANA
+        ],
         tokenAddress,
       );
 
-      expect(result).toStrictEqual(nonEvmTransactions);
+      expect(result).toStrictEqual({
+        transactions: [
+          transactionWithSolAndToken,
+          transactionWithOnlySol,
+          transactionWithOnlyToken,
+        ],
+        next: null,
+        lastUpdated: expect.any(Number),
+      });
     });
   });
 });

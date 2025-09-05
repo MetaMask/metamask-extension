@@ -320,7 +320,7 @@
     "@metamask/multichain-api-client": "^0.6.5",
     "@metamask/multichain-api-middleware": "1.0.0",
     "@metamask/multichain-network-controller": "^0.11.1",
-    "@metamask/multichain-transactions-controller": "^0.9.0",
+    "@metamask/multichain-transactions-controller": "^5.0.0",
     "@metamask/name-controller": "^8.0.3",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A24.1.0#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch",
     "@metamask/notification-services-controller": "^16.0.0",
