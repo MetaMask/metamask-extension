@@ -92,7 +92,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     if (originTrustSignals.state === TrustSignalDisplayState.Malicious) {
       return (
         <Tooltip
-          title={t('trustSignalUrlMalicious')}
+          title={t('alertReasonOriginTrustSignalMalicious')}
           position="bottom"
           style={{ display: 'flex' }}
         >
@@ -114,7 +114,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     if (originTrustSignals.state === TrustSignalDisplayState.Warning) {
       return (
         <Tooltip
-          title={t('trustSignalUrlSuspicious')}
+          title={t('alertReasonOriginTrustSignalWarning')}
           position="bottom"
           style={{ display: 'flex' }}
         >
@@ -131,7 +131,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
     if (originTrustSignals.state === TrustSignalDisplayState.Verified) {
       return (
         <Tooltip
-          title={t('trustSignalUrlVerified')}
+          title={t('alertReasonOriginTrustSignalVerified')}
           position="bottom"
           style={{ display: 'flex' }}
         >

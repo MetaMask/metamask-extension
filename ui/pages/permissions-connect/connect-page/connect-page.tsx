@@ -491,7 +491,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
+        <Text
+          variant={TextVariant.headingLg}
+          marginBottom={1}
+          style={{
+            wordBreak: 'break-word',
+            whiteSpace: 'normal',
+          }}
+        >
           {title}
         </Text>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
