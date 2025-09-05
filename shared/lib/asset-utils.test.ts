@@ -459,8 +459,16 @@ describe('asset-utils', () => {
   });
 
   describe('isEvmChainId', () => {
-    it('should return true for EVM chain IDs', () => {
+    it('should return true for EVM chain ids on caip format', () => {
       expect(isEvmChainId('eip155:1')).toBe(true);
+    });
+
+    it('should return true for EVM chain ids on hex format', () => {
+      expect(isEvmChainId('0x1')).toBe(true);
+    });
+
+    it('should return false for non-EVM chain ids', () => {
+      expect(isEvmChainId('solana:1')).toBe(false);
     });
   });
 });
