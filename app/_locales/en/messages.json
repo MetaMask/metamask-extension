@@ -513,6 +513,9 @@
   "alertReasonOriginTrustSignalWarning": {
     "message": "Suspicious site"
   },
+  "alertReasonOriginTrustSignalVerified": {
+    "message": "Verified site"
+  },
   "alertReasonPendingTransactions": {
     "message": "Pending transaction"
   },
@@ -7108,15 +7111,6 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
-  },
-  "trustSignalUrlMalicious": {
-    "message": "Malicious site"
-  },
-  "trustSignalUrlSuspicious": {
-    "message": "Suspicious site"
-  },
-  "trustSignalUrlVerified": {
-    "message": "Verified site"
   },
   "tryAgain": {
     "message": "Try again"
