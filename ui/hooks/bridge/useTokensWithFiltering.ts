@@ -85,7 +85,7 @@ const buildTokenData = (
 
     return {
       ...sharedFields,
-      type: AssetType.token,
+      type: AssetType.native,
       address: '', // Return empty string to match useMultichainBalances output
       image:
         image ??
@@ -95,7 +95,7 @@ const buildTokenData = (
       // Only unimported native assets are processed here so hardcode balance to 0
       balance: '0',
       string: '0',
-    };
+    } as AssetWithDisplayData<NativeAsset>;
   }
 
   return {
