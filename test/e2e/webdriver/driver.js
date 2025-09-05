@@ -44,6 +44,10 @@ function wrapElementWithAPI(element, driver) {
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
+
+    // Wait for DOM to update before checking if clearing worked
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
     if ((await element.getProperty('value')) !== '') {
       await driver.driver
@@ -53,6 +57,9 @@ function wrapElementWithAPI(element, driver) {
         .sendKeys('a')
         .keyUp(driver.Key.MODIFIER)
         .perform();
+
+      // Wait for second clearing method to complete
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
     await element.sendKeys(input);
   };

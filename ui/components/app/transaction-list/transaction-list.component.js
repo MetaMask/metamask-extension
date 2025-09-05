@@ -8,6 +8,7 @@ import React, {
   ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
+import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -34,7 +35,6 @@ import {
   getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
 ///: END:ONLY_INCLUDE_IF
@@ -123,6 +123,10 @@ import {
   startIncomingTransactionPolling,
   stopIncomingTransactionPolling,
 } from '../../../store/controller-actions/transaction-controller';
+import {
+  selectBridgeHistoryForAccount,
+  selectBridgeHistoryItemForTxMetaId,
+} from '../../../ducks/bridge-status/selectors';
 import NoTransactions from './no-transactions';
 
 const PAGE_INCREMENT = 10;
@@ -327,14 +331,9 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
-  const nonEvmTransactionFilteredByToken = useMemo(
+  const nonEvmTransactionsForToken = useMemo(
     () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
     [nonEvmTransactions, tokenAddress],
-  );
-
-  // Use our custom hook to map Solana bridge transactions with destination chain info
-  const modifiedNonEvmTransactions = useSolanaBridgeTransactionMapping(
-    nonEvmTransactionFilteredByToken,
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -607,6 +606,13 @@ export default function TransactionList({
 
   const trackEvent = useContext(MetaMetricsContext);
 
+  const bridgeHistoryItems = useSelector((state) =>
+    selectBridgeHistoryForAccount(state, selectedAccount.address),
+  );
+  const selectedBridgeHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, selectedTransaction?.id),
+  );
+
   if (!isEvmAccountType(selectedAccount.type)) {
     const { namespace } = parseCaipChainId(multichainNetworkConfig.chainId);
     const isBitcoinNetwork = namespace === KnownCaipNamespace.Bip122;
@@ -618,16 +624,17 @@ export default function TransactionList({
 
     const metricsLocation = 'Activity Tab';
 
-    const groupedTransactionsList = tokenAddress
-      ? nonEvmTransactionFilteredByToken
-      : modifiedNonEvmTransactions;
-
     return (
       <>
         {selectedTransaction &&
-          (selectedTransaction.isBridgeTx && selectedTransaction.bridgeInfo ? (
+          (selectedBridgeHistoryItem &&
+          isCrossChain(
+            selectedBridgeHistoryItem.quote.srcChainId,
+            selectedBridgeHistoryItem.quote.destChainId,
+          ) ? (
             <MultichainBridgeTransactionDetailsModal
               transaction={selectedTransaction}
+              bridgeHistoryItem={selectedBridgeHistoryItem}
               onClose={() => toggleShowDetails(null)}
             />
           ) : (
@@ -644,7 +651,7 @@ export default function TransactionList({
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
-                {groupNonEvmTransactionsByDate(groupedTransactionsList).map(
+                {groupNonEvmTransactionsByDate(nonEvmTransactionsForToken).map(
                   (dateGroup) => (
                     <Fragment key={dateGroup.date}>
                       <Text
@@ -656,15 +663,22 @@ export default function TransactionList({
                         {dateGroup.date}
                       </Text>
                       {dateGroup.transactionGroups.map((transaction) => {
-                        // Check for bridging transactions
+                        // Show the Bridge transaction list item component when a multichain cross chain transaction matches a txHistory item.
+                        const matchedBridgeHistoryItem =
+                          bridgeHistoryItems[transaction.id];
+
                         if (
-                          transaction.isBridgeOriginated ||
-                          (transaction.isBridgeTx && transaction.bridgeInfo)
+                          matchedBridgeHistoryItem &&
+                          isCrossChain(
+                            matchedBridgeHistoryItem.quote?.srcChainId,
+                            matchedBridgeHistoryItem.quote?.destChainId,
+                          )
                         ) {
                           return (
                             <MultichainBridgeTransactionListItem
                               key={`bridge-${transaction.id}`}
                               transaction={transaction}
+                              bridgeHistoryItem={matchedBridgeHistoryItem}
                               toggleShowDetails={toggleShowDetails}
                             />
                           );

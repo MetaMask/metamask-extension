@@ -1,8 +1,8 @@
 import { CaipAssetType, Hex } from '@metamask/utils';
-import { useSelector } from 'react-redux';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { getAssetsRates } from '../../../../selectors/assets';
@@ -16,6 +16,7 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { Asset } from '../../types/send';
 import { convertedCurrency, formatToFixedDecimals } from '../../utils/send';
 import { useSendContext } from '../../context/send';
+import { useSendType } from './useSendType';
 
 type ConversionArgs = {
   asset?: Asset;
@@ -71,8 +72,9 @@ export const useCurrencyConversions = () => {
   );
   const currencyRates = useSelector(getCurrencyRates);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const { isEvmSendType } = useSendType();
   const conversionRateEvm = useMemo((): number => {
-    if (!asset?.address || !chainId || !isEvmAddress(asset?.address)) {
+    if (!isEvmSendType) {
       return 0;
     }
     const { nativeCurrency } = allNetworks[chainId as Hex];
@@ -88,6 +90,9 @@ export const useCurrencyConversions = () => {
   const conversionRate = useMemo(() => {
     if (!asset?.address) {
       return 0;
+    }
+    if ((asset as Asset)?.fiat?.conversionRate) {
+      return (asset as Asset)?.fiat?.conversionRate ?? 0;
     }
     if (isEvmAddress(asset?.address)) {
       if (isNativeAddress(asset?.address)) {

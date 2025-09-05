@@ -168,11 +168,18 @@ const createMockState = () => ({
   },
 });
 
-const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
+const renderComponent = (
+  groupId: AccountGroupId = GROUP_ID_MOCK,
+  onQrClick: (
+    address: string,
+    networkName: string,
+    networkImageSrc?: string,
+  ) => void = jest.fn(),
+) => {
   const store = mockStore(createMockState());
   return render(
     <Provider store={store}>
-      <MultichainAddressRowsList groupId={groupId} />
+      <MultichainAddressRowsList groupId={groupId} onQrClick={onQrClick} />
     </Provider>,
   );
 };
@@ -256,5 +263,23 @@ describe('MultichainAddressRowsList', () => {
     expect(
       screen.getByTestId('multichain-address-rows-list-empty-message'),
     ).toHaveTextContent('noNetworksFound');
+  });
+
+  it('passes onQrClick callback to child components', () => {
+    const mockOnQrClick = jest.fn();
+    renderComponent(GROUP_ID_MOCK, mockOnQrClick);
+
+    const qrButtons = screen.getAllByTestId('multichain-address-row-qr-button');
+    expect(qrButtons.length).toBeGreaterThan(0);
+
+    // Click the first QR button (Ethereum account)
+    fireEvent.click(qrButtons[0]);
+
+    expect(mockOnQrClick).toHaveBeenCalledTimes(1);
+    expect(mockOnQrClick).toHaveBeenCalledWith(
+      '0x1234567890abcdef1234567890abcdef12345678',
+      'Ethereum Mainnet',
+      './images/eth_logo.svg',
+    );
   });
 });
