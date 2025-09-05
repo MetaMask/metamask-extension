@@ -197,11 +197,6 @@ const AssetPage = ({
 
   const { currentPrice } = useCurrentPrice(asset);
 
-  console.log('ASSET PAGE CURRENT PRICE', {
-    currentPrice,
-    asset,
-  });
-
   let balance, tokenFiatAmount, assetId;
   if (isMultichainAccountsState2Enabled) {
     const assetWithBalance = accountGroupIdAssets[chainId]?.find(
@@ -289,10 +284,6 @@ const AssetPage = ({
           secondary: balance ? Number(balance) : 0,
         }
       : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
-
-  console.log('ASSET PAGE TOKEN WITH FIAT AMOUNT', {
-    tokenWithFiatAmount,
-  });
 
   const { safeChains } = useSafeChains();
 
