@@ -25,7 +25,7 @@ class ContractAddressRegistry {
    */
   getContractAddress(contractName) {
     const matchingContracts = this.#contracts.filter(
-      contract => contract.name === contractName
+      (contract) => contract.name === contractName,
     );
     return matchingContracts.length > 0
       ? matchingContracts[matchingContracts.length - 1].address
@@ -38,7 +38,7 @@ class ContractAddressRegistry {
    * @returns Array of all deployed contract addresses in deployment order
    */
   getAllDeployedContractAddresses() {
-    return this.#contracts.map(contract => contract.address);
+    return this.#contracts.map((contract) => contract.address);
   }
 }
 
