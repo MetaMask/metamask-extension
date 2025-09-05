@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { type Hex } from '@metamask/utils';
+import { CaipChainId, type Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -52,9 +52,9 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 type TokenListItemProps = {
   className?: string;
@@ -70,7 +70,7 @@ type TokenListItemProps = {
   isTitleNetworkName?: boolean;
   isTitleHidden?: boolean;
   tokenChainImage?: string;
-  chainId: string;
+  chainId: CaipChainId | Hex;
   address?: string | null;
   showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
