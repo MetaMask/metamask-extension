@@ -128,7 +128,7 @@ export async function bridgeTransaction(
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
-    .forGet(`https://portfolio.metamask.io/bridge`)
+    .forGet(`https://app.metamask.io/bridge`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -500,7 +500,7 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
 
 async function mockSwapAggregatorLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet('bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata')
     .always()
     .thenCallback(() => {
       return {
@@ -544,7 +544,9 @@ export async function mockGasPricesMainnet(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -556,7 +558,7 @@ export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -569,7 +571,7 @@ export async function mockSwapTokensLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/42161/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -582,7 +584,9 @@ export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/42161/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -654,6 +658,7 @@ export const getBridgeFixtures = (
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -765,6 +770,7 @@ export const getBridgeFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
@@ -793,6 +799,7 @@ export const getQuoteNegativeCasesFixtures = (
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -813,6 +820,7 @@ export const getQuoteNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -838,6 +846,7 @@ export const getBridgeNegativeCasesFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
@@ -859,6 +868,7 @@ export const getBridgeNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -925,6 +935,7 @@ export const getBridgeL2Fixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({
@@ -969,6 +980,7 @@ export const getBridgeL2Fixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,

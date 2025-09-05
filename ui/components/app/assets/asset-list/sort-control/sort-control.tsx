@@ -47,7 +47,7 @@ export const SelectableListItem = ({
           'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
