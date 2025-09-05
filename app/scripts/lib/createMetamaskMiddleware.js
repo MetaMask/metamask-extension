@@ -11,8 +11,6 @@ import {
 export default function createMetamaskMiddleware({
   version,
   getAccounts,
-  getCallsStatus,
-  getCapabilities,
   processTransaction,
   processTypedMessage,
   processTypedMessageV3,
@@ -20,7 +18,6 @@ export default function createMetamaskMiddleware({
   processPersonalMessage,
   processDecryptMessage,
   processEncryptionPublicKey,
-  processSendCalls,
   getPendingNonce,
   getPendingTransactionByHash,
 }) {
@@ -31,8 +28,6 @@ export default function createMetamaskMiddleware({
     }),
     createWalletMiddleware({
       getAccounts,
-      getCallsStatus,
-      getCapabilities,
       processTransaction,
       processTypedMessage,
       processTypedMessageV3,
@@ -40,7 +35,6 @@ export default function createMetamaskMiddleware({
       processPersonalMessage,
       processDecryptMessage,
       processEncryptionPublicKey,
-      processSendCalls,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),
