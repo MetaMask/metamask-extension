@@ -23,7 +23,11 @@ import {
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
-import { ContainerMaxWidth, Label } from '../../components/component-library';
+import {
+  ButtonLink,
+  ContainerMaxWidth,
+  Label,
+} from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
@@ -44,10 +48,21 @@ const { getExtensionURL } = globalThis.platform;
 
 function set404(
   setDescription: React.Dispatch<React.SetStateAction<string | null>>,
+  setExtraDescription: React.Dispatch<React.SetStateAction<string | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
   t: TranslateFunction,
 ) {
   setDescription(t('deepLink_Error404Description'));
+  setExtraDescription(
+    t('deepLink_Error404_CTA', [
+      <ButtonLink
+        as="a"
+        href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+      >
+        {t('deepLink_Error404_CTA_LinkText')}
+      </ButtonLink>,
+    ]),
+  );
   setTitle(t('deepLink_Error404Title'));
 }
 
@@ -66,6 +81,7 @@ function set404(
 async function updateStateFromUrl(
   urlPathAndQuery: string,
   setDescription: React.Dispatch<React.SetStateAction<string | null>>,
+  setExtraDescription: React.Dispatch<React.SetStateAction<string | null>>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setRoute: React.Dispatch<React.SetStateAction<Route | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
@@ -95,6 +111,7 @@ async function updateStateFromUrl(
         ? continueMessage
         : t('deepLink_ThirdPartyDescription', [continueMessage]);
       setDescription(description);
+      setExtraDescription(null);
       setRoute({ href, signed });
       setTitle(
         signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
@@ -102,12 +119,13 @@ async function updateStateFromUrl(
       setCta(t('deepLink_Continue', [t(title)]));
     } else {
       setRoute(null);
-      set404(setDescription, setTitle, t);
+      set404(setDescription, setExtraDescription, setTitle, t);
       setCta(t('deepLink_GoToTheHomePageButton'));
     }
   } catch (e) {
     log.error('Error parsing deep link:', e);
     setDescription(t('deepLink_ErrorOtherDescription'));
+    setExtraDescription(null);
     setRoute(null);
     setTitle(t('deepLink_ErrorOtherTitle'));
     setCta(t('deepLink_GoToTheHomePageButton'));
@@ -130,6 +148,7 @@ export const DeepLink = () => {
   );
 
   const [description, setDescription] = useState<string | null>(null);
+  const [extraDescription, setExtraDescription] = useState<string | null>(null);
   const [route, setRoute] = useState<null | Route>(null);
   const [title, setTitle] = useState<null | string>(null);
   const [cta, setCta] = useState<null | string>(null);
@@ -145,7 +164,7 @@ export const DeepLink = () => {
       setRoute(null);
       setIsLoading(false);
       if (errorCode === '404') {
-        set404(setDescription, setTitle, t);
+        set404(setDescription, setExtraDescription, setTitle, t);
       } else {
         setDescription(null);
         setTitle(t('deepLink_ErrorMissingUrl'));
@@ -157,6 +176,7 @@ export const DeepLink = () => {
     updateStateFromUrl(
       urlStr,
       setDescription,
+      setExtraDescription,
       setIsLoading,
       setRoute,
       setTitle,
@@ -211,6 +231,11 @@ export const DeepLink = () => {
                 paddingBottom={12}
               >
                 {description}
+                {extraDescription ? (
+                  <Box paddingTop={4}>{extraDescription}</Box>
+                ) : (
+                  ''
+                )}
               </Box>
             )}
 
