@@ -1,0 +1,131 @@
+name: Auto Create Release PR
+
+on:
+  create:
+
+jobs:
+  extract:
+    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) }}
+    runs-on: ubuntu-latest
+    outputs:
+      semver: ${{ steps.out.outputs.semver }}
+      previous_ref: ${{ steps.out.outputs.previous_ref }}
+      proceed: ${{ steps.out.outputs.proceed }}
+    steps:
+      - id: out
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          ref_name="${GITHUB_REF#refs/heads/}"
+
+          # Extract semver based on prefix
+          if [[ "$ref_name" == Version-v* ]]; then
+            semver="${ref_name#Version-v}"
+          elif [[ "$ref_name" == release/* ]]; then
+            semver="${ref_name#release/}"
+          else
+            echo "Error: Branch name must be Version-vX.Y.Z or release/X.Y.Z where X, Y, Z are numbers. Got: $ref_name" >&2
+            exit 1
+          fi
+          echo "semver=${semver}" >> "$GITHUB_OUTPUT"
+
+          # Validate semver format X.Y.Z where X, Y, Z are numbers
+          if ! [[ "$semver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Invalid semver in branch name: $ref_name (extracted: $semver; must be numeric X.Y.Z)" >&2
+            exit 1
+          fi
+
+          # Check if release X.Y.Z is hotfix: if patch (aka Z) > 0, skip
+          patch="${semver##*.}"
+          if [ "$patch" -gt 0 ]; then
+            echo "Hotfix detected (patch $patch > 0), skipping auto-create-release-pr."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Not a hotfix (patch=0), proceeding."
+
+          # Function to paginate and collect refs for a prefix
+          fetch_matching_refs() {
+            local prefix="$1"
+            local temp_file
+            temp_file="$(mktemp)"
+            local page=1
+            echo "Fetching branches matching $prefix* (paginated)..." >&2
+            while :; do
+              echo "Fetching page $page for $prefix..." >&2
+              resp="$(mktemp)"
+              url="https://api.github.com/repos/${GITHUB_REPOSITORY}/git/matching-refs/heads/${prefix}?per_page=100&page=${page}"
+              curl -sS -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "$url" -o "$resp"
+
+              cat "$resp" >> "$temp_file"
+
+              count=$(jq length "$resp")
+              if [ "$count" -lt 100 ]; then
+                break
+              fi
+              page=$((page + 1))
+            done
+            echo "$temp_file"
+          }
+
+          # Fetch for each prefix
+          version_v_file=$(fetch_matching_refs "Version-v")
+          release_file=$(fetch_matching_refs "release/")
+
+          # Combine and process: extract {name, semver} for matches, sort desc by semver
+          jq -s 'add | [ .[] | .ref | ltrimstr("refs/heads/") as $name | select($name | test("^Version-v[0-9]+\\.[0-9]+\\.[0-9]+$") or test("^release/[0-9]+\\.[0-9]+\\.[0-9]+$")) | {name: $name, semver: (if $name | test("^Version-v") then $name | ltrimstr("Version-v") else $name | ltrimstr("release/") end) } ] | sort_by( .semver | split(".") | map(tonumber) ) | reverse' "$version_v_file" "$release_file" > all_versions.json
+
+          # Print all found versions (sorted desc)
+          echo "All found versions (sorted desc): $(jq '[ .[].semver ]' all_versions.json)"
+
+          # Print all found matching branches (sorted by semver desc)
+          echo "All found matching branches:"
+          jq -r '.[].name' all_versions.json || echo "No matching branches found."
+
+          # Filter to those with semver strictly lower than current
+          jq --arg semver "$semver" '[ .[] | select( .semver as $v | $semver | split(".") as $c | $v | split(".") as $p | ($p[0] | tonumber) < ($c[0] | tonumber) or (($p[0] | tonumber) == ($c[0] | tonumber) and (($p[1] | tonumber) < ($c[1] | tonumber) or (($p[1] | tonumber) == ($c[1] | tonumber) and ($p[2] | tonumber) < ($c[2] | tonumber)))) ) ]' all_versions.json > filtered_versions.json
+
+          # Print filtered versions (still sorted desc, so [0] is highest lower)
+          echo "Filtered versions (< $semver, sorted desc): $(jq '[ .[].semver ]' filtered_versions.json)"
+
+          # Select the highest lower: first in filtered list
+          if [ "$(jq length filtered_versions.json)" -eq 0 ]; then
+            echo "Error: No versions lower than $semver found. Cannot determine previous-version-ref." >&2
+            exit 1
+          else
+            highest_lower="$(jq -r '.[0].semver' filtered_versions.json)"
+            previous_ref="$(jq -r '.[0].name' filtered_versions.json)"
+            echo "Selected highest version lower than $semver: ${highest_lower}"
+            echo "Selected branch: ${previous_ref}"
+            echo "Passing to previous-version-ref: ${previous_ref}"
+          fi
+          echo "previous_ref=${previous_ref}" >> "$GITHUB_OUTPUT"
+
+          # Print values passed to call-create-release-pr
+          echo "Inputs to call-create-release-pr:"
+          echo "  checkout-base-branch: main"
+          echo "  release-pr-base-branch: stable"
+          echo "  semver-version: ${semver}"
+          echo "  previous-version-ref: ${previous_ref}"
+
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+  call-create-release-pr:
+    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) && needs.extract.outputs.proceed == 'true' }}
+    needs: extract
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/create-release-pr.yml
+    secrets:
+      github-token: ${{ secrets.PR_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+    with:
+      checkout-base-branch: main
+      release-pr-base-branch: stable
+      semver-version: ${{ needs.extract.outputs.semver }}
+      previous-version-ref: ${{ needs.extract.outputs.previous_ref }}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import WelcomeLogin from './welcome-login';
 
 describe('Welcome login', () => {

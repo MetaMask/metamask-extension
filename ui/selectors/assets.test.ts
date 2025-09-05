@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 import {
   calculateBalanceForAllWallets,
   calculateBalanceChangeForAllWallets,
+  selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import type { BalanceChangeResult } from '@metamask/assets-controllers';
 import {
@@ -24,6 +25,7 @@ import {
   type BalanceCalculationState,
   selectBalanceChangeForAllWallets,
   selectBalanceChangeBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroup,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -45,6 +47,8 @@ jest.mock('@metamask/assets-controllers', () => {
     })),
   };
 });
+
+jest.mock('@metamask/assets-controllers');
 
 const mockRatesState = {
   metamask: {
@@ -885,5 +889,37 @@ describe('Balance change selectors', () => {
     const selector = selectBalanceChangeBySelectedAccountGroup('7d');
     const out = selector(baseState);
     expect(out).toBeNull();
+  });
+});
+
+describe('getAssetsBySelectedAccountGroup', () => {
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls the imported selector with the prepared initial state', () => {
+    const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
+    const expectedResult = {};
+    selectorMock.mockReturnValue(expectedResult);
+
+    const result = getAssetsBySelectedAccountGroup(mockState);
+
+    expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
+    expect(result).toBe(expectedResult);
   });
 });

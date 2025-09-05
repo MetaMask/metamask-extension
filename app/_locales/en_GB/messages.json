@@ -348,6 +348,18 @@
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addressQrCodeModalDescription": {
+    "message": "Use this address to receive tokens and collectibles on $1",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalHeading": {
+    "message": "$1 Address",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalTitle": {
+    "message": "$1 / $2",
+    "description": "$1 is account name, $2 is network name"
+  },
   "addresses": {
     "message": "Addresses",
     "description": "Multichain account menu item for linking to addresses page"
@@ -447,9 +459,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Gas prices are high and estimates are less accurate."
-  },
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
@@ -494,9 +503,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Unnecessary permission"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Network is busy"
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
@@ -4751,6 +4757,50 @@
   "publicAddress": {
     "message": "Public address"
   },
+  "pushNotificationLimitOrderFilledDescriptionLong": {
+    "message": "Your $1 long position is now open.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationLimitOrderFilledDescriptionShort": {
+    "message": "Your $1 short position is now open.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "✅ Limit order filled"
+  },
+  "pushNotificationPositionLiquidatedDescriptionLong": {
+    "message": "Your $1 long was closed.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationPositionLiquidatedDescriptionShort": {
+    "message": "Your $1 short was closed.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "😟 Position liquidated"
+  },
+  "pushNotificationStopLossTriggeredDescriptionLong": {
+    "message": "Your $1 long closed at your stop loss.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationStopLossTriggeredDescriptionShort": {
+    "message": "Your $1 short closed at your stop loss.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "🛑 Stop loss triggered"
+  },
+  "pushNotificationTakeProfitTriggeredDescriptionLong": {
+    "message": "Your $1 long closed at your take profit.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationTakeProfitTriggeredDescriptionShort": {
+    "message": "Your $1 short closed at your take profit.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "📈 Take profit triggered"
+  },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "You received $1 $2"
   },
@@ -7033,6 +7083,15 @@
   },
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
+  },
+  "trustSignalUrlMalicious": {
+    "message": "Malicious site"
+  },
+  "trustSignalUrlSuspicious": {
+    "message": "Suspicious site"
+  },
+  "trustSignalUrlVerified": {
+    "message": "Verified site"
   },
   "tryAgain": {
     "message": "Try again"

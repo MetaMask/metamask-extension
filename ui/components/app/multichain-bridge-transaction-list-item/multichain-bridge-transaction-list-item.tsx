@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
+import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import {
-  getBridgeStatusKey,
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
@@ -40,20 +41,16 @@ import {
   SOLANA_TOKEN_IMAGE_URL,
   BITCOIN_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/multichain/networks';
-import {
-  TransactionGroupCategory,
-  TransactionGroupStatus,
-} from '../../../../shared/constants/transaction';
-import type {
-  ExtendedTransaction,
-  BridgeOriginatedItem,
-} from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
+import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 
 type MultichainBridgeTransactionListItemProps = {
-  transaction: ExtendedTransaction | BridgeOriginatedItem;
-  toggleShowDetails: (
-    transaction: ExtendedTransaction | BridgeOriginatedItem,
-  ) => void;
+  transaction: Transaction;
+  bridgeHistoryItem: BridgeHistoryItem;
+  toggleShowDetails: (transaction: Transaction) => void;
 };
 
 /**
@@ -62,45 +59,29 @@ type MultichainBridgeTransactionListItemProps = {
  *
  * @param options0 - Component props
  * @param options0.transaction - The transaction data to display
+ * @param options0.bridgeHistoryItem - The bridge history item data to display
  * @param options0.toggleShowDetails - Function to call when the item is clicked
  */
 const MultichainBridgeTransactionListItem: React.FC<
   MultichainBridgeTransactionListItemProps
-> = ({ transaction, toggleShowDetails }) => {
+> = ({ transaction, bridgeHistoryItem, toggleShowDetails }) => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
+
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 
-  const { type, from, bridgeInfo, isBridgeOriginated, isSourceTxConfirmed } =
-    transaction;
+  const isSourceTxConfirmed =
+    transaction.status === TransactionStatus.Confirmed;
+
+  const { type, from } = transaction;
   const sourceAsset = from?.[0]?.asset;
 
-  const sourceTxRawStatus = isBridgeOriginated
-    ? TransactionStatus.submitted
-    : (transaction as ExtendedTransaction).status;
-  const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
-
-  const finalDisplayStatusKey = getBridgeStatusKey(
-    { ...transaction, isBridgeTx: transaction.isBridgeTx ?? false },
-    sourceTxStatusKey,
-  );
-  const isBridgeFullyComplete = isBridgeComplete({
-    ...transaction,
-    isBridgeTx: transaction.isBridgeTx ?? false,
-  });
+  const isBridgeFullyComplete = isBridgeComplete(bridgeHistoryItem);
   const isBridgeFailedOrSourceFailed = isBridgeFailed(
-    { ...transaction, isBridgeTx: transaction.isBridgeTx ?? false },
-    sourceTxStatusKey,
+    transaction,
+    bridgeHistoryItem,
   );
   const isTerminalState = isBridgeFullyComplete || isBridgeFailedOrSourceFailed;
-
-  const statusLabelTextKey = [
-    TransactionStatus.submitted,
-    TransactionGroupStatus.pending,
-  ].includes(
-    finalDisplayStatusKey as TransactionStatus | TransactionGroupStatus,
-  )
-    ? undefined
-    : finalDisplayStatusKey;
 
   const srcSegmentStatus: StatusTypes = isSourceTxConfirmed
     ? StatusTypes.COMPLETE
@@ -115,19 +96,19 @@ const MultichainBridgeTransactionListItem: React.FC<
 
   const txIndex = isSourceTxConfirmed ? 2 : 1;
 
-  let title = capitalize(type);
-  if (transaction.isBridgeTx && bridgeInfo) {
-    const { destChainName, provider, destChainId } = bridgeInfo;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const displayChainName = destChainName || destChainId;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    title = `${t('bridge')} ${t('to')} ${displayChainName}`;
-    if (provider) {
-      title = `${title} ${t('via')} ${provider}`;
-    }
-  }
+  const { destNetwork } = useBridgeChainInfo({
+    bridgeHistoryItem,
+    nonEvmTransaction: transaction,
+  });
+
+  const displayChainName =
+    (destNetwork?.chainId
+      ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork.chainId]
+      : undefined) ?? destNetwork?.chainId;
+
+  const title = displayChainName
+    ? `${t('bridgeTo')} ${displayChainName}`
+    : capitalize(type);
 
   return (
     <ActivityListItem
@@ -163,7 +144,10 @@ const MultichainBridgeTransactionListItem: React.FC<
         >
           <TransactionIcon
             category={TransactionGroupCategory.bridge}
-            status={finalDisplayStatusKey as TransactionGroupStatus}
+            status={
+              KEYRING_TRANSACTION_STATUS_KEY[transaction.status] ??
+              TransactionStatus.Submitted
+            }
           />
         </BadgeWrapper>
       }
@@ -181,8 +165,11 @@ const MultichainBridgeTransactionListItem: React.FC<
           >
             {(() => {
               if (sourceAsset?.fungible) {
-                const displayAmount = sourceAsset.amount;
-                return `${displayAmount} ${sourceAsset.unit}`;
+                const displayAmount = formatAmount(
+                  locale,
+                  new BigNumber(sourceAsset.amount),
+                );
+                return `-${displayAmount} ${bridgeHistoryItem.quote.srcAsset.symbol ?? sourceAsset.unit}`;
               }
               return '';
             })()}
@@ -196,18 +183,19 @@ const MultichainBridgeTransactionListItem: React.FC<
           flexDirection={FlexDirection.Column}
           gap={1}
         >
-          <TransactionStatusLabel
-            date={formatTimestamp(transaction.timestamp)}
-            error={{}}
-            status={statusLabelTextKey}
-            statusOnly
-            className={
-              isBridgeFullyComplete
-                ? 'transaction-status-label--confirmed'
-                : undefined
-            }
-          />
-          {transaction.isBridgeTx && bridgeInfo && !isTerminalState && (
+          {isTerminalState ? (
+            <TransactionStatusLabel
+              date={formatTimestamp(transaction.timestamp)}
+              error={{}}
+              status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
+              statusOnly
+              className={
+                isBridgeFullyComplete
+                  ? 'transaction-status-label--confirmed'
+                  : undefined
+              }
+            />
+          ) : (
             <Box
               marginTop={0}
               display={Display.Flex}
