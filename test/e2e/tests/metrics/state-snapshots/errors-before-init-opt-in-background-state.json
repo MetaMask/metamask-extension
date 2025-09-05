@@ -68,6 +68,12 @@
       "gasEstimateType": "none",
       "gasFeeEstimates": {}
     },
+    "GatorPermissionsController": {
+      "gatorPermissionsMapSerialized": "string",
+      "gatorPermissionsProviderSnapId": "string",
+      "isFetchingGatorPermissions": "boolean",
+      "isGatorPermissionsEnabled": "boolean"
+    },
     "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
