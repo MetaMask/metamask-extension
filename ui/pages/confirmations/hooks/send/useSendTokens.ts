@@ -35,12 +35,17 @@ export const useSendTokens = (): Asset[] => {
       const chainNetworkNameAndImage = chainNetworkNAmeAndImageMap.get(
         asset.chainId as Hex,
       );
-      const imageSource = asset.isNative
-        ? (CHAIN_ID_TOKEN_IMAGE_MAP[
+
+      let imageSource: string | undefined;
+      if (asset.isNative) {
+        // Try chain-specific token image first, then fall back to network image
+        imageSource =
+          CHAIN_ID_TOKEN_IMAGE_MAP[
             asset.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-            // This fallback is for Solana
-          ] ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[asset.chainId as Hex])
-        : asset.image;
+          ] ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[asset.chainId as Hex];
+      } else {
+        imageSource = asset.image;
+      }
 
       let balanceInSelectedCurrency: string;
       try {
