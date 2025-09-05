@@ -127,12 +127,7 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean"
   },
-  "GatorPermissionsController": {
-    "gatorPermissionsMapSerialized": "string",
-    "gatorPermissionsProviderSnapId": "string",
-    "isFetchingGatorPermissions": "boolean",
-    "isGatorPermissionsEnabled": "boolean"
-  },
+  "GatorPermissionsController": "object",
   "InstitutionalSnapController": "object",
   "KeyringController": {
     "isUnlocked": true,
