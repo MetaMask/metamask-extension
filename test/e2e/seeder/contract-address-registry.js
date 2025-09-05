@@ -13,7 +13,7 @@ class ContractAddressRegistry {
    */
   storeNewContractAddress(contractName, contractAddress) {
     this.#contracts.push({
-      contractName,
+      name: contractName,
       address: contractAddress,
     });
   }
@@ -26,7 +26,7 @@ class ContractAddressRegistry {
    */
   getContractAddress(contractName) {
     const matchingContracts = this.#contracts.filter(
-      contract => contract.contractName === contractName
+      contract => contract.name === contractName
     );
     return matchingContracts.length > 0
       ? matchingContracts[matchingContracts.length - 1].address
