@@ -201,10 +201,6 @@ const useHistoricalPricesNonEvm = ({
     const fetchPrices = async () => {
       setLoading(true);
       try {
-        console.log('FETCHING HISTORICAL PRICES FOR NON-EVM', {
-          address,
-          chainId,
-        });
         await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
       } catch (error) {
         console.error(
