@@ -1595,13 +1595,13 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Losing this password means losing wallet access on all devices, "
+    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
   },
   "createPasswordMarketing": {
-    "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
+    "message": "Get product updates, tips, and news including by email. We may use your interactions to improve what we share."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -7478,15 +7478,6 @@
   },
   "welcomeBack": {
     "message": "Welcome back"
-  },
-  "welcomeDescription": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
-  },
-  "welcomeGetStarted": {
-    "message": "Get started"
-  },
-  "welcomeTitle": {
-    "message": "Welcome to MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"
