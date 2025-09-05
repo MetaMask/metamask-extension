@@ -4,9 +4,9 @@ import { getGatorPermissionsControllerMessenger } from './gator-permissions-cont
 describe('getGatorPermissionsControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const delegationControllerMessenger =
+    const gatorPermissionsControllerMessenger =
       getGatorPermissionsControllerMessenger(messenger);
 
-    expect(delegationControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(gatorPermissionsControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
 });
