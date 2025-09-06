@@ -1,6 +1,7 @@
 import {
   BtcAccountType,
   SolAccountType,
+  TrxAccountType,
   isEvmAccountType,
 } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -13,6 +14,7 @@ export type AccountTypeCategory =
   | 'private-key'
   | 'institutional-evm'
   | 'bitcoin'
+  | 'tron'
   | 'unknown';
 
 /**
@@ -71,6 +73,11 @@ export const getAccountTypeCategory = (
   // Bitcoin accounts
   if (Object.values(BtcAccountType).includes(type as BtcAccountType)) {
     return 'bitcoin';
+  }
+
+  // TRON accounts
+  if (type === TrxAccountType.Eoa) {
+    return 'tron';
   }
 
   return 'unknown';

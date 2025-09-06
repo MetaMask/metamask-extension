@@ -31,7 +31,6 @@ const useMultiChainAssets = () => {
   const currentCurrency = useSelector(getCurrentCurrency);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const { networkFilter } = useNetworkFilter();
-
   const multichainAssets = useSelector((state) =>
     getMultiChainAssets(state, selectedAccount),
   );
