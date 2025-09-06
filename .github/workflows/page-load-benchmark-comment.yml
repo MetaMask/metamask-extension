@@ -1,4 +1,4 @@
-name: Benchmark Comment
+name: Page Load Benchmark Comment
 
 on:
   workflow_call:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   page-load-benchmark-comment:
-    name: Post Benchmark Comment
+    name: Post Page Load Benchmark Comment
     runs-on: ubuntu-latest
     env:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -28,6 +28,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: benchmark-results
+
+      - name: Create expected directory structure
+        run: |
+          mkdir -p test-artifacts/benchmarks
+          mv benchmark-results.json test-artifacts/benchmarks/benchmark-results.json
 
       - name: Compare and comment
         if: ${{ github.event_name == 'pull_request' }}
