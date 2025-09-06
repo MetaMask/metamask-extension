@@ -358,7 +358,7 @@ function TransactionListItemInner({
                 </Text>
               </Box>
               <Text
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
                 color={Color.textAlternative}
                 textAlign={TextAlign.Right}
                 data-testid="transaction-list-item-secondary-currency"
