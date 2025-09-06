@@ -284,7 +284,7 @@ describe('Onboarding Flow', () => {
     expect(creationSuccessful).toBeInTheDocument();
   });
 
-  it('should render onboarding welcome screen', () => {
+  it('should render onboarding Login page screen', () => {
     mockUseLocation.mockReturnValue({
       key: 'test-key',
       pathname: ONBOARDING_WELCOME_ROUTE,
@@ -298,8 +298,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_WELCOME_ROUTE,
     );
 
-    const onboardingWelcome = queryByTestId('onboarding-welcome-banner-title');
-    expect(onboardingWelcome).toBeInTheDocument();
+    const onboardingLogin = queryByTestId('get-started');
+    expect(onboardingLogin).toBeInTheDocument();
+    jest.clearAllMocks();
   });
 
   it('should render onboarding pin extension screen', () => {

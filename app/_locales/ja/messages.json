@@ -7176,15 +7176,6 @@
   "welcomeBack": {
     "message": "お帰りなさい"
   },
-  "welcomeDescription": {
-    "message": "MetaMaskは何百万人ものユーザーに信頼されている安全なウォレットで、Web3の世界に誰でもアクセスすることができます。"
-  },
-  "welcomeGetStarted": {
-    "message": "利用を開始する"
-  },
-  "welcomeTitle": {
-    "message": "MetaMaskにようこそ"
-  },
   "welcomeToMetaMask": {
     "message": "始めましょう"
   },

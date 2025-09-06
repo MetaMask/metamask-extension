@@ -7226,15 +7226,6 @@
   "welcomeBack": {
     "message": "С возвращением!"
   },
-  "welcomeDescription": {
-    "message": "MetaMask, которому доверяют миллионы, — это безопасный кошелек, предоставляющим всем доступ к миру web3."
-  },
-  "welcomeGetStarted": {
-    "message": "С чего начать"
-  },
-  "welcomeTitle": {
-    "message": "Добро пожаловать в MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Давайте приступим к делу"
   },

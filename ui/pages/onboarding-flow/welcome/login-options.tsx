@@ -26,6 +26,7 @@ import {
   FontWeight,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextTransform,
   TextVariant,
@@ -147,7 +148,7 @@ export default function LoginOptions({
               backgroundColor={BackgroundColor.backgroundDefault}
               paddingInline={2}
               marginInline="auto"
-              textTransform={TextTransform.Uppercase}
+              textTransform={TextTransform.Lowercase}
               as="div"
               style={{
                 position: 'relative',
@@ -172,6 +173,39 @@ export default function LoginOptions({
               ? t('onboardingSrpImport')
               : t('onboardingSrpCreate')}
           </Button>
+          <Text
+            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
+            textAlign={TextAlign.Center}
+            paddingTop={8}
+            width={BlockSize.Full}
+            margin={'auto'}
+          >
+            {t('onboardingLoginFooter')}{' '}
+            <Text
+              as="a"
+              href="https://consensys.io/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant={TextVariant.bodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.primaryDefault}
+            >
+              {t('onboardingLoginFooterTermsOfUse')}
+            </Text>{' '}
+            {t('onboardingLoginFooterAnd')}{' '}
+            <Text
+              as="a"
+              variant={TextVariant.bodySm}
+              fontWeight={FontWeight.Medium}
+              href="https://consensys.io/privacy-notice"
+              target="_blank"
+              rel="noopener noreferrer"
+              color={TextColor.primaryDefault}
+            >
+              {t('onboardingLoginFooterPrivacyNotice')}
+            </Text>
+          </Text>
         </Box>
       </ModalContent>
     </Modal>
