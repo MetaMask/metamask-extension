@@ -11,7 +11,6 @@ jobs:
     name: Post Page Load Benchmark Comment
     runs-on: ubuntu-latest
     env:
-      BRANCH: ${{ github.head_ref || github.ref_name }}
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
@@ -35,23 +34,6 @@ jobs:
         run: |
           mkdir -p test-artifacts/benchmarks
           mv benchmark-results.json test-artifacts/benchmarks/benchmark-results.json
-
-      - name: Sync commit hash
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prs = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${process.env.BRANCH}`,
-              base: 'stable',
-            });
-            if (prs.data.length > 0) {
-              core.exportVariable("GITHUB_SHA", prs.data[0].head.sha);
-              core.info(`The head commit hash is '${process.env.GITHUB_SHA}'`);
-            } else {
-              core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
-            }
 
       - name: Compare and comment
         run: yarn tsx development/page-load-benchmark-pr-comment.ts
