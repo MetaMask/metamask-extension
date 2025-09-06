@@ -139,7 +139,7 @@ exports[`ConnectPage should render correctly 1`] = `
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 shrink-0"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -516,7 +516,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 shrink-0"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"

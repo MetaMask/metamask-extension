@@ -245,7 +245,7 @@ const AccountListItem = ({
           />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
-          <PreferredAvatar address={account.address} />
+          <PreferredAvatar address={account.address} className="shrink-0" />
         </Box>
 
         <Box
