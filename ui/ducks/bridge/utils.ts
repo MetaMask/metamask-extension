@@ -27,7 +27,10 @@ import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util'
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MultichainNetworks,
+} from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
 
 type GasFeeEstimate = {
@@ -210,6 +213,14 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   // If the token is native, return the SVG image asset
   if (isNativeAddress(address)) {
     if (isSolanaChainId(chainId)) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
+    }
+    // Check if it's Bitcoin chain ID
+    if (
+      [MultichainNetworks.BITCOIN, MultichainNetworks.BITCOIN_TESTNET].includes(
+        chainId as MultichainNetworks,
+      )
+    ) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
     }
     return CHAIN_ID_TOKEN_IMAGE_MAP[
