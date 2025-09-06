@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   EncryptionPublicKeyManager,
   AbstractMessage,
@@ -355,6 +356,58 @@ describe('EncryptionPublicKeyController', () => {
           messageIdMock,
         ),
       ).toEqual(stateMock);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      expect(
+        deriveStateFromMetadata(
+          encryptionPublicKeyController.state,
+          encryptionPublicKeyController.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedEncryptionPublicKeyMsgCount": 0,
+          "unapprovedEncryptionPublicKeyMsgs": {},
+        }
+      `);
     });
   });
 });

@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   DecryptMessageManager,
   DecryptMessageParams,
@@ -302,6 +303,58 @@ describe('DecryptMessageController', () => {
       properties: {
         action: 'Decrypt Message Request',
       },
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedDecryptMsgCount": 0,
+          "unapprovedDecryptMsgs": {},
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedDecryptMsgCount": 0,
+          "unapprovedDecryptMsgs": {},
+        }
+      `);
     });
   });
 });
