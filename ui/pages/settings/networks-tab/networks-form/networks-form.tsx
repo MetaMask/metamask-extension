@@ -71,6 +71,7 @@ import {
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import {
+  getIsMultichainAccountsState2Enabled,
   getIsRpcFailoverEnabled,
   getTokenNetworkFilter,
 } from '../../../../selectors';
@@ -136,6 +137,9 @@ export const NetworksForm = ({
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const isMultichainAccountsFeatureEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
@@ -297,7 +301,12 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
-            await dispatch(enableSingleNetwork(existingNetwork.chainId));
+            await dispatch(
+              enableSingleNetwork(
+                existingNetwork.chainId,
+                Boolean(isMultichainAccountsFeatureEnabled),
+              ),
+            );
           }
         } else {
           const addedNetworkConfiguration = (await dispatch(
@@ -310,7 +319,12 @@ export const NetworksForm = ({
             ]?.networkClientId;
 
           await dispatch(setActiveNetwork(networkClientId));
-          await dispatch(enableSingleNetwork(networkPayload.chainId));
+          await dispatch(
+            enableSingleNetwork(
+              networkPayload.chainId,
+              Boolean(isMultichainAccountsFeatureEnabled),
+            ),
+          );
         }
 
         trackEvent({

@@ -71,6 +71,7 @@ import {
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -174,6 +175,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     getIsAccessedFromDappConnectedSitePopover,
   );
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const isMultichainAccountsFeatureEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
   // This selector provides the indication if the "Discover" button
   // is enabled based on the remote feature flag.
   const isNetworkDiscoverButtonEnabled = useSelector(
@@ -388,7 +392,12 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       }
 
       if (Object.keys(enabledNetworksByNamespace).length === 1) {
-        dispatch(enableSingleNetwork(hexChainId));
+        dispatch(
+          enableSingleNetwork(
+            hexChainId,
+            Boolean(isMultichainAccountsFeatureEnabled),
+          ),
+        );
       } else {
         dispatch(enableAllPopularNetworks());
       }

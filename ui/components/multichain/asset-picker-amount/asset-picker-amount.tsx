@@ -25,6 +25,7 @@ import {
   getCurrentNetwork,
   getEnabledNetworksByNamespace,
   getIpfsGateway,
+  getIsMultichainAccountsState2Enabled,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
   getTokenList,
@@ -127,6 +128,8 @@ export const AssetPickerAmount = ({
   const currentNetwork = useSelector(getCurrentNetwork);
   const allChainIds = useSelector(getAllChainsToPoll);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isMultichainAccountsFeatureEnabled =
+    useSelector(getIsMultichainAccountsState2Enabled) ?? false;
 
   useEffect(() => {
     // if this input is immutable – avoids double fire
@@ -294,10 +297,20 @@ export const AssetPickerAmount = ({
                         );
 
                         if (!isNetworkEnabled) {
-                          dispatch(enableSingleNetwork(networkConfig.chainId));
+                          dispatch(
+                            enableSingleNetwork(
+                              networkConfig.chainId,
+                              Boolean(isMultichainAccountsFeatureEnabled),
+                            ),
+                          );
                         }
                       } else {
-                        dispatch(enableSingleNetwork(networkConfig.chainId));
+                        dispatch(
+                          enableSingleNetwork(
+                            networkConfig.chainId,
+                            Boolean(isMultichainAccountsFeatureEnabled),
+                          ),
+                        );
                       }
                     }
 
