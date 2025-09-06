@@ -87,7 +87,7 @@ export const ActivityListItem = ({
               <Text
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyLgMedium}
+                variant={TextVariant.bodyMdMedium}
                 fontWeight={FontWeight.Medium}
                 data-testid="activity-list-item-action"
               >
@@ -99,7 +99,7 @@ export const ActivityListItem = ({
                 as="div"
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySm}
                 fontWeight={FontWeight.Normal}
               >
                 {subtitle}

@@ -945,7 +945,7 @@ const MultichainTransactionListItem = ({
           fontWeight="medium"
           textAlign="right"
           title="Primary Currency"
-          variant="body-lg-medium"
+          variant="body-md-medium"
         >
           {amount} {unit}
         </Text>
