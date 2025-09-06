@@ -43,7 +43,7 @@ export function getUniqueAccountName(
   let candidateName = nameSuggestion;
 
   const isNameTaken = (name: string) =>
-    accounts.some((account) => account.metadata.name === name);
+    accounts.some((account) => account.metadata?.name === name);
 
   while (isNameTaken(candidateName)) {
     suffix += 1;

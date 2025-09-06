@@ -292,7 +292,7 @@ const WalletDetails = () => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
             >
-              {wallet.metadata.name}
+              {wallet.metadata?.name || ''}
             </Text>
           </Box>
 

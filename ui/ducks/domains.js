@@ -159,11 +159,11 @@ export async function fetchResolutions({ domain, chainId, state }) {
             resolvingSnap: getSnapMetadata(
               state,
               filteredNameLookupSnapsIds[idx],
-            )?.name,
+            )?.name || '',
             addressBookEntryName: getAddressBookEntry(
               state,
               resolution.resolvedAddress,
-            )?.name,
+            )?.name || '',
           }),
         );
         return successfulResolutions.concat(resolutions);

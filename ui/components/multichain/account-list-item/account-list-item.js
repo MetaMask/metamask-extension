@@ -296,17 +296,17 @@ const AccountListItem = ({
                   textAlign={TextAlign.Left}
                   ellipsis
                 >
-                  {account.metadata.name.length >
+                  {account.metadata?.name?.length >
                   MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                     <Tooltip
-                      title={account.metadata.name}
+                      title={account.metadata?.name || ''}
                       position="bottom"
                       wrapperClassName="multichain-account-list-item__tooltip"
                     >
-                      {account.metadata.name}
+                      {account.metadata?.name || ''}
                     </Tooltip>
                   ) : (
-                    account.metadata.name
+                    account.metadata?.name || ''
                   )}
                 </Text>
               </Box>
@@ -378,7 +378,7 @@ const AccountListItem = ({
       >
         {menuType === AccountListItemMenuTypes.None ? null : (
           <ButtonIcon
-            ariaLabel={`${account.metadata.name} ${t('options')}`}
+            ariaLabel={`${account.metadata?.name || ''} ${t('options')}`}
             iconName={IconName.MoreVertical}
             size={IconSize.Sm}
             ref={setAccountListItemMenuRef}

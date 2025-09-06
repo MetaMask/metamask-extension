@@ -90,7 +90,7 @@ export const AccountShowPrivateKeyRow = ({
 
           {privateKey && !showHoldToReveal && (
             <AccountDetailsKey
-              accountName={account.metadata.name}
+              accountName={account.metadata?.name || ''}
               onClose={handleClose}
               privateKey={privateKey}
             />

@@ -59,7 +59,7 @@ export const PermissionsHeader = ({
       >
         {connectedSubjectsMetadata?.iconUrl ? (
           <AvatarFavicon
-            name={connectedSubjectsMetadata.name}
+            name={connectedSubjectsMetadata?.name || ''}
             size={AvatarFaviconSize.Sm}
             src={connectedSubjectsMetadata.iconUrl}
           />
