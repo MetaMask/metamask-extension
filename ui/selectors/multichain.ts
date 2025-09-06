@@ -7,7 +7,10 @@ import type {
 import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  MultichainTransactionsControllerState,
+  TransactionStateEntry,
+} from '@metamask/multichain-transactions-controller';
 import {
   NetworkConfiguration,
   RpcEndpointType,
@@ -438,7 +441,15 @@ export function getSelectedAccountMultichainTransactions(
     return undefined;
   }
 
-  return state.metamask.nonEvmTransactions[selectedAccount.id];
+  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id] as
+    | { [chain: CaipChainId]: TransactionStateEntry }
+    | undefined;
+
+  // We need to get the provider config for the selected account to get the correct chainId
+  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
+  const currentChainId = providerConfig.chainId as MultichainNetworks;
+
+  return transactions?.[currentChainId as CaipChainId];
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
