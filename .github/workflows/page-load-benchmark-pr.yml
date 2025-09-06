@@ -1,4 +1,4 @@
-name: Benchmark PR Performance
+name: Page Load Benchmark PR Performance
 
 on:
   workflow_call:
