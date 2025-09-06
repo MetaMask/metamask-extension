@@ -1032,9 +1032,9 @@
     },
     "@metamask/eip-5792-middleware": {
       "packages": {
-        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
+        "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "uuid": true
