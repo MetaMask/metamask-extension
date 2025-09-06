@@ -20,7 +20,7 @@ on:
         required: true
 
 jobs:
-  benchmark-pr:
+  page-load-benchmark-pr:
     name: Run Page Load Benchmarks
     runs-on: ubuntu-latest
     env:
@@ -48,14 +48,11 @@ jobs:
       - name: Run page load benchmarks
         run: yarn test:e2e:benchmark
 
-      - name: Compare and comment
-        if: ${{ github.event_name == 'pull_request' }}
-        run: yarn tsx development/benchmark-pr-comment.ts
-        env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: test-artifacts/benchmarks/benchmark-results.json
 
       - name: Upload benchmark results
         if: github.ref == 'refs/heads/main'

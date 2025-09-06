@@ -1,0 +1,40 @@
+name: Benchmark Comment
+
+on:
+  workflow_call:
+    secrets:
+      PR_COMMENT_TOKEN:
+        required: true
+
+jobs:
+  page-load-benchmark-comment:
+    name: Post Benchmark Comment
+    runs-on: ubuntu-latest
+    env:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Download benchmark results
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-results
+
+      - name: Compare and comment
+        if: ${{ github.event_name == 'pull_request' }}
+        run: yarn tsx development/page-load-benchmark-pr-comment.ts
+        env:
+          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}

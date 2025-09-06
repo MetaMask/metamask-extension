@@ -427,16 +427,17 @@ function generateBenchmarkComment(
   benchmarkData: BenchmarkOutput,
   referenceData?: BenchmarkOutput | null,
 ): string {
-  const { summary, timestamp } = benchmarkData;
+  const { summary, commit, timestamp } = benchmarkData;
 
   if (!summary || summary.length === 0) {
     return '## 📊 Page Load Benchmark Results\n\n❌ No benchmark results available.';
   }
 
+  const shortCommit = commit.slice(0, 7);
   const date = new Date(timestamp).toLocaleDateString();
 
   let comment = `## 📊 Page Load Benchmark Results\n\n`;
-  comment += `**Date**: ${date}\n\n`;
+  comment += `**Current Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
 
   // Track significant increases for warning
   const significantIncreases: {
@@ -533,7 +534,7 @@ function generateBenchmarkComment(
  * @throws {Error} When GitHub API request fails or required environment variables are missing
  */
 async function main(): Promise<void> {
-  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER } =
+  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER, GITHUB_SHA } =
     process.env as Record<string, string>;
   const N_COMMITS = 10;
 
@@ -567,6 +568,7 @@ async function main(): Promise<void> {
     return;
   }
 
+  benchmarkData.commit = GITHUB_SHA;
   const referenceData = await fetchLatestMainBenchmarkData(N_COMMITS);
 
   const commentBody = generateBenchmarkComment(benchmarkData, referenceData);
