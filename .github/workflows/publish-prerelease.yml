@@ -60,27 +60,15 @@ jobs:
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
-      - name: Download page load benchmark results
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/download-artifact@v4
-        with:
-          name: benchmark-results
-
-      - name: Create expected page load benchmark results directory structure
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          mkdir -p test-artifacts/benchmarks
-          mv benchmark-results.json test-artifacts/benchmarks/benchmark-results.json
-
-      - name: Page load benchmark compare and comment
-        if: ${{ github.event_name == 'pull_request' }}
-        run: yarn tsx development/page-load-benchmark-pr-comment.ts
-        env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         run: yarn tsx ./development/metamaskbot-build-announce.ts
+
+  page-load-benchmark-comment:
+    name: Page load benchmark comment
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/page-load-benchmark-comment.yml
+    with:
+      head-commit-hash: ${{ env.HEAD_COMMIT_HASH }}
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
