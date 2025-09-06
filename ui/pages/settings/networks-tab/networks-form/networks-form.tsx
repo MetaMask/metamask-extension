@@ -16,6 +16,7 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
   infuraProjectId,
+  WHITELIST_SYMBOL,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import {
@@ -174,7 +175,15 @@ export const NetworksForm = ({
           ?.nativeCurrency?.symbol)
       : undefined;
 
-    const mismatch = expectedSymbol && expectedSymbol !== ticker;
+    const isWhitelistedSymbol = chainIdHex
+      ? WHITELIST_SYMBOL[
+          chainIdHex as keyof typeof WHITELIST_SYMBOL
+        ]?.toLowerCase() === ticker?.toLowerCase()
+      : false;
+
+    const mismatch =
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+
     setSuggestedTicker(mismatch ? expectedSymbol : undefined);
     setWarnings((state) => ({
       ...state,
