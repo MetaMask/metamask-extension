@@ -2,6 +2,7 @@
   {
     "quote": {
       "requestId": "a63df72a-75ae-4416-a8ab-aff02596c75c",
+      "minDestTokenAmount": "900000000000000000",
       "srcChainId": 10,
       "srcTokenAmount": "991250000000000000",
       "srcAsset": {
@@ -103,6 +104,7 @@
   },
   {
     "quote": {
+      "minDestTokenAmount": "900000000000000000",
       "requestId": "aad73198-a64d-4310-b12d-9dcc81c412e2",
       "srcChainId": 10,
       "srcTokenAmount": "991250000000000000",
@@ -205,6 +207,7 @@
   },
   {
     "quote": {
+      "minDestTokenAmount": "900000000000000000",
       "requestId": "6cfd4952-c9b2-4aec-9349-af39c212f84b",
       "srcChainId": 10,
       "srcTokenAmount": "991250000000000000",
@@ -307,6 +310,7 @@
   },
   {
     "quote": {
+      "minDestTokenAmount": "900000000000000000",
       "requestId": "2c2ba7d8-3922-4081-9f27-63b7d5cc1986",
       "srcChainId": 10,
       "srcTokenAmount": "991250000000000000",
@@ -409,6 +413,7 @@
   },
   {
     "quote": {
+      "minDestTokenAmount": "900000000000000000",
       "requestId": "a77bc7b2-e8c8-4463-89db-5dd239d6aacc",
       "srcChainId": 10,
       "srcAsset": {
@@ -506,6 +511,7 @@
   },
   {
     "quote": {
+      "minDestTokenAmount": "900000000000000000",
       "requestId": "4f2154d9b330221b2ad461adf63acc2c",
       "srcChainId": 10,
       "srcTokenAmount": "991250000000000000",
