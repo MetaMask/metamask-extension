@@ -1,0 +1,32 @@
+name: 'Page load benchmark comment'
+description: 'Download benchmark results, create directory structure, and comment on PR'
+inputs:
+  head-commit-hash:
+    description: 'The head commit hash to pass to the benchmark comment script'
+    required: true
+  pr-comment-token:
+    description: 'GitHub token for commenting on PR'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Download page load benchmark results
+      uses: actions/download-artifact@v4
+      with:
+        name: benchmark-results
+
+    - name: Create expected page load benchmark results directory structure
+      shell: bash
+      run: |
+        mkdir -p test-artifacts/benchmarks
+        mv benchmark-results.json test-artifacts/benchmarks/benchmark-results.json
+
+    - name: Page load benchmark compare and comment
+      shell: bash
+      run: yarn tsx development/page-load-benchmark-pr-comment.ts
+      env:
+        PR_COMMENT_TOKEN: ${{ inputs.pr-comment-token }}
+        OWNER: ${{ github.repository_owner }}
+        REPOSITORY: ${{ github.event.repository.name }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        HEAD_COMMIT_HASH: ${{ inputs.head-commit-hash }}
