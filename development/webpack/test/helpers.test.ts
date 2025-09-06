@@ -59,7 +59,16 @@ describe('./utils/helpers.ts', () => {
       content_scripts: [
         {
           matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-          js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+          js: [
+            // browserify backwards compatibility
+            'scripts/disable-console.js',
+            'scripts/lockdown-install.js',
+            'scripts/lockdown-run.js',
+            'scripts/lockdown-more.js',
+            //
+            'scripts/contentscript.js',
+            'scripts/inpage.js',
+          ],
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           run_at: 'document_start',
@@ -166,7 +175,15 @@ describe('./utils/helpers.ts', () => {
       content_scripts: [
         {
           matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-          js: ['scripts/contentscript.js'],
+          js: [
+            // browserify backwards compatibility
+            'scripts/disable-console.js',
+            'scripts/lockdown-install.js',
+            'scripts/lockdown-run.js',
+            'scripts/lockdown-more.js',
+            //
+            'scripts/contentscript.js',
+          ],
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           run_at: 'document_start',

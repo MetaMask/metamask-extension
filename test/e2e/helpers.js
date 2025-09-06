@@ -17,7 +17,7 @@ const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { setManifestFlags } = require('./set-manifest-flags');
+const { readManifest, setManifestFlags } = require('./set-manifest-flags');
 const {
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
@@ -964,6 +964,14 @@ async function openMenuSafe(driver) {
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
+// TODO: https://github.com/MetaMask/metamask-extension/issues/35218
+// The security team is working on adding an improved version of lockdown-more to the lavamoat webpack plugin.
+// remove this function once lockdown more works under webpack
+const isWebpack = () => {
+  const manifest = readManifest();
+  return manifest.description.includes('webpack');
+};
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1012,4 +1020,5 @@ module.exports = {
   openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,
+  isWebpack,
 };

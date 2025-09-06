@@ -72,10 +72,11 @@ export function getManifestVersion(): number {
   return parseInt(manifest.manifest_version, 10);
 }
 
-function readManifest() {
+export function readManifest() {
   if (!manifest) {
     manifest = JSON.parse(
       fs.readFileSync(`${folder}/manifest.json`).toString(),
     );
   }
+  return manifest;
 }
