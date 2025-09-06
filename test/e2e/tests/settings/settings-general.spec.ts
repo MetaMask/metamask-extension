@@ -25,7 +25,7 @@ describe('Settings', function () {
 
         // Verify identicon options
         await generalSettings.checkIdenticonOptionsAreDisplayed();
-        await generalSettings.checkIdenticonIsActive('jazzicon');
+        await generalSettings.checkIdenticonIsActive('maskicon');
       },
     );
   });

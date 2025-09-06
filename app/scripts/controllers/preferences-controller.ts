@@ -108,6 +108,7 @@ export type Preferences = {
   dismissSmartAccountSuggestionEnabled: boolean;
   skipDeepLinkInterstitial: boolean;
   smartAccountOptIn: boolean;
+  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -120,6 +121,7 @@ export type PreferencesControllerState = Omit<
   | 'tokenSortConfig'
   | 'useMultiRpcMigration'
 > & {
+  /** @deprecated Use avatarType instead */
   useBlockie: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
@@ -204,6 +206,7 @@ export const getDefaultPreferencesControllerState =
       },
       tokenNetworkFilter: {},
       skipDeepLinkInterstitial: false,
+      avatarType: 'maskicon',
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -265,6 +268,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  /** @deprecated Use avatarType instead */
   useBlockie: {
     persist: true,
     anonymous: true,
@@ -358,6 +362,10 @@ const controllerMetadata = {
         anonymous: true,
       },
       smartTransactionsMigrationApplied: {
+        persist: true,
+        anonymous: true,
+      },
+      avatarType: {
         persist: true,
         anonymous: true,
       },
@@ -463,6 +471,7 @@ export class PreferencesController extends BaseController<
   /**
    * Setter for the `useBlockie` property
    *
+   * @deprecated Use setAvatarType instead
    * @param val - Whether or not the user prefers blockie indicators
    */
   setUseBlockie(val: boolean): void {
