@@ -248,9 +248,13 @@ jobs:
     with:
       browser-loads: '10'
       page-loads: '10'
-    secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+
+  page-load-benchmark-upload:
+    needs:
+      - page-load-benchmark-upload
+    # if: github.ref == 'refs/heads/main'
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/page-load-benchmark-upload.yml
 
   needs-e2e:
     needs:

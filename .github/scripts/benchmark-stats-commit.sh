@@ -29,9 +29,9 @@ git clone --depth 1 https://github.com/MetaMask/extension_benchmark_stats.git te
 
 cd temp
 
-git fetch origin main:main
+git fetch origin temp:temp
 
-git checkout main
+git checkout temp
 
 BENCHMARK_FILE="../test-artifacts/benchmarks/benchmark-results.json"
 STATS_FILE="stats/page_load_data.json"
@@ -72,7 +72,7 @@ git commit --message "Adding page load benchmark data at commit: ${GITHUB_SHA}"
 
 repo_slug="${GITHUB_REPOSITORY_OWNER}/extension_benchmark_stats"
 
-git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
+git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" temp
 
 cd ..
 
