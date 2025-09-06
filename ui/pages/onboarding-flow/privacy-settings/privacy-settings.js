@@ -73,6 +73,7 @@ import {
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
+import ToggleButton from '../../../components/ui/toggle-button';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
@@ -252,12 +253,16 @@ export default function PrivacySettings() {
                   justifyContent={JustifyContent.center}
                   width={BlockSize.Full}
                 >
-                  <Text variant={TextVariant.headingLg} as="h2">
+                  <Text variant={TextVariant.headingMd} as="h2">
                     {t('defaultSettingsTitle')}
                   </Text>
                 </Box>
               </Box>
-              <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
+              <Text
+                variant={TextVariant.bodyMd}
+                marginTop={5}
+                color={TextColor.textAlternative}
+              >
                 {t('defaultSettingsSubTitle')}
               </Text>
               <a
@@ -266,7 +271,7 @@ export default function PrivacySettings() {
                 rel="noreferrer"
                 key="learnMoreAboutPrivacy"
                 style={{
-                  fontSize: 'var(--font-size-5)',
+                  fontSize: 'var(--font-size-4)',
                 }}
               >
                 {t('learnMoreAboutPrivacy')}
@@ -352,7 +357,7 @@ export default function PrivacySettings() {
                 justifyContent={JustifyContent.center}
                 width={BlockSize.Full}
               >
-                <Text variant={TextVariant.headingLg} as="h2">
+                <Text variant={TextVariant.headingMd} as="h2">
                   {selectedItem?.title}
                 </Text>
               </Box>
@@ -364,39 +369,68 @@ export default function PrivacySettings() {
             >
               {selectedItem?.id === 1 ? (
                 <>
-                  <Setting
-                    dataTestId="basic-functionality-toggle"
-                    value={externalServicesOnboardingToggleState}
-                    setValue={(toggledValue) => {
-                      if (toggledValue) {
-                        dispatch(onboardingToggleBasicFunctionalityOn());
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Onboarding,
-                          event: MetaMetricsEventName.SettingsUpdated,
-                          properties: {
-                            settings_group: 'onboarding_advanced_configuration',
-                            settings_type: 'basic_functionality',
-                            old_value: false,
-                            new_value: true,
-                            was_profile_syncing_on: false,
-                          },
-                        });
-                      } else {
-                        dispatch(openBasicFunctionalityModal());
-                      }
-                    }}
-                    title={t('basicConfigurationLabel')}
-                    description={t('basicConfigurationDescription', [
-                      <a
-                        href="https://consensys.io/privacy-policy"
-                        key="link"
-                        target="_blank"
-                        rel="noreferrer noopener"
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                    data-testid="basic-functionality-toggle"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('basicConfigurationLabel')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={externalServicesOnboardingToggleState}
+                          onToggle={() => {
+                            if (externalServicesOnboardingToggleState) {
+                              dispatch(openBasicFunctionalityModal());
+                            } else {
+                              dispatch(onboardingToggleBasicFunctionalityOn());
+                              trackEvent({
+                                category: MetaMetricsEventCategory.Onboarding,
+                                event: MetaMetricsEventName.SettingsUpdated,
+                                properties: {
+                                  settings_group:
+                                    'onboarding_advanced_configuration',
+                                  settings_type: 'basic_functionality',
+                                  old_value: false,
+                                  new_value: true,
+                                  was_profile_syncing_on: false,
+                                },
+                              });
+                            }
+                          }}
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
                       >
-                        {t('privacyMsg')}
-                      </a>,
-                    ])}
-                  />
+                        {t('basicConfigurationDescription', [
+                          <a
+                            href="https://consensys.io/privacy-policy"
+                            key="link"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                          >
+                            {t('privacyMsg')}
+                          </a>,
+                        ])}
+                      </Text>
+                    </div>
+                  </Box>
 
                   <BackupAndSyncToggle />
 
@@ -533,27 +567,89 @@ export default function PrivacySettings() {
               ) : null}
               {selectedItem?.id === 2 ? (
                 <>
-                  <Setting
-                    value={turnOnTokenDetection}
-                    setValue={setTurnOnTokenDetection}
-                    title={t('turnOnTokenDetection')}
-                    description={t('useTokenDetectionPrivacyDesc')}
-                  />
-                  <Setting
-                    value={isTransactionSimulationsEnabled}
-                    setValue={setTransactionSimulationsEnabled}
-                    title={t('simulationsSettingSubHeader')}
-                    description={t('simulationsSettingDescription', [
-                      <a
-                        key="learn_more_link"
-                        href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
-                        rel="noreferrer"
-                        target="_blank"
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('turnOnTokenDetection')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={turnOnTokenDetection}
+                          onToggle={() =>
+                            setTurnOnTokenDetection(!turnOnTokenDetection)
+                          }
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
                       >
-                        {t('learnMoreUpperCase')}
-                      </a>,
-                    ])}
-                  />
+                        {t('useTokenDetectionPrivacyDesc')}
+                      </Text>
+                    </div>
+                  </Box>
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('simulationsSettingSubHeader')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={isTransactionSimulationsEnabled}
+                          onToggle={() =>
+                            setTransactionSimulationsEnabled(
+                              !isTransactionSimulationsEnabled,
+                            )
+                          }
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
+                      >
+                        {t('simulationsSettingDescription', [
+                          <a
+                            key="learn_more_link"
+                            href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('learnMoreUpperCase')}
+                          </a>,
+                        ])}
+                      </Text>
+                    </div>
+                  </Box>
                   <Setting
                     title={t('onboardingAdvancedPrivacyIPFSTitle')}
                     showToggle={false}
@@ -586,91 +682,255 @@ export default function PrivacySettings() {
                       </>
                     }
                   />
-                  <Setting
-                    value={turnOnCurrencyRateCheck}
-                    setValue={setTurnOnCurrencyRateCheck}
-                    title={t('currencyRateCheckToggle')}
-                    dataTestId="currency-rate-check-toggle"
-                    description={t('currencyRateCheckToggleDescription', [
-                      <a
-                        key="coingecko_link"
-                        href={COINGECKO_LINK}
-                        rel="noreferrer"
-                        target="_blank"
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                    data-testid="currency-rate-check-toggle"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('currencyRateCheckToggle')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={turnOnCurrencyRateCheck}
+                          onToggle={() =>
+                            setTurnOnCurrencyRateCheck(!turnOnCurrencyRateCheck)
+                          }
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
                       >
-                        {t('coingecko')}
-                      </a>,
-                      <a
-                        key="cryptocompare_link"
-                        href={CRYPTOCOMPARE_LINK}
-                        rel="noreferrer"
-                        target="_blank"
+                        {t('currencyRateCheckToggleDescription', [
+                          <a
+                            key="coingecko_link"
+                            href={COINGECKO_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('coingecko')}
+                          </a>,
+                          <a
+                            key="cryptocompare_link"
+                            href={CRYPTOCOMPARE_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('cryptoCompare')}
+                          </a>,
+                          <a
+                            key="privacy_policy_link"
+                            href={PRIVACY_POLICY_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('privacyMsg')}
+                          </a>,
+                        ])}
+                      </Text>
+                    </div>
+                  </Box>
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('ensDomainsSettingTitle')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={addressBarResolution}
+                          onToggle={() =>
+                            setAddressBarResolution(!addressBarResolution)
+                          }
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
                       >
-                        {t('cryptoCompare')}
-                      </a>,
-                      <a
-                        key="privacy_policy_link"
-                        href={PRIVACY_POLICY_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('privacyMsg')}
-                      </a>,
-                    ])}
-                  />
-                  <Setting
-                    value={addressBarResolution}
-                    setValue={setAddressBarResolution}
-                    title={t('ensDomainsSettingTitle')}
-                    description={
-                      <>
-                        <Text variant={TextVariant.inherit}>
-                          {t('ensDomainsSettingDescriptionIntroduction')}
-                        </Text>
-                        <Box
-                          as="ul"
-                          marginTop={4}
-                          marginBottom={4}
-                          paddingInlineStart={4}
-                          style={{ listStyleType: 'circle' }}
-                        >
-                          <Text variant={TextVariant.inherit} as="li">
-                            {t('ensDomainsSettingDescriptionPart1')}
+                        <>
+                          <Text
+                            variant={TextVariant.inherit}
+                            color={TextColor.textAlternative}
+                          >
+                            {t('ensDomainsSettingDescriptionIntroduction')}
                           </Text>
-                          <Text variant={TextVariant.inherit} as="li">
-                            {t('ensDomainsSettingDescriptionPart2')}
+                          <Box
+                            as="ul"
+                            marginTop={4}
+                            marginBottom={4}
+                            paddingInlineStart={4}
+                            style={{ listStyleType: 'circle' }}
+                          >
+                            <Text
+                              variant={TextVariant.inherit}
+                              color={TextColor.textAlternative}
+                              as="li"
+                            >
+                              {t('ensDomainsSettingDescriptionPart1')}
+                            </Text>
+                            <Text
+                              variant={TextVariant.inherit}
+                              color={TextColor.textAlternative}
+                              as="li"
+                            >
+                              {t('ensDomainsSettingDescriptionPart2')}
+                            </Text>
+                          </Box>
+                          <Text
+                            variant={TextVariant.inherit}
+                            color={TextColor.textAlternative}
+                          >
+                            {t('ensDomainsSettingDescriptionOutroduction')}
                           </Text>
-                        </Box>
-                        <Text variant={TextVariant.inherit}>
-                          {t('ensDomainsSettingDescriptionOutroduction')}
-                        </Text>
-                      </>
-                    }
-                  />
-                  <Setting
-                    value={isMultiAccountBalanceCheckerEnabled}
-                    setValue={setMultiAccountBalanceCheckerEnabled}
-                    title={t('useMultiAccountBalanceChecker')}
-                    description={t(
-                      'useMultiAccountBalanceCheckerSettingDescription',
-                    )}
-                  />
+                        </>
+                      </Text>
+                    </div>
+                  </Box>
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('useMultiAccountBalanceChecker')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={isMultiAccountBalanceCheckerEnabled}
+                          onToggle={() =>
+                            setMultiAccountBalanceCheckerEnabled(
+                              !isMultiAccountBalanceCheckerEnabled,
+                            )
+                          }
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
+                      >
+                        {t('useMultiAccountBalanceCheckerSettingDescription')}
+                      </Text>
+                    </div>
+                  </Box>
                 </>
               ) : null}
               {selectedItem?.id === 3 ? (
                 <>
-                  <Setting
-                    value={turnOn4ByteResolution}
-                    setValue={setTurnOn4ByteResolution}
-                    title={t('use4ByteResolution')}
-                    description={t('toggleDecodeDescription')}
-                  />
-                  <Setting
-                    value={turnOnExternalNameSources}
-                    setValue={setTurnOnExternalNameSources}
-                    title={t('externalNameSourcesSetting')}
-                    description={t('externalNameSourcesSettingDescription')}
-                  />
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('use4ByteResolution')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={turnOn4ByteResolution}
+                          onToggle={() =>
+                            setTurnOn4ByteResolution(!turnOn4ByteResolution)
+                          }
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
+                      >
+                        {t('toggleDecodeDescription')}
+                      </Text>
+                    </div>
+                  </Box>
+                  <Box
+                    marginTop={4}
+                    marginBottom={4}
+                    className="privacy-settings__setting__wrapper"
+                  >
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.flexStart}
+                      marginBottom={4}
+                    >
+                      <Text variant={TextVariant.bodyMdMedium}>
+                        {t('externalNameSourcesSetting')}
+                      </Text>
+
+                      <div className="privacy-settings__setting__toggle">
+                        <ToggleButton
+                          value={turnOnExternalNameSources}
+                          onToggle={() =>
+                            setTurnOnExternalNameSources(
+                              !turnOnExternalNameSources,
+                            )
+                          }
+                          offLabel={t('off')}
+                          onLabel={t('on')}
+                        />
+                      </div>
+                    </Box>
+                    <div className="privacy-settings__setting__description">
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        as="div"
+                      >
+                        {t('externalNameSourcesSettingDescription')}
+                      </Text>
+                    </div>
+                  </Box>
                 </>
               ) : null}
             </div>

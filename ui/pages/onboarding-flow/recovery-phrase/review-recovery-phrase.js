@@ -25,7 +25,6 @@ import {
   BlockSize,
   TextColor,
   IconColor,
-  FontWeight,
   Display,
   FlexDirection,
   AlignItems,
@@ -161,13 +160,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               >
                 {t('secretRecoveryPhrase')}
               </ButtonLink>,
-              <Text
-                key="seedPhraseReviewDetails2"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textAlternative}
-              >
-                {t('seedPhraseReviewDetails2')}
-              </Text>,
             ])}
           </Text>
         </Box>

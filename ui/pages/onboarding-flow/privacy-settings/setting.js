@@ -27,8 +27,8 @@ export const Setting = ({
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
-      marginTop={3}
-      marginBottom={3}
+      marginTop={4}
+      marginBottom={4}
       className="privacy-settings__setting__wrapper"
       data-testid={dataTestId}
     >
