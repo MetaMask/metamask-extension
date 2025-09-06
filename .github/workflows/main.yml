@@ -251,7 +251,7 @@ jobs:
 
   page-load-benchmark-upload:
     needs:
-      - page-load-benchmark-upload
+      - page-load-benchmark-pr
     # if: github.ref == 'refs/heads/main'
     if: ${{ github.event_name == 'pull_request' }}
     uses: ./.github/workflows/page-load-benchmark-upload.yml
