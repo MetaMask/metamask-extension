@@ -1,7 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
-import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 
 class HomePage {
@@ -281,17 +280,6 @@ class HomePage {
       css: '[data-testid="multichain-token-list-item-value"]',
       text: `${expectedTokenBalance} ${symbol}`,
     });
-  }
-
-  /**
-   * This function checks if account syncing has been successfully completed at least once.
-   */
-  async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
-    console.log('Check if account syncing has synced at least once');
-    await this.driver.wait(async () => {
-      const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
   async checkIfBridgeButtonIsClickable(): Promise<boolean> {

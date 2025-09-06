@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -2970,29 +2969,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('syncInternalAccountsWithUserStorage', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls syncInternalAccountsWithUserStorage in the background', async () => {
-      const store = mockStore();
-
-      const syncInternalAccountsWithUserStorageStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        syncInternalAccountsWithUserStorage:
-          syncInternalAccountsWithUserStorageStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.syncInternalAccountsWithUserStorage());
-      expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
-        true,
-      );
-    });
-  });
-
   describe('syncContactsWithUserStorage', () => {
     afterEach(() => {
       sinon.restore();
@@ -3032,8 +3008,13 @@ describe('Actions', () => {
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
-        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith(
-          USER_STORAGE_FEATURE_NAMES.accounts,
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          'multichain_accounts_groups',
+        ),
+      ).toBe(true);
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          'multichain_accounts_wallets',
         ),
       ).toBe(true);
     });

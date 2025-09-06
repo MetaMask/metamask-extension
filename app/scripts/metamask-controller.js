@@ -4307,18 +4307,6 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.setIsBackupAndSyncFeatureEnabled.bind(
           userStorageController,
         ),
-      syncInternalAccountsWithUserStorage:
-        userStorageController.syncInternalAccountsWithUserStorage.bind(
-          userStorageController,
-        ),
-      setHasAccountSyncingSyncedAtLeastOnce:
-        userStorageController.setHasAccountSyncingSyncedAtLeastOnce.bind(
-          userStorageController,
-        ),
-      setIsAccountSyncingReadyToBeDispatched:
-        userStorageController.setIsAccountSyncingReadyToBeDispatched.bind(
-          userStorageController,
-        ),
       deleteAccountSyncingDataFromUserStorage:
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
@@ -4326,6 +4314,11 @@ export default class MetamaskController extends EventEmitter {
       syncContactsWithUserStorage:
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
+        ),
+      // AccountTreeController backup and sync
+      syncAccountTreeWithUserStorage:
+        this.accountTreeController.syncWithUserStorage.bind(
+          this.accountTreeController,
         ),
 
       // NotificationServicesController
@@ -5520,6 +5513,7 @@ export default class MetamaskController extends EventEmitter {
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
+      this.accountTreeController.clearPersistedMetadataAndSyncingState();
       this.accountTreeController.init();
 
       if (completedOnboarding) {
@@ -5565,12 +5559,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
     try {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        false,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        false,
-      );
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
@@ -5681,13 +5669,6 @@ export default class MetamaskController extends EventEmitter {
         bitcoin: 0,
         solana: 0,
       };
-    } finally {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        true,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
     }
   }
 
