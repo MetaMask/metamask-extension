@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo } from 'react';
@@ -6,12 +6,14 @@ import { useHistory } from 'react-router-dom';
 import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
+import { toHex } from '../../../../../shared/lib/delegation/utils';
 import useMultiChainAssets from '../../../../components/app/assets/hooks/useMultichainAssets';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { getAllTokens } from '../../../../selectors';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import { useSendContext } from '../../context/send';
+import { useSendAssets } from './useSendAssets';
 
 export const getAssetFromList = (
   evmTokens: Record<Hex, Record<Hex, Asset[]>>,
@@ -50,6 +52,7 @@ export const useSendQueryParams = () => {
   const evmTokens: Record<Hex, Record<Hex, Asset[]>> = useSelector(
     getAllTokens,
   );
+  const { tokens, nfts } = useSendAssets();
 
   const subPath = useMemo(() => {
     const path = pathname.split('/').filter(Boolean)[1];
@@ -126,8 +129,38 @@ export const useSendQueryParams = () => {
     if (asset) {
       return;
     }
+    let nativeAsset;
+    if (paramChainId && !paramAsset) {
+      nativeAsset = {
+        ...getNativeAssetForChainId(paramChainId),
+        chainId: paramChainId,
+      };
+    }
     let newAsset;
-    if (paramAsset) {
+    const add = paramAsset ?? nativeAsset?.address ?? nativeAsset?.assetId;
+    if (add) {
+      const cid = paramChainId ?? nativeAsset?.chainId;
+      const chainId =
+        isEvmAddress(add) && cid && !isHexString(cid) ? toHex(cid) : cid;
+
+      if (chainId) {
+        newAsset = tokens?.find(
+          ({ assetId, chainId: tokenChainId }) =>
+            chainId === tokenChainId &&
+            assetId?.toLowerCase() === add.toLowerCase(),
+        );
+      }
+
+      if (!newAsset) {
+        newAsset = nfts?.find(
+          ({ assetId, chainId: tokenChainId }) =>
+            chainId === tokenChainId &&
+            assetId?.toLowerCase() === add.toLowerCase(),
+        );
+      }
+    }
+
+    if (!newAsset && paramAsset) {
       if (isEvmAddress(paramAsset)) {
         newAsset = getAssetFromList(evmTokens, paramAsset as Hex);
       } else {
@@ -136,22 +169,19 @@ export const useSendQueryParams = () => {
         );
       }
     }
-    if (!newAsset && paramChainId) {
-      newAsset = {
-        ...getNativeAssetForChainId(paramChainId),
-        chainId: paramChainId,
-      };
-    }
+
     if (newAsset) {
       updateAsset(newAsset);
     }
   }, [
     asset,
+    evmTokens,
     paramAsset,
     paramChainId,
     // using only multiChainAssets as dependency causes infinite loading
     multiChainAssets?.length,
-    evmTokens,
+    nfts,
+    tokens,
     updateAsset,
   ]);
 };
