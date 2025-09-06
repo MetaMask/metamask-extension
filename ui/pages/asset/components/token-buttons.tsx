@@ -44,11 +44,7 @@ import {
   IconSize,
 } from '../../../components/component-library';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainIsEvm,
-  getMultichainIsTestnet,
-} from '../../../selectors/multichain';
+import { getMultichainIsTestnet } from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
@@ -60,6 +56,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 const TokenButtons = ({
   token,
@@ -73,7 +70,7 @@ const TokenButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
-  const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(token.chainId);
 
   const account = useSelector(getSelectedInternalAccount, isEqual);
 
@@ -116,6 +113,7 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
+  // TODO BIP 44: How is this going to work with BIP44 given that there is no selected chain?
   const setCorrectChain = useCallback(async () => {
     // If we aren't presently on the chain of the asset, change to it
     if (

@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
+  getIsMultichainAccountsState2Enabled,
   getIsTestnet,
   getSelectedAccount,
   getShowFiatInTestnets,
@@ -10,7 +11,6 @@ import {
 import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
-  getMultichainIsEvm,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
@@ -19,6 +19,7 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../helpers/formatters';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -29,7 +30,7 @@ export const useTokenDisplayInfo = ({
   token,
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(token.chainId);
   const tokenList = useSelector(getTokenList) || {};
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -37,10 +38,15 @@ export const useTokenDisplayInfo = ({
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
-  const showFiat = useMultichainSelector(
-    makeGetMultichainShouldShowFiatByChainId(token.chainId),
-    selectedAccount,
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
   );
+  // TODO Fix this selector before merging
+  const showFiat =
+    useMultichainSelector(
+      makeGetMultichainShouldShowFiatByChainId(token.chainId),
+      selectedAccount,
+    ) || isMultichainAccountsState2Enabled;
 
   const isTestnet = useSelector(getIsTestnet);
 
@@ -59,10 +65,10 @@ export const useTokenDisplayInfo = ({
           token.tokenFiatAmount,
           fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
-      : undefined;
+      : null;
 
   const formattedPrimary = formatWithThreshold(
-    Number(isEvm ? token.string : token.primary),
+    Number((isEvm ? token.string : token.primary) || token.balance),
     0.00001,
     locale,
     {
@@ -112,12 +118,20 @@ export const useTokenDisplayInfo = ({
       tokenChainImage: tokenChainImage as string,
     };
   }
+
+  // TODO: type for secondary is wrongly set as number | null, when it is a string | null
+  // Just changing it causes a number of errors all over the codebase
+  // When BIP44 flag is enabled and stable, this can be refactored to use the type from the new selector
+  const nonEvmSecondary = isMultichainAccountsState2Enabled
+    ? (secondary as unknown as number)
+    : token.secondary;
+
   // TODO non-evm assets. this is only the native token
   return {
     title: token.title,
     tokenImage: token.image,
     primary: formattedPrimary,
-    secondary: showFiat ? token.secondary : null,
+    secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };
