@@ -42,7 +42,6 @@ export const getEstimatedTotalGas = (
 
 type GetMaxAmountArgs = {
   asset?: Asset;
-  from: string;
   layer1GasFees: Hex;
   isEvmSendType?: boolean;
   gasFeeEstimates?: GasFeeEstimatesType;
@@ -112,20 +111,12 @@ export const useMaxAmount = () => {
   const getMaxAmount = useCallback(() => {
     return getMaxAmountFn({
       asset,
-      from,
       gasFeeEstimates,
       isEvmSendType,
       layer1GasFees: layer1GasFees ?? '0x0',
       rawBalanceNumeric,
     });
-  }, [
-    asset,
-    from,
-    gasFeeEstimates,
-    isEvmSendType,
-    layer1GasFees,
-    rawBalanceNumeric,
-  ]);
+  }, [asset, gasFeeEstimates, isEvmSendType, layer1GasFees, rawBalanceNumeric]);
 
   return {
     getMaxAmount,
