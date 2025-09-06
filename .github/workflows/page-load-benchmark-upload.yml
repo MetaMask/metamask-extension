@@ -2,10 +2,13 @@ name: Page load benchmark upload
 
 on:
   workflow_call:
+    secrets:
+      EXTENSION_BENCHMARK_STATS_TOKEN:
+        required: true
 
 jobs:
   page-load-benchmark-upload:
-    name: Run Page Load Benchmarks
+    name: Upload Page Load Benchmarks Data
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment

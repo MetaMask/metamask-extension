@@ -255,6 +255,8 @@ jobs:
     # if: github.ref == 'refs/heads/main'
     if: ${{ github.event_name == 'pull_request' }}
     uses: ./.github/workflows/page-load-benchmark-upload.yml
+    secrets:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
   needs-e2e:
     needs:
