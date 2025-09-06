@@ -16,7 +16,6 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
-
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -36,9 +35,11 @@ jobs:
           mv benchmark-results.json test-artifacts/benchmarks/benchmark-results.json
 
       - name: Compare and comment
+        if: ${{ github.event_name == 'pull_request' }}
         run: yarn tsx development/page-load-benchmark-pr-comment.ts
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
           OWNER: ${{ github.repository_owner }}
           REPOSITORY: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}

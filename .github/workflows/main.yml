@@ -252,6 +252,14 @@ jobs:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
+  page-load-benchmark-comment:
+    needs:
+      - page-load-benchmark-pr
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/page-load-benchmark-comment.yml
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+
   needs-e2e:
     needs:
       - prep-deps
@@ -376,15 +384,6 @@ jobs:
       - build-source-map-explorer
       - build-lavamoat-viz
     uses: ./.github/workflows/publish-prerelease.yml
-    secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-
-  page-load-benchmark-comment:
-    needs:
-      - page-load-benchmark-pr
-      - publish-prerelease
-    if: ${{ github.event_name == 'pull_request' }}
-    uses: ./.github/workflows/page-load-benchmark-comment.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
