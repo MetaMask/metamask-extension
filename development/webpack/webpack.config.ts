@@ -372,6 +372,8 @@ const config = {
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
+                // Conditionally compress CSS output based on minify flag
+                outputStyle: args.minify ? 'compressed' : 'expanded',
                 // The order of includePaths is important; prefer our own
                 // folders over `node_modules`
                 includePaths: [
