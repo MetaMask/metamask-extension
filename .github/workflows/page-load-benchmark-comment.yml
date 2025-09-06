@@ -7,9 +7,6 @@ on:
         required: true
         type: string
         description: The head commit hash to pass to the benchmark comment script
-    secrets:
-      PR_COMMENT_TOKEN:
-        required: true
 
 jobs:
   page-load-benchmark-comment:

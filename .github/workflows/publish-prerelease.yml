@@ -60,15 +60,12 @@ jobs:
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
 
+      - name: Page load benchmark comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: ./.github/workflows/page-load-benchmark-comment.yml
+        with:
+          head-commit-hash: ${{ env.HEAD_COMMIT_HASH }}
+
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         run: yarn tsx ./development/metamaskbot-build-announce.ts
-
-  page-load-benchmark-comment:
-    name: Page load benchmark comment
-    if: ${{ github.event_name == 'pull_request' }}
-    uses: ./.github/workflows/page-load-benchmark-comment.yml
-    with:
-      head-commit-hash: ${{ env.HEAD_COMMIT_HASH }}
-    secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
