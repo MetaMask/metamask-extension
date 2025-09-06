@@ -9,10 +9,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../components/component-library';
 import { loadingOpacity, getShortDateFormatter } from '../../util';
-import {
-  threeSignificantDigits,
-  useFormatters,
-} from '../../../../helpers/formatters';
+import { useFormatters } from '../../../../helpers/formatters';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import { TokenCellPercentChange } from '../../../../components/app/assets/token-cell/cells';
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';

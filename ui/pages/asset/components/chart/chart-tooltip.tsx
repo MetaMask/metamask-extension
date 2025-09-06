@@ -6,10 +6,7 @@ import {
   Text,
   TextDirection,
 } from '../../../../components/component-library';
-import {
-  threeSignificantDigits,
-  useFormatters,
-} from '../../../../helpers/formatters';
+import { useFormatters } from '../../../../helpers/formatters';
 import {
   TextAlign,
   TextColor,
