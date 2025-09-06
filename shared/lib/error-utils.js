@@ -97,16 +97,27 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
   const { t } = localeContext;
 
+  const legalText = `
+    <span>
+      We will receive a single error report, containing:<br />
+      - Technical diagnostic information.<br />
+      - Your browser, operating system and MetaMask versions.<br />
+      <br />
+      No personal information or other device information will be collected.
+    </span>
+  `;
+
   const footer = supportLink
     ? `
       <p class="critical-error__footer">
         <span>${lodashEscape(t('stillGettingMessage'))}</span>
+        <br />
         <a
           href="${lodashEscape(supportLink)}"
           class="critical-error__link"
           target="_blank"
           rel="noopener noreferrer">
-            ${lodashEscape(t('sendBugReport'))}
+            ${lodashEscape(t('errorPageContactSupport'))}
         </a>
       </p>
     `
@@ -116,6 +127,17 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
   if (error?.message) {
     detailsRawHtml += `<strong>${lodashEscape(t('errorDetails'))}</strong>\n`;
     detailsRawHtml += `<p class="critical-error__details"><code>${lodashEscape(error?.message)}</code></p>`;
+  }
+
+  function onClickRestartMetaMaskButton() {
+    fetch(`http://sentry.io/api/273505/envelope/`, {
+      method: 'POST',
+      body:
+        error && typeof error === 'object'
+          ? JSON.stringify(error)
+          : String(error),
+    }).catch((e) => console.error(e));
+    console.log('Error object sent to Sentry API.');
   }
 
   /**
@@ -131,7 +153,27 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
         ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
       </p>
       ${detailsRawHtml}
-      <button id="critical-error-button" class="critical-error__button-restore button btn-primary">
+      <input type="checkbox" checked>
+        ${lodashEscape(t('sendBugReport'))}
+        <button
+          id="critical-error__tip-anchor"
+          popovertarget="critical-error__legal-text"
+        >
+          ℹ️
+        </button>
+      </input>
+      <div
+        popover
+        anchor="critical-error__tip-anchor"
+        id="critical-error__legal-text"
+        class="critical-error__legal-text"
+      >
+        ${legalText}
+      </div>
+      <button id="todo-remove" class="critical-error__button-restore button btn-primary" onclick="${onClickRestartMetaMaskButton}()">
+        Test Sentry Fetch Request
+      </button>
+      <button id="critical-error-button" class="critical-error__button-restore button btn-primary" onclick="${onClickRestartMetaMaskButton}()">
         ${lodashEscape(t('restartMetamask'))}
       </button>
       ${footer}
