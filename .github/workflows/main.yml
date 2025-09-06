@@ -382,7 +382,6 @@ jobs:
   page-load-benchmark-comment:
     needs:
       - page-load-benchmark-pr
-      - publish-prerelease
     if: ${{ github.event_name == 'pull_request' }}
     uses: ./.github/workflows/page-load-benchmark-comment.yml
     secrets:
