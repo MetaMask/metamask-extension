@@ -1,0 +1,70 @@
+@use "design-system";
+
+.keystone-usb-bridge {
+  &__container {
+    flex: 1;
+    flex-direction: row;
+    display: flex;
+  }
+
+  &__header {
+    flex-direction: column;
+    display: flex;
+    width: 30vw;
+    min-width: 300px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__header-title-wrapper {
+    height: 150px;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__header-title {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 48px;
+  }
+
+  &__header-title-wrapper-text {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+  }
+
+  &__content {
+    height: 100%;
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+  }
+
+  &__content-text {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  &__content-wrapper {
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  &__content-button {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: var(--color-primary-default);
+    color: var(--color-text-default);
+    border: none;
+  }
+}

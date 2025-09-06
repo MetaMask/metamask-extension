@@ -35,6 +35,7 @@ import {
   LedgerIframeBridge,
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { KeystoneUSBKeyring } from '@keystonehq/metamask-keystone-usb-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
@@ -347,6 +348,7 @@ import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
+import { KeystoneOffscreenBridge } from './lib/offscreen-bridge/keystone-offscreen-bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
@@ -1173,6 +1175,10 @@ export default class MetamaskController extends EventEmitter {
         hardwareKeyringBuilderFactory(
           LedgerKeyring,
           keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          KeystoneUSBKeyring,
+          keyringOverrides?.keystoneBridge || KeystoneOffscreenBridge,
         ),
         keyringBuilderFactory(LatticeKeyringOffscreen),
       );
@@ -9350,6 +9356,9 @@ export default class MetamaskController extends EventEmitter {
         break;
       case HardwareDeviceNames.ledger:
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
+        break;
+      case HardwareDeviceNames.keystone:
+        keyringType = keyringOverrides?.keystone?.type || KeystoneUSBKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;

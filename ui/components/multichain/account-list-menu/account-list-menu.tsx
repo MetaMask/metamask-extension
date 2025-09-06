@@ -178,6 +178,7 @@ export const AccountListMenu = ({
 
   const accountListItems = useMemo(() => {
     return searchResults.map((account) => {
+      console.log('account', account);
       const connectedSite = connectedSites[account.address]?.find(
         ({ origin }) => origin === currentTabOrigin,
       );
