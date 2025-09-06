@@ -5991,7 +5991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^8.0.0, @metamask/eth-sig-util@npm:^8.1.2, @metamask/eth-sig-util@npm:^8.2.0":
+"@metamask/eth-sig-util@npm:^8.1.2, @metamask/eth-sig-util@npm:^8.2.0":
   version: 8.2.0
   resolution: "@metamask/eth-sig-util@npm:8.2.0"
   dependencies:
@@ -6538,18 +6538,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/message-manager@npm:12.0.1"
+"@metamask/message-manager@npm:@metamask-previews/message-manager@12.0.2-preview-d71561e3":
+  version: 12.0.2-preview-d71561e3
+  resolution: "@metamask-previews/message-manager@npm:12.0.2-preview-d71561e3"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/controller-utils": "npm:^11.12.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.4.2"
     "@types/uuid": "npm:^8.3.0"
     jsonschema: "npm:^1.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/f8f728ddfaa5ee901ec099b85160ab9c607dd00068a866f7057c731679c33ec790ad055d8dc31470cd0720dc10587f66b173812c2d2c0c0582083b398ff73f8d
+  checksum: 10/f045e51e7be0701cf146e1e3fa1f80976ee84ac8d0a7d0c43549f1864baa25cb16d71f837328325b6adf23b2e944127ebd9f405b799fe8dca5aa6cfd149f1fa3
   languageName: node
   linkType: hard
 
