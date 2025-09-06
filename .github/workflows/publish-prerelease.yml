@@ -62,9 +62,10 @@ jobs:
 
       - name: Page load benchmark comment
         if: ${{ github.event_name == 'pull_request' }}
-        uses: ./.github/workflows/page-load-benchmark-comment.yml
+        uses: ./.github/actions/page-load-benchmark-comment
         with:
           head-commit-hash: ${{ env.HEAD_COMMIT_HASH }}
+          pr-comment-token: ${{ secrets.PR_COMMENT_TOKEN }}
 
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
