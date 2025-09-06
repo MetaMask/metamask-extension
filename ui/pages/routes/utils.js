@@ -28,6 +28,7 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  SITES,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -283,6 +284,17 @@ export function hideAppHeader(props) {
       exact: false,
     }),
   );
+
+  const isSitesPage = Boolean(
+    matchPath(location.pathname, {
+      path: SITES,
+      exact: false,
+    }),
+  );
+
+  if (isSitesPage) {
+    return true;
+  }
 
   return (
     isHandlingPermissionsRequest ||
