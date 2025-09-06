@@ -51,7 +51,10 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import {
+  accountSupportsCancelSpeedup,
+  checkNetworkAndAccountSupports1559,
+} from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import Button from '../../ui/button';
@@ -250,13 +253,16 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, history, id, trackEvent, category]);
 
+  const supportsCancelSpeedup = useSelector(accountSupportsCancelSpeedup);
+
   const speedUpButton = useMemo(() => {
     if (
       !shouldShowSpeedUp ||
       !isPending ||
       isUnapproved ||
       isSigning ||
-      isSubmitting
+      isSubmitting ||
+      !supportsCancelSpeedup
     ) {
       return null;
     }
@@ -281,9 +287,16 @@ function TransactionListItemInner({
     hasCancelled,
     retryTransaction,
     cancelTransaction,
+    supportsCancelSpeedup,
   ]);
+
   const showCancelButton =
-    !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
+    !hasCancelled &&
+    isPending &&
+    !isUnapproved &&
+    !isSubmitting &&
+    !isBridgeTx &&
+    supportsCancelSpeedup;
 
   return (
     <>
