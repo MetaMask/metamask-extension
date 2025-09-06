@@ -48,13 +48,13 @@ jobs:
       - name: Run page load benchmarks
         run: yarn test:e2e:benchmark
 
-      - name: Upload benchmark results
+      - name: Upload benchmark results (github artifacts)
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
           path: test-artifacts/benchmarks/benchmark-results.json
 
-      - name: Upload benchmark results
+      - name: Upload benchmark results (historical data)
         if: github.ref == 'refs/heads/main'
         run: .github/scripts/benchmark-stats-commit.sh
         env:
