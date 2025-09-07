@@ -439,8 +439,6 @@ import {
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 
-import { processRequestExecutionPermissions } from './lib/transaction/eip7715';
-
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -2071,6 +2069,7 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
     this.controllerMessenger.subscribe(
       'NotificationServicesPushController:pushNotificationClicked',
       (notification) => {
@@ -2191,7 +2190,8 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
       ),
       processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
-        ? processRequestExecutionPermissions.bind(null, {
+        ? forwardRequestToSnap.bind(null, {
+            snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.controllerMessenger.call.bind(
               this.controllerMessenger,
               'SnapController:handleRequest',
