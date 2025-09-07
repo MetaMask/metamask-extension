@@ -44,14 +44,6 @@ export function useTrustSignals(
         };
       }
 
-      // If no value/address provided, return Unknown (nothing to check)
-      if (!value) {
-        return {
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
-        };
-      }
-
       const securityAlertResponse = getAddressSecurityAlertResponse(
         state,
         value,

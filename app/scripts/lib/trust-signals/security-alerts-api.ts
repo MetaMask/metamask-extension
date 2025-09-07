@@ -54,7 +54,7 @@ export async function scanAddressAndAddToCache(
   chainId: SupportedEVMChain,
 ): Promise<ScanAddressResponse> {
   const cachedResponse = getAddressSecurityAlertResponse(address);
-  if (cachedResponse && cachedResponse.result_type !== ResultType.Loading) {
+  if (cachedResponse) {
     return cachedResponse;
   }
 

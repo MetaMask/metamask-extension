@@ -135,7 +135,7 @@ describe('Security Alerts API', () => {
       expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
     });
 
-    it('should re-scan when cached response is in loading state', async () => {
+    it('should return cached loading state without making new API call', async () => {
       const cachedLoadingResponse = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -146,13 +146,6 @@ describe('Security Alerts API', () => {
         cachedLoadingResponse,
       );
 
-      const scope = nock(BASE_URL)
-        .post('/address/evm/scan', {
-          chain: SupportedEVMChain.Ethereum,
-          address: TEST_ADDRESS,
-        })
-        .reply(200, RESPONSE_MOCK);
-
       const result = await scanAddressAndAddToCache(
         TEST_ADDRESS,
         getAddressSecurityAlertResponseMock,
@@ -160,13 +153,12 @@ describe('Security Alerts API', () => {
         SupportedEVMChain.Ethereum,
       );
 
-      expect(result).toEqual(RESPONSE_MOCK);
+      expect(result).toEqual(cachedLoadingResponse);
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
         TEST_ADDRESS,
       );
-      // Should be called twice: once for loading state, once for result
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
-      expect(scope.isDone()).toBe(true);
+      // Should not make any API calls or update cache when loading state is cached
+      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
     });
 
     it('should scan address and cache result when not cached', async () => {

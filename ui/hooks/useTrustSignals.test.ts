@@ -244,25 +244,6 @@ describe('useTrustSignals', () => {
         });
       });
 
-      it('returns unknown state when security alert response is null (checked but no data)', () => {
-        getAddressSecurityAlertResponseMock.mockReturnValue(null);
-
-        const requests: UseTrustSignalRequest[] = [
-          {
-            value: VALUE_MOCK,
-            type: NameType.ETHEREUM_ADDRESS,
-          },
-        ];
-
-        const results = useTrustSignals(requests);
-
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
-        });
-      });
-
       it('returns unknown state when security alert response is undefined (no check initiated)', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
 
