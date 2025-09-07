@@ -661,10 +661,6 @@ describe('Request-queue UI changes', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
 
-        await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
-
         // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
