@@ -1,57 +1,148 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/dom';
+import { render, fireEvent } from '@testing-library/react';
 
-import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
-import configureStore from '../../../../../store/store';
+import { useSendAssets } from '../../../hooks/send/useSendAssets';
+import { useSendAssetFilter } from '../../../hooks/send/useSendAssetFilter';
 import { Asset } from './asset';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
+jest.mock('../../../hooks/send/useSendAssets');
+jest.mock('../../../hooks/send/useSendAssetFilter');
+jest.mock('../header', () => ({
+  Header: () => <div data-testid="header">Header</div>,
 }));
-
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
-  useLocation: () => ({ pathname: '/send/asset' }),
-  useSearchParams: jest
-    .fn()
-    .mockReturnValue([
-      { get: () => null, toString: () => 'searchParams=dummy' },
-    ]),
+jest.mock('../asset-filter-input', () => ({
+  AssetFilterInput: ({
+    searchQuery,
+    onChange,
+  }: {
+    searchQuery: string;
+    onChange: (value: string) => void;
+  }) => (
+    <input
+      data-testid="asset-filter-input"
+      value={searchQuery}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
 }));
-
-const render = (args?: Record<string, unknown>) => {
-  const store = configureStore(args ?? mockState);
-
-  return renderWithProvider(<Asset />, store);
-};
+jest.mock('../network-filter', () => ({
+  NetworkFilter: ({
+    selectedChainId,
+    onChainIdChange,
+  }: {
+    selectedChainId: string | null;
+    onChainIdChange: (chainId: string | null) => void;
+  }) => (
+    <select
+      data-testid="network-filter"
+      value={selectedChainId || ''}
+      onChange={(e) => onChainIdChange(e.target.value || null)}
+    >
+      <option value="">All Networks</option>
+      <option value="1">Ethereum</option>
+    </select>
+  ),
+}));
+jest.mock('../asset-list', () => ({
+  AssetList: ({ onClearFilters }: { onClearFilters: () => void }) => (
+    <div data-testid="asset-list">
+      <button onClick={onClearFilters}>Clear Filters</button>
+    </div>
+  ),
+}));
 
 describe('Asset', () => {
-  it('should render correctly', () => {
-    const { getByText } = render();
+  const mockUseSendAssets = jest.mocked(useSendAssets);
+  const mockUseSendAssetFilter = jest.mocked(useSendAssetFilter);
 
-    expect(getByText('asset')).toBeInTheDocument();
+  const mockTokens = [
+    { name: 'Ethereum', symbol: 'ETH', chainId: '1' },
+    { name: 'USDC', symbol: 'USDC', chainId: '1' },
+  ];
+
+  const mockNfts = [
+    { name: 'Cool NFT', collection: { name: 'Cool Collection' }, chainId: '1' },
+  ];
+
+  const mockFilteredTokens = [mockTokens[0]];
+  const mockFilteredNfts = [mockNfts[0]];
+
+  beforeEach(() => {
+    mockUseSendAssets.mockReturnValue({
+      tokens: mockTokens,
+      nfts: mockNfts,
+    });
+
+    mockUseSendAssetFilter.mockReturnValue({
+      filteredTokens: mockFilteredTokens,
+      filteredNfts: mockFilteredNfts,
+    });
   });
 
-  it('go to AmountRecipient page when continue button is clicked', () => {
-    const { getByText } = render();
-
-    fireEvent.click(getByText('Continue'));
-    expect(mockHistory.push).toHaveBeenCalledWith(
-      '/send/amount-recipient?searchParams=dummy',
-    );
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('go to previous page when previous button is clicked', () => {
-    const { getByText } = render();
+  it('renders all components', () => {
+    const { getByTestId } = render(<Asset />);
+    expect(getByTestId('asset-filter-input')).toBeInTheDocument();
+    expect(getByTestId('network-filter')).toBeInTheDocument();
+    expect(getByTestId('asset-list')).toBeInTheDocument();
+  });
 
-    fireEvent.click(getByText('Previous'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+  it('updates search query when input changes', () => {
+    const { getByTestId } = render(<Asset />);
+    const input = getByTestId('asset-filter-input');
+
+    fireEvent.change(input, { target: { value: 'test query' } });
+
+    expect(mockUseSendAssetFilter).toHaveBeenCalledWith({
+      tokens: mockTokens,
+      nfts: mockNfts,
+      selectedChainId: null,
+      searchQuery: 'test query',
+    });
+  });
+
+  it('updates selected chain when network filter changes', () => {
+    const { getByTestId } = render(<Asset />);
+    const select = getByTestId('network-filter');
+
+    fireEvent.change(select, { target: { value: '1' } });
+
+    expect(mockUseSendAssetFilter).toHaveBeenCalledWith({
+      tokens: mockTokens,
+      nfts: mockNfts,
+      selectedChainId: '1',
+      searchQuery: '',
+    });
+  });
+
+  it('clears filters when clear button is clicked', () => {
+    const { getByTestId, getByText } = render(<Asset />);
+    const input = getByTestId('asset-filter-input');
+    const select = getByTestId('network-filter');
+
+    fireEvent.change(input, { target: { value: 'search' } });
+    fireEvent.change(select, { target: { value: '1' } });
+    fireEvent.click(getByText('Clear Filters'));
+
+    expect(mockUseSendAssetFilter).toHaveBeenLastCalledWith({
+      tokens: mockTokens,
+      nfts: mockNfts,
+      selectedChainId: null,
+      searchQuery: '',
+    });
+  });
+
+  it('passes correct props to AssetList', () => {
+    render(<Asset />);
+
+    expect(mockUseSendAssetFilter).toHaveBeenCalledWith({
+      tokens: mockTokens,
+      nfts: mockNfts,
+      selectedChainId: null,
+      searchQuery: '',
+    });
   });
 });
