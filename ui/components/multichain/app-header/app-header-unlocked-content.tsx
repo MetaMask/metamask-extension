@@ -147,6 +147,8 @@ export const AppHeaderUnlockedContent = ({
         location: 'Home',
       },
     });
+
+    console.log('>>> trying to OPEN the menu')
     setAccountOptionsMenuOpen(true);
   };
 
@@ -292,11 +294,14 @@ export const AppHeaderUnlockedContent = ({
               </Box>
             )}
             <ButtonIcon
-              iconName={IconName.Menu}
+              iconName={IconName.Menu} 
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
-              onClick={() => {
-                handleMainMenuOpened();
+              onClick={(e) => {
+                e.stopPropagation()
+                console.log('>>> ButtonIcon clicked and event target', accountOptionsMenuOpen, e.target, e.currentTarget)
+                // handleMainMenuOpened();
+                setAccountOptionsMenuOpen(prev => !prev)
               }}
               size={ButtonIconSize.Lg}
             />
@@ -305,7 +310,18 @@ export const AppHeaderUnlockedContent = ({
         <GlobalMenu
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={(event) => {
+            console.log('>>> GlobalMenu closeMenu event target', event.currentTarget)
+            // if (event && menuRef.current?.contains(event.target)) {
+            //   return; // Don't close if clicking trigger
+            // }
+
+            setAccountOptionsMenuOpen(false)
+          }}
+          // closeMenu={() => {
+          //   console.log('>>> GlobalMenu closeMenu')
+          //   setAccountOptionsMenuOpen(false)
+          // }}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}
