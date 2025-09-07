@@ -609,9 +609,12 @@ describe('Request-queue UI changes', function () {
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
+          .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
+              '0x2105': true,
+              '0xe708': true,
             },
           })
           .build(),
@@ -656,6 +659,9 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+
+        await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
