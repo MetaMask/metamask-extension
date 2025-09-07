@@ -99,7 +99,7 @@ export const ActivityListItem = ({
                 as="div"
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
                 fontWeight={FontWeight.Normal}
               >
                 {subtitle}

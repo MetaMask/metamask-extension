@@ -85,7 +85,7 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
                   </p>
                 </div>
                 <div
-                  class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
                 >
                   <div
                     class="transaction-status-label transaction-status-label--confirmed"
@@ -109,7 +109,7 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
                   </p>
                 </div>
                 <p
-                  class="mm-box mm-text mm-text--body-sm mm-text--text-align-right mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-right mm-box--color-text-alternative"
                   data-testid="transaction-list-item-secondary-currency"
                 >
                   18.75 ETH
@@ -191,7 +191,7 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
                   </p>
                 </div>
                 <div
-                  class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
                 >
                   <div
                     class="transaction-status-label transaction-status-label--confirmed"
@@ -215,7 +215,7 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
                   </p>
                 </div>
                 <p
-                  class="mm-box mm-text mm-text--body-sm mm-text--text-align-right mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-right mm-box--color-text-alternative"
                   data-testid="transaction-list-item-secondary-currency"
                 >
                   18.75 ETH
