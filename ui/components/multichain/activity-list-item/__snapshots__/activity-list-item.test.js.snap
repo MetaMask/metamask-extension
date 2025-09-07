@@ -72,7 +72,7 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
           >
             <p>
               I am a list item
