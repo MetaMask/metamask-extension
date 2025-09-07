@@ -17,6 +17,11 @@ const compactTwoDecimals: Intl.NumberFormatOptions = {
   maximumFractionDigits: 2,
 };
 
+const oneSignificantDigit = {
+  minimumSignificantDigits: 1,
+  maximumSignificantDigits: 1,
+};
+
 const threeSignificantDigits = {
   minimumSignificantDigits: 3,
   maximumSignificantDigits: 3,
@@ -115,8 +120,12 @@ function formatCurrencyTokenPrice(
     return '';
   }
 
+  if (number === 0) {
+    return formatCurrency(config, 0, currency);
+  }
+
   if (number < minThreshold) {
-    return `<${formatCurrency(config, minThreshold, currency)}`;
+    return `<${formatCurrency(config, minThreshold, currency, oneSignificantDigit)}`;
   }
 
   if (number < 1) {
