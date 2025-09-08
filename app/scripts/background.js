@@ -1120,9 +1120,34 @@ export function setupController(
     }
 
     if (isMetaMaskInternalProcess) {
+      /**
+       * @type {ExtensionPortStream}
+       */
       const portStream =
         overrides?.getPortStream?.(remotePort) ||
         new ExtensionPortStream(remotePort);
+
+      portStream.on('message-too-large', (event) => {
+        /**
+         * @type {import("extension-port-stream").MessageTooLargeEventData}
+         */
+        const e = event;
+        // send event to sentry with details about the event
+        sentry?.captureException(
+          new Error('Notice: Message too large for Port'),
+          {
+            extra: {
+              originalError: e.originalError,
+              chunkSize: e.chunkSize,
+              // TODO: create a method to get more information about this user's
+              // state, or this message object itself. Can we quickly determine
+              // why it is so big and report it?
+              analysis: null,
+            }
+          },
+        );
+      });
+
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);

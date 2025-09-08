@@ -1,7 +1,20 @@
-import { withFixtures } from '../../helpers';
+import { largeDelayMs, sentryRegEx, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { Mockttp } from 'mockttp';
+
+async function mockSentryTestError(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(sentryRegEx)
+    .withBodyIncluding('Notice: Message too large for Port')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+}
 
 describe('Port Stream Chunking', function () {
   it('can load the wallet UI with a huge background state (~128MB)', async function () {
@@ -33,12 +46,28 @@ describe('Port Stream Chunking', function () {
           .withTransactions(largeTransactions)
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockSentryTestError,
       },
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver);
         const homepage = new HomePage(driver);
         // Just check that the balance is displayed (wallet is usable)
         await homepage.checkExpectedBalanceIsDisplayed();
+
+        // Wait for the mocked Sentry endpoint to be called.
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        }, largeDelayMs);
+
+        const requests = await mockedEndpoint.getSeenRequests();
+        assert.equal(requests.length, 1, 'Expected one request to Sentry.');
+
+        const request = requests[0];
+        const [, , data] = (await request.body.getText()).split('\n');
+        const [error] = JSON.parse(data).exception.values;
+
+        assert.equal(error.value, 'Notice: Message too large for Port');
       },
     );
   });
