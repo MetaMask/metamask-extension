@@ -43,15 +43,6 @@ export const useRecipientValidation = () => {
     [sendType.isSolanaSendType],
   );
 
-  const cacheKey = useMemo(() => {
-    return `${isEvmSendType}-${isSolanaSendType}-${chainId}`;
-  }, [isEvmSendType, isSolanaSendType, chainId]);
-
-  const validationCache = useMemo(
-    () => new Map<string, RecipientValidationResult>(),
-    [cacheKey],
-  );
-
   const validateRecipient = useCallback(
     async (address?: string) => {
       const emptyResult = {
@@ -61,11 +52,6 @@ export const useRecipientValidation = () => {
       };
       if (!address) {
         return emptyResult;
-      }
-
-      const cachedResult = validationCache.get(address);
-      if (cachedResult) {
-        return cachedResult;
       }
 
       let result;
@@ -88,8 +74,6 @@ export const useRecipientValidation = () => {
         warning: result.warning ?? null,
       };
 
-      validationCache.set(address, finalResult);
-
       return finalResult;
     },
     [
@@ -98,7 +82,6 @@ export const useRecipientValidation = () => {
       validateEvmRecipient,
       validateSolanaRecipient,
       chainId,
-      validationCache,
     ],
   );
 

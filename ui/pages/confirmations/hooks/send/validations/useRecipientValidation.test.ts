@@ -294,26 +294,6 @@ describe('useRecipientValidation', () => {
       });
     });
 
-    it('caches validation results', async () => {
-      mockValidateEvmRecipient.mockResolvedValue({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-      });
-
-      const { result } = renderHook();
-
-      await act(async () => {
-        await result.current.validateRecipient('0x123');
-      });
-
-      await act(async () => {
-        await result.current.validateRecipient('0x123');
-      });
-
-      expect(mockValidateEvmRecipient).toHaveBeenCalledTimes(1);
-    });
-
     it('clears cache when send type changes', async () => {
       mockValidateEvmRecipient.mockResolvedValue({
         error: null,
