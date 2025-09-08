@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, fireEvent, act, within } from '@testing-library/react';
 import {
   AccountGroupType,
   AccountWalletType,
@@ -30,17 +30,24 @@ jest.mock('react-router-dom', () => {
 
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
-  const mockSetSelectedMultichainAccount = jest.fn().mockImplementation(() => {
-    return async function () {
-      await Promise.resolve();
-    };
-  });
-
   return {
     ...actualActions,
-    setSelectedMultichainAccount: mockSetSelectedMultichainAccount,
+    setAccountGroupName: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
+    setSelectedMultichainAccount: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
   };
 });
+
+const mockSetAccountGroupName = jest.requireMock(
+  '../../../store/actions',
+).setAccountGroupName;
 
 const mockSetSelectedMultichainAccount = jest.requireMock(
   '../../../store/actions',
@@ -264,5 +271,139 @@ describe('MultichainAccountList', () => {
 
     expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
     expect(screen.getByText('Account 2 from wallet 1')).toBeInTheDocument();
+  });
+
+  it('opens account rename modal when clicking rename in menu and handles form submission', async () => {
+    renderComponent();
+
+    // Find the menu button for the first account and click it
+    const menuButton = document.querySelector(
+      '.multichain-account-cell-popover-menu-button',
+    );
+    expect(menuButton).toBeInTheDocument();
+
+    await act(async () => {
+      if (menuButton) {
+        fireEvent.click(menuButton);
+      }
+    });
+
+    // Find the popover
+    const popover = document.querySelector('.mm-popover--open');
+    expect(popover).toBeInTheDocument();
+
+    // Find all menu items within the popover
+    const menuItems = popover
+      ? within(popover as HTMLElement).getAllByText(/\w+/u)
+      : [];
+
+    // Find the "Rename" option by text
+    const renameOption = menuItems.find(
+      (item) => item.textContent === 'Rename',
+    );
+    expect(renameOption).toBeInTheDocument();
+
+    await act(async () => {
+      if (renameOption) {
+        fireEvent.click(renameOption);
+      }
+    });
+
+    // Verify the modal is open by finding the modal header
+    const modalHeader = document.querySelector('.mm-modal-header');
+    expect(modalHeader).toBeInTheDocument();
+
+    // Find the header text inside the modal
+    if (modalHeader) {
+      const headerText = within(modalHeader as HTMLElement).getByText('Rename');
+      expect(headerText).toBeInTheDocument();
+    }
+
+    // Find the actual input element directly
+    const inputContainer = screen.getByTestId('account-name-input');
+    // Get the input element inside the container using a more direct selector
+    const inputElement = inputContainer.querySelector('input');
+    expect(inputElement).toBeInTheDocument();
+
+    // Enter a new name
+    const newAccountName = 'Renamed Account';
+    await act(async () => {
+      if (inputElement) {
+        fireEvent.change(inputElement, { target: { value: newAccountName } });
+      }
+    });
+
+    // Find and click the confirm button
+    const confirmButton = screen.getByText('Confirm');
+    expect(confirmButton).toBeInTheDocument();
+
+    // The button should no longer be disabled after entering text
+    expect(confirmButton).not.toBeDisabled();
+
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
+
+    // Verify the action was dispatched with the correct parameters
+    expect(mockSetAccountGroupName).toHaveBeenCalledWith(
+      walletOneGroupId,
+      newAccountName,
+    );
+
+    // Verify the modal is closed after submission
+    expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
+  });
+
+  it('opens account rename modal and closes it without saving', async () => {
+    renderComponent();
+
+    // Find the menu button for the first account and click it
+    const menuButton = document.querySelector(
+      '.multichain-account-cell-popover-menu-button',
+    );
+    expect(menuButton).toBeInTheDocument();
+
+    await act(async () => {
+      if (menuButton) {
+        fireEvent.click(menuButton);
+      }
+    });
+
+    // Find the popover
+    const popover = document.querySelector('.mm-popover--open');
+    expect(popover).toBeInTheDocument();
+
+    // Find all menu items within the popover
+    const menuItems = popover
+      ? within(popover as HTMLElement).getAllByText(/\w+/u)
+      : [];
+
+    // Find the "Rename" option by text
+    const renameOption = menuItems.find(
+      (item) => item.textContent === 'Rename',
+    );
+    expect(renameOption).toBeInTheDocument();
+
+    await act(async () => {
+      if (renameOption) {
+        fireEvent.click(renameOption);
+      }
+    });
+
+    // Verify that the modal is open
+    const modalHeader = document.querySelector('.mm-modal-header');
+    expect(modalHeader).toBeInTheDocument();
+
+    // Find the close button by aria-label
+    const closeButton = screen.getByLabelText('Close');
+    expect(closeButton).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(closeButton);
+    });
+
+    // Verify the modal is closed and action was not called
+    expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
+    expect(mockSetAccountGroupName).not.toHaveBeenCalled();
   });
 });

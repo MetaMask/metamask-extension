@@ -234,7 +234,6 @@ export const MultichainAccountDetailsPage = () => {
           <MultichainAccountEditModal
             isOpen={isAccountRenameModalOpen}
             onClose={() => setIsAccountRenameModalOpen(false)}
-            currentAccountName={multichainAccount.metadata.name}
             accountGroupId={multichainAccount.id}
           />
         )}

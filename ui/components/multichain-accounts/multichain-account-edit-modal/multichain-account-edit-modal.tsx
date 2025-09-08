@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   Modal,
@@ -17,22 +17,25 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
+import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 
 export type MultichainAccountEditModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  currentAccountName: string;
   accountGroupId: AccountGroupId;
 };
 
 export const MultichainAccountEditModal = ({
   isOpen,
   onClose,
-  currentAccountName,
   accountGroupId,
 }: MultichainAccountEditModalProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const accountGroup = useSelector((state) =>
+    getMultichainAccountGroupById(state, accountGroupId),
+  );
+  const currentAccountName = accountGroup?.metadata.name || '';
   const [accountName, setAccountName] = useState('');
 
   const handleSave = async () => {

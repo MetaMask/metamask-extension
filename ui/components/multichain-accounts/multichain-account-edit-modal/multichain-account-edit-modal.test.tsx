@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
+import mockDefaultState from '../../../../test/data/mock-state.json';
 import { setAccountGroupName } from '../../../store/actions';
 import {
   MultichainAccountEditModal,
@@ -16,12 +17,7 @@ describe('MultichainAccountEditModal', () => {
   const mockProps: MultichainAccountEditModalProps = {
     isOpen: true,
     onClose: jest.fn(),
-    currentAccountName: 'Account 1',
     accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-  };
-
-  const initialState = {
-    metamask: {},
   };
 
   beforeEach(() => {
@@ -29,7 +25,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('renders the modal with correct elements when open', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     expect(screen.getByText('Rename')).toBeInTheDocument();
@@ -45,7 +41,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('does not render when isOpen is false', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(
       <MultichainAccountEditModal {...mockProps} isOpen={false} />,
       store,
@@ -58,7 +54,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('enables confirm button when input has valid value', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
@@ -87,7 +83,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('calls onClose when header close button is clicked', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const closeButton = screen.getByLabelText('Close');
@@ -97,7 +93,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('calls onClose when back button is clicked', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const backButton = screen.getByLabelText('Back');
@@ -107,7 +103,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('updates input value when typing', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
@@ -117,7 +113,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('dispatches setAccountGroupName action when saving with new name', async () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     store.dispatch = jest.fn().mockResolvedValue(undefined);
 
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
@@ -138,7 +134,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('does not dispatch action when name is unchanged', async () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     store.dispatch = jest.fn().mockResolvedValue(undefined);
 
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
@@ -147,7 +143,7 @@ describe('MultichainAccountEditModal', () => {
 
     // Type the same name
     fireEvent.change(input, {
-      target: { value: mockProps.currentAccountName },
+      target: { value: 'Account 1' },
     });
 
     // Click the confirm button
@@ -162,7 +158,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('trims whitespace when saving account name', async () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     store.dispatch = jest.fn().mockResolvedValue(undefined);
 
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
@@ -186,7 +182,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('focuses the input field on mount', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
@@ -195,7 +191,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('handles empty input correctly', () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     const input = screen.getByPlaceholderText('Account 1');
@@ -212,7 +208,7 @@ describe('MultichainAccountEditModal', () => {
   });
 
   it('handles form submission with different account name', async () => {
-    const store = configureStore(initialState);
+    const store = configureStore(mockDefaultState);
     store.dispatch = jest.fn().mockResolvedValue(undefined);
 
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
