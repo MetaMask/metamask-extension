@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/dom';
+import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
@@ -54,7 +55,7 @@ describe('Amount', () => {
     expect(mockUpdateValue).toHaveBeenCalledWith('1');
   });
 
-  it('amount input is reset when fiatmode is toggled', () => {
+  it('amount value is changed when fiatmode is toggled', async () => {
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
@@ -67,7 +68,7 @@ describe('Amount', () => {
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
     expect(getByText('~$ 20.00')).toBeInTheDocument();
     fireEvent.click(getByTestId('toggle-fiat-mode'));
-    expect(getByRole('textbox')).toHaveValue('');
+    expect(getByRole('textbox')).toHaveValue('20');
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
     expect(getByText('~ETH 1.20001')).toBeInTheDocument();
   });

@@ -33,8 +33,12 @@ export const Amount = () => {
   const [amount, setAmount] = useState(value ?? '');
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
-  const { getFiatDisplayValue, getNativeValue, getNativeDisplayValue } =
-    useCurrencyConversions();
+  const {
+    getFiatValue,
+    getFiatDisplayValue,
+    getNativeValue,
+    getNativeDisplayValue,
+  } = useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
   const {
@@ -62,7 +66,9 @@ export const Amount = () => {
 
   const toggleFiatMode = useCallback(() => {
     const newFiatMode = !fiatMode;
-    setAmount('');
+    if (amount) {
+      setAmount(newFiatMode ? getFiatValue(amount) : getNativeValue(amount));
+    }
     setFiatMode(newFiatMode);
     if (newFiatMode) {
       setAmountInputTypeFiat();
@@ -70,6 +76,7 @@ export const Amount = () => {
       setAmountInputTypeToken();
     }
   }, [
+    amount,
     fiatMode,
     setAmount,
     setAmountInputTypeFiat,
