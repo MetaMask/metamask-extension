@@ -5584,6 +5584,73 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shieldClaim": {
+    "message": "Submit Claim"
+  },
+  "shieldClaimDescription": {
+    "message": "Description"
+  },
+  "shieldClaimDescriptionPlaceholder": {
+    "message": "Enter a description"
+  },
+  "shieldClaimDetails": {
+    "message": "You can submit one claim per incident. View the full coverage policy $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimEmail": {
+    "message": "Email"
+  },
+  "shieldClaimEmailHelpText": {
+    "message": "We'll use this email to keep you informed with updates."
+  },
+  "shieldClaimFirstName": {
+    "message": "First Name"
+  },
+  "shieldClaimFirstNamePlaceholder": {
+    "message": "Enter your first name"
+  },
+  "shieldClaimImpactedTxHash": {
+    "message": "Impacted transaction hash"
+  },
+  "shieldClaimImpactedTxHashHelpText": {
+    "message": "Also known as TXID, hash ID, or transaction ID."
+  },
+  "shieldClaimImpactedTxHashHelpTextLink": {
+    "message": "Need help finding it?"
+  },
+  "shieldClaimImpactedWalletAddress": {
+    "message": "Impacted wallet address"
+  },
+  "shieldClaimInvalidEmail": {
+    "message": "Invalid email"
+  },
+  "shieldClaimInvalidImpactedWalletAddress": {
+    "message": "Invalid impacted wallet address"
+  },
+  "shieldClaimInvalidReimbursementWalletAddress": {
+    "message": "Invalid reimbursement wallet address"
+  },
+  "shieldClaimLastName": {
+    "message": "Last Name"
+  },
+  "shieldClaimLastNamePlaceholder": {
+    "message": "Enter your last name"
+  },
+  "shieldClaimLossAmount": {
+    "message": "Loss amount"
+  },
+  "shieldClaimLossAmountHelpText": {
+    "message": "Input your wallet balance during the incident (estimate)."
+  },
+  "shieldClaimReimbursementWalletAddress": {
+    "message": "Reimbursement wallet address"
+  },
+  "shieldClaimReimbursementWalletAddressHelpText": {
+    "message": "Please ensure this is not a compromised wallet."
+  },
+  "shieldClaimSubmit": {
+    "message": "Submit claim"
+  },
   "shieldEntryModalAssetCoverage": {
     "message": "$10,000 asset coverage per transaction"
   },
