@@ -3,12 +3,14 @@ import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type Hex,
+  isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { isEqual } from 'lodash';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -52,9 +54,7 @@ import {
   getIsSwapsChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedInternalAccount,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -75,10 +75,11 @@ import {
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { AssetMarketDetails } from './asset-market-details';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 // A page representing a native or token asset
 const AssetPage = ({
@@ -90,7 +91,6 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const history = useHistory();
-  const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
@@ -99,6 +99,12 @@ const AssetPage = ({
     getIsMultichainAccountsState2Enabled,
   );
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const caipChainId = isCaipChainId(asset.chainId)
+    ? asset.chainId
+    : formatChainIdToCaip(asset.chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  ) as InternalAccount;
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -113,12 +119,11 @@ const AssetPage = ({
     getIsBridgeChain(state, chainId),
   );
 
-  const account = useSelector(getSelectedInternalAccount, isEqual);
   const isSigningEnabled =
-    account.methods.includes(EthMethod.SignTransaction) ||
-    account.methods.includes(EthMethod.SignUserOperation) ||
-    account.methods.includes(SolMethod.SignTransaction) ||
-    account.methods.includes(BtcMethod.SignPsbt);
+    selectedAccount.methods.includes(EthMethod.SignTransaction) ||
+    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
+    selectedAccount.methods.includes(SolMethod.SignTransaction) ||
+    selectedAccount.methods.includes(BtcMethod.SignPsbt);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -135,7 +140,7 @@ const AssetPage = ({
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
 
   const selectedAccountTokenBalancesAcrossChains =
-    tokenBalances[selectedAccount.address];
+    tokenBalances[selectedAccount.address as Hex];
 
   const multiChainAssets = useMultiChainAssets();
   const mutichainTokenWithFiatAmount = multiChainAssets
@@ -249,10 +254,15 @@ const AssetPage = ({
         metaMetricsId,
         isMetaMetricsEnabled,
         isMarketingEnabled,
-        account.address,
+        selectedAccount.address,
         'spending-caps',
       ),
-    [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
+    [
+      selectedAccount.address,
+      isMarketingEnabled,
+      isMetaMetricsEnabled,
+      metaMetricsId,
+    ],
   );
 
   const networkConfigurationsByChainId = useSelector(
@@ -334,7 +344,7 @@ const AssetPage = ({
         {type === AssetType.native ? (
           <CoinButtons
             {...{
-              account,
+              account: selectedAccount,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
@@ -344,7 +354,7 @@ const AssetPage = ({
             }}
           />
         ) : (
-          <TokenButtons token={asset} />
+          <TokenButtons token={asset} account={selectedAccount} />
         )}
       </Box>
       <Box
@@ -363,7 +373,7 @@ const AssetPage = ({
         {[AssetType.token, AssetType.native].includes(type) && (
           <TokenCell
             key={`${symbol}-${address}`}
-            token={tokenWithFiatAmount}
+            token={tokenWithFiatAmount as TokenWithFiatAmount}
             disableHover={true}
             safeChains={safeChains}
           />

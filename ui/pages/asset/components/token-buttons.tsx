@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
-import { isEqual } from 'lodash';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { I18nContext } from '../../../contexts/i18n';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -17,8 +17,8 @@ import {
   getIsBridgeChain,
   getCurrentKeyring,
   getNetworkConfigurationIdByChainId,
-  getSelectedInternalAccount,
   getSelectedMultichainNetworkConfiguration,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
@@ -60,8 +60,10 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 const TokenButtons = ({
   token,
+  account,
 }: {
   token: Asset & { type: AssetType.token };
+  account: InternalAccount;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -71,24 +73,34 @@ const TokenButtons = ({
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   const isEvm = isEvmChainId(token.chainId);
-
-  const account = useSelector(getSelectedInternalAccount, isEqual);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const { chainId: multichainChainId } = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
 
-  const currentChainId = useSelector(getCurrentChainId);
+  const currentEvmChainId = useSelector(getCurrentChainId);
+
+  const currentChainId = (() => {
+    if (isMultichainAccountsState2Enabled) {
+      return token.chainId;
+    }
+
+    return isEvm ? currentEvmChainId : multichainChainId;
+  })();
+
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
   >;
   const isSwapsChain = useSelector((state) =>
-    getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
+    getIsSwapsChain(state, currentChainId),
   );
 
   const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, isEvm ? currentChainId : multichainChainId),
+    getIsBridgeChain(state, currentChainId),
   );
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
@@ -99,7 +111,7 @@ const TokenButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const isUnifiedUIEnabled = useSelector((state) =>
-    getIsUnifiedUIEnabled(state, isEvm ? currentChainId : multichainChainId),
+    getIsUnifiedUIEnabled(state, currentChainId),
   );
 
   useEffect(() => {
@@ -113,19 +125,20 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  // TODO BIP 44: How is this going to work with BIP44 given that there is no selected chain?
+  // TODO BIP 44 Refactor: Remove this code
   const setCorrectChain = useCallback(async () => {
     // If we aren't presently on the chain of the asset, change to it
     if (
-      currentChainId !== token.chainId &&
-      multichainChainId !== token.chainId
+      currentEvmChainId !== token.chainId &&
+      multichainChainId !== token.chainId &&
+      !isMultichainAccountsState2Enabled
     ) {
       try {
         const networkConfigurationId = networks[token.chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
       } catch (err) {
         console.error(`Failed to switch chains.
-        Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
+        Target chainId: ${token.chainId}, Current chainId: ${currentEvmChainId}.
         ${
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -134,7 +147,14 @@ const TokenButtons = ({
         throw err;
       }
     }
-  }, [currentChainId, multichainChainId, networks, token.chainId, dispatch]);
+  }, [
+    isMultichainAccountsState2Enabled,
+    currentEvmChainId,
+    multichainChainId,
+    networks,
+    token.chainId,
+    dispatch,
+  ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
@@ -253,7 +273,7 @@ const TokenButtons = ({
         text: 'Swap',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: currentChainId,
+        chain_id: currentEvmChainId,
       },
     });
     dispatch(
@@ -275,7 +295,7 @@ const TokenButtons = ({
       history.push(PREPARE_SWAP_ROUTE);
     }
   }, [
-    currentChainId,
+    currentEvmChainId,
     trackEvent,
     dispatch,
     history,
