@@ -74,8 +74,7 @@ export const useMaxValueRefresher = () => {
   useEffect(() => {
     if (
       !isMaxValueMode ||
-      (transactionMeta.type !== TransactionType.simpleSend &&
-        transactionMeta.type !== TransactionType.tokenMethodTransfer)
+      transactionMeta.type !== TransactionType.simpleSend
     ) {
       return;
     }
