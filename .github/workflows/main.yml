@@ -418,12 +418,27 @@ jobs:
       - build-test-webpack
       - run-tests
       - needs-e2e
-      - e2e-chrome
-      - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
       - build-lavamoat-viz
+    outputs:
+      PASSED: ${{ steps.set-output.outputs.PASSED }}
+    steps:
+      - name: Set PASSED output
+        id: set-output
+        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
+
+  # All jobs including E2E (only when E2E tests actually ran)
+  all-e2e-jobs-completed:
+    name: All E2E jobs completed
+    runs-on: ubuntu-latest
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
+    needs:
+      - all-jobs-completed
+      - needs-e2e
+      - e2e-chrome
+      - e2e-firefox
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
@@ -437,12 +452,15 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - all-jobs-completed
+      - all-e2e-jobs-completed
+      - needs-e2e
     steps:
       - name: Check that all jobs have passed
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
-            exit 1
+          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
+            [[ "${{ needs.all-e2e-jobs-completed.outputs.PASSED }}" == "true" ]] || exit 1
+          else
+            [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" == "true" ]] || exit 1
           fi
 
   log-merge-group-failure:

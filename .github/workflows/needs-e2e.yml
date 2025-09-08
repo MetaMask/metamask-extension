@@ -73,9 +73,9 @@ jobs:
             if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]] || [[ "${{ steps.skip-label.outputs.SKIP }}" == "true" ]]; then
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
               if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]]; then
-                echo "-> Skipping E2E tests due to [skip e2e] tag on last commit message"
+                echo "-> Skipping E2E tests due to [skip-e2e] tag on last commit message"
               else
-                echo "-> Skipping E2E tests due to 'skip e2e' label on PR"
+                echo "-> Skipping E2E tests due to 'skip-e2e' label on PR"
               fi
 
             # Skip if no files requiring E2E were changed
