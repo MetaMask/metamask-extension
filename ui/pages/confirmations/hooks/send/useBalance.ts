@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { getMultichainBalances } from '../../../../selectors/multichain';
 import { getTokenBalances } from '../../../../ducks/metamask/metamask';
 import { Asset } from '../../types/send';
 import {
@@ -26,6 +27,7 @@ type GetEvmBalanceArgs = {
   asset?: Asset;
   from: string;
   isEvmSendType?: boolean;
+  multichainBalances: Record<Hex, Record<string, { amount: string }>>;
   tokenBalances: TokenBalances;
 };
 
@@ -34,6 +36,7 @@ const getBalance = ({
   asset,
   from,
   isEvmSendType,
+  multichainBalances,
   tokenBalances,
 }: GetEvmBalanceArgs) => {
   if (!asset) {
@@ -88,6 +91,19 @@ const getBalance = ({
     };
   }
 
+  const assetId = asset.assetId ?? asset.address;
+  if (assetId && multichainBalances) {
+    const assetBalance =
+      Object.values(multichainBalances)?.[0]?.[assetId]?.amount;
+    if (assetBalance) {
+      return {
+        balance: formatToFixedDecimals(assetBalance, asset.decimals),
+        decimals: asset.decimals,
+        rawBalanceNumeric: new Numeric(assetBalance, 10),
+      };
+    }
+  }
+
   return { balance: '0', decimals: 0, rawBalanceNumeric: new Numeric('0', 10) };
 };
 
@@ -95,6 +111,7 @@ export const useBalance = () => {
   const { asset, chainId, from } = useSendContext();
   const tokenBalances = useSelector(getTokenBalances);
   const { isEvmSendType } = useSendType();
+  const multichainBalances = useSelector(getMultichainBalances);
   const accountsByChainId = useSelector(
     (state: MetamaskSendState) => state.metamask.accountsByChainId,
   ) as AccountWithBalances;
@@ -119,9 +136,17 @@ export const useBalance = () => {
       asset,
       from,
       isEvmSendType,
+      multichainBalances,
       tokenBalances,
     });
-  }, [accountsWithBalances, asset, from, isEvmSendType, tokenBalances]);
+  }, [
+    accountsWithBalances,
+    asset,
+    from,
+    isEvmSendType,
+    multichainBalances,
+    tokenBalances,
+  ]);
 
   return {
     balance,

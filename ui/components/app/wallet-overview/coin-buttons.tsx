@@ -265,7 +265,7 @@ const CoinButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
+    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;

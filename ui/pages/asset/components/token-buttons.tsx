@@ -191,7 +191,10 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      navigateToSendRoute(history, { address: token.address });
+      navigateToSendRoute(history, {
+        address: token.address,
+        chainId: token.chainId,
+      });
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
