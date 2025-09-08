@@ -41,7 +41,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
         await testDapp.openTestDappPage();
 
         // Create Token
-        await testDapp.findAndClickCreateToken();
+        await testDapp.clickCreateToken();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
