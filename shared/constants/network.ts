@@ -355,11 +355,12 @@ export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
 
+// If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
+// so we need to look at process.env.INFURA_PROJECT_ID instead.
 export const infuraProjectId =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: yarn test:api-specs-multichain complains "Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature"
-  globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS ??
-  process.env.INFURA_PROJECT_ID;
+  globalThis.INFURA_PROJECT_ID ?? process.env.INFURA_PROJECT_ID;
 
 export const getRpcUrl = ({
   network,

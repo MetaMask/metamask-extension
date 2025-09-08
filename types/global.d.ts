@@ -300,7 +300,7 @@ export declare global {
 
   var browser: Browser;
 
-  var INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS: string | undefined;
+  var INFURA_PROJECT_ID: string | undefined;
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
