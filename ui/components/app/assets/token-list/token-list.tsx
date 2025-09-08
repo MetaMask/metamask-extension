@@ -94,6 +94,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
+        // TODO: This condition needs to be removed when changes to network selector are merged
+        // Until then, it is the only way to display non-evm assets
         const singleNetworkAndNonEvm =
           Object.entries(networksToShow).length === 1 &&
           !chainId.startsWith('0x');
@@ -110,6 +112,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           return [];
         }
 
+        // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets.map((asset) => {
           const token: TokenWithFiatAmount = {
             ...asset,
