@@ -398,6 +398,7 @@ env:
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'false'
+
   # URL of Shield gateway
   - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
   # URL of Shield rule engine

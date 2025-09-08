@@ -9,6 +9,7 @@ import {
   IconName,
   Text,
   TextField,
+  TextFieldSize,
 } from '../../../../../components/component-library';
 import {
   BlockSize,
@@ -92,6 +93,7 @@ export const Amount = () => {
 
   const isERC1155 = asset?.standard === ERC1155;
   const isERC721 = asset?.standard === ERC721;
+  const isTokenTransfer = asset && !isERC1155 && !isERC721;
 
   if (isERC721) {
     return null;
@@ -99,7 +101,9 @@ export const Amount = () => {
 
   return (
     <Box marginTop={4}>
-      <Text variant={TextVariant.bodyMd}>{t('amount')}</Text>
+      <Text variant={TextVariant.bodyMd} paddingBottom={1}>
+        {t('amount')}
+      </Text>
       <TextField
         error={Boolean(amountError)}
         onChange={onChange}
@@ -108,7 +112,7 @@ export const Amount = () => {
         value={amount}
         endAccessory={
           <div>
-            {!isERC1155 && (
+            {isTokenTransfer && (
               <ButtonIcon
                 ariaLabel="toggle fiat mode"
                 iconName={IconName.SwapVertical}
@@ -120,6 +124,7 @@ export const Amount = () => {
           </div>
         }
         width={BlockSize.Full}
+        size={TextFieldSize.Lg}
       />
       <Box
         display={Display.Flex}
@@ -132,13 +137,13 @@ export const Amount = () => {
           }
           variant={TextVariant.bodySm}
         >
-          {amountError || `~${alternateDisplayValue}`}
+          {isTokenTransfer ? amountError || `~${alternateDisplayValue}` : ''}
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
             {balance} {asset?.symbol} {t('available')}
           </Text>
-          {!isERC1155 && !isNonEvmNativeSendType && (
+          {!isNonEvmNativeSendType && (
             <ButtonLink
               marginLeft={1}
               onClick={updateToMax}
