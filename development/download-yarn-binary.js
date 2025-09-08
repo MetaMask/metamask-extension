@@ -17,9 +17,10 @@
 const fs = require('fs').promises;
 const path = require('path');
 const https = require('https');
-const crypto = require('crypto');
+const nodeCrypto = require('crypto');
 const { createWriteStream, existsSync } = require('fs');
 const { pipeline } = require('stream/promises');
+const { execSync } = require('child_process');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
@@ -88,19 +89,20 @@ async function downloadFile(url, filePath) {
         if (response.statusCode === 302 || response.statusCode === 301) {
           // Handle redirect
           file.close();
-          return downloadFile(response.headers.location, filePath)
+          downloadFile(response.headers.location, filePath)
             .then(resolve)
             .catch(reject);
         }
 
         if (response.statusCode !== 200) {
           file.close();
-          return reject(
+          reject(
             new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`),
           );
+          return;
         }
 
-        pipeline(response, file)
+        return pipeline(response, file)
           .then(() => resolve())
           .catch(reject);
       })
@@ -118,7 +120,7 @@ async function downloadFile(url, filePath) {
  * @param algorithm
  */
 async function calculateChecksum(filePath, algorithm = 'sha256') {
-  const hash = crypto.createHash(algorithm);
+  const hash = nodeCrypto.createHash(algorithm);
   const data = await fs.readFile(filePath);
   hash.update(data);
   return hash.digest('hex');
@@ -165,15 +167,16 @@ async function fetchUrlData(url) {
       .get(url, (response) => {
         if (response.statusCode === 302 || response.statusCode === 301) {
           // Handle redirect
-          return fetchUrlData(response.headers.location)
+          fetchUrlData(response.headers.location)
             .then(resolve)
             .catch(reject);
         }
 
         if (response.statusCode !== 200) {
-          return reject(
+          reject(
             new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`),
           );
+          return;
         }
 
         let data = '';
@@ -200,7 +203,7 @@ async function fetchOfficialChecksums(version) {
       // Try to get PGP signature first (most secure)
       const data = await fetchUrlData(checksumsUrl);
       // Extract SHA-256 from PGP signature if available
-      const sha256Match = data.match(/SHA-?256[:\s]+([a-f0-9]{64})/i);
+      const sha256Match = data.match(/SHA-?256[:\s]+([a-f0-9]{64})/iu);
       if (sha256Match) {
         return { sha256: sha256Match[1], source: 'pgp' };
       }
@@ -213,7 +216,7 @@ async function fetchOfficialChecksums(version) {
 
     try {
       const data = await fetchUrlData(checksumUrl);
-      const checksum = data.trim().split(/\s+/)[0];
+      const checksum = data.trim().split(/\s+/u)[0];
       return { sha256: checksum, source: 'checksums' };
     } catch (error) {
       console.warn(`Warning: Could not fetch checksums file: ${error.message}`);
@@ -283,10 +286,10 @@ async function fetchOfficialChecksums(version) {
           const trimmedLine = line.trim();
 
           // Look for a 64-character hex string (SHA-256)
-          const sha256Match = trimmedLine.match(/([a-f0-9]{64})/i);
+          const sha256Match = trimmedLine.match(/([a-f0-9]{64})/iu);
           if (sha256Match) {
             // Verify it's for the right file or if no filename is specified, use it
-            const parts = trimmedLine.split(/\s+/);
+            const parts = trimmedLine.split(/\s+/u);
             if (
               parts.length === 1 || // Just checksum
               parts[1]?.includes('yarn.js') || // Contains yarn.js
@@ -381,7 +384,15 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
 
   // Load existing config (unless --no-config is specified)
   let config = { versions: {}, current: null, lastUpdated: null };
-  if (!noConfig) {
+  if (noConfig) {
+    // With --no-config, only check if binary file exists
+    if (!force && existsSync(binaryPath)) {
+      console.log(
+        `✓ Yarn v${version} binary already exists. Use --force to re-download.`,
+      );
+      return config;
+    }
+  } else {
     config = await loadYarnConfig();
 
     // Check if version already exists
@@ -398,14 +409,6 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
         );
         return config;
       }
-    }
-  } else {
-    // With --no-config, only check if binary file exists
-    if (!force && existsSync(binaryPath)) {
-      console.log(
-        `✓ Yarn v${version} binary already exists. Use --force to re-download.`,
-      );
-      return config;
     }
   }
 
@@ -490,7 +493,6 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
 
   if (versionInfo.repository === 'classic') {
     // Yarn v1 uses tar.gz format - extract it
-    const { execSync } = require('child_process');
     try {
       execSync(
         `tar -xzf "${binaryPath}" -C "${versionDir}" --strip-components=1`,
@@ -530,7 +532,9 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
   }
 
   // Update configuration with relative paths for portability (unless --no-config)
-  if (!noConfig) {
+  if (noConfig) {
+    console.log(`ℹ️  Skipping configuration file (--no-config specified)`);
+  } else {
     const relativeBinaryPath = path.relative(process.cwd(), binaryPath);
     const relativeExtractedPath = path.relative(process.cwd(), versionDir);
 
@@ -548,8 +552,6 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
     config.lastUpdated = new Date().toISOString();
 
     await saveYarnConfig(config);
-  } else {
-    console.log(`ℹ️  Skipping configuration file (--no-config specified)`);
   }
 
   console.log(`🎉 Successfully downloaded and verified yarn v${version}!`);
