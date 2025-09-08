@@ -2194,10 +2194,7 @@ export default class MetamaskController extends EventEmitter {
       processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
         ? forwardRequestToSnap.bind(null, {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.controllerMessenger.call.bind(
-              this.controllerMessenger,
-              'SnapController:handleRequest',
-            ),
+            handleRequest: this.handleSnapRequest.bind(this),
           })
         : undefined,
     });

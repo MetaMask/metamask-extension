@@ -1,8 +1,7 @@
 import type { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import { HandlerType } from '@metamask/snaps-utils';
-import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapController } from '@metamask/snaps-controllers';
-import type { SnapId } from '@metamask/snaps-sdk';
+import { InternalError, type SnapId } from '@metamask/snaps-sdk';
 
 /**
  * Forwards a JSON-RPC request to a specified Snap by invoking its `handleRequest` method.
@@ -30,11 +29,11 @@ export async function forwardRequestToSnap(
   const { handleRequest, snapId } = config;
 
   if (!snapId) {
-    throw new JsonRpcError(500, `No snapId configured for method ${method}`);
+    throw new InternalError(`No snapId configured for method ${method}`);
   }
 
   if (!origin) {
-    throw new JsonRpcError(500, `No origin specified for method ${method}`);
+    throw new InternalError(`No origin specified for method ${method}`);
   }
 
   const response = (await handleRequest({
