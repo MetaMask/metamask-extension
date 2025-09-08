@@ -38,6 +38,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -65,6 +66,7 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE]: 'shieldClaimsListTitle',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 

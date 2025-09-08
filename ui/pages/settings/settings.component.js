@@ -31,6 +31,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -71,6 +72,7 @@ import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
 import { TransactionShield } from './transaction-shield-tab';
+import ClaimsList from './transaction-shield-tab/claims-list';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -527,6 +529,10 @@ class SettingsPage extends PureComponent {
         <Route
           path={TRANSACTION_SHIELD_ROUTE}
           element={<TransactionShield />}
+        />
+        <Route
+          path={TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE}
+          element={<ClaimsList />}
         />
         <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||

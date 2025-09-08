@@ -1206,6 +1206,9 @@
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "completed": {
+    "message": "Completed"
+  },
   "concentratedSupplyDistributionDescription": {
     "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
   },
@@ -5505,6 +5508,15 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
+  },
+  "shieldClaimsHistoryTitle": {
+    "message": "CLAIM HISTORY"
+  },
+  "shieldClaimsListTitle": {
+    "message": "Claim details"
+  },
+  "shieldClaimsPendingTitle": {
+    "message": "PENDING CLAIMS"
   },
   "shieldEntryModalAssetCoverage": {
     "message": "$10,000 asset coverage per transaction"
