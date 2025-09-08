@@ -3869,14 +3869,6 @@ export default class MetamaskController extends EventEmitter {
       changePassword: this.changePassword.bind(this),
 
       // GatorPermissionsController
-      enableGatorPermissions:
-        gatorPermissionsController.enableGatorPermissions.bind(
-          gatorPermissionsController,
-        ),
-      disableGatorPermissions:
-        gatorPermissionsController.disableGatorPermissions.bind(
-          gatorPermissionsController,
-        ),
       fetchAndUpdateGatorPermissions:
         gatorPermissionsController.fetchAndUpdateGatorPermissions.bind(
           gatorPermissionsController,
