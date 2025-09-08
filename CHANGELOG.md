@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.2.1]
+### Fixed
+- fix: update the Solana snap to latest version (#35642)
+
 ## [13.2.0]
 ### Added
 - feat: enable Linea for Smart Transactions (#35117)
@@ -484,7 +488,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.1...HEAD
+[13.2.1]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...v13.2.1
 [13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.2...v13.2.0
 [13.1.2]: https://github.com/MetaMask/metamask-extension/compare/v13.1.1...v13.1.2
 [13.1.1]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.1.1

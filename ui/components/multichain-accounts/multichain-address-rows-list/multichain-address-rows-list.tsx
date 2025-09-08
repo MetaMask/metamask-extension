@@ -26,10 +26,19 @@ export type MultichainAddressRowsListProps = {
    * The account group ID.
    */
   groupId: AccountGroupId;
+  /**
+   * Callback for when QR code button is clicked
+   */
+  onQrClick: (
+    address: string,
+    networkName: string,
+    networkImageSrc?: string,
+  ) => void;
 };
 
 export const MultichainAddressRowsList = ({
   groupId,
+  onQrClick,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
@@ -71,9 +80,10 @@ export const MultichainAddressRowsList = ({
         chainId={item.scope}
         networkName={item.networkName}
         address={item.account.address}
+        onQrClick={onQrClick}
       />
     ));
-  }, [filteredItems]);
+  }, [filteredItems, onQrClick]);
 
   return (
     <Box

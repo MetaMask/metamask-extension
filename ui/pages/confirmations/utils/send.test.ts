@@ -16,6 +16,7 @@ import {
   convertedCurrency,
   navigateToSendRoute,
   getLayer1GasFees,
+  trimTrailingZeros,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -27,6 +28,15 @@ jest.mock('../../../store/actions', () => {
 });
 
 describe('Send - utils', () => {
+  describe('trimTrailingZeros', () => {
+    it('removes trailing zeros', async () => {
+      expect(trimTrailingZeros('0.001')).toBe('0.001');
+      expect(trimTrailingZeros('0.00')).toBe('0');
+      expect(trimTrailingZeros('0.001000')).toBe('0.001');
+      expect(trimTrailingZeros('5.')).toBe('5');
+    });
+  });
+
   describe('fromTokenMinimalUnit', () => {
     it('return hex for the value with decimals multiplied', async () => {
       expect(fromTokenMinimalUnits('0xA', 18)).toBe('0x8ac7230489e80000');
