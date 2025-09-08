@@ -66,6 +66,7 @@ exports[`ConnectPage should render correctly 1`] = `
       </div>
       <div
         class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        style="overflow: auto;"
       >
         <div
           class="mm-box tabs mm-box--justify-content-center mm-box--background-color-transparent"
@@ -407,6 +408,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
       </div>
       <div
         class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        style="overflow: auto;"
       >
         <div
           class="mm-box tabs mm-box--justify-content-center mm-box--background-color-transparent"
