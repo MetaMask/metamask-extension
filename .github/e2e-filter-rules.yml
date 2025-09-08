@@ -27,7 +27,7 @@ files-e2e-required:
   - '.github/workflows/main.yml'
   - '.github/workflows/run-build.yml'
   # - '.github/workflows/needs-e2e.yml'
-  - '.github/e2e-filter-rules.yml'
+  # - '.github/e2e-filter-rules.yml'
   - '.github/workflows/e2e-chrome.yml'
   - '.github/workflows/e2e-firefox.yml'
   - '.github/workflows/run-e2e.yml'

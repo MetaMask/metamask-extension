@@ -1,6 +1,6 @@
 <!--
 Please submit this PR as a draft initially.
-Do not mark it as "Ready for review" until the template has been completely filled out, and PR status checks have passed at least once.
+Do not mark it as "Ready for review" until the template has been completely filled out, and PR status checks have passed at least once...
 -->
 
 ## **Description**
