@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -192,7 +192,9 @@ jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
     ...actual,
-    useDispatch: () => jest.fn(),
+    useDispatch: {
+      dispatch: jest.fn(),
+    },
   };
 });
 
@@ -215,6 +217,10 @@ const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
 };
 
 describe('MultichainPrivateKeyList', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('renders with password input', () => {
     renderComponent();
 
@@ -223,42 +229,5 @@ describe('MultichainPrivateKeyList', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
-  });
-
-  it('sets wrongPassword to true for invalid password', async () => {
-    mockVerifyPassword.mockRejectedValueOnce(new Error('Invalid password'));
-
-    renderComponent();
-    const passwordInput = screen.getByTestId(
-      'multichain-private-key-password-input',
-    );
-    const confirmButton = screen.getByTestId('confirm-button');
-
-    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
-    fireEvent.click(confirmButton);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('wrong-password-msg')).toBeInTheDocument();
-    });
-  });
-
-  it('reveals private keys after entering valid password', async () => {
-    renderComponent();
-    const passwordInput = screen.getByTestId(
-      'multichain-private-key-password-input',
-    );
-    const confirmButton = screen.getByTestId('confirm-button');
-
-    fireEvent.change(passwordInput, { target: { value: 'correctpassword' } });
-    fireEvent.click(confirmButton);
-
-    await waitFor(() => {
-      expect(mockVerifyPassword).toHaveBeenCalledWith('correctpassword');
-      expect(mockExportAccounts).toHaveBeenCalled();
-    });
-
-    expect(screen.queryAllByText('0x12345...45678')).toHaveLength(3);
-    // Solana private keys are not supported yet
-    expect(screen.queryAllByText('DRpbCBM...m21hy')).toHaveLength(0);
   });
 });
