@@ -358,7 +358,7 @@ describe('TransactionList', () => {
             blockExplorerUrls: [],
             chainId: '0xe708',
             defaultRpcEndpointIndex: 0,
-            name: 'Linea Mainnet',
+            name: 'Linea',
             nativeCurrency: 'ETH',
             rpcEndpoints: [
               {
@@ -385,9 +385,7 @@ describe('TransactionList', () => {
       store,
     );
     expect(
-      queryByText(
-        'Please switch to Linea Mainnet network to view transactions',
-      ),
+      queryByText('Please switch to Linea network to view transactions'),
     ).toBeNull();
   });
 

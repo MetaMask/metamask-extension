@@ -37,7 +37,7 @@ describe('Bridge tests', function (this: Suite) {
           2,
         );
 
-        // Switch to Linea Mainnet to set it as the selected network
+        // Switch to Linea to set it as the selected network
         // in the network-controller
         await switchToNetworkFromSendFlow(driver, 'Linea');
 

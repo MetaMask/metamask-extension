@@ -6,7 +6,7 @@ Step,Test steps,Preconditions,Test data,Expected result,Notes
 5,Switch back to the tokens list.,,,A prompt is shown to Import tokens found in the account.,Note that token detection takes place on Ethereum Mainnet regardless of whether this setting is on or off.
 6,Proceed to Import tokens.,,,,
 7,Select the tokens to import or import all.,,,The tokens list is updated with all imported tokens.,
-8,Switch to a network other than Ethereum Mainnet.,,e.g.: BNB Smart Chain,,"Note that token autodetection is currently available on: Ethereum Mainnet, Avalanche, BNB Smart Chain, Polygon and Linea Mainnet."
+8,Switch to a network other than Ethereum Mainnet.,,e.g.: BNB Smart Chain,,"Note that token autodetection is currently available on: Ethereum Mainnet, Avalanche, BNB Smart Chain, Polygon and Linea."
 9,Go to the Tokens list.,Make sure the autodetect tokens toggle is OFF in Settings.,,No prompt to Import tokens is shown.,
 10,Proceed to Privacy & Security Settings.,,,,
 11,Search for Token autodetection.,,,,

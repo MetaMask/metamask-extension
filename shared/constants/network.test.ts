@@ -19,7 +19,7 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.AVALANCHE]).toBe('Avalanche');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BSC]).toBe('BNB Chain');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]).toBe('Ethereum Mainnet');
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea Mainnet');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
   });
@@ -33,7 +33,7 @@ describe('NetworkConstants', () => {
         Polygon: CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         Base: CHAIN_IDS.BASE,
-        'Linea Mainnet': CHAIN_IDS.LINEA_MAINNET,
+        Linea: CHAIN_IDS.LINEA_MAINNET,
         'Sei Mainnet': CHAIN_IDS.SEI,
       };
 
