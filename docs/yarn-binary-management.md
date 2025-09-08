@@ -250,7 +250,6 @@ metamask-extension/
 5. Check official yarn releases for updated checksums
 6. Consider using a different version temporarily
 
-
 ### Debug Information
 
 To debug issues with the yarn binary management:
@@ -280,6 +279,7 @@ cat tools/yarn/yarn-config.json
 - ✅ **Yarn Berry support**: Proper handling of Berry'di different distribution model
 
 ### CI/CD Optimizations
+
 - ✅ **Portable paths**: Config files now use relative paths for cross-platform compatibility
 - ✅ **No-config mode**: `--no-config=true` option for lightweight CI/CD usage
 - ✅ **Backward compatibility**: Existing absolute paths still work
