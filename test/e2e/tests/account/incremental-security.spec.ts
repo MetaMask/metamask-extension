@@ -44,8 +44,6 @@ describe('Incremental Security', function (this: Suite) {
 
         // agree to terms of use and start onboarding
         const startOnboardingPage = new StartOnboardingPage(driver);
-        // await startOnboardingPage.checkBannerPageIsLoaded();
-        // await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 

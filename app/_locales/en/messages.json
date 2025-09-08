@@ -4156,10 +4156,7 @@
     "message": "I have an existing wallet"
   },
   "onboardingLoginFooter": {
-    "message": "By continuing, I agree to MetaMask’s"
-  },
-  "onboardingLoginFooterAnd": {
-    "message": "and"
+    "message": "By continuing, I agree to MetaMask’s $1 and $2"
   },
   "onboardingLoginFooterPrivacyNotice": {
     "message": "Privacy notice."

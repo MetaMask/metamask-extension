@@ -181,30 +181,32 @@ export default function LoginOptions({
             width={BlockSize.Full}
             margin={'auto'}
           >
-            {t('onboardingLoginFooter')}{' '}
-            <Text
-              as="a"
-              href="https://consensys.io/terms-of-use"
-              target="_blank"
-              rel="noopener noreferrer"
-              variant={TextVariant.bodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.primaryDefault}
-            >
-              {t('onboardingLoginFooterTermsOfUse')}
-            </Text>{' '}
-            {t('onboardingLoginFooterAnd')}{' '}
-            <Text
-              as="a"
-              variant={TextVariant.bodySm}
-              fontWeight={FontWeight.Medium}
-              href="https://consensys.io/privacy-notice"
-              target="_blank"
-              rel="noopener noreferrer"
-              color={TextColor.primaryDefault}
-            >
-              {t('onboardingLoginFooterPrivacyNotice')}
-            </Text>
+            {t('onboardingLoginFooter', [
+              <Text
+                as="a"
+                href="https://consensys.io/terms-of-use"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant={TextVariant.bodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.primaryDefault}
+                key="onboardingLoginFooterTermsOfUse"
+              >
+                {t('onboardingLoginFooterTermsOfUse')}
+              </Text>,
+              <Text
+                as="a"
+                variant={TextVariant.bodySm}
+                fontWeight={FontWeight.Medium}
+                href="https://consensys.io/privacy-notice"
+                target="_blank"
+                rel="noopener noreferrer"
+                color={TextColor.primaryDefault}
+                key="onboardingLoginFooterPrivacyNotice"
+              >
+                {t('onboardingLoginFooterPrivacyNotice')}
+              </Text>,
+            ])}
           </Text>
         </Box>
       </ModalContent>

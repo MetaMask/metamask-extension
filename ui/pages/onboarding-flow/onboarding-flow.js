@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import {
   Routes as Switch,
   Route,
@@ -114,7 +114,10 @@ export default function OnboardingFlow() {
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
-  const [welcomePageState, setWelcomePageState] = useState(false);
+  const isWelcomePage = useMemo(
+    () => pathname === ONBOARDING_WELCOME_ROUTE,
+    [pathname],
+  );
 
   useEffect(() => {
     setOnboardingDate();
@@ -147,12 +150,6 @@ export default function OnboardingFlow() {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE, {
         replace: true,
       });
-    }
-
-    if (pathname === ONBOARDING_WELCOME_ROUTE) {
-      setWelcomePageState(true);
-    } else {
-      setWelcomePageState(false);
     }
   }, [
     isUnlocked,
@@ -248,10 +245,10 @@ export default function OnboardingFlow() {
       }
       justifyContent={JustifyContent.flexStart}
       className={classnames('onboarding-flow', {
-        'onboarding-flow--welcome-login': welcomePageState,
+        'onboarding-flow--welcome-login': isWelcomePage,
       })}
     >
-      {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
+      {!isPopup && <OnboardingAppHeader isWelcomePage={isWelcomePage} />}
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
