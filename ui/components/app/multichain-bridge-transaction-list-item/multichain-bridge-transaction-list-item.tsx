@@ -161,7 +161,7 @@ const MultichainBridgeTransactionListItem: React.FC<
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Right}
             title="Primary Currency"
-            variant={TextVariant.bodyLgMedium}
+            variant={TextVariant.bodyMdMedium}
           >
             {(() => {
               if (sourceAsset?.fungible) {
