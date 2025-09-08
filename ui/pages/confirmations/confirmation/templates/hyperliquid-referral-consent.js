@@ -22,25 +22,6 @@ function getValues(pendingApproval, t, actions, _history) {
         },
         children: [
           {
-            element: 'Box',
-            key: 'hyperliquid-referral-icon',
-            props: {
-              display: Display.Flex,
-              alignItems: AlignItems.center,
-              justifyContent: JustifyContent.center,
-              paddingBottom: 4,
-            },
-            children: {
-              element: 'Text',
-              key: 'hyperliquid-referral-icon-text',
-              props: {
-                variant: TypographyVariant.H4,
-                color: TextColor.primaryDefault,
-              },
-              children: '🦊 MetaMask',
-            },
-          },
-          {
             element: 'Typography',
             key: 'hyperliquid-referral-title',
             props: {
@@ -135,6 +116,11 @@ function getValues(pendingApproval, t, actions, _history) {
               alignItems: AlignItems.flexStart,
               paddingTop: 4,
               paddingBottom: 4,
+              paddingLeft: 4,
+              paddingRight: 4,
+              backgroundColor: 'var(--color-background-section)',
+              borderRadius: '8px',
+              padding: '8px',
             },
             children: [
               {
@@ -152,10 +138,11 @@ function getValues(pendingApproval, t, actions, _history) {
                 },
               },
               {
-                element: 'Text',
+                element: 'Typography',
                 key: 'hyperliquid-referral-label',
                 props: {
-                  variant: TypographyVariant.H7,
+                  variant: TypographyVariant.H6,
+                  color: TextColor.textAlternative,
                   marginLeft: 1,
                   style: {
                     cursor: 'pointer',
@@ -174,32 +161,10 @@ function getValues(pendingApproval, t, actions, _history) {
               },
             ],
           },
-          {
-            element: 'Box',
-            key: 'hyperliquid-referral-info',
-            props: {
-              paddingTop: 2,
-              paddingBottom: 2,
-            },
-            children: {
-              element: 'Typography',
-              props: {
-                variant: TypographyVariant.H7,
-                color: TextColor.textAlternative,
-                style: {
-                  fontSize: '12px',
-                  fontStyle: 'italic',
-                },
-              },
-              children:
-                '• For the hyperliquid case, users will confirm using the code on the dapp side too.',
-            },
-          },
         ],
       },
     ],
     submitText: t('confirm'),
-    cancelText: t('cancel'),
     onSubmit: () => {
       const checkbox = document.getElementById('hyperliquid-referral-consent');
       const isChecked = checkbox
@@ -208,13 +173,6 @@ function getValues(pendingApproval, t, actions, _history) {
       actions.resolvePendingApproval(pendingApproval.id, {
         approved: isChecked,
         allAccounts: isChecked, // If approved, applies to all accounts
-        selectedAddress: pendingApproval.requestData?.selectedAddress,
-      });
-    },
-    onCancel: () => {
-      actions.resolvePendingApproval(pendingApproval.id, {
-        approved: false,
-        allAccounts: false,
         selectedAddress: pendingApproval.requestData?.selectedAddress,
       });
     },
