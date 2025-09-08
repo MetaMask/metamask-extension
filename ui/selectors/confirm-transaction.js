@@ -274,15 +274,6 @@ export function selectIsMaxValueEnabled(state, transactionId) {
   return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
 }
 
-export const selectMaxValue = createSelector(
-  selectTransactionFeeById,
-  selectTransactionAvailableBalance,
-  (transactionFee, balance) =>
-    balance && transactionFee.hexMaximumTransactionFee
-      ? subtractHexes(balance, transactionFee.hexMaximumTransactionFee)
-      : undefined,
-);
-
 const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
 
 export function selectMaxValueModeForTransaction(state, transactionId) {
