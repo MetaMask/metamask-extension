@@ -382,7 +382,7 @@ describe(`migration #${version}`, () => {
               ...oldState.data.NetworkController.networkConfigurationsByChainId[
                 '0x1'
               ],
-              name: 'Ethereum Mainnet',
+              name: 'Ethereum',
             },
             '0xe708': {
               ...oldState.data.NetworkController.networkConfigurationsByChainId[

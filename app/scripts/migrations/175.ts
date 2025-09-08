@@ -16,6 +16,11 @@ const CHAINS_TO_RENAME: {
   readonly toName: string;
 }[] = [
   {
+    id: '0x1',
+    fromName: 'Ethereum Mainnet',
+    toName: 'Ethereum',
+  },
+  {
     id: CHAIN_IDS.LINEA_MAINNET,
     fromName: 'Linea Mainnet',
     toName: 'Linea',
