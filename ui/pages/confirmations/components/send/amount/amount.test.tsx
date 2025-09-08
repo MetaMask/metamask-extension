@@ -1,6 +1,5 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/dom';
-import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
