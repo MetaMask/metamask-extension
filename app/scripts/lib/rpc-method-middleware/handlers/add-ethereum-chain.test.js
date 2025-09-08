@@ -13,7 +13,7 @@ const NON_INFURA_CHAIN_ID = '0x123456789';
 
 const createMockMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.MAINNET,
-  name: 'Ethereum Mainnet',
+  name: 'Ethereum',
   defaultRpcEndpointIndex: 0,
   rpcEndpoints: [
     {
@@ -214,7 +214,7 @@ describe('addEthereumChainHandler', () => {
           params: [
             {
               chainId: CHAIN_IDS.MAINNET,
-              chainName: 'Ethereum Mainnet',
+              chainName: 'Ethereum',
               rpcUrls: ['https://eth.llamarpc.com'],
               nativeCurrency: {
                 symbol: 'ETH',
@@ -232,7 +232,7 @@ describe('addEthereumChainHandler', () => {
             chainId: '0x1',
             defaultBlockExplorerUrlIndex: 0,
             defaultRpcEndpointIndex: 1,
-            name: 'Ethereum Mainnet',
+            name: 'Ethereum',
             nativeCurrency: 'ETH',
             rpcEndpoints: [
               {
@@ -241,7 +241,7 @@ describe('addEthereumChainHandler', () => {
                 url: 'https://mainnet.infura.io/v3/',
               },
               {
-                name: 'Ethereum Mainnet',
+                name: 'Ethereum',
                 type: 'custom',
                 url: 'https://eth.llamarpc.com',
               },
@@ -332,7 +332,7 @@ describe('addEthereumChainHandler', () => {
       params: [
         {
           chainId: CHAIN_IDS.MAINNET,
-          chainName: 'Ethereum Mainnet',
+          chainName: 'Ethereum',
           rpcUrls: ['https://mainnet.infura.io/v3/'],
           nativeCurrency: {
             symbol: 'WRONG',

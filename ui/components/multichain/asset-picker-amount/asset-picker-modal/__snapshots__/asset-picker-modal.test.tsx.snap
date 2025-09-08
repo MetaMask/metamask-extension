@@ -390,7 +390,7 @@ exports[`AssetPickerModal token filtering should render all tokens from single c
     "isTokenListLoading": false,
     "network": {
       "chainId": "0x1",
-      "name": "Ethereum Mainnet",
+      "name": "Ethereum",
     },
     "tokenList": [
       {

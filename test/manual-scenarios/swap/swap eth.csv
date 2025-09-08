@@ -1,9 +1,9 @@
 Step,Test steps,Preconditions,Test data,Expected result,Notes
 1,Open the extension.,,,The Welcome Back screen is shown.,
-2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.  ,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum.  ,
 3,Login to Tenderly. Go to Forks tab in the left menu.,"Have a tenderly account. (If not, sign up on https://tenderly.co for a free version)",,,
 4,"Click ""Fork a network"". Leave network field as default Mainnet, click ""Create"".",,,,
-5,"Click ""Add RPC to MetaMask"". Proceed to add new network and switch to new network on MetaMask Dialog screen.",,,The selected network is the fork of Ethereum Mainnet started in previous step.  The Ether balance is shown on the overview. The wallet address is shown on the overview. ,Take a note of the wallet address.
+5,"Click ""Add RPC to MetaMask"". Proceed to add new network and switch to new network on MetaMask Dialog screen.",,,The selected network is the fork of Ethereum started in previous step.  The Ether balance is shown on the overview. The wallet address is shown on the overview. ,Take a note of the wallet address.
 6,"Go back to Tenderly, click ""Fund Accounts"". Enter wallet address we copied in previous step and click ""Submit"".",,,Wait a bit and see the balance on MeteMask has been funded with more Ether.,
 7,Go to Settings. Make sure Smart Transactions in settings is set to OFF.,,,,
 8,"Click ""Swap"" button on MetaMask home screen.",,,"Swap screen is shown. Default swap from currency is ETH. Settings button is shown. Slippage tolerance section is displayed. User can choose between 2%, 3%  or enter a custom value.",

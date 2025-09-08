@@ -183,7 +183,7 @@ export const MultipleConnections = () => (
             '0xeeeF07C80ce267F3132cE7e6048B66E6E669365B': 'Staking Account',
           },
           networkIconUrl: ETH_TOKEN_IMAGE_URL,
-          networkName: 'Ethereum Mainnet',
+          networkName: 'Ethereum',
         }}
         onClick={() => console.log('Uniswap clicked')}
       />

@@ -83,7 +83,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
 
 const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
   {
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     chainId: '0x1' as Hex,
     caipChainId: 'eip155:1' as CaipChainId,
     blockExplorerUrls: ['https://etherscan.io'],

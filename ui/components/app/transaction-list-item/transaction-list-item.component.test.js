@@ -124,7 +124,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
   } else if (selector === getCurrentNetwork) {
-    return { nickname: 'Ethereum Mainnet' };
+    return { nickname: 'Ethereum' };
   } else if (selector === getPreferences) {
     return opts.preferences ?? {};
   } else if (selector === getShouldShowFiat) {

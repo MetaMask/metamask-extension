@@ -242,7 +242,7 @@ describe('Network Manager', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
             eip155: {
-              '0x1': true, // Start with only Ethereum Mainnet
+              '0x1': true, // Start with only Ethereum
             },
           })
           .build(),

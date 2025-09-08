@@ -8,4 +8,4 @@ Step,Test Steps,Test Data,Expected Result,Notes
 7,Proceed through the onboarding completion screens.,,,
 8,Dismiss the Whats new dialog.,,"The Ether balance is shown on the overview.
 The wallet address is shown on the overview.
-The selected network is Ethereum Mainnet.",
+The selected network is Ethereum.",

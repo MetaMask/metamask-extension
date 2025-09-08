@@ -66,7 +66,7 @@ describe('MultichainSiteCellTooltip', () => {
 
   const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
     {
-      name: 'Ethereum Mainnet',
+      name: 'Ethereum',
       chainId: '0x1',
       caipChainId: 'eip155:1' as CaipChainId,
       blockExplorerUrls: ['mock-mainnet-url'],

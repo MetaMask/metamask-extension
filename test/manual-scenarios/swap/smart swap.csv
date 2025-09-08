@@ -1,7 +1,7 @@
 Step,Test steps,Preconditions,Test data,Expected result,Notes
 1,Open the extension.,,,The Welcome Back screen is shown.,
-2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.  ,
-3,Keep the selected network as Ethereum Mainnet. ,Have funds on mainnet. (We can only test Smart Transactions with real money on Ethereum Mainnet) ,,,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum.  ,
+3,Keep the selected network as Ethereum. ,Have funds on mainnet. (We can only test Smart Transactions with real money on Ethereum) ,,,
 4,"Go to Settings, Advanced. Turn ON the Smart Transactions toggle.",The Smart Transactions toggle initially was set to OFF.,,,
 5,"Click ""Swap"" button on MetaMask home screen.",,,Swap screen is shown. Default swap from currency is ETH. Settings button is shown.,
 6,Click on Settings button.,,,"Slippage tolerance section is displayed. User can choose between 2%, 3%, or enter a custom value.",

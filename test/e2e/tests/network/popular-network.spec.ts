@@ -17,7 +17,7 @@ import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/n
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     chain: 'ETH',
     icon: 'ethereum',
     rpc: [

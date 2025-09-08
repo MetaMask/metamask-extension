@@ -161,7 +161,7 @@ describe('Bridge selectors', () => {
         chainId: '0x1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         rpcEndpoints: [
           {
             networkClientId: expect.anything(),

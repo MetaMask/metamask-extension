@@ -12,7 +12,7 @@ exports[`NetworkListItem renders correctly with required props 1`] = `
         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
       >
         <img
-          alt="Ethereum Mainnet logo"
+          alt="Ethereum logo"
           class="mm-avatar-network__network-image"
           src="./images/eth_logo.svg"
         />
@@ -26,7 +26,7 @@ exports[`NetworkListItem renders correctly with required props 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
           >
-            Ethereum Mainnet
+            Ethereum
           </p>
         </div>
         <div

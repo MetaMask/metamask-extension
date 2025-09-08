@@ -33,7 +33,7 @@ jest.mock('../../../../store/actions', () => ({
 const mockStore = configureMockStore();
 const networkConfiguration = {
   chainId: '0x1',
-  name: 'Ethereum Mainnet',
+  name: 'Ethereum',
   rpcEndpoints: [
     { url: 'https://mainnet.infura.io/v3/', networkClientId: 'mainnet' },
     { url: 'https://rpc.flashbots.net/', networkClientId: 'flashbots' },

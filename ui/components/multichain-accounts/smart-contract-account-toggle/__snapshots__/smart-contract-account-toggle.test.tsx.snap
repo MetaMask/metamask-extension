@@ -63,7 +63,7 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as enabled for 
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
     >
-      Ethereum Mainnet
+      Ethereum
     </p>
     <label
       class="toggle-button toggle-button--on"
@@ -118,7 +118,7 @@ exports[`SmartContractAccountToggle Disabled State disables toggle during pendin
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
     >
-      Ethereum Mainnet
+      Ethereum
     </p>
     <label
       class="toggle-button toggle-button--on toggle-button--disabled"

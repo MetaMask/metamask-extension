@@ -2972,7 +2972,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 
 /**
  * To check for the chainId that supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC, and Avalanche
+ * currently it returns true for Ethereum, Polygon, BSC, and Avalanche
  *
  * @param {*} state
  * @returns Boolean

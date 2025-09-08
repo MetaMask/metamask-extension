@@ -53,7 +53,7 @@ const mockNetworksData: EIP7702NetworkConfiguration[] = [
   {
     chainId: 'eip155:1' as const,
     chainIdHex: '0x1' as Hex,
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     isSupported: true,
     upgradeContractAddress: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as Hex,
     nativeCurrency: 'ETH',
@@ -147,7 +147,7 @@ describe('SmartContractAccountToggleSection', () => {
 
       const { container } = render();
 
-      expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+      expect(screen.getByText('Ethereum')).toBeInTheDocument();
       expect(screen.getByText('Sepolia')).toBeInTheDocument();
       // Check that toggle checkboxes are rendered (2 toggles) + 1 learn more button
       expect(screen.getAllByRole('checkbox')).toHaveLength(2);
@@ -169,7 +169,7 @@ describe('SmartContractAccountToggleSection', () => {
 
       expect(toggleCheckboxes).toHaveLength(2);
 
-      // Click first toggle (Ethereum Mainnet - supported, should downgrade)
+      // Click first toggle (Ethereum - supported, should downgrade)
       fireEvent.click(toggleCheckboxes[0]);
 
       await waitFor(() => {

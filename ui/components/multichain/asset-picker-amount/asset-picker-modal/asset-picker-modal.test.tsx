@@ -385,7 +385,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum Mainnet');
+    const modalContent = getByText('Ethereum');
     expect(modalContent).toBeInTheDocument();
   });
 
@@ -440,7 +440,7 @@ describe('AssetPickerModal token filtering', () => {
     networks: [
       {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
       },
       {
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -550,7 +550,7 @@ describe('AssetPickerModal token filtering', () => {
         network={
           {
             chainId: '0x1',
-            name: 'Ethereum Mainnet',
+            name: 'Ethereum',
           } as unknown as NetworkConfiguration
         }
       />,

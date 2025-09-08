@@ -11,7 +11,7 @@ const mockHandleCopy = jest.fn();
 
 const defaultProps = {
   chainId: '0x1',
-  networkName: 'Ethereum Mainnet',
+  networkName: 'Ethereum',
   address: '0x1234567890123456789012345678901234567890',
   onQrClick: jest.fn(),
 };
@@ -31,7 +31,7 @@ describe('MultichainAddressRow', () => {
 
     expect(
       screen.getByTestId('multichain-address-row-network-name'),
-    ).toHaveTextContent('Ethereum Mainnet');
+    ).toHaveTextContent('Ethereum');
 
     expect(
       screen.getByTestId('multichain-address-row-address'),

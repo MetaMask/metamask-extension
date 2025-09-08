@@ -21,7 +21,7 @@ export const Default: Story = {
         <AddressQRCodeModal
           accountName="Account 1"
           address="0xa0b86991c431e50c0dd0b653aa1e8c7b7c66f5e4b"
-          networkName="Ethereum Mainnet"
+          networkName="Ethereum"
           networkImageSrc="./images/eth_logo.svg"
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}

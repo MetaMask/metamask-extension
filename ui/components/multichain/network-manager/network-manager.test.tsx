@@ -22,7 +22,7 @@ jest.mock('react-redux', () => ({
 const mockNetworkConfigurations = {
   '0x1': {
     chainId: '0x1',
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     rpcEndpoints: [
       {
         url: 'https://mainnet.infura.io/v3/123',

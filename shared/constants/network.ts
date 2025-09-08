@@ -292,7 +292,7 @@ export const DEPRECATED_NETWORKS = [
  */
 export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 
-export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
+export const MAINNET_DISPLAY_NAME = 'Ethereum';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
 export const LINEA_GOERLI_DISPLAY_NAME = 'Linea Goerli';

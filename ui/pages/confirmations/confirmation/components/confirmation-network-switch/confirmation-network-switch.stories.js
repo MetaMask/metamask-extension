@@ -21,7 +21,7 @@ export default {
     fromNetwork: {
       chainId: '1',
       ticker: 'ETH',
-      name: 'Ethereum Mainnet',
+      name: 'Ethereum',
     },
   },
 };

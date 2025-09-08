@@ -66,7 +66,7 @@ const createMockAccountGroup = (
 // Network configurations for many networks stories
 const MAINNET_NETWORKS = [
   {
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     chainId: '0x1' as Hex,
     caipChainId: 'eip155:1',
     currency: 'ETH',
@@ -253,7 +253,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
 const mockNonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] =
   [
     createMockNetwork(
-      'Ethereum Mainnet',
+      'Ethereum',
       '0x1' as Hex,
       'eip155:1' as CaipChainId,
       'ETH',

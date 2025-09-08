@@ -940,7 +940,7 @@ export const getBridgeL2Fixtures = (
     .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({
       eip155: {
-        '0x1': true, // Ethereum Mainnet
+        '0x1': true, // Ethereum
         '0xa4b1': true, // Arbitrum
         '0xe708': true, // Linea
         '0xa': true, // Optimism

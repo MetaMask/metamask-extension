@@ -126,7 +126,7 @@ describe('Custom RPC history', function (this: Suite) {
           duplicateChainId,
         );
         await addEditNetworkModal.checkChainIdInputErrorMessageIsDisplayed(
-          'This Chain ID is currently used by the Ethereum Mainnet network.',
+          'This Chain ID is currently used by the Ethereum network.',
         );
 
         // Add invalid rcp url

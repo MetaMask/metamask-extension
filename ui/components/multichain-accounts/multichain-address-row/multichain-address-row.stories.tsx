@@ -39,7 +39,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     chainId: '0x1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     address: '0x1234567890123456789012345678901234567890',
     className: '',
   },

@@ -143,7 +143,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           );
           await connectAccountConfirmation.checkPageIsLoaded();
 
-          // Deselect all networks except "Ethereum Mainnet"
+          // Deselect all networks except "Ethereum"
           await connectAccountConfirmation.goToPermissionsTab();
           await connectAccountConfirmation.openEditNetworksModal();
 
@@ -151,9 +151,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
             driver,
           );
           await networkPermissionSelectModal.checkPageIsLoaded();
-          await networkPermissionSelectModal.updateNetworkStatus([
-            'Ethereum Mainnet',
-          ]);
+          await networkPermissionSelectModal.updateNetworkStatus(['Ethereum']);
           await networkPermissionSelectModal.clickConfirmEditButton();
 
           // Click connect

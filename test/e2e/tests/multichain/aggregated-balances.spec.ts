@@ -60,7 +60,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         const sendTokenPage = new SendTokenPage(driver);
 
-        console.log('Step 2: Switch to Ethereum Mainnet');
+        console.log('Step 2: Switch to Ethereum');
         await switchToNetworkFromSendFlow(driver, NETWORK_NAME_MAINNET);
 
         console.log('Step 3: Enable fiat balance display in settings');

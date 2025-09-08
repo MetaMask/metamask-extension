@@ -4,7 +4,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 1,
-    chainName: 'Ethereum Mainnet',
+    chainName: 'Ethereum',
     shortName: 'Ethereum',
     nativeTokenSupported: true,
   },

@@ -26,14 +26,14 @@ describe('MultichainAddressRowsList Utils', () => {
         createNetworkItem('0xaa36a7', 'Sepolia'), // Test network
         createNetworkItem('0xa4b1', 'Arbitrum'),
         createNetworkItem(MultichainNetworks.SOLANA, 'Solana'),
-        createNetworkItem(CHAIN_IDS.MAINNET, 'Ethereum Mainnet'),
+        createNetworkItem(CHAIN_IDS.MAINNET, 'Ethereum'),
         createNetworkItem('0xa', 'Optimism'),
         createNetworkItem('0x13881', 'Mumbai'), // Test network
       ];
 
       const sorted = sortNetworkAddressItems(items);
 
-      expect(sorted[0].networkName).toBe('Ethereum Mainnet');
+      expect(sorted[0].networkName).toBe('Ethereum');
       expect(sorted[1].networkName).toBe('Solana');
       expect(sorted[2].networkName).toBe('Arbitrum');
       expect(sorted[3].networkName).toBe('Optimism');
@@ -55,7 +55,7 @@ describe('MultichainAddressRowsList Utils', () => {
   describe('getCompatibleNetworksForAccount', () => {
     const mockNetworks = {
       'eip155:1': {
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         chainId: 'eip155:1' as CaipChainId,
       },
       'eip155:137': { name: 'Polygon', chainId: 'eip155:137' as CaipChainId },
@@ -115,7 +115,7 @@ describe('MultichainAddressRowsList Utils', () => {
       );
       expect(specificResult).toHaveLength(1);
       expect(specificResult[0].chainId).toBe('eip155:1'); // CAIP format
-      expect(specificResult[0].networkName).toBe('Ethereum Mainnet');
+      expect(specificResult[0].networkName).toBe('Ethereum');
 
       // Test Solana scope (non-EVM stays in CAIP format)
       const solanaAccount = createMockAccount('DRpbCBMx...', ['solana:*']);
