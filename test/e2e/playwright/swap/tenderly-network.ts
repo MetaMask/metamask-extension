@@ -9,7 +9,7 @@ export const Tenderly = {
     symbol: 'ETH',
   },
   Optimism: {
-    name: 'OP Mainnet',
+    name: 'OP',
     rpcName: '',
     url: 'https://virtual.optimism.rpc.tenderly.co/3170a58e-fa67-4ccc-9697-b13aff0f5c1a',
     chainID: '10',
