@@ -6,8 +6,8 @@ semver="$SEMVER"
 
 patch="${semver##*.}"
 if [ "$patch" -gt 0 ]; then
-  previous_ref=""
-  echo "Hotfix detected (patch=$patch > 0): setting previous-version-ref to null (empty)."
+  previous_ref="null"
+  echo "Hotfix detected (patch=$patch > 0): setting previous-version-ref to 'null' (string)."
   echo "previous_ref=${previous_ref}" >> "$GITHUB_OUTPUT"
   exit 0
 fi
