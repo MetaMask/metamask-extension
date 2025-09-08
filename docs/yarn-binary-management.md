@@ -95,44 +95,6 @@ node development/download-yarn-binary.js --yarn-version=4.9.4 --no-config=true
 
 ### For CI/CD (GitHub Actions)
 
-#### Option 1: With Config Tracking (Recommended)
-
-```yaml
-name: Build and Test
-
-on: [push, pull_request]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Verify Yarn Binary
-        run: |
-          # Verify the committed yarn binary
-          yarn yarn-binary:verify
-
-      - name: Setup Local Yarn
-        run: |
-          # Use the verified local yarn binary
-          export PATH="$(pwd)/tools/yarn/v4.9.4/bin:$PATH"
-          echo "$(pwd)/tools/yarn/v4.9.4/bin" >> $GITHUB_PATH
-
-      - name: Install Dependencies
-        run: yarn install --immutable
-
-      - name: Build
-        run: yarn build
-```
-
-#### Option 2: Lightweight Download (No Config Tracking)
-
 ```yaml
 name: Build and Test
 
@@ -240,19 +202,17 @@ node development/download-yarn-binary.js --yarn-version=4.9.4 --no-config=true
 ```text
 metamask-extension/
 ├── development/
-│   ├── download-yarn-binary.js    # Core download and verification logic
-│   └── update-yarn-binary.sh      # User-friendly shell wrapper
+│   └── download-yarn-binary.js    # Core download and verification logic
 ├── tools/
 │   └── yarn/
 │       ├── README.md              # Detailed usage documentation
-│       ├── yarn-config.json       # Version metadata with portable paths
+│       ├── yarn-config.json       # Version metadata with portable paths (if no-config param was set to true)
 │       ├── yarn-4.9.4.cjs         # Downloaded yarn binary (Berry)
 │       └── v4.9.4/                # Extracted yarn files
 │           └── bin/
 │               └── yarn.js        # Executable yarn binary
 ├── docs/
 │   └── yarn-binary-management.md  # This file
-├── .yarnrc.yml.example           # Example yarn configuration
 └── package.json                  # Updated with yarn-binary scripts
 ```
 
@@ -290,16 +250,6 @@ metamask-extension/
 5. Check official yarn releases for updated checksums
 6. Consider using a different version temporarily
 
-#### Permission errors
-
-```bash
-# Fix script permissions
-chmod +x development/update-yarn-binary.sh
-chmod +x development/download-yarn-binary.js
-
-# Fix yarn binary permissions
-chmod +x tools/yarn/v*/bin/yarn.js
-```
 
 ### Debug Information
 
@@ -322,20 +272,19 @@ cat tools/yarn/yarn-config.json
 
 ## Recent Improvements
 
-### Enhanced Checksum Verification (v2024)
+### Enhanced Checksum Verification
 
 - ✅ **Multiple hash algorithms**: Now supports SHA-256, SHA-512, and SHA-1
 - ✅ **NPM registry integration**: Checks official npm registry for additional verification
 - ✅ **Better error handling**: Clearer messages about checksum availability
-- ✅ **Yarn Berry support**: Proper handling of Berry's different distribution model
+- ✅ **Yarn Berry support**: Proper handling of Berry'di different distribution model
 
-### CI/CD Optimizations (v2024)
-
+### CI/CD Optimizations
 - ✅ **Portable paths**: Config files now use relative paths for cross-platform compatibility
 - ✅ **No-config mode**: `--no-config=true` option for lightweight CI/CD usage
 - ✅ **Backward compatibility**: Existing absolute paths still work
 
-### Enhanced Security (v2024)
+### Enhanced Security
 
 - ✅ **Manual verification guidance**: Provides GitHub release links for manual verification
 - ✅ **Multiple verification sources**: Attempts multiple checksum sources before giving up
@@ -388,7 +337,7 @@ If you need to switch to a different yarn version:
 1. **Download the new version**:
 
    ```bash
-   ./development/update-yarn-binary.sh 4.10.0
+   node development/download-yarn-binary.js --yarn-version=<new version>
    ```
 
 2. **Update package.json** engines field if needed
