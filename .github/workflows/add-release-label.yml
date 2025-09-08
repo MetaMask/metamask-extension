@@ -9,7 +9,7 @@ on:
 
 jobs:
   add-release-label:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
       - name: Checkout and setup environment
