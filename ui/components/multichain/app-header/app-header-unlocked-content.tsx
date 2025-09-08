@@ -139,17 +139,23 @@ export const AppHeaderUnlockedContent = ({
     origin &&
     origin !== browser.runtime.id;
 
-  const handleMainMenuOpened = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NavMainMenuOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Home',
-      },
-    });
+  const handleMainMenuToggle = () => {
+    setAccountOptionsMenuOpen((previous) => {
+      const newValue = !previous;
+      const menuOpen = newValue === true;
 
-    console.log('>>> trying to OPEN the menu')
-    setAccountOptionsMenuOpen(true);
+      if (menuOpen) {
+        trackEvent({
+          event: MetaMetricsEventName.NavMainMenuOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            location: 'Home',
+          },
+        });
+      }
+
+      return newValue;
+    });
   };
 
   const handleConnectionsRoute = () => {
@@ -289,20 +295,15 @@ export const AppHeaderUnlockedContent = ({
             style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box onClick={() => handleMainMenuOpened()}>
+              <Box onClick={handleMainMenuToggle}>
                 <NotificationsTagCounter noLabel />
               </Box>
             )}
             <ButtonIcon
-              iconName={IconName.Menu} 
+              iconName={IconName.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
-              onClick={(e) => {
-                e.stopPropagation()
-                console.log('>>> ButtonIcon clicked and event target', accountOptionsMenuOpen, e.target, e.currentTarget)
-                // handleMainMenuOpened();
-                setAccountOptionsMenuOpen(prev => !prev)
-              }}
+              onClick={handleMainMenuToggle}
               size={ButtonIconSize.Lg}
             />
           </Box>
@@ -310,18 +311,9 @@ export const AppHeaderUnlockedContent = ({
         <GlobalMenu
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={(event) => {
-            console.log('>>> GlobalMenu closeMenu event target', event.currentTarget)
-            // if (event && menuRef.current?.contains(event.target)) {
-            //   return; // Don't close if clicking trigger
-            // }
-
-            setAccountOptionsMenuOpen(false)
+          closeMenu={() => {
+            setAccountOptionsMenuOpen(false);
           }}
-          // closeMenu={() => {
-          //   console.log('>>> GlobalMenu closeMenu')
-          //   setAccountOptionsMenuOpen(false)
-          // }}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}
