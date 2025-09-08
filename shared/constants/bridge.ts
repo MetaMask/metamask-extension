@@ -32,6 +32,9 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
   MultichainNetworks.SOLANA,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
+  MultichainNetworks.BITCOIN,
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =

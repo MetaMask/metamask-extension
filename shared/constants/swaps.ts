@@ -149,16 +149,6 @@ const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
-const BITCOIN_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
-  symbol: 'BTC',
-  name: 'Bitcoin',
-  address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC,
-  decimals: 8,
-  iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
-};
-///: END:ONLY_INCLUDE_IF
-
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
 export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0';
 
@@ -221,9 +211,6 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
   MultichainNetworks.SOLANA,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
-  MultichainNetworks.BITCOIN,
-  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
@@ -332,9 +319,6 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.BASE]: BASE_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.SEI]: SEI_SWAPS_TOKEN_OBJECT,
   [MultichainNetworks.SOLANA]: SOLANA_SWAPS_TOKEN_OBJECT,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
-  [MultichainNetworks.BITCOIN]: BITCOIN_SWAPS_TOKEN_OBJECT,
-  ///: END:ONLY_INCLUDE_IF
 } as const;
 
 export const ETHEREUM = 'ethereum';
