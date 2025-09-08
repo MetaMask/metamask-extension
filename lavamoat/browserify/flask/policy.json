@@ -1017,17 +1017,20 @@
     },
     "@metamask/design-system-react": {
       "globals": {
-        "__import__": true,
         "console.warn": true
       },
       "packages": {
+        "@metamask/design-system-react>@metamask/design-system-shared": true,
         "@metamask/jazzicon": true,
-        "@metamask/utils": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
-        "@solana/addresses": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
         "@metamask/design-system-react>tailwind-merge": true
+      }
+    },
+    "@metamask/design-system-react>@metamask/design-system-shared": {
+      "packages": {
+        "@metamask/design-system-react>@metamask/design-system-shared>@metamask/utils": true
       }
     },
     "@metamask/eip-5792-middleware": {
@@ -2138,6 +2141,22 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/design-system-react>@metamask/design-system-shared>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "lodash": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
       }
