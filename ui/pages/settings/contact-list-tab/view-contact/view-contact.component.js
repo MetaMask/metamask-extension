@@ -1,18 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
-
+import { Navigate } from 'react-router-dom-v5-compat';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   Button,
   ButtonVariant,
-  AvatarAccount,
-  AvatarAccountSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
   Text,
 } from '../../../../components/component-library';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -30,7 +29,7 @@ function quadSplit(address) {
 }
 
 function ViewContact({
-  history,
+  navigate,
   name,
   address,
   checkSummedAddress,
@@ -42,7 +41,7 @@ function ViewContact({
   const [copied, handleCopy] = useCopyToClipboard();
 
   if (!address) {
-    return <Redirect to={{ pathname: listRoute }} />;
+    return <Navigate to={{ pathname: listRoute }} />;
   }
 
   return (
@@ -53,9 +52,10 @@ function ViewContact({
           paddingLeft={6}
           paddingRight={6}
         >
-          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <PreferredAvatar size={AvatarAccountSize.Lg} address={address} />
           <Text
             className="address-book__header__name"
+            data-testid="address-book-name"
             variant={TextVariant.bodyLgMedium}
             marginInlineStart={4}
             style={{ overflow: 'hidden' }}
@@ -68,7 +68,7 @@ function ViewContact({
           <Button
             variant={ButtonVariant.Secondary}
             onClick={() => {
-              history.push(`${editRoute}/${address}`);
+              navigate(`${editRoute}/${address}`);
             }}
           >
             {t('edit')}
@@ -79,7 +79,10 @@ function ViewContact({
             {t('ethereumPublicAddress')}
           </div>
           <div className="address-book__view-contact__group__value">
-            <div className="address-book__view-contact__group__static-address">
+            <div
+              className="address-book__view-contact__group__static-address"
+              data-testid="address-book-view-contact-address"
+            >
               {quadSplit(checkSummedAddress)}
             </div>
             <Tooltip
@@ -117,7 +120,7 @@ function ViewContact({
 ViewContact.propTypes = {
   name: PropTypes.string,
   address: PropTypes.string,
-  history: PropTypes.object,
+  navigate: PropTypes.func.isRequired,
   checkSummedAddress: PropTypes.string,
   memo: PropTypes.string,
   editRoute: PropTypes.string,

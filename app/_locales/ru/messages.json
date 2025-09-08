@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "У вас на счету недостаточно $1 для оплаты комиссий сети."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Цены газа высоки, а оценки менее точны."
-  },
   "alertMessageNoGasPrice": {
     "message": "Мы не сможем продолжить эту транзакцию, пока вы не обновите комиссию вручную."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Ненужное разрешение"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Сеть занята"
   },
   "alertReasonNoGasPrice": {
     "message": "Оценка комиссии недоступна"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Узнайте, как мы защищаем вашу конфиденциальность"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Создавайте резервные копии своих счетов и синхронизируйте настройки."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Представляем резервное копирование и синхронизацию"
-  },
   "backupApprovalInfo": {
     "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "Базовый"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Базовый функционал отключен"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
@@ -2180,9 +2165,6 @@
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
-  "enableIt": {
-    "message": " Включить"
-  },
   "enableSmartContractAccount": {
     "message": "Включить счет смарт-контракта"
   },
@@ -3568,9 +3550,6 @@
   },
   "networkIsBusy": {
     "message": "Сеть занята. Цены газа высоки, а оценки менее точны."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Должна быть включена хотя бы одна сеть"
   },
   "networkMenu": {
     "message": "Сетевое меню"
@@ -5533,60 +5512,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Включение этой опции позволит пропустить промежуточный экран, который отображается при открытии диплинков в MetaMask. Диплинк — это ссылка типа https://link.metamask.io/home, которая приведет к открытию MetaMask; эти ссылки могут быть замаскированы другими людьми. Промежуточный экран предназначен для защиты от случайного открытия страниц в MetaMask, которые могут отображать ваши счета, токены, историю, балансы, настройки или другую потенциально конфиденциальную информацию. Этот параметр применяется только к ссылкам, подписанным MetaMask."
-  },
-  "slideBridgeDescription": {
-    "message": "Перемещайтесь по 9 блокчейнам, все из которых находятся в Вашем кошельке"
-  },
-  "slideBridgeTitle": {
-    "message": "Готовы создать мост?"
-  },
-  "slideCashOutDescription": {
-    "message": "Продайте свою криптовалюту за наличные"
-  },
-  "slideCashOutTitle": {
-    "message": "Вывести деньги с помощью MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Доступна в некоторых регионах"
-  },
-  "slideDebitCardTitle": {
-    "message": "Дебетовая карта MetaMask"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Берите кошелек с собой везде"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Скачать MetaMask mobile"
-  },
-  "slideFundWalletDescription": {
-    "message": "Добавьте или переведите токены, чтобы начать"
-  },
-  "slideFundWalletTitle": {
-    "message": "Пополните свой кошелек"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Импорт и использование нескольких кошельков в MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Добавьте несколько секретных фраз для восстановления"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Один и тот же адрес, более умные функции"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Начните использовать смарт-счета"
-  },
-  "slideSolanaDescription": {
-    "message": "Создайте счет Solana, чтобы начать"
-  },
-  "slideSolanaTitle": {
-    "message": "Теперь поддерживается Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Выполните минтинг NFT и получите шанс выиграть"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Примите участие в розыгрыше USDC на $5000!"
   },
   "slippage": {
     "message": "Проскальзывание"

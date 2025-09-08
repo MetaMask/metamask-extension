@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
-  },
   "alertMessageNoGasPrice": {
     "message": "Wir können mit dieser Transaktion nicht fortfahren, bis Sie die Gebühr manuell aktualisieren."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Unnötige Genehmigung"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Netzwerk ist ausgelastet"
   },
   "alertReasonNoGasPrice": {
     "message": "Gebührenschätzung nicht verfügbar"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Erfahren Sie, wie wir Ihre Privatsphäre schützen"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Sichern Sie Ihre Konten und Synchronisierungseinstellungen."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Einführung in Backup und Synchronisierung"
-  },
   "backupApprovalInfo": {
     "message": "Dieser geheime Code ist zum Wiedererlangen Ihrer Wallet erforderlich, falls Sie Ihr Gerät verlieren, Ihr Passwort vergessen, MetaMask neu installieren müssen oder auf einem anderen Gerät auf Ihre Wallet zugreifen möchten."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "Grundlegend"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Grundfunktionalität ist ausgeschaltet"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask bietet grundlegende Funktionen wie Token-Details und Gas-Einstellungen über Internetdienste. Wenn Sie Internetdienste nutzen, wird Ihre IP-Adresse weitergegeben, in diesem Fall an MetaMask. Das ist genau so, wie wenn Sie eine beliebige Website besuchen. MetaMask verwendet diese Daten vorübergehend und verkauft Ihre Daten niemals. Sie können ein VPN verwenden oder diese Dienste abschalten, aber das kann Ihr MetaMask-Erlebnis beeinträchtigen. Um mehr zu erfahren, lesen Sie unsere $1.",
@@ -2180,9 +2165,6 @@
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
   },
-  "enableIt": {
-    "message": " Aktiviere es"
-  },
   "enableSmartContractAccount": {
     "message": "Smart-Contract-Konto aktivieren"
   },
@@ -3568,9 +3550,6 @@
   },
   "networkIsBusy": {
     "message": "Das Netzwerk ist ausgelastet. Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Mindestens ein Netzwerk muss aktiviert sein"
   },
   "networkMenu": {
     "message": "Netzwerkmenü"
@@ -5533,60 +5512,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Wenn Sie diese Option aktivieren, wird der Zwischenbildschirm übersprungen, der beim Öffnen von Deeplinks in MetaMask angezeigt wird. Ein „Deeplink“ ist ein Link wie https://link.metamask.io/home, der MetaMask öffnet; diese Links können von anderen verschleiert werden. Der Zwischenbildschirm soll Sie davor schützen, versehentlich Seiten in MetaMask zu öffnen, die Ihre Konten, Token, Ihren Verlauf, Kontostände, Einstellungen oder andere potenziell sensible Daten anzeigen könnten. Diese Einstellung gilt nur für von MetaMask signierte Links."
-  },
-  "slideBridgeDescription": {
-    "message": "Bewegen Sie sich über 9 Chains, und zwar in Ihrer Wallet"
-  },
-  "slideBridgeTitle": {
-    "message": "Bereit zum Bridgen?"
-  },
-  "slideCashOutDescription": {
-    "message": "Verkaufen Sie Ihre Krypto gegen Bargeld"
-  },
-  "slideCashOutTitle": {
-    "message": "Bargeldauszahlung mit MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "In ausgewählten Regionen verfügbar"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask-Debitkarte"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Nehmen Sie Ihre Wallet mit, wohin Sie gehen"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "MetaMask Mobile herunterladen"
-  },
-  "slideFundWalletDescription": {
-    "message": "Token hinzufügen oder übertragen, um loszulegen"
-  },
-  "slideFundWalletTitle": {
-    "message": "Überweisen Sie Guthaben auf Ihre Wallet"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Mehrere Wallets in MetaMask importieren und verwenden"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Mehrere geheime Wiederherstellungsphrasen hinzufügen"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Dieselbe Adresse, intelligentere Funktionen"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Beginnen Sie mit der Nutzung von Smart-Konten"
-  },
-  "slideSolanaDescription": {
-    "message": "Erstellen Sie ein Solana-Konto, um loszulegen"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana wird nun unterstützt"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Erstellen Sie gleich ein NFT für eine Gewinnchance"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Nehmen Sie am $5000-USDC-Giveaway teil!"
   },
   "slippage": {
     "message": "Slippage"
