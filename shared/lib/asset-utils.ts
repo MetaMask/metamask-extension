@@ -11,10 +11,7 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 
-import {
-  toEvmCaipChainId,
-  isEvmCaipChainId,
-} from '@metamask/multichain-network-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import {
   getNativeAssetForChainId,
