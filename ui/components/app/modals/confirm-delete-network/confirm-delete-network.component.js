@@ -11,6 +11,8 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     onConfirm: PropTypes.func.isRequired,
     networkNickname: PropTypes.string.isRequired,
     chainId: PropTypes.string.isRequired,
+    isChainToDeleteSelected: PropTypes.bool,
+    switchToEthereumNetwork: PropTypes.func,
   };
 
   static contextTypes = {
@@ -18,10 +20,23 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   handleDelete = async () => {
-    const { chainId, onConfirm, hideModal, removeNetwork } = this.props;
+    const {
+      chainId,
+      onConfirm,
+      hideModal,
+      removeNetwork,
+      isChainToDeleteSelected,
+      switchToEthereumNetwork,
+    } = this.props;
 
     // NOTE: We only support EVM networks removal, so the conversion is safe here.
     const caipChainId = toEvmCaipChainId(chainId);
+
+    // NOTE: ensure that we are not deleting a selected evm chain
+    if (isChainToDeleteSelected) {
+      await switchToEthereumNetwork?.();
+    }
+
     await removeNetwork(caipChainId);
 
     onConfirm();

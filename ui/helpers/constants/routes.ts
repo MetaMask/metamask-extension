@@ -15,6 +15,7 @@ export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
+export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/settings/networks';
@@ -42,8 +43,14 @@ export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
+export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
+  '/multichain-account-address-list';
+export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
+export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
+  '/multichain-wallet-details-page';
+export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const ACCOUNT_DETAILS_ROUTE = '/account-details';
 export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
@@ -139,6 +146,16 @@ export const ROUTES = [
   {
     path: `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`,
     label: 'Account Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`,
+    label: 'Wallet Details Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
+    label: 'Smart Account Page',
     trackInAnalytics: true,
   },
   {

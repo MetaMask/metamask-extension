@@ -25,6 +25,8 @@ const {
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
+const LocalWebSocketServer = require('./websocket-server').default;
+const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -126,6 +128,10 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
+    withSolanaWebSocket = {
+      server: false,
+      mocks: [],
+    },
   } = options;
 
   // Normalize localNodeOptions
@@ -151,6 +157,8 @@ async function withFixtures(options, testSuite) {
 
   let localNode;
   const localNodes = [];
+
+  let localWebSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -255,6 +263,13 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
+
+    if (withSolanaWebSocket.server) {
+      localWebSocketServer = LocalWebSocketServer.getServerInstance();
+      localWebSocketServer.start();
+      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
+    }
+
     const { mockedEndpoint, getPrivacyReport } = await setupMocking(
       mockServer,
       testSpecificMock,
@@ -263,6 +278,7 @@ async function withFixtures(options, testSuite) {
         ethConversionInUsd,
         monConversionInUsd,
       },
+      withSolanaWebSocket,
     );
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
@@ -438,6 +454,10 @@ async function withFixtures(options, testSuite) {
           }
         })(),
       );
+
+      if (withSolanaWebSocket.server) {
+        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
+      }
 
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');

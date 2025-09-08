@@ -648,9 +648,7 @@ export function publishBatchSmartTransactionHook({
     getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
 
   if (!isSmartTransaction) {
-    throw new Error(
-      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
-    );
+    return undefined;
   }
 
   return submitBatchSmartTransactionHook({

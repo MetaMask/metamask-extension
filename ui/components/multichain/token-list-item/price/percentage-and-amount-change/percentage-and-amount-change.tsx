@@ -14,7 +14,7 @@ import {
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
-import { getIntlLocale } from '../../../../../ducks/locale/locale';
+import { useFormatters } from '../../../../../helpers/formatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 import {
@@ -35,7 +35,7 @@ export const renderPercentageWithNumber = (
   color: TextColor,
 ) => {
   return (
-    <Box display={Display.Flex}>
+    <Box display={Display.Flex} className="gap-1">
       <Text
         variant={TextVariant.bodyMdMedium}
         color={color}
@@ -63,7 +63,7 @@ export const PercentageAndAmountChange = ({
   value: number | null | undefined;
 }) => {
   const fiatCurrency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrencyCompact } = useFormatters();
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -124,27 +124,10 @@ export const PercentageAndAmountChange = ({
   if (isValidAmount(balanceChange)) {
     formattedValuePrice = (balanceChange as number) >= 0 ? '+' : '';
 
-    const options = {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 2,
-    } as const;
-
-    try {
-      // For currencies compliant with ISO 4217 Standard
-      formattedValuePrice += `${Intl.NumberFormat(locale, {
-        ...options,
-        style: 'currency',
-        currency: fiatCurrency,
-      }).format(balanceChange as number)} `;
-    } catch {
-      // Non-standard Currency Codes
-      formattedValuePrice += `${Intl.NumberFormat(locale, {
-        ...options,
-        minimumFractionDigits: 2,
-        style: 'decimal',
-      }).format(balanceChange as number)} `;
-    }
+    formattedValuePrice += formatCurrencyCompact(
+      balanceChange ?? 0,
+      fiatCurrency,
+    );
   }
 
   return renderPercentageWithNumber(formattedValue, formattedValuePrice, color);
