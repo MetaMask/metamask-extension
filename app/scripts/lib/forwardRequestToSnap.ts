@@ -12,6 +12,7 @@ import type { SnapId } from '@metamask/snaps-sdk';
  * @param config.handleRequest - The SnapController's handleRequest function.
  * @param config.snapId - The ID of the Snap to forward the request to.
  * @param _params - Additional parameters, including the request ID.
+ * @param _params.id - The request ID.
  * @param req - The JSON-RPC request object.
  * @returns The response from the Snap as JSON.
  */

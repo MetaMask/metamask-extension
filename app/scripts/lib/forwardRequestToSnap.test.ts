@@ -1,8 +1,9 @@
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
-import { forwardRequestToSnap } from './forwardRequestToSnap';
 import type { SnapId } from '@metamask/snaps-sdk';
+
+import { forwardRequestToSnap } from './forwardRequestToSnap';
 
 describe('forwardRequestToSnap', () => {
   const SNAP_ID_MOCK = 'local:test-snap' as SnapId;
@@ -110,7 +111,7 @@ describe('forwardRequestToSnap', () => {
     it('throws JsonRpcError with 500 status and method name', async () => {
       await expect(
         forwardRequestToSnap(
-          { handleRequest: handleRequestMock, snapId: '' as any },
+          { handleRequest: handleRequestMock, snapId: '' as SnapId },
           { id: ID_MOCK },
           REQUEST_MOCK,
         ),
@@ -122,7 +123,10 @@ describe('forwardRequestToSnap', () => {
     it('throws JsonRpcError with 500 status and method name for falsy snapId', async () => {
       await expect(
         forwardRequestToSnap(
-          { handleRequest: handleRequestMock, snapId: null as any },
+          {
+            handleRequest: handleRequestMock,
+            snapId: null as unknown as SnapId,
+          },
           { id: ID_MOCK },
           REQUEST_MOCK,
         ),
@@ -134,7 +138,10 @@ describe('forwardRequestToSnap', () => {
     it('throws JsonRpcError with 500 status and method name for undefined snapId', async () => {
       await expect(
         forwardRequestToSnap(
-          { handleRequest: handleRequestMock, snapId: undefined as any },
+          {
+            handleRequest: handleRequestMock,
+            snapId: undefined as unknown as SnapId,
+          },
           { id: ID_MOCK },
           REQUEST_MOCK,
         ),
@@ -163,7 +170,7 @@ describe('forwardRequestToSnap', () => {
 
       await expect(
         forwardRequestToSnap(
-          { handleRequest: handleRequestMock, snapId: '' as any },
+          { handleRequest: handleRequestMock, snapId: '' as SnapId },
           { id: ID_MOCK },
           customMethodRequest,
         ),

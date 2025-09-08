@@ -439,6 +439,8 @@ import {
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 
+import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
