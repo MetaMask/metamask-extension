@@ -5768,10 +5768,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-resolver-snap@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "@metamask/ens-resolver-snap@npm:0.1.3"
-  checksum: 10/3ac6e8c0d4936f3e449b40c7ada826e988b4001cc506aba715f8ccfb274bdc8469a9cb4d013c9ccb79e12ac9a07135eb1db21c30c17f635fff788bab4e4614c5
+"@metamask/ens-resolver-snap@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "@metamask/ens-resolver-snap@npm:0.1.4"
+  checksum: 10/483fb5c3a3081e064fb69893d2d9497322fb8ab5695d39be8c2f3093dea5d5571d01484862a1e53e298c1ac9510092647116112518d3679afe9f1ec3aa3626a5
   languageName: node
   linkType: hard
 
@@ -31756,7 +31756,7 @@ __metadata:
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^1.0.0"
     "@metamask/ens-controller": "npm:^17.0.1"
-    "@metamask/ens-resolver-snap": "npm:^0.1.3"
+    "@metamask/ens-resolver-snap": "npm:^0.1.4"
     "@metamask/error-reporting-service": "npm:^2.0.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"

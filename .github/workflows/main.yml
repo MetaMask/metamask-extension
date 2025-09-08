@@ -248,8 +248,13 @@ jobs:
     with:
       browser-loads: '10'
       page-loads: '10'
+
+  page-load-benchmark-upload:
+    needs:
+      - page-load-benchmark-pr
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/page-load-benchmark-upload.yml
     secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
   needs-e2e:
