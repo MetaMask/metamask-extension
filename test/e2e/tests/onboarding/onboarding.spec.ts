@@ -132,8 +132,6 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        // await startOnboardingPage.checkBannerPageIsLoaded();
-        // await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.importWallet();
 

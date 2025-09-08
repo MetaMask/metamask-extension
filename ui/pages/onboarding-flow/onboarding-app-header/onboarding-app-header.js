@@ -21,7 +21,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ThemeType } from '../../../../shared/constants/preferences';
 
-export default function OnboardingAppHeader({ pageState }) {
+export default function OnboardingAppHeader({ isWelcomePage }) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const currentLocale = useSelector(getCurrentLocale);
@@ -40,7 +40,7 @@ export default function OnboardingAppHeader({ pageState }) {
       width={BlockSize.Full}
       padding={4}
       className={classnames('onboarding-app-header', {
-        'onboarding-app-header--welcome': pathname === ONBOARDING_WELCOME_ROUTE,
+        'onboarding-app-header--welcome': isWelcomePage,
       })}
     >
       <Box
@@ -59,7 +59,7 @@ export default function OnboardingAppHeader({ pageState }) {
         <Dropdown
           data-testid="select-locale"
           className={classnames('onboarding-app-header__dropdown', {
-            'onboarding-app-header__dropdown--welcome--login': pageState,
+            'onboarding-app-header__dropdown--welcome--login': isWelcomePage,
           })}
           options={localeOptions}
           selectedOption={currentLocale}
@@ -73,5 +73,5 @@ export default function OnboardingAppHeader({ pageState }) {
 }
 
 OnboardingAppHeader.propTypes = {
-  pageState: PropTypes.bool,
+  isWelcomePage: PropTypes.bool,
 };
