@@ -23971,14 +23971,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extension-port-stream@https://github.com/MetaMask/extension-port-stream.git#9850ac75a4bbe1a245cdcb7b8c73290afa2663f0":
+"extension-port-stream@https://github.com/MetaMask/extension-port-stream.git#aa74b623c1d99d59d7e3b0a2da0278d21fbc8342":
   version: 4.2.0
-  resolution: "extension-port-stream@https://github.com/MetaMask/extension-port-stream.git#commit=9850ac75a4bbe1a245cdcb7b8c73290afa2663f0"
+  resolution: "extension-port-stream@https://github.com/MetaMask/extension-port-stream.git#commit=aa74b623c1d99d59d7e3b0a2da0278d21fbc8342"
   dependencies:
     readable-stream: "npm:^3.6.2 || ^4.4.2"
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/238cd2fdeb19cecb2376ba33788bde0f20cfd3fa22dc12968e1303795f151acbe4250014f6d8b098bf3a7bb2814acc6000e84caa8282c7e5c3919fb8a18b30ff
+  checksum: 10/013ad33b278357b4c15c737f66459548ee531ea3310339db0eab56a25747538e126efe5cbeee166879254fcd0ec0b3ce4d8575a1926d003fb30bd57829d8074a
   languageName: node
   linkType: hard
 
@@ -31948,7 +31948,7 @@ __metadata:
     eth-method-registry: "npm:^4.0.0"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:^5.7.0"
-    extension-port-stream: "https://github.com/MetaMask/extension-port-stream.git#9850ac75a4bbe1a245cdcb7b8c73290afa2663f0"
+    extension-port-stream: "https://github.com/MetaMask/extension-port-stream.git#aa74b623c1d99d59d7e3b0a2da0278d21fbc8342"
     fake-indexeddb: "npm:^6.1.0"
     fancy-log: "npm:^1.3.3"
     fast-glob: "npm:^3.2.2"
