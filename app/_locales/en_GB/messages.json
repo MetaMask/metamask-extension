@@ -1483,7 +1483,7 @@
     "message": "Connecting to Linea Goerli test network"
   },
   "connectingToLineaMainnet": {
-    "message": "Connecting to Linea Mainnet"
+    "message": "Connecting to Linea"
   },
   "connectingToLineaSepolia": {
     "message": "Connecting to Linea Sepolia test network"
@@ -3214,7 +3214,7 @@
     "message": "Linea Goerli test network"
   },
   "lineaMainnet": {
-    "message": "Linea Mainnet"
+    "message": "Linea"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia test network"

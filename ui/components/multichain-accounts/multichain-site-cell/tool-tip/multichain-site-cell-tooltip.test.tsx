@@ -126,7 +126,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: 'Linea Mainnet',
+      name: 'Linea',
       chainId: '0xe708',
       caipChainId: 'eip155:59144' as CaipChainId,
       blockExplorerUrls: ['mock-linea-url'],

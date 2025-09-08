@@ -1414,7 +1414,7 @@
     "message": "Kumokonekta sa Linea Goerli test network"
   },
   "connectingToLineaMainnet": {
-    "message": "Kumokonekta sa Linea Mainnet"
+    "message": "Kumokonekta sa Linea"
   },
   "connectingToLineaSepolia": {
     "message": "Kumokonekta sa Linea Sepolia test network"
@@ -3116,7 +3116,7 @@
     "message": "Linea Goerli test network"
   },
   "lineaMainnet": {
-    "message": "Linea Mainnet"
+    "message": "Linea"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia test network"

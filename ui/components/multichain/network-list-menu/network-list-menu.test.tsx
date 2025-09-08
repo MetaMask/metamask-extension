@@ -308,7 +308,7 @@ describe('NetworkListMenu', () => {
       origin: 'https://app.metamask.io',
     });
 
-    // Contains Mainnet, Linea Mainnet and the two custom networks
+    // Contains Mainnet, Linea and the two custom networks
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
@@ -351,7 +351,7 @@ describe('NetworkListMenu', () => {
     ).toHaveLength(0);
   });
 
-  it('enables the "Discover" for Linea Mainnet button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
+  it('enables the "Discover" for Linea button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
     const { queryByTestId, getByTestId } = render({
       neNetworkDiscoverButton: {
         '0xe708': true,

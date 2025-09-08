@@ -1441,7 +1441,7 @@
     "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToLineaMainnet": {
-    "message": "Linea Mainnet से कनेक्ट हो रहा है"
+    "message": "Linea से कनेक्ट हो रहा है"
   },
   "connectingToLineaSepolia": {
     "message": "Linea Sepolia टेस्ट नेटवर्क से कनेक्ट हो रहा है"
@@ -3149,7 +3149,7 @@
     "message": "Linea Goerli टेस्ट नेटवर्क"
   },
   "lineaMainnet": {
-    "message": "Linea Mainnet"
+    "message": "Linea"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia टेस्ट नेटवर्क"

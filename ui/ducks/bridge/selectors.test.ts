@@ -129,7 +129,7 @@ describe('Bridge selectors', () => {
         chainId: '0xe708',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Linea Mainnet',
+        name: 'Linea',
         rpcEndpoints: [
           {
             networkClientId: expect.anything(),
@@ -399,7 +399,7 @@ describe('Bridge selectors', () => {
           ...mockNetworkState(
             { chainId: CHAIN_IDS.MAINNET },
             ...FEATURED_RPCS.filter(
-              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea mainnet is both a built in network, as well as featured RPC
+              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea is both a built in network, as well as featured RPC
             ),
           ),
           useExternalServices: true,

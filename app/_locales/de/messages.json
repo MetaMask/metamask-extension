@@ -1441,7 +1441,7 @@
     "message": "Verbindungsaufbau zum Linea-Testnetzwerk"
   },
   "connectingToLineaMainnet": {
-    "message": "Verbindung zum Linea Mainnet wird hergestellt"
+    "message": "Verbindung zum Linea wird hergestellt"
   },
   "connectingToLineaSepolia": {
     "message": "Herstellung der Verbindung zum Linea-Sepolia-Testnetzwerk"
@@ -3149,7 +3149,7 @@
     "message": "Linea-Testnetzwerk"
   },
   "lineaMainnet": {
-    "message": "Linea Mainnet"
+    "message": "Linea"
   },
   "lineaSepolia": {
     "message": "Linea-Sepolia-Testnetzwerk"
