@@ -30,7 +30,7 @@ export const FIXTURES_NETWORKS = {
     base: {
       chainId: '0x2105',
       id: 'base',
-      nickname: 'Base Mainnet',
+      nickname: 'Base',
       rpcPrefs: {
         blockExplorerUrl: 'https://basescan.org',
         imageUrl: './images/base.svg',

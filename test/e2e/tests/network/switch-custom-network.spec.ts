@@ -73,7 +73,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x2105' }], // Hex Chain ID for Base Mainnet
+          params: [{ chainId: '0x2105' }], // Hex Chain ID for Base
         });
 
         await driver.executeScript(
@@ -83,7 +83,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.findVisibleElement({
-          text: 'Base Mainnet',
+          text: 'Base',
           tag: 'p',
         });
 
