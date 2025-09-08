@@ -1,0 +1,37 @@
+# Filter rules for determining if E2E tests should run if any of those files are modified
+# Used with dorny/paths-filter action
+
+files-e2e-required:
+  # Include everything by default
+  - '**'
+
+  # Exclude doc files
+  - '!**/*.md'
+  - '!**/*.mdx'
+  - '!**/*.txt'
+  - '!**/*.csv'
+  - '!LICENSE'
+
+  # Exclude test files
+  - '!**/*.test.{js,ts,tsx,jsx}'
+  - '!**/*.stories.*'
+  - '!**/*.snap'
+
+  # Exclude config files
+  - '!tailwind.config.js'
+  - '!eslint.config.js'
+  - '!prettier.config.js'
+
+    # Exclude Github files except specific E2E related
+  - '!.github/**'
+  - '.github/workflows/main.yml'
+  - '.github/workflows/run-build.yml'
+  - '.github/workflows/needs-e2e.yml'
+  - '.github/e2e-filter-rules.yml'
+  - '.github/workflows/e2e-chrome.yml'
+  - '.github/workflows/e2e-firefox.yml'
+  - '.github/workflows/run-e2e.yml'
+  - '.github/scripts/git-diff-default-branch.ts'
+  - '.github/scripts/create-e2e-test-report.ts'
+  - '.github/scripts/split-tests-by-timings.ts'
+  - '.github/scripts/validate-e2e-page-object-usage.ts'
