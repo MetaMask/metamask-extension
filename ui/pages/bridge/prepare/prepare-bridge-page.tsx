@@ -122,6 +122,7 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
+import { isSendBundleSupported } from '../../../store/actions';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -252,6 +253,17 @@ const PrepareBridgePage = ({
     fromChain,
   );
 
+  const [isSendBundleSupportedForChain, setIsSendBundleSupportedForChain] =
+    useState(false);
+
+  useEffect(() => {
+    if (fromChain?.chainId) {
+      isSendBundleSupported(fromChain.chainId as Hex).then(
+        setIsSendBundleSupportedForChain,
+      );
+    }
+  }, [fromChain?.chainId]);
+
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
@@ -358,6 +370,10 @@ const PrepareBridgePage = ({
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
+  const gasIncluded =
+    (smartTransactionsEnabled && isSwap && isSendBundleSupportedForChain) ||
+    gasIncluded7702;
+
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
@@ -384,7 +400,7 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: smartTransactionsEnabled && isSwap,
+      gasIncluded,
       gasIncluded7702,
     }),
     [
@@ -398,8 +414,7 @@ const PrepareBridgePage = ({
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
-      smartTransactionsEnabled,
-      isSwap,
+      gasIncluded,
       gasIncluded7702,
     ],
   );
