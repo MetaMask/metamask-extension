@@ -58,13 +58,10 @@ export const AccountDetailsMenuItem = ({
       history.push(
         `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
       );
-      closeMenu?.();
-      return;
-    }
-    if (isMultichainAccountsState1Enabled) {
+    } else if (isMultichainAccountsState1Enabled) {
       history.push(`${ACCOUNT_DETAILS_ROUTE}/${address}`);
-      closeMenu?.();
     }
+    closeMenu?.();
   }, [
     address,
     closeMenu,
