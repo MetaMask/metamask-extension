@@ -30,7 +30,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
   );
 
-  const addressToCheck = to || recipient;
+  const addressToCheck = recipient;
 
   const { state: trustSignalDisplayState } = useTrustSignal(
     addressToCheck || '',
