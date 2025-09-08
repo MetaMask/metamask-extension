@@ -34,7 +34,7 @@ const networkConfigurationsByChainId = {
     chainId: '0xa86a',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Avalanche Network C-Chain',
+    name: 'Avalanche',
     nativeCurrency: 'AVAX',
     rpcEndpoints: [
       {
