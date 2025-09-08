@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
+import { KnownCaipNamespace } from '@metamask/utils';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -108,8 +109,34 @@ describe('AssetPage', () => {
         eip155: {},
       },
       accountTree: {
-        wallets: {},
-        selectedAccountGroup: 'mock-account-group-id',
+        wallets: {
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+            id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+            type: 'entropy',
+            groups: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+                type: 'multichain-account',
+                accounts: [selectedAccountAddress],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                  hidden: false,
+                  pinned: false,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+              },
+            },
+          },
+        },
+        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
       internalAccounts: {
         accounts: {
@@ -125,6 +152,7 @@ describe('AssetPage', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [`${KnownCaipNamespace.Eip155}:0`],
           },
         },
         selectedAccount: selectedAccountAddress,
@@ -139,6 +167,7 @@ describe('AssetPage', () => {
           accounts: [],
         },
       ],
+      accountsAssets: {},
     },
   };
 
