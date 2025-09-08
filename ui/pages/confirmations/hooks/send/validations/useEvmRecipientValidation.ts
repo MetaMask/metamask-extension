@@ -8,6 +8,7 @@ import {
 } from '../../../../../store/actions';
 import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
 import { validateDomainWithConfusables } from '../../../utils/sendValidations';
+import { RecipientValidationResult } from '../../../types/send';
 
 const LOWER_CASED_BURN_ADDRESSES = [
   '0x0000000000000000000000000000000000000000',
@@ -46,7 +47,10 @@ export const useEvmRecipientValidation = () => {
   const resolveNameLookup = useSnapNameResolution();
 
   const validateEvmRecipient = useCallback(
-    async (address: string, passedChainId?: string) => {
+    async (
+      address: string,
+      passedChainId?: string,
+    ): Promise<RecipientValidationResult> => {
       const effectiveChainId = passedChainId || '0x1';
 
       if (isValidHexAddress(address)) {

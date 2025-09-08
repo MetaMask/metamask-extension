@@ -78,7 +78,10 @@ export const useRecipientValidation = () => {
       }
 
       const finalResult = {
-        confusableCharacters: result.confusableCharacters ?? [],
+        confusableCharacters:
+          'confusableCharacters' in result
+            ? (result.confusableCharacters ?? [])
+            : [],
         error: result.error ?? null,
         resolvedLookup:
           'resolvedLookup' in result ? (result.resolvedLookup ?? null) : null,
