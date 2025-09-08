@@ -115,7 +115,7 @@ const mockWallets = {
 describe('MultichainAccountList', () => {
   const defaultProps: MultichainAccountListProps = {
     wallets: mockWallets,
-    selectedAccountGroup: walletOneGroupId,
+    selectedAccountGroups: [walletOneGroupId],
   };
 
   const renderComponent = (props = {}) => {
@@ -142,6 +142,22 @@ describe('MultichainAccountList', () => {
     );
     expect(walletHeaders).toHaveLength(2);
 
+    expect(
+      screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+    ).toBeInTheDocument();
+
+    expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
+    expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
+  });
+
+  it('does not render wallet headers based on prop', () => {
+    renderComponent({ displayWalletHeader: false });
+
+    expect(screen.queryByText('Wallet 1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Wallet 2')).not.toBeInTheDocument();
     expect(
       screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
     ).toBeInTheDocument();
@@ -198,7 +214,7 @@ describe('MultichainAccountList', () => {
     rerender(
       <MultichainAccountList
         wallets={mockWallets}
-        selectedAccountGroup={walletTwoGroupId}
+        selectedAccountGroups={[walletTwoGroupId]}
       />,
     );
 
@@ -237,7 +253,7 @@ describe('MultichainAccountList', () => {
     renderComponent({ wallets: multiGroupWallets });
 
     expect(
-      screen.getAllByTestId('multichain-account-tree-wallet-header'),
+      screen.queryAllByTestId('multichain-account-tree-wallet-header'),
     ).toHaveLength(1);
     expect(
       screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),

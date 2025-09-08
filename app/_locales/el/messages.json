@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Οι τιμές των τελών συναλλαγών είναι υψηλές και οι εκτιμήσεις είναι λιγότερο ακριβείς."
-  },
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Μη αναγκαία άδεια"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Το δίκτυο είναι απασχολημένο"
   },
   "alertReasonNoGasPrice": {
     "message": "Δεν είναι διαθέσιμη η εκτίμηση των τελών"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Δημιουργήστε αντίγραφα ασφαλείας των λογαριασμών και των ρυθμίσεων συγχρονισμού."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Γνωρίστε τη δημιουργία αντιγράφων ασφαλείας και συγχρονισμού"
-  },
   "backupApprovalInfo": {
     "message": "Αυτός ο μυστικός κωδικός απαιτείται για ανάκτηση του πορτοφολιού σας σε περίπτωση που χάσετε τη συσκευή σας, ξεχάσετε τον κωδικό πρόσβασης, πρέπει να κάνετε επανεγκατάσταση του MetaMask, ή θέλετε να έχετε πρόσβαση στο πορτοφόλι σας από μια άλλη συσκευή."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "Βασικά"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Οι βασικές λειτουργίες είναι απενεργοποιημένες"
   },
   "basicConfigurationDescription": {
     "message": "Το MetaMask παρέχει βασικές λειτουργίες, όπως λεπτομέρειες για τα tokens και ρυθμίσεις τελών συναλλαγών μέσω υπηρεσιών διαδικτύου. Όταν χρησιμοποιείτε υπηρεσίες διαδικτύου, η διεύθυνση IP σας κοινοποιείται, σε αυτή την περίπτωση με στο MetaMask. Αυτό συμβαίνει ακριβώς όπως όταν επισκέπτεστε οποιονδήποτε ιστότοπο. Το MetaMask χρησιμοποιεί αυτά τα δεδομένα προσωρινά και δεν πωλεί ποτέ τα δεδομένα σας. Μπορείτε να χρησιμοποιήσετε ένα VPN ή να απενεργοποιήσετε αυτές τις υπηρεσίες, αλλά αυτό μπορεί να επηρεάσει την εμπειρία σας στο MetaMask. Για να μάθετε περισσότερα διαβάστε την $1.",
@@ -2180,9 +2165,6 @@
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },
-  "enableIt": {
-    "message": " Ενεργοποίηση"
-  },
   "enableSmartContractAccount": {
     "message": "Ενεργοποίηση λογαριασμού έξυπνου συμβολαίου"
   },
@@ -3568,9 +3550,6 @@
   },
   "networkIsBusy": {
     "message": "Το δίκτυο είναι απασχολημένο. Τα τέλη συναλλαγής είναι υψηλά και οι εκτιμήσεις λιγότερο ακριβείς."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Πρέπει να είναι ενεργοποιημένο τουλάχιστον ένα δίκτυο"
   },
   "networkMenu": {
     "message": "Μενού δικτύου"
@@ -5534,60 +5513,6 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Επιλέγοντας αυτήν την επιλογή, δεν θα εμφανίζεται το παράθυρο προειδοποίησης όταν ανοίγετε ειδικούς συνδέσμους στο MetaMask. Ένας 'ειδικός σύνδεσμος' είναι όπως το https://link.metamask.io/home που ανοίγει το MetaMask, αυτοί οι σύνδεσμοι μπορούν να παραποιηθούν από τρίτους. Το παράθυρο προειδοποίησης έχει σχεδιαστεί για να σας προστατεύει από το να ανοίγετε κατά λάθος σελίδες μέσα στο MetaMask που μπορεί να εμφανίζουν τους λογαριασμούς σας, tokens, ιστορικό, υπόλοιπα, ρυθμίσεις ή άλλες ενδεχομένως ευαίσθητες πληροφορίες. Αυτή η ρύθμιση αφορά μόνο τους συνδέσμους που έχουν πιστοποιηθεί από το MetaMask."
   },
-  "slideBridgeDescription": {
-    "message": "Μετακινηθείτε σε 9 αλυσίδες, όλες μέσα στο πορτοφόλι σας"
-  },
-  "slideBridgeTitle": {
-    "message": "Έτοιμοι για διασύνδεση;"
-  },
-  "slideCashOutDescription": {
-    "message": "Πουλήστε τα κρυπτονομίσματά σας για μετρητά"
-  },
-  "slideCashOutTitle": {
-    "message": "Κάντε ανάληψη με το MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Διατίθεται σε επιλεγμένες περιοχές"
-  },
-  "slideDebitCardTitle": {
-    "message": "Χρεωστική κάρτα από το MetaMask"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Πάρτε το πορτοφόλι σας παντού μαζί σας"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Κατεβάστε το MetaMask για κινητά"
-  },
-  "slideFundWalletDescription": {
-    "message": "Προσθέστε ή μεταφέρετε tokens για να ξεκινήσετε"
-  },
-  "slideFundWalletTitle": {
-    "message": "Χρηματοδοτήστε το πορτοφόλι σας"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Εισαγωγή και χρήση πολλαπλών πορτοφολιών στο MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Προσθήκη πολλαπλών Φράσεων Μυστικής Ανάκτησης"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Ίδια διεύθυνση, πιο έξυπνες λειτουργίες"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Ξεκινήστε να χρησιμοποιείτε έξυπνους λογαριασμούς"
-  },
-  "slideSolanaDescription": {
-    "message": "Δημιουργήστε λογαριασμό στο Solana για να ξεκινήσετε"
-  },
-  "slideSolanaTitle": {
-    "message": "Υποστηρίζουμε τώρα το Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Αναρτήστε ένα NFT τώρα για μια ευκαιρία να κερδίσετε"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Δηλώστε συμμετοχή στον διαγωνισμό για $5000 USDC!"
-  },
   "slippage": {
     "message": "Απόκλιση"
   },
@@ -7300,15 +7225,6 @@
   },
   "welcomeBack": {
     "message": "Καλώς ήρθατε και πάλι"
-  },
-  "welcomeDescription": {
-    "message": "Με την εμπιστοσύνη εκατομμυρίων ατόμων, το MetaMask είναι ένα ασφαλές πορτοφόλι που καθιστά τον κόσμο του web3 προσιτό σε όλους."
-  },
-  "welcomeGetStarted": {
-    "message": "Ξεκινήστε"
-  },
-  "welcomeTitle": {
-    "message": "Καλώς ορίσατε στο MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Ας ξεκινήσουμε"

@@ -67,6 +67,7 @@ describe('AssetPage', () => {
     },
     metamask: {
       ...mockMultichainNetworkState(),
+      txHistory: {},
       remoteFeatureFlags: {
         bridgeConfig: {
           support: true,
@@ -105,6 +106,10 @@ describe('AssetPage', () => {
       preferences: {},
       enabledNetworkMap: {
         eip155: {},
+      },
+      accountTree: {
+        wallets: {},
+        selectedAccountGroup: 'mock-account-group-id',
       },
       internalAccounts: {
         accounts: {

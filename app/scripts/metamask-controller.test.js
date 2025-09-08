@@ -49,7 +49,7 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';
-import { flushPromises } from '../../test/lib/timer-helpers';
+
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
@@ -57,6 +57,7 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import * as NetworkConstantsModule from '../../shared/constants/network';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
+import { flushPromises } from '../../test/lib/timer-helpers';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
 
@@ -378,15 +379,6 @@ describe('MetaMaskController', () => {
   describe('MetaMaskController Behaviour', () => {
     let metamaskController;
 
-    async function simulatePreferencesChange(preferences) {
-      metamaskController.controllerMessenger.publish(
-        'PreferencesController:stateChange',
-        preferences,
-        getMockPatches(),
-      );
-      await flushPromises();
-    }
-
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
 
@@ -412,7 +404,12 @@ describe('MetaMaskController', () => {
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
-        initState: cloneDeep(firstTimeState),
+        initState: {
+          ...cloneDeep(firstTimeState),
+          PreferencesController: {
+            useExternalServices: false,
+          },
+        },
         initLangCode: 'en_US',
         platform: {
           showTransactionNotification: () => undefined,
@@ -424,6 +421,14 @@ describe('MetaMaskController', () => {
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
       });
+
+      // Mock RemoteFeatureFlagController to prevent network requests in tests
+      jest
+        .spyOn(
+          metamaskController.remoteFeatureFlagController,
+          'updateRemoteFeatureFlags',
+        )
+        .mockResolvedValue();
 
       jest.spyOn(
         metamaskController.keyringController,
@@ -579,6 +584,7 @@ describe('MetaMaskController', () => {
           updateSecurityAlertResponse: expect.any(Function),
           getSecurityAlertResponse: expect.any(Function),
           addSecurityAlertResponse: expect.any(Function),
+          getSecurityAlertsConfig: expect.any(Function),
         });
       });
       it('passes through any additional params to the object', () => {
@@ -3300,11 +3306,31 @@ describe('MetaMaskController', () => {
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
         });
+
+        // Mock RemoteFeatureFlagController to prevent network requests in tests
+        jest
+          .spyOn(
+            localMetamaskController.remoteFeatureFlagController,
+            'updateRemoteFeatureFlags',
+          )
+          .mockResolvedValue();
       });
 
-      afterEach(() => {
+      afterEach(async () => {
         jest.clearAllMocks();
+        // Ensure all async operations complete before next test
+        await flushPromises();
       });
+
+      async function simulateLocalPreferencesChange(preferences) {
+        localMetamaskController.controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          preferences,
+          getMockPatches(),
+        );
+        // Wait for all async operations to complete
+        await flushPromises();
+      }
 
       it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
         const { remoteFeatureFlagController, preferencesController } =
@@ -3321,12 +3347,12 @@ describe('MetaMaskController', () => {
         const { remoteFeatureFlagController } = localMetamaskController;
 
         // First enable external services
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
 
         // Then disable them
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: false,
         });
 
@@ -3338,16 +3364,22 @@ describe('MetaMaskController', () => {
 
       it('should handle errors during feature flag updates', async () => {
         const { remoteFeatureFlagController } = localMetamaskController;
-        const mockError = new Error('Failed to fetch');
 
+        // Replace the global mock with an error mock for this test
         jest
           .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
-          .mockRejectedValue(mockError);
+          .mockImplementation(() =>
+            Promise.reject(
+              new Error('Network error during feature flag update'),
+            ),
+          );
 
-        await simulatePreferencesChange({
+        // Trigger the error scenario and wait for async operations
+        await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
 
+        // Verify the controller state remains unchanged after error
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
           cacheTimestamp: 0,
@@ -3363,12 +3395,12 @@ describe('MetaMaskController', () => {
           .mockResolvedValue(mockFlags);
 
         // Enable external services
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: true,
         });
 
         // Disable external services
-        await simulatePreferencesChange({
+        await simulateLocalPreferencesChange({
           useExternalServices: false,
         });
 

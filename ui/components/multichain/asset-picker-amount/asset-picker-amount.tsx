@@ -50,13 +50,10 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
-import {
-  detectNfts,
-  setActiveNetworkWithError,
-  setEnabledNetworks,
-} from '../../../store/actions';
+import { detectNfts, setActiveNetworkWithError } from '../../../store/actions';
 import { setToChainId } from '../../../ducks/bridge/actions';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import { enableSingleNetwork } from '../../../store/controller-actions/network-order-controller';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -297,30 +294,10 @@ export const AssetPickerAmount = ({
                         );
 
                         if (!isNetworkEnabled) {
-                          const filteredPopularNetworks =
-                            enabledNetworkKeys.filter((key) =>
-                              FEATURED_NETWORK_CHAIN_IDS.includes(
-                                key as `0x${string}`,
-                              ),
-                            );
-
-                          dispatch(
-                            setEnabledNetworks(
-                              [
-                                networkConfig.chainId,
-                                ...filteredPopularNetworks,
-                              ],
-                              namespace,
-                            ),
-                          );
+                          dispatch(enableSingleNetwork(networkConfig.chainId));
                         }
                       } else {
-                        dispatch(
-                          setEnabledNetworks(
-                            [networkConfig.chainId],
-                            namespace,
-                          ),
-                        );
+                        dispatch(enableSingleNetwork(networkConfig.chainId));
                       }
                     }
 
