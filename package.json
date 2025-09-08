@@ -128,7 +128,9 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
     "attributions:check": "./development/attributions-check.sh",
-    "attributions:generate": "./development/generate-attributions.sh"
+    "attributions:generate": "./development/generate-attributions.sh",
+    "yarn-binary:download": "node development/download-yarn-binary.js --yarn-version=4.9.4",
+    "yarn-binary:verify": "node development/download-yarn-binary.js --yarn-version=4.9.4 --verify-only"
   },
   "resolutions": {
     "http-cache-semantics": "^4.1.1",
