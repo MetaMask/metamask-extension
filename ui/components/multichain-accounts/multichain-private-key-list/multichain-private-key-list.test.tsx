@@ -173,6 +173,8 @@ const createMockState = () => ({
   },
 });
 
+const mockGoBack = jest.fn();
+
 const mockVerifyPassword = jest.fn().mockImplementation((pwd: string) => {
   if (pwd === 'correctpassword') {
     return Promise.resolve();
@@ -207,7 +209,7 @@ const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
   const store = mockStore(createMockState());
   return render(
     <Provider store={store}>
-      <MultichainPrivateKeyList groupId={groupId} />
+      <MultichainPrivateKeyList groupId={groupId} goBack={mockGoBack} />
     </Provider>,
   );
 };
@@ -223,7 +225,7 @@ describe('MultichainPrivateKeyList', () => {
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
   });
 
-  it('sets wrongPassword to true for invalid passwor d', async () => {
+  it('sets wrongPassword to true for invalid password', async () => {
     mockVerifyPassword.mockRejectedValueOnce(new Error('Invalid password'));
 
     renderComponent();

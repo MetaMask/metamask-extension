@@ -154,7 +154,7 @@ const MultichainPrivateKeyList = ({
             onChange={handlePasswordChange}
             error={wrongPassword}
             width={BlockSize.Full}
-            data-testid="multichain-private-key-password-input"
+            testId="multichain-private-key-password-input"
           />
           {wrongPassword ? (
             <Text
