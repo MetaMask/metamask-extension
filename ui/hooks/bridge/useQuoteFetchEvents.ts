@@ -58,7 +58,6 @@ export const useQuoteFetchEvents = () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           gas_included: Boolean(activeQuote?.quote?.gasIncluded),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // @ts-expect-error gas_included_7702 needs to be added to bridge-controller types
           // eslint-disable-next-line @typescript-eslint/naming-convention
           gas_included_7702: Boolean(activeQuote?.quote?.gasIncluded7702),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

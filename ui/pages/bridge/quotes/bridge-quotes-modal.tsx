@@ -121,6 +121,7 @@ export const BridgeQuotesModal = ({
                           recommendedQuote?.quote?.gasIncluded,
                         ),
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // @ts-expect-error gas_included_7702 needs to be added to bridge-controller types
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         gas_included_7702: Boolean(
                           recommendedQuote?.quote?.gasIncluded7702,
