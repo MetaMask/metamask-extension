@@ -19,7 +19,7 @@ const networkConfigurationsByChainId = {
     chainId: '0xa4b1',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Arbitrum One',
+    name: 'Arbitrum',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {

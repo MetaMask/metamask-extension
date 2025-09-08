@@ -94,7 +94,7 @@ const MAINNET_NETWORKS = [
     clientId: 'avalanche',
   },
   {
-    name: 'Arbitrum One',
+    name: 'Arbitrum',
     chainId: '0xa4b1' as Hex,
     caipChainId: 'eip155:42161',
     currency: 'ETH',

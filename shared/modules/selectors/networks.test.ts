@@ -146,7 +146,7 @@ describe('Network Selectors', () => {
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
           lastUpdatedAt: 1738689624782,
-          name: 'Arbitrum One',
+          name: 'Arbitrum',
           nativeCurrency: 'ETH',
           rpcEndpoints: [
             {
@@ -241,7 +241,7 @@ describe('Network Selectors', () => {
         },
         {
           chainId: '0xa4b1',
-          name: 'Arbitrum One',
+          name: 'Arbitrum',
         },
         {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
