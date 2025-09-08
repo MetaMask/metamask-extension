@@ -22,7 +22,6 @@ import {
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
-  subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
