@@ -7226,15 +7226,6 @@
   "welcomeBack": {
     "message": "Bienvenido de nuevo"
   },
-  "welcomeDescription": {
-    "message": "Con la confianza de millones de usuarios, MetaMask es una billetera segura que permite que todos puedan acceder al mundo de la web3."
-  },
-  "welcomeGetStarted": {
-    "message": "Comenzar"
-  },
-  "welcomeTitle": {
-    "message": "Bienvenido a MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Comencemos"
   },

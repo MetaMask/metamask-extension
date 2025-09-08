@@ -70,6 +70,7 @@ import {
   ADD_WALLET_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -322,6 +323,12 @@ const MultichainAccountDetailsPage = mmLazy(
   (() =>
     import(
       '../multichain-accounts/multichain-account-details-page/index.ts'
+    )) as unknown as DynamicImportType,
+);
+const SmartAccountPage = mmLazy(
+  (() =>
+    import(
+      '../multichain-accounts/smart-account-page/index.ts'
     )) as unknown as DynamicImportType,
 );
 const NonEvmBalanceCheck = mmLazy(
@@ -641,6 +648,11 @@ export default function Routes() {
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            component={SmartAccountPage}
             exact
           />
           <Authenticated
