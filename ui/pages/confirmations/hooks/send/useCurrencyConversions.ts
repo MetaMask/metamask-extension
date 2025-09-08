@@ -29,7 +29,7 @@ const getFiatValueFn = ({ amount, conversionRate }: ConversionArgs) => {
   if (!amount) {
     return '0.00';
   }
-  return convertedCurrency(amount, conversionRate) ?? '0.00';
+  return convertedCurrency(amount, conversionRate, 2) ?? '0.00';
 };
 
 const getFiatDisplayValueFn = ({
@@ -43,11 +43,15 @@ const getFiatDisplayValueFn = ({
   return `${getCurrencySymbol(currentCurrency)} ${amt}`;
 };
 
-const getNativeValueFn = ({ amount, conversionRate }: ConversionArgs) => {
+const getNativeValueFn = ({
+  asset,
+  amount,
+  conversionRate,
+}: ConversionArgs) => {
   if (!amount) {
     return '0';
   }
-  return convertedCurrency(amount, 1 / conversionRate) ?? '0';
+  return convertedCurrency(amount, 1 / conversionRate, asset?.decimals) ?? '0';
 };
 
 const getNativeDisplayValueFn = ({
@@ -57,6 +61,7 @@ const getNativeDisplayValueFn = ({
 }: ConversionArgs) => {
   return `${asset?.symbol} ${formatToFixedDecimals(
     getNativeValueFn({
+      asset,
       amount,
       conversionRate,
     }),
@@ -138,10 +143,11 @@ export const useCurrencyConversions = () => {
   const getNativeValue = useCallback(
     (amount: string) =>
       getNativeValueFn({
+        asset,
         amount,
         conversionRate,
       }),
-    [conversionRate],
+    [asset, conversionRate],
   );
 
   const getNativeDisplayValue = useCallback(
