@@ -43,7 +43,7 @@ export const getEstimatedTotalGas = (
 type GetMaxAmountArgs = {
   asset?: Asset;
   layer1GasFees: Hex;
-  isEvmSendType?: boolean;
+  isEvmNativeSendType?: boolean;
   gasFeeEstimates?: GasFeeEstimatesType;
   rawBalanceNumeric: Numeric;
 };
@@ -52,7 +52,7 @@ const getMaxAmountFn = ({
   asset,
   layer1GasFees,
   gasFeeEstimates,
-  isEvmSendType,
+  isEvmNativeSendType,
   rawBalanceNumeric,
 }: GetMaxAmountArgs) => {
   if (!asset) {
@@ -60,16 +60,9 @@ const getMaxAmountFn = ({
   }
 
   let estimatedTotalGas = new Numeric('0', 10);
-  if (isEvmSendType) {
-    const nativeTokenAddressForChainId = getNativeTokenAddress(
-      asset.chainId as Hex,
-    );
-    if (
-      nativeTokenAddressForChainId.toLowerCase() ===
-      asset.address?.toLowerCase()
-    ) {
-      estimatedTotalGas = getEstimatedTotalGas(layer1GasFees, gasFeeEstimates);
-    }
+
+  if (isEvmNativeSendType) {
+    estimatedTotalGas = getEstimatedTotalGas(layer1GasFees, gasFeeEstimates);
   }
 
   const balance = rawBalanceNumeric.minus(estimatedTotalGas);
@@ -112,11 +105,17 @@ export const useMaxAmount = () => {
     return getMaxAmountFn({
       asset,
       gasFeeEstimates,
-      isEvmSendType,
+      isEvmNativeSendType,
       layer1GasFees: layer1GasFees ?? '0x0',
       rawBalanceNumeric,
     });
-  }, [asset, gasFeeEstimates, isEvmSendType, layer1GasFees, rawBalanceNumeric]);
+  }, [
+    asset,
+    gasFeeEstimates,
+    isEvmNativeSendType,
+    layer1GasFees,
+    rawBalanceNumeric,
+  ]);
 
   return {
     getMaxAmount,
