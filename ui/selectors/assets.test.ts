@@ -1,4 +1,4 @@
-import { SolScope } from '@metamask/keyring-api';
+import { EthScope, SolScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
@@ -273,17 +273,52 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
   // Create a mock state with an EVM account and a non-EVM account, each having a token on their respective chains
   const mockState = {
     metamask: {
+      accountTree: {
+        wallets: {
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+            id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+            type: 'entropy',
+            groups: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+                type: 'multichain-account',
+                accounts: [
+                  '81b1ead4-334c-4921-9adf-282fde539752',
+                  '5132883f-598e-482c-a02b-84eeaa352f5b',
+                ],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                  hidden: false,
+                  pinned: false,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+              },
+            },
+          },
+        },
+        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      },
       internalAccounts: {
         accounts: {
           '81b1ead4-334c-4921-9adf-282fde539752': {
             id: '81b1ead4-334c-4921-9adf-282fde539752',
             address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
             type: 'eip155:eoa',
+            scopes: [EthScope.Eoa],
           },
           '5132883f-598e-482c-a02b-84eeaa352f5b': {
             id: '5132883f-598e-482c-a02b-84eeaa352f5b',
             address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
             type: 'solana:data-account',
+            scopes: [SolScope.Mainnet],
           },
         },
         selectedAccount: '', // To be populated in each case

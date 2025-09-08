@@ -2,9 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
-import { KnownCaipNamespace } from '@metamask/utils';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -152,7 +151,7 @@ describe('AssetPage', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-            scopes: [`${KnownCaipNamespace.Eip155}:0`],
+            scopes: [EthScope.Eoa],
           },
         },
         selectedAccount: selectedAccountAddress,

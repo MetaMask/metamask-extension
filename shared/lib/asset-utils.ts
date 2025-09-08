@@ -195,6 +195,12 @@ export const fetchAssetMetadataForAssetIds = async (
   }
 };
 
+/**
+ * Checks if the given chain ID is an EVM chain ID
+ *
+ * @param chainId - The chain ID to check. It can be in caip or hex format.
+ * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
+ */
 export const isEvmChainId = (chainId: CaipChainId | Hex) => {
   const chainIdInCaip = isCaipChainId(chainId)
     ? chainId
