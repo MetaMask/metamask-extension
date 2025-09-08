@@ -91,7 +91,7 @@ describe('NetworkForm Component', () => {
       .get('/chains.json')
       .reply(200, [
         {
-          name: 'Polygon Mainnet',
+          name: 'Polygon',
           chain: 'Polygon',
           rpc: [
             'https://polygon-rpc.com/',

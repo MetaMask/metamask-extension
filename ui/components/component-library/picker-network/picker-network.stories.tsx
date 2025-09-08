@@ -51,7 +51,7 @@ export const Label: StoryFn<typeof PickerNetwork> = (args) => (
   >
     <PickerNetwork {...args} />
     <PickerNetwork {...args} src="" label="Arbitrum One" />
-    <PickerNetwork {...args} src="" label="Polygon Mainnet" />
+    <PickerNetwork {...args} src="" label="Polygon" />
     <PickerNetwork {...args} src="" label="Optimism" />
     <PickerNetwork
       {...args}
@@ -69,11 +69,7 @@ export const Src: StoryFn<typeof PickerNetwork> = (args) => (
     gap={2}
   >
     <PickerNetwork {...args} label="Arbitrum One" src="./images/arbitrum.svg" />
-    <PickerNetwork
-      {...args}
-      label="Polygon Mainnet"
-      src="./images/pol-token.svg"
-    />
+    <PickerNetwork {...args} label="Polygon" src="./images/pol-token.svg" />
     <PickerNetwork {...args} label="Optimism" src="./images/optimism.svg" />
   </Box>
 );

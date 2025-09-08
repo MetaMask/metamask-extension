@@ -41,7 +41,7 @@ export const FIXTURES_NETWORKS = {
     polygon: {
       chainId: '0x89',
       id: 'polygon',
-      nickname: 'Polygon Mainnet',
+      nickname: 'Polygon',
       rpcPrefs: {
         blockExplorerUrl: 'https://polygonscan.com/',
         imageUrl: './images/matic-token.svg',

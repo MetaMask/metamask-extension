@@ -75,7 +75,7 @@ export const OptimismNetwork: Story = {
 export const PolygonNetwork: Story = {
   args: {
     chainId: '0x89',
-    networkName: 'Polygon Mainnet',
+    networkName: 'Polygon',
     address: '0xfedcba0987654321fedcba0987654321fedcba09',
     className: '',
   },

@@ -507,7 +507,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689655105,
-        "name": "Polygon Mainnet",
+        "name": "Polygon",
         "nativeCurrency": "POL",
         "rpcEndpoints": [
           {
@@ -2377,7 +2377,7 @@
       {
         "active": true,
         "chainId": 137,
-        "chainName": "Polygon Mainnet",
+        "chainName": "Polygon",
         "shortName": "Polygon",
         "nativeTokenSupported": true
       },

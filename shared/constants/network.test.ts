@@ -30,7 +30,7 @@ describe('NetworkConstants', () => {
         Avalanche: CHAIN_IDS.AVALANCHE,
         'Binance Smart Chain': CHAIN_IDS.BSC,
         'OP Mainnet': CHAIN_IDS.OPTIMISM,
-        'Polygon Mainnet': CHAIN_IDS.POLYGON,
+        Polygon: CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         'Base Mainnet': CHAIN_IDS.BASE,
         'Linea Mainnet': CHAIN_IDS.LINEA_MAINNET,

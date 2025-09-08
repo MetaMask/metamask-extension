@@ -62,13 +62,13 @@ describe('MultichainAddressRow', () => {
   it('renders correctly with different network', () => {
     renderComponent({
       chainId: '0x89',
-      networkName: 'Polygon Mainnet',
+      networkName: 'Polygon',
       address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
     });
 
     expect(
       screen.getByTestId('multichain-address-row-network-name'),
-    ).toHaveTextContent('Polygon Mainnet');
+    ).toHaveTextContent('Polygon');
 
     expect(
       screen.getByTestId('multichain-address-row-address'),

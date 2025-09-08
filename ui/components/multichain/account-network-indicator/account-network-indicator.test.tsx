@@ -39,7 +39,7 @@ describe('AccountNetworkIndicator', () => {
       fireEvent.mouseEnter(tooltipTrigger);
       expect(tooltipTrigger.getAttribute('aria-describedby')).not.toBeNull();
 
-      expect(getByText('Polygon Mainnet')).toBeInTheDocument();
+      expect(getByText('Polygon')).toBeInTheDocument();
       expect(getByText('Binance Smart Chain')).toBeInTheDocument();
     }
   });

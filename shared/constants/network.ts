@@ -1397,7 +1397,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
   },
   {
     chainId: CHAIN_IDS.POLYGON,
-    name: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
+    name: POLYGON_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.POL,
     rpcEndpoints: [
       {

@@ -163,7 +163,7 @@ describe('SiteCellTooltip', () => {
         nativeCurrency: 'POL',
         rpcEndpoints: [
           {
-            name: 'Polygon Mainnet',
+            name: 'Polygon',
             networkClientId: 'cf19f0de-8a83-468c-ad97-49b855a2ca9e',
             type: 'custom',
             url: 'https://polygon-mainnet.infura.io/v3/{infuraProjectId}',
