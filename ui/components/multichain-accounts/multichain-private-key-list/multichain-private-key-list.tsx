@@ -108,31 +108,19 @@ const MultichainPrivateKeyList = ({
   }, [password]);
 
   const unlockPrivateKeys = useCallback(async () => {
-    console.log('Unlocking private keys...');
     const pkAccounts = accounts.filter((account: InternalAccount) =>
       hasPrivateKeyAvailable(account),
     );
 
-    console.log('Accounts with private keys:', pkAccounts);
-
-    if (pkAccounts.length === 0) {
-      console.log('No accounts with private keys found.');
-      return;
-    }
     const addresses = pkAccounts.map((account) => account.address);
-
-    console.log('Exporting private keys for addresses:', addresses);
 
     const pks = (await dispatch(
       exportAccounts(password, addresses),
     )) as unknown as string[];
 
-    console.log('Exported private keys:', pks);
-
     const privateKeyMap = await addresses.reduce(
       (acc, address, index) => {
         acc[address] = pks[index];
-        console.log(`Private key for ${address}: ${pks[index]}`);
         return acc;
       },
       {} as Record<string, string>,
