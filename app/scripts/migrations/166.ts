@@ -83,7 +83,7 @@ export function getBaseNetworkConfiguration() {
     blockExplorerUrls: [],
     chainId: '0x2105' as const, // toHex(8453) Base Network
     defaultRpcEndpointIndex: 0,
-    name: 'Base',
+    name: 'Base Mainnet',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {

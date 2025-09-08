@@ -32,7 +32,7 @@ export async function migrate(
 
 function transformState(state: Record<string, unknown>) {
   const fromName = 'Sei Network';
-  const toName = 'Sei';
+  const toName = 'Sei Mainnet';
   const seiChainId = CHAIN_IDS.SEI;
 
   // We only update the network name if it exists in the state
