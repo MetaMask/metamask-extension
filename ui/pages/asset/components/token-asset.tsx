@@ -11,6 +11,7 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -22,12 +23,7 @@ import {
 } from '../../../helpers/utils/util';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import {
-  getIsMultichainAccountsState2Enabled,
-  getSelectedInternalAccount,
-  getTokenList,
-  selectERC20TokensByChain,
-} from '../../../selectors';
+import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -51,20 +47,13 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       ? null
       : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
 
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
-  const needsMultichainInternalAccount =
-    isMultichainAccountsState2Enabled && isCaipChainId(chainId);
-
-  // TODO Modify this for BIP44 usage
-  const selectedAccount = useSelector(
-    needsMultichainInternalAccount
-      ? (state: any) =>
-          getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
-      : getSelectedInternalAccount,
+  const caipChainId = isCaipChainId(chainId)
+    ? chainId
+    : formatChainIdToCaip(chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   ) as InternalAccount;
+
   const { address: walletAddress } = selectedAccount;
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
