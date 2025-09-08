@@ -94,10 +94,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
 
         // Wait for token to show in list of tokens to watch
         const addTokensModal = new AddTokensModal(driver);
-        await addTokensModal.waitForSuggestedTokensCount(2);
-
-        // Confirm only 2 tokens are present in suggested token list
-        await addTokensModal.checkSuggestedTokensCount(2);
+        await addTokensModal.waitUntilXTokens(2);
       },
     );
   });
