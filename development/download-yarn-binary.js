@@ -24,14 +24,16 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
 // Configuration
-const YARN_V1_RELEASES_BASE_URL = 'https://github.com/yarnpkg/yarn/releases/download';
-const YARN_BERRY_RELEASES_BASE_URL = 'https://github.com/yarnpkg/berry/releases/download';
+const YARN_V1_RELEASES_BASE_URL =
+  'https://github.com/yarnpkg/yarn/releases/download';
+const YARN_BERRY_RELEASES_BASE_URL =
+  'https://github.com/yarnpkg/berry/releases/download';
 const TOOLS_DIR = path.join(__dirname, '..', 'tools');
 const YARN_DIR = path.join(TOOLS_DIR, 'yarn');
 const YARN_CONFIG_FILE = path.join(YARN_DIR, 'yarn-config.json');
 
 // Parse command line arguments
-const argv = yargs(hideBin(process.argv))
+const { argv } = yargs(hideBin(process.argv))
   .version(false) // Disable built-in version to avoid conflicts
   .option('yarn-version', {
     alias: ['v', 'version'],
@@ -46,7 +48,7 @@ const argv = yargs(hideBin(process.argv))
     default: false,
   })
   .option('verify-only', {
-    describe: 'Only verify existing binary, don\'t download',
+    describe: "Only verify existing binary, don't download",
     type: 'boolean',
     default: false,
   })
@@ -55,11 +57,12 @@ const argv = yargs(hideBin(process.argv))
     type: 'boolean',
     default: false,
   })
-  .help()
-  .argv;
+  .help();
 
 /**
  * Ensure directory exists
+ *
+ * @param dirPath
  */
 async function ensureDirectory(dirPath) {
   try {
@@ -72,38 +75,47 @@ async function ensureDirectory(dirPath) {
 
 /**
  * Download file from URL
+ *
+ * @param url
+ * @param filePath
  */
 async function downloadFile(url, filePath) {
   return new Promise((resolve, reject) => {
     const file = createWriteStream(filePath);
 
-    https.get(url, (response) => {
-      if (response.statusCode === 302 || response.statusCode === 301) {
-        // Handle redirect
-        file.close();
-        return downloadFile(response.headers.location, filePath)
-          .then(resolve)
+    https
+      .get(url, (response) => {
+        if (response.statusCode === 302 || response.statusCode === 301) {
+          // Handle redirect
+          file.close();
+          return downloadFile(response.headers.location, filePath)
+            .then(resolve)
+            .catch(reject);
+        }
+
+        if (response.statusCode !== 200) {
+          file.close();
+          return reject(
+            new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`),
+          );
+        }
+
+        pipeline(response, file)
+          .then(() => resolve())
           .catch(reject);
-      }
-
-      if (response.statusCode !== 200) {
+      })
+      .on('error', (error) => {
         file.close();
-        return reject(new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`));
-      }
-
-      pipeline(response, file)
-        .then(() => resolve())
-        .catch(reject);
-    })
-    .on('error', (error) => {
-      file.close();
-      reject(error);
-    });
+        reject(error);
+      });
   });
 }
 
 /**
  * Calculate checksum of file using specified algorithm
+ *
+ * @param filePath
+ * @param algorithm
  */
 async function calculateChecksum(filePath, algorithm = 'sha256') {
   const hash = crypto.createHash(algorithm);
@@ -114,6 +126,8 @@ async function calculateChecksum(filePath, algorithm = 'sha256') {
 
 /**
  * Determine yarn version info and repository
+ *
+ * @param version
  */
 function getYarnVersionInfo(version) {
   const majorVersion = parseInt(version.split('.')[0], 10);
@@ -136,37 +150,44 @@ function getYarnVersionInfo(version) {
       filename: `yarn-${version}.cjs`,
       downloadUrl: `https://repo.yarnpkg.com/${version}/packages/yarnpkg-cli/bin/yarn.js`,
     };
-  } else {
-    throw new Error(`Unsupported yarn version: ${version}`);
   }
+  throw new Error(`Unsupported yarn version: ${version}`);
 }
 
 /**
  * Fetch data from URL and return as string
+ *
+ * @param url
  */
 async function fetchUrlData(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, (response) => {
-      if (response.statusCode === 302 || response.statusCode === 301) {
-        // Handle redirect
-        return fetchUrlData(response.headers.location)
-          .then(resolve)
-          .catch(reject);
-      }
+    https
+      .get(url, (response) => {
+        if (response.statusCode === 302 || response.statusCode === 301) {
+          // Handle redirect
+          return fetchUrlData(response.headers.location)
+            .then(resolve)
+            .catch(reject);
+        }
 
-      if (response.statusCode !== 200) {
-        return reject(new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`));
-      }
+        if (response.statusCode !== 200) {
+          return reject(
+            new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`),
+          );
+        }
 
-      let data = '';
-      response.on('data', chunk => data += chunk);
-      response.on('end', () => resolve(data));
-    }).on('error', reject);
+        let data = '';
+        response.on('data', (chunk) => (data += chunk));
+        response.on('end', () => resolve(data));
+      })
+      .on('error', reject);
   });
 }
 
 /**
  * Fetch and verify checksums from yarn release
+ *
+ * @param version
  */
 async function fetchOfficialChecksums(version) {
   const versionInfo = getYarnVersionInfo(version);
@@ -208,21 +229,32 @@ async function fetchOfficialChecksums(version) {
       const packageInfo = JSON.parse(data);
 
       if (packageInfo.dist && packageInfo.dist.tarball) {
-        console.log(`ℹ️  Note: npm registry provides checksums for tarball (${packageInfo.dist.tarball})`);
-        console.log(`ℹ️  We're downloading standalone binary from repo.yarnpkg.com - these are different files`);
+        console.log(
+          `ℹ️  Note: npm registry provides checksums for tarball (${packageInfo.dist.tarball})`,
+        );
+        console.log(
+          `ℹ️  We're downloading standalone binary from repo.yarnpkg.com - these are different files`,
+        );
 
         // Still record the npm checksums for reference, but don't use them for verification
-        if (packageInfo.dist.integrity && packageInfo.dist.integrity.startsWith('sha512-')) {
+        if (
+          packageInfo.dist.integrity &&
+          packageInfo.dist.integrity.startsWith('sha512-')
+        ) {
           const base64Hash = packageInfo.dist.integrity.replace('sha512-', '');
           const hexHash = Buffer.from(base64Hash, 'base64').toString('hex');
           console.log(`📝 npm tarball SHA-512: ${hexHash} (reference only)`);
         }
         if (packageInfo.dist.shasum) {
-          console.log(`📝 npm tarball SHA-1: ${packageInfo.dist.shasum} (reference only)`);
+          console.log(
+            `📝 npm tarball SHA-1: ${packageInfo.dist.shasum} (reference only)`,
+          );
         }
       }
     } catch (error) {
-      console.warn(`Warning: Could not fetch from npm registry: ${error.message}`);
+      console.warn(
+        `Warning: Could not fetch from npm registry: ${error.message}`,
+      );
     }
 
     // Fallback: try to get checksums from berry repository
@@ -255,10 +287,13 @@ async function fetchOfficialChecksums(version) {
           if (sha256Match) {
             // Verify it's for the right file or if no filename is specified, use it
             const parts = trimmedLine.split(/\s+/);
-            if (parts.length === 1 || // Just checksum
-                parts[1]?.includes('yarn.js') || // Contains yarn.js
-                parts[1]?.includes(`yarn-${version}.cjs`) || // Contains version-specific name
-                trimmedLine.includes('yarn')) { // Contains yarn somewhere
+            if (
+              parts.length === 1 || // Just checksum
+              parts[1]?.includes('yarn.js') || // Contains yarn.js
+              parts[1]?.includes(`yarn-${version}.cjs`) || // Contains version-specific name
+              trimmedLine.includes('yarn')
+            ) {
+              // Contains yarn somewhere
               checksum = sha256Match[1];
               break;
             }
@@ -274,10 +309,18 @@ async function fetchOfficialChecksums(version) {
       }
     }
 
-    console.warn(`Note: Official checksums for yarn v${version} standalone binaries are not publicly available.`);
-    console.warn(`Yarn Berry standalone binaries from repo.yarnpkg.com don't provide separate checksum files.`);
-    console.warn(`For additional security, you can manually verify this is an official yarn release at:`);
-    console.warn(`https://github.com/yarnpkg/berry/releases/tag/@yarnpkg%2Fcli%2F${version}`);
+    console.warn(
+      `Note: Official checksums for yarn v${version} standalone binaries are not publicly available.`,
+    );
+    console.warn(
+      `Yarn Berry standalone binaries from repo.yarnpkg.com don't provide separate checksum files.`,
+    );
+    console.warn(
+      `For additional security, you can manually verify this is an official yarn release at:`,
+    );
+    console.warn(
+      `https://github.com/yarnpkg/berry/releases/tag/@yarnpkg%2Fcli%2F${version}`,
+    );
   }
 
   return null;
@@ -302,6 +345,8 @@ async function loadYarnConfig() {
 
 /**
  * Save yarn configuration
+ *
+ * @param config
  */
 async function saveYarnConfig(config) {
   await fs.writeFile(YARN_CONFIG_FILE, JSON.stringify(config, null, 2));
@@ -310,13 +355,21 @@ async function saveYarnConfig(config) {
 
 /**
  * Main download function
+ *
+ * @param version
+ * @param force
+ * @param noConfig
  */
 async function downloadYarnBinary(version, force = false, noConfig = false) {
   console.log(`📦 Downloading yarn version ${version}...`);
 
   // Get version info
   const versionInfo = getYarnVersionInfo(version);
-  console.log(`ℹ️  Using ${versionInfo.repository} repository (${versionInfo.repository === 'classic' ? 'yarn v1' : 'yarn berry'})`);
+  console.log(
+    `ℹ️  Using ${versionInfo.repository} repository (${
+      versionInfo.repository === 'classic' ? 'yarn v1' : 'yarn berry'
+    })`,
+  );
 
   // Ensure directories exist
   await ensureDirectory(TOOLS_DIR);
@@ -333,25 +386,31 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
 
     // Check if version already exists
     if (!force && config.versions[version]) {
-      const existingBinaryPath = path.isAbsolute(config.versions[version].binaryPath)
+      const existingBinaryPath = path.isAbsolute(
+        config.versions[version].binaryPath,
+      )
         ? config.versions[version].binaryPath
         : path.resolve(process.cwd(), config.versions[version].binaryPath);
 
       if (existsSync(existingBinaryPath)) {
-        console.log(`✓ Yarn v${version} already exists. Use --force to re-download.`);
+        console.log(
+          `✓ Yarn v${version} already exists. Use --force to re-download.`,
+        );
         return config;
       }
     }
   } else {
     // With --no-config, only check if binary file exists
     if (!force && existsSync(binaryPath)) {
-      console.log(`✓ Yarn v${version} binary already exists. Use --force to re-download.`);
+      console.log(
+        `✓ Yarn v${version} binary already exists. Use --force to re-download.`,
+      );
       return config;
     }
   }
 
   // Download binary
-  const downloadUrl = versionInfo.downloadUrl;
+  const { downloadUrl } = versionInfo;
   console.log(`⬇️  Downloading from: ${downloadUrl}`);
 
   try {
@@ -399,25 +458,29 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
 
     if (expectedChecksum && actualChecksum) {
       if (expectedChecksum.toLowerCase() === actualChecksum.toLowerCase()) {
-        console.log(`✅ ${algorithm} checksum verified against official ${officialChecksums.source}!`);
+        console.log(
+          `✅ ${algorithm} checksum verified against official ${officialChecksums.source}!`,
+        );
         verified = true;
       } else {
         throw new Error(
           `❌ ${algorithm} checksum mismatch!\n` +
-          `Expected: ${expectedChecksum}\n` +
-          `Actual:   ${actualChecksum}\n` +
-          `This could indicate a compromised download.`
+            `Expected: ${expectedChecksum}\n` +
+            `Actual:   ${actualChecksum}\n` +
+            `This could indicate a compromised download.`,
         );
       }
     }
 
     if (!verified) {
-      console.warn(`⚠️  Could not verify checksum - unknown format from ${officialChecksums.source}`);
+      console.warn(
+        `⚠️  Could not verify checksum - unknown format from ${officialChecksums.source}`,
+      );
     }
   } else {
     console.warn(
       `⚠️  Could not verify checksum against official sources.\n` +
-      `Please manually verify this SHA-256 checksum: ${sha256Checksum}`
+        `Please manually verify this SHA-256 checksum: ${sha256Checksum}`,
     );
   }
 
@@ -429,9 +492,12 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
     // Yarn v1 uses tar.gz format - extract it
     const { execSync } = require('child_process');
     try {
-      execSync(`tar -xzf "${binaryPath}" -C "${versionDir}" --strip-components=1`, {
-        stdio: 'inherit',
-      });
+      execSync(
+        `tar -xzf "${binaryPath}" -C "${versionDir}" --strip-components=1`,
+        {
+          stdio: 'inherit',
+        },
+      );
       console.log(`✓ Extracted to: ${versionDir}`);
     } catch (error) {
       throw new Error(`Failed to extract yarn binary: ${error.message}`);
@@ -450,12 +516,15 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
     // Create a simple package.json for reference
     const packageInfo = {
       name: `@yarnpkg/cli-local-${version}`,
-      version: version,
+      version,
       bin: {
-        yarn: './bin/yarn.js'
-      }
+        yarn: './bin/yarn.js',
+      },
     };
-    await fs.writeFile(path.join(versionDir, 'package.json'), JSON.stringify(packageInfo, null, 2));
+    await fs.writeFile(
+      path.join(versionDir, 'package.json'),
+      JSON.stringify(packageInfo, null, 2),
+    );
 
     console.log(`✓ Set up standalone binary at: ${versionDir}`);
   }
@@ -470,13 +539,13 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
       binaryPath: relativeBinaryPath,
       extractedPath: relativeExtractedPath,
       checksum: sha256Checksum, // Always store SHA-256 for consistency
-      verified: !!officialChecksums,
+      verified: Boolean(officialChecksums),
       repository: versionInfo.repository,
       downloadUrl,
     };
 
-  config.current = version;
-  config.lastUpdated = new Date().toISOString();
+    config.current = version;
+    config.lastUpdated = new Date().toISOString();
 
     await saveYarnConfig(config);
   } else {
@@ -489,13 +558,17 @@ async function downloadYarnBinary(version, force = false, noConfig = false) {
 
 /**
  * Verify existing binary
+ *
+ * @param version
  */
 async function verifyExistingBinary(version) {
   const config = await loadYarnConfig();
   const versionInfo = config.versions[version];
 
   if (!versionInfo) {
-    throw new Error(`Yarn v${version} is not installed. Run without --verify-only to download.`);
+    throw new Error(
+      `Yarn v${version} is not installed. Run without --verify-only to download.`,
+    );
   }
 
   console.log(`🔍 Verifying existing yarn v${version}...`);
@@ -514,13 +587,12 @@ async function verifyExistingBinary(version) {
   if (currentChecksum === versionInfo.checksum) {
     console.log(`✅ Binary integrity verified!`);
     return true;
-  } else {
-    throw new Error(
-      `❌ Binary integrity check failed!\n` +
-      `Expected: ${versionInfo.checksum}\n` +
-      `Actual:   ${currentChecksum}`
-    );
   }
+  throw new Error(
+    `❌ Binary integrity check failed!\n` +
+      `Expected: ${versionInfo.checksum}\n` +
+      `Actual:   ${currentChecksum}`,
+  );
 }
 
 /**
