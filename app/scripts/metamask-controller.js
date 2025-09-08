@@ -7521,10 +7521,6 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
-    if (origin === BaseUrl.Portfolio) {
-      engine.push(createTxVerificationMiddleware(this.networkController));
-    }
-
     engine.push(createTracingMiddleware());
 
     engine.push(
