@@ -283,15 +283,6 @@ export const selectMaxValue = createSelector(
       : undefined,
 );
 
-/** @type {state: any, transactionId: string => string} */
-export const selectTransactionValue = createSelector(
-  selectIsMaxValueEnabled,
-  selectMaxValue,
-  selectTransactionMetadata,
-  (isMaxValueEnabled, maxValue, transactionMetadata) =>
-    isMaxValueEnabled ? maxValue : transactionMetadata?.txParams?.value,
-);
-
 const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
 
 export function selectMaxValueModeForTransaction(state, transactionId) {

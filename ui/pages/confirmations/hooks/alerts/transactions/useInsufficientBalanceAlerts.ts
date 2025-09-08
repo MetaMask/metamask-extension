@@ -10,7 +10,6 @@ import {
   getUseTransactionSimulations,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
-  selectTransactionValue,
 } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -33,6 +32,7 @@ export function useInsufficientBalanceAlerts({
     chainId,
     selectedGasFeeToken,
     gasFeeTokens,
+    txParams: { value } = {},
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
@@ -46,11 +46,7 @@ export function useInsufficientBalanceAlerts({
     selectTransactionAvailableBalance(state, transactionId, chainId),
   );
 
-  const value = useSelector((state) =>
-    selectTransactionValue(state, transactionId),
-  );
-
-  const totalValue = sumHexes(value, ...batchTransactionValues);
+  const totalValue = sumHexes(value ?? '0x0', ...batchTransactionValues);
 
   const { hexMaximumTransactionFee } = useSelector((state) =>
     selectTransactionFeeById(state, transactionId),
