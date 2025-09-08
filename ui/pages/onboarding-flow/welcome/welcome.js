@@ -172,6 +172,12 @@ export default function OnboardingWelcome() {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
+      // Map raw OAuth error messages to UI modal-friendly constants
+      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+        setLoginError(null);
+        return;
+      }
+
       bufferedTrace?.({
         name: TraceName.OnboardingSocialLoginError,
         op: TraceOperation.OnboardingError,
@@ -183,12 +189,6 @@ export default function OnboardingWelcome() {
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
       });
-
-      // Map raw OAuth error messages to UI modal-friendly constants
-      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
-        setLoginError(null);
-        return;
-      }
 
       if (errorMessage === OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR) {
         setLoginError(LOGIN_ERROR.SESSION_EXPIRED);

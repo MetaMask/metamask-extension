@@ -41,12 +41,10 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
-  setTermsOfUseLastAgreed,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-  getIsSocialLoginFlow,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -110,7 +108,6 @@ export default function OnboardingFlow() {
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
-  const isSocialLogin = useSelector(getIsSocialLoginFlow);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -192,11 +189,6 @@ export default function OnboardingFlow() {
         newSecretRecoveryPhrase = await dispatch(
           createNewVaultAndGetSeedPhrase(password),
         );
-      }
-
-      // For social login, we need to agree to the terms of use
-      if (isSocialLogin) {
-        await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
       }
 
       setSecretRecoveryPhrase(newSecretRecoveryPhrase);
