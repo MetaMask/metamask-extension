@@ -92,7 +92,7 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(oldState.data);
     });
 
-    it('updates the SEI network name from `Sei Network` to `Sei`', async () => {
+    it('updates the SEI network name from `Sei Network` to `Sei Mainnet`', async () => {
       const oldState = {
         meta: { version: oldVersion },
         data: {
@@ -144,7 +144,7 @@ describe(`migration #${version}`, () => {
               ...oldState.data.NetworkController.networkConfigurationsByChainId[
                 '0x531'
               ],
-              name: 'Sei',
+              name: 'Sei Mainnet',
             },
           },
         },

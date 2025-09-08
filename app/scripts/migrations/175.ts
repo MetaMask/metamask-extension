@@ -27,12 +27,12 @@ const CHAINS_TO_RENAME: {
   },
   {
     id: CHAIN_IDS.ARBITRUM,
-    fromName: 'Arbitrum Mainnet',
+    fromName: 'Arbitrum One',
     toName: 'Arbitrum',
   },
   {
     id: CHAIN_IDS.AVALANCHE,
-    fromName: 'Avalanche Mainnet',
+    fromName: 'Avalanche Network C-Chain',
     toName: 'Avalanche',
   },
   {
