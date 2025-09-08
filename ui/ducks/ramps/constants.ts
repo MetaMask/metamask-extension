@@ -81,7 +81,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 8453,
-    chainName: 'Base Mainnet',
+    chainName: 'Base',
     shortName: 'Base',
     nativeTokenSupported: true,
   },

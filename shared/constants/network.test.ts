@@ -32,7 +32,7 @@ describe('NetworkConstants', () => {
         'OP Mainnet': CHAIN_IDS.OPTIMISM,
         Polygon: CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
-        'Base Mainnet': CHAIN_IDS.BASE,
+        Base: CHAIN_IDS.BASE,
         'Linea Mainnet': CHAIN_IDS.LINEA_MAINNET,
         'Sei Mainnet': CHAIN_IDS.SEI,
       };
