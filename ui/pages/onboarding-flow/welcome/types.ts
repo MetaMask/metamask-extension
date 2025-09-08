@@ -13,11 +13,6 @@ export const LOGIN_OPTION = {
 
 export type LoginOptionType = (typeof LOGIN_OPTION)[keyof typeof LOGIN_OPTION];
 
-export const WelcomePageState = {
-  Banner: 'Banner',
-  Login: 'Login',
-} as const;
-
 export const LOGIN_ERROR = {
   UNABLE_TO_CONNECT: 'unable_to_connect',
   GENERIC: 'generic',
