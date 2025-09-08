@@ -24,7 +24,7 @@ files-e2e-required:
 
     # Exclude Github files except specific E2E related
   - '!.github/**'
-  - '.github/workflows/main.yml'
+  # - '.github/workflows/main.yml'
   - '.github/workflows/run-build.yml'
   # - '.github/workflows/needs-e2e.yml'
   # - '.github/e2e-filter-rules.yml'

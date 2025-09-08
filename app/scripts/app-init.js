@@ -5,7 +5,7 @@
 // is so small we won't ever have a problem with these two files being "split".
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 
-// Represents if importAllScripts has been run
+// Represents if importAllScripts has been runnnn
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
