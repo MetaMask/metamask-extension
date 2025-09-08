@@ -5686,10 +5686,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@metamask/design-system-react@npm:0.3.1"
+"@metamask/design-system-react@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/design-system-react@npm:0.4.0"
   dependencies:
+    "@metamask/design-system-shared": "npm:^0.1.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -5697,13 +5698,22 @@ __metadata:
   peerDependencies:
     "@metamask/design-system-tailwind-preset": ^0.6.0
     "@metamask/design-tokens": ^8.1.0
-    "@metamask/utils": ^11.4.2
+    "@metamask/utils": ^11.7.0
     "@solana/addresses": ^2.0.0
     bitcoin-address-validation: ">=2.0.0"
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/f1270d3e351d539582914b3c6848c5abc264954975f4c4443e135e10a6e8eb0ed4c583bc462e737ad152abbb7ab6b238df39c98f62089d901a3a43f127005364
+  checksum: 10/d4770ad0a4865e4b8746b4b4f72e2bf9031c2a0ae6873b7841b16f538ff64e2503aa9d422dc6cc89d29174f9ba5c81c0e8ae9082607f3fe6644bf9edbfad6b6c
+  languageName: node
+  linkType: hard
+
+"@metamask/design-system-shared@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/design-system-shared@npm:0.1.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.7.0"
+  checksum: 10/871fb9fd9ce536c841c9f5611fc3bd57faed1215f9d17eeb839074b3b1cc8da75b7257e40e203de28c6fa3f98d3f877ca78a7873c068b69f8a33d4507471c6be
   languageName: node
   linkType: hard
 
@@ -7583,7 +7593,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2":
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0":
   version: 11.7.0
   resolution: "@metamask/utils@npm:11.7.0"
   dependencies:
@@ -31736,7 +31746,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/delegation-controller": "npm:^0.6.0"
     "@metamask/delegation-deployments": "npm:^0.11.0"
-    "@metamask/design-system-react": "npm:^0.3.1"
+    "@metamask/design-system-react": "npm:^0.4.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^1.0.0"
