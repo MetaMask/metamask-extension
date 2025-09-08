@@ -166,45 +166,6 @@ jobs:
         run: yarn build
 ```
 
-### For Docker Builds
-
-#### Option 1: With Config Verification
-
-```dockerfile
-FROM node:20-alpine
-
-WORKDIR /app
-COPY . .
-
-# Verify and use local yarn binary
-RUN yarn yarn-binary:verify
-ENV PATH="/app/tools/yarn/v4.9.4/bin:$PATH"
-
-# Install dependencies
-RUN yarn install --immutable
-
-# Build
-RUN yarn build
-```
-
-#### Option 2: Lightweight Download
-
-```dockerfile
-FROM node:20-alpine
-
-WORKDIR /app
-COPY . .
-
-# Download yarn binary without config tracking
-RUN node development/download-yarn-binary.js --yarn-version=4.9.4 --no-config=true
-ENV PATH="/app/tools/yarn/v4.9.4/bin:$PATH"
-
-# Install dependencies
-RUN yarn install --immutable
-
-# Build
-RUN yarn build
-```
 
 ## Security Features
 
