@@ -368,22 +368,6 @@
     "message": "addresses",
     "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
-  "revealMultichainPrivateKeysBannerTitle": {
-    "message": "Don’t share your private key",
-    "description": "Title for the banner warning users not to share their private key"
-  },
-  "revealMultichainPrivateKeysBannerDescription": {
-    "message": "This key grants full control of your account for the associated chain.",
-    "description": "Description for the banner warning users not to share their private key"
-  },
-  "multichainAccountAddressCopied": {
-    "message": "Address copied",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
-  "multichainAccountPrivateKeyCopied": {
-    "message": "Private key copied",
-    "description": "Message displayed when the multichain account private key is copied to clipboard"
-  },
   "advanced": {
     "message": "Advanced"
   },
@@ -2317,10 +2301,6 @@
   },
   "enterYourPassword": {
     "message": "Enter your password"
-  },
-  "wrongPassword": {
-    "message": "Wrong password",
-    "description": "Displayed when the user enters an incorrect password"
   },
   "enterYourPasswordContinue": {
     "message": "Enter password to continue"
