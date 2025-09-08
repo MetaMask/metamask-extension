@@ -1,7 +1,7 @@
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
-import type { SnapId } from '@metamask/snaps-sdk';
+import { InternalError, type SnapId } from '@metamask/snaps-sdk';
 
 import { forwardRequestToSnap } from './forwardRequestToSnap';
 
@@ -108,7 +108,7 @@ describe('forwardRequestToSnap', () => {
   });
 
   describe('when snapId is not provided', () => {
-    it('throws JsonRpcError with 500 status and method name', async () => {
+    it('throws InternalError with method name', async () => {
       await expect(
         forwardRequestToSnap(
           { handleRequest: handleRequestMock, snapId: '' as SnapId },
@@ -116,11 +116,11 @@ describe('forwardRequestToSnap', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(
-        new JsonRpcError(500, 'No snapId configured for method test_method'),
+        new InternalError('No snapId configured for method test_method'),
       );
     });
 
-    it('throws JsonRpcError with 500 status and method name for falsy snapId', async () => {
+    it('throws InternalError with method name for falsy snapId', async () => {
       await expect(
         forwardRequestToSnap(
           {
@@ -131,11 +131,11 @@ describe('forwardRequestToSnap', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(
-        new JsonRpcError(500, 'No snapId configured for method test_method'),
+        new InternalError('No snapId configured for method test_method'),
       );
     });
 
-    it('throws JsonRpcError with 500 status and method name for undefined snapId', async () => {
+    it('throws InternalError with method name for undefined snapId', async () => {
       await expect(
         forwardRequestToSnap(
           {
@@ -146,11 +146,11 @@ describe('forwardRequestToSnap', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(
-        new JsonRpcError(500, 'No snapId configured for method test_method'),
+        new InternalError('No snapId configured for method test_method'),
       );
     });
 
-    it('throws JsonRpcError with 500 status and method name for undefined origin', async () => {
+    it('throws InternalError with method name for undefined origin', async () => {
       await expect(
         forwardRequestToSnap(
           { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
@@ -158,7 +158,7 @@ describe('forwardRequestToSnap', () => {
           { ...REQUEST_MOCK, origin: undefined as unknown as string },
         ),
       ).rejects.toThrow(
-        new JsonRpcError(500, 'No origin specified for method test_method'),
+        new InternalError('No origin specified for method test_method'),
       );
     });
 
@@ -175,7 +175,7 @@ describe('forwardRequestToSnap', () => {
           customMethodRequest,
         ),
       ).rejects.toThrow(
-        new JsonRpcError(500, 'No snapId configured for method custom_method'),
+        new InternalError('No snapId configured for method custom_method'),
       );
     });
   });
