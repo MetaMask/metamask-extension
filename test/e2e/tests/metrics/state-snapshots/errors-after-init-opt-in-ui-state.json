@@ -385,6 +385,7 @@
     "srpSessionData": "object",
     "isGatorPermissionsEnabled": "boolean",
     "gatorPermissionsMapSerialized": "string",
+    "gatorPermissionsProviderSnapId": "string",
     "isFetchingGatorPermissions": "boolean"
   },
   "ramps": "object",

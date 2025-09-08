@@ -2,7 +2,6 @@ import {
   GatorPermissionsController,
   GatorPermissionsControllerState,
 } from '@metamask/gator-permissions-controller';
-import { SnapId } from '@metamask/snaps-sdk';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
 import { ControllerInitFunction } from '../types';
 import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
@@ -11,18 +10,20 @@ import { GatorPermissionsControllerMessenger } from '../messengers/gator-permiss
 const generateDefaultGatorPermissionsControllerState =
   (): Partial<GatorPermissionsControllerState> => {
     const snapId = process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
-    let validSnapId: SnapId | undefined;
+    const baseGatorPermissionsControllerState: Partial<GatorPermissionsControllerState> =
+      {
+        isGatorPermissionsEnabled: isGatorPermissionsFeatureEnabled(),
+      };
 
     try {
       assertIsValidSnapId(snapId);
-      validSnapId = snapId;
     } catch (error) {
-      validSnapId = undefined;
+      return baseGatorPermissionsControllerState;
     }
 
     return {
-      isGatorPermissionsEnabled: isGatorPermissionsFeatureEnabled(),
-      gatorPermissionsProviderSnapId: validSnapId,
+      ...baseGatorPermissionsControllerState,
+      gatorPermissionsProviderSnapId: snapId,
     };
   };
 
