@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import {
   AlignItems,
@@ -82,35 +82,55 @@ export const MultichainAddressRow = ({
   qrActionParams,
   className = '',
 }: MultichainAddressRowProps) => {
-  // We're mixing hex with caip chain ids so its necessary
-  // to use the hex format for EVMs and caip for non EVMs.
   const networkImageSrc = getImageForChainId(
     chainId.startsWith(KnownCaipNamespace.Eip155)
       ? convertCaipToHexChainId(chainId as CaipChainId)
       : chainId,
   );
 
-  const truncatedAddress = shortenAddress(address);
+  const truncatedAddress = shortenAddress(address); // Shorten address for display
+  const [subText, setSubText] = useState(truncatedAddress); // Message below the network name
+  const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
 
-  // State for managing blinking effect and temporary message
-  const [subText, setSubText] = useState(truncatedAddress);
-  const [copyIcon, setCopyIcon] = useState(IconName.Copy);
+  // Track timeout ID for managing `setTimeout`
+  const timeoutRef = useRef<number | null>(null);
 
+  // Update `subText` when the address prop changes
+  useEffect(() => {
+    setSubText(truncatedAddress);
+  }, [address, truncatedAddress]);
+
+  // Cleanup timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  // Handle "Copy" button click events
   const handleCopyClick = () => {
-    // Execute the copy callback
-    copyActionParams.callback();
+    // Clear existing timeout if clicking multiple times in rapid succession
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
+    // Trigger copy callback and update UI state
+    copyActionParams.callback();
     setSubText(copyActionParams.message);
     setCopyIcon(IconName.CopySuccess);
 
-    const timeoutId = setTimeout(() => {
+    // Reset state after 1 second and track the new timeout
+    timeoutRef.current = window.setTimeout(() => {
       setSubText(truncatedAddress);
       setCopyIcon(IconName.Copy);
+      timeoutRef.current = null; // Clear the reference after timeout resolves
     }, 1000);
-
-    return () => clearTimeout(timeoutId);
   };
 
+  // Handle "QR Code" button click
   const handleQrClick = () => {
     qrActionParams?.callback(address, networkName, networkImageSrc);
   };
@@ -138,10 +158,7 @@ export const MultichainAddressRow = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
-        // Parent Box with flex: 1 needs minWidth: 0 to allow it to shrink below its content size.
-        // Without that, the flex item would expand the entire row to fit the text content
-        // instead of being constrained by the grid cell.
-        style={{ flex: 1, minWidth: 0 }}
+        style={{ flex: 1, minWidth: 0 }} // Ensure text shrinks properly
       >
         <Text
           variant={TextVariant.bodyMdMedium}
@@ -157,15 +174,14 @@ export const MultichainAddressRow = ({
           color={TextColor.textAlternative}
           data-testid="multichain-address-row-address"
         >
-          {subText} {/* Use dynamic address content */}
+          {subText} {/* Dynamically updating subText */}
         </Text>
       </Box>
-      {/* Action buttons */}
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={4}>
         <ButtonIcon
           iconName={copyIcon}
           size={ButtonIconSize.Md}
-          onClick={handleCopyClick} // Trigger blinking on copy
+          onClick={handleCopyClick} // Trigger copy logic
           ariaLabel="Copy address"
           color={IconColor.iconDefault}
           data-testid="multichain-address-row-copy-button"
