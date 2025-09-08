@@ -1,6 +1,8 @@
 import { join } from 'node:path';
-import type { WebpackPluginInstance } from 'webpack';
-import LavamoatPlugin from '../../../../../../LavaMoat/packages/webpack/src/plugin.js';
+import type { WebpackPluginInstance, RuleSetRule } from 'webpack';
+import LavamoatPlugin, {
+  exclude as LavamoatExcludeLoader,
+} from '../../../../../../LavaMoat/packages/webpack/src/plugin.js';
 import type { Args } from '../../cli';
 
 // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
@@ -127,8 +129,17 @@ export const lavamoatPlugin = (args: Args) =>
     },
   });
 
+// Unsafe layer that runs code without LavaMoat
+export const lavamoatUnsafeLayerRule = {
+  issuerLayer: 'unsafe',
+  use: LavamoatExcludeLoader,
+} satisfies RuleSetRule;
+
+// Unsafe layer plugin that applies the layer and assigns the unsafeEntries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
+    compiler.options.experiments.layers = true;
+    compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
     compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {
         const { name } = options;
@@ -136,7 +147,7 @@ export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
           if (unsafeEntries.has(name)) {
             const entryData = compilation.entries.get(name);
             if (entryData) {
-              entryData.options.layer = 'unsafe';
+              entryData.options.layer = lavamoatUnsafeLayerRule.issuerLayer;
             }
           }
         }
