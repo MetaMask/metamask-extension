@@ -534,7 +534,7 @@ function generateBenchmarkComment(
  * @throws {Error} When GitHub API request fails or required environment variables are missing
  */
 async function main(): Promise<void> {
-  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER } =
+  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER, HEAD_COMMIT_HASH } =
     process.env as Record<string, string>;
   const N_COMMITS = 10;
 
@@ -568,6 +568,7 @@ async function main(): Promise<void> {
     return;
   }
 
+  benchmarkData.commit = HEAD_COMMIT_HASH;
   const referenceData = await fetchLatestMainBenchmarkData(N_COMMITS);
 
   const commentBody = generateBenchmarkComment(benchmarkData, referenceData);
