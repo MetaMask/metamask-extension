@@ -30,10 +30,8 @@ export function useFirstTimeInteractionAlert(): Alert[] {
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
   );
 
-  const addressToCheck = recipient;
-
   const { state: trustSignalDisplayState } = useTrustSignal(
-    addressToCheck || '',
+    recipient || '',
     NameType.ETHEREUM_ADDRESS,
   );
 
