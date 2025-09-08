@@ -2886,15 +2886,15 @@ export async function getNFTContractInfo(
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
+export type TokenStandAndDetails = Awaited<
+  ReturnType<AssetsContractController['getTokenStandardAndDetails']>
+> & { balance?: string };
+
 export async function getTokenStandardAndDetails(
   address: string,
   userAddress?: string,
   tokenId?: string,
-): Promise<
-  Awaited<
-    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
-  > & { balance?: string }
-> {
+): Promise<TokenStandAndDetails> {
   return await submitRequestToBackground('getTokenStandardAndDetails', [
     address,
     userAddress,
@@ -2907,11 +2907,7 @@ export async function getTokenStandardAndDetailsByChain(
   userAddress?: string,
   tokenId?: string,
   chainId?: string,
-): Promise<
-  Awaited<
-    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
-  > & { balance?: string }
-> {
+): Promise<TokenStandAndDetails> {
   return await submitRequestToBackground('getTokenStandardAndDetailsByChain', [
     address,
     userAddress,
