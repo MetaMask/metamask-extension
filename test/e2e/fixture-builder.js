@@ -1935,7 +1935,7 @@ class FixtureBuilder {
       networkConfigurations: {
         'op-mainnet': {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'OP Mainnet',
+          nickname: 'OP',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.optimism.io',
           ticker: 'ETH',

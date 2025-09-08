@@ -57,7 +57,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
             <img
-              alt="OP Mainnet logo"
+              alt="OP logo"
               class="mm-avatar-network__network-image"
               src="./images/optimism.svg"
             />
@@ -65,7 +65,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            OP Mainnet
+            OP
           </p>
           <span
             class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
@@ -216,7 +216,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
             <img
-              alt="OP Mainnet logo"
+              alt="OP logo"
               class="mm-avatar-network__network-image"
               src="./images/optimism.svg"
             />
@@ -224,7 +224,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            OP Mainnet
+            OP
           </p>
           <span
             class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
@@ -373,7 +373,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
             <img
-              alt="OP Mainnet logo"
+              alt="OP logo"
               class="mm-avatar-network__network-image"
               src="./images/optimism.svg"
             />
@@ -381,7 +381,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            OP Mainnet
+            OP
           </p>
           <span
             class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"

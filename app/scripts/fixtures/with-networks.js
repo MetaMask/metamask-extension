@@ -19,7 +19,7 @@ export const FIXTURES_NETWORKS = {
     optimism: {
       chainId: '0xa',
       id: 'optimism',
-      nickname: 'OP Mainnet',
+      nickname: 'OP',
       rpcPrefs: {
         blockExplorerUrl: 'https://optimistic.etherscan.io/',
         imageUrl: './images/optimism.svg',

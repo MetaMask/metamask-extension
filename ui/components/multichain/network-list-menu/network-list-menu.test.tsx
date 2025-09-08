@@ -564,10 +564,10 @@ describe('NetworkListMenu', () => {
       // Simulate typing "Optimism" into the search box
       const searchBox = getByPlaceholderText('Search');
       fireEvent.focus(searchBox);
-      fireEvent.change(searchBox, { target: { value: 'OP Mainnet' } });
+      fireEvent.change(searchBox, { target: { value: 'OP' } });
 
       // "Optimism" should be visible, but "Arbitrum" should not
-      expect(queryByText('OP Mainnet')).toBeInTheDocument();
+      expect(queryByText('OP')).toBeInTheDocument();
       expect(queryByText('Arbitrum')).not.toBeInTheDocument();
     });
 

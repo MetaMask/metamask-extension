@@ -20,7 +20,7 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BSC]).toBe('Binance Smart Chain');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]).toBe('Ethereum Mainnet');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea Mainnet');
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP Mainnet');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
   });
   describe('popularNetwork', () => {
@@ -29,7 +29,7 @@ describe('NetworkConstants', () => {
         Arbitrum: CHAIN_IDS.ARBITRUM,
         Avalanche: CHAIN_IDS.AVALANCHE,
         'Binance Smart Chain': CHAIN_IDS.BSC,
-        'OP Mainnet': CHAIN_IDS.OPTIMISM,
+        OP: CHAIN_IDS.OPTIMISM,
         Polygon: CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         Base: CHAIN_IDS.BASE,
