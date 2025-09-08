@@ -66,7 +66,7 @@ export const Amount = () => {
 
   const toggleFiatMode = useCallback(() => {
     const newFiatMode = !fiatMode;
-    if (amount) {
+    if (amount !== undefined) {
       setAmount(newFiatMode ? getFiatValue(amount) : getNativeValue(amount));
     }
     setFiatMode(newFiatMode);
