@@ -4248,13 +4248,6 @@
   "passwordNotLongEnough": {
     "message": "पासवर्ड में कम से कम 8 कैरेक्टर्स होने चाहिए"
   },
-  "passwordStrength": {
-    "message": "पासवर्ड की मजबूती: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "अगर आपका डिवाइस चोरी हो गया हो या उसके साथ छेड़छाड़ की गई है, तब एक मजबूत पासवर्ड आपके वॉलेट की सुरक्षा को बेहतर बना सकता है।"
-  },
   "passwordTermsWarning": {
     "message": "अगर मैं यह पासवर्ड भूल गया, तो MetaMask इसे मेरे लिए रीसेट नहीं कर सकता।"
   },
@@ -7204,9 +7197,6 @@
   "watchOutMessage": {
     "message": "$1 से सावधान रहें।",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "कमज़ोर"
   },
   "web3": {
     "message": "Web3"

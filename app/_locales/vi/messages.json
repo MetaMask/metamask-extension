@@ -4248,13 +4248,6 @@
   "passwordNotLongEnough": {
     "message": "Mật khẩu phải có ít nhất 8 ký tự"
   },
-  "passwordStrength": {
-    "message": "Độ mạnh của mật khẩu: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Một mật khẩu mạnh có thể giúp tăng cường bảo mật cho ví nếu thiết bị của bạn bị đánh cắp hoặc xâm phạm."
-  },
   "passwordTermsWarning": {
     "message": "Nếu tôi quên mật khẩu này, MetaMask không thể đặt lại mật khẩu cho tôi."
   },
@@ -7204,9 +7197,6 @@
   "watchOutMessage": {
     "message": "Hãy cẩn thận với $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Yếu"
   },
   "web3": {
     "message": "Web3"

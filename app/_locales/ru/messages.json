@@ -4248,13 +4248,6 @@
   "passwordNotLongEnough": {
     "message": "Пароль должен содержать не менее 8 символов"
   },
-  "passwordStrength": {
-    "message": "Надежность пароля: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
-  },
   "passwordTermsWarning": {
     "message": "Если я забуду этот пароль, MetaMask не сможет восстановить его для меня."
   },
@@ -7204,9 +7197,6 @@
   "watchOutMessage": {
     "message": "Остерегайтесь $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Слабый"
   },
   "web3": {
     "message": "Web3"

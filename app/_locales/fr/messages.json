@@ -4215,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "Le mot de passe doit comporter au moins 8 caractères"
   },
-  "passwordStrength": {
-    "message": "Robustesse du mot de passe : $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Un mot de passe robuste peut améliorer la sécurité de votre portefeuille en cas de vol ou de compromission de votre appareil."
-  },
   "passwordTermsWarning": {
     "message": "Si j’oublie ce mot de passe, MetaMask ne pourra pas le réinitialiser pour moi."
   },
@@ -7154,9 +7147,6 @@
   "watchOutMessage": {
     "message": "Méfiez-vous de $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Faible"
   },
   "web3": {
     "message": "Web3"

@@ -4248,13 +4248,6 @@
   "passwordNotLongEnough": {
     "message": "비밀번호는 8자 이상이어야 합니다"
   },
-  "passwordStrength": {
-    "message": "비밀번호 강도: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "장치가 도난되거나 해킹되는 경우에 대비해 강력한 암호를 설정하면 지갑의 보안을 향상시킬 수 있습니다."
-  },
   "passwordTermsWarning": {
     "message": "이 비밀번호를 잊은 경우, MetaMask는 회원님을 대신하여 비밀번호를 초기화해드릴 수 없습니다."
   },
@@ -7204,9 +7197,6 @@
   "watchOutMessage": {
     "message": "$1에 주의하세요.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "약함"
   },
   "web3": {
     "message": "웹3"

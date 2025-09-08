@@ -4215,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "Şifre en az 8 karakterden oluşmalıdır"
   },
-  "passwordStrength": {
-    "message": "Şifre güvenlik düzeyi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
-  },
   "passwordTermsWarning": {
     "message": "Bu şifreyi unutursam MetaMask bunu benim için sıfırlayamaz."
   },
@@ -7154,9 +7147,6 @@
   "watchOutMessage": {
     "message": "Şuraya dikkat edin: $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Zayıf"
   },
   "web3": {
     "message": "Web3"

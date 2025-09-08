@@ -4248,13 +4248,6 @@
   "passwordNotLongEnough": {
     "message": "La contraseña debe tener al menos 8 caracteres"
   },
-  "passwordStrength": {
-    "message": "Solidez de la contraseña: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Una contraseña segura puede mejorar la protección de su monedero en caso de que le roben el dispositivo o esté comprometido."
-  },
   "passwordTermsWarning": {
     "message": "Si olvido esta contraseña, MetaMask no podrá restablecerla por mí."
   },
@@ -7204,9 +7197,6 @@
   "watchOutMessage": {
     "message": "Cuidado con $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Débil"
   },
   "web3": {
     "message": "Web3"

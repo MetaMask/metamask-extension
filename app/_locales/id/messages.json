@@ -4248,13 +4248,6 @@
   "passwordNotLongEnough": {
     "message": "Kata sandi harus memiliki minimal 8 karakter"
   },
-  "passwordStrength": {
-    "message": "Kekuatan kata sandi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Kata sandi yang kuat dapat meningkatkan keamanan dompet jika perangkat Anda dicuri atau disusupi."
-  },
   "passwordTermsWarning": {
     "message": "Jika saya lupa kata sandi ini, MetaMask tidak dapat meresetnya untuk saya."
   },
@@ -7204,9 +7197,6 @@
   "watchOutMessage": {
     "message": "Waspadalah terhadap $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Lemah"
   },
   "web3": {
     "message": "Web3"

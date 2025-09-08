@@ -4215,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "Ang password ay dapat na hindi bababa sa 8 karakter"
   },
-  "passwordStrength": {
-    "message": "Tibay ng password: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Mapapabuti ng matibay na password ang seguridad ng iyong wallet kung sakaling manakaw o makompromiso ang iyong device."
-  },
   "passwordTermsWarning": {
     "message": "Kung makakalimutan ko ang password na ito, hindi ito mare-reset ng MetaMask para sa akin."
   },
@@ -7154,9 +7147,6 @@
   "watchOutMessage": {
     "message": "Mag-ingat sa $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Madali"
   },
   "web3": {
     "message": "Web3"

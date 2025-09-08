@@ -4215,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "A senha deve ter pelo menos 8 caracteres"
   },
-  "passwordStrength": {
-    "message": "Segurança da senha: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Uma senha forte pode aumentar a segurança da sua carteira caso seu dispositivo seja roubado ou comprometido."
-  },
   "passwordTermsWarning": {
     "message": "Se eu esquecer essa senha, a MetaMask não conseguirá redefini-la para mim."
   },
@@ -7154,9 +7147,6 @@
   "watchOutMessage": {
     "message": "Tome cuidado com $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Fraca"
   },
   "web3": {
     "message": "Web3"
