@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -57,6 +57,7 @@ const MultichainPrivateKeyList = ({
   goBack,
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const [password, setPassword] = useState<string>('');
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [reveal, setReveal] = useState<boolean>(false);
@@ -107,31 +108,42 @@ const MultichainPrivateKeyList = ({
   }, [password]);
 
   const unlockPrivateKeys = useCallback(async () => {
+    console.log('Unlocking private keys...');
     const pkAccounts = accounts.filter((account: InternalAccount) =>
       hasPrivateKeyAvailable(account),
     );
 
+    console.log('Accounts with private keys:', pkAccounts);
+
+    if (pkAccounts.length === 0) {
+      console.log('No accounts with private keys found.');
+      return;
+    }
     const addresses = pkAccounts.map((account) => account.address);
 
-    const pks = (await exportAccounts(
-      password,
-      addresses,
+    console.log('Exporting private keys for addresses:', addresses);
+
+    const pks = (await dispatch(
+      exportAccounts(password, addresses),
     )) as unknown as string[];
+
+    console.log('Exported private keys:', pks);
 
     const privateKeyMap = await addresses.reduce(
       (acc, address, index) => {
         acc[address] = pks[index];
+        console.log(`Private key for ${address}: ${pks[index]}`);
         return acc;
       },
       {} as Record<string, string>,
     );
 
     setPrivateKeys(privateKeyMap);
-  }, [accounts, password]);
+  }, [accounts, dispatch, password]);
 
-  const onSubmit = useCallback(() => {
-    validatePassword();
-    unlockPrivateKeys();
+  const onSubmit = useCallback(async () => {
+    await validatePassword();
+    await unlockPrivateKeys();
   }, [validatePassword, unlockPrivateKeys]);
 
   const onCancel = useCallback(() => {
