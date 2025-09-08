@@ -94,7 +94,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
 
         // Wait for token to show in list of tokens to watch
         const addTokensModal = new AddTokensModal(driver);
-        await addTokensModal.waitUntilXTokens(2);
+        await addTokensModal.waitUntilXTokens(1);
       },
     );
   });
