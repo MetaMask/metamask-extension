@@ -7223,15 +7223,6 @@
   "welcomeBack": {
     "message": "Καλώς ήρθατε και πάλι"
   },
-  "welcomeDescription": {
-    "message": "Με την εμπιστοσύνη εκατομμυρίων ατόμων, το MetaMask είναι ένα ασφαλές πορτοφόλι που καθιστά τον κόσμο του web3 προσιτό σε όλους."
-  },
-  "welcomeGetStarted": {
-    "message": "Ξεκινήστε"
-  },
-  "welcomeTitle": {
-    "message": "Καλώς ορίσατε στο MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Ας ξεκινήσουμε"
   },

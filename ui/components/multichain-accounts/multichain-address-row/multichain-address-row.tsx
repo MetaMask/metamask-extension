@@ -1,4 +1,6 @@
 import React from 'react';
+import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+
 import {
   AlignItems,
   BlockSize,
@@ -22,6 +24,7 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 
 type MultichainAddressRowProps = {
   /**
@@ -40,6 +43,14 @@ type MultichainAddressRowProps = {
    * Optional className for additional styling
    */
   className?: string;
+  /**
+   * Callback for when QR code button is clicked
+   */
+  onQrClick: (
+    address: string,
+    networkName: string,
+    networkImageSrc?: string,
+  ) => void;
 };
 
 export const MultichainAddressRow = ({
@@ -47,10 +58,17 @@ export const MultichainAddressRow = ({
   networkName,
   address,
   className = '',
+  onQrClick,
 }: MultichainAddressRowProps) => {
   const [copied, handleCopy] = useCopyToClipboard();
 
-  const networkImageSrc = getImageForChainId(chainId);
+  // We're mixing hex with caip chain ids so its necessary
+  // to use the hex format for EVMs and caip for non EVMs.
+  const networkImageSrc = getImageForChainId(
+    chainId.startsWith(KnownCaipNamespace.Eip155)
+      ? convertCaipToHexChainId(chainId as CaipChainId)
+      : chainId,
+  );
   const truncatedAddress = shortenAddress(address);
 
   const handleCopyClick = () => {
@@ -58,7 +76,7 @@ export const MultichainAddressRow = ({
   };
 
   const handleQrClick = () => {
-    console.log('QR code clicked for address:', address);
+    onQrClick?.(address, networkName, networkImageSrc);
   };
 
   return (

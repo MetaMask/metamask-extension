@@ -12,7 +12,7 @@ exports[`AddressListItem displays duplicate contact warning icon 1`] = `
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
       >
         <div
-          class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -133,11 +133,47 @@ exports[`AddressListItem renders the address and label without duplicate contact
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
       >
         <div
-          class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
         >
           <div
             class="flex [&>div]:!rounded-none"
-          />
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
+            >
+              <svg
+                height="32"
+                width="32"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#F5D800"
+                  height="32"
+                  transform="translate(-2.259751642128839 9.986727856309313) rotate(238.2 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#1888F2"
+                  height="32"
+                  transform="translate(3.5983407434334205 13.963394795558013) rotate(211.2 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#017E8E"
+                  height="32"
+                  transform="translate(5.504819407037733 -22.91863393981918) rotate(404.9 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
         <div
           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
@@ -199,7 +235,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
       >
         <div
-          class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
         >
           <div
             class="flex [&>div]:!rounded-none"

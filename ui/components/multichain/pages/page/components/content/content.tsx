@@ -26,6 +26,11 @@ export const Content = ({
   className = '',
   ...props
 }: ContentProps) => {
+  const styles = {
+    overflow: 'auto',
+    scrollbarColor: 'var(--color-icon-muted) transparent',
+  };
+
   return (
     <Box
       display={Display.Flex}
@@ -34,6 +39,7 @@ export const Content = ({
       padding={4}
       height={BlockSize.Full}
       className={classnames('multichain-page-content', className)}
+      style={styles}
       {...props}
     >
       {children}

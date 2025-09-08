@@ -7223,15 +7223,6 @@
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
   },
-  "welcomeDescription": {
-    "message": "수백만 명이 신뢰하는 MetaMask는 모두가 웹3 세상에 접근할 수 있도록 돕는 안전한 지갑입니다."
-  },
-  "welcomeGetStarted": {
-    "message": "시작하기"
-  },
-  "welcomeTitle": {
-    "message": "MetaMask에 오신 것을 환영합니다"
-  },
   "welcomeToMetaMask": {
     "message": "시작하기"
   },

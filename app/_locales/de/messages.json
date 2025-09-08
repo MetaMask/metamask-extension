@@ -7223,15 +7223,6 @@
   "welcomeBack": {
     "message": "Willkommen zurück"
   },
-  "welcomeDescription": {
-    "message": "MetaMask ist eine sichere Wallet, die die Welt von web3 für alle zugänglich macht und das Vertrauen von Millionen genießt."
-  },
-  "welcomeGetStarted": {
-    "message": "Erste Schritte"
-  },
-  "welcomeTitle": {
-    "message": "Willkommen bei MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Los geht's"
   },

@@ -146,11 +146,47 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            class="items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
                             <div
                               class="flex [&>div]:!rounded-none"
-                            />
+                            >
+                              <div
+                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(35, 140, 225);"
+                              >
+                                <svg
+                                  height="32"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                >
+                                  <rect
+                                    fill="#FA4300"
+                                    height="32"
+                                    transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#018E77"
+                                    height="32"
+                                    transform="translate(-11.340391831620598 -14.992292625888258) rotate(296.3 16 16)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                  <rect
+                                    fill="#F26E02"
+                                    height="32"
+                                    transform="translate(18.207719499376854 -18.300980401883564) rotate(444.6 16 16)"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-badge-wrapper__badge-container"
@@ -169,11 +205,47 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                   class="mm-box mm-box--display-none mm-box--sm:display-flex"
                 >
                   <div
-                    class="inline-flex items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                    class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
-                    />
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(35, 140, 225);"
+                      >
+                        <svg
+                          height="32"
+                          width="32"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#FA4300"
+                            height="32"
+                            transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#018E77"
+                            height="32"
+                            transform="translate(-11.340391831620598 -14.992292625888258) rotate(296.3 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F26E02"
+                            height="32"
+                            transform="translate(18.207719499376854 -18.300980401883564) rotate(444.6 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div
