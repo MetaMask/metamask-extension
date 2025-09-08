@@ -116,13 +116,6 @@ export const AccountList = () => {
             data-testid="multichain-account-list-search"
           />
         </Box>
-        <MultichainAccountList
-          wallets={wallets}
-          selectedAccountGroups={[selectedAccountGroup]}
-          formattedAccountGroupBalancesByWallet={
-            formattedAccountGroupBalancesByWallet
-          }
-        />
         <Box
           display={Display.Flex}
           height={BlockSize.Full}
@@ -134,6 +127,9 @@ export const AccountList = () => {
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
+              formattedAccountGroupBalancesByWallet={
+                formattedAccountGroupBalancesByWallet
+              }
             />
           ) : (
             <Box
