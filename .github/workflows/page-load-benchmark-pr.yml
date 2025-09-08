@@ -19,7 +19,6 @@ jobs:
     name: Run Page Load Benchmarks
     runs-on: ubuntu-latest
     env:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
