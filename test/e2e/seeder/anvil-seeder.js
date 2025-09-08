@@ -1,3 +1,4 @@
+const { privateKeyToAccount } = require('viem/accounts');
 const { DEFAULT_FIXTURE_ACCOUNT, ENTRYPOINT } = require('../constants');
 const ContractAddressRegistry = require('./contract-address-registry');
 const { contractConfiguration, SMART_CONTRACTS } = require('./smart-contracts');
@@ -15,11 +16,55 @@ class AnvilSeeder {
    * Deploy initial smart contracts that can be used later within the e2e tests.
    *
    * @param contractName
+   * @param hardfork
+   * @param deployerOptions - Optional deployer configuration object:
+   *   - { fromAddress?: string, fromPrivateKey?: string }
    */
 
-  async deploySmartContract(contractName, hardfork) {
+  async deploySmartContract(contractName, hardfork, deployerOptions) {
     const { publicClient, testClient, walletClient } = this.provider;
-    const fromAddress = (await walletClient.getAddresses())[0];
+
+    let fromAddress;
+
+    // Determine deployment type
+    let deploymentType;
+    if (!deployerOptions) {
+      deploymentType = 'default';
+    } else if (deployerOptions.fromPrivateKey) {
+      deploymentType = 'fromPrivateKey';
+    } else if (deployerOptions.fromAddress) {
+      deploymentType = 'fromAddress';
+    } else {
+      deploymentType = 'invalid';
+    }
+
+    switch (deploymentType) {
+      case 'default':
+        fromAddress = (await walletClient.getAddresses())[0];
+        break;
+
+      case 'fromPrivateKey':
+        fromAddress = privateKeyToAccount(deployerOptions.fromPrivateKey).address;
+        // Seed the account with ETH for gas
+        await testClient.setBalance({
+          address: fromAddress,
+          value: 1000000000000000000n, // 1 ETH
+        });
+        break;
+
+      case 'fromAddress':
+        fromAddress = deployerOptions.fromAddress;
+        await this.impersonateAccount(deployerOptions.fromAddress, testClient);
+        // Seed the impersonated account with ETH for gas
+        await testClient.setBalance({
+          address: fromAddress,
+          value: 1000000000000000000n, // 1 ETH
+        });
+        break;
+
+      default:
+        throw new Error('invalid deployerOptions object');
+    }
 
     const contractConfig = contractConfiguration[contractName];
     const deployArgs = this.getDeployArgs(contractName, contractConfig);
@@ -150,6 +195,16 @@ class AnvilSeeder {
    */
   getContractRegistry() {
     return this.smartContractRegistry;
+  }
+
+  /**
+   * Impersonate account for anvil deployment
+   *
+   * @param {string} address - Address to impersonate
+   * @param {object} testClient - Viem test client
+   */
+  async impersonateAccount(address, testClient) {
+    await testClient.impersonateAccount({ address });
   }
 
   getDeployArgs(contractName, contractConfig) {

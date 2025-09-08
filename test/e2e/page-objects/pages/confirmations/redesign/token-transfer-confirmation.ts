@@ -37,7 +37,7 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
 
   async clickConfirmButton(): Promise<void> {
     console.log('Click confirm button to confirm transaction');
-    await this.driver.clickElement(this.confirmButton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
   }
 
   /**

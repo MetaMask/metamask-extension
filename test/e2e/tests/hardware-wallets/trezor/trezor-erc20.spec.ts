@@ -10,6 +10,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
 describe('Trezor Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
@@ -60,9 +61,59 @@ describe('Trezor Hardware', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
         await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+      },
+    );
+  });
+  it.only('can transfer an ERC20 token', async function () {
+    const erc20 = SMART_CONTRACTS.HST;
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+        smartContract: [
+          {
+            name: erc20,
+            deployerOptions: {
+              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            }
+          },
+        ],
+      },
+      async ({ driver, localNodes, contractRegistry }) => {
+        const symbol = 'TST';
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
+        const contractAddress = contractRegistry.getContractAddress(erc20);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+        });
+        await testDappPage.checkPageIsLoaded();
+        // Add to wallet
+        await testDappPage.clickERC20WatchAssetButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const watchAssetConfirmation = new WatchAssetConfirmation(driver);
+        await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.TestDApp,
+        );
 
         // Transfer token
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.clickERC20TokenTransferButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const tokenTransferTransactionConfirmation =
@@ -72,30 +123,120 @@ describe('Trezor Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const activityListPage = new ActivityListPage(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAction(`Sent ${symbol}`);
         await activityListPage.checkTxAmountInActivity(`-1.5 ${symbol}`);
+      },
+    );
+  });
+  it('can approve an ERC20 token', async function () {
+    const erc20 = SMART_CONTRACTS.HST;
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+        smartContract: [
+          {
+            name: erc20,
+            deployerOptions: {
+              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            }
+          },
+        ],
+      },
+      async ({ driver, localNodes, contractRegistry }) => {
+        const symbol = 'TST';
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
+        const contractAddress = contractRegistry.getContractAddress(erc20);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+        });
+        await testDappPage.checkPageIsLoaded();
 
         // Approve token
-        const txConfirmation = new TransactionConfirmation(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const txConfirmation = new TransactionConfirmation(driver);
         await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        const homePage = new HomePage(driver);
         await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText(
           `Approve ${symbol} spending cap`,
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
+      },
+    );
+  });
+  it('can increase token allowance', async function () {
+    const erc20 = SMART_CONTRACTS.HST;
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+        smartContract: [
+          {
+            name: erc20,
+            deployerOptions: {
+              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            },
+          },
+        ],
+      },
+      async ({ driver, localNodes, contractRegistry }) => {
+        const symbol = 'TST';
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
+        const contractAddress = contractRegistry.getContractAddress(erc20);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+        });
+        await testDappPage.checkPageIsLoaded();
 
+        const activityListPage = new ActivityListPage(driver);
+        const homePage = new HomePage(driver);
         // Increase token allowance
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const txConfirmation = new TransactionConfirmation(driver);
         await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
