@@ -1,5 +1,4 @@
-import { hasProperty, isObject, RuntimeObject } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
@@ -78,28 +77,19 @@ export async function migrate(
 }
 
 /**
- * Validates if the NetworkController state exists and has the expected structure.
- */
-function isValidNetworkControllerState(
-  state: Record<string, unknown>,
-): state is Record<string, unknown> & {
-  NetworkController: RuntimeObject & {
-    networkConfigurationsByChainId: RuntimeObject;
-  };
-} {
-  return (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    hasProperty(state.NetworkController, 'networkConfigurationsByChainId') &&
-    isObject(state.NetworkController.networkConfigurationsByChainId)
-  );
-}
-
-/**
  * Modifies all chain names according to CHAINS_TO_RENAME.
+ * @param state - The state object to transform.
  */
 function transformState(state: Record<string, unknown>) {
-  if (!isValidNetworkControllerState(state)) {
+  // Validate if the NetworkController state exists and has the expected structure.
+  if (
+    !(
+      hasProperty(state, 'NetworkController') &&
+      isObject(state.NetworkController) &&
+      hasProperty(state.NetworkController, 'networkConfigurationsByChainId') &&
+      isObject(state.NetworkController.networkConfigurationsByChainId)
+    )
+  ) {
     return;
   }
 
