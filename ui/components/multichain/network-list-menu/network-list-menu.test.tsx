@@ -559,7 +559,7 @@ describe('NetworkListMenu', () => {
       const { queryByText, getByPlaceholderText } = render();
 
       // Now "Arbitrum" should be in the document if PopularNetworkList is rendered
-      expect(queryByText('Arbitrum One')).toBeInTheDocument();
+      expect(queryByText('Arbitrum')).toBeInTheDocument();
 
       // Simulate typing "Optimism" into the search box
       const searchBox = getByPlaceholderText('Search');
@@ -568,7 +568,7 @@ describe('NetworkListMenu', () => {
 
       // "Optimism" should be visible, but "Arbitrum" should not
       expect(queryByText('OP Mainnet')).toBeInTheDocument();
-      expect(queryByText('Arbitrum One')).not.toBeInTheDocument();
+      expect(queryByText('Arbitrum')).not.toBeInTheDocument();
     });
 
     it('should filter testNets when ENABLE_NETWORK_UI_REDESIGN is true', async () => {

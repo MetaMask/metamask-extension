@@ -614,7 +614,7 @@ describe(`migration #${newVersion}`, () => {
                 '0x1': true, // Ethereum mainnet
                 '0x89': false, // Polygon
                 '0xa': true, // Optimism
-                '0xa4b1': true, // Arbitrum One
+                '0xa4b1': true, // Arbitrum
               },
             },
           },

@@ -88,7 +88,7 @@ describe('Popular Networks', function (this: Suite) {
             networkURL: 'https://arbitrum-mainnet.infura.io',
             currencySymbol: 'ETH',
             chainId: '42161',
-            networkName: 'Arbitrum One',
+            networkName: 'Arbitrum',
             blockExplorerURL: 'https://explorer.arbitrum.io',
           },
         );
@@ -147,7 +147,7 @@ describe('Popular Networks', function (this: Suite) {
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkPopularNetworkIsDisplayed({
           chainId: '0xa4b1',
-          networkName: 'Arbitrum One',
+          networkName: 'Arbitrum',
         });
       },
     );

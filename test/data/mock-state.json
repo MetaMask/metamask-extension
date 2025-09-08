@@ -523,7 +523,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689624782,
-        "name": "Arbitrum One",
+        "name": "Arbitrum",
         "nativeCurrency": "ETH",
         "rpcEndpoints": [
           {

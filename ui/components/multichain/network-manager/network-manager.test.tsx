@@ -52,7 +52,7 @@ const mockNetworkConfigurations = {
   },
   '0xa4b1': {
     chainId: '0xa4b1',
-    name: 'Arbitrum One',
+    name: 'Arbitrum',
     rpcEndpoints: [
       {
         url: 'https://arbitrum-mainnet.infura.io/v3/123',
@@ -178,7 +178,7 @@ describe('NetworkManager Component', () => {
 
     // Verify default tab content is rendered
     expect(screen.getByText('All popular networks')).toBeInTheDocument();
-    expect(screen.getByText('Arbitrum One')).toBeInTheDocument();
+    expect(screen.getByText('Arbitrum')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
     expect(screen.getByText('Base')).toBeInTheDocument();

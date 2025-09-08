@@ -117,7 +117,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         await driver.clickElement({ tag: 'button', text: 'Approve' });
         await driver.clickElement({
           tag: 'h6',
-          text: 'Switch to Arbitrum One',
+          text: 'Switch to Arbitrum',
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

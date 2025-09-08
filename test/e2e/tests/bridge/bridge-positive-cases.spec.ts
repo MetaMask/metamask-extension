@@ -48,7 +48,7 @@ describe('Bridge tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'USDC',
             fromChain: 'Ethereum',
-            toChain: 'Arbitrum One',
+            toChain: 'Arbitrum',
           },
           3,
         );
@@ -65,11 +65,11 @@ describe('Bridge tests', function (this: Suite) {
           4,
         );
 
-        // Switch to Arbitrum One to set it as the selected network
+        // Switch to Arbitrum to set it as the selected network
         // in the network-controller
         await homePage.checkPageIsLoaded();
         await homePage.goToTokensTab();
-        await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum One');
+        await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum');
         await homePage.goToActivityList();
 
         await bridgeTransaction(

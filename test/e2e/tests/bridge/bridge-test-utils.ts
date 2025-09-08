@@ -941,7 +941,7 @@ export const getBridgeL2Fixtures = (
     .withEnabledNetworks({
       eip155: {
         '0x1': true, // Ethereum Mainnet
-        '0xa4b1': true, // Arbitrum One
+        '0xa4b1': true, // Arbitrum
         '0xe708': true, // Linea Mainnet
         '0xa': true, // Optimism
         '0x89': true, // Polygon

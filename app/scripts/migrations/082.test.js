@@ -57,7 +57,7 @@ describe('migration #82', () => {
             },
             {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum One',
+              nickname: 'Arbitrum',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -98,7 +98,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum One',
+              nickname: 'Arbitrum',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -145,7 +145,7 @@ describe('migration #82', () => {
             },
             {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum One',
+              nickname: 'Arbitrum',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -240,7 +240,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum One',
+              nickname: 'Arbitrum',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -283,7 +283,7 @@ describe('migration #82', () => {
             },
             {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum One',
+              nickname: 'Arbitrum',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -316,7 +316,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum One',
+              nickname: 'Arbitrum',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -550,7 +550,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum One',
+              nickname: 'Arbitrum',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },

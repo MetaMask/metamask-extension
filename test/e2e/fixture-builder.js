@@ -1951,7 +1951,7 @@ class FixtureBuilder {
         },
         'arbitrum-one': {
           chainId: CHAIN_IDS.ARBITRUM,
-          nickname: 'Arbitrum One',
+          nickname: 'Arbitrum',
           rpcPrefs: {},
           rpcUrl: 'https://arb1.arbitrum.io/rpc',
           ticker: 'ETH',

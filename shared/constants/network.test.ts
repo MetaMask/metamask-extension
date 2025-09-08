@@ -15,7 +15,7 @@ describe('NetworkConstants', () => {
   });
 
   it('returns network name for chain ids', () => {
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM]).toBe('Arbitrum One');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM]).toBe('Arbitrum');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.AVALANCHE]).toBe('Avalanche');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BSC]).toBe('Binance Smart Chain');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]).toBe('Ethereum Mainnet');
@@ -26,7 +26,7 @@ describe('NetworkConstants', () => {
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
       const expectedChainIds: { [key: string]: string } = {
-        'Arbitrum One': CHAIN_IDS.ARBITRUM,
+        Arbitrum: CHAIN_IDS.ARBITRUM,
         Avalanche: CHAIN_IDS.AVALANCHE,
         'Binance Smart Chain': CHAIN_IDS.BSC,
         'OP Mainnet': CHAIN_IDS.OPTIMISM,

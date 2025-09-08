@@ -76,7 +76,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/',
       chainId: '0xa4b1',
       ticker: 'ETH',
-      nickname: 'Arbitrum One',
+      nickname: 'Arbitrum',
       rpcPrefs: {
         blockExplorerUrl: 'https://explorer.arbitrum.io',
         imageUrl: './images/arbitrum.svg',
