@@ -133,7 +133,7 @@ export const MultichainAccountList = ({
             // If prop is provided, attempt render balance. Otherwise do not render balance.
             const balanceText = formattedAccountGroupBalancesByWallet
               ? (formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
-                '$ n/a')
+                undefined)
               : '';
 
             // TODO: Implement logic for removable accounts
@@ -144,7 +144,7 @@ export const MultichainAccountList = ({
                 key={`multichain-account-cell-${groupId}`}
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
-                balance={balanceText}
+                balance={balanceText ?? ''}
                 selected={selectedAccountGroupsSet.has(
                   groupId as AccountGroupId,
                 )}
