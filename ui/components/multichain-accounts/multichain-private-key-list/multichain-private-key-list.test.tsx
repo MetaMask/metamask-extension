@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -15,10 +15,15 @@ const GROUP_ID_MOCK = `${WALLET_ID_MOCK}/0`;
 const ACCOUNT_ONE_ID_MOCK = 'account-one-id';
 const ACCOUNT_TWO_ID_MOCK = 'account-two-id';
 
+const ACCOUNT_ONE_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
+const ACCOUNT_TWO_ADDRESS_MOCK = 'DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy';
+
+const ACCOUNT_ONE_PRIVATE_KEY_MOCK = 'private-key-mock';
+
 const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
   [ACCOUNT_ONE_ID_MOCK]: {
     id: ACCOUNT_ONE_ID_MOCK,
-    address: '0x1234567890abcdef1234567890abcdef12345678',
+    address: ACCOUNT_ONE_ADDRESS_MOCK,
     metadata: {
       name: 'Ethereum Account',
       importTime: Date.now(),
@@ -31,7 +36,7 @@ const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
   },
   [ACCOUNT_TWO_ID_MOCK]: {
     id: ACCOUNT_TWO_ID_MOCK,
-    address: 'DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy',
+    address: ACCOUNT_TWO_ADDRESS_MOCK,
     metadata: {
       name: 'Solana Account',
       importTime: Date.now(),
@@ -168,14 +173,37 @@ const createMockState = () => ({
   },
 });
 
-const renderComponent = (
-  groupId: AccountGroupId = GROUP_ID_MOCK,
-  onQrClick: (
-    address: string,
-    networkName: string,
-    networkImageSrc?: string,
-  ) => void = jest.fn(),
-) => {
+const mockVerifyPassword = jest.fn().mockImplementation((pwd: string) => {
+  if (pwd === 'correctpassword') {
+    return Promise.resolve();
+  }
+  return Promise.reject(new Error('Invalid password'));
+});
+
+const mockExportAccounts = jest
+  .fn()
+  .mockImplementation((_pwd: string, _addresses: string[]) => {
+    return Promise.resolve([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
+  });
+
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => jest.fn(),
+  };
+});
+
+jest.mock('../../../store/actions', () => ({
+  verifyPassword: (_pwd: string) => {
+    return mockVerifyPassword(_pwd);
+  },
+  exportAccounts: (_pwd: string, _addresses: string[]) => {
+    return mockExportAccounts(_pwd, _addresses);
+  },
+}));
+
+const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
   const store = mockStore(createMockState());
   return render(
     <Provider store={store}>
@@ -185,23 +213,50 @@ const renderComponent = (
 };
 
 describe('MultichainPrivateKeyList', () => {
-  it('renders with addresses', () => {
+  it('renders with password input', () => {
     renderComponent();
 
     expect(
-      screen.getByTestId('multichain-private-key-list'),
+      screen.getByTestId('multichain-private-key-password-input'),
     ).toBeInTheDocument();
-    expect(
-      screen.getAllByTestId('multichain-address-row').length,
-    ).toBeGreaterThan(0);
+    expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+    expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
   });
 
-  it('handles invalid group', () => {
-    renderComponent('invalid-group-id' as AccountGroupId);
+  it('sets wrongPassword to true for invalid passwor d', async () => {
+    mockVerifyPassword.mockRejectedValueOnce(new Error('Invalid password'));
 
-    expect(
-      screen.getByTestId('multichain-private-key-list'),
-    ).toBeInTheDocument();
-    expect(screen.queryAllByTestId('multichain-address-row').length).toBe(0);
+    renderComponent();
+    const passwordInput = screen.getByTestId(
+      'multichain-private-key-password-input',
+    );
+    const confirmButton = screen.getByTestId('confirm-button');
+
+    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('wrong-password-msg')).toBeInTheDocument();
+    });
+  });
+
+  it('reveals private keys after entering valid password', async () => {
+    renderComponent();
+    const passwordInput = screen.getByTestId(
+      'multichain-private-key-password-input',
+    );
+    const confirmButton = screen.getByTestId('confirm-button');
+
+    fireEvent.change(passwordInput, { target: { value: 'correctpassword' } });
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => {
+      expect(mockVerifyPassword).toHaveBeenCalledWith('correctpassword');
+      expect(mockExportAccounts).toHaveBeenCalled();
+    });
+
+    expect(screen.queryAllByText('0x12345...45678')).toHaveLength(3);
+    // Solana private keys are not supported yet
+    expect(screen.queryAllByText('DRpbCBM...m21hy')).toHaveLength(0);
   });
 });

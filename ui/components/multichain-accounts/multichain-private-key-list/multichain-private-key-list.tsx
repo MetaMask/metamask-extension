@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -52,7 +52,6 @@ const MultichainPrivateKeyList = ({
   groupId,
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const [password, setPassword] = useState<string>('');
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [reveal, setReveal] = useState<boolean>(false);
@@ -109,8 +108,9 @@ const MultichainPrivateKeyList = ({
 
     const addresses = pkAccounts.map((account) => account.address);
 
-    const pks = (await dispatch(
-      exportAccounts(password, addresses),
+    const pks = (await exportAccounts(
+      password,
+      addresses,
     )) as unknown as string[];
 
     const privateKeyMap = await addresses.reduce(
@@ -122,7 +122,7 @@ const MultichainPrivateKeyList = ({
     );
 
     setPrivateKeys(privateKeyMap);
-  }, [accounts, dispatch, password]);
+  }, [accounts, password]);
 
   const onSubmit = useCallback(() => {
     validatePassword();
@@ -133,7 +133,7 @@ const MultichainPrivateKeyList = ({
     cleanStateVariables();
   }, []);
 
-  const renderPasswordInput = useMemo(
+  const renderedPasswordInput = useMemo(
     () => (
       <Box paddingTop={8} paddingBottom={4}>
         <Box>
@@ -148,9 +148,14 @@ const MultichainPrivateKeyList = ({
             onChange={handlePasswordChange}
             error={wrongPassword}
             width={BlockSize.Full}
+            testId="multichain-private-key-password-input"
           />
           {wrongPassword ? (
-            <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              data-testid="wrong-password-msg"
+            >
               {t('wrongPassword')}
             </Text>
           ) : null}
@@ -164,7 +169,7 @@ const MultichainPrivateKeyList = ({
         >
           <Button
             block
-            data-testid="confirm-footer-cancel-button"
+            data-testid="cancel-button"
             onClick={onCancel}
             size={ButtonSize.Lg}
             variant={ButtonVariant.Secondary}
@@ -173,7 +178,7 @@ const MultichainPrivateKeyList = ({
           </Button>
           <Button
             block
-            data-testid="confirm-footer-cancel-button"
+            data-testid="confirm-button"
             onClick={onSubmit}
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
@@ -195,12 +200,13 @@ const MultichainPrivateKeyList = ({
       },
       index: number,
     ): React.JSX.Element => {
-      const privatekey = privateKeys[item.account.address];
-      if (!privatekey) {
+      const privateKey = privateKeys[item.account.address];
+      if (!privateKey) {
         return <></>;
       }
+
       const handleCopyClick = () => {
-        handleCopy(privatekey);
+        handleCopy(privateKey);
       };
 
       return (
@@ -231,7 +237,7 @@ const MultichainPrivateKeyList = ({
       flexDirection={FlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >
-      {reveal ? renderedRows : renderPasswordInput}
+      {reveal ? renderedRows : renderedPasswordInput}
     </Box>
   );
 };
