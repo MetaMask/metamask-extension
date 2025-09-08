@@ -51,7 +51,7 @@
     {
       "active": true,
       "chainId": "56",
-      "chainName": "BNB Chain Mainnet",
+      "chainName": "BNB Chain",
       "shortName": "BNB Chain",
       "isEvm": true,
       "nativeTokenSupported": true

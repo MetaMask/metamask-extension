@@ -80,7 +80,7 @@ const MAINNET_NETWORKS = [
     clientId: 'polygon',
   },
   {
-    name: 'Binance Smart Chain',
+    name: 'BNB Chain',
     chainId: '0x38' as Hex,
     caipChainId: 'eip155:56',
     currency: 'BNB',

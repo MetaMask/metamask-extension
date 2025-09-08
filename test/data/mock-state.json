@@ -491,7 +491,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689643708,
-        "name": "Binance Smart Chain",
+        "name": "BNB Chain",
         "nativeCurrency": "BNB",
         "rpcEndpoints": [
           {
@@ -2363,7 +2363,7 @@
       {
         "active": true,
         "chainId": 56,
-        "chainName": "BNB Chain Mainnet",
+        "chainName": "BNB Chain",
         "shortName": "BNB Chain",
         "nativeTokenSupported": true
       },

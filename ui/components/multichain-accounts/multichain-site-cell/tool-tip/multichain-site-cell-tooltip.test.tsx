@@ -96,7 +96,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: 'Binance Smart Chain',
+      name: 'BNB Chain',
       chainId: '0x38',
       caipChainId: 'eip155:56' as CaipChainId,
       blockExplorerUrls: ['mock-bsc-url'],
