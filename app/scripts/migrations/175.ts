@@ -78,6 +78,7 @@ export async function migrate(
 
 /**
  * Modifies all chain names according to CHAINS_TO_RENAME.
+ *
  * @param state - The state object to transform.
  */
 function transformState(state: Record<string, unknown>) {
