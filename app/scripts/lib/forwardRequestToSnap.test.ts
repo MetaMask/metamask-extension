@@ -1,6 +1,5 @@
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { HandlerType } from '@metamask/snaps-utils';
-import { JsonRpcError } from '@metamask/rpc-errors';
 import { InternalError, type SnapId } from '@metamask/snaps-sdk';
 
 import { forwardRequestToSnap } from './forwardRequestToSnap';
