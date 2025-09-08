@@ -362,7 +362,6 @@ import {
 } from './constants/stream';
 
 // Notification controllers
-import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import {
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
