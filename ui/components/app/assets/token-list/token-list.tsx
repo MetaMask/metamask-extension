@@ -113,7 +113,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         return assets.map((asset) => {
           const token: TokenWithFiatAmount = {
             ...asset,
-            // TODO: When state2 flag is permanently on, this can be refactored and removed
             tokenFiatAmount: asset.fiat?.balance,
             primary: '',
             secondary: null,

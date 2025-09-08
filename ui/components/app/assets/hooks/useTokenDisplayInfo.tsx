@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { isCaipChainId } from '@metamask/utils';
 import {
   getIsMultichainAccountsState2Enabled,
   getIsTestnet,
@@ -20,6 +22,7 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../helpers/formatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -37,16 +40,20 @@ export const useTokenDisplayInfo = ({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const caipChainId = isCaipChainId(token.chainId)
+    ? token.chainId
+    : formatChainIdToCaip(token.chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  );
+
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
-  // TODO Fix this selector before merging
-  const showFiat =
-    useMultichainSelector(
-      makeGetMultichainShouldShowFiatByChainId(token.chainId),
-      selectedAccount,
-    ) || isMultichainAccountsState2Enabled;
+  const showFiat = useMultichainSelector(
+    makeGetMultichainShouldShowFiatByChainId(token.chainId),
+    selectedAccount,
+  );
 
   const isTestnet = useSelector(getIsTestnet);
 
