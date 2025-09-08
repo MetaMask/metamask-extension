@@ -78,6 +78,7 @@ node development/download-yarn-binary.js --yarn-version=4.9.4 --no-config=true
 ### For Local Development
 
 1. **Download the yarn binary**:
+
    ```bash
    yarn yarn-binary:download
    ```
@@ -166,7 +167,6 @@ jobs:
         run: yarn build
 ```
 
-
 ## Security Features
 
 ### Checksum Verification
@@ -196,6 +196,8 @@ By default, the system creates a `yarn-config.json` file with portable relative 
 
 ```json
 {
+  "current": "4.9.4",
+  "lastUpdated": "2025-09-08T08:44:39.703Z",
   "versions": {
     "4.9.4": {
       "downloadDate": "2025-09-08T08:44:39.699Z",
@@ -206,11 +208,10 @@ By default, the system creates a `yarn-config.json` file with portable relative 
       "repository": "berry",
       "downloadUrl": "https://repo.yarnpkg.com/4.9.4/packages/yarnpkg-cli/bin/yarn.js"
     }
-  },
-  "current": "4.9.4",
-  "lastUpdated": "2025-09-08T08:44:39.703Z"
+  }
 }
 ```
+
 This file can be avoided using the `--no-config=true` parameter.
 **Benefits:**
 
@@ -262,6 +263,7 @@ metamask-extension/
 #### "Binary not found" errors
 
 1. Ensure the binary was downloaded:
+
    ```bash
    ls tools/yarn/
    cat tools/yarn/yarn-config.json
