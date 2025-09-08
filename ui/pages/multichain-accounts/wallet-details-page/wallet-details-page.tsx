@@ -81,7 +81,7 @@ export const WalletDetailsPage = () => {
           key={`multichain-account-cell-${group.id}`}
           accountId={group.id as AccountGroupId}
           accountName={group.metadata.name}
-          balance={walletAccountBalance(group.id) ?? '$ n/a'}
+          balance={walletAccountBalance(group.id) ?? ''}
           disableHoverEffect={true}
         />
       )),
