@@ -45,6 +45,7 @@ const isBitcoinChainId = (chainId: ChainId | Hex | CaipChainId) => {
   return [
     MultichainNetworks.BITCOIN,
     MultichainNetworks.BITCOIN_TESTNET,
+    MultichainNetworks.BITCOIN_SIGNET,
   ].includes(chainId as MultichainNetworks);
 };
 

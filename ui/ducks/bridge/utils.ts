@@ -217,9 +217,11 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
     }
     // Check if it's Bitcoin chain ID
     if (
-      [MultichainNetworks.BITCOIN, MultichainNetworks.BITCOIN_TESTNET].includes(
-        chainId as MultichainNetworks,
-      )
+      [
+        MultichainNetworks.BITCOIN,
+        MultichainNetworks.BITCOIN_TESTNET,
+        MultichainNetworks.BITCOIN_SIGNET,
+      ].includes(chainId as MultichainNetworks)
     ) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
     }

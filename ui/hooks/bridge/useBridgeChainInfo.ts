@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { type Transaction } from '@metamask/keyring-api';
+import { type CaipChainId } from '@metamask/utils';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -19,11 +20,12 @@ import {
 } from '../../../shared/constants/multichain/networks';
 
 // Helper function to check if a chain is Bitcoin
-const isBitcoinChainId = (chainId: string) => {
+const isBitcoinChainId = (chainId: string | number | CaipChainId) => {
   return [
     MultichainNetworks.BITCOIN,
     MultichainNetworks.BITCOIN_TESTNET,
-  ].includes(chainId as MultichainNetworks);
+    MultichainNetworks.BITCOIN_SIGNET,
+  ].includes(String(chainId) as MultichainNetworks);
 };
 
 const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
@@ -87,7 +89,7 @@ export default function useBridgeChainInfo({
 
   // Source chain info
   const normalizedSrcChainId =
-    isSolanaChainId(srcChainId) || isBitcoinChainId(srcChainIdInCaip)
+    isSolanaChainId(srcChainId) || isBitcoinChainId(srcChainId)
       ? srcChainIdInCaip
       : formatChainIdToHex(srcChainId);
 
@@ -122,7 +124,7 @@ export default function useBridgeChainInfo({
 
   // Dest chain info
   const normalizedDestChainId =
-    isSolanaChainId(destChainId) || isBitcoinChainId(destChainIdInCaip)
+    isSolanaChainId(destChainId) || isBitcoinChainId(destChainId)
       ? destChainIdInCaip
       : formatChainIdToHex(destChainId);
 
