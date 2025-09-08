@@ -31,12 +31,7 @@ describe('useGasIncluded7702', () => {
 
   it('returns false when smartAccountOptIn is false', () => {
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        false,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(false, true, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     expect(result.current).toBe(false);
@@ -46,12 +41,7 @@ describe('useGasIncluded7702', () => {
 
   it('returns false when isSwap is false', () => {
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        false,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(true, false, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     expect(result.current).toBe(false);
@@ -86,12 +76,7 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(true, true, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     await waitForNextUpdate();
@@ -111,12 +96,7 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(true, true, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     // Initial state should be false
@@ -138,12 +118,7 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(false);
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(true, true, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     // Initial state should be false
@@ -162,12 +137,7 @@ describe('useGasIncluded7702', () => {
     mockIsAtomicBatchSupported.mockRejectedValue(new Error('Test error'));
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(true, true, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     // Initial state should be false
@@ -193,12 +163,7 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(true, true, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     await waitForNextUpdate();
@@ -212,12 +177,7 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-      ),
+      useGasIncluded7702(true, true, { address: '0x123' }, { chainId: '0x1' }),
     );
 
     // Initial state should be false
