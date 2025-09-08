@@ -57,21 +57,28 @@ export class DeepLinkRouter extends EventEmitter<{
   }
 
   /**
+   * Formats the URL parameters for the deep link interstitial page
+   *
+   * @param url - The URL to format.
+   * @returns The formatted URL string. This should be used as the `u` parameter
+   * for the interstitial page.
+   */
+  private formatUrlForInterstitialPage(url: URL) {
+    return url.pathname + url.search;
+  }
+
+  /**
    * Returns the URL to the 404 error page for deep links.
    *
-   * @param url
+   * @param originalUrl - The original URL that caused the error, if available.
+   * @returns The URL to the 404 error page with appropriate query parameters.
    */
-  private get404ErrorURL(url?: URL) {
-    const params: { errorCode: '404'; u?: string } = {
-      errorCode: '404',
-    };
-    if (url) {
-      params.u = url.pathname + url.search;
+  private get404ErrorURL(originalUrl?: URL) {
+    const params = new URLSearchParams({ errorCode: '404' });
+    if (originalUrl) {
+      params.set('u', this.formatUrlForInterstitialPage(originalUrl));
     }
-    return this.getExtensionURL(
-      TRIMMED_DEEP_LINK_ROUTE,
-      new URLSearchParams(params).toString(),
-    );
+    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, params.toString());
   }
 
   /**
@@ -171,7 +178,7 @@ export class DeepLinkRouter extends EventEmitter<{
         } else {
           // unsigned links or signed links that don't skip the interstitial
           const search = new URLSearchParams({
-            u: url.pathname + url.search,
+            u: this.formatUrlForInterstitialPage(url),
           });
           link = this.getExtensionURL(
             TRIMMED_DEEP_LINK_ROUTE,

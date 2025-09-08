@@ -67,8 +67,8 @@ function set404(
  * URL, retrieves the route, and sets the route and error state accordingly.
  *
  * @param urlPathAndQuery - The URL path and query string to parse. (relative to its origin, i.e., /home?utm_source=foo)
- * @param setExtraDescription - The function to call to set the extra description state.
  * @param setDescription - The function to call to set the description state.
+ * @param setExtraDescription - The function to call to set the extra description state.
  * @param setIsLoading - The function to call to set the loading state.
  * @param setRoute - The function to call to set the route state.
  * @param setTitle - The function to call to set the title state.
