@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../ducks/locale/locale';
 
@@ -129,5 +130,5 @@ export function createFormatters({ locale = FALLBACK_LOCALE }) {
 export function useFormatters() {
   const locale = useSelector(getIntlLocale);
 
-  return createFormatters({ locale });
+  return useMemo(() => createFormatters({ locale }), [locale]);
 }

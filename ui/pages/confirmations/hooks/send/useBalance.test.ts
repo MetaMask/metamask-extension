@@ -6,6 +6,7 @@ import {
   EVM_NATIVE_ASSET,
   MOCK_NFT1155,
   SOLANA_ASSET,
+  SOLANA_NATIVE_ASSET,
 } from '../../../../../test/data/send/assets';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
@@ -96,5 +97,25 @@ describe('useBalance', () => {
     expect(result.balance).toEqual('1.00724');
     expect(result.decimals).toEqual(6);
     expect(result.rawBalanceNumeric).toEqual(new Numeric('1007248', 10));
+  });
+
+  it('return correct balance for native solana assets', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: SOLANA_NATIVE_ASSET,
+    } as unknown as SendContext.SendContextType);
+    const result = renderHook({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        balances: {
+          [MOCK_ADDRESS_1]: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              amount: '0.0049308',
+            },
+          },
+        },
+      },
+    });
+    expect(result.balance).toEqual('0.00493');
   });
 });
