@@ -11,7 +11,7 @@ type VersionedData = {
 export const version = 173;
 
 /**
- * This migration updates the SEI network name from `Sei Network` to `Sei Mainnet`.
+ * This migration updates the SEI network name from `Sei Network` to `Sei`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
@@ -32,7 +32,7 @@ export async function migrate(
 
 function transformState(state: Record<string, unknown>) {
   const fromName = 'Sei Network';
-  const toName = 'Sei Mainnet';
+  const toName = 'Sei';
   const seiChainId = CHAIN_IDS.SEI;
 
   // We only update the network name if it exists in the state

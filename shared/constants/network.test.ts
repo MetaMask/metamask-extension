@@ -34,7 +34,7 @@ describe('NetworkConstants', () => {
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         Base: CHAIN_IDS.BASE,
         Linea: CHAIN_IDS.LINEA_MAINNET,
-        'Sei Mainnet': CHAIN_IDS.SEI,
+        Sei: CHAIN_IDS.SEI,
       };
 
       FEATURED_RPCS.forEach((rpc) => {
