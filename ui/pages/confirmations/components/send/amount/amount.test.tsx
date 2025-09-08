@@ -8,6 +8,7 @@ import {
   MOCK_NFT721,
   SOLANA_ASSET,
 } from '../../../../../../test/data/send/assets';
+import { Numeric } from '../../../../../../shared/modules/Numeric';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
@@ -54,6 +55,14 @@ describe('Amount', () => {
   });
 
   it('amount input is reset when fiatmode is toggled', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_ASSET,
+      updateValue: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '10.023',
+      rawBalanceNumeric: new Numeric('10.023', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
@@ -72,6 +81,21 @@ describe('Amount', () => {
   });
 
   it('capture metrics when when fiatmode is toggled', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_ASSET,
+      updateValue: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '10.023',
+      rawBalanceNumeric: new Numeric('10.023', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      fiatCurrencySymbol: 'USD',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
+    });
     const mockSetAmountInputTypeFiat = jest.fn();
     const mockSetAmountInputTypeToken = jest.fn();
     jest
@@ -92,8 +116,13 @@ describe('Amount', () => {
   });
 
   it('if fiatmode is enbled call update value with converted values method when value is changed', () => {
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '10.023',
+      rawBalanceNumeric: new Numeric('10.023', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     const mockUpdateValue = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_ASSET,
       updateValue: mockUpdateValue,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
@@ -124,7 +153,8 @@ describe('Amount', () => {
     });
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '10.023',
-    });
+      rawBalanceNumeric: new Numeric('10.023', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     const { getByText } = render();
 
     expect(getByText('10.023 NEU available')).toBeInTheDocument();
@@ -143,7 +173,7 @@ describe('Amount', () => {
 
     fireEvent.click(getByText('Max'));
     expect(getByRole('textbox')).toHaveValue('5');
-    expect(mockUpdateValue).toHaveBeenCalledWith('5');
+    expect(mockUpdateValue).toHaveBeenCalledWith('5', true);
   });
 
   it('capture metrics when max button is clicked', () => {
@@ -173,7 +203,8 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
-    });
+      rawBalanceNumeric: new Numeric('1', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
@@ -186,13 +217,14 @@ describe('Amount', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('max and fait mode button is not rendered for asset of type ERC1155', () => {
+  it('fait mode button is not rendered for asset of type ERC1155', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: MOCK_NFT1155,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
-    });
+      rawBalanceNumeric: new Numeric('1', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
@@ -203,7 +235,6 @@ describe('Amount', () => {
 
     const { queryByText } = render();
     expect(queryByText('Fiat Mode')).not.toBeInTheDocument();
-    expect(queryByText('Max')).not.toBeInTheDocument();
   });
 
   it('max button is not rendered for solana native asset', () => {
@@ -215,7 +246,8 @@ describe('Amount', () => {
     } as ReturnType<typeof SendType.useSendType>);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
-    });
+      rawBalanceNumeric: new Numeric('1', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',

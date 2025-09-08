@@ -16,7 +16,6 @@ import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmount
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { Amount } from '../amount/amount';
-import { Header } from '../header';
 import { Recipient } from '../recipient';
 
 export const AmountRecipient = () => {
@@ -34,35 +33,31 @@ export const AmountRecipient = () => {
   const hasAmountError = Boolean(amountError);
 
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.spaceBetween}
-            className="send__body"
-          >
-            <Box>
-              <Recipient setTo={setTo} />
-              <Amount />
-            </Box>
-            <Button
-              disabled={hasAmountError}
-              onClick={onClick}
-              size={ButtonSize.Lg}
-              backgroundColor={
-                hasAmountError
-                  ? BackgroundColor.errorDefault
-                  : BackgroundColor.iconDefault
-              }
-            >
-              {amountError ?? t('continue')}
-            </Button>
-          </Box>
-        </div>
-      </div>
-    </div>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      paddingLeft={4}
+      paddingRight={4}
+      style={{ flex: 1 }}
+    >
+      <Box>
+        <Recipient setTo={setTo} />
+        <Amount />
+      </Box>
+      <Button
+        disabled={hasAmountError}
+        onClick={onClick}
+        size={ButtonSize.Lg}
+        backgroundColor={
+          hasAmountError
+            ? BackgroundColor.errorDefault
+            : BackgroundColor.iconDefault
+        }
+        marginBottom={4}
+      >
+        {amountError ?? t('continue')}
+      </Button>
+    </Box>
   );
 };

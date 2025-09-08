@@ -1,11 +1,14 @@
 import React, {
   ReactElement,
   createContext,
+  useCallback,
   useContext,
   useState,
 } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
+import { isHexString } from 'ethereumjs-util';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import { toHex } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
 
@@ -19,11 +22,12 @@ export type SendContextType = {
   currentPage?: SendPages;
   fromAccount: InternalAccount;
   from: string;
+  maxValueMode?: boolean;
   to?: string;
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
   updateTo: (to: string) => void;
-  updateValue: (value: string) => void;
+  updateValue: (value: string, maxValueMode?: boolean) => void;
   value?: string;
 };
 
@@ -33,6 +37,7 @@ export const SendContext = createContext<SendContextType>({
   currentPage: undefined,
   fromAccount: {} as InternalAccount,
   from: '',
+  maxValueMode: undefined,
   to: undefined,
   updateAsset: () => undefined,
   updateCurrentPage: () => undefined,
@@ -46,12 +51,25 @@ export const SendContextProvider: React.FC<{
 }> = ({ children }) => {
   const [asset, updateAsset] = useState<Asset>();
   const from = useSelector(getSelectedAccount);
+  const [maxValueMode, updateMaxValueMode] = useState<boolean>();
   const [to, updateTo] = useState<string>();
-  const [value, updateValue] = useState<string>();
+  const [value, setValue] = useState<string>();
   const [currentPage, updateCurrentPage] = useState<SendPages>();
 
+  const updateValue = useCallback(
+    (val: string, maxMode?: boolean) => {
+      updateMaxValueMode(maxMode ?? false);
+      setValue(val);
+    },
+    [updateMaxValueMode, setValue],
+  );
+
   const chainId =
-    asset?.address && isEvmAddress(asset?.address) && asset.chainId
+    asset?.address &&
+    isEvmAddress(asset?.address) &&
+    asset.chainId &&
+    !isSolanaChainId(asset.chainId?.toString()) &&
+    !isHexString(asset.chainId.toString())
       ? toHex(asset.chainId)
       : asset?.chainId?.toString();
 
@@ -63,6 +81,7 @@ export const SendContextProvider: React.FC<{
         currentPage,
         fromAccount: from as InternalAccount,
         from: from?.address as string,
+        maxValueMode,
         to,
         updateAsset,
         updateCurrentPage,

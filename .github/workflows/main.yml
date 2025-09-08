@@ -17,10 +17,10 @@ on:
       - stable
   merge_group:
   schedule:
-    # Run the full suite "overnight," once every half hour from 1:00am UTC until 2:59am UTC.
+    # Run the full suite "overnight," once every hour from 2:00am UTC until 5:59am UTC.
     # This helps with "Top 10 failed tests on the metamask-extension repository main branch,"
     # especially the Monday morning list, which is otherwise usually a fake empty.
-    - cron: '0,30 1-2 * * *'
+    - cron: '0 2-6 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
