@@ -128,7 +128,10 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    navigateToSendRoute(history, { address: nft.address });
+    navigateToSendRoute(history, {
+      address: nft.address,
+      chainId: nft.chainId,
+    });
     onClose && onClose();
   };
 

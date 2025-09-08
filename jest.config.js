@@ -9,6 +9,9 @@ module.exports = {
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
+  // The path to the Prettier executable used to format snapshots
+  // Jest doesn't support Prettier 3 yet, so we use Prettier 2
+  prettierPath: require.resolve('prettier-2'),
   reporters: [
     'default',
     [
