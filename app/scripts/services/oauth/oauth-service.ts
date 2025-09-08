@@ -59,17 +59,17 @@ export default class OAuthService {
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
 
-    messenger.registerActionHandler(
+    this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:startOAuthLogin`,
       this.startOAuthLogin.bind(this),
     );
 
-    messenger.registerActionHandler(
+    this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:getNewRefreshToken`,
       this.getNewRefreshToken.bind(this),
     );
 
-    messenger.registerActionHandler(
+    this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:revokeAndGetNewRefreshToken`,
       this.revokeAndGetNewRefreshToken.bind(this),
     );
