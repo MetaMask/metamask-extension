@@ -9,6 +9,7 @@ import {
   IconName,
   Text,
   TextField,
+  TextFieldSize,
 } from '../../../../../components/component-library';
 import {
   BlockSize,
@@ -99,7 +100,9 @@ export const Amount = () => {
 
   return (
     <Box marginTop={4}>
-      <Text variant={TextVariant.bodyMd}>{t('amount')}</Text>
+      <Text variant={TextVariant.bodyMd} paddingBottom={1}>
+        {t('amount')}
+      </Text>
       <TextField
         error={Boolean(amountError)}
         onChange={onChange}
@@ -120,6 +123,7 @@ export const Amount = () => {
           </div>
         }
         width={BlockSize.Full}
+        size={TextFieldSize.Lg}
       />
       <Box
         display={Display.Flex}

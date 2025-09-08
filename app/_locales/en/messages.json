@@ -1177,6 +1177,9 @@
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "clearFilters": {
+    "message": "Clear filters"
+  },
   "click": {
     "message": "Click"
   },
@@ -3869,6 +3872,9 @@
   "noThanks": {
     "message": "No thanks"
   },
+  "noTokensMatchingYourFilters": {
+    "message": "No tokens matching your filters"
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -5197,6 +5203,12 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchAnAcccountOrContact": {
+    "message": "Search an account or contact"
+  },
+  "searchForAnAssetToSend": {
+    "message": "Search for an asset to send"
+  },
   "searchNetworks": {
     "message": "Search networks"
   },
@@ -5208,6 +5220,10 @@
   },
   "searchTokensByNameOrAddress": {
     "message": "Search tokens by name or address"
+  },
+  "searchYourAccounts": {
+    "message": "Search your accounts",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -5356,8 +5372,14 @@
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
   },
+  "selectNetworkToFilter": {
+    "message": "Select network to filter"
+  },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
+  },
+  "selectRecipient": {
+    "message": "Select recipient"
   },
   "selectRpcUrl": {
     "message": "Select RPC URL"
@@ -5731,6 +5753,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Edit slippage"
+  },
+  "smartAccount": {
+    "message": "Smart account"
   },
   "smartAccountAccept": {
     "message": "Use smart account"
