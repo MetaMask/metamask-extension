@@ -156,6 +156,12 @@ import {
 } from '@metamask/multichain-api-middleware';
 
 import {
+  getCallsStatus,
+  getCapabilities,
+  processSendCalls,
+} from '@metamask/eip-5792-middleware';
+
+import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -407,11 +413,6 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import {
-  getCallsStatus,
-  getCapabilities,
-  processSendCalls,
-} from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
@@ -3707,6 +3708,10 @@ export default class MetamaskController extends EventEmitter {
       getTokenSymbol: this.getTokenSymbol.bind(this),
       getTokenStandardAndDetailsByChain:
         this.getTokenStandardAndDetailsByChain.bind(this),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
