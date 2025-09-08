@@ -63,6 +63,8 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
+          undefined,
+          2,
         );
 
         // Switch to Arbitrum One to set it as the selected network
@@ -83,6 +85,8 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           6,
+          undefined,
+          3,
         );
       },
     );

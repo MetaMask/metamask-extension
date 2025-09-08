@@ -87,6 +87,7 @@ export async function bridgeTransaction(
   quote: BridgeQuote,
   transactionsCount: number,
   expectedWalletBalance?: string,
+  repeatedTransactionsCount?: number,
 ) {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
@@ -104,13 +105,19 @@ export async function bridgeTransaction(
   await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
 
   if (quote.unapproved) {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction(
+      `Bridged to ${quote.toChain}`,
+      repeatedTransactionsCount,
+    );
     await activityList.checkTxAction(
       `Approve ${quote.tokenFrom} for bridge`,
-      2,
+      1,
     );
   } else {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction(
+      `Bridged to ${quote.toChain}`,
+      repeatedTransactionsCount,
+    );
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.checkTxAmountInActivity(

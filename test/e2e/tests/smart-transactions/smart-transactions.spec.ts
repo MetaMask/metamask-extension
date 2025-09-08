@@ -84,7 +84,9 @@ describe('Smart Transactions', function () {
         await activityList.checkCompletedTxNumberDisplayedInActivity(2);
         await activityList.checkNoFailedTransactions();
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
-        await activityList.checkTxAction('Sent', 2);
+        // At the moment, there is 1 Sent and 1 Unnamed transaction (issue #35565)
+        // The fix will consolidate the 2 into 1 tx
+        await activityList.checkTxAction('Sent', 1);
         await activityList.checkTxAmountInActivity(`-0 ETH`, 1);
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 2);
       },
