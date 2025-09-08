@@ -25,7 +25,6 @@ import {
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
-import { BridgeStatusControllerGetStateAction } from '@metamask/bridge-status-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
@@ -62,8 +61,7 @@ type MessengerActions =
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction
   | TransactionControllerEstimateGasAction
-  | TransactionControllerGetStateAction
-  | BridgeStatusControllerGetStateAction;
+  | TransactionControllerGetStateAction;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -138,7 +136,6 @@ export function getTransactionControllerInitMessenger(
       'SwapsController:setTradeTxId',
       'TransactionController:estimateGas',
       'TransactionController:getState',
-      'BridgeStatusController:getState',
     ],
   });
 }
