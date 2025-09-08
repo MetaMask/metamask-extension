@@ -13,6 +13,12 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useSearchParams: () => [{ get: () => null }],
 }));
 
+jest.mock('../hooks/send/useSendAssets', () => {
+  return {
+    useSendAssets: jest.fn().mockReturnValue({ tokens: [], nfts: [] }),
+  };
+});
+
 jest.mock('../components/send/asset', () => ({
   Asset: () => <div data-testid="asset-page">Asset page</div>,
 }));

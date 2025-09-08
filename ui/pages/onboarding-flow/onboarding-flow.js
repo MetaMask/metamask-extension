@@ -42,7 +42,6 @@ import {
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
   setParticipateInMetaMetrics,
-  setTermsOfUseLastAgreed,
   setDataCollectionForMarketing,
 } from '../../store/actions';
 import {
@@ -194,11 +193,6 @@ export default function OnboardingFlow() {
         newSecretRecoveryPhrase = await dispatch(
           createNewVaultAndGetSeedPhrase(password),
         );
-      }
-
-      // For social login, we need to agree to the terms of use
-      if (isSocialLogin) {
-        await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
       }
 
       setSecretRecoveryPhrase(newSecretRecoveryPhrase);

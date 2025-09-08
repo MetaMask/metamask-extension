@@ -5221,6 +5221,9 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchAnAcccountOrContact": {
+    "message": "Search an account or contact"
+  },
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
   },
@@ -5235,6 +5238,10 @@
   },
   "searchTokensByNameOrAddress": {
     "message": "Search tokens by name or address"
+  },
+  "searchYourAccounts": {
+    "message": "Search your accounts",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -5388,6 +5395,9 @@
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
+  },
+  "selectRecipient": {
+    "message": "Select recipient"
   },
   "selectRpcUrl": {
     "message": "Select RPC URL"
@@ -5761,6 +5771,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Edit slippage"
+  },
+  "smartAccount": {
+    "message": "Smart account"
   },
   "smartAccountAccept": {
     "message": "Use smart account"
