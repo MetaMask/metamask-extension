@@ -100,15 +100,15 @@ export const MultichainAddressRow = ({
     // Execute the copy callback
     copyActionParams.callback();
 
-    // Update state for the blinking effect
-    setSubText(copyActionParams.message); // Show the copy message
-    setCopyIcon(IconName.CopySuccess); // Change background to success
+    setSubText(copyActionParams.message);
+    setCopyIcon(IconName.CopySuccess);
 
-    // Reset back to default after 1 second
-    setTimeout(() => {
-      setSubText(truncatedAddress); // Reset display address
-      setCopyIcon(IconName.Copy); // Reset background
-    }, 1000); // Blinking duration is 1 second
+    const timeoutId = setTimeout(() => {
+      setSubText(truncatedAddress);
+      setCopyIcon(IconName.Copy);
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
   };
 
   const handleQrClick = () => {
