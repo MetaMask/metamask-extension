@@ -56,7 +56,7 @@ export const Label: StoryFn<typeof PickerNetwork> = (args) => (
     <PickerNetwork
       {...args}
       src=""
-      label="BNB Smart Chain (previously Binance Smart Chain Mainnet)"
+      label="BNB Smart Chain (previously BNB Chain)"
       style={{ maxWidth: '200px' }}
     />
   </Box>

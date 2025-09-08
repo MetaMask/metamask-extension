@@ -67,8 +67,7 @@ describe('migration #83', () => {
             },
             'network-configuration-id-4': {
               chainId: '0x38',
-              nickname:
-                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
+              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },
@@ -110,8 +109,7 @@ describe('migration #83', () => {
             },
             'network-configuration-id-4': {
               chainId: '0x38',
-              nickname:
-                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
+              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },

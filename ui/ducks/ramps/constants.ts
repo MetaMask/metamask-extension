@@ -25,7 +25,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 56,
-    chainName: 'BNB Chain Mainnet',
+    chainName: 'BNB Chain',
     shortName: 'BNB Chain',
     nativeTokenSupported: true,
   },

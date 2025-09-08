@@ -112,7 +112,7 @@ describe('Network Selectors', () => {
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
           lastUpdatedAt: 1738689643708,
-          name: 'Binance Smart Chain',
+          name: 'BNB Chain',
           nativeCurrency: 'BNB',
           rpcEndpoints: [
             {
@@ -233,7 +233,7 @@ describe('Network Selectors', () => {
         },
         {
           chainId: '0x38',
-          name: 'Binance Smart Chain',
+          name: 'BNB Chain',
         },
         {
           chainId: '0x89',

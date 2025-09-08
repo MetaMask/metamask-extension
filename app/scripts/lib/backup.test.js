@@ -116,7 +116,7 @@ const jsonData = JSON.stringify({
       {
         id: 'network-configuration-id-2',
         chainId: '0x38',
-        nickname: 'Binance Smart Chain Mainnet',
+        nickname: 'BNB Chain',
         rpcPrefs: {
           blockExplorerUrl: 'https://bscscan.com',
         },
@@ -126,7 +126,7 @@ const jsonData = JSON.stringify({
       {
         id: 'network-configuration-id-3',
         chainId: '0x61',
-        nickname: 'Binance Smart Chain Testnet',
+        nickname: 'BNB Chain Testnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://testnet.bscscan.com',
         },

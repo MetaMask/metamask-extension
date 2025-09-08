@@ -143,7 +143,7 @@ describe('SiteCellTooltip', () => {
         chainId: '0x38',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Binance Smart Chain',
+        name: 'BNB Chain',
         nativeCurrency: 'BNB',
         rpcEndpoints: [
           {
