@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import {
   Box,
@@ -15,22 +15,26 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
+import { useSendContext } from '../../../context/send';
+import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const [to, setTo] = useState<string | undefined>();
+  const { to } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
   const { amountError } = useAmountValidation();
+  const { recipientError } = useRecipientValidation();
+
+  const isDisabled = Boolean(amountError) || Boolean(recipientError) || !to;
+  const hasError = Boolean(amountError) || Boolean(recipientError);
 
   const onClick = useCallback(() => {
     handleSubmit(to);
     captureAmountSelected();
   }, [captureAmountSelected, handleSubmit, to]);
-
-  const hasAmountError = Boolean(amountError);
 
   return (
     <Box
@@ -42,17 +46,15 @@ export const AmountRecipient = () => {
       style={{ flex: 1 }}
     >
       <Box>
-        <Recipient setTo={setTo} />
+        <Recipient />
         <Amount />
       </Box>
       <Button
-        disabled={hasAmountError}
+        disabled={isDisabled}
         onClick={onClick}
         size={ButtonSize.Lg}
         backgroundColor={
-          hasAmountError
-            ? BackgroundColor.errorDefault
-            : BackgroundColor.iconDefault
+          hasError ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
         }
         marginBottom={4}
       >

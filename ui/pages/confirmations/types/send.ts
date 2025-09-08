@@ -41,3 +41,14 @@ export type Asset = {
   primary?: string;
   rawBalance?: Hex;
 };
+
+export type RecipientValidationResult = {
+  confusableCharacters?: {
+    point: string;
+    similarTo: string;
+  }[];
+  error?: string | null;
+  isLookupLoading?: boolean;
+  resolvedLookup?: string | null;
+  warning?: string | null;
+};

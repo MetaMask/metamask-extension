@@ -148,15 +148,15 @@ const mockState = {
 
 describe('useSnapNameResolution', () => {
   it('calls name resolution Snaps with the provided input', async () => {
-    const { result, waitForValueToChange } = renderHookWithProvider(
-      () =>
-        useSnapNameResolution({ chainId: 'eip155:1', domain: 'metamask.eth' }),
+    const { result } = renderHookWithProvider(
+      () => useSnapNameResolution(),
       mockState,
     );
 
-    await waitForValueToChange(() => result.current.results);
+    const resolveNameLookup = result.current;
+    const results = await resolveNameLookup('eip155:1', 'metamask.eth');
 
-    expect(result.current.results).toStrictEqual([
+    expect(results).toStrictEqual([
       {
         domainName: 'metamask.eth',
         protocol: 'ENS',
@@ -166,18 +166,18 @@ describe('useSnapNameResolution', () => {
   });
 
   it('supports chain ID filtering', async () => {
-    const { result, waitForValueToChange } = renderHookWithProvider(
-      () =>
-        useSnapNameResolution({
-          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          domain: 'metamask',
-        }),
+    const { result } = renderHookWithProvider(
+      () => useSnapNameResolution(),
       mockState,
     );
 
-    await waitForValueToChange(() => result.current.results);
+    const resolveNameLookup = result.current;
+    const results = await resolveNameLookup(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      'metamask',
+    );
 
-    expect(result.current.results).toStrictEqual([
+    expect(results).toStrictEqual([
       {
         domainName: 'metamask.eth',
         protocol: 'ENS',
@@ -192,15 +192,15 @@ describe('useSnapNameResolution', () => {
   });
 
   it('supports scheme filtering', async () => {
-    const { result, waitForValueToChange } = renderHookWithProvider(
-      () =>
-        useSnapNameResolution({ chainId: 'eip155:1', domain: 'farcaster:v' }),
+    const { result } = renderHookWithProvider(
+      () => useSnapNameResolution(),
       mockState,
     );
 
-    await waitForValueToChange(() => result.current.results);
+    const resolveNameLookup = result.current;
+    const results = await resolveNameLookup('eip155:1', 'farcaster:v');
 
-    expect(result.current.results).toStrictEqual([
+    expect(results).toStrictEqual([
       {
         domainName: 'farcaster:v',
         protocol: 'Farcaster',
@@ -210,14 +210,15 @@ describe('useSnapNameResolution', () => {
   });
 
   it('supports TLD filtering', async () => {
-    const { result, waitForValueToChange } = renderHookWithProvider(
-      () => useSnapNameResolution({ chainId: 'eip155:1', domain: 'foo.lens' }),
+    const { result } = renderHookWithProvider(
+      () => useSnapNameResolution(),
       mockState,
     );
 
-    await waitForValueToChange(() => result.current.results);
+    const resolveNameLookup = result.current;
+    const results = await resolveNameLookup('eip155:1', 'foo.lens');
 
-    expect(result.current.results).toStrictEqual([
+    expect(results).toStrictEqual([
       {
         domainName: 'foo.lens',
         protocol: 'Lens',

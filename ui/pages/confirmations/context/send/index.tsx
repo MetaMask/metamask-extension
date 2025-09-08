@@ -24,9 +24,11 @@ export type SendContextType = {
   from: string;
   maxValueMode?: boolean;
   to?: string;
+  toResolvedLookup?: string | null;
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
   updateTo: (to: string) => void;
+  updateToResolvedLookup: (toResolvedLookup?: string | null) => void;
   updateValue: (value: string, maxValueMode?: boolean) => void;
   value?: string;
 };
@@ -39,9 +41,11 @@ export const SendContext = createContext<SendContextType>({
   from: '',
   maxValueMode: undefined,
   to: undefined,
+  toResolvedLookup: undefined,
   updateAsset: () => undefined,
   updateCurrentPage: () => undefined,
   updateTo: () => undefined,
+  updateToResolvedLookup: () => undefined,
   updateValue: () => undefined,
   value: undefined,
 });
@@ -53,6 +57,9 @@ export const SendContextProvider: React.FC<{
   const from = useSelector(getSelectedAccount);
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
   const [to, updateTo] = useState<string>();
+  const [toResolvedLookup, updateToResolvedLookup] = useState<
+    string | undefined | null
+  >();
   const [value, setValue] = useState<string>();
   const [currentPage, updateCurrentPage] = useState<SendPages>();
 
@@ -83,9 +90,11 @@ export const SendContextProvider: React.FC<{
         from: from?.address as string,
         maxValueMode,
         to,
+        toResolvedLookup,
         updateAsset,
         updateCurrentPage,
         updateTo,
+        updateToResolvedLookup,
         updateValue,
         value,
       }}

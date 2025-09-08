@@ -1,37 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsCaveat,
   getLookupMatchersCaveat,
 } from '@metamask/snaps-rpc-methods';
-import { AddressResolution, DomainLookupResult } from '@metamask/snaps-sdk';
+import { DomainLookupResult } from '@metamask/snaps-sdk';
 import { getNameLookupSnaps } from '../../selectors';
 import { handleSnapRequest } from '../../store/actions';
 
 /**
- * A hook for using Snaps to resolve domain names for a given chain ID.
+ * A hook for using Snaps to lookup domains for a given chain ID.
+ * Returns a callback function that lookups domains on-demand.
  *
- * @param options - An options bag.
- * @param options.chainId - A CAIP-2 chain ID.
- * @param options.domain - The domain to resolve.
- * @returns The results of the name resolution and a flag to determine if the
- * results are loading.
+ * @returns The resolve callback function.
  */
-export function useSnapNameResolution({
-  chainId,
-  domain,
-}: {
-  chainId: string;
-  domain: string;
-}) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [results, setResults] = useState<AddressResolution[]>([]);
-
+export function useSnapNameResolution() {
   const snaps = useSelector(getNameLookupSnaps);
 
-  const filteredSnaps = useMemo(
-    () =>
-      snaps
+  const getFilteredSnaps = useCallback(
+    (chainId: string, domain: string) => {
+      return snaps
         .filter(({ permission }) => {
           const chainIdCaveat = getChainIdsCaveat(permission);
 
@@ -51,35 +39,35 @@ export function useSnapNameResolution({
 
           return true;
         })
-        .map(({ id }) => id),
-    [snaps, chainId, domain],
+        .map(({ id }) => id);
+    },
+    [snaps],
   );
 
-  useEffect(() => {
-    let cancelled = false;
-    async function fetchResolutions() {
-      setLoading(true);
+  const resolveNameLookup = useCallback(
+    async (chainId: string, domain: string) => {
+      try {
+        const filteredSnaps = getFilteredSnaps(chainId, domain);
 
-      const responses = await Promise.allSettled(
-        filteredSnaps.map(
-          (id) =>
-            handleSnapRequest({
-              snapId: id,
-              origin: 'metamask',
-              handler: 'onNameLookup',
-              request: {
-                jsonrpc: '2.0',
-                method: ' ',
-                params: {
-                  chainId,
-                  domain,
+        const responses = await Promise.allSettled(
+          filteredSnaps.map(
+            (id) =>
+              handleSnapRequest({
+                snapId: id,
+                origin: 'metamask',
+                handler: 'onNameLookup',
+                request: {
+                  jsonrpc: '2.0',
+                  method: ' ',
+                  params: {
+                    chainId,
+                    domain,
+                  },
                 },
-              },
-            }) as Promise<DomainLookupResult>,
-        ),
-      );
+              }) as Promise<DomainLookupResult>,
+          ),
+        );
 
-      if (!cancelled) {
         const resolutions = responses
           .filter(
             (response) => response.status === 'fulfilled' && response.value,
@@ -89,17 +77,15 @@ export function useSnapNameResolution({
               (response as PromiseFulfilledResult<DomainLookupResult>).value
                 .resolvedAddresses,
           );
-        setResults(resolutions);
-        setLoading(false);
+
+        return resolutions;
+      } catch (error) {
+        console.error('Error resolving name lookup:', error);
+        return [];
       }
-    }
+    },
+    [getFilteredSnaps],
+  );
 
-    fetchResolutions();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [filteredSnaps, domain]);
-
-  return { results, loading };
+  return resolveNameLookup;
 }

@@ -7126,6 +7126,16 @@ export async function getERC1155BalanceOf(
   ]);
 }
 
+export async function getERC721AssetSymbol(
+  checksummedAddress: string,
+  networkClientId: string,
+): Promise<string> {
+  return await submitRequestToBackground<string>('getERC721AssetSymbol', [
+    checksummedAddress,
+    networkClientId,
+  ]);
+}
+
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
