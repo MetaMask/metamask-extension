@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { AssetFilterInput } from './asset-filter-input';
+import { RecipientFilterInput } from './recipient-filter-input';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../components/component-library', () => ({
@@ -11,7 +11,8 @@ jest.mock('../../../../../components/component-library', () => ({
     ...props
   }: {
     children: React.ReactNode;
-    [key: string]: unknown;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
   }) => (
     <div data-testid="box" {...props}>
       {children}
@@ -43,7 +44,7 @@ jest.mock('../../../../../components/component-library', () => ({
   TextFieldSearchSize: { Lg: 'lg' },
 }));
 
-describe('AssetFilterInput', () => {
+describe('RecipientFilterInput', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockOnChange = jest.fn();
 
@@ -57,46 +58,31 @@ describe('AssetFilterInput', () => {
 
   it('renders with search input', () => {
     const { getByTestId } = render(
-      <AssetFilterInput searchQuery="" onChange={mockOnChange} />,
+      <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
     expect(getByTestId('box')).toBeInTheDocument();
     expect(getByTestId('text-field-search')).toBeInTheDocument();
-    expect(getByTestId('asset-filter-search-input')).toBeInTheDocument();
+    expect(getByTestId('recipient-filter-search-input')).toBeInTheDocument();
   });
 
-  it('displays custom placeholder when provided', () => {
+  it('displays default placeholder', () => {
     const { getByTestId } = render(
-      <AssetFilterInput
-        searchQuery=""
-        onChange={mockOnChange}
-        placeholder="Custom placeholder"
-      />,
+      <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
-    expect(getByTestId('asset-filter-search-input')).toHaveAttribute(
+    expect(getByTestId('recipient-filter-search-input')).toHaveAttribute(
       'placeholder',
-      'Custom placeholder',
-    );
-  });
-
-  it('displays default placeholder when none provided', () => {
-    const { getByTestId } = render(
-      <AssetFilterInput searchQuery="" onChange={mockOnChange} />,
-    );
-
-    expect(getByTestId('asset-filter-search-input')).toHaveAttribute(
-      'placeholder',
-      'searchForAnAssetToSend',
+      'searchAnAcccountOrContact',
     );
   });
 
   it('calls onChange when input value changes', () => {
     const { getByTestId } = render(
-      <AssetFilterInput searchQuery="" onChange={mockOnChange} />,
+      <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
-    const input = getByTestId('asset-filter-search-input');
+    const input = getByTestId('recipient-filter-search-input');
     fireEvent.change(input, { target: { value: 'new search' } });
 
     expect(mockOnChange).toHaveBeenCalledWith('new search');
@@ -104,22 +90,53 @@ describe('AssetFilterInput', () => {
 
   it('displays current search query value', () => {
     const { getByTestId } = render(
-      <AssetFilterInput searchQuery="current query" onChange={mockOnChange} />,
+      <RecipientFilterInput
+        searchQuery="current query"
+        onChange={mockOnChange}
+      />,
     );
 
-    expect(getByTestId('asset-filter-search-input')).toHaveValue(
+    expect(getByTestId('recipient-filter-search-input')).toHaveValue(
       'current query',
     );
   });
 
   it('clears input when clear button is clicked', () => {
     const { getByTestId } = render(
-      <AssetFilterInput searchQuery="some text" onChange={mockOnChange} />,
+      <RecipientFilterInput searchQuery="some text" onChange={mockOnChange} />,
     );
 
     const clearButton = getByTestId('clear-button');
     fireEvent.click(clearButton);
 
     expect(mockOnChange).toHaveBeenCalledWith('');
+  });
+
+  it('calls useI18nContext hook', () => {
+    render(<RecipientFilterInput searchQuery="" onChange={mockOnChange} />);
+
+    expect(mockUseI18nContext).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates value when searchQuery prop changes', () => {
+    const { getByTestId, rerender } = render(
+      <RecipientFilterInput searchQuery="initial" onChange={mockOnChange} />,
+    );
+
+    expect(getByTestId('recipient-filter-search-input')).toHaveValue('initial');
+
+    rerender(
+      <RecipientFilterInput searchQuery="updated" onChange={mockOnChange} />,
+    );
+
+    expect(getByTestId('recipient-filter-search-input')).toHaveValue('updated');
+  });
+
+  it('renders with empty search query', () => {
+    const { getByTestId } = render(
+      <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
+    );
+
+    expect(getByTestId('recipient-filter-search-input')).toHaveValue('');
   });
 });

@@ -11,28 +11,26 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-type AssetFilterInputProps = {
+type RecipientFilterInputProps = {
   searchQuery: string;
   onChange: (value: string) => void;
   placeholder?: string;
 };
 
-export const AssetFilterInput = ({
+export const RecipientFilterInput = ({
   searchQuery,
   onChange,
-  placeholder,
-}: AssetFilterInputProps) => {
+}: RecipientFilterInputProps) => {
   const t = useI18nContext();
 
   return (
-    <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+    <Box paddingBottom={2}>
       <TextFieldSearch
         borderRadius={BorderRadius.LG}
-        placeholder={placeholder ?? t('searchForAnAssetToSend')}
+        placeholder={t('searchAnAcccountOrContact')}
         value={searchQuery}
         onChange={(e) => onChange(e.target.value)}
         error={false}
-        autoFocus
         autoComplete={false}
         width={BlockSize.Full}
         clearButtonOnClick={() => onChange('')}
@@ -42,7 +40,7 @@ export const AssetFilterInput = ({
         style={{ paddingInline: 12 }}
         showClearButton
         inputProps={{
-          'data-testid': 'asset-filter-search-input',
+          'data-testid': 'recipient-filter-search-input',
         }}
         endAccessory={null}
         size={TextFieldSearchSize.Lg}
