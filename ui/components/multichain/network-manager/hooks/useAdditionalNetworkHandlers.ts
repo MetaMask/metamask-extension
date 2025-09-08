@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
@@ -8,13 +8,9 @@ import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/m
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { hideModal, requestUserApproval } from '../../../../store/actions';
 import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
-import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 
 export const useAdditionalNetworkHandlers = () => {
   const dispatch = useDispatch();
-  const isMultichainAccountsFeatureEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   // Memoize the additional network click handler
   const handleAdditionalNetworkClick = useCallback(
@@ -52,15 +48,10 @@ export const useAdditionalNetworkHandlers = () => {
 
       // Only switch chains if user confirms request to change network.
       if (requestResult) {
-        await dispatch(
-          enableSingleNetwork(
-            network.chainId,
-            Boolean(isMultichainAccountsFeatureEnabled),
-          ),
-        );
+        await dispatch(enableSingleNetwork(network.chainId));
       }
     },
-    [dispatch, isMultichainAccountsFeatureEnabled],
+    [dispatch],
   );
 
   return {

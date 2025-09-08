@@ -1,7 +1,8 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
-import { Hex, hexToNumber, KnownCaipNamespace } from '@metamask/utils';
+import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -1462,8 +1463,8 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
-  `${KnownCaipNamespace.Solana}:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`,
-  `${KnownCaipNamespace.Bip122}:000000000019d6689c085ae165831e93`,
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

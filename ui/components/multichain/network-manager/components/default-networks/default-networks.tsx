@@ -86,20 +86,14 @@ const DefaultNetworks = memo(() => {
 
   // extract the solana account of the selected account group
   const solAccountGroup = useSelector((state) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(
-      state,
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    ),
+    getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
   );
 
   let btcAccountGroup = null;
 
   if (isFlask()) {
     btcAccountGroup = useSelector((state) =>
-      getInternalAccountBySelectedAccountGroupAndCaip(
-        state,
-        'bip122:000000000019d6689c085ae165831e93',
-      ),
+      getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
     );
   }
 

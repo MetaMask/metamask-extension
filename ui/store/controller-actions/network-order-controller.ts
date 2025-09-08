@@ -55,9 +55,12 @@ export function enableAllPopularNetworks(): ThunkAction<
 
 export function enableSingleNetwork(
   chainId: Hex | CaipChainId,
-  isMultichainAccountsFeatureEnabled: boolean = false,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const isMultichainAccountsFeatureEnabled =
+      getIsMultichainAccountsState2Enabled(state);
+
     const caipChainId = isCaipChainId(chainId)
       ? chainId
       : toEvmCaipChainId(chainId);

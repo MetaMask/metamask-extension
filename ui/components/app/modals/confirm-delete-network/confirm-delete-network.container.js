@@ -33,10 +33,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    switchToEthereumNetwork: async (isMultichainAccountsFeatureEnabled) => {
-      await dispatch(
-        enableSingleNetwork('0x1', Boolean(isMultichainAccountsFeatureEnabled)),
-      );
+    switchToEthereumNetwork: async () => {
+      await dispatch(enableSingleNetwork('0x1'));
     },
     removeNetwork: (chainId) => {
       dispatch(removeNetwork(chainId));
