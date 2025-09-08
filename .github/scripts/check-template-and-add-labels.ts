@@ -173,7 +173,7 @@ async function main(): Promise<void> {
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
       console.log(errorMessage);
 
-      // Add label to indicate issue doesn't match any template
+      // Add label to indicate issue does not match any template
       await addLabelToLabelable(octokit, labelable, invalidIssueTemplateLabel);
       await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
 
