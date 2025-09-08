@@ -206,19 +206,11 @@ const DefaultNetworks = memo(() => {
         if (isEvmNetworkSelected) {
           return network.isEvm;
         }
-        if (
-          selectedAccount.scopes.includes(
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          )
-        ) {
-          return network.chainId === 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+        if (selectedAccount.scopes.includes(SolScope.Mainnet)) {
+          return network.chainId === SolScope.Mainnet;
         }
-        if (
-          selectedAccount.scopes.includes(
-            'bip122:000000000019d6689c085ae165831e93',
-          )
-        ) {
-          return network.chainId === 'bip122:000000000019d6689c085ae165831e93';
+        if (selectedAccount.scopes.includes(BtcScope.Mainnet)) {
+          return network.chainId === BtcScope.Mainnet;
         }
         return false;
       });
