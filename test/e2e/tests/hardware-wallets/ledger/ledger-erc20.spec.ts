@@ -1,15 +1,15 @@
 import { Suite } from 'mocha';
-import TestDappPage from '../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import CreateContractModal from '../../page-objects/pages/dialog/create-contract';
-import WatchAssetConfirmation from '../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
-import HomePage from '../../page-objects/pages/home/homepage';
-import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TestDappPage from '../../../page-objects/pages/test-dapp';
+import FixtureBuilder from '../../../fixture-builder';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
+import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 
 describe('Ledger Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
@@ -86,6 +86,9 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        await homePage.checkPageIsLoaded();
+
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
           `Approve ${symbol} spending cap`,
@@ -100,6 +103,9 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        await homePage.checkPageIsLoaded();
+
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
           `Increase ${symbol} spending cap`,
