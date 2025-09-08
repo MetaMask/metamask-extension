@@ -137,25 +137,26 @@ export const useSendQueryParams = () => {
       };
     }
     let newAsset;
-    const add = paramAsset ?? nativeAsset?.address ?? nativeAsset?.assetId;
-    if (add) {
+    const asAddress =
+      paramAsset ?? nativeAsset?.address ?? nativeAsset?.assetId;
+    if (asAddress) {
       const cid = paramChainId ?? nativeAsset?.chainId;
       const chainId =
-        isEvmAddress(add) && cid && !isHexString(cid) ? toHex(cid) : cid;
+        isEvmAddress(asAddress) && cid && !isHexString(cid) ? toHex(cid) : cid;
 
       if (chainId) {
         newAsset = tokens?.find(
           ({ assetId, chainId: tokenChainId }) =>
             chainId === tokenChainId &&
-            assetId?.toLowerCase() === add.toLowerCase(),
+            assetId?.toLowerCase() === asAddress.toLowerCase(),
         );
       }
 
       if (!newAsset) {
         newAsset = nfts?.find(
-          ({ assetId, chainId: tokenChainId }) =>
+          ({ address: tokenAddrress, chainId: tokenChainId }) =>
             chainId === tokenChainId &&
-            assetId?.toLowerCase() === add.toLowerCase(),
+            tokenAddrress?.toLowerCase() === asAddress.toLowerCase(),
         );
       }
     }
