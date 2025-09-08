@@ -5,7 +5,6 @@ import { isCaipChainId } from '@metamask/utils';
 import {
   getIsMultichainAccountsState2Enabled,
   getIsTestnet,
-  getSelectedAccount,
   getShowFiatInTestnets,
   getTokenList,
   selectERC20TokensByChain,
@@ -72,7 +71,7 @@ export const useTokenDisplayInfo = ({
           token.tokenFiatAmount,
           fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
-      : null;
+      : undefined;
 
   const formattedPrimary = formatWithThreshold(
     Number((isEvm ? token.string : token.primary) || token.balance),
