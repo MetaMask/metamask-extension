@@ -72,7 +72,11 @@ export const MultichainAccountPrivateKeyListPage = () => {
         />
         <Box flexDirection={BoxFlexDirection.Column}>
           {decodedAccountGroupId ? (
-            <MultichainPrivateKeyList groupId={decodedAccountGroupId} />
+            <MultichainPrivateKeyList
+              groupId={decodedAccountGroupId}
+              goBack={history.goBack}
+              data-testid="multichain-account-private-key-list"
+            />
           ) : null}
         </Box>
       </Content>

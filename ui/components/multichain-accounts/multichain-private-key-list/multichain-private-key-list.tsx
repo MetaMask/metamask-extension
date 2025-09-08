@@ -46,10 +46,15 @@ export type MultichainPrivateKeyListProps = {
    * The account group ID.
    */
   groupId: AccountGroupId;
+  /**
+   * Function to go back to the previous page.
+   */
+  goBack: () => void;
 };
 
 const MultichainPrivateKeyList = ({
   groupId,
+  goBack,
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
   const [password, setPassword] = useState<string>('');
@@ -57,19 +62,19 @@ const MultichainPrivateKeyList = ({
   const [reveal, setReveal] = useState<boolean>(false);
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
 
-  const cleanStateVariables = () => {
+  const cleanStateVariables = useCallback(() => {
     setPrivateKeys({});
     setPassword('');
     setWrongPassword(false);
     setReveal(false);
-  };
+  }, []);
 
   useEffect(
     () => () => {
       // Clean state variables on unmount
       cleanStateVariables();
     },
-    [],
+    [cleanStateVariables],
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -131,7 +136,8 @@ const MultichainPrivateKeyList = ({
 
   const onCancel = useCallback(() => {
     cleanStateVariables();
-  }, []);
+    goBack();
+  }, [cleanStateVariables, goBack]);
 
   const renderedPasswordInput = useMemo(
     () => (
@@ -148,7 +154,7 @@ const MultichainPrivateKeyList = ({
             onChange={handlePasswordChange}
             error={wrongPassword}
             width={BlockSize.Full}
-            testId="multichain-private-key-password-input"
+            data-testid="multichain-private-key-password-input"
           />
           {wrongPassword ? (
             <Text
