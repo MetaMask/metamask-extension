@@ -1,7 +1,0 @@
-{
-  "name": "@yarnpkg/cli-local-4.9.4",
-  "version": "4.9.4",
-  "bin": {
-    "yarn": "./bin/yarn.js"
-  }
-}
