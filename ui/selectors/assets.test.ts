@@ -335,7 +335,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
       mockState,
       undefined,
       '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-      undefined,
+      '0x1',
     );
     expect(result).toBeNull();
   });
