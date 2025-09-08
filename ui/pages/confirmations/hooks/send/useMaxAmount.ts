@@ -1,6 +1,5 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { useCallback } from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 
