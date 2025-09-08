@@ -163,6 +163,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       return;
     }
 
+    // TODO BIP44 Refactor: The route requires evm native tokens to not pass the address
     const tokenAddress =
       isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
 

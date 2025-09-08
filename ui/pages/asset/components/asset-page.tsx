@@ -138,40 +138,37 @@ const AssetPage = ({
     tokenBalances[selectedAccount.address];
 
   const multiChainAssets = useMultiChainAssets();
-  let mutichainTokenWithFiatAmount;
-  if (!isMultichainAccountsState2Enabled) {
-    mutichainTokenWithFiatAmount = multiChainAssets
-      .filter((item) => item.chainId === chainId && item.address !== undefined)
-      .find((item) => {
-        switch (type) {
-          case AssetType.native:
-            return item.isNative;
-          case AssetType.token:
-            return item.address === asset.address;
-          default:
-            return false;
-        }
-      }) ?? {
-      // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
-      // Root cause: There is a race condition where when switching from a non-EVM network
-      // to an EVM network, the mutichainTokenWithFiatAmount is undefined
-      // This is a workaround to avoid the error
-      // Look into the isEvm selector
-      // We might be switching network before account.
-      address: '',
-      chainId: '',
-      symbol: '',
-      title: '',
-      image: '',
-      tokenFiatAmount: 0,
-      string: '',
-      decimals: 0,
-      aggregators: [],
-      isNative: false,
-      primary: '',
-      secondary: 0,
-    };
-  }
+  const mutichainTokenWithFiatAmount = multiChainAssets
+    .filter((item) => item.chainId === chainId && item.address !== undefined)
+    .find((item) => {
+      switch (type) {
+        case AssetType.native:
+          return item.isNative;
+        case AssetType.token:
+          return item.address === asset.address;
+        default:
+          return false;
+      }
+    }) ?? {
+    // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
+    // Root cause: There is a race condition where when switching from a non-EVM network
+    // to an EVM network, the mutichainTokenWithFiatAmount is undefined
+    // This is a workaround to avoid the error
+    // Look into the isEvm selector
+    // We might be switching network before account.
+    address: '',
+    chainId: '',
+    symbol: '',
+    title: '',
+    image: '',
+    tokenFiatAmount: 0,
+    string: '',
+    decimals: 0,
+    aggregators: [],
+    isNative: false,
+    primary: '',
+    secondary: 0,
+  };
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
