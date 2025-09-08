@@ -21,18 +21,7 @@ describe('MultichainAccountEditModal', () => {
   };
 
   const initialState = {
-    metamask: {
-      localeMessages: {
-        current: {
-          rename: 'Rename',
-          accountName: 'Account name',
-          confirm: 'Confirm',
-          back: 'Back',
-          close: 'Close',
-        },
-        currentLocale: 'en',
-      },
-    },
+    metamask: {},
   };
 
   beforeEach(() => {
