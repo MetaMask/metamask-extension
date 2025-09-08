@@ -1,4 +1,4 @@
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
+import { ERC1155, ERC20, ERC721 } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
 import {
   TransactionParams,
@@ -184,9 +184,21 @@ export const submitEvmTransaction = async ({
 }) => {
   const trxnParams = prepareEVMTransaction(asset, { from, to, value });
   const networkClientId = await findNetworkClientIdByChainId(chainId);
+
+  let transactionType;
+  if (isNativeAddress(asset.address ?? asset.assetId)) {
+    transactionType = TransactionType.simpleSend;
+  } else if (asset.standard === ERC20) {
+    transactionType = TransactionType.tokenMethodTransfer;
+  } else if (asset.standard === ERC721) {
+    transactionType = TransactionType.tokenMethodTransferFrom;
+  } else if (asset.standard === ERC1155) {
+    transactionType = TransactionType.tokenMethodSafeTransferFrom;
+  }
+
   return addTransactionAndRouteToConfirmationPage(trxnParams, {
     networkClientId,
-    type: TransactionType.simpleSend,
+    type: transactionType,
   });
 };
 
