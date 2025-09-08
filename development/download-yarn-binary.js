@@ -102,8 +102,10 @@ async function downloadFile(url, filePath) {
           return;
         }
 
-        return pipeline(response, file)
-          .then(() => resolve())
+        pipeline(response, file)
+          .then(() => {
+            resolve();
+          })
           .catch(reject);
       })
       .on('error', (error) => {
@@ -167,9 +169,7 @@ async function fetchUrlData(url) {
       .get(url, (response) => {
         if (response.statusCode === 302 || response.statusCode === 301) {
           // Handle redirect
-          fetchUrlData(response.headers.location)
-            .then(resolve)
-            .catch(reject);
+          fetchUrlData(response.headers.location).then(resolve).catch(reject);
         }
 
         if (response.statusCode !== 200) {
