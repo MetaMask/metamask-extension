@@ -41,13 +41,10 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
-  setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-  getIsSocialLoginFlow,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -111,7 +108,6 @@ export default function OnboardingFlow() {
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
-  const isSocialLogin = useSelector(getIsSocialLoginFlow);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -217,11 +213,6 @@ export default function OnboardingFlow() {
         retrievedSecretRecoveryPhrase = await dispatch(
           unlockAndGetSeedPhrase(password),
         );
-      }
-
-      if (isSocialLogin) {
-        await dispatch(setParticipateInMetaMetrics(true));
-        await dispatch(setDataCollectionForMarketing(true));
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);

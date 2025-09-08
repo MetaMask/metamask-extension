@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
@@ -21,7 +21,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { setTermsOfUseLastAgreed } from '../../../store/actions';
+import {
+  setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
+  setTermsOfUseLastAgreed,
+} from '../../../store/actions';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -38,6 +43,7 @@ export default function WelcomeLogin({
   const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
+  const isSocialLogin = useSelector(getIsSocialLoginFlow);
   const dispatch = useDispatch();
 
   const renderMascot = () => {
@@ -69,9 +75,14 @@ export default function WelcomeLogin({
 
       await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
+      if (isSocialLogin) {
+        await dispatch(setParticipateInMetaMetrics(true));
+        await dispatch(setDataCollectionForMarketing(true));
+      }
+
       await onLogin(loginType, loginOption);
     },
-    [dispatch, loginOption, onLogin],
+    [dispatch, loginOption, onLogin, isSocialLogin],
   );
 
   return (
