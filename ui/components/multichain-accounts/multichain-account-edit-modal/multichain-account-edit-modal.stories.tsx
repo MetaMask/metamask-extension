@@ -10,11 +10,9 @@ const accountGroupIds: AccountGroupId[] = [
 ];
 
 const ModalWithTrigger = ({
-  currentAccountName,
   accountGroupId,
   buttonText = 'Edit Account Name',
 }: {
-  currentAccountName: string;
   accountGroupId: AccountGroupId;
   buttonText: string;
 }) => {
@@ -31,7 +29,6 @@ const ModalWithTrigger = ({
       <MultichainAccountEditModal
         isOpen={isOpen}
         onClose={handleClose}
-        currentAccountName={currentAccountName}
         accountGroupId={accountGroupId}
       />
     </>
@@ -49,10 +46,6 @@ const meta: Meta<typeof ModalWithTrigger> = {
     },
   },
   argTypes: {
-    currentAccountName: {
-      control: 'text',
-      description: 'The current name of the account',
-    },
     accountGroupId: {
       control: 'select',
       options: accountGroupIds,
@@ -71,17 +64,7 @@ type Story = StoryObj<typeof ModalWithTrigger>;
 
 export const Default: Story = {
   args: {
-    currentAccountName: 'Account 1',
     accountGroupId: accountGroupIds[0],
     buttonText: 'Edit Account Name',
-  },
-};
-
-export const WithLongAccountName: Story = {
-  args: {
-    currentAccountName:
-      'My Very Long Account Name That Might Cause Layout Issues In The Modal Component',
-    accountGroupId: accountGroupIds[0],
-    buttonText: 'Edit Account With Long Name',
   },
 };
