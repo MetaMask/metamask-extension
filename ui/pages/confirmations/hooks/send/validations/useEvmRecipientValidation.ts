@@ -27,6 +27,7 @@ const validateHexAddress = async (address: string, chainId?: string) => {
     if (networkClientId) {
       const symbol = await getERC721AssetSymbol(address, networkClientId);
       if (symbol) {
+        // Contract address detected
         return {
           error: 'invalidAddress',
         };

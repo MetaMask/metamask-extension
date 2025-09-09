@@ -3,6 +3,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -12,6 +13,10 @@ import { isSolanaChainId } from '@metamask/bridge-controller';
 import { toHex } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
 
+import {
+  getSelectedAccountGroup,
+  getAccountGroupWithInternalAccounts,
+} from '../../../../selectors/multichain-accounts/account-tree';
 import { getSelectedAccount } from '../../../../selectors';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
@@ -20,7 +25,7 @@ export type SendContextType = {
   asset?: Asset;
   chainId?: string;
   currentPage?: SendPages;
-  fromAccount: InternalAccount;
+  fromAccount?: InternalAccount;
   from: string;
   maxValueMode?: boolean;
   to?: string;
@@ -55,6 +60,11 @@ export const SendContextProvider: React.FC<{
 }> = ({ children }) => {
   const [asset, updateAsset] = useState<Asset>();
   const from = useSelector(getSelectedAccount);
+  const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
+  const accountGroupWithInternalAccounts = useSelector(
+    getAccountGroupWithInternalAccounts,
+  );
+  const [fromAccount, updateFromAccount] = useState<InternalAccount>();
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
   const [to, updateTo] = useState<string>();
   const [toResolvedLookup, updateToResolvedLookup] = useState<
@@ -80,13 +90,31 @@ export const SendContextProvider: React.FC<{
       ? toHex(asset.chainId)
       : asset?.chainId?.toString();
 
+  useEffect(() => {
+    if (asset?.accountId) {
+      const selectedAccountGroupWithInternalAccounts =
+        accountGroupWithInternalAccounts.find(
+          (accountGroup) => accountGroup.id === selectedAccountGroupId,
+        )?.accounts;
+
+      const selectedAccount = selectedAccountGroupWithInternalAccounts?.find(
+        (account) => account.id === asset?.accountId,
+      );
+      updateFromAccount(selectedAccount as InternalAccount);
+    }
+  }, [
+    asset?.accountId,
+    selectedAccountGroupId,
+    accountGroupWithInternalAccounts,
+  ]);
+
   return (
     <SendContext.Provider
       value={{
         asset,
         chainId,
         currentPage,
-        fromAccount: from as InternalAccount,
+        fromAccount,
         from: from?.address as string,
         maxValueMode,
         to,

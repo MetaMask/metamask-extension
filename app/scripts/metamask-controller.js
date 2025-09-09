@@ -3711,6 +3711,10 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
