@@ -5272,14 +5272,12 @@ export default class MetamaskController extends EventEmitter {
         keyringIdToDiscover,
       );
 
-      return await multichainAccountWallet.discoverAndCreateAccounts(
-        keyringIdToDiscover,
-      );
+      return await multichainAccountWallet.discoverAndCreateAccounts();
     } catch (error) {
       log.warn(`Failed to add accounts with balance. Error: ${error}`);
       return {
-        bitcoin: 0,
-        solana: 0,
+        Bitcoin: 0,
+        Solana: 0,
       };
     } finally {
       await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
@@ -5383,24 +5381,6 @@ export default class MetamaskController extends EventEmitter {
           id,
           shouldImportSolanaAccount,
         );
-
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-        const btcClient = await this._getMultichainWalletSnapClient(
-          BITCOIN_WALLET_SNAP_ID,
-        );
-        const btcScope = BtcScope.Mainnet;
-        const btcAccounts = await btcClient.discoverAccounts(id, btcScope);
-
-        discoveredAccounts.bitcoin = btcAccounts.length;
-
-        // If none accounts got discovered, we still create the first (default) one.
-        if (btcAccounts.length === 0) {
-          await this._addSnapAccount(id, btcClient, {
-            scope: btcScope,
-            synchronize: false,
-          });
-        }
-        ///: END:ONLY_INCLUDE_IF
       }
 
       return {
