@@ -108,7 +108,8 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
 
-      # Enables gator permissions feature
+      # EIP-7715 Readable Permissions
+      - PERMISSIONS_KERNEL_SNAP_ID: ''
       - GATOR_PERMISSIONS_ENABLED: false
       - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: '@metamask/gator-permissions-snap'
 
@@ -330,7 +331,8 @@ env:
 
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
-  # Enables gator permissions feature
+  # EIP-7715 Readable Permissions
+  - PERMISSIONS_KERNEL_SNAP_ID: ''
   - GATOR_PERMISSIONS_ENABLED: false
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: '@metamask/gator-permissions-snap'
 
