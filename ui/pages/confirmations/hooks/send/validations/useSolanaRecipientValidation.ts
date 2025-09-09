@@ -4,7 +4,6 @@ import { isSolanaAddress } from '../../../../../../shared/lib/multichain/account
 import { isValidDomainName } from '../../../../../helpers/utils/util';
 import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
 import { useSendContext } from '../../../context/send';
-import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { validateDomainWithConfusables } from '../../../utils/sendValidations';
 import { RecipientValidationResult } from '../../../types/send';
 
