@@ -482,7 +482,9 @@ describe('PrepareBridgePage - Race Conditions', () => {
 
     // Now resolve the promise
     await act(async () => {
-      resolveSendBundle!(true);
+      if (resolveSendBundle) {
+        resolveSendBundle(true);
+      }
       await Promise.resolve();
     });
 
