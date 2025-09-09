@@ -85,7 +85,7 @@ describe('Test Snap Notification', function () {
         await headerNavbar.checkNotificationCountInMenuOption(1);
 
         // this click will close the menu
-        await headerNavbar.openThreeDotMenu();
+        await headerNavbar.mouseClickOnThreeDotMenu();
 
         // click the notification options
         await headerNavbar.clickNotificationsOptions();
