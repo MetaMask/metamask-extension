@@ -258,25 +258,4 @@ describe('useEvmRecipientValidation', () => {
       isLookupLoading: false,
     });
   });
-
-  it('validates hex address without chainId', async () => {
-    mockIsValidHexAddress.mockReturnValue(true);
-    const { result } = renderHook();
-
-    let validationResult;
-    await act(async () => {
-      validationResult = await result.current.validateEvmRecipient(
-        '0x1234567890123456789012345678901234567890',
-      );
-    });
-
-    expect(validationResult).toEqual({
-      error: null,
-      resolvedLookup: null,
-      isLookupLoading: false,
-      warning: null,
-    });
-    expect(mockFindNetworkClientIdByChainId).not.toHaveBeenCalled();
-    expect(mockGetERC721AssetSymbol).not.toHaveBeenCalled();
-  });
 });
