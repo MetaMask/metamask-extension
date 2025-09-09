@@ -141,7 +141,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
@@ -229,7 +229,7 @@
         "ethers>@ethersproject/transactions": true
       }
     },
-    "@ethersproject/hash": {
+    "ethers>@ethersproject/hash": {
       "packages": {
         "ethers>@ethersproject/address": true,
         "ethers>@ethersproject/base64": true,
@@ -339,7 +339,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "ethers>@ethersproject/networks": true,
         "ethers>@ethersproject/properties": true,
@@ -417,13 +417,13 @@
         "@ethersproject/abi>@ethersproject/logger": true
       }
     },
-    "@ethersproject/wallet": {
+    "ethers>@ethersproject/wallet": {
       "packages": {
         "ethers>@ethersproject/abstract-provider": true,
         "ethers>@ethersproject/abstract-signer": true,
         "ethers>@ethersproject/address": true,
         "@ethersproject/bytes": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/hdnode": true,
         "ethers>@ethersproject/json-wallets": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
@@ -451,7 +451,7 @@
     "ethers>@ethersproject/wordlists": {
       "packages": {
         "@ethersproject/bytes": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
         "ethers>@ethersproject/strings": true
@@ -644,7 +644,7 @@
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
       "packages": {
         "ethers>@ethersproject/constants": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "axios": true,
@@ -2056,7 +2056,7 @@
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@ethersproject/wallet": true,
+        "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
@@ -3476,7 +3476,7 @@
         "ethers>@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
         "@ethersproject/contracts": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/hdnode": true,
         "ethers>@ethersproject/json-wallets": true,
         "ethers>@ethersproject/keccak256": true,
@@ -3491,7 +3491,7 @@
         "ethers>@ethersproject/strings": true,
         "ethers>@ethersproject/transactions": true,
         "ethers>@ethersproject/units": true,
-        "@ethersproject/wallet": true,
+        "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
       }
