@@ -383,6 +383,10 @@ import {
   SnapsRegistryInit,
   WebSocketServiceInit,
 } from './controller-init/snaps';
+import {
+  BackendWebSocketServiceInit,
+  AccountActivityServiceInit,
+} from './controller-init/backend-platform';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
@@ -854,6 +858,61 @@ export default class MetamaskController extends EventEmitter {
       onInactiveTimeout: () => this.setLocked(),
       messenger: appStateControllerMessenger,
       extension: this.extension,
+    });
+
+    const currencyRateMessenger = this.controllerMessenger.getRestricted({
+      name: 'CurrencyRateController',
+      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
+    });
+    this.currencyRateController = new CurrencyRateController({
+      includeUsdRate: true,
+      messenger: currencyRateMessenger,
+      state: initState.CurrencyController,
+      useExternalServices: () =>
+        this.preferencesController.state.useExternalServices,
+    });
+    const initialFetchMultiExchangeRate =
+      this.currencyRateController.fetchMultiExchangeRate.bind(
+        this.currencyRateController,
+      );
+    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
+      if (this.preferencesController.state.useCurrencyRateCheck) {
+        return initialFetchMultiExchangeRate(...args);
+      }
+      return {
+        conversionRate: null,
+        usdConversionRate: null,
+      };
+    };
+
+    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenBalancesController',
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'TokensController:getState',
+        'PreferencesController:getState',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:listAccounts',
+        'AccountTrackerController:updateNativeBalances',
+        'AccountTrackerController:updateStakedBalances',
+      ],
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'TokensController:stateChange',
+        'NetworkController:stateChange',
+        'KeyringController:accountRemoved',
+        'AccountActivityService:balanceUpdated',
+      ],
+    });
+
+    this.tokenBalancesController = new TokenBalancesController({
+      messenger: tokenBalancesMessenger,
+      state: initState.TokenBalancesController,
+      useAccountsAPI: false,
+      queryMultipleAccounts:
+        this.preferencesController.state.useMultiAccountBalanceChecker,
+      interval: 30000,
     });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1478,6 +1537,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
+      BackendWebSocketService: BackendWebSocketServiceInit,
+      AccountActivityService: AccountActivityServiceInit,
       PPOMController: PPOMControllerInit,
       OnboardingController: OnboardingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -1555,6 +1616,8 @@ export default class MetamaskController extends EventEmitter {
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
       controllersByName.SmartTransactionsController;
+    this.backendWebSocketService = controllersByName.BackendWebSocketService;
+    this.accountActivityService = controllersByName.AccountActivityService;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
@@ -1930,6 +1993,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
+      AccountActivityService: this.accountActivityService,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
@@ -2166,6 +2230,15 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
+
+    // Clean up WebSocket connections and account activity subscriptions
+    if (this.controllersByName?.AccountActivityService) {
+      this.controllersByName.AccountActivityService.cleanup();
+    }
+    if (this.webSocketService) {
+      this.webSocketService.disconnect();
+    }
+
   }
 
   resetStates(resetMethods) {
