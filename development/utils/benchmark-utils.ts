@@ -24,7 +24,7 @@ export async function postCommentWithMetamaskBot({
   prNumber: string;
   optionalLog?: string;
   commentToken?: string;
-}): Promise<{ html_url: string } | undefined> {
+}): Promise<Response | null> {
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
   const POST_COMMENT_URI = `https://api.github.com/repos/${owner}/${repository}/issues/${prNumber}/comments`;
 
@@ -33,7 +33,7 @@ export async function postCommentWithMetamaskBot({
   }
 
   if (!commentToken) {
-    return;
+    return null;
   }
 
   console.log(`Posting to: ${POST_COMMENT_URI}`);
@@ -55,5 +55,5 @@ export async function postCommentWithMetamaskBot({
     );
   }
 
-  return response.json();
+  return response;
 }

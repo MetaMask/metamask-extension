@@ -576,7 +576,7 @@ async function main(): Promise<void> {
   console.log('Generated comment:');
   console.log(commentBody);
 
-  const responseData = await postCommentWithMetamaskBot({
+  const response = await postCommentWithMetamaskBot({
     commentBody,
     owner: OWNER,
     repository: REPOSITORY,
@@ -584,8 +584,9 @@ async function main(): Promise<void> {
     commentToken: PR_COMMENT_TOKEN,
   });
 
-  if (responseData) {
-    console.log(`Comment posted successfully: ${responseData.html_url}`);
+  if (response) {
+    const data = await response.json();
+    console.log(`Comment posted successfully: ${data.html_url}`);
   }
 }
 
