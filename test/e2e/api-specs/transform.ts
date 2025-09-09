@@ -1,12 +1,10 @@
 import {
-  ErrorObject,
   ExampleObject,
   ExamplePairingObject,
   MethodObject,
   OpenrpcDocument,
 } from '@open-rpc/meta-schema';
 import { toHex } from '../../../shared/lib/delegation/utils';
-import { EIP5792ErrorCode } from '../../../shared/constants/transaction';
 
 const transformOpenRPCDocument = (
   openrpcDocument: OpenrpcDocument,

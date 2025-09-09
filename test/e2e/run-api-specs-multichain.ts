@@ -30,7 +30,6 @@ import {
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
-import { PermittedAccountRule } from './api-specs/PermittedAccountRule';
 import { mockEip7702FeatureFlag } from './tests/confirmations/helpers';
 import { ExpectedErrorRule } from './api-specs/ExpectedErrorRule';
 
