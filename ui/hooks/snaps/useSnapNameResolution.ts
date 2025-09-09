@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsCaveat,
@@ -17,17 +17,28 @@ import { handleSnapRequest } from '../../store/actions';
 export function useSnapNameResolution() {
   const snaps = useSelector(getNameLookupSnaps);
 
-  const getFilteredSnaps = useCallback(
-    (chainId: string, domain: string) => {
-      return snaps
-        .filter(({ permission }) => {
-          const chainIdCaveat = getChainIdsCaveat(permission);
+  const processedSnaps = useMemo(
+    () =>
+      snaps.map((snap) => {
+        const chainIdCaveat = getChainIdsCaveat(snap.permission);
+        const lookupMatchersCaveat = getLookupMatchersCaveat(snap.permission);
 
+        return {
+          id: snap.id,
+          chainIdCaveat,
+          lookupMatchersCaveat,
+        };
+      }),
+    [snaps],
+  );
+
+  const getFilteredSnaps = useCallback(
+    (chainId: string, domain: string) =>
+      processedSnaps
+        .filter(({ chainIdCaveat, lookupMatchersCaveat }) => {
           if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
             return false;
           }
-
-          const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
 
           if (lookupMatchersCaveat) {
             const { tlds, schemes } = lookupMatchersCaveat;
@@ -39,9 +50,8 @@ export function useSnapNameResolution() {
 
           return true;
         })
-        .map(({ id }) => id);
-    },
-    [snaps],
+        .map(({ id }) => id),
+    [processedSnaps],
   );
 
   const lookupDomainAddresses = useCallback(
