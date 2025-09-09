@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { isValidHexAddress } from '@metamask/controller-utils';
 import {
   Box,
   Button,
@@ -22,7 +23,6 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import { useSubmitClaimFormState } from './submit-claim-form-state';
-import { isValidHexAddress } from '@metamask/controller-utils';
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
@@ -50,30 +50,36 @@ const SubmitClaimForm = () => {
     Record<string, { key: string; msg: string } | undefined>
   >({});
 
-  const validateAndSetEmail = useCallback((value: string) => {
-    const isEmailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-    setErrors((state) => ({
-      ...state,
-      email: isEmailValid
-        ? undefined
-        : { key: 'email', msg: t('shieldClaimInvalidEmail') },
-    }));
-    setEmail(value);
-  }, []);
+  const validateAndSetEmail = useCallback(
+    (value: string) => {
+      const isEmailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/iu);
+      setErrors((state) => ({
+        ...state,
+        email: isEmailValid
+          ? undefined
+          : { key: 'email', msg: t('shieldClaimInvalidEmail') },
+      }));
+      setEmail(value);
+    },
+    [setEmail, t],
+  );
 
-  const validateAndSetImpactedWalletAddress = useCallback((value: string) => {
-    const isImpactedWalletAddressValid = isValidHexAddress(value);
-    setErrors((state) => ({
-      ...state,
-      impactedWalletAddress: isImpactedWalletAddressValid
-        ? undefined
-        : {
-            key: 'impactedWalletAddress',
-            msg: t('shieldClaimInvalidImpactedWalletAddress'),
-          },
-    }));
-    setImpactedWalletAddress(value);
-  }, []);
+  const validateAndSetImpactedWalletAddress = useCallback(
+    (value: string) => {
+      const isImpactedWalletAddressValid = isValidHexAddress(value);
+      setErrors((state) => ({
+        ...state,
+        impactedWalletAddress: isImpactedWalletAddressValid
+          ? undefined
+          : {
+              key: 'impactedWalletAddress',
+              msg: t('shieldClaimInvalidImpactedWalletAddress'),
+            },
+      }));
+      setImpactedWalletAddress(value);
+    },
+    [setImpactedWalletAddress, t],
+  );
 
   const validateAndSetReimbursementWalletAddress = useCallback(
     (value: string) => {
@@ -89,7 +95,7 @@ const SubmitClaimForm = () => {
       }));
       setReimbursementWalletAddress(value);
     },
-    [],
+    [setReimbursementWalletAddress, t],
   );
 
   const isInvalidData = useMemo(() => {
@@ -181,7 +187,7 @@ const SubmitClaimForm = () => {
       />
       <FormTextField
         label={`${t('shieldClaimLossAmount')}*`}
-        placeholder="$10,000 USDT"
+        placeholder="10,000 USDT"
         helpText={t('shieldClaimLossAmountHelpText')}
         id="loss-amount"
         name="loss-amount"
