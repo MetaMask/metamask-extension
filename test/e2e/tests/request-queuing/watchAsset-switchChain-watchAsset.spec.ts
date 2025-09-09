@@ -4,11 +4,15 @@ import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { DAPP_URL } from '../../constants';
+import ContractAddressRegistry from '../../seeder/contract-address-registry';
+import { Anvil } from '../../seeder/anvil';
 
 describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this: Suite) {
+  const smartContract = SMART_CONTRACTS.HST;
   it('should not batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -31,27 +35,25 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
             },
           },
         ],
+        smartContract,
         title: this.test?.fullTitle(),
       },
 
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        contractRegistry,
+        localNodes,
+      }: {
+        driver: Driver;
+        contractRegistry: ContractAddressRegistry;
+        localNodes: Anvil[];
+      }) => {
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-
-        // Create Token
-        await testDapp.clickCreateToken();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.clickFooterConfirmButton();
-
-        // Wait for token address to populate in dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.checkTokenAddressesValue(
-          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-        );
+        await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
         // Watch Asset 1st call
         await testDapp.clickAddTokenToWallet();
