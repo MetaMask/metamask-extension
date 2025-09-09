@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { CaipChainId, type Hex } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -37,6 +37,7 @@ import {
   Text,
 } from '../../component-library';
 import { getMarketData, getCurrencyRates } from '../../../selectors';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -52,7 +53,6 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -70,7 +70,7 @@ type TokenListItemProps = {
   isTitleNetworkName?: boolean;
   isTitleHidden?: boolean;
   tokenChainImage?: string;
-  chainId: CaipChainId | Hex;
+  chainId: string;
   address?: string | null;
   showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
@@ -100,7 +100,7 @@ export const TokenListItemComponent = ({
   nativeCurrencySymbol,
 }: TokenListItemProps) => {
   const t = useI18nContext();
-  const isEvm = isEvmChainId(chainId);
+  const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
   const currencyRates = useSelector(getCurrencyRates);
 

@@ -68,7 +68,7 @@ describe('TokenListItem', () => {
     title: '',
     chainId: '0x1',
     tokenChainImage: './eth-logo.png',
-  } as const;
+  };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
     (useSelector as jest.Mock).mockImplementation((selector) => {
@@ -108,7 +108,7 @@ describe('TokenListItem', () => {
       tokenImage: '',
       title: '',
       chainId: '0x1',
-    } as const;
+    };
     const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
@@ -138,7 +138,7 @@ describe('TokenListItem', () => {
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
       nativeCurrencySymbol: 'ETH',
-    } as const;
+    };
     const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
@@ -167,7 +167,7 @@ describe('TokenListItem', () => {
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
       nativeCurrencySymbol: undefined,
-    } as const;
+    };
     const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
@@ -196,7 +196,7 @@ describe('TokenListItem', () => {
       tokenImage: '',
       title: '',
       chainId: '0x1',
-    } as const;
+    };
 
     const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
