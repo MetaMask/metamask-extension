@@ -269,6 +269,36 @@ describe('toast display', () => {
       tokenBalances: {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
       },
+      accountTree: {
+        wallets: {
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+            id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+            type: 'entropy',
+            groups: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+                type: 'multichain-account',
+                accounts: [selectedAccountId],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                  hidden: false,
+                  pinned: false,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+              },
+            },
+          },
+        },
+        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      },
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,
