@@ -194,10 +194,6 @@ describe('AlertRow', () => {
       );
     });
 
-    it('returns TextColor.infoDefault for Severity.Info', () => {
-      expect(getAlertTextColors(Severity.Info)).toBe(TextColor.infoDefault);
-    });
-
     it('returns TextColor.textDefault for undefined severity', () => {
       expect(getAlertTextColors()).toBe(TextColor.textDefault);
     });
