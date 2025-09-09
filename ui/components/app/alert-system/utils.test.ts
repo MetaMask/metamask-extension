@@ -1,11 +1,6 @@
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import {
-  Severity,
-} from '../../../helpers/constants/design-system';
-import {
-  getBannerAlertSeverity,
-  getHighestSeverity,
-} from './utils';
+import { Severity } from '../../../helpers/constants/design-system';
+import { getBannerAlertSeverity, getHighestSeverity } from './utils';
 
 jest.mock('../../../hooks/useI18nContext');
 

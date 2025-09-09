@@ -3,9 +3,16 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { Text } from '../../../../../component-library';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { Severity, TextColor } from '../../../../../../helpers/constants/design-system';
+import {
+  Severity,
+  TextColor,
+} from '../../../../../../helpers/constants/design-system';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { ConfirmInfoAlertRow, ConfirmInfoAlertRowProps, getAlertTextColors } from './alert-row';
+import {
+  ConfirmInfoAlertRow,
+  ConfirmInfoAlertRowProps,
+  getAlertTextColors,
+} from './alert-row';
 
 const onProcessActionMock = jest.fn();
 
@@ -182,7 +189,9 @@ describe('AlertRow', () => {
     });
 
     it('returns TextColor.warningDefault for Severity.Warning', () => {
-      expect(getAlertTextColors(Severity.Warning)).toBe(TextColor.warningDefault);
+      expect(getAlertTextColors(Severity.Warning)).toBe(
+        TextColor.warningDefault,
+      );
     });
 
     it('returns TextColor.infoDefault for Severity.Info', () => {

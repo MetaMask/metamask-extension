@@ -2,9 +2,7 @@ import {
   Alert,
   AlertSeverity,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
-import {
-  Severity,
-} from '../../../helpers/constants/design-system';
+import { Severity } from '../../../helpers/constants/design-system';
 import { BannerAlertSeverity } from '../../component-library';
 
 /**
