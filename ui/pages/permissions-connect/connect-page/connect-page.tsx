@@ -513,6 +513,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             <Tooltip
               title={t('alertReasonOriginTrustSignalVerified')}
               position="bottom"
+              style={{ display: 'flex' }}
             >
               <Icon
                 name={IconName.VerifiedFilled}
