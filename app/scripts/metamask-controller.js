@@ -1417,7 +1417,6 @@ export default class MetamaskController extends EventEmitter {
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
 
-          // HM - Should we run token detection on the whole account group?
           // execute once the token detection on the post-onboarding
           await this.tokenDetectionController.detectTokens({
             selectedAddress: address,
@@ -2414,8 +2413,15 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * Checks if the multichain accounts feature is enabled for state 2.
+   *
+   * @returns boolean - True if the feature is enabled for state 2, false otherwise.
+   */
   isMultichainAccountsState2Enabled() {
-    const remoteFlag = this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.enableMultichainAccounts;
+    const remoteFlag =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.enableMultichainAccounts;
     if (!remoteFlag?.enabled || remoteFlag.featureVersion !== '2') {
       return false;
     }
@@ -5246,7 +5252,7 @@ export default class MetamaskController extends EventEmitter {
    * Discovers and creates accounts for the given keyring id.
    *
    * @param {string} id - The keyring id to discover and create accounts for.
-   * @returns {Promise<void>}
+   * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
     try {
@@ -5357,7 +5363,6 @@ export default class MetamaskController extends EventEmitter {
         }
       }
 
-      // HM - Should we be doing this? Will set selected account be a thing in state 2?
       if (shouldSelectAccount) {
         const account =
           this.accountsController.getAccountByAddress(newAccountAddress);
