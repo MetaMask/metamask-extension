@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
@@ -106,7 +106,7 @@ async function mockSecurityAlertsRequest(server: MockttpServer): Promise<void> {
   };
 
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
     .withJsonBodyIncluding(request)
     .thenJson(response.statusCode ?? 201, response);
 }
@@ -122,17 +122,25 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
           })
+          .withNetworkController({
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
+          })
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
-          .withNetworkControllerOnMainnet()
+          // .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();

@@ -4,8 +4,9 @@ import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
+import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
 async function mockInfura(mockServer: MockttpServer): Promise<void> {
   await mockServerJsonRpc(mockServer, [
@@ -188,6 +189,37 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
         ],
       },
     }));
+
+  mockSecurityAlertsRequest(mockServer);
+}
+
+async function mockSecurityAlertsRequest(server: MockttpServer): Promise<void> {
+  const request = {
+    method: 'eth_sendTransaction',
+    params: [
+      {
+        from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        to: '0x00008f1149168c1d2fa1eba1ad3e9cd644510000',
+        data: '0xef5cfb8c0000000000000000000000000b3e87a076ac4b0d1975f0f232444af6deb96c59',
+        value: '0x0',
+      },
+    ],
+  };
+
+  const response = {
+    block: 20733277,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'Malicious',
+    reason: 'transfer_farming',
+    description: '',
+    features: ['Interaction with a known malicious address'],
+  };
+
+  await server
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
+    .withJsonBodyIncluding(request)
+    .thenJson(201, response);
 }
 
 describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this: Suite) {
@@ -196,7 +228,14 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+          .withNetworkController({
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
+          })
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
           })
@@ -209,7 +248,7 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
       },
 
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();

@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
@@ -52,7 +52,7 @@ async function mockRequest(
   response: SecurityAlert,
 ): Promise<void> {
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
     .withJsonBodyIncluding({
       method: 'eth_sendTransaction',
       params: [
@@ -83,7 +83,9 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function (this: Suite
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+          .withNetworkController({
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
           })
@@ -92,17 +94,16 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function (this: Suite
           })
           .withEnabledNetworks({
             eip155: {
-              '0x1': true,
+              '0x539': true,
             },
           })
-          .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
