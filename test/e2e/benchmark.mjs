@@ -9,6 +9,7 @@ import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import FixtureBuilder from './fixture-builder';
 import { unlockWallet, withFixtures } from './helpers';
 import { PAGES } from './webdriver/driver';
+import { calculateStandardDeviation } from '../utils/benchmark-math-utils.ts';
 
 const DEFAULT_NUM_BROWSER_LOADS = 10;
 const DEFAULT_NUM_PAGE_LOADS = 10;
@@ -66,12 +67,7 @@ const minResult = calculateResult((array) => Math.min(...array));
 const maxResult = calculateResult((array) => Math.max(...array));
 const meanResult = calculateResult((array) => calculateMean(array));
 const standardDeviationResult = calculateResult((array) => {
-  if (array.length === 1) {
-    return 0;
-  }
-  const average = calculateMean(array);
-  const squareDiffs = array.map((value) => Math.pow(value - average, 2));
-  return Math.sqrt(calculateMean(squareDiffs));
+  calculateStandardDeviation(array);
 });
 
 // Calculate the pth percentile of an array

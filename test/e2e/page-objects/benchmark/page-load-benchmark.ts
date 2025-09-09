@@ -3,6 +3,7 @@ import { execSync } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
 import { mean } from 'lodash';
+import { calculateStandardDeviation } from '../../../utils/benchmark-math-utils';
 
 declare global {
   /**
@@ -384,8 +385,7 @@ export class PageLoadBenchmark {
           summary.p99[key] = this.calculatePercentile(values, 99);
           summary.min[key] = Math.min(...values);
           summary.max[key] = Math.max(...values);
-          summary.standardDeviation[key] =
-            this.calculateStandardDeviation(values);
+          summary.standardDeviation[key] = calculateStandardDeviation(values);
         }
       }
 
@@ -407,20 +407,6 @@ export class PageLoadBenchmark {
     const sorted = [...values].sort((a, b) => a - b);
     const index = Math.floor((percentile / 100) * sorted.length);
     return sorted[index];
-  }
-
-  /**
-   * Calculates the standard deviation of an array of numbers.
-   * Uses the population standard deviation formula.
-   *
-   * @param values - Array of numeric values
-   * @returns The standard deviation value
-   */
-  private calculateStandardDeviation(values: number[]): number {
-    const calculatedMean = mean(values);
-    const squaredDiffs = values.map((val) => Math.pow(val - calculatedMean, 2));
-    const variance = mean(squaredDiffs);
-    return Math.sqrt(variance);
   }
 
   /**
