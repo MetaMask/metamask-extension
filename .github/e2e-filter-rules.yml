@@ -2,16 +2,10 @@
 # Used with dorny/paths-filter action
 
 files-e2e-required:
-  # Include specific E2E related GH files FIRST
-  - '.github/workflows/e2e-chrome.yml'
-  - '.github/workflows/e2e-firefox.yml'
-  - '.github/workflows/run-e2e.yml'
-  - '.github/scripts/git-diff-default-branch.ts'
-  - '.github/scripts/create-e2e-test-report.ts'
-  - '.github/scripts/split-tests-by-timings.ts'
-  - '.github/scripts/validate-e2e-page-object-usage.ts'
+  # Including everything by default
+  - '**'
 
-  # Exclude doc files
+  # Exclude documentation files
   - '!**/*.md'
   - '!**/*.mdx'
   - '!**/*.txt'
@@ -23,13 +17,17 @@ files-e2e-required:
   - '!**/*.stories.*'
   - '!**/*.snap'
 
-  # Exclude config files
+  # Exclude specific config files
   - '!tailwind.config.js'
   - '!eslint.config.js'
   - '!prettier.config.js'
 
-  # Exclude Github files (after specific includes)
-  - '!.github/**'
-
-  # Include everything else
-  - '**'
+  # Exclude most .github files, but re-include E2E-related ones
+  # - '!.github/**'
+  # - '.github/workflows/e2e-chrome.yml'
+  # - '.github/workflows/e2e-firefox.yml'
+  # - '.github/workflows/run-e2e.yml'
+  # - '.github/scripts/git-diff-default-branch.ts'
+  # - '.github/scripts/create-e2e-test-report.ts'
+  # - '.github/scripts/split-tests-by-timings.ts'
+  # - '.github/scripts/validate-e2e-page-object-usage.ts'
