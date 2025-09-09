@@ -594,7 +594,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it.only('should gracefully handle network connectivity failure for confirmations', async function () {
+  it('should gracefully handle network connectivity failure for confirmations', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -648,13 +648,6 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        // Check if Ethereum Mainnet is selected
-        // const networkManager = new NetworkManager(driver);
-        // await networkManager.openNetworkManager();
-        // await networkManager.selectTab('Popular');
-        // await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        // await networkManager.closeNetworkManager();
 
         // Kill local node servers
         await localNodes[0].quit();
