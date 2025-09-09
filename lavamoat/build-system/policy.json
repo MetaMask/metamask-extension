@@ -798,7 +798,7 @@
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
-        "process.env": true
+        "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
@@ -969,7 +969,7 @@
         "node:path.relative": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa>resolve": true
+        "depcheck>resolve": true
       }
     },
     "@lavamoat/lavapack": {
@@ -1821,7 +1821,6 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -3398,13 +3397,6 @@
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
-    },
-    "tsx>fsevents": {
-      "globals": {
-        "console.assert": true,
-        "process.platform": true
-      },
-      "native": true
     },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
@@ -6563,36 +6555,6 @@
     "gulp>vinyl-fs>resolve-options": {
       "packages": {
         "gulp>vinyl-fs>value-or-function": true
-      }
-    },
-    "lavamoat>@lavamoat/aa>resolve": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "fs.realpathSync": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "depcheck>is-core-module": true,
-        "depcheck>resolve>path-parse": true
       }
     },
     "depcheck>resolve": {
