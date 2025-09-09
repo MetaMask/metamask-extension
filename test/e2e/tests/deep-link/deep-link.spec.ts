@@ -144,7 +144,7 @@ describe('Deep Link', function () {
             assert.equal(
               text,
               `We can't find the page you are looking for.${
-                signed
+                isSigned
                   ? `
 Update to the latest version of MetaMask
 and we'll take you to the right place.`
