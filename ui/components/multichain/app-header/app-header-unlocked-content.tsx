@@ -141,10 +141,8 @@ export const AppHeaderUnlockedContent = ({
 
   const handleMainMenuToggle = () => {
     setAccountOptionsMenuOpen((previous) => {
-      const newValue = !previous;
-      const menuOpen = newValue === true;
-
-      if (menuOpen) {
+      const isMenuOpen = !previous;
+      if (isMenuOpen) {
         trackEvent({
           event: MetaMetricsEventName.NavMainMenuOpened,
           category: MetaMetricsEventCategory.Navigation,
