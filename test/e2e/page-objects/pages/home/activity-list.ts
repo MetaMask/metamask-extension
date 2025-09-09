@@ -125,14 +125,10 @@ class ActivityListPage {
       `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      try {
-        const confirmedTxs = await this.driver.findElements(
-          this.confirmedTransactions,
-        );
-        return confirmedTxs.length === expectedNumber;
-      } catch (error) {
-        return expectedNumber === 0;
-      }
+      const confirmedTxs = await this.driver.findElements(
+        this.confirmedTransactions,
+      );
+      return confirmedTxs.length === expectedNumber;
     }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
@@ -185,19 +181,17 @@ class ActivityListPage {
     totalTx?: number;
   }): Promise<void> {
     // We need to wait for the total number of tx's to be able to use getText() without race conditions.
-    await this.checkConfirmedTxNumberDisplayedInActivity(totalTx);
+    await this.checkCompletedTxNumberDisplayedInActivity(totalTx);
 
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
     await this.driver.wait(async () => {
       const transactionActionText =
-      await transactionActions[txIndex - 1].getText();
+        await transactionActions[txIndex - 1].getText();
       return transactionActionText === action;
     }, 60000);
-    console.log(
-      `Action for transaction ${txIndex} is displayed as ${action}`,
-    );
+    console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
   /**

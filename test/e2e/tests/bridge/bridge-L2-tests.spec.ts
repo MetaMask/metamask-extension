@@ -52,8 +52,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           4,
-          undefined,
-          2,
         );
 
         await bridgeTransaction(
@@ -66,8 +64,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Ethereum',
           },
           6,
-          undefined,
-          2,
         );
       },
     );
