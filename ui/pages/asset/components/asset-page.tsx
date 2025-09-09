@@ -95,6 +95,7 @@ const AssetPage = ({
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
+  // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
@@ -209,10 +210,10 @@ const AssetPage = ({
         (!address && !isEvm && item.isNative),
     );
 
-    assetId = assetWithBalance?.assetId;
-    address = assetWithBalance?.assetId as string;
-    balance = assetWithBalance?.balance as string;
-    tokenFiatAmount = assetWithBalance?.fiat?.balance as number;
+    assetId = assetWithBalance?.assetId || '';
+    address = assetWithBalance?.assetId || '';
+    balance = assetWithBalance?.balance ?? '0';
+    tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
     const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
     asset.balance = {
