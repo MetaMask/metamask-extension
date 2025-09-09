@@ -270,7 +270,7 @@
     "@metamask/address-book-controller": "^6.1.0",
     "@metamask/announcement-controller": "^7.0.3",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A74.3.1#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.1-900afb3754.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A74.3.2#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.2-900afb3754.patch",
     "@metamask/base-controller": "^8.3.0",
     "@metamask/bitcoin-wallet-snap": "^1.0.0",
     "@metamask/bridge-controller": "^41.4.0",
