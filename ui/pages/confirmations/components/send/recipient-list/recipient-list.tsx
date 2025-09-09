@@ -14,7 +14,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendRecipientFilter } from '../../../hooks/send/useSendRecipientFilter';
-import { useSendContext } from '../../../context/send';
 import { RecipientFilterInput } from '../recipient-filter-input';
 
 const AccountsList = ({
@@ -102,10 +101,15 @@ const ContactsList = ({
   );
 };
 
-export const RecipientList = ({ hideModal }: { hideModal: () => void }) => {
+export const RecipientList = ({
+  hideModal,
+  onToChange,
+}: {
+  hideModal: () => void;
+  onToChange: (address: string) => void;
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const recipients = useRecipients();
-  const { updateTo } = useSendContext();
   const contactRecipients = recipients.filter(
     (recipient) => recipient.contactName,
   );
@@ -121,10 +125,10 @@ export const RecipientList = ({ hideModal }: { hideModal: () => void }) => {
 
   const handleSelectRecipient = useCallback(
     (recipient: RecipientType) => {
-      updateTo(recipient.address);
+      onToChange(recipient.address);
       hideModal();
     },
-    [hideModal, updateTo],
+    [hideModal, onToChange],
   );
 
   return (
