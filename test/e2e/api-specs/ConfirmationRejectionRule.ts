@@ -35,10 +35,7 @@ export class ConfirmationsRejectRule implements Rule {
     this.driver = options.driver;
     this.only = options.only;
 
-    this.requiresEthAccountsPermission = [
-      ...options.requiresEthAccountsPermission,
-      ...options.requiresSmartAccountUpgrade,
-    ];
+    this.requiresEthAccountsPermission = options.requiresEthAccountsPermission;
 
     this.requiresSmartAccountUpgrade = options.requiresSmartAccountUpgrade;
   }

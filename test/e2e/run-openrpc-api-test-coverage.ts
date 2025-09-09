@@ -23,6 +23,7 @@ import {
 import transformOpenRPCDocument from './api-specs/transform';
 import { ExpectedErrorRule } from './api-specs/ExpectedErrorRule';
 import { PermittedAccountRule } from './api-specs/PermittedAccountRule';
+import { mockEip7702FeatureFlag } from './tests/confirmations/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -36,6 +37,7 @@ async function main() {
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: 'none',
       title: 'api-specs coverage',
+      testSpecificMock: mockEip7702FeatureFlag,
     },
     async ({ driver }: { driver: Driver }) => {
       const transport = createDriverTransport(driver);
@@ -91,6 +93,7 @@ async function main() {
               'personal_sign',
               'eth_signTypedData_v4',
               'eth_getEncryptionPublicKey',
+              'wallet_sendCalls',
             ],
             requiresSmartAccountUpgrade: ['wallet_sendCalls'],
           }),

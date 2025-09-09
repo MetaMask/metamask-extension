@@ -30,6 +30,8 @@ import {
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
+import { PermittedAccountRule } from './api-specs/PermittedAccountRule';
+import { mockEip7702FeatureFlag } from './tests/confirmations/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -184,6 +186,8 @@ async function main() {
               body: '',
             };
           });
+
+        mockEip7702FeatureFlag(server);
       },
     },
     async ({
@@ -222,9 +226,10 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           // TODO: EIP-5792 methods below are quarantined until we improve openrpc document examples for testing, task to unskip tracked here: https://github.com/MetaMask/MetaMask-planning/issues/5224
-          'wallet_getCapabilities',
-          'wallet_getCallsStatus',
-          'wallet_sendCalls',
+          // 'wallet_getCapabilities',
+          // 'wallet_getCallsStatus',
+          // ...skipMethods,
+          // 'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -239,7 +244,13 @@ async function main() {
           new ConfirmationsRejectRule({
             driver,
             only: confirmationMethods,
-            requiresEthAccountsPermission: ['wallet_sendCalls'],
+            requiresEthAccountsPermission: [],
+            requiresSmartAccountUpgrade: ['wallet_sendCalls'],
+          }),
+          new PermittedAccountRule({
+            driver,
+            only: ['wallet_getCapabilities'],
+            skip: filteredMethods,
           }),
         ],
       });

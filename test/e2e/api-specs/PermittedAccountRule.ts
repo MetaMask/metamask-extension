@@ -46,7 +46,6 @@ export class PermittedAccountRule implements Rule {
               params: [{ eth_accounts: {} }],
             });
 
-            console.log('first thing');
             await this.driver.executeScript(
               `window.ethereum.request(${requestPermissionsRequest})`,
             );
