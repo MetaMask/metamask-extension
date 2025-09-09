@@ -11,13 +11,13 @@ jest.mock('unicode-confusables');
 
 describe('validateDomainWithConfusables', () => {
   const mockConfusables = jest.mocked(confusables);
-  const mockResolveNameLookup = jest.fn();
+  const mockLookupDomainAddresses = jest.fn();
   const mockFormatChainId = jest.fn();
   const mockFilterResolutions = jest.fn();
 
   const defaultOptions: DomainValidationOptions = {
     chainId: '0x1',
-    resolveNameLookup: mockResolveNameLookup,
+    lookupDomainAddresses: mockLookupDomainAddresses,
     errorMessages: {
       unknownError: 'Unknown error occurred',
       confusingDomain: 'Domain contains confusing characters',
@@ -26,7 +26,7 @@ describe('validateDomainWithConfusables', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockResolveNameLookup.mockResolvedValue([
+    mockLookupDomainAddresses.mockResolvedValue([
       { resolvedAddress: '0x123456789abcdef' },
     ]);
     mockConfusables.mockReturnValue([]);
@@ -44,11 +44,11 @@ describe('validateDomainWithConfusables', () => {
       warning: null,
       isLookupLoading: false,
     });
-    expect(mockResolveNameLookup).toHaveBeenCalledWith('0x1', 'example.eth');
+    expect(mockLookupDomainAddresses).toHaveBeenCalledWith('0x1', 'example.eth');
   });
 
   it('returns error when no resolutions found', async () => {
-    mockResolveNameLookup.mockResolvedValue([]);
+    mockLookupDomainAddresses.mockResolvedValue([]);
 
     const result = await validateDomainWithConfusables(
       'example.eth',
@@ -62,7 +62,7 @@ describe('validateDomainWithConfusables', () => {
   });
 
   it('returns error when resolutions is null', async () => {
-    mockResolveNameLookup.mockResolvedValue(null);
+    mockLookupDomainAddresses.mockResolvedValue(null);
 
     const result = await validateDomainWithConfusables(
       'example.eth',
@@ -85,12 +85,12 @@ describe('validateDomainWithConfusables', () => {
     await validateDomainWithConfusables('example.eth', optionsWithFormatter);
 
     expect(mockFormatChainId).toHaveBeenCalledWith('0x1');
-    expect(mockResolveNameLookup).toHaveBeenCalledWith('1', 'example.eth');
+    expect(mockLookupDomainAddresses).toHaveBeenCalledWith('1', 'example.eth');
   });
 
   it('applies filterResolutions when provided', async () => {
     const filteredResults = [{ resolvedAddress: '0x987654321' }];
-    mockResolveNameLookup.mockResolvedValue([
+    mockLookupDomainAddresses.mockResolvedValue([
       { resolvedAddress: '0x123456789abcdef' },
       { resolvedAddress: '0x987654321' },
     ]);
@@ -114,7 +114,7 @@ describe('validateDomainWithConfusables', () => {
   });
 
   it('returns error when filterResolutions returns empty array', async () => {
-    mockResolveNameLookup.mockResolvedValue([
+    mockLookupDomainAddresses.mockResolvedValue([
       { resolvedAddress: '0x123456789abcdef' },
     ]);
     mockFilterResolutions.mockReturnValue([]);
@@ -214,7 +214,7 @@ describe('validateDomainWithConfusables', () => {
   });
 
   it('returns error when resolveNameLookup throws', async () => {
-    mockResolveNameLookup.mockRejectedValue(new Error('Network error'));
+    mockLookupDomainAddresses.mockRejectedValue(new Error('Network error'));
 
     const result = await validateDomainWithConfusables(
       'example.eth',
