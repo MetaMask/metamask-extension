@@ -24,6 +24,7 @@ files-e2e-required:
 
   # Exclude most .github files, but re-include E2E-related ones
   # - '!.github/**'
+  - '!.github/workflows/needs-e2e.yml'
   # - '.github/workflows/e2e-chrome.yml'
   # - '.github/workflows/e2e-firefox.yml'
   # - '.github/workflows/run-e2e.yml'
