@@ -426,9 +426,10 @@ import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 import { qrKeyringBuilderFactory } from './lib/qr-keyring-builder-factory';
 import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
-import OAuthService from './services/oauth/oauth-service';
-import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
-import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
+import {
+  OAuthServiceInit,
+  SeedlessOnboardingControllerInit,
+} from './controller-init/seedless-onboarding';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 import {
   getSendBundleSupportedChains,
@@ -1112,20 +1113,6 @@ export default class MetamaskController extends EventEmitter {
     this.onboardingController = new OnboardingController({
       messenger: onboardingControllerMessenger,
       state: initState.OnboardingController,
-    });
-
-    this.oauthService = new OAuthService({
-      env: {
-        googleClientId: process.env.GOOGLE_CLIENT_ID,
-        appleClientId: process.env.APPLE_CLIENT_ID,
-      },
-      webAuthenticator: webAuthenticatorFactory(),
-      bufferedTrace: this.metaMetricsController.bufferedTrace.bind(
-        this.metaMetricsController,
-      ),
-      bufferedEndTrace: this.metaMetricsController.bufferedEndTrace.bind(
-        this.metaMetricsController,
-      ),
     });
 
     const keyringOverrides = this.opts.overrides?.keyrings;
@@ -1968,6 +1955,7 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
+      OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
@@ -2026,6 +2014,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
+    this.oauthService = controllersByName.OAuthService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
@@ -9469,11 +9458,6 @@ export default class MetamaskController extends EventEmitter {
       trackEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
-      refreshOAuthToken: this.oauthService.getNewRefreshToken.bind(
-        this.oauthService,
-      ),
-      revokeAndGetNewRefreshToken:
-        this.oauthService.revokeAndGetNewRefreshToken.bind(this.oauthService),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
