@@ -448,6 +448,7 @@ jobs:
           passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
           if [[ $passed != "true" ]]; then
             exit 1
+          fi
 
   log-merge-group-failure:
     name: Log merge group failure
