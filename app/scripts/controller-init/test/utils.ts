@@ -32,6 +32,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     getMetaMetricsId: jest.fn(),
     preinstalledSnaps: [],
     refreshOAuthToken: jest.fn(),
-    revokeAndGetNewRefreshToken: jest.fn(),
+    renewRefreshToken: jest.fn(),
+    revokeRefreshToken: jest.fn(),
   };
 }

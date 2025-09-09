@@ -10,6 +10,7 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
 import {
@@ -216,10 +217,18 @@ export type ControllerInitRequest<
   /**
    * Revoke the current OAuth refresh token and get a new one.
    */
-  revokeAndGetNewRefreshToken: () => Promise<{
+  renewRefreshToken: (params: {
+    connection: AuthConnection;
+    revokeToken: string;
+  }) => Promise<{
     newRefreshToken: string;
     newRevokeToken: string;
   }>;
+
+  revokeRefreshToken: (params: {
+    connection: AuthConnection;
+    revokeToken: string;
+  }) => Promise<void>;
 
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
 };

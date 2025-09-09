@@ -20,7 +20,8 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     controllerMessenger,
     persistedState,
     refreshOAuthToken,
-    revokeAndGetNewRefreshToken,
+    renewRefreshToken,
+    revokeRefreshToken,
   } = request;
 
   const encryptor = encryptorFactory(600_000);
@@ -33,7 +34,8 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     network,
     passwordOutdatedCacheTTL: 15_000, // 15 seconds
     refreshJWTToken: refreshOAuthToken,
-    revokeRefreshToken: revokeAndGetNewRefreshToken,
+    renewRefreshToken,
+    revokeRefreshToken,
     encryptor: {
       decrypt: (key, encryptedData) => encryptor.decrypt(key, encryptedData),
       decryptWithDetail: (key, encryptedData) =>

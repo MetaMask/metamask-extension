@@ -249,7 +249,7 @@ describe('OAuthService - getNewRefreshToken', () => {
   });
 });
 
-describe('OAuthService - revokeAndGetNewRefreshToken', () => {
+describe('OAuthService - renewRefreshToken', () => {
   it('should be able to get new refresh token', async () => {
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
@@ -279,7 +279,7 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
     });
     const oauthConfig = loadOAuthConfig();
 
-    const result = await oauthService.revokeAndGetNewRefreshToken({
+    const result = await oauthService.renewRefreshToken({
       connection: AuthConnection.Google,
       revokeToken: 'MOCK_REVOKE_TOKEN',
     });
@@ -305,7 +305,7 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
     );
   });
 
-  it('should throw an error if the revoke refresh token api call fails', async () => {
+  it('should throw an error if the renew refresh token api call fails', async () => {
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(() => {
         return Promise.resolve({
@@ -322,7 +322,78 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
     });
 
     await expect(
-      oauthService.revokeAndGetNewRefreshToken({
+      oauthService.renewRefreshToken({
+        connection: AuthConnection.Google,
+        revokeToken: 'MOCK_REVOKE_TOKEN',
+      }),
+    ).rejects.toThrow('Failed to revoke refresh token');
+  });
+});
+
+describe('OAuthService - revokeRefreshToken', () => {
+  it('should be able to revoke refresh token', async () => {
+    // mock the fetch call to auth-server
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          json: jest.fn().mockResolvedValue({
+            success: true,
+            message: 'Token revoked successfully',
+          }),
+          status: 200,
+          ok: true,
+        });
+      }) as jest.Mock,
+    );
+
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+    });
+    const oauthConfig = loadOAuthConfig();
+
+    await oauthService.revokeRefreshToken({
+      connection: AuthConnection.Google,
+      revokeToken: 'MOCK_REVOKE_TOKEN',
+    });
+
+    expect(fetch).toHaveBeenCalledWith(
+      `${oauthConfig.authServerUrl}/api/v1/oauth/revoke`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          revoke_token: 'MOCK_REVOKE_TOKEN',
+        }),
+      },
+    );
+  });
+
+  it('should throw an error if the revoke refresh token api call fails', async () => {
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          status: 401,
+          ok: false,
+        });
+      }) as jest.Mock,
+    );
+
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+    });
+
+    await expect(
+      oauthService.revokeRefreshToken({
         connection: AuthConnection.Google,
         revokeToken: 'MOCK_REVOKE_TOKEN',
       }),

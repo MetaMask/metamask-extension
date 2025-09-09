@@ -4856,11 +4856,19 @@ export default class MetamaskController extends EventEmitter {
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
       if (isSocialLoginFlow) {
-        // revoke seedless refresh token asynchronously
+        // renew seedless refresh token asynchronously
         this.seedlessOnboardingController
-          .revokeRefreshToken(password)
+          .renewRefreshToken(password)
           .catch((err) => {
             log.error('error while revoking seedless refresh token', err);
+          })
+          .finally(() => {
+            // try to revoke pending refresh tokens asynchronously
+            this.seedlessOnboardingController
+              .revokePendingRefreshTokens()
+              .catch((err) => {
+                log.error('error while revoking pending refresh tokens', err);
+              });
           });
       }
       isPasswordSynced = true;
@@ -4961,9 +4969,17 @@ export default class MetamaskController extends EventEmitter {
 
         // revoke seedless refresh token asynchronously
         this.seedlessOnboardingController
-          .revokeRefreshToken(password)
+          .renewRefreshToken(password)
           .catch((err) => {
             log.error('error while revoking seedless refresh token', err);
+          })
+          .finally(() => {
+            // try to revoke pending refresh tokens asynchronously
+            this.seedlessOnboardingController
+              .revokePendingRefreshTokens()
+              .catch((err) => {
+                log.error('error while revoking pending refresh tokens', err);
+              });
           });
       } catch (err) {
         const errorMessage =
@@ -9472,8 +9488,12 @@ export default class MetamaskController extends EventEmitter {
       refreshOAuthToken: this.oauthService.getNewRefreshToken.bind(
         this.oauthService,
       ),
-      revokeAndGetNewRefreshToken:
-        this.oauthService.revokeAndGetNewRefreshToken.bind(this.oauthService),
+      renewRefreshToken: this.oauthService.renewRefreshToken.bind(
+        this.oauthService,
+      ),
+      revokeRefreshToken: this.oauthService.revokeRefreshToken.bind(
+        this.oauthService,
+      ),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),

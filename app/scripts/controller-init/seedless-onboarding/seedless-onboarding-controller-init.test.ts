@@ -68,7 +68,8 @@ describe('SeedlessOnboardingControllerInit', () => {
       },
       passwordOutdatedCacheTTL: expect.any(Number),
       refreshJWTToken: requestMock.refreshOAuthToken,
-      revokeRefreshToken: requestMock.revokeAndGetNewRefreshToken,
+      revokeRefreshToken: requestMock.revokeRefreshToken,
+      renewRefreshToken: requestMock.renewRefreshToken,
     });
   });
 });
