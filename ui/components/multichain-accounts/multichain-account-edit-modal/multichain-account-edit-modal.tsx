@@ -1,21 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  FormTextField,
   Box,
   ButtonSecondary,
+  FormTextField,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
 import {
   Display,
   FlexDirection,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { MetaMaskReduxDispatch } from '../../../store/store';
@@ -90,6 +91,7 @@ export const MultichainAccountEditModal = ({
                 placeholder={currentAccountName}
                 error={showErrorMessage}
                 helpText={helpText}
+                helpTextProps={{ fontWeight: FontWeight.Medium }}
                 autoFocus
               />
             </Box>
