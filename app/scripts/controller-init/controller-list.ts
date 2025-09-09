@@ -38,8 +38,8 @@ import {
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
-  WebSocketService,
 } from '@metamask/snaps-controllers';
+import { WebSocketService as BackendWebSocketService } from '@metamask/backend-platform';
 import {
   RateLimitController,
   RateLimitedApiMap,
@@ -76,6 +76,7 @@ import {
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
+import { AccountActivityService } from '@metamask/backend-platform';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -180,7 +181,8 @@ export type Controller =
   | NftDetectionController
   | AssetsContractController
   | AccountTreeController
-  | WebSocketService
+  | BackendWebSocketService
+  | AccountActivityService
   | MultichainAccountService
   | NetworkEnablementController;
 

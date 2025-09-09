@@ -37,7 +37,9 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type ControllersToInitialize =
+  | 'AccountActivityService'
   | 'AuthenticationController'
+  | 'BackendWebSocketService'
   | 'CronjobController'
   | 'DeFiPositionsController'
   | 'ExecutionService'

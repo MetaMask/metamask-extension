@@ -326,6 +326,10 @@ import {
   MultichainRouterInit,
   ///: END:ONLY_INCLUDE_IF
 } from './controller-init/snaps';
+import {
+  BackendWebSocketServiceInit,
+  AccountActivityServiceInit,
+} from './controller-init/backend-platform';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
@@ -551,6 +555,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
+      BackendWebSocketService: BackendWebSocketServiceInit,
+      AccountActivityService: AccountActivityServiceInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       OnboardingController: OnboardingControllerInit,
@@ -663,6 +669,8 @@ export default class MetamaskController extends EventEmitter {
     this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
+    this.backendWebSocketService = controllersByName.BackendWebSocketService;
+    this.accountActivityService = controllersByName.AccountActivityService;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
@@ -1012,6 +1020,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
+      AccountActivityService: this.accountActivityService,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
@@ -1265,6 +1274,15 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
+
+    // Clean up WebSocket connections and account activity subscriptions
+    if (this.controllersByName?.AccountActivityService) {
+      this.controllersByName.AccountActivityService.cleanup();
+    }
+    if (this.webSocketService) {
+      this.webSocketService.disconnect();
+    }
+
   }
 
   resetStates(resetMethods) {
