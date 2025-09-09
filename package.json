@@ -240,8 +240,7 @@
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
     "@endo/env-options@npm:^1.1.11": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
-    "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
-    "@metamask/multichain-account-service@^0.6.0": "npm:@metamask-previews/multichain-account-service@0.6.0-preview-3232d5bd"
+    "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -317,7 +316,7 @@
     "@metamask/message-manager": "^12.0.1",
     "@metamask/message-signing-snap": "1.1.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain-account-service": "^0.6.0",
+    "@metamask/multichain-account-service": "^0.7.0",
     "@metamask/multichain-api-client": "^0.6.5",
     "@metamask/multichain-api-middleware": "1.0.0",
     "@metamask/multichain-network-controller": "^0.11.1",

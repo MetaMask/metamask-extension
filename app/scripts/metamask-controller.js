@@ -186,6 +186,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import semver from 'semver';
 import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -1397,19 +1398,21 @@ export default class MetamaskController extends EventEmitter {
       `${this.onboardingController.name}:stateChange`,
       previousValueComparator(async (prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const { completedOnboarding: currCompletedOnboarding } = currState;
+        const {
+          completedOnboarding: currCompletedOnboarding,
+          firstTimeFlowType,
+        } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          // HM - Get selected account group? The EVM account in there?
           const { address } = this.accountsController.getSelectedAccount();
 
-          // HM - We shouldn't need this block of code anymore if we're running discovery in onboarding
-
-          // if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-          //   // importing multiple SRPs on social login rehydration
-          //   await this._importAccountsWithBalances();
-          // } else {
-          //   await this._addAccountsWithBalance();
-          // }
+          if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+            // importing multiple SRPs on social login rehydration
+            await this._importAccountsWithBalances();
+          } else if (this.isMultichainAccountsState2Enabled()) {
+            await this.discoverAndCreateAccounts();
+          } else {
+            await this._addAccountsWithBalance();
+          }
 
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
@@ -2409,6 +2412,16 @@ export default class MetamaskController extends EventEmitter {
     if (pollInterval > 0) {
       this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
     }
+  }
+
+  isMultichainAccountsState2Enabled() {
+    const remoteFlag = this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.enableMultichainAccounts;
+    if (!remoteFlag?.enabled || remoteFlag.featureVersion !== '2') {
+      return false;
+    }
+    const min = remoteFlag.minimumVersion;
+    const current = process.env.METAMASK_VERSION;
+    return !min || semver.gte(current, min);
   }
 
   postOnboardingInitialization() {
@@ -5230,6 +5243,49 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Discovers and creates accounts for the given keyring id.
+   *
+   * @param {string} id - The keyring id to discover and create accounts for.
+   * @returns {Promise<void>}
+   */
+  async discoverAndCreateAccounts(id) {
+    try {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        false,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        false,
+      );
+
+      // If no keyring id is provided, we assume one keyring was added to the vault
+      const keyringIdToDiscover =
+        id || this.keyringController.getKeyringsByType(KeyringTypes.hd)[0].id;
+
+      const multichainAccountWallet = this.messenger.call(
+        'MultichainAccountService:getMultichainAccountWallet',
+        keyringIdToDiscover,
+      );
+
+      return await multichainAccountWallet.discoverAndCreateAccounts(
+        keyringIdToDiscover,
+      );
+    } catch (error) {
+      log.warn(`Failed to add accounts with balance. Error: ${error}`);
+      return {
+        bitcoin: 0,
+        solana: 0,
+      };
+    } finally {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        true,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        true,
+      );
+    }
+  }
+
+  /**
    * Imports a new mnemonic to the vault.
    *
    * @param {string} mnemonic - The mnemonic to import.
@@ -5247,77 +5303,107 @@ export default class MetamaskController extends EventEmitter {
       shouldImportSolanaAccount: true,
     },
   ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
+    const {
+      shouldCreateSocialBackup,
+      shouldSelectAccount,
+      shouldImportSolanaAccount,
+    } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        false,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        false,
-      );
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
-      const [wallet, id] =
-        this.multichainAccountService.createMultichainAccountWallet(mnemonic);
+      const alreadyImportedSrp = this.keyringController
+        .getKeyringsByType(KeyringTypes.hd)
+        .some((keyring) => {
+          return (
+            Buffer.from(
+              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            ).toString('utf8') === mnemonic
+          );
+        });
 
-      const discoveredAccounts = await wallet.discoverAndCreateAccounts();
+      if (alreadyImportedSrp) {
+        throw new Error(
+          'This Secret Recovery Phrase has already been imported.',
+        );
+      }
 
-      const group = await wallet.getMultichainAccountGroup(0);
+      const { id } = await this.keyringController.addNewKeyring(
+        KeyringTypes.hd,
+        {
+          mnemonic,
+          numberOfAccounts: 1,
+        },
+      );
 
-      const newAccount = group.getAccounts()[0];
+      const [newAccountAddress] = await this.keyringController.withKeyring(
+        { id },
+        async ({ keyring }) => keyring.getAccounts(),
+      );
 
       if (this.onboardingController.getIsSocialLoginFlow()) {
-        // if social backup is requested, add the seed phrase backup
-        await this.addNewSeedPhraseBackup(
-          mnemonic,
-          id,
-          shouldCreateSocialBackup,
-        );
+        try {
+          // if social backup is requested, add the seed phrase backup
+          await this.addNewSeedPhraseBackup(
+            mnemonic,
+            id,
+            shouldCreateSocialBackup,
+          );
+        } catch (err) {
+          // handle seedless controller import error by reverting keyring controller mnemonic import
+          // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
+          await this.keyringController.removeAccount(newAccountAddress);
+          throw err;
+        }
       }
 
       // HM - Should we be doing this? Will set selected account be a thing in state 2?
       if (shouldSelectAccount) {
-        this.accountsController.setSelectedAccount(newAccount.id);
+        const account =
+          this.accountsController.getAccountByAddress(newAccountAddress);
+        this.accountsController.setSelectedAccount(account.id);
       }
 
-      // HM - How do we handle bitcoin discovery? The bitcoin accounts need to be aligned with the created
-      // multichain account groups.
-      /**
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      const btcClient = await this._getMultichainWalletSnapClient(
-        BITCOIN_WALLET_SNAP_ID,
-      );
-      const btcScope = BtcScope.Mainnet;
-      const btcAccounts = await btcClient.discoverAccounts(
-        entropySource,
-        btcScope,
-      );
+      let discoveredAccounts;
 
-      discoveredAccounts.bitcoin = btcAccounts.length;
+      if (
+        this.isMultichainAccountsState2Enabled() &&
+        shouldImportSolanaAccount
+      ) {
+        // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
+        // We just create the accounts at the end of the onboarding flow (including EVM).
+        discoveredAccounts = await this.discoverAndCreateAccounts(id);
+      } else {
+        discoveredAccounts = await this._addAccountsWithBalance(
+          id,
+          shouldImportSolanaAccount,
+        );
 
-      // If none accounts got discovered, we still create the first (default) one.
-      if (btcAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, btcClient, {
-          scope: btcScope,
-          synchronize: false,
-        });
+        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+        const btcClient = await this._getMultichainWalletSnapClient(
+          BITCOIN_WALLET_SNAP_ID,
+        );
+        const btcScope = BtcScope.Mainnet;
+        const btcAccounts = await btcClient.discoverAccounts(id, btcScope);
+
+        discoveredAccounts.bitcoin = btcAccounts.length;
+
+        // If none accounts got discovered, we still create the first (default) one.
+        if (btcAccounts.length === 0) {
+          await this._addSnapAccount(id, btcClient, {
+            scope: btcScope,
+            synchronize: false,
+          });
+        }
+        ///: END:ONLY_INCLUDE_IF
       }
-      ///: END:ONLY_INCLUDE_IF
-    */
 
       return {
-        newAccountAddress: newAccount.address,
+        newAccountAddress,
         discoveredAccounts,
       };
     } finally {
       releaseLock();
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        true,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
     }
   }
 
@@ -5524,10 +5610,11 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.init();
 
       if (completedOnboarding) {
-        await this.importMnemonicToVault(seedPhraseAsBuffer.toString('utf8'), {
-          shouldCreateSocialBackup: false,
-          shouldSelectAccount: false,
-        });
+        if (this.isMultichainAccountsState2Enabled()) {
+          await this.discoverAndCreateAccounts();
+        } else {
+          await this._addAccountsWithBalance();
+        }
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5633,8 +5720,8 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const discoveredAccounts = {
-        bitcoin: 0,
-        solana: 0,
+        Bitcoin: 0,
+        Solana: 0,
       };
 
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -5647,7 +5734,7 @@ export default class MetamaskController extends EventEmitter {
         btcScope,
       );
 
-      discoveredAccounts.bitcoin = btcAccounts.length;
+      discoveredAccounts.Bitcoin = btcAccounts.length;
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
@@ -5668,7 +5755,7 @@ export default class MetamaskController extends EventEmitter {
           solScope,
         );
 
-        discoveredAccounts.solana = solanaAccounts.length;
+        discoveredAccounts.Solana = solanaAccounts.length;
 
         // If none accounts got discovered, we still create the first (default) one.
         if (solanaAccounts.length === 0) {
@@ -5682,8 +5769,8 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
       return {
-        bitcoin: 0,
-        solana: 0,
+        Bitcoin: 0,
+        Solana: 0,
       };
     } finally {
       await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
@@ -5712,10 +5799,14 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        await this._addAccountsWithBalance(
-          metadata.id,
-          shouldImportSolanaAccount,
-        );
+        if (this.isMultichainAccountsState2Enabled()) {
+          await this.discoverAndCreateAccounts(metadata.id);
+        } else {
+          await this._addAccountsWithBalance(
+            metadata.id,
+            shouldImportSolanaAccount,
+          );
+        }
       }
     }
   }
