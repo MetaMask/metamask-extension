@@ -1,0 +1,45 @@
+export async function postCommentWithMetamaskBot({
+  commentBody,
+  owner,
+  repository,
+  prNumber,
+  optionalLog,
+  commentToken,
+}: {
+  commentBody: string;
+  owner: string;
+  repository: string;
+  prNumber: string;
+  optionalLog?: string;
+  commentToken?: string;
+}): Promise<{ html_url: string } | undefined> {
+  const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
+  const POST_COMMENT_URI = `https://api.github.com/repos/${owner}/${repository}/issues/${prNumber}/comments`;
+
+  if (optionalLog) {
+    console.log(optionalLog);
+  }
+
+  if (commentToken) {
+    console.log(`Posting to: ${POST_COMMENT_URI}`);
+
+    const response = await fetch(POST_COMMENT_URI, {
+      method: 'POST',
+      body: JSON_PAYLOAD,
+      headers: {
+        'User-Agent': 'metamaskbot',
+        Authorization: `token ${commentToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Post comment failed with status '${response.statusText}': ${errorText}`,
+      );
+    }
+
+    return response.json();
+  }
+}
