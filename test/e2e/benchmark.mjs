@@ -66,9 +66,7 @@ const calculateMean = (array) => calculateSum(array) / array.length;
 const minResult = calculateResult((array) => Math.min(...array));
 const maxResult = calculateResult((array) => Math.max(...array));
 const meanResult = calculateResult((array) => calculateMean(array));
-const standardDeviationResult = calculateResult((array) => {
-  calculateStandardDeviation(array);
-});
+const standardDeviationResult = calculateResult((array) => calculateStandardDeviation(array));
 
 // Calculate the pth percentile of an array
 function pResult(array, p) {
