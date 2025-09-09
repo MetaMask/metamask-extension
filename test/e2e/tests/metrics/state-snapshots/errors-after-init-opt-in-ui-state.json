@@ -70,8 +70,7 @@
     "showPasswordChangeToast": null,
     "showCopyAddressToast": "boolean",
     "showSupportDataConsentModal": "boolean",
-    "showConnectionsRemovedModal": "boolean",
-    "productTour": "accountIcon"
+    "showConnectionsRemovedModal": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
