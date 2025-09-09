@@ -7,10 +7,11 @@ import { mean } from 'lodash';
  * @param values - Array of numeric values
  * @returns The standard deviation value
  */
-export function calculateStandardDeviation(values: number[]): number {
+export function calculateStandardDeviation(values) {
   if (values.length === 1) {
-    return 0
-  };
+    return 0;
+  }
+
   const calculatedMean = mean(values);
   const squaredDiffs = values.map((val) => Math.pow(val - calculatedMean, 2));
   const variance = mean(squaredDiffs);

@@ -8,7 +8,7 @@
  * @param param.prNumber - PR Number.
  * @param [param.optionalLog] - Optional log for extra debug.
  * @param [param.commentToken] - PR secret comment token.
- * @returns A promise with response object containing `html_url` string, or undefined.
+ * @returns A promise with response object or undefined.
  */
 export async function postCommentWithMetamaskBot({
   commentBody,
@@ -32,26 +32,28 @@ export async function postCommentWithMetamaskBot({
     console.log(optionalLog);
   }
 
-  if (commentToken) {
-    console.log(`Posting to: ${POST_COMMENT_URI}`);
-
-    const response = await fetch(POST_COMMENT_URI, {
-      method: 'POST',
-      body: JSON_PAYLOAD,
-      headers: {
-        'User-Agent': 'metamaskbot',
-        Authorization: `token ${commentToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `Post comment failed with status '${response.statusText}': ${errorText}`,
-      );
-    }
-
-    return response.json();
+  if (!commentToken) {
+    return;
   }
+
+  console.log(`Posting to: ${POST_COMMENT_URI}`);
+
+  const response = await fetch(POST_COMMENT_URI, {
+    method: 'POST',
+    body: JSON_PAYLOAD,
+    headers: {
+      'User-Agent': 'metamaskbot',
+      Authorization: `token ${commentToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Post comment failed with status '${response.statusText}': ${errorText}`,
+    );
+  }
+
+  return response.json();
 }
