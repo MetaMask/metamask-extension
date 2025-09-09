@@ -18,8 +18,8 @@ function filterDiffByFilePath(diff: string, regex: RegExp): string {
         // if at least one of the two paths matches the regex, filter the
         // corresponding diff block in
         .forEach((path) => {
-          if (!regex.test(path)) {
-            // Not excluded, include in check
+          // If at least one of the paths MATCHES the regex, include this block
+          if (regex.test(path)) {
             shouldCheckBlock = true;
           }
         });
@@ -99,14 +99,30 @@ function filterDiffFileCreations(diff: string): string {
   const filteredDiff = diffBlocks
     .map((block) => block.trim())
     .filter((block) => {
-      const isFileCreationLine =
-        block
-          // get the second line of the block which has the file mode
-          .split('\n')[1]
-          .trim()
-          .substring(0, 13) === 'new file mode';
+      const lines = block.split('\n');
+      if (lines.length < 2) {
+        return false;
+      }
 
-      return isFileCreationLine;
+      // Skip binary diff blocks
+      if (block.includes('Binary files ') || block.includes('GIT binary patch')) {
+        return false;
+      }
+
+      // Detect creation via explicit "new file mode" on second line
+      const secondLine = lines[1].trim();
+      if (secondLine.startsWith('new file mode')) {
+        return true;
+      }
+
+      // Or via the /dev/null header pair indicating a new file
+      const hasDevNullOld = lines.some((l) => l.startsWith('--- /dev/null'));
+      const hasNewPath = lines.some((l) => l.startsWith('+++ b/'));
+      if (hasDevNullOld && hasNewPath) {
+        return true;
+      }
+
+      return false;
     })
     // prepend `git --diff` to each block
     .map((block) => `diff --git ${block}`)
