@@ -7,7 +7,7 @@ import {
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 
 // Simplified ETH->DAI trade mock with only essential data for hardware wallet swap test
-export const SWAP_ETH_DAI_TRADES_MOCK = [
+const SWAP_ETH_DAI_TRADES_MOCK = [
   {
     // Primary successful trade option (airswapV4)
     trade: {
@@ -119,10 +119,25 @@ export const SWAP_ETH_DAI_TRADES_MOCK = [
   },
 ];
 
+// Generic catch-all for any token icons on any chain - covers ETH, DAI, and others
+export async function mockIcon(mockServer: MockttpServer) {
+  const tokenIconResponse = {
+    statusCode: 200,
+    body: 'fake-image-data',
+    headers: { 'content-type': 'image/png' },
+  };
+
+  await mockServer
+    .forGet(
+      /https:\/\/static\.cx\.metamask\.io\/api\/v1\/tokenIcons\/\d+\/0x[a-fA-F0-9]{40}\.png/u,
+    )
+    .thenCallback(() => tokenIconResponse);
+}
+
 export async function mockEthDaiTrade(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -136,11 +151,10 @@ export async function mockTransactionRequestsBase(mockServer: MockttpServer) {
   await mockMultiNetworkBalancePolling(mockServer);
 }
 
-// Mock external accounts API for activity list display
+// Mock the external accounts API that provides transaction history for activity list
+// This API is called when user clicks on Activity tab
+// Use the ACTUAL address that the test is using (from the API call logs)
 export async function mockExternalAccountsAPI(mockServer: MockttpServer) {
-  // Mock the external accounts API that provides transaction history for activity list
-  // This API is called when user clicks on Activity tab
-  // Use the ACTUAL address that the test is using (from the API call logs)
   await mockServer
     .forGet(
       'https://accounts.api.cx.metamask.io/v1/accounts/0xF68464152d7289D7eA9a2bEC2E0035c45188223c/transactions',
@@ -198,7 +212,7 @@ export async function mockExternalAccountsAPI(mockServer: MockttpServer) {
 // Mock swap feature flags API
 export async function mockSwapFeatureFlags(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .forGet('https://bridge.api.cx.metamask.io/featureFlags')
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -223,7 +237,7 @@ export async function mockSwapFeatureFlags(mockServer: MockttpServer) {
 // Mock swap tokens API
 export async function mockSwapTokens(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/1/tokens')
     .thenCallback(() => ({
       statusCode: 200,
       json: [
@@ -298,14 +312,14 @@ export async function mockSwapGasPrices(mockServer: MockttpServer) {
 // Mock network information for swap API
 export async function mockSwapNetworkInfo(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/1')
+    .forGet('https://bridge.api.cx.metamask.io/networks/1')
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         active: true,
         networkId: 1,
         chainId: 1,
-        chainName: 'Ethereum Mainnet',
+        chainName: 'Ethereum',
         nativeCurrency: {
           name: 'Ether',
           symbol: 'ETH',
