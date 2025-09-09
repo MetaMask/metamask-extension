@@ -75,7 +75,7 @@ jobs:
               echo "-> Skipping E2E tests - only non_e2e_related_files changes found"
 
             else
-              echo "-> Running E2E tests - found changes outside 'safe_to_skip_files' categories"
+              echo "-> Running E2E tests - found changes outside non_e2e_related_files filter"
             fi
           fi
 
