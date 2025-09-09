@@ -1,3 +1,15 @@
+/**
+ * Uses Github API to post a comment to a PR with `metamaskbot`.
+ *
+ * @param param - Params object.
+ * @param param.commentBody - Comment to post.
+ * @param param.owner - Github repo owner.
+ * @param param.repository - Github repository.
+ * @param param.prNumber - PR Number.
+ * @param [param.optionalLog] - Optional log for extra debug.
+ * @param [param.commentToken] - PR secret comment token.
+ * @returns
+ */
 export async function postCommentWithMetamaskBot({
   commentBody,
   owner,
