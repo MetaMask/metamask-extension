@@ -72,6 +72,7 @@ describe('useRecipientValidation', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
+      recipientValidationLoading: false,
       validateRecipient: expect.any(Function),
     });
   });

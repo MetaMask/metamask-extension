@@ -35,8 +35,7 @@ export const useRecipientValidation = () => {
     debouncedSetTo(to || '');
   }, [to, debouncedSetTo]);
 
-  const isEvmSendType = sendType.isEvmSendType;
-  const isSolanaSendType = sendType.isSolanaSendType;
+  const { isEvmSendType, isSolanaSendType } = sendType;
 
   const validateRecipient = useCallback(
     async (address?: string): Promise<RecipientValidationResult> => {

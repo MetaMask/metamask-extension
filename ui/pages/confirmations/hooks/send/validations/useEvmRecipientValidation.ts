@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { isValidDomainName } from '../../../../../helpers/utils/util';
