@@ -27,6 +27,27 @@ type NewTransactionsState = {
 };
 
 /**
+ * Validate that the given entry is a valid transaction state entry.
+ *
+ * @param entry - The entry to validate.
+ * @returns True if the entry is valid, false otherwise.
+ */
+function isValidTransactionStateEntry(
+  entry: unknown,
+): entry is TransactionStateEntry {
+  return (
+    typeof entry === 'object' &&
+    entry !== null &&
+    hasProperty(entry, 'transactions') &&
+    hasProperty(entry, 'next') &&
+    hasProperty(entry, 'lastUpdated') &&
+    Array.isArray(entry.transactions) &&
+    (typeof entry.next === 'string' || entry.next === null) &&
+    typeof entry.lastUpdated === 'number'
+  );
+}
+
+/**
  * This migration transforms the MultichainTransactionsController state structure
  * to support per-chain transaction storage. It moves transactions from directly
  * under the account to be nested under the chainId (Solana in this case).
@@ -78,20 +99,12 @@ function transformState(
 
   // Migrate each account's transactions to the new nested structure
   for (const [accountId, accountTransactions] of Object.entries(
-    nonEvmTransactions as LegacyTransactionsState,
+    nonEvmTransactions,
   )) {
-    // If the account already has the new structure, meaning the accountTransactions
-    // doesn't have a direct transactions property, instead it has a chainId as a key,
-    // so we can skip it and continue to the next account
-    if (
-      isObject(accountTransactions) &&
-      !Array.isArray(accountTransactions.transactions)
-    ) {
-      // This state is only used for Solana's transactions (at that time), we assume it's already well-shaped
-      // and don't run any validation on the object itself (hence the `as unknown`).
-      newNonEvmTransactions[accountId] =
-        accountTransactions as unknown as NewTransactionsState[string];
-      continue;
+    if (!isValidTransactionStateEntry(accountTransactions)) {
+      throw new Error(
+        `Invalid transaction state entry for account ${accountId}: expected TransactionStateEntry, got ${typeof accountTransactions}`,
+      );
     }
 
     // Creates the new structure for this account
@@ -99,14 +112,9 @@ function transformState(
     // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' is Solana mainnet (the only supported so far)
     newNonEvmTransactions[accountId] = {
       [SOLANA_MAINNET_ADDRESS]: {
-        transactions: Array.isArray(accountTransactions.transactions)
-          ? accountTransactions.transactions
-          : [],
-        next: accountTransactions.next || null,
-        lastUpdated:
-          typeof accountTransactions.lastUpdated === 'number'
-            ? accountTransactions.lastUpdated
-            : Date.now(),
+        transactions: accountTransactions.transactions,
+        next: accountTransactions.next,
+        lastUpdated: accountTransactions.lastUpdated,
       },
     };
   }
