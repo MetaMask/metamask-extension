@@ -429,13 +429,11 @@ jobs:
         id: set-output
         run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
 
-  # All jobs including E2E (only when E2E tests actually ran)
   all-e2e-jobs-completed:
     name: All E2E jobs completed
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     needs:
-      - needs-e2e
       - e2e-chrome
       - e2e-firefox
     outputs:
