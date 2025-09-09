@@ -1,4 +1,4 @@
-# Filter rues for determining E2E test requirements
+# Filter rules for determining E2E test requirements
 # Used with dorny/paths-filter action
 #
 # Each filter creates two outputs:
