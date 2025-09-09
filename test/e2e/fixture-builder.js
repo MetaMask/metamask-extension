@@ -38,6 +38,7 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        productTour: '',
       },
       NetworkController: {
         ...mockNetworkStateOld({
