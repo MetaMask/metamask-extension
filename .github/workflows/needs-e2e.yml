@@ -64,27 +64,19 @@ jobs:
           # Only consider skipping for PRs and merge-queue events
           if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
 
-            # Skip if [skip e2e] tag found or label exists
+            # Skip if [skip e2e] tag found or label exists on PR
             if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]] || [[ "${{ steps.skip-label.outputs.SKIP }}" == "true" ]]; then
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
-              if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]]; then
-                echo "-> Skipping E2E tests due to [skip-e2e] tag on last commit message"
-              else
-                echo "-> Skipping E2E tests due to 'skip-e2e' label on PR"
-              fi
+              echo "-> Skipping E2E tests due to 'skip-e2e' tag"
 
-            # Skip if no files requiring E2E were changed
-            elif [[ "${{ steps.changes.outputs.files-e2e-required }}" == "false" ]]; then
+            # Skip E2E only if ALL changed files are in safe_to_skip_files filter
+            elif [[ "${{ steps.changes.outputs.safe_to_skip_files_count }}" == "${{ steps.changes.outputs.all_changes_count }}" ]]; then
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
-              echo "-> Skipping E2E tests - only non-code files changed"
+              echo "-> Skipping E2E tests - only safe_to_skip_files_count changes found"
 
             else
-              echo "-> Running E2E tests - code files were changed"
+              echo "-> Running E2E tests - found changes outside 'safe_to_skip_files' categories"
             fi
-
-          else
-            # For all other events (push, schedule, etc.), always run E2E
-            echo "-> Always run E2E tests for ${{ github.event_name }} events"
           fi
 
   prep-e2e:

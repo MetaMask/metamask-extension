@@ -1,34 +1,70 @@
-# Filter rules for determining if E2E tests should run if any of those files are modified
+# Filter rues for determining E2E test requirements
 # Used with dorny/paths-filter action
+#
+# Each filter creates two outputs:
+# - {filter_name}: 'true'/'false' if any changed files match any filter rules
+# - {filter_name}_count: number of matching files
+#
+# STRATEGY: Use separate filters to detect different file types non E2E related.
+# Conservative approach - add only files that safely allow skipping E2E tests.
 
-files-e2e-required:
-  # Including everything by default
-  - '**'
+# DOCUMENTATION FILES
+documentation_files: &documentation_files
+  - '**/*.{md,mdx,txt}'
+  - 'docs/**/*'
+  - 'test/manual-scenarios/**/*'
+  - 'LICENSE'
 
-  # Exclude documentation files
-  - '!**/*.md'
-  - '!**/*.mdx'
-  - '!**/*.txt'
-  - '!**/*.csv'
-  - '!LICENSE'
+# LOW LEVEL TEST FILES
+test_files: &test_files
+  - '**/*.test.{js,ts,tsx,jsx}'
+  - '**/*.stories.*'
+  - '**/*.snap'
+  - 'test/jest/**/*'
+  - 'test/unit-global/**/*'
+  - 'test/helpers/**/*'
+  - 'test/lib/**/*'
+  - 'test/stub/**/*'
+  - 'test/integration/**/*'
 
-  # Exclude test files
-  - '!**/*.test.{js,ts,tsx,jsx}'
-  - '!**/*.stories.*'
-  - '!**/*.snap'
+# CONFIG FILES
+config_files: &config_files
+  - '.eslint*'
+  - 'eslint.config.js'
+  - 'prettier.config.js'
+  - 'stylelint.config.js'
+  - 'tailwind.config.js'
+  - 'sonar-project.properties'
+  - 'codecov.yml'
 
-  # Exclude specific config files
-  - '!tailwind.config.js'
-  - '!eslint.config.js'
-  - '!prettier.config.js'
-
-  # Exclude most .github files, but re-include E2E-related ones
-  # - '!.github/**'
+# GITHUB CI/CD FILES
+github_ci_files: &github_ci_files
+  - '.github/**/*'
+  - '!.github/workflows/main.yml'
   - '!.github/workflows/needs-e2e.yml'
-  # - '.github/workflows/e2e-chrome.yml'
-  # - '.github/workflows/e2e-firefox.yml'
-  # - '.github/workflows/run-e2e.yml'
-  # - '.github/scripts/git-diff-default-branch.ts'
-  # - '.github/scripts/create-e2e-test-report.ts'
-  # - '.github/scripts/split-tests-by-timings.ts'
-  # - '.github/scripts/validate-e2e-page-object-usage.ts'
+  - '!.github/e2e-filter-rules.yml'
+  - '!.github/workflows/e2e-chrome.yml'
+  - '!.github/workflows/e2e-firefox.yml'
+  - '!.github/workflows/run-e2e.yml'
+  - '!.github/scripts/git-diff-default-branch.ts'
+  - '!.github/scripts/create-e2e-test-report.ts'
+  - '!.github/scripts/split-tests-by-timings.ts'
+  - '!.github/scripts/validate-e2e-page-object-usage.ts'
+
+# DEVELOPMENT TOOLS
+dev_tools: &dev_tools
+  - 'development/fitness-functions/**/*'
+  - 'development/ts-migration-dashboard/**/*'
+  - 'development/generate-attributions/**/*'
+
+# ALL FILTERED FILES - non E2E related files
+safe_to_skip_files:
+  - *documentation_files
+  - *test_files
+  - *config_files
+  - *github_ci_files
+  - *dev_tools
+
+# ALL CHANGED FILES
+all_changes:
+  - '**'
