@@ -169,7 +169,6 @@ class ActivityListPage {
    * @param params.txIndex - The index of the transaction to check in the activity list
    * @param params.completedTxs - The total number of completed transactions expected to be displayed in the activity list
    * @returns A promise that resolves if the transaction at the specified index displays the expected action text within the timeout period.
-   * @example
    */
   async checkTxAction({
     action,
