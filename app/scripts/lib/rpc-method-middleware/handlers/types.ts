@@ -24,9 +24,8 @@ export type HandlerWrapper = {
 };
 
 export type HandlerRequestType<Params extends JsonRpcParams = JsonRpcParams> =
-  Required<Omit<JsonRpcRequest<Params>, 'params'>> & {
+  Required<JsonRpcRequest<Params>> & {
     origin: string;
-    params?: { isInitializingStreamProvider?: boolean };
   };
 
 export type GetAccounts = MetamaskController['getPermittedAccounts'];

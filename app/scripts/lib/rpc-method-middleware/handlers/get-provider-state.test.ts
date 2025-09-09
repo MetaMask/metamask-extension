@@ -2,9 +2,9 @@ import { PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import getProviderState, {
   GetProviderState,
+  ProviderStateHandlerRequest,
   ProviderStateHandlerResult,
 } from './get-provider-state';
-import { HandlerRequestType } from './types';
 
 describe('getProviderState', () => {
   let mockEnd: JsonRpcEngineEndCallback;
@@ -21,7 +21,7 @@ describe('getProviderState', () => {
   });
 
   it('should call getProviderState when the handler is invoked', async () => {
-    const req: HandlerRequestType = {
+    const req: ProviderStateHandlerRequest = {
       origin: 'testOrigin',
       params: {
         isInitializingStreamProvider: true,
