@@ -39,7 +39,7 @@ export const MultichainAccountAvatarGroup: React.FC<
                 data-testid={`avatar-account-${i}`}
                 size={AvatarAccountSize.Xs}
                 address={member.avatarValue}
-                // TODO: Switch to maskicon once it is available
+                // TODO: Switch to maskicon once it is available (see issue #1234)
                 variant={AvatarAccountVariant.Blockies}
               />
             </Box>
