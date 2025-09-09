@@ -170,6 +170,16 @@ export class PageLoadBenchmark {
     });
 
     await this.waitForExtensionLoad();
+    /**
+     * await this.createStaticDappServer();
+     *
+     * similar to buildExtension(), this will execSync('yarn dapp') to start up a static dapp server
+     * check: development/static-server.js
+     * --> development/create-static-server.js
+     * --> test/e2e/helpers.js L#257 (how it's used, but yarn dapp should do everything necessary)
+     *
+     * and in test/e2e/playwright/benchmark/page-load-benchmark.spec.ts, we replace url by http://127.0.0.1:8080 (DAPP_URL constant)
+     */
   }
 
   /**
