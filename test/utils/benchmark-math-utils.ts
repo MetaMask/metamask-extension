@@ -1,4 +1,4 @@
-import { mean } from "lodash";
+import { mean } from 'lodash';
 
 /**
  * Calculates the standard deviation of an array of numbers.
