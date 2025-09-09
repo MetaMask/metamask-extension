@@ -46,7 +46,7 @@ jobs:
 
           patch="${SEMVER##*.}"
           if [ "$patch" -gt 0 ]; then
-            echo "Detected hotfix (patch=$patch): using stable for both bases."
+            echo "Detected hotfix (patch=$patch): using stable for checkout and stable for release PR base."
             echo "checkout_base=stable" >> "$GITHUB_OUTPUT"
           else
             echo "Detected non-hotfix (patch=0): using main for checkout and stable for release PR base."

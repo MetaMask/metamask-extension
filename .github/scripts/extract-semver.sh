@@ -28,7 +28,6 @@ if [ "$patch" -gt 0 ]; then
 else
   echo "Not a hotfix (patch=0), proceeding."
 fi
-echo "proceed=true" >> "$GITHUB_OUTPUT"
 
 # Print values passed to call-create-release-pr (note: previous-version-ref computed in reusable workflow)
 echo "Inputs to call-create-release-pr:"

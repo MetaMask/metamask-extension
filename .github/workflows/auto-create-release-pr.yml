@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       semver: ${{ steps.out.outputs.semver }}
-      proceed: ${{ steps.out.outputs.proceed }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,7 +19,6 @@ jobs:
           .github/scripts/extract-semver.sh
 
   call-create-release-pr:
-    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) && needs.extract.outputs.proceed == 'true' }}
     needs: extract
     permissions:
       contents: write
