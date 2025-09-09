@@ -163,7 +163,7 @@ export const useEnableMissingNetwork = () => {
 const PrepareBridgePage = ({
   onOpenSettings,
 }: {
-  onOpenSettings?: () => void;
+  onOpenSettings: () => void;
 }) => {
   const dispatch = useDispatch();
   const enableMissingNetwork = useEnableMissingNetwork();
@@ -257,8 +257,12 @@ const PrepareBridgePage = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { tokenAlert } = useTokenAlerts();
-  const { selectedDestinationAccount, setSelectedDestinationAccount } =
-    useDestinationAccount();
+  const {
+    selectedDestinationAccount,
+    setSelectedDestinationAccount,
+    isDestinationAccountPickerOpen,
+    setIsDestinationAccountPickerOpen,
+  } = useDestinationAccount();
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
@@ -498,6 +502,16 @@ const PrepareBridgePage = ({
 
   return (
     <>
+      <DestinationAccountPickerModal
+        isOpen={isDestinationAccountPickerOpen}
+        onAccountSelect={(account) => {
+          setSelectedDestinationAccount(account);
+          setIsDestinationAccountPickerOpen(false);
+        }}
+        selectedAccount={selectedDestinationAccount}
+        onClose={() => setIsDestinationAccountPickerOpen(false)}
+      />
+
       <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
           header={getFromInputHeader()}
@@ -739,13 +753,6 @@ const PrepareBridgePage = ({
               setToastTriggerCounter((prev) => prev + 1);
             }}
           />
-
-          {isToOrFromSolana && (
-            <DestinationAccountPicker
-              onAccountSelect={setSelectedDestinationAccount}
-              selectedSwapToAccount={selectedDestinationAccount}
-            />
-          )}
 
           {!activeQuote_ && (
             <Column

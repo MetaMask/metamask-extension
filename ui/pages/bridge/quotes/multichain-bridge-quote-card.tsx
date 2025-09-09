@@ -57,8 +57,12 @@ const getTimeLabelColor = (timeInSeconds: number) => {
 
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
+  onOpenRecipientModal,
+  selectedDestinationAccount,
 }: {
-  onOpenSlippageModal?: () => void;
+  onOpenSlippageModal: () => void;
+  onOpenRecipientModal: () => void;
+  selectedDestinationAccount: DestinationAccount | null;
 }) => {
   const t = useI18nContext();
   const { activeQuote, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);

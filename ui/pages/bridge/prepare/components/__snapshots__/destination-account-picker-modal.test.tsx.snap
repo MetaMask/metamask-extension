@@ -1,0 +1,1178 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DestinationAccountPickerModal should render the modal when an account is selected 1`] = `
+<div
+  class="mm-modal"
+  data-testid="destination-account-picker-modal"
+>
+  <div
+    aria-hidden="true"
+    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+  />
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+  <div
+    data-focus-lock-disabled="false"
+  >
+    <div
+      class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-3 mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+    >
+      <section
+        aria-modal="true"
+        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+        role="dialog"
+      >
+        <header
+          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <h4
+              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+            >
+              Recipient
+            </h4>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="min-width: 0px;"
+          >
+            <button
+              aria-label="Close"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </header>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-width-0"
+          data-testid="destination-account-picker-modal-search-input"
+          style="height: 48px; margin-bottom: 12px; outline: none;"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+            />
+          </svg>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            focused="true"
+            placeholder="Receiving address or ENS"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="mm-box mm-modal-body mm-box--padding-right-0 mm-box--padding-left-0"
+          data-testid="destination-account-picker-modal-body"
+        >
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+              data-testid="selected-to-account"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Account 1
+                </p>
+                <svg
+                  class="inline-block w-5 h-5 text-primary-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9.55 18.686-6.5-6.5 2.25-2.25 4.25 4.25 9.15-9.15 2.25 2.25z"
+                  />
+                </svg>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x0DCD5...3E7bc
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#FA6C00"
+                        height="32"
+                        transform="translate(0.012499013728094784 -0.006385319322122122) rotate(489.0 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FB1868"
+                        height="32"
+                        transform="translate(-14.408597140338982 -8.780736166288932) rotate(387.1 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F5BC00"
+                        height="32"
+                        transform="translate(-12.05422484490241 -22.091892032818553) rotate(345.4 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Account 1
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0xC5b8d...10aCb
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 92);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#F28A02"
+                        height="32"
+                        transform="translate(5.856796012320635 8.737636484049885) rotate(159.5 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#18ADF2"
+                        height="32"
+                        transform="translate(-10.732044487284895 -4.4515520487224745) rotate(339.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FB1873"
+                        height="32"
+                        transform="translate(16.743885100341735 -17.079268707848318) rotate(454.3 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Account 2
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x2f8D4...6572D
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+              data-testid="selected-to-account"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Test Account 3
+                </p>
+                <svg
+                  class="inline-block w-5 h-5 text-primary-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9.55 18.686-6.5-6.5 2.25-2.25 4.25 4.25 9.15-9.15 2.25 2.25z"
+                  />
+                </svg>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x0DCD5...3E7bc
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(245, 184, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#C81456"
+                        height="32"
+                        transform="translate(6.080278063321545 4.084834576158491) rotate(206.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#018E8C"
+                        height="32"
+                        transform="translate(-15.505408615168813 -13.011985761210282) rotate(356.3 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#03555E"
+                        height="32"
+                        transform="translate(27.992111032774744 3.078238146270286) rotate(92.1 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Snap Account 1
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x95222...BAfe6
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+              data-testid="selected-to-account"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc
+                </p>
+                <svg
+                  class="inline-block w-5 h-5 text-primary-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m9.55 18.686-6.5-6.5 2.25-2.25 4.25 4.25 9.15-9.15 2.25 2.25z"
+                  />
+                </svg>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x0DCD5...3E7bc
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+</div>
+`;
+
+exports[`DestinationAccountPickerModal should render the modal when no account is selected 1`] = `
+<div
+  class="mm-modal"
+  data-testid="destination-account-picker-modal"
+>
+  <div
+    aria-hidden="true"
+    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+  />
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+  <div
+    data-focus-lock-disabled="false"
+  >
+    <div
+      class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-3 mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+    >
+      <section
+        aria-modal="true"
+        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+        role="dialog"
+      >
+        <header
+          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <h4
+              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+            >
+              Recipient
+            </h4>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="min-width: 0px;"
+          >
+            <button
+              aria-label="Close"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </header>
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-width-0"
+          data-testid="destination-account-picker-modal-search-input"
+          style="height: 48px; margin-bottom: 12px; outline: none;"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+            />
+          </svg>
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            focused="true"
+            placeholder="Receiving address or ENS"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="mm-box mm-modal-body mm-box--padding-right-0 mm-box--padding-left-0"
+          data-testid="destination-account-picker-modal-body"
+        >
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                />
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Account 1
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x0DCD5...3E7bc
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                />
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Account 1
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0xC5b8d...10aCb
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                />
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Account 2
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x2f8D4...6572D
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                />
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Test Account 3
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x0DCD5...3E7bc
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                />
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  Snap Account 1
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x95222...BAfe6
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          >
+            <div
+              class="mm-box"
+              style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
+            >
+              <div
+                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                style="min-width: max-content; border-radius: 8px;"
+              >
+                <div
+                  class="flex [&>div]:!rounded-none"
+                />
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            >
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                style="max-width: min-content;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+                >
+                  0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc
+                </p>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                data-testid="account-list-address"
+              >
+                0x0DCD5...3E7bc
+              </p>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-max"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="USD 0.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  USD 0.00
+                </span>
+              </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <img
+                  alt="Ethereum Mainnet logo"
+                  class="mm-avatar-network__network-image"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+</div>
+`;
