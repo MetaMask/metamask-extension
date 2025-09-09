@@ -37,12 +37,6 @@ config_files: &config_files
   - 'sonar-project.properties'
   - 'codecov.yml'
 
-# GITHUB CI/CD FILES - Files that are NOT relevant for E2E tests
-github_ci_files: &github_ci_files
-  - '.github/**/*'
-  - '!.github/workflows/main.yml'
-
-
 # DEVELOPMENT TOOLS
 dev_tools: &dev_tools
   - 'development/fitness-functions/**/*'
@@ -54,7 +48,6 @@ non_e2e_related_files:
   - *documentation_files
   - *test_files
   - *config_files
-  - *github_ci_files
   - *dev_tools
 
 # ALL CHANGED FILES
