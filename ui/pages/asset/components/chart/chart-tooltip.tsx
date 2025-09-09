@@ -6,13 +6,12 @@ import {
   Text,
   TextDirection,
 } from '../../../../components/component-library';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { useFormatters } from '../../../../helpers/formatters';
 import {
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { getPricePrecision } from '../../util';
 
 // A label indicating the minimum or maximum price on the chart
 const ChartTooltip = ({
@@ -26,6 +25,7 @@ const ChartTooltip = ({
   xMax?: number;
   currency: string;
 }) => {
+  const { formatCurrencyTokenPrice } = useFormatters();
   const xAxisPercent =
     point && xMin && xMax ? (point.x - xMin) / (xMax - xMin) : 0;
 
@@ -52,11 +52,7 @@ const ChartTooltip = ({
       >
         {point?.y === undefined
           ? '\u00A0'
-          : formatCurrency(
-              `${point?.y}`,
-              currency,
-              getPricePrecision(point?.y),
-            )}
+          : formatCurrencyTokenPrice(point?.y, currency)}
       </Text>
     </Box>
   );
