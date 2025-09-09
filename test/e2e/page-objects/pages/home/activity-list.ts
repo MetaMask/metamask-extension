@@ -167,21 +167,21 @@ class ActivityListPage {
    * @param params - The parameters object containing:
    * @param params.action - The expected action text to be displayed (e.g., "Send", "Receive", "Swap")
    * @param params.txIndex - The index of the transaction to check in the activity list
-   * @param params.totalTx - The total number of confirmed transactions expected to be displayed in the activity list
+   * @param params.completedTxs - The total number of completed transactions expected to be displayed in the activity list
    * @returns A promise that resolves if the transaction at the specified index displays the expected action text within the timeout period.
    * @example
    */
   async checkTxAction({
     action,
     txIndex = 1,
-    totalTx = 1,
+    completedTxs = 1,
   }: {
     action: string;
     txIndex?: number;
-    totalTx?: number;
+    completedTxs?: number;
   }): Promise<void> {
     // We need to wait for the total number of tx's to be able to use getText() without race conditions.
-    await this.checkCompletedTxNumberDisplayedInActivity(totalTx);
+    await this.checkCompletedTxNumberDisplayedInActivity(completedTxs);
 
     const transactionActions = await this.driver.findElements(
       this.activityListAction,

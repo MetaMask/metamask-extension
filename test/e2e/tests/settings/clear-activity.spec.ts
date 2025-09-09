@@ -28,11 +28,11 @@ describe('Clear account activity', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityList = new ActivityList(driver);
-        await activityList.checkTxAction({ action: 'Received', totalTx: 2 });
+        await activityList.checkTxAction({ action: 'Received', completedTxs: 2 });
         await activityList.checkTxAction({
           action: 'Sent',
           txIndex: 2,
-          totalTx: 2,
+          completedTxs: 2,
         });
 
         // Clear activity and nonce data

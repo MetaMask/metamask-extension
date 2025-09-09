@@ -87,7 +87,7 @@ describe('Smart Transactions', function () {
         await activityList.checkTxAction({
           action: 'Sent',
           txIndex: 2,
-          totalTx: 2,
+          completedTxs: 2,
         });
         await activityList.checkTxAmountInActivity(`-0 ETH`, 1);
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 2);
