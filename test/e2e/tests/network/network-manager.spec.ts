@@ -43,8 +43,9 @@ describe('Network Manager', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
+
+        // there cannot be an inbetween value, either 1 network or all networks. So the controller updates to all networks
+        await networkManager.checkAllPopularNetworksIsSelected();
       },
     );
   });
@@ -67,15 +68,20 @@ describe('Network Manager', function (this: Suite) {
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
 
-        // Act Assert - Both eth and linea selected
-        await networkManager.selectNetwork(NetworkId.LINEA);
-        await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-
-        // Act Assert - eth deselected, linea selected
-        await networkManager.deselectNetwork(NetworkId.ETHEREUM);
+        // Act Assert - select linea will deselect etherum and select linea
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
+        await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsSelected(NetworkId.LINEA);
         await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
+
+        // Act Assert - select ethereum will deselect linea and select ethereum
+        await networkManager.openNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await networkManager.openNetworkManager();
+        await networkManager.checkNetworkIsDeselected(NetworkId.LINEA);
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
       },
     );
   });
@@ -108,7 +114,7 @@ describe('Network Manager', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.checkTabIsSelected('Default');
+        await networkManager.checkTabIsSelected('Popular');
       },
     );
   });
@@ -118,7 +124,7 @@ describe('Network Manager', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ eip155: { '0x1': true, '0xe708': true } })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -127,21 +133,18 @@ describe('Network Manager', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         const networkManager = new NetworkManager(driver);
 
-        await assetListPage.check_tokenItemNumber(2);
+        // Only Ethereum native token visible
+        await assetListPage.checkTokenItemNumber(1);
 
+        // Change to Linea, only Linea native token visible
         await networkManager.openNetworkManager();
-        await networkManager.checkTabIsSelected('Default');
-        await networkManager.deselectNetwork(NetworkId.LINEA);
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
+        await assetListPage.checkTokenItemNumber(1);
 
-        await assetListPage.check_tokenItemNumber(1);
-
-        await networkManager.selectNetwork('eip155:8453');
-
-        await assetListPage.check_tokenItemNumber(2);
-
-        await networkManager.selectNetwork(NetworkId.LINEA);
-
-        await assetListPage.check_tokenItemNumber(3);
+        // Change to Ethereum, only Ethereum native token visible
+        await networkManager.openNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+        await assetListPage.checkTokenItemNumber(1);
       },
     );
   });
@@ -183,7 +186,7 @@ describe('Network Manager', function (this: Suite) {
         // Add network via dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const addEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -210,7 +213,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Polygon Mainnet');
+        await addNetworkConfirmation.checkPageIsLoaded('Polygon Mainnet');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify preservation
@@ -222,12 +225,10 @@ describe('Network Manager', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
-        // Should be on Default tab since both are default networks
-        await networkManager.checkTabIsSelected('Default');
+        // Should be on Popular tab since both are popular networks
+        await networkManager.checkTabIsSelected('Popular');
 
-        // Check both networks are selected
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-
+        // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
         await networkManager.checkNetworkIsSelected(NetworkId.POLYGON);
       },
     );
@@ -270,7 +271,7 @@ describe('Network Manager', function (this: Suite) {
         // Add custom network via dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const addEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -297,7 +298,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded('Custom Test Network');
+        await addNetworkConfirmation.checkPageIsLoaded('Custom Test Network');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify behavior
@@ -317,8 +318,9 @@ describe('Network Manager', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
-        // Switch to Default tab and verify Ethereum is deselected
-        await networkManager.selectTab('Default');
+        // Switch to Popular tab and verify Ethereum is deselected
+        await networkManager.selectTab('Popular');
+        await networkManager.checkNetworkIsDeselected(NetworkId.ETHEREUM);
       },
     );
   });

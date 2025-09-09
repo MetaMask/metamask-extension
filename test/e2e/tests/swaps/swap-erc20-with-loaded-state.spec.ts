@@ -5,9 +5,6 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockEmptyHistoricalPrices,
@@ -23,7 +20,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
     await mockEmptyHistoricalPrices(mockServer, ETH_ADDRESS, '0x1'),
     await mockEmptyPrices(mockServer, '1'),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/token/1')
+      .forGet('https://bridge.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -84,7 +81,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
         },
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback((request: CompletedRequest) => {
         const url = new URL(request.url);
         const sourceToken = url.searchParams.get('sourceToken')?.toLowerCase();
@@ -148,7 +145,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       }),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -235,6 +232,7 @@ describe.skip('Swap', function () {
                 '0x1': true,
               },
             })
+            .withPreferencesControllerSmartTransactionsOptedOut()
             .withTokensController({
               allTokens: {
                 '0x1': {
@@ -251,6 +249,9 @@ describe.skip('Swap', function () {
               },
             })
             .build(),
+          manifestFlags: {
+            testing: { disableSmartTransactionsOverride: true },
+          },
           title: this.test?.fullTitle(),
           testSpecificMock: mockSwapQuotes,
           localNodeOptions: [
@@ -269,33 +270,20 @@ describe.skip('Swap', function () {
           await loginWithBalanceValidation(driver, localNodes[0]);
 
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
-          await homePage.check_expectedTokenBalanceIsDisplayed('25', 'ETH');
-
-          // disable smart transactions
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
-          await headerNavbar.openSettingsPage();
-
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
-          await settingsPage.clickAdvancedTab();
-          const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.check_pageIsLoaded();
-          await advancedSettingsPage.toggleSmartTransactions();
-          await settingsPage.closeSettingsPage();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
           // Swap tokens
           const assetListPage = new AssetListPage(driver);
           await assetListPage.clickOnAsset(testCase.sourceToken);
 
           const tokenOverviewPage = new TokenOverviewPage(driver);
-          await tokenOverviewPage.check_pageIsLoaded();
+          await tokenOverviewPage.checkPageIsLoaded();
           await tokenOverviewPage.clickSwap();
 
           const swapPage = new SwapPage(driver);
-          await swapPage.check_pageIsLoaded();
+          await swapPage.checkPageIsLoaded();
           await swapPage.enterSwapAmount(testCase.sourceAmount);
           await swapPage.selectDestinationToken(testCase.destinationToken);
 
@@ -304,13 +292,13 @@ describe.skip('Swap', function () {
           await swapPage.submitSwap();
           await swapPage.waitForTransactionToComplete();
 
-          await homePage.check_expectedTokenBalanceIsDisplayed(
+          await homePage.checkExpectedTokenBalanceIsDisplayed(
             testCase.expectedWethBalance,
             'WETH',
           );
 
           // https://github.com/MetaMask/metamask-extension/issues/31427
-          // await homePage.check_expectedTokenBalanceIsDisplayed(
+          // await homePage.checkExpectedTokenBalanceIsDisplayed(
           //   testCase.expectedEthBalance,
           //   'ETH',
           // );

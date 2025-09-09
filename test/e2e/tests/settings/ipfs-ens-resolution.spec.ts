@@ -2,6 +2,7 @@ import { MockttpServer } from 'mockttp';
 import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -30,6 +31,7 @@ describe('Settings', function () {
     // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
+        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
         driverOptions: {
@@ -38,6 +40,8 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
 
         // The setting defaults to "on" so we can simply enter an ENS address
         // into the address bar and listen for address change
@@ -71,12 +75,12 @@ describe('Settings', function () {
         // navigate to security & privacy settings screen
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         // turns off IPFS setting and ENS domain resolution
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
 

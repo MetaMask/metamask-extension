@@ -3,6 +3,12 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
 import {
+  calculateBalanceForAllWallets,
+  calculateBalanceChangeForAllWallets,
+  selectAssetsBySelectedAccountGroup,
+} from '@metamask/assets-controllers';
+import type { BalanceChangeResult } from '@metamask/assets-controllers';
+import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
@@ -13,7 +19,35 @@ import {
   getMultichainNativeAssetType,
   getTokenByAccountAndAddressAndChainId,
   getHistoricalMultichainAggregatedBalance,
+  selectBalanceForAllWallets,
+  selectBalanceByAccountGroup,
+  selectBalanceByWallet,
+  type BalanceCalculationState,
+  selectBalanceChangeForAllWallets,
+  selectBalanceChangeBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroup,
 } from './assets';
+
+jest.mock('@metamask/assets-controllers', () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const actual = jest.requireActual('@metamask/assets-controllers');
+  return {
+    ...actual,
+    calculateBalanceForAllWallets: jest.fn(() => ({
+      wallets: {},
+      userCurrency: 'usd',
+    })),
+    calculateBalanceChangeForAllWallets: jest.fn(() => ({
+      period: '1d',
+      currentTotalInUserCurrency: 0,
+      previousTotalInUserCurrency: 0,
+      amountChangeInUserCurrency: 0,
+      percentChange: 0,
+      userCurrency: 'usd',
+    })),
+    selectAssetsBySelectedAccountGroup: jest.fn(),
+  };
+});
 
 const mockRatesState = {
   metamask: {
@@ -614,5 +648,277 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
 
     expect(result.P1D.percentChange).toBe(5.123457); // max 8 decimal places
     expect(result.P1D.amountChange).toBe(49.33922174); // max 8 decimal places
+  });
+});
+
+describe('Aggregated balance adapters/selectors', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const baseState: BalanceCalculationState = {
+    metamask: {} as BalanceCalculationState['metamask'],
+  };
+
+  it('selectBalanceForAllWallets adapts shapes and calls core calculator once', () => {
+    const out = selectBalanceForAllWallets(baseState);
+    expect(out).toEqual({ wallets: {}, userCurrency: 'usd' });
+    expect((calculateBalanceForAllWallets as jest.Mock).mock.calls.length).toBe(
+      1,
+    );
+
+    const args = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
+    expect(args[0]).toHaveProperty('accountTree');
+    expect(args[1]).toHaveProperty('internalAccounts');
+    expect(args[2]).toHaveProperty('tokenBalances');
+    expect(args[3]).toHaveProperty('marketData');
+    expect(args[4]).toEqual({ conversionRates: {}, historicalPrices: {} });
+    expect(args[5]).toHaveProperty('balances');
+    expect(args[6]).toHaveProperty('allTokens');
+    expect(args[7]).toEqual({ currentCurrency: 'usd', currencyRates: {} });
+  });
+
+  it('memoizes aggregate output for identical state', () => {
+    const a = selectBalanceForAllWallets(baseState);
+    const b = selectBalanceForAllWallets(baseState);
+    expect(a).toBe(b);
+  });
+
+  it('group and wallet readers use aggregate output', () => {
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce({
+      wallets: {
+        w1: {
+          totalBalanceInUserCurrency: 100,
+          groups: {
+            'w1/g1': {
+              walletId: 'w1',
+              groupId: 'w1/g1',
+              totalBalanceInUserCurrency: 40,
+              userCurrency: 'usd',
+            },
+          },
+        },
+      },
+      userCurrency: 'usd',
+    });
+
+    // Use a new state reference to force recomputation of the memoized selector
+    const nextState: BalanceCalculationState = {
+      metamask: {} as BalanceCalculationState['metamask'],
+    };
+    // Prime aggregate with the new mock result
+    selectBalanceForAllWallets(nextState);
+
+    const groupSel = selectBalanceByAccountGroup('w1/g1');
+    const group = groupSel(nextState);
+
+    const walletSel = selectBalanceByWallet('w1');
+    const wallet = walletSel(nextState);
+
+    // If wallet/groups exist in aggregate, selectors should match that shape.
+    // Otherwise, selectors should return the default shape consistently.
+    if (wallet?.groups?.['w1/g1']) {
+      expect(group).toEqual(wallet.groups['w1/g1']);
+    } else {
+      expect(group).toEqual({
+        walletId: 'w1',
+        groupId: 'w1/g1',
+        totalBalanceInUserCurrency: 0,
+        userCurrency: wallet?.userCurrency ?? 'usd',
+      });
+    }
+
+    // Wallet selector should reflect aggregate totals when available
+    if (wallet?.groups) {
+      // userCurrency is required on wallet shape
+      expect(wallet).toHaveProperty('userCurrency');
+    }
+  });
+});
+
+describe('Aggregated balance recomputation behavior', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('does not recompute when unrelated state changes but used slice references are stable', () => {
+    // Build stable references for used slices
+    const accountTree = { wallets: {}, selectedAccountGroup: '' };
+    const internalAccounts = { accounts: {}, selectedAccount: '' };
+    const tokenBalances = {};
+    const marketData = {};
+    const conversionRates = {};
+    const historicalPrices = {};
+    const balances = {};
+    const allTokens = {};
+    const currencyRates = {};
+
+    const baseState: BalanceCalculationState = {
+      metamask: {
+        // provide all used slices with stable refs
+        accountTree,
+        internalAccounts,
+        tokenBalances,
+        marketData,
+        balances,
+        allTokens,
+        currentCurrency: 'usd',
+        currencyRates,
+        conversionRates,
+        historicalPrices,
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+
+    const out1 = selectBalanceForAllWallets(baseState);
+
+    // Unrelated state change: add a non-used field while keeping used refs identical
+    const nextState: BalanceCalculationState = {
+      metamask: {
+        // reuse same references for used inputs
+        accountTree,
+        internalAccounts,
+        tokenBalances,
+        marketData,
+        balances,
+        allTokens,
+        currentCurrency: 'usd',
+        currencyRates,
+        conversionRates,
+        historicalPrices,
+        // unrelated field
+        remoteFeatureFlags: { foo: true },
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+
+    const out2 = selectBalanceForAllWallets(nextState);
+
+    // No recompute and referentially equal output
+    expect(out1).toBe(out2);
+    expect((calculateBalanceForAllWallets as jest.Mock).mock.calls.length).toBe(
+      1,
+    );
+  });
+
+  it('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
+    const tokenBalancesA = {};
+    const tokenBalancesB = {}; // new reference
+
+    const stateA: BalanceCalculationState = {
+      metamask: {
+        accountTree: { wallets: {}, selectedAccountGroup: '' },
+        internalAccounts: { accounts: {}, selectedAccount: '' },
+        tokenBalances: tokenBalancesA,
+        marketData: {},
+        balances: {},
+        allTokens: {},
+        currentCurrency: 'usd',
+        currencyRates: {},
+        conversionRates: {},
+        historicalPrices: {},
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+
+    const outA = selectBalanceForAllWallets(stateA);
+
+    const stateB: BalanceCalculationState = {
+      metamask: {
+        ...stateA.metamask,
+        tokenBalances: tokenBalancesB, // change relevant input ref
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+
+    const outB = selectBalanceForAllWallets(stateB);
+
+    // Recompute should have happened at least once more, and outputs not the same ref
+    expect(outA).not.toBe(outB);
+    expect(
+      (calculateBalanceForAllWallets as jest.Mock).mock.calls.length,
+    ).toBeGreaterThan(1);
+  });
+});
+
+describe('Balance change selectors', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const baseState: BalanceCalculationState = {
+    metamask: {} as BalanceCalculationState['metamask'],
+  };
+
+  it('selectBalanceChangeForAllWallets adapts shapes and calls core with period', () => {
+    const mockReturn: BalanceChangeResult = {
+      period: '1d',
+      currentTotalInUserCurrency: 123,
+      previousTotalInUserCurrency: 100,
+      amountChangeInUserCurrency: 23,
+      percentChange: 23,
+      userCurrency: 'usd',
+    };
+    (calculateBalanceChangeForAllWallets as jest.Mock).mockReturnValueOnce(
+      mockReturn,
+    );
+
+    const selectChange1d = selectBalanceChangeForAllWallets('1d');
+    const out = selectChange1d(baseState);
+    expect(out).toEqual(mockReturn);
+
+    expect(calculateBalanceChangeForAllWallets).toHaveBeenCalledTimes(1);
+    const args = (calculateBalanceChangeForAllWallets as jest.Mock).mock
+      .calls[0];
+    expect(args[0]).toHaveProperty('accountTree');
+    expect(args[1]).toHaveProperty('internalAccounts');
+    expect(args[2]).toHaveProperty('tokenBalances');
+    expect(args[3]).toHaveProperty('marketData');
+    expect(args[4]).toHaveProperty('conversionRates');
+    expect(args[5]).toHaveProperty('balances');
+    expect(args[6]).toHaveProperty('allTokens');
+    expect(args[7]).toHaveProperty('currentCurrency');
+    expect(args[9]).toBe('1d');
+  });
+
+  it('memoizes balance change output for identical state', () => {
+    const selectChange7d = selectBalanceChangeForAllWallets('7d');
+    const a = selectChange7d(baseState);
+    const b = selectChange7d(baseState);
+    expect(a).toBe(b);
+  });
+
+  it('selectBalanceChangeBySelectedAccountGroup returns null when none selected', () => {
+    const selector = selectBalanceChangeBySelectedAccountGroup('7d');
+    const out = selector(baseState);
+    expect(out).toBeNull();
+  });
+});
+
+describe('getAssetsBySelectedAccountGroup', () => {
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls the imported selector with the prepared initial state', () => {
+    const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
+    const expectedResult = {};
+    selectorMock.mockReturnValue(expectedResult);
+
+    const result = getAssetsBySelectedAccountGroup(mockState);
+
+    expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
+    expect(result).toBe(expectedResult);
   });
 });

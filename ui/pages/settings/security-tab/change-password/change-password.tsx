@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   Button,
@@ -41,7 +41,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { getPasswordStrengthCategory } from '../../../../helpers/utils/common.util';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -53,7 +52,7 @@ const ChangePasswordSteps = {
 const ChangePassword = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const animationEventEmitter = useRef(new EventEmitter());
@@ -112,14 +111,11 @@ const ChangePassword = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           biometrics_enabled: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          password_strength: getPasswordStrengthCategory(newPassword),
         },
       });
 
       // upon successful password change, go back to the settings page
-      history.push(SECURITY_ROUTE);
+      navigate(SECURITY_ROUTE);
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
     } catch (error) {
       console.error(error);

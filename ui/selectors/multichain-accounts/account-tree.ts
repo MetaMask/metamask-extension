@@ -1,5 +1,21 @@
-import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import {
+  AccountWalletType,
+  type AccountGroupId,
+  type AccountWalletId,
+} from '@metamask/account-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { AccountId } from '@metamask/accounts-controller';
+import { createSelector } from 'reselect';
+import { AccountGroupObject } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  type Hex,
+  type CaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { type NetworkConfiguration } from '@metamask/network-controller';
+
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
@@ -8,12 +24,23 @@ import {
   getHiddenAccountsList,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
-import { getSelectedInternalAccount } from '../accounts';
 import {
+  getInternalAccounts,
+  getInternalAccountsObject,
+  getSelectedInternalAccount,
+} from '../accounts';
+
+import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
+import { isTestNetwork } from '../../helpers/utils/network-helper';
+import {
+  AccountGroupWithInternalAccounts,
   AccountTreeState,
   ConsolidatedWallets,
+  MultichainAccountGroupScopeToCaipAccountId,
+  MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
 } from './account-tree.types';
+import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
 /**
  * Retrieve account tree state.
@@ -23,9 +50,10 @@ import {
  * @param state.metamask.accountTree - Account tree state object.
  * @returns Account tree state.
  */
-export const getAccountTree = (
-  state: MultichainAccountsState,
-): AccountTreeState => state.metamask.accountTree;
+export const getAccountTree = createDeepEqualSelector(
+  (state: MultichainAccountsState) => state.metamask.accountTree,
+  (accountTree: AccountTreeState): AccountTreeState => accountTree,
+);
 
 /**
  * Common function to create consolidated wallets with accounts.
@@ -77,6 +105,7 @@ const createConsolidatedWallets = (
     (consolidatedWallets: ConsolidatedWallets, [walletId, wallet]) => {
       consolidatedWallets[walletId as AccountWalletId] = {
         id: walletId as AccountWalletId,
+        type: wallet.type,
         metadata: wallet.metadata,
         groups: {},
       };
@@ -117,6 +146,7 @@ const createConsolidatedWallets = (
           groupId as AccountGroupId
         ] = {
           id: groupId as AccountGroupId,
+          type: group.type,
           metadata: group.metadata,
           accounts: accountsFromGroup,
         };
@@ -236,5 +266,548 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
       }
     }
     return null;
+  },
+);
+
+/**
+ * Retrieve a multichain account group by its ID.
+ *
+ * @param accountTree - Account tree state.
+ * @param accountId - The account group ID to find.
+ * @returns The multichain account group object, or undefined if not found.
+ */
+export const getMultichainAccountGroupById = createDeepEqualSelector(
+  getAccountTree,
+  (_, accountId: AccountGroupId) => accountId,
+  (accountTree: AccountTreeState, accountId: AccountGroupId) => {
+    const { wallets } = accountTree;
+
+    const walletId = extractWalletIdFromGroupId(accountId);
+    const wallet = wallets[walletId as AccountWalletId];
+
+    return wallet?.groups[accountId as AccountGroupId];
+  },
+);
+
+/**
+ * Retrieve all account groups from all wallets in the account tree.
+ *
+ * @param accountTree - Account tree state.
+ * @returns Array of all account groups.
+ */
+export const getAllAccountGroups = createDeepEqualSelector(
+  getAccountTree,
+  (accountTree: AccountTreeState) => {
+    const { wallets } = accountTree;
+
+    return Object.values(wallets).flatMap((wallet) => {
+      return Object.values(wallet.groups).map((group) => ({
+        ...group,
+        walletName: wallet.metadata.name,
+      }));
+    });
+  },
+);
+
+/**
+ * Retrieve all multichain account groups (filtered by Entropy wallet type).
+ *
+ * @param accountGroups - Array of all account groups.
+ * @returns Array of multichain account groups.
+ */
+export const getMultichainAccountGroups = createDeepEqualSelector(
+  getAllAccountGroups,
+  (accountGroups: AccountGroupObject[]) => {
+    return accountGroups.filter((group) =>
+      group.id.startsWith(AccountWalletType.Entropy),
+    );
+  },
+);
+
+/**
+ * Retrieve all non-multichain account groups (filtered to exclude Entropy wallet type).
+ *
+ * @param accountGroups - Array of all account groups.
+ * @returns Array of non-multichain account groups.
+ */
+export const getSingleAccountGroups = createDeepEqualSelector(
+  getAllAccountGroups,
+  (accountGroups: AccountGroupObject[]) => {
+    return accountGroups.filter(
+      (group) => !group.id.startsWith(AccountWalletType.Entropy),
+    );
+  },
+);
+
+/**
+ * Retrieve account groups with their internal accounts populated.
+ *
+ * @param accountGroups - Array of all account groups.
+ * @param internalAccounts - Array of internal accounts.
+ * @returns Array of account groups with internal accounts instead of account IDs.
+ */
+export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
+  getAllAccountGroups,
+  getInternalAccounts,
+  (
+    accountGroups: (AccountGroupObject & { walletName: string })[],
+    internalAccounts: InternalAccount[],
+  ): AccountGroupWithInternalAccounts[] => {
+    return accountGroups.map((accountGroup) => {
+      return {
+        ...accountGroup,
+        accounts: accountGroup.accounts
+          .map((accountId: string) => {
+            const internalAccount = internalAccounts.find(
+              (account) => account.id === accountId,
+            );
+            return internalAccount;
+          })
+          .filter(
+            (account): account is InternalAccount => account !== undefined,
+          ),
+      };
+    });
+  },
+);
+
+/**
+ * Create a map from multichain account group IDs to their scope mappings.
+ *
+ * @param multichainAccounts - Array of multichain account groups.
+ * @param internalAccounts - Array of internal accounts.
+ * @returns Map from multichain account group IDs to scope-to-CAIP account ID mappings.
+ */
+export const getMultichainAccountsToScopesMap = createDeepEqualSelector(
+  getMultichainAccountGroups,
+  getInternalAccounts,
+  (
+    multichainAccounts: AccountGroupObject[],
+    internalAccounts: InternalAccount[],
+  ) => {
+    const multichainAccountsToScopesMap: MultichainAccountGroupToScopesMap =
+      new Map();
+
+    multichainAccounts.forEach((multichainAccount) => {
+      const multichainAccountIdToCaip25Ids: MultichainAccountGroupScopeToCaipAccountId =
+        new Map();
+
+      Object.values(multichainAccount.accounts).forEach((internalAccountId) => {
+        const internalAccount = internalAccounts.find(
+          (account) => account.id === internalAccountId,
+        );
+
+        if (!internalAccount) {
+          return;
+        }
+        const [caip25Id] = internalAccount.scopes;
+        if (caip25Id) {
+          const [namespace, reference] = caip25Id.split(':');
+          multichainAccountIdToCaip25Ids.set(
+            caip25Id,
+            `${namespace}:${reference}:${internalAccount.address}`,
+          );
+        }
+      });
+
+      multichainAccountsToScopesMap.set(
+        multichainAccount.id,
+        multichainAccountIdToCaip25Ids,
+      );
+    });
+
+    return multichainAccountsToScopesMap;
+  },
+);
+
+/**
+ * Get the CAIP-25 account ID for a specific account group and scope.
+ *
+ * @param multichainAccountsToScopesMap - Map of multichain account groups to their scopes.
+ * @param accountGroup - The account group to search in.
+ * @param scope - The CAIP chain ID scope to find.
+ * @returns The CAIP-25 account ID, or undefined if not found.
+ */
+export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
+  getMultichainAccountsToScopesMap,
+  (_, accountGroup: AccountGroupObject, scope: CaipChainId) => ({
+    accountGroup,
+    scope,
+  }),
+  (
+    multichainAccountsToScopesMap: MultichainAccountGroupToScopesMap,
+    {
+      accountGroup,
+      scope,
+    }: { accountGroup: AccountGroupObject; scope: CaipChainId },
+  ) => {
+    const multichainAccountGroup = multichainAccountsToScopesMap.get(
+      accountGroup.id,
+    );
+    if (!multichainAccountGroup) {
+      return undefined;
+    }
+    return multichainAccountGroup.get(scope);
+  },
+);
+
+/**
+ * Get account groups filtered by the provided scopes.
+ *
+ * @param accountGroupsWithInternalAccounts - Array of account groups with internal accounts.
+ * @param scopes - Array of scope strings to filter by.
+ * @returns Array of account groups that match the provided scopes.
+ */
+export const getAccountGroupsByScopes = createDeepEqualSelector(
+  getAccountGroupWithInternalAccounts,
+  (_, scopes: string[]) => scopes,
+  (
+    accountGroupsWithInternalAccounts: AccountGroupWithInternalAccounts[],
+    scopes: string[],
+  ) => {
+    const { cleanedScopes, hasEvmScope } = scopes.reduce(
+      (acc, scope) => {
+        const [namespace] = scope.split(':');
+        if (namespace === KnownCaipNamespace.Eip155) {
+          acc.hasEvmScope = true;
+        } else {
+          acc.cleanedScopes.push(scope as CaipChainId);
+        }
+        return acc;
+      },
+      { cleanedScopes: [] as CaipChainId[], hasEvmScope: false },
+    );
+
+    // Can early return with all multichain account groups because they all have EVM scopes
+    if (hasEvmScope) {
+      return accountGroupsWithInternalAccounts;
+    }
+
+    const scopesToAccountGroupsMap = new Map<
+      CaipChainId,
+      AccountGroupWithInternalAccounts[]
+    >();
+
+    cleanedScopes.forEach((scope) => {
+      const accountGroupsWithScope = accountGroupsWithInternalAccounts.filter(
+        (accountGroup) =>
+          accountGroup.accounts.some((internalAccount: InternalAccount) =>
+            internalAccount.scopes.includes(scope),
+          ),
+      );
+      scopesToAccountGroupsMap.set(scope, accountGroupsWithScope);
+    });
+
+    return Array.from(scopesToAccountGroupsMap.values()).flat();
+  },
+);
+/**
+ * Get a group by its ID from the account tree.
+ *
+ * @param wallets - The wallets object from the account tree.
+ * @param groupId - The ID of the group to get.
+ * @returns The group object, or null if not found.
+ */
+const getGroupByGroupId = (
+  wallets: AccountTreeState['wallets'],
+  groupId: AccountGroupId,
+) => {
+  for (const wallet of Object.values(wallets)) {
+    if (wallet.groups[groupId]) {
+      return wallet.groups[groupId];
+    }
+  }
+  return null;
+};
+
+/**
+ * Get an internal account from a group by its CAIP chain ID.
+ *
+ * @param group - The group object to search in.
+ * @param caipChainId - The CAIP chain ID to search for.
+ * @param internalAccounts - The internal accounts object.
+ * @returns The internal account object, or null if not found.
+ */
+const getInternalAccountFromGroup = (
+  group: AccountGroupObject | null,
+  caipChainId: CaipChainId,
+  internalAccounts: Record<AccountId, InternalAccount>,
+) => {
+  if (!group) {
+    return null;
+  }
+
+  const sanitizedChainId = getSanitizedChainId(caipChainId);
+
+  for (const account of group.accounts) {
+    const internalAccount = internalAccounts[account];
+    if (internalAccount?.scopes.includes(sanitizedChainId)) {
+      return internalAccount;
+    }
+  }
+
+  return null;
+};
+
+/**
+ * Get an internal account from the account tree by its group ID and CAIP chain ID.
+ *
+ * @param groupId - The ID of the group to search in.
+ * @param caipChainId - The CAIP chain ID to search for.
+ * @returns The internal account object, or null if not found.
+ */
+export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (_, groupId: AccountGroupId, caipChainId: CaipChainId) => ({
+    groupId,
+    caipChainId,
+  }),
+  (
+    accountTree: AccountTreeState,
+    internalAccounts: Record<AccountId, InternalAccount>,
+    {
+      groupId,
+      caipChainId,
+    }: { groupId: AccountGroupId; caipChainId: CaipChainId },
+  ) => {
+    const { wallets } = accountTree;
+    const group = getGroupByGroupId(wallets, groupId);
+
+    return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
+  },
+);
+
+/**
+ * Get the selected account group from the account tree.
+ *
+ * @param accountTree - The account tree state.
+ * @returns The selected account group, or null if not found.
+ */
+export const getSelectedAccountGroup = createDeepEqualSelector(
+  getAccountTree,
+  (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
+);
+
+/**
+ * Get an internal account from the account tree by its selected account group and CAIP chain ID.
+ *
+ * @param caipChainId - The CAIP chain ID to search for.
+ * @returns The internal account object, or null if not found.
+ */
+export const getInternalAccountBySelectedAccountGroupAndCaip =
+  createDeepEqualSelector(
+    getAccountTree,
+    getInternalAccountsObject,
+    getSelectedAccountGroup,
+    (_, caipChainId: CaipChainId) => caipChainId,
+    (
+      accountTree: AccountTreeState,
+      internalAccounts: Record<AccountId, InternalAccount>,
+      selectedAccountGroup: AccountGroupId | null,
+      caipChainId: CaipChainId,
+    ) => {
+      if (!selectedAccountGroup) {
+        return null;
+      }
+
+      const { wallets } = accountTree;
+      const group = getGroupByGroupId(wallets, selectedAccountGroup);
+
+      return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
+    },
+  );
+
+/**
+ * Retrieve wallet from account tree state.
+ *
+ * @param state - Redux state.
+ * @param state.metamask - MetaMask state object.
+ * @param state.metamask.accountTree - Account tree state object.
+ * @param walletId - The ID of the wallet to retrieve.
+ * @returns Wallet object from account tree state.
+ */
+export const getWallet = createSelector(
+  (state: MultichainAccountsState) => state.metamask?.accountTree?.wallets,
+  (_, walletId: AccountWalletId) => walletId,
+  (wallets, walletId: AccountWalletId) => {
+    return wallets?.[walletId];
+  },
+);
+
+/**
+ * Returns all account groups that belong to a specific wallet ID.
+ *
+ * @param state - Redux state.
+ * @param walletId - The wallet ID to filter account groups by.
+ * @returns Object containing all account groups for the specified wallet.
+ */
+export const getMultichainAccountsByWalletId = createSelector(
+  getAccountTree,
+  (_: MultichainAccountsState, walletId: AccountWalletId) => walletId,
+  (
+    accountTree,
+    walletId,
+  ): Record<AccountGroupId, AccountGroupObject> | undefined => {
+    const wallet = accountTree.wallets[walletId];
+
+    return wallet?.groups;
+  },
+);
+
+/**
+ * Get all internal accounts from a specific account group by its ID.
+ *
+ * @param state - Redux state.
+ * @param groupId - The ID of the account group.
+ * @returns Array of internal accounts in the specified group, or empty array if not found.
+ */
+export const getInternalAccountsFromGroupById = createSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (_, groupId: AccountGroupId) => groupId,
+  (
+    accountTree: AccountTreeState,
+    internalAccounts: Record<AccountId, InternalAccount>,
+    groupId: AccountGroupId | null,
+  ): InternalAccount[] => {
+    if (!groupId) {
+      return [];
+    }
+
+    const { wallets } = accountTree;
+    const group = getGroupByGroupId(wallets, groupId);
+
+    if (!group) {
+      return [];
+    }
+
+    return group.accounts
+      .map((accountId) => internalAccounts[accountId])
+      .filter((account): account is InternalAccount => Boolean(account));
+  },
+);
+
+/**
+ * Selector to get account groups by a list of addresses.
+ * Returns groups that contain at least one account matching any of the provided addresses.
+ *
+ * @param _state - Redux state.
+ * @param addresses - An array of addresses to filter account groups by.
+ * @returns An array of AccountGroupWithInternalAccounts that contain at least one matching account.
+ */
+export const getAccountGroupsByAddress = createDeepEqualSelector(
+  [
+    getAccountGroupWithInternalAccounts,
+    (_state: MultichainAccountsState, addresses: string[]) =>
+      new Set(addresses.map((address) => address.toLowerCase())),
+  ],
+  (
+    accountGroupWithInternalAccounts,
+    addressesSet: Set<string>,
+  ): AccountGroupWithInternalAccounts[] => {
+    const matchingGroups = new Set<AccountGroupWithInternalAccounts>();
+
+    accountGroupWithInternalAccounts.forEach((group) => {
+      const containsMatchingAccount = group.accounts.some((account) =>
+        addressesSet.has(account.address.toLowerCase()),
+      );
+
+      if (containsMatchingAccount) {
+        matchingGroups.add(group);
+      }
+    });
+
+    // Convert the Set of AccountGroupWithInternalAccounts to an Array
+    return [...matchingGroups];
+  },
+);
+
+/**
+ * Selector to get a list of internal accounts spread across different network scopes for a specific account group.
+ *
+ * @param _state - Redux state.
+ * @param groupId - The ID of the account group.
+ * @returns An array of internal accounts spread across different network scopes.
+ */
+export const getInternalAccountListSpreadByScopesByGroupId =
+  createDeepEqualSelector(
+    [
+      getInternalAccountsFromGroupById,
+      getMultichainNetworkConfigurationsByChainId,
+    ],
+    (
+      internalAccounts: InternalAccount[],
+      networks: [
+        Record<CaipChainId, MultichainNetworkConfiguration>,
+        Record<Hex, NetworkConfiguration>,
+      ],
+    ): {
+      account: InternalAccount;
+      scope: CaipChainId;
+      networkName: string;
+    }[] => {
+      const caipNetworks = networks[0];
+
+      // Precompute EVM network IDs (filtered by non-test networks)
+      const evmNetworkIds = new Set(
+        Object.keys(caipNetworks).filter(
+          (chainId) =>
+            chainId.startsWith(KnownCaipNamespace.Eip155) &&
+            !isTestNetwork(chainId as CaipChainId),
+        ) as CaipChainId[],
+      );
+
+      // Prepare the result array by iterating through internalAccounts
+      const result: {
+        account: InternalAccount;
+        scope: CaipChainId;
+        networkName: string;
+      }[] = [];
+
+      internalAccounts.forEach((account) => {
+        // Use the precomputed EVM network IDs or account-specific scopes
+        const scopes =
+          account.type === EthAccountType.Eoa
+            ? [...evmNetworkIds]
+            : account.scopes || [];
+
+        // Iterate over scopes and filter out test networks
+        scopes.forEach((scope) => {
+          if (!isTestNetwork(scope)) {
+            result.push({
+              account,
+              scope,
+              networkName: caipNetworks[scope]?.name || 'Unknown Network',
+            });
+          }
+        });
+      });
+
+      return result;
+    },
+  );
+
+/**
+ * Get the number of internal accounts in a specific group.
+ *
+ * @param _state - Redux state.
+ * @param groupId - The account group ID.
+ * @returns The number of accounts in the group, or 0 if the group is not found.
+ */
+export const getNetworkAddressCount = createDeepEqualSelector(
+  [getInternalAccountListSpreadByScopesByGroupId],
+  (
+    accounts: {
+      account: InternalAccount;
+      scope: CaipChainId;
+      networkName: string;
+    }[],
+  ): number => {
+    if (!accounts) {
+      return 0;
+    }
+
+    return accounts.length;
   },
 );

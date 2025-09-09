@@ -25,7 +25,11 @@
 @import 'swaps/index';
 @import 'bridge/index';
 @import 'unlock-page/index';
+@import 'multichain-accounts/account-list/account-list';
 @import 'multichain-accounts/wallet-details/wallet-details';
+@import 'multichain-accounts/wallet-details-page/index';
 @import 'multi-srp/import-srp/index';
 @import 'multichain-accounts/address-qr-code/address-qr-code';
 @import 'multichain-accounts/base-account-details/base-account-details';
+@import 'multichain-accounts/multichain-account-details-page/index';
+@import 'multichain-accounts/multichain-accounts-connect-page/index';

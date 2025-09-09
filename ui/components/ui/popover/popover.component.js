@@ -104,10 +104,14 @@ const Popover = ({
             color={Color.iconDefault}
             size={Size.SM}
           />
-        ) : null}
+        ) : (
+          <div className="size-6" />
+        )}
         <Text
           textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
-          className={wrapTitle ? 'popover-header__title-wrap' : null}
+          className={classnames('flex-1', {
+            'popover-header__title-wrap': wrapTitle,
+          })}
           ellipsis
           variant={TextVariant.headingSm}
           as="h2"
@@ -123,7 +127,9 @@ const Popover = ({
             onClick={onClose}
             size={Size.SM}
           />
-        ) : null}
+        ) : (
+          <div className="size-6" />
+        )}
       </Box>
       {subtitle ? <Text variant={TextVariant.bodySm}>{subtitle}</Text> : null}
     </Box>

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import {
@@ -31,9 +31,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSocialLoginType } from '../../../selectors';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
@@ -41,7 +41,7 @@ import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 export default function CreationSuccessful() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
   const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
@@ -126,11 +126,11 @@ export default function CreationSuccessful() {
 
   const onDone = useCallback(() => {
     if (isFromReminder) {
-      history.push(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-  }, [history, isFromReminder, isFromSettingsSecurity]);
+    navigate(ONBOARDING_DOWNLOAD_APP_ROUTE);
+  }, [navigate, isFromReminder, isFromSettingsSecurity]);
 
   return (
     <Box
@@ -202,7 +202,7 @@ export default function CreationSuccessful() {
               data-testid="manage-default-settings"
               borderRadius={BorderRadius.LG}
               width={BlockSize.Full}
-              onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+              onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
             >
               <Box display={Display.Flex} alignItems={AlignItems.center}>
                 <Icon

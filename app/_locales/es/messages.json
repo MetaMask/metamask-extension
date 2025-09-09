@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Reinicia MetaMask si el problema persiste.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "La carga está tardando más de lo habitual.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -175,6 +183,9 @@
     "message": "Agregar cuenta de $1",
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
+  "addAccountOrWallet": {
+    "message": "Añadir una cuenta o una billetera"
+  },
   "addAccountToMetaMask": {
     "message": "Añadir cuenta a MetaMask"
   },
@@ -306,6 +317,9 @@
   "address": {
     "message": "Dirección"
   },
+  "addressCopied": {
+    "message": "Dirección copiada"
+  },
   "addressMismatch": {
     "message": "La dirección del sitio no coincide"
   },
@@ -316,6 +330,10 @@
   "addressMismatchPunycode": {
     "message": "Versión de Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addresses": {
+    "message": "Direcciones",
+    "description": "Multichain account menu item for linking to addresses page"
   },
   "advanced": {
     "message": "Avanzado"
@@ -408,11 +426,14 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "No tienes suficiente $1 en tu cuenta para pagar las tarifas de red."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Los precios del gas son altos y las estimaciones son menos precisas."
-  },
   "alertMessageNoGasPrice": {
     "message": "No podemos seguir adelante con esta transacción hasta que actualice manualmente la tarifa."
+  },
+  "alertMessageOriginTrustSignalMalicious": {
+    "message": "Se identificó como malicioso. Recomendamos no interactuar con este sitio."
+  },
+  "alertMessageOriginTrustSignalWarning": {
+    "message": "Se identificó como sospechoso. Recomendamos no interactuar con este sitio."
   },
   "alertMessageSignInDomainMismatch": {
     "message": "El sitio que realiza la solicitud no es el sitio en el que está iniciando sesión. Esto podría ser un intento de robar sus credenciales de inicio de sesión."
@@ -450,11 +471,14 @@
   "alertReasonMultipleApprovals": {
     "message": "Permiso innecesario"
   },
-  "alertReasonNetworkBusy": {
-    "message": "La red está ocupada"
-  },
   "alertReasonNoGasPrice": {
     "message": "Estimación de tarifa no disponible"
+  },
+  "alertReasonOriginTrustSignalMalicious": {
+    "message": "Sitio malicioso"
+  },
+  "alertReasonOriginTrustSignalWarning": {
+    "message": "Sitio sospechoso"
   },
   "alertReasonPendingTransactions": {
     "message": "Transacción pendiente"
@@ -654,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Más información sobre cómo protegemos su privacidad"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Realice una copia de respaldo de sus cuentas y sincronice la configuración."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Presentamos la copia de respaldo y la sincronización"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
@@ -683,9 +701,6 @@
   },
   "basic": {
     "message": "Básico"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "La funcionalidad básica está desactivada"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask ofrece funciones básicas como los detalles del token y la configuración de gas mediante servicios de Internet. Al utilizar los servicios de Internet, su dirección IP es compartida, en este caso con MetaMask. Es lo mismo que cuando visita cualquier página web. MetaMask utiliza estos datos temporalmente y nunca los vende. Puede utilizar una VPN o desactivar estos servicios, pero esto podría afectar su experiencia con MetaMask. Para saber más, consulte nuestra $1.",
@@ -718,9 +733,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Activar la funcionalidad básica"
-  },
-  "bestPrice": {
-    "message": "Mejor precio"
   },
   "beta": {
     "message": "Beta"
@@ -887,6 +899,21 @@
   "bridgeNetCost": {
     "message": "Costo neto"
   },
+  "bridgePriceImpact": {
+    "message": "Impacto en el precio"
+  },
+  "bridgePriceImpactGaslessWarning": {
+    "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Si no dispones de fondos suficientes para el gas, una parte de tu token de origen se asigna automáticamente para cubrir las comisiones, lo que reducirá la cantidad canjeada. MetaMask no influye ni controla el impacto en el precio."
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Depende del tamaño de la operación y de la liquidez disponible en el fondo. MetaMask no influye ni controla el impacto en el precio."
+  },
+  "bridgePriceImpactTooltipTitle": {
+    "message": "Impacto en el precio"
+  },
+  "bridgePriceImpactWarningTitle": {
+    "message": "Advertencia de impacto en el precio"
+  },
   "bridgeQuoteExpired": {
     "message": "Su cotización caducó."
   },
@@ -935,9 +962,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Intercambiando $1 por $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTerms": {
-    "message": "Términos"
   },
   "bridgeTimingMinutes": {
     "message": "$1 min",
@@ -1025,9 +1049,6 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
-  },
-  "bulletpoint": {
-    "message": "·"
   },
   "busy": {
     "message": "Ocupado"
@@ -1446,6 +1467,12 @@
   },
   "connectionRequest": {
     "message": "Solicitud de conexión"
+  },
+  "connectionsRemovedModalDescription": {
+    "message": "Algunas conexiones (como billeteras físicas y snaps) se eliminaron por inactividad en este dispositivo. Puedes volver a agregarlas en cualquier momento en Configuración."
+  },
+  "connectionsRemovedModalTitle": {
+    "message": "Conexiones eliminadas"
   },
   "contactUs": {
     "message": "Contáctenos"
@@ -1937,8 +1964,23 @@
   "downArrow": {
     "message": "flecha hacia abajo"
   },
+  "downloadAppDescription": {
+    "message": "Lleva MetaMask contigo a todas partes con la aplicación móvil. Además, activa Face ID para que siempre tengas acceso, incluso si olvidas tu contraseña."
+  },
+  "downloadAppTitle": {
+    "message": "Escanea el código QR y descarga la aplicación"
+  },
   "downloadGoogleChrome": {
     "message": "Descargar Google Chrome"
+  },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID en nuestra aplicación te permite acceder incluso si olvidas tu contraseña. ¡Lleva MetaMask a todas partes!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Escanea este código QR para comenzar."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Obtén nuestra aplicación móvil"
   },
   "downloadNow": {
     "message": "Descargar ahora"
@@ -2123,9 +2165,6 @@
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
-  "enableIt": {
-    "message": " Activarla"
-  },
   "enableSmartContractAccount": {
     "message": "Activar la cuenta de contrato inteligente"
   },
@@ -2219,6 +2258,10 @@
   "errorCode": {
     "message": "Código: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorDetails": {
+    "message": "Detalles del error",
+    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Error al obtener la lista de cadenas seguras, por favor continúe con precaución."
@@ -2424,7 +2467,7 @@
     "message": "biometría activada"
   },
   "forgotPasswordSocialStep2": {
-    "message": "Si tienes tu $1, puedes restablecer tu billetera actual y reimportar usando $1.",
+    "message": "Si tienes tu $1, puedes restablecer tu billetera actual y reimportar usando la frase secreta de recuperación.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -2665,9 +2708,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howNetworkFeesWorkExplanation": {
-    "message": "Tarifa estimada necesaria para procesar la transacción. La tarifa máxima es $1."
-  },
   "howQuotesWork": {
     "message": "Cómo funcionan las cotizaciones"
   },
@@ -2713,6 +2753,13 @@
   },
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con su frase secreta de recuperación de MetaMask. Obtenga más información sobre las cuentas importadas"
+  },
+  "importAccountWithSocialMsg": {
+    "message": "Las claves privadas importadas tienen copia de respaldo en tu cuenta y se sincronizan automáticamente cuando inicias sesión con el mismo inicio de sesión de Google o Apple."
+  },
+  "importAccountWithSocialMsgLearnMore": {
+    "message": "$1 sobre cómo funcionan las claves importadas",
+    "description": "$1 is a link to learn more about imported keys"
   },
   "importNFT": {
     "message": "Agregar NFT"
@@ -3004,9 +3051,6 @@
   "learnMoreAboutPrivacy": {
     "message": "Obtenga más información sobre las mejores prácticas de privacidad."
   },
-  "learnMoreAboutSolanaAccounts": {
-    "message": "Obtenga más información sobre las cuentas de Solana"
-  },
   "learnMoreKeystone": {
     "message": "Más información"
   },
@@ -3054,6 +3098,21 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Los datos de entrada de la transacción de Ethereum no están lo suficientemente completos."
+  },
+  "ledgerFirefoxNotSupportedDescription1": {
+    "message": "Tenemos problemas para conectarnos a Ledger. Consulta nuestra "
+  },
+  "ledgerFirefoxNotSupportedDescription2": {
+    "message": " sobre cómo conectar una billetera física y vuelve a intentarlo."
+  },
+  "ledgerFirefoxNotSupportedDescription3": {
+    "message": " Ledger ya no es compatible con Firefox, por lo que es posible que necesites utilizar un navegador diferente."
+  },
+  "ledgerFirefoxNotSupportedLink": {
+    "message": "guía"
+  },
+  "ledgerFirefoxNotSupportedTitle": {
+    "message": "Firefox no es compatible"
   },
   "ledgerLiveApp": {
     "message": "Aplicación de Ledger Live"
@@ -3709,6 +3768,9 @@
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
+  "noDeFiPositions": {
+    "message": "¿No encuentras lo que buscas?"
+  },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
   },
@@ -3717,6 +3779,9 @@
   },
   "noNFTs": {
     "message": "No hay ningún NFT aún"
+  },
+  "noNetworksAvailable": {
+    "message": "No hay redes disponibles"
   },
   "noNetworksFound": {
     "message": "No se encontraron redes para la consulta de búsqueda dada"
@@ -3765,9 +3830,6 @@
   },
   "notEnoughGas": {
     "message": "No hay gas suficiente"
-  },
-  "notNow": {
-    "message": "Ahora no"
   },
   "notificationDetail": {
     "message": "Detalles"
@@ -4087,7 +4149,7 @@
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Continúa con tu frase secreta de recuperación"
+    "message": "Usar la frase secreta de recuperación"
   },
   "onboardingSrpImport": {
     "message": "Importar con la frase secreta de recuperación"
@@ -4178,7 +4240,7 @@
     "message": "Contraseña"
   },
   "passwordChangedRecently": {
-    "message": "Tu contraseña ha cambiado"
+    "message": "Tu contraseña se cambió"
   },
   "passwordChangedRecentlyDescription": {
     "message": "Ingresa tu nueva contraseña para permanecer conectado a MetaMask."
@@ -4194,6 +4256,9 @@
     "message": "Una contraseña segura puede mejorar la protección de su monedero en caso de que le roben el dispositivo o esté comprometido."
   },
   "passwordTermsWarning": {
+    "message": "Si olvido esta contraseña, MetaMask no podrá restablecerla por mí."
+  },
+  "passwordTermsWarningSocial": {
     "message": "Si olvido esta contraseña, perderé el acceso a mi billetera para siempre. MetaMask no puede restablecerla."
   },
   "passwordToggleHide": {
@@ -4521,6 +4586,10 @@
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
   },
+  "pin": {
+    "message": "Fijar",
+    "description": "Pin label used in multichain account menu"
+  },
   "pinToTop": {
     "message": "Anclar arriba"
   },
@@ -4603,6 +4672,9 @@
   },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
+  },
+  "protocolNotSupported": {
+    "message": "Es posible que aún no admitamos tu protocolo."
   },
   "provide": {
     "message": "Proporcionar"
@@ -4811,6 +4883,10 @@
   "removeSnapDescription": {
     "message": "Esta acción eliminará el snap, sus datos y revocará los permisos otorgados."
   },
+  "rename": {
+    "message": "Renombrar",
+    "description": "Multichain account menu item for triggering account rename action modal"
+  },
   "replace": {
     "message": "reemplazar"
   },
@@ -4847,16 +4923,34 @@
     "message": "Restablecer"
   },
   "resetWallet": {
-    "message": "Restablecer monedero"
+    "message": "Restablece tu billetera"
   },
   "resetWalletSubHeader": {
     "message": "MetaMask no guarda una copia de su contraseña. Si tiene problemas para desbloquear su cuenta, deberá restablecer su monedero. Puede hacerlo proporcionando la frase secreta de recuperación que utilizó cuando configuró su monedero."
   },
+  "resetWalletSubHeaderSocial": {
+    "message": "MetaMask no guarda una copia de tu contraseña. Si tienes problemas para desbloquear tu cuenta, tendrás que restablecer tu billetera. Si tienes una frase secreta de recuperación, puedes usarla para borrar tu billetera actual de este dispositivo, junto con la lista de tus cuentas."
+  },
   "resetWalletUsingSRP": {
     "message": "Esta acción eliminará su monedero actual y la frase secreta de recuperación de este dispositivo, junto con la lista de cuentas que ha seleccionado. Después de restablecer con una frase secreta de recuperación, verá una lista de cuentas basada en la frase secreta de recuperación que usa para restablecer. Esta nueva lista incluirá automáticamente las cuentas que tengan saldo. También podrá $1 creado anteriormente. Las cuentas personalizadas que haya importado deberán costar $2, y cualquier token personalizado que haya agregado a una cuenta también deberá costar $3."
   },
+  "resetWalletUsingSRPSocial": {
+    "message": "Después de restablecer con una frase secreta de recuperación, verás una nueva lista de cuentas. Esta lista incluirá las cuentas con saldo. Puedes $1 que hayas generado anteriormente, pero tendrás que volver a agregar los $2 y $3 que hayas importado. "
+  },
+  "resetWalletUsingSRPSocialAccounts": {
+    "message": "volver a agregar cualquier otra cuenta"
+  },
+  "resetWalletUsingSRPSocialCustomAccounts": {
+    "message": "cuentas personalizadas"
+  },
+  "resetWalletUsingSRPSocialCustomTokens": {
+    "message": "tokens personalizados"
+  },
   "resetWalletWarning": {
     "message": "Asegúrese de usar la frase secreta de recuperación correcta antes de continuar. No podrá deshacer esto."
+  },
+  "resetWalletWarningSocial": {
+    "message": "Asegúrate de usar la frase secreta de recuperación correcta antes de restablecer. Esto no se puede deshacer."
   },
   "restartMetamask": {
     "message": "Reiniciar MetaMask"
@@ -4980,6 +5074,9 @@
   "searchAccounts": {
     "message": "Buscar cuentas"
   },
+  "searchNetworks": {
+    "message": "Buscar redes"
+  },
   "searchNfts": {
     "message": "Buscar NFT"
   },
@@ -5067,7 +5164,7 @@
     "message": "Activado"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Este correo electrónico y tu contraseña de MetaMask te ayudarán a recuperar tu cuenta y frases de recuperación.",
+    "message": "Utiliza tu nombre de usuario de $1 y tu contraseña de MetaMask para recuperar tu cuenta y tus frases secretas de recuperación.",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySocialLoginLabel": {
@@ -5359,6 +5456,12 @@
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
+  "simulationSettingsModalEnforceSlippage": {
+    "message": "Tolerancia de deslizamiento"
+  },
+  "simulationSettingsModalEnforceSlippageDescription": {
+    "message": "Establece una diferencia con la que te sientas cómodo para los cambios de saldo. Las transacciones no se procesarán si la diferencia es mayor."
+  },
   "simulationSettingsModalEnforceToggle": {
     "message": "Aplicar los cambios de saldo"
   },
@@ -5410,53 +5513,14 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Al activar esta opción, se omitirá la pantalla intersticial que se muestra al abrir enlaces profundos en MetaMask. Un \"enlace profundo\" es un enlace como https://link.metamask.io/home que hace que MetaMask se abra; otros pueden ofuscar estos enlaces. La pantalla intersticial está diseñada para protegerte de abrir accidentalmente páginas dentro de MetaMask que puedan mostrar tus cuentas, tokens, historial, saldos, configuración u otra información potencialmente confidencial. Esta configuración solo se aplica a los enlaces firmados por MetaMask."
   },
-  "slideBridgeDescription": {
-    "message": "Opere en 9 cadenas, todas dentro de su monedero"
+  "slippage": {
+    "message": "Deslizamiento"
   },
-  "slideBridgeTitle": {
-    "message": "¿Listo para puentear?"
+  "slippageAuto": {
+    "message": "Automático"
   },
-  "slideCashOutDescription": {
-    "message": "Venda sus criptomonedas por efectivo"
-  },
-  "slideCashOutTitle": {
-    "message": "Retire su dinero con MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Disponible en regiones seleccionadas"
-  },
-  "slideDebitCardTitle": {
-    "message": "Tarjeta de débito MetaMask"
-  },
-  "slideFundWalletDescription": {
-    "message": "Añada o transfiera tokens para comenzar"
-  },
-  "slideFundWalletTitle": {
-    "message": "Añada fondos a su monedero"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Importar y usar varios monederos en MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Agregar varias frases secretas de recuperación"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "La misma dirección, funciones más inteligentes"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Empiece a usar cuentas inteligentes"
-  },
-  "slideSolanaDescription": {
-    "message": "Cree una cuenta de Solana para comenzar"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana ahora es compatible"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Acuñe un NFT ahora para tener la oportunidad de ganar"
-  },
-  "slideSweepStakeTitle": {
-    "message": "¡Participe en el sorteo de $5000 USDC!"
+  "slippageEditAriaLabel": {
+    "message": "Editar deslizamiento"
   },
   "smartAccountAccept": {
     "message": "Use una cuenta inteligente"
@@ -5484,6 +5548,9 @@
   },
   "smartAccountSameAccount": {
     "message": "La misma cuenta, funciones más inteligentes."
+  },
+  "smartAccountSplashInfo": {
+    "message": "Cuentas inteligentes"
   },
   "smartAccountSplashTitle": {
     "message": "¿Usar una cuenta inteligente?"
@@ -5642,6 +5709,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 está listo para usar"
   },
+  "snapUIAccountSelectorTitle": {
+    "message": "Selecciona una cuenta"
+  },
   "snapUIAssetSelectorTitle": {
     "message": "Seleccione un activo"
   },
@@ -5709,27 +5779,6 @@
   },
   "solanaAccountRequired": {
     "message": "Se requiere una cuenta de Solana para conectarse a este sitio."
-  },
-  "solanaImportAccounts": {
-    "message": "Importar cuentas de Solana"
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Importe una frase secreta de recuperación para migrar su cuenta de Solana desde otro monedero."
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "Próximamente habrá más funciones"
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Próximamente, compatibilidad con NFT, monederos físicos y más."
-  },
-  "solanaOnMetaMask": {
-    "message": "Solana en MetaMask"
-  },
-  "solanaSendReceiveSwapTokens": {
-    "message": "Envíe, reciba e intercambie tokens"
-  },
-  "solanaSendReceiveSwapTokensDescription": {
-    "message": "Transfiera y realice transacciones con tokens como SOL, USDC y más."
   },
   "someNetworks": {
     "message": "$1 redes"
@@ -5875,7 +5924,7 @@
     "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
-    "message": "Puede pegar toda su frase secreta de recuperación en cualquier campo",
+    "message": "Puede pegar toda tu frase secreta de recuperación en cualquier campo.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpSecurityQuizGetStarted": {
@@ -6581,7 +6630,7 @@
     "message": "Acepto"
   },
   "termsOfUseAgreeText": {
-    "message": "Acepto los Términos de Uso, que se aplican al uso que hago de MetaMask y de todas sus funcionalidades"
+    "message": "Acepto los Términos de uso, que se aplican al uso que hago de MetaMask y de todas sus funcionalidades."
   },
   "termsOfUseFooterText": {
     "message": "Por favor, desplácese para leer todas las secciones"
@@ -6819,6 +6868,12 @@
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStartingMessage": {
+    "message": "Este error podría ser intermitente, así que intenta reiniciar la extensión."
+  },
+  "troubleStartingTitle": {
+    "message": "MetaMask tuvo problemas al iniciar."
+  },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
   },
@@ -6906,7 +6961,7 @@
     "message": "La contraseña es incorrecta. Inténtalo de nuevo."
   },
   "unlockPageTooManyFailedAttempts": {
-    "message": "Demasiados intentos fallidos. Inténtalo de nuevo "
+    "message": "Demasiados intentos. Inténtalo de nuevo en "
   },
   "unpin": {
     "message": "Desanclar"
@@ -7026,6 +7081,10 @@
   "viewActivity": {
     "message": "Ver actividad"
   },
+  "viewAddressOnExplorer": {
+    "message": "Ver en $1",
+    "description": "$1 is the block explorer name"
+  },
   "viewAllQuotes": {
     "message": "ver todas las cotizaciones"
   },
@@ -7054,9 +7113,6 @@
   },
   "viewOnOpensea": {
     "message": "Ver en Opensea"
-  },
-  "viewSolanaAccount": {
-    "message": "Ver cuenta de Solana"
   },
   "viewTransaction": {
     "message": "Ver transacción"
@@ -7169,15 +7225,6 @@
   },
   "welcomeBack": {
     "message": "Bienvenido de nuevo"
-  },
-  "welcomeDescription": {
-    "message": "Con la confianza de millones de usuarios, MetaMask es una billetera segura que permite que todos puedan acceder al mundo de la web3."
-  },
-  "welcomeGetStarted": {
-    "message": "Comenzar"
-  },
-  "welcomeTitle": {
-    "message": "Bienvenido a MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Comencemos"

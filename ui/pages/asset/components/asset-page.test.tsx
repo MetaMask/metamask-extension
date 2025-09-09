@@ -67,6 +67,7 @@ describe('AssetPage', () => {
     },
     metamask: {
       ...mockMultichainNetworkState(),
+      txHistory: {},
       remoteFeatureFlags: {
         bridgeConfig: {
           support: true,
@@ -105,6 +106,10 @@ describe('AssetPage', () => {
       preferences: {},
       enabledNetworkMap: {
         eip155: {},
+      },
+      accountTree: {
+        wallets: {},
+        selectedAccountGroup: 'mock-account-group-id',
       },
       internalAccounts: {
         accounts: {
@@ -306,7 +311,7 @@ describe('AssetPage', () => {
     expect(bridgeButton).not.toBeDisabled();
   });
 
-  it('should disable Bridge button if chain id is not supported', async () => {
+  it('should not render Bridge button on testnet chains', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -317,8 +322,9 @@ describe('AssetPage', () => {
         },
       }),
     );
+    // bridge button is hidden on unified and testnet chains.
     const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeDisabled();
+    expect(bridgeButton).toBeNull();
   });
 
   it('should render the network name', async () => {

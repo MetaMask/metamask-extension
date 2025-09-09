@@ -44,15 +44,43 @@ export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
       };
     });
 
+export const mockMultichainAccountsFeatureFlagStateTwo = (
+  mockServer: Mockttp,
+) =>
+  mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            enableMultichainAccounts: {
+              enabled: true,
+              featureVersion: '2',
+              minimumVersion: '12.19.0',
+            },
+          },
+        ],
+      };
+    });
+
 export async function withMultichainAccountsDesignEnabled(
   {
     title,
     testSpecificMock = mockMultichainAccountsFeatureFlag,
     accountType = AccountType.MultiSRP,
+    state = 1,
   }: {
     title?: string;
     testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
     accountType?: AccountType;
+    state?: number;
   },
   test: (driver: Driver) => Promise<void>,
 ) {
@@ -80,17 +108,28 @@ export async function withMultichainAccountsDesignEnabled(
       dapp: true,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      if (accountType === AccountType.HardwareWallet) {
+      // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
+      // Skip strict balance validation for hardware wallets and state 2 flows.
+      if (accountType === AccountType.HardwareWallet || state === 2) {
         await loginWithoutBalanceValidation(driver);
       } else {
         await loginWithBalanceValidation(driver);
       }
       const homePage = new HomePage(driver);
-      await homePage.check_pageIsLoaded();
+      await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.openAccountMenu();
+
+      if (state === 1) {
+        await headerNavbar.openAccountMenu();
+      } else {
+        await headerNavbar.openAccountsPage();
+      }
+
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+
+      if (state === 1) {
+        await accountListPage.checkPageIsLoaded();
+      }
       await test(driver);
     },
   );

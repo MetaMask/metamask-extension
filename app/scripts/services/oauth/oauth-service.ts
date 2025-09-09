@@ -1,24 +1,38 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
-import {
-  MOCK_AUTH_CONNECTION_ID,
-  MOCK_GROUPED_AUTH_CONNECTION_ID,
-} from '../../../../test/e2e/constants';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
-import type {
+import {
   OAuthConfig,
   OAuthLoginEnv,
   OAuthLoginResult,
   OAuthRefreshTokenResult,
+  OAuthServiceAction,
+  OAuthServiceEvent,
   OAuthServiceOptions,
+  SERVICE_NAME,
+  ServiceName,
   WebAuthenticator,
 } from './types';
 import { loadOAuthConfig } from './config';
 
 export default class OAuthService {
+  // Required for modular initialisation.
+  name: ServiceName = SERVICE_NAME;
+
+  state = null;
+
+  #messenger: RestrictedMessenger<
+    typeof SERVICE_NAME,
+    OAuthServiceAction,
+    OAuthServiceEvent,
+    OAuthServiceAction['type'],
+    OAuthServiceEvent['type']
+  >;
+
   #env: OAuthConfig & OAuthLoginEnv;
 
   #webAuthenticator: WebAuthenticator;
@@ -28,11 +42,14 @@ export default class OAuthService {
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
 
   constructor({
+    messenger,
     env,
     webAuthenticator,
     bufferedTrace,
     bufferedEndTrace,
   }: OAuthServiceOptions) {
+    this.#messenger = messenger;
+
     const oauthConfig = loadOAuthConfig();
     this.#env = {
       ...env,
@@ -41,6 +58,21 @@ export default class OAuthService {
     this.#webAuthenticator = webAuthenticator;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:startOAuthLogin`,
+      this.startOAuthLogin.bind(this),
+    );
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:getNewRefreshToken`,
+      this.getNewRefreshToken.bind(this),
+    );
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:revokeAndGetNewRefreshToken`,
+      this.revokeAndGetNewRefreshToken.bind(this),
+    );
   }
 
   /**
@@ -273,6 +305,10 @@ export default class OAuthService {
     let groupedAuthConnectionId = '';
 
     if (process.env.IN_TEST) {
+      const { MOCK_AUTH_CONNECTION_ID, MOCK_GROUPED_AUTH_CONNECTION_ID } =
+        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
     } else if (loginHandler.authConnection === AuthConnection.Google) {

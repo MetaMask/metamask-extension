@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -28,6 +28,7 @@ import {
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
   getSocialLoginType,
+  getIsParticipateInMetaMetricsSet,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -55,7 +56,6 @@ import {
   resetOnboarding,
 } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
-import { getPasswordStrengthCategory } from '../../../helpers/utils/common.util';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -70,7 +70,7 @@ export default function CreatePassword({
   const [termsChecked, setTermsChecked] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
@@ -83,6 +83,9 @@ export default function CreatePassword({
   const socialLoginType = useSelector(getSocialLoginType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isParticipateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
   const metametricsId = useSelector(getMetaMetricsId);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
@@ -104,28 +107,34 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        history.replace(ONBOARDING_METAMETRICS);
+        navigate(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+          { replace: true },
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (isFirefox) {
-          history.replace(ONBOARDING_COMPLETION_ROUTE);
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
-          history.replace(ONBOARDING_METAMETRICS);
+          navigate(ONBOARDING_METAMETRICS, { replace: true });
         }
       } else {
-        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }
     } else if (
       firstTimeFlowType === FirstTimeFlowType.import &&
       !secretRecoveryPhrase
     ) {
-      history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+      navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
     }
   }, [
     currentKeyring,
-    history,
+    navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
+    isParticipateInMetaMetricsSet,
   ]);
 
   const handleLearnMoreClick = (event) => {
@@ -166,7 +175,6 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletImported,
       properties: {
         biometrics_enabled: false,
-        password_strength: getPasswordStrengthCategory(password),
       },
     });
 
@@ -184,9 +192,9 @@ export default function CreatePassword({
     });
 
     if (isFirefox) {
-      history.replace(ONBOARDING_COMPLETION_ROUTE);
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
-      history.replace(ONBOARDING_METAMETRICS);
+      navigate(ONBOARDING_METAMETRICS, { replace: true });
     }
   };
 
@@ -217,7 +225,10 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletCreated,
       properties: {
         biometrics_enabled: false,
-        password_strength: getPasswordStrengthCategory(password),
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 
@@ -236,12 +247,12 @@ export default function CreatePassword({
 
     if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       if (isFirefox) {
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
-        history.replace(ONBOARDING_METAMETRICS);
+        navigate(ONBOARDING_METAMETRICS, { replace: true });
       }
     } else {
-      history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
     }
   };
 
@@ -263,8 +274,8 @@ export default function CreatePassword({
     await forceUpdateMetamaskState(dispatch);
 
     firstTimeFlowType === FirstTimeFlowType.import
-      ? history.replace(ONBOARDING_IMPORT_WITH_SRP_ROUTE)
-      : history.replace(ONBOARDING_WELCOME_ROUTE);
+      ? navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true })
+      : navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
   };
 
   const handlePasswordSetupError = (error) => {

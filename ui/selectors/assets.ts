@@ -1,7 +1,12 @@
 import {
+  AssetListState,
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
+  calculateBalanceChangeForAllWallets,
+  calculateBalanceForAllWallets,
+  calculateBalanceChangeForAccountGroup,
+  selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
@@ -13,12 +18,27 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { createSelector } from 'reselect';
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type {
+  TokenBalancesControllerState,
+  TokenRatesControllerState,
+  MultichainBalancesControllerState,
+  TokensControllerState,
+  CurrencyRateState,
+  BalanceChangePeriod,
+  BalanceChangeResult,
+} from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
-import { getTokenBalances } from '../ducks/metamask/metamask';
+import {
+  getTokenBalances,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances, getMultichainIsEvm } from './multichain';
@@ -31,6 +51,7 @@ import {
   getPreferences,
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
+  getEnabledNetworks,
 } from './selectors';
 import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 
@@ -44,6 +65,20 @@ export type AssetsRatesState = {
 
 export type DefiState = {
   metamask: DeFiPositionsControllerState;
+};
+
+// Type for the main Redux state that includes all controller states needed for balance calculations
+export type BalanceCalculationState = {
+  metamask: Partial<AccountTreeControllerState> &
+    Partial<AccountsControllerState> &
+    Partial<TokenBalancesControllerState> &
+    Partial<TokenRatesControllerState> &
+    Partial<MultichainBalancesControllerState> &
+    Partial<TokensControllerState> &
+    Partial<CurrencyRateState> & {
+      conversionRates?: Record<string, unknown>;
+      historicalPrices?: Record<string, unknown>;
+    };
 };
 
 /**
@@ -320,8 +355,9 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
   getAccountAssets,
   getAssetsRates,
   (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
+    const { id } = selectedAccountAddress ?? {};
+    const assetIds = id ? accountAssets?.[id] || [] : [];
+    const balances = id ? multichainBalances?.[id] : {};
 
     let aggregatedBalance = new BigNumber(0);
 
@@ -507,4 +543,447 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
 
     return balances[nativeAssetType];
   },
+);
+
+// Aggregated balance selectors using core pure function
+/**
+ * Returns the `metamask` slice with a safe empty fallback.
+ *
+ * @param state - Redux state used by balance selectors.
+ * @returns The `metamask` slice or an empty object.
+ */
+const getMetamaskState = (state: BalanceCalculationState) =>
+  state.metamask ?? {};
+
+const EMPTY_OBJ = Object.freeze({});
+const EMPTY_ACCOUNT_TREE = Object.freeze({
+  wallets: {},
+  selectedAccountGroup: '',
+});
+
+// Renamed for clarity
+/**
+ * Derives the minimal Account Tree payload needed by core balance functions.
+ * Provides stable empty fallbacks for memoization resilience.
+ *
+ * @param state
+ */
+const selectAccountTreeStateForBalances = createSelector(
+  [
+    (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
+
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).accountGroupsMetadata,
+
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).accountWalletsMetadata,
+  ],
+  (accountTree, accountGroupsMetadata, accountWalletsMetadata) => ({
+    accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
+    accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJ,
+    accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJ,
+  }),
+);
+
+/**
+ * Picks internal accounts with defaults in the shape expected by core.
+ *
+ * @param state
+ */
+const selectAccountsStateForBalances = createSelector(
+  [
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).internalAccounts,
+  ],
+  (internalAccounts) => ({
+    internalAccounts: internalAccounts ?? { accounts: {}, selectedAccount: '' },
+  }),
+);
+
+/**
+ * Wraps token balances for core balance computations.
+ */
+const selectTokenBalancesStateForBalances = createSelector(
+  [getTokenBalances],
+  (tokenBalances) => ({ tokenBalances }),
+);
+
+/**
+ * Exposes market data (rates) for core balance computations.
+ */
+const selectTokenRatesStateForBalances = createSelector(
+  [getMarketData],
+  (marketData) => ({
+    marketData,
+  }),
+);
+
+/**
+ * Provides conversion rates and historical prices with stable fallbacks.
+ */
+const selectMultichainRatesStateForBalances = createSelector(
+  [getAssetsRates, getHistoricalPrices],
+  (conversionRates, historicalPrices) => ({
+    conversionRates: conversionRates ?? EMPTY_OBJ,
+    historicalPrices: historicalPrices ?? EMPTY_OBJ,
+  }),
+);
+
+/**
+ * Wraps multichain balances for core balance computations.
+ */
+const selectMultichainBalancesStateForBalances = createSelector(
+  [getMultichainBalances],
+  (balances) => ({ balances }),
+);
+
+/**
+ * Normalizes tokens state and supplies explicit empty maps for optional pieces.
+ *
+ * @param state - Redux state providing `metamask.allTokens`.
+ */
+const selectTokensStateForBalances = createSelector(
+  [(state: BalanceCalculationState) => getMetamaskState(state).allTokens],
+  (allTokens) => ({
+    allTokens: allTokens ?? EMPTY_OBJ,
+    allIgnoredTokens: EMPTY_OBJ,
+    allDetectedTokens: EMPTY_OBJ,
+  }),
+);
+
+/**
+ * Exposes current user currency and currency rates with safe defaults.
+ */
+const selectCurrencyRateStateForBalances = createSelector(
+  [getCurrentCurrency, getCurrencyRates],
+  (currentCurrency, currencyRates) => ({
+    currentCurrency: currentCurrency ?? 'usd',
+    currencyRates: currencyRates ?? {},
+  }),
+);
+
+/**
+ * Returns the enabled network map as-is for filtering and eligibility checks.
+ */
+const selectEnabledNetworkMapForBalances = createSelector(
+  [getEnabledNetworks],
+  (map) => map,
+);
+
+/**
+ * Aggregates balances for all wallets and groups using core pure function.
+ * Only the minimal controller state is composed to keep this selector lean.
+ *
+ * @param state - Redux state from which the required slices are derived.
+ * @returns Aggregated balances structure for all wallets and groups.
+ */
+export const selectBalanceForAllWallets = createSelector(
+  [
+    selectAccountTreeStateForBalances,
+    selectAccountsStateForBalances,
+    selectTokenBalancesStateForBalances,
+    selectTokenRatesStateForBalances,
+    selectMultichainRatesStateForBalances,
+    selectMultichainBalancesStateForBalances,
+    selectTokensStateForBalances,
+    selectCurrencyRateStateForBalances,
+    selectEnabledNetworkMapForBalances,
+  ],
+  (
+    accountTreeState,
+    accountsState,
+    tokenBalancesState,
+    tokenRatesState,
+    multichainRatesState,
+    multichainBalancesState,
+    tokensState,
+    currencyRateState,
+    enabledNetworkMap,
+  ) =>
+    calculateBalanceForAllWallets(
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ),
+);
+
+// Balance change selectors (period: '1d' | '7d' | '30d')
+/**
+ * Factory returning a selector that computes balance change across all wallets
+ * for the provided period.
+ *
+ * @param period - Balance change period.
+ */
+export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
+  createSelector(
+    [
+      selectAccountTreeStateForBalances,
+      selectAccountsStateForBalances,
+      selectTokenBalancesStateForBalances,
+      selectTokenRatesStateForBalances,
+      selectMultichainRatesStateForBalances,
+      selectMultichainBalancesStateForBalances,
+      selectTokensStateForBalances,
+      selectCurrencyRateStateForBalances,
+      selectEnabledNetworkMapForBalances,
+    ],
+    (
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ): BalanceChangeResult =>
+      calculateBalanceChangeForAllWallets(
+        accountTreeState,
+        accountsState,
+        tokenBalancesState,
+        tokenRatesState,
+        multichainRatesState,
+        multichainBalancesState,
+        tokensState,
+        currencyRateState,
+        enabledNetworkMap,
+        period,
+      ),
+  );
+
+/**
+ * Convenience factory returning only the percent change for the given period.
+ *
+ * @param period - Balance change period.
+ */
+// Removed percent-only selector for all wallets to match mobile API surface
+
+// Per-account-group balance change selectors using core helper
+/**
+ * Factory returning a selector that computes balance change for a specific
+ * account group and period.
+ *
+ * @param groupId - Account group identifier.
+ * @param period - Balance change period.
+ */
+export const selectBalanceChangeByAccountGroup = (
+  groupId: string,
+  period: BalanceChangePeriod,
+) =>
+  createSelector(
+    [
+      selectAccountTreeStateForBalances,
+      selectAccountsStateForBalances,
+      selectTokenBalancesStateForBalances,
+      selectTokenRatesStateForBalances,
+      selectMultichainRatesStateForBalances,
+      selectMultichainBalancesStateForBalances,
+      selectTokensStateForBalances,
+      selectCurrencyRateStateForBalances,
+      selectEnabledNetworkMapForBalances,
+    ],
+    (
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ): BalanceChangeResult =>
+      calculateBalanceChangeForAccountGroup(
+        accountTreeState,
+        accountsState,
+        tokenBalancesState,
+        tokenRatesState,
+        multichainRatesState,
+        multichainBalancesState,
+        tokensState,
+        currencyRateState,
+        enabledNetworkMap,
+        groupId,
+        period,
+      ),
+  );
+
+export const selectBalancePercentChangeByAccountGroup = (
+  groupId: string,
+  period: BalanceChangePeriod,
+) =>
+  createSelector(
+    [selectBalanceChangeByAccountGroup(groupId, period)],
+    (change) => change.percentChange,
+  );
+
+/**
+ * Computes balance change for the currently selected account group.
+ * Returns null when no group is selected.
+ *
+ * @param period - Balance change period.
+ */
+export const selectBalanceChangeBySelectedAccountGroup = (
+  period: BalanceChangePeriod,
+) =>
+  createSelector(
+    [
+      selectAccountTreeStateForBalances,
+      selectAccountsStateForBalances,
+      selectTokenBalancesStateForBalances,
+      selectTokenRatesStateForBalances,
+      selectMultichainRatesStateForBalances,
+      selectMultichainBalancesStateForBalances,
+      selectTokensStateForBalances,
+      selectCurrencyRateStateForBalances,
+      selectEnabledNetworkMapForBalances,
+    ],
+    (
+      accountTreeState,
+      accountsState,
+      tokenBalancesState,
+      tokenRatesState,
+      multichainRatesState,
+      multichainBalancesState,
+      tokensState,
+      currencyRateState,
+      enabledNetworkMap,
+    ): BalanceChangeResult | null => {
+      const groupId = accountTreeState?.accountTree?.selectedAccountGroup;
+      if (!groupId) {
+        return null;
+      }
+      return calculateBalanceChangeForAccountGroup(
+        accountTreeState,
+        accountsState,
+        tokenBalancesState,
+        tokenRatesState,
+        multichainRatesState,
+        multichainBalancesState,
+        tokensState,
+        currencyRateState,
+        enabledNetworkMap,
+        groupId,
+        period,
+      );
+    },
+  );
+
+/**
+ * Selects the selected account group's balance entry from the aggregated
+ * balances output, returning a minimal fallback when not present.
+ *
+ * @param state - Redux state used to read selection and aggregated balances.
+ */
+export const selectBalanceBySelectedAccountGroup = createSelector(
+  [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
+  (accountTreeState, allBalances) => {
+    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    if (!selectedGroupId) {
+      return null;
+    }
+    const walletId = selectedGroupId.split('/')[0];
+    const wallet = allBalances.wallets[walletId] ?? null;
+    const { userCurrency } = allBalances;
+    if (!wallet?.groups[selectedGroupId]) {
+      return {
+        walletId,
+        groupId: selectedGroupId,
+        totalBalanceInUserCurrency: 0,
+        userCurrency,
+      };
+    }
+    return wallet.groups[selectedGroupId];
+  },
+);
+
+export const selectBalanceByAccountGroup = (groupId: string) =>
+  createSelector([selectBalanceForAllWallets], (allBalances) => {
+    const walletId = groupId.split('/')[0];
+    const wallet = allBalances.wallets[walletId] ?? null;
+    const { userCurrency } = allBalances;
+    if (!wallet?.groups[groupId]) {
+      return {
+        walletId,
+        groupId,
+        totalBalanceInUserCurrency: 0,
+        userCurrency,
+      };
+    }
+    return wallet.groups[groupId];
+  });
+
+/**
+ * Returns a summary for a wallet's balance and its groups, with zeroed fallback
+ * when the wallet entry does not exist in the aggregated output.
+ *
+ * @param walletId - Wallet identifier.
+ */
+export const selectBalanceByWallet = (walletId: string) =>
+  createSelector([selectBalanceForAllWallets], (allBalances) => {
+    const wallet = allBalances.wallets[walletId] ?? null;
+    const { userCurrency } = allBalances;
+
+    if (!wallet) {
+      return {
+        walletId,
+        totalBalanceInUserCurrency: 0,
+        userCurrency,
+        groups: {},
+      };
+    }
+
+    return {
+      walletId,
+      totalBalanceInUserCurrency: wallet.totalBalanceInUserCurrency,
+      userCurrency,
+      groups: wallet.groups,
+    };
+  });
+
+export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
+  ({ metamask }) => {
+    const initialState = {
+      accountTree: metamask.accountTree,
+      internalAccounts: metamask.internalAccounts,
+      allTokens: metamask.allTokens,
+      allIgnoredTokens: metamask.allIgnoredTokens,
+      tokenBalances: metamask.tokenBalances,
+      marketData: metamask.marketData,
+      currencyRates: metamask.currencyRates,
+      currentCurrency: metamask.currentCurrency,
+      networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
+      accountsByChainId: metamask.accountsByChainId,
+    };
+
+    let multichainState = {
+      accountsAssets: {},
+      assetsMetadata: {},
+      balances: {},
+      conversionRates: {},
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    multichainState = {
+      accountsAssets: metamask.accountsAssets,
+      assetsMetadata: metamask.assetsMetadata,
+      balances: metamask.balances,
+      conversionRates: metamask.conversionRates,
+    };
+    ///: END:ONLY_INCLUDE_IF
+
+    return {
+      ...initialState,
+      ...multichainState,
+    };
+  },
+  (assetListState: AssetListState) =>
+    selectAssetsBySelectedAccountGroup(assetListState),
 );
