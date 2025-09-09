@@ -28,8 +28,8 @@ export const AmountRecipient = () => {
   const { amountError } = useAmountValidation();
   const { recipientError } = useRecipientValidation();
 
-  const isDisabled = Boolean(amountError) || Boolean(recipientError) || !to;
   const hasError = Boolean(amountError) || Boolean(recipientError);
+  const isDisabled = hasError || !to;
 
   const onClick = useCallback(() => {
     handleSubmit();
