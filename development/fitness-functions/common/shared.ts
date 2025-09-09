@@ -18,8 +18,8 @@ function filterDiffByFilePath(diff: string, regex: RegExp): string {
         // if at least one of the two paths matches the regex, filter the
         // corresponding diff block in
         .forEach((path) => {
-          // If at least one of the paths MATCHES the regex, include this block
-          if (regex.test(path)) {
+          if (!regex.test(path)) {
+            // Not excluded, include in check
             shouldCheckBlock = true;
           }
         });
