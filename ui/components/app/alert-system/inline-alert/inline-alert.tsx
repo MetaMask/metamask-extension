@@ -1,21 +1,12 @@
 import React from 'react';
 import classnames from 'classnames';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { Box, Icon, IconName, IconSize } from '../../../component-library';
 import {
   AlignItems,
   BorderRadius,
   Display,
   Severity,
-  TextColor,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type InlineAlertProps = {
   /** The onClick handler for the inline alerts */
@@ -33,8 +24,6 @@ export default function InlineAlert({
   severity = Severity.Info,
   style,
 }: InlineAlertProps) {
-  const t = useI18nContext();
-
   return (
     <Box>
       <Box
