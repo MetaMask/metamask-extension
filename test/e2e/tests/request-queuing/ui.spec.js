@@ -404,7 +404,12 @@ describe('Request-queue UI changes', function () {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .withNetworkControllerOnMainnet()
           .build(),
         localNodeOptions: [
           {
@@ -430,23 +435,13 @@ describe('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
 
-        // await driver.delay(500000);
-
         // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
-
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
-
         // Open Network Manager and delete custom network
+        const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
 
@@ -613,8 +608,7 @@ describe('Request-queue UI changes', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-              '0x2105': true,
-              '0xe708': true,
+              '0x539': true,
             },
           })
           .build(),
@@ -654,12 +648,6 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        // Check if Ethereum Mainnet is selected
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
 
         // Kill local node servers
         await localNodes[0].quit();
