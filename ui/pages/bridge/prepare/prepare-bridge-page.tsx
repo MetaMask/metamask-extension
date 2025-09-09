@@ -257,11 +257,33 @@ const PrepareBridgePage = ({
     useState(false);
 
   useEffect(() => {
-    if (fromChain?.chainId) {
-      isSendBundleSupported(fromChain.chainId as Hex).then(
-        setIsSendBundleSupportedForChain,
-      );
-    }
+    let isCancelled = false;
+
+    const checkSendBundleSupport = async () => {
+      if (fromChain?.chainId) {
+        try {
+          const isSupported = await isSendBundleSupported(
+            fromChain.chainId as Hex,
+          );
+          if (!isCancelled) {
+            setIsSendBundleSupportedForChain(isSupported);
+          }
+        } catch (error) {
+          if (!isCancelled) {
+            console.error('Error checking send bundle support:', error);
+            setIsSendBundleSupportedForChain(false);
+          }
+        }
+      } else if (!isCancelled) {
+        setIsSendBundleSupportedForChain(false);
+      }
+    };
+
+    checkSendBundleSupport();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [fromChain?.chainId]);
 
   const keyring = useSelector(getCurrentKeyring);

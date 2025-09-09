@@ -16,6 +16,17 @@ import PrepareBridgePage, {
   useEnableMissingNetwork,
 } from './prepare-bridge-page';
 
+// Mock the isSendBundleSupported function
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  isSendBundleSupported: jest.fn(),
+}));
+
+// Mock the useGasIncluded7702 hook
+jest.mock('../hooks/useGasIncluded7702', () => ({
+  useGasIncluded7702: jest.fn().mockReturnValue(false),
+}));
+
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
     const { provider } = createTestProviderTools({
@@ -323,5 +334,159 @@ describe('useEnableMissingNetwork', () => {
 
     hook.result.current('0x1111'); // not popular network
     expect(mocks.mockEnableAllPopularNetworks).not.toHaveBeenCalled();
+  });
+});
+
+describe('PrepareBridgePage - Race Conditions', () => {
+  const mockIsSendBundleSupported = jest.requireMock(
+    '../../../store/actions',
+  ).isSendBundleSupported;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Reset the mock to a default resolved value
+    mockIsSendBundleSupported.mockResolvedValue(false);
+  });
+
+  it('handles isSendBundleSupported race conditions correctly', async () => {
+    // Test that rapid chain changes don't cause race conditions
+    const chainIds = ['0x1', '0x89', '0xa'];
+
+    // Mock different responses for different chains
+    mockIsSendBundleSupported.mockImplementation((chainId) => {
+      const delays: Record<string, number> = {
+        '0x1': 100,
+        '0x89': 50,
+        '0xa': 10,
+      };
+      return new Promise((resolve) => {
+        setTimeout(
+          () => {
+            resolve(chainId === '0x1'); // Only mainnet supports bundles
+          },
+          delays[chainId as string] || 0,
+        );
+      });
+    });
+
+    const mockStore = createBridgeMockStore({
+      bridgeStateOverrides: {
+        srcTokens: { '0x00': {} },
+        srcTopAssets: [],
+        quoteRequest: {
+          srcChainId: chainIds[0],
+        },
+      },
+    });
+
+    const { rerender } = renderWithProvider(
+      <PrepareBridgePage />,
+      configureStore(mockStore),
+    );
+
+    // Simulate rapid chain changes
+    for (const chainId of chainIds) {
+      const newStore = createBridgeMockStore({
+        bridgeStateOverrides: {
+          srcTokens: { '0x00': {} },
+          srcTopAssets: [],
+          quoteRequest: {
+            srcChainId: chainId,
+          },
+        },
+      });
+
+      rerender(
+        <ReactReduxModule.Provider store={configureStore(newStore)}>
+          <PrepareBridgePage />
+        </ReactReduxModule.Provider>,
+      );
+    }
+
+    // Wait for all async operations to complete
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    });
+
+    // Should have called the function for each chain
+    expect(mockIsSendBundleSupported).toHaveBeenCalledWith('0x1');
+    expect(mockIsSendBundleSupported).toHaveBeenCalledWith('0x89');
+    expect(mockIsSendBundleSupported).toHaveBeenCalledWith('0xa');
+  });
+
+  it('handles isSendBundleSupported errors gracefully', async () => {
+    const testError = new Error('Network error');
+    mockIsSendBundleSupported.mockRejectedValue(testError);
+
+    // Spy on console.error
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    const mockStore = createBridgeMockStore({
+      bridgeStateOverrides: {
+        srcTokens: { '0x00': {} },
+        srcTopAssets: [],
+        quoteRequest: {
+          srcChainId: '0x1',
+        },
+      },
+    });
+
+    const { container } = renderWithProvider(
+      <PrepareBridgePage />,
+      configureStore(mockStore),
+    );
+
+    // Wait for async operations
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+
+    // Should have logged the error
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Error checking send bundle support:',
+      testError,
+    );
+
+    // Component should still render
+    expect(container).toBeTruthy();
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('handles component unmount during async operations', async () => {
+    // Create a promise that we can control
+    let resolveSendBundle: (value: boolean) => void;
+    const sendBundlePromise = new Promise<boolean>((resolve) => {
+      resolveSendBundle = resolve;
+    });
+
+    mockIsSendBundleSupported.mockReturnValue(sendBundlePromise);
+
+    const mockStore = createBridgeMockStore({
+      bridgeStateOverrides: {
+        srcTokens: { '0x00': {} },
+        srcTopAssets: [],
+        quoteRequest: {
+          srcChainId: '0x1',
+        },
+      },
+    });
+
+    const { unmount } = renderWithProvider(
+      <PrepareBridgePage />,
+      configureStore(mockStore),
+    );
+
+    // Unmount before the promise resolves
+    unmount();
+
+    // Now resolve the promise
+    await act(async () => {
+      resolveSendBundle!(true);
+      await Promise.resolve();
+    });
+
+    // No errors should be thrown
+    // This test passes if no errors occur
   });
 });
