@@ -43,7 +43,7 @@ const hasConnectedAccounts = (
  * @param requestedChainIds - Array of requested chain IDs to match against
  * @returns True if any account in the group supports the requested chain IDs
  */
-const supportsChainIds = (
+export const supportsChainIds = (
   accountGroup: AccountGroupWithInternalAccounts,
   requestedChainIds: CaipChainId[],
 ): boolean => {
@@ -59,7 +59,7 @@ const supportsChainIds = (
  * @param requestedNamespaces - Set of requested namespaces to match against
  * @returns True if any account in the group supports the requested namespaces
  */
-const supportsNamespaces = (
+export const supportsNamespaces = (
   accountGroup: AccountGroupWithInternalAccounts,
   requestedNamespaces: Set<CaipNamespace>,
 ): boolean => {
@@ -75,7 +75,7 @@ const supportsNamespaces = (
  * @param requestedAccountIds - Array of requested account IDs to match against
  * @returns True if any account in the group matches the requested account IDs
  */
-const hasRequestedAccountIds = (
+export const hasRequestedAccountIds = (
   accountGroup: AccountGroupWithInternalAccounts,
   requestedAccountIds: CaipAccountId[],
 ): boolean => {
