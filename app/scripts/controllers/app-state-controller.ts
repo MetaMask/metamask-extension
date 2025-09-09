@@ -205,6 +205,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showPermissionsTour: true,
   showNetworkBanner: true,
   showAccountBanner: true,
+  productTour: 'accountIcon',
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
