@@ -95,7 +95,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
+      '?Bridged to OPTransaction 2 of 2-2 USDC',
     );
   });
 
@@ -130,7 +130,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC-USD 0.00',
+      '?Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
     );
   });
 
@@ -158,7 +158,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetConfirmed-2 USDC',
+      '?Bridged to OPConfirmed-2 USDC',
     );
 
     fireEvent.click(getByTestId('activity-list-item'));
@@ -200,7 +200,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetFailed-2 USDC',
+      '?Bridged to OPFailed-2 USDC',
     );
     expect(getByText('Failed')).toBeInTheDocument();
 

@@ -296,7 +296,7 @@ describe('network utils', () => {
       },
       '0x38': {
         chainId: '0x38',
-        name: 'Binance Smart Chain Mainnet',
+        name: 'BNB Chain',
         nativeCurrency: 'BNB',
         rpcEndpoints: [
           {
@@ -311,7 +311,7 @@ describe('network utils', () => {
       },
       '0x89': {
         chainId: '0x89',
-        name: 'Polygon Mainnet',
+        name: 'Polygon',
         nativeCurrency: 'MATIC',
         rpcEndpoints: [
           {

@@ -135,7 +135,7 @@ describe(`migration #${version}`, () => {
                 defaultRpcEndpointIndex: 0,
                 blockExplorerUrls: ['https://lineascan.build'],
                 defaultBlockExplorerUrlIndex: 0,
-                name: 'Linea Mainnet',
+                name: 'Linea',
                 nativeCurrency: 'ETH',
               },
             },

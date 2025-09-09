@@ -374,7 +374,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: 'Polygon',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -1935,7 +1935,7 @@ class FixtureBuilder {
       networkConfigurations: {
         'op-mainnet': {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'OP Mainnet',
+          nickname: 'OP',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.optimism.io',
           ticker: 'ETH',
@@ -1943,7 +1943,7 @@ class FixtureBuilder {
         },
         'polygon-mainnet': {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: 'Polygon',
           rpcPrefs: {},
           rpcUrl: 'https://polygon-rpc.com',
           ticker: 'MATIC',
@@ -1951,7 +1951,7 @@ class FixtureBuilder {
         },
         'arbitrum-one': {
           chainId: CHAIN_IDS.ARBITRUM,
-          nickname: 'Arbitrum One',
+          nickname: 'Arbitrum',
           rpcPrefs: {},
           rpcUrl: 'https://arb1.arbitrum.io/rpc',
           ticker: 'ETH',
@@ -1959,7 +1959,7 @@ class FixtureBuilder {
         },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
-          nickname: 'Avalanche Network C-Chain',
+          nickname: 'Avalanche',
           rpcPrefs: {},
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',

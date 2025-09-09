@@ -81,7 +81,7 @@ describe('migration #96', () => {
     const networkConfigurations = {
       'network-configuration-id-1': {
         chainId: '0xa4b1',
-        nickname: 'Arbitrum One',
+        nickname: 'Arbitrum',
         rpcPrefs: {
           blockExplorerUrl: 'https://explorer.arbitrum.io',
         },

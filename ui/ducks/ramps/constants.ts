@@ -25,7 +25,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 56,
-    chainName: 'BNB Chain Mainnet',
+    chainName: 'BNB Chain',
     shortName: 'BNB Chain',
     nativeTokenSupported: true,
   },
@@ -39,7 +39,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 137,
-    chainName: 'Polygon Mainnet',
+    chainName: 'Polygon',
     shortName: 'Polygon',
     nativeTokenSupported: true,
   },
@@ -81,7 +81,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 8453,
-    chainName: 'Base Mainnet',
+    chainName: 'Base',
     shortName: 'Base',
     nativeTokenSupported: true,
   },

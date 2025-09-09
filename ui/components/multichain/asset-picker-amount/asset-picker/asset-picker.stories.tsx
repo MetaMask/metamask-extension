@@ -141,7 +141,7 @@ const networkProps = {
     },
     {
       chainId: CHAIN_IDS.LINEA_MAINNET,
-      name: 'Linea Mainnet Test Name',
+      name: 'Linea Test Name',
       blockExplorerUrls: [],
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [

@@ -70,7 +70,7 @@ describe('Block Explorer Tests', () => {
       expect(result).toBe(expectedUrl);
     });
 
-    it('returns the correct account URL for Binance Smart Chain', () => {
+    it('returns the correct account URL for BNB Chain', () => {
       const address = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
       const expectedUrl = `https://mempool.space/address/${address}`;
 

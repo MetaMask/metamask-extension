@@ -54,10 +54,7 @@ describe('Switch network - ', function (this: Suite) {
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(
-          driver,
-          'Arbitrum One',
-        );
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum Mainnet

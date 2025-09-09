@@ -57,7 +57,7 @@ export const WithLongNetworkName: Story = {
 export const ArbitrumNetwork: Story = {
   args: {
     chainId: '0xa4b1',
-    networkName: 'Arbitrum One',
+    networkName: 'Arbitrum',
     address: '0x0123456789abcdef0123456789abcdef01234567',
     className: '',
   },
@@ -75,7 +75,7 @@ export const OptimismNetwork: Story = {
 export const PolygonNetwork: Story = {
   args: {
     chainId: '0x89',
-    networkName: 'Polygon Mainnet',
+    networkName: 'Polygon',
     address: '0xfedcba0987654321fedcba0987654321fedcba09',
     className: '',
   },

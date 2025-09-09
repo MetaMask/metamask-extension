@@ -19,7 +19,7 @@ export const FIXTURES_NETWORKS = {
     optimism: {
       chainId: '0xa',
       id: 'optimism',
-      nickname: 'OP Mainnet',
+      nickname: 'OP',
       rpcPrefs: {
         blockExplorerUrl: 'https://optimistic.etherscan.io/',
         imageUrl: './images/optimism.svg',
@@ -30,7 +30,7 @@ export const FIXTURES_NETWORKS = {
     base: {
       chainId: '0x2105',
       id: 'base',
-      nickname: 'Base Mainnet',
+      nickname: 'Base',
       rpcPrefs: {
         blockExplorerUrl: 'https://basescan.org',
         imageUrl: './images/base.svg',
@@ -41,7 +41,7 @@ export const FIXTURES_NETWORKS = {
     polygon: {
       chainId: '0x89',
       id: 'polygon',
-      nickname: 'Polygon Mainnet',
+      nickname: 'Polygon',
       rpcPrefs: {
         blockExplorerUrl: 'https://polygonscan.com/',
         imageUrl: './images/matic-token.svg',
@@ -76,7 +76,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/',
       chainId: '0xa4b1',
       ticker: 'ETH',
-      nickname: 'Arbitrum One',
+      nickname: 'Arbitrum',
       rpcPrefs: {
         blockExplorerUrl: 'https://explorer.arbitrum.io',
         imageUrl: './images/arbitrum.svg',
@@ -87,7 +87,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://avalanche-mainnet.infura.io/v3/',
       chainId: '0xa86a',
       ticker: 'AVAX',
-      nickname: 'Avalanche Network C-Chain',
+      nickname: 'Avalanche',
       rpcPrefs: {
         blockExplorerUrl: 'https://snowtrace.io/',
         imageUrl: './images/avax-token.svg',

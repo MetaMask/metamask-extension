@@ -1976,7 +1976,7 @@ export const networkList = [
     chainId: '0x38',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: false,
-    label: 'Binance Smart Chain',
+    label: 'BNB Chain',
     providerType: 'rpc',
     rpcUrl: 'https://bsc-dataseed.binance.org/',
     ticker: 'BNB',

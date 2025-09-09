@@ -186,7 +186,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <img
-                    alt="OP Mainnet logo"
+                    alt="OP logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
                   />
@@ -197,7 +197,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="OP Mainnet"
+                    data-testid="OP"
                   >
                     <div
                       class="multichain-network-list-item__tooltip"
@@ -212,7 +212,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                           class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                           tabindex="0"
                         >
-                          OP Mainnet
+                          OP
                         </p>
                       </div>
                     </div>
@@ -361,7 +361,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <img
-                    alt="OP Mainnet logo"
+                    alt="OP logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
                   />
@@ -372,7 +372,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="OP Mainnet"
+                    data-testid="OP"
                   >
                     <div
                       class="multichain-network-list-item__tooltip"
@@ -387,7 +387,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                           class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                           tabindex="0"
                         >
-                          OP Mainnet
+                          OP
                         </p>
                       </div>
                     </div>

@@ -143,7 +143,7 @@ describe('SiteCellTooltip', () => {
         chainId: '0x38',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Binance Smart Chain',
+        name: 'BNB Chain',
         nativeCurrency: 'BNB',
         rpcEndpoints: [
           {
@@ -163,7 +163,7 @@ describe('SiteCellTooltip', () => {
         nativeCurrency: 'POL',
         rpcEndpoints: [
           {
-            name: 'Polygon Mainnet',
+            name: 'Polygon',
             networkClientId: 'cf19f0de-8a83-468c-ad97-49b855a2ca9e',
             type: 'custom',
             url: 'https://polygon-mainnet.infura.io/v3/{infuraProjectId}',
@@ -175,7 +175,7 @@ describe('SiteCellTooltip', () => {
         chainId: '0xe708',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Linea Mainnet',
+        name: 'Linea',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
