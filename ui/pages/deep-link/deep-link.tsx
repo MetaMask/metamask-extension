@@ -74,6 +74,7 @@ function set404(
  * @param setTitle - The function to call to set the title state.
  * @param setCta - The function to call to set the call-to-action state.
  * @param t - The translation function.
+ * @param abortController
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -84,12 +85,16 @@ async function updateStateFromUrl(
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
   setCta: React.Dispatch<React.SetStateAction<string | null>>,
   t: TranslateFunction,
+  abortController: AbortController,
 ) {
   try {
     const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
     const url = new URL(fullUrlStr);
     setIsLoading(true);
     const parsed = await parse(url);
+    if (abortController.signal.aborted) {
+      return;
+    }
     if (parsed) {
       const { destination } = parsed;
 
@@ -120,6 +125,9 @@ async function updateStateFromUrl(
       setCta(t('deepLink_GoToTheHomePageButton'));
 
       const signature = await verify(url);
+      if (abortController.signal.aborted) {
+        return;
+      }
       if (signature === VALID) {
         setExtraDescription(
           t('deepLink_Error404_CTA', [
@@ -235,7 +243,7 @@ export const DeepLink = () => {
         return;
       }
 
-      updateStateFromUrl(
+      await updateStateFromUrl(
         urlStr,
         setDescription,
         setExtraDescription,
@@ -244,6 +252,7 @@ export const DeepLink = () => {
         setTitle,
         setCta,
         t,
+        abortController,
       );
     };
 
