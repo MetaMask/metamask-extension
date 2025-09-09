@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
-  },
   "alertMessageNoGasPrice": {
     "message": "Wir können mit dieser Transaktion nicht fortfahren, bis Sie die Gebühr manuell aktualisieren."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Unnötige Genehmigung"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Netzwerk ist ausgelastet"
   },
   "alertReasonNoGasPrice": {
     "message": "Gebührenschätzung nicht verfügbar"
@@ -7231,15 +7225,6 @@
   },
   "welcomeBack": {
     "message": "Willkommen zurück"
-  },
-  "welcomeDescription": {
-    "message": "MetaMask ist eine sichere Wallet, die die Welt von web3 für alle zugänglich macht und das Vertrauen von Millionen genießt."
-  },
-  "welcomeGetStarted": {
-    "message": "Erste Schritte"
-  },
-  "welcomeTitle": {
-    "message": "Willkommen bei MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Los geht's"

@@ -414,9 +414,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de rede."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Os preços do gás são altos e as estimativas são menos precisas."
-  },
   "alertMessageNoGasPrice": {
     "message": "Não podemos prosseguir com essa transação até você atualizar manualmente a taxa."
   },
@@ -461,9 +458,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Permissão desnecessária"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Rede ocupada"
   },
   "alertReasonNoGasPrice": {
     "message": "Estimativa de taxa indisponível"
@@ -7181,15 +7175,6 @@
   },
   "welcomeBack": {
     "message": "Boas-vindas de volta"
-  },
-  "welcomeDescription": {
-    "message": "Aprovada por milhões de pessoas, a MetaMask é uma carteira segura que torna o mundo da web3 acessível a todos."
-  },
-  "welcomeGetStarted": {
-    "message": "Começar"
-  },
-  "welcomeTitle": {
-    "message": "Boas-vindas à MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Vamos começar"

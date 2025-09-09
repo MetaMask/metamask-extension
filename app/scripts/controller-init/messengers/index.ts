@@ -53,8 +53,16 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
 } from './accounts';
-import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
+import {
+  getOAuthServiceMessenger,
+  getSeedlessOnboardingControllerMessenger,
+  getSeedlessOnboardingControllerInitMessenger,
+} from './seedless-onboarding';
 import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
+import {
+  getShieldControllerInitMessenger,
+  getShieldControllerMessenger,
+} from './shield/shield-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -109,13 +117,21 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getNotificationServicesPushControllerMessenger,
     getInitMessenger: noop,
   },
+  OAuthService: {
+    getMessenger: getOAuthServiceMessenger,
+    getInitMessenger: noop,
+  },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
   },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
+  },
+  ShieldController: {
+    getMessenger: getShieldControllerMessenger,
+    getInitMessenger: getShieldControllerInitMessenger,
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,

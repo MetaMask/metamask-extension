@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "您的账户中没有足够的 $1 来支付网络费用。"
   },
-  "alertMessageNetworkBusy": {
-    "message": "燃料价格很高，估算不太准确。"
-  },
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "非必要权限"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "网络繁忙"
   },
   "alertReasonNoGasPrice": {
     "message": "无法使用费用估算"
@@ -7231,15 +7225,6 @@
   },
   "welcomeBack": {
     "message": "欢迎回来"
-  },
-  "welcomeDescription": {
-    "message": "广受数百万人信赖的 MetaMask 是一款安全钱包，让每个人都能轻松进入 Web3 的世界。"
-  },
-  "welcomeGetStarted": {
-    "message": "开始使用"
-  },
-  "welcomeTitle": {
-    "message": "欢迎使用 MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"

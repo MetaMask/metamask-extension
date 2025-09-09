@@ -138,6 +138,10 @@ class TestDapp {
   private readonly maliciousERC20TransferButton =
     '#maliciousERC20TransferButton';
 
+  private readonly maliciousEthTransferButton = '#maliciousRawEthButton';
+
+  private readonly maliciousTradeOrderButton = '#maliciousTradeOrder';
+
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
@@ -245,6 +249,21 @@ class TestDapp {
   constructor(driver: Driver) {
     this.driver = driver;
   }
+
+  private readonly networkSelector = (networkId: string) => ({
+    testId: 'chainId',
+    text: networkId,
+  });
+
+  private readonly networkHost = (host: string) => ({
+    css: 'p',
+    text: host,
+  });
+
+  private readonly connectDappButton = {
+    text: 'Connect',
+    tag: 'button',
+  };
 
   /**
    * Sends a JSON-RPC request to the connected wallet using window.ethereum.
@@ -735,6 +754,24 @@ class TestDapp {
     await this.driver.clickElement(this.connectAccountButton);
   }
 
+  async clickConnectAccountButtonAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.connectDappButton,
+    );
+  }
+
+  async clickRevokePermissionButton() {
+    await this.driver.clickElement(this.revokePermissionButton);
+  }
+
+  async checkDappIsNotConnectedToNetwork(networkId: string) {
+    await this.driver.assertElementNotPresent(this.networkSelector(networkId));
+  }
+
+  async checkDappHostNetwork(host: string) {
+    await this.driver.waitForSelector(this.networkHost(host));
+  }
+
   async clickApproveTokens() {
     await this.driver.clickElement(this.approveTokensButton);
   }
@@ -895,6 +932,14 @@ class TestDapp {
     await this.driver.clickElement(this.maliciousContractInteractionButton);
   }
 
+  async clickMaliciousEthTransferButton() {
+    await this.driver.clickElement(this.maliciousEthTransferButton);
+  }
+
+  async clickMaliciousTradeOrderButton() {
+    await this.driver.clickElement(this.maliciousTradeOrderButton);
+  }
+
   /**
    * Connect account to test dapp.
    *
@@ -982,11 +1027,7 @@ class TestDapp {
   /**
    * Scrolls to the create token button and clicks it.
    */
-  async findAndClickCreateToken() {
-    const createTokenElement = await this.driver.findElement(
-      this.createTokenButton,
-    );
-    await this.driver.scrollToElement(createTokenElement);
+  async clickCreateToken() {
     await this.driver.clickElement(this.createTokenButton);
   }
 

@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "계정에 네트워크 수수료를 지불할 만큼의 $1(이)가 부족합니다."
   },
-  "alertMessageNetworkBusy": {
-    "message": "가스비가 높고 견적의 정확도도 떨어집니다."
-  },
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "불필요한 승인"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "네트워크 혼잡"
   },
   "alertReasonNoGasPrice": {
     "message": "수수료 견적 제공 불가"
@@ -7231,15 +7225,6 @@
   },
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
-  },
-  "welcomeDescription": {
-    "message": "수백만 명이 신뢰하는 MetaMask는 모두가 웹3 세상에 접근할 수 있도록 돕는 안전한 지갑입니다."
-  },
-  "welcomeGetStarted": {
-    "message": "시작하기"
-  },
-  "welcomeTitle": {
-    "message": "MetaMask에 오신 것을 환영합니다"
   },
   "welcomeToMetaMask": {
     "message": "시작하기"

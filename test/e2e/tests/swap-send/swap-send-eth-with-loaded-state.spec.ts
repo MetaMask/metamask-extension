@@ -45,7 +45,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/token/1')
+      .forGet('https://bridge.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -107,7 +107,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/v2/networks/1/quotes')
+      .forGet('https://bridge.api.cx.metamask.io/v2/networks/1/quotes')
       .thenCallback(() => ({
         statusCode: 200,
         json: [
@@ -143,7 +143,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {

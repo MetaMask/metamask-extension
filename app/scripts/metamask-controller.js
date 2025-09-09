@@ -129,9 +129,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolScope,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   hasProperty,
@@ -156,6 +154,12 @@ import {
   MultichainApiNotifications,
   walletCreateSession,
 } from '@metamask/multichain-api-middleware';
+
+import {
+  getCallsStatus,
+  getCapabilities,
+  processSendCalls,
+} from '@metamask/eip-5792-middleware';
 
 import {
   Caip25CaveatMutators,
@@ -263,12 +267,13 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import {
+  getIsSeedlessOnboardingFeatureEnabled,
+  isGatorPermissionsFeatureEnabled,
+} from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
@@ -411,11 +416,6 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import {
-  getCallsStatus,
-  getCapabilities,
-  processSendCalls,
-} from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
@@ -429,14 +429,18 @@ import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 import { qrKeyringBuilderFactory } from './lib/qr-keyring-builder-factory';
 import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
-import OAuthService from './services/oauth/oauth-service';
-import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
-import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
+import {
+  OAuthServiceInit,
+  SeedlessOnboardingControllerInit,
+} from './controller-init/seedless-onboarding';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
+import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
+
+import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1114,20 +1118,6 @@ export default class MetamaskController extends EventEmitter {
     this.onboardingController = new OnboardingController({
       messenger: onboardingControllerMessenger,
       state: initState.OnboardingController,
-    });
-
-    this.oauthService = new OAuthService({
-      env: {
-        googleClientId: process.env.GOOGLE_CLIENT_ID,
-        appleClientId: process.env.APPLE_CLIENT_ID,
-      },
-      webAuthenticator: webAuthenticatorFactory(),
-      bufferedTrace: this.metaMetricsController.bufferedTrace.bind(
-        this.metaMetricsController,
-      ),
-      bufferedEndTrace: this.metaMetricsController.bufferedEndTrace.bind(
-        this.metaMetricsController,
-      ),
     });
 
     const keyringOverrides = this.opts.overrides?.keyrings;
@@ -1844,9 +1834,40 @@ export default class MetamaskController extends EventEmitter {
         const { useExternalServices: currUseExternalServices } = currState;
         if (currUseExternalServices && !prevUseExternalServices) {
           this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController.updateRemoteFeatureFlags();
+          this.remoteFeatureFlagController
+            .updateRemoteFeatureFlags()
+            .catch((error) => {
+              console.error('Failed to update remote feature flags:', error);
+            });
         } else if (!currUseExternalServices && prevUseExternalServices) {
           this.remoteFeatureFlagController.disable();
+        }
+      }, this.preferencesController.state),
+    );
+
+    // MultichainAccountService has subscription for preferences changes
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        if (prevUseExternalServices !== currUseExternalServices) {
+          // Set basic functionality and trigger alignment when enabled
+          // This single call handles both provider disable/enable and alignment
+          // Only call if MultichainAccountService is available (multichain builds)
+          if (this.multichainAccountService) {
+            this.controllerMessenger
+              .call(
+                'MultichainAccountService:setBasicFunctionality',
+                currUseExternalServices,
+              )
+              .catch((error) => {
+                console.error(
+                  'Failed to set basic functionality on MultichainAccountService:',
+                  error,
+                );
+              });
+          }
         }
       }, this.preferencesController.state),
     );
@@ -1939,8 +1960,10 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
+      OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
+      ShieldController: ShieldControllerInit,
     };
 
     const {
@@ -1996,9 +2019,11 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
+    this.oauthService = controllersByName.OAuthService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
+    this.shieldController = controllersByName.ShieldController;
 
     this.getSecurityAlertsConfig = () => {
       return async (url) => {
@@ -2035,6 +2060,7 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
     this.controllerMessenger.subscribe(
       'NotificationServicesPushController:pushNotificationClicked',
       (notification) => {
@@ -2154,6 +2180,12 @@ export default class MetamaskController extends EventEmitter {
         },
         this.controllerMessenger,
       ),
+      processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
+        ? forwardRequestToSnap.bind(null, {
+            snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
+            handleRequest: this.handleSnapRequest.bind(this),
+          })
+        : undefined,
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -2276,6 +2308,7 @@ export default class MetamaskController extends EventEmitter {
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
         PhishingController: this.phishingController,
+        ShieldController: this.shieldController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -2359,7 +2392,7 @@ export default class MetamaskController extends EventEmitter {
   // initial rollout, such that we can remotely modify polling interval
   getInfuraFeatureFlags() {
     fetchWithCache({
-      url: 'https://swap.api.cx.metamask.io/featureFlags',
+      url: 'https://bridge.api.cx.metamask.io/featureFlags',
       cacheRefreshTime: MINUTE * 20,
     })
       .then(this.onFeatureFlagResponseReceived)
@@ -3675,6 +3708,10 @@ export default class MetamaskController extends EventEmitter {
       getTokenSymbol: this.getTokenSymbol.bind(this),
       getTokenStandardAndDetailsByChain:
         this.getTokenStandardAndDetailsByChain.bind(this),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -5542,28 +5579,17 @@ export default class MetamaskController extends EventEmitter {
         ? { id: keyringId }
         : { type: KeyringTypes.hd };
 
-      const {
-        accounts,
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        entropySource,
-        ///: END:ONLY_INCLUDE_IF
-      } = await this.keyringController.withKeyring(
-        keyringSelector,
-        async ({
-          keyring,
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          metadata,
-          ///: END:ONLY_INCLUDE_IF
-        }) => {
-          const keyringAccounts = await keyring.getAccounts();
-          return {
-            accounts: keyringAccounts,
-            ///: BEGIN:ONLY_INCLUDE_IF(solana)
-            entropySource: metadata.id,
-            ///: END:ONLY_INCLUDE_IF
-          };
-        },
-      );
+      const { accounts, entropySource } =
+        await this.keyringController.withKeyring(
+          keyringSelector,
+          async ({ keyring, metadata }) => {
+            const keyringAccounts = await keyring.getAccounts();
+            return {
+              accounts: keyringAccounts,
+              entropySource: metadata.id,
+            };
+          },
+        );
       let address = accounts[accounts.length - 1];
 
       for (let count = accounts.length; ; count++) {
@@ -5629,7 +5655,6 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
       if (shouldImportSolanaAccount) {
         const solanaClient = await this._getMultichainWalletSnapClient(
           SOLANA_WALLET_SNAP_ID,
@@ -5649,7 +5674,7 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       }
-      ///: END:ONLY_INCLUDE_IF
+
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -6384,7 +6409,7 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
+   * @returns {string[]} The origin's permitted accounts, or an empty
    * array.
    */
   getPermittedAccounts(origin) {
@@ -7383,7 +7408,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       setActiveNetwork: async (networkClientId) => {
-        await this.networkController.setActiveNetwork(networkClientId);
         // if the origin has the CAIP-25 permission
         // we set per dapp network selection state
         if (
@@ -7396,6 +7420,8 @@ export default class MetamaskController extends EventEmitter {
             origin,
             networkClientId,
           );
+        } else {
+          await this.networkController.setActiveNetwork(networkClientId);
         }
       },
       getNetworkConfigurationByChainId:
@@ -9444,11 +9470,6 @@ export default class MetamaskController extends EventEmitter {
       trackEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
-      refreshOAuthToken: this.oauthService.getNewRefreshToken.bind(
-        this.oauthService,
-      ),
-      revokeAndGetNewRefreshToken:
-        this.oauthService.revokeAndGetNewRefreshToken.bind(this.oauthService),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
