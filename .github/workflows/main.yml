@@ -435,7 +435,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     needs:
-      - all-jobs-completed
       - needs-e2e
       - e2e-chrome
       - e2e-firefox
