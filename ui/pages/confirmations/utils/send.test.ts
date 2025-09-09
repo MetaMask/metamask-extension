@@ -17,6 +17,7 @@ import {
   navigateToSendRoute,
   getLayer1GasFees,
   trimTrailingZeros,
+  removeAdditionalDecimalPlaces,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -180,13 +181,34 @@ describe('Send - utils', () => {
 
   describe('convertedCurrency', () => {
     it('return undefined for invalid input value', () => {
-      expect(convertedCurrency('abc', 15)).not.toBeDefined();
-      expect(convertedCurrency('-10', 15)).not.toBeDefined();
+      expect(convertedCurrency('abc', 15, 2)).not.toBeDefined();
+      expect(convertedCurrency('-10', 15, 4)).not.toBeDefined();
     });
 
     it('apply conversion rate to a currency', () => {
-      expect(convertedCurrency('10.100', 15)).toBe('151.5');
-      expect(convertedCurrency('250', 0.001)).toBe('0.25');
+      expect(convertedCurrency('10.100125', 15, 2)).toBe('151.5');
+      expect(convertedCurrency('10.111125', 15, 2)).toBe('151.66');
+      expect(convertedCurrency('250', 0.00001, 4)).toBe('0.0025');
+    });
+  });
+
+  describe('removeAdditionalDecimalPlaces', () => {
+    it('return undefined is value is not defined', () => {
+      expect(
+        removeAdditionalDecimalPlaces(undefined as unknown as string, 2),
+      ).not.toBeDefined();
+      expect(
+        removeAdditionalDecimalPlaces(null as unknown as string, 2),
+      ).not.toBeDefined();
+      expect(removeAdditionalDecimalPlaces('', 2)).not.toBeDefined();
+    });
+
+    it('remove additional decimal places', () => {
+      expect(removeAdditionalDecimalPlaces('100.12345', 0)).toEqual('100');
+      expect(removeAdditionalDecimalPlaces('100.12345', 2)).toEqual('100.12');
+      expect(removeAdditionalDecimalPlaces('100.12345', 8)).toEqual(
+        '100.12345',
+      );
     });
   });
 

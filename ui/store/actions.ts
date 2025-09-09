@@ -2886,15 +2886,15 @@ export async function getNFTContractInfo(
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
+export type TokenStandAndDetails = Awaited<
+  ReturnType<AssetsContractController['getTokenStandardAndDetails']>
+> & { balance?: string };
+
 export async function getTokenStandardAndDetails(
   address: string,
   userAddress?: string,
   tokenId?: string,
-): Promise<
-  Awaited<
-    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
-  > & { balance?: string }
-> {
+): Promise<TokenStandAndDetails> {
   return await submitRequestToBackground('getTokenStandardAndDetails', [
     address,
     userAddress,
@@ -2907,11 +2907,7 @@ export async function getTokenStandardAndDetailsByChain(
   userAddress?: string,
   tokenId?: string,
   chainId?: string,
-): Promise<
-  Awaited<
-    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
-  > & { balance?: string }
-> {
+): Promise<TokenStandAndDetails> {
   return await submitRequestToBackground('getTokenStandardAndDetailsByChain', [
     address,
     userAddress,
@@ -4881,6 +4877,28 @@ export function setEnabledNetworks(
     await submitRequestToBackground('setEnabledNetworks', [
       chainIds,
       networkId,
+    ]);
+  };
+}
+
+/**
+ * Sets the enabled networks in the controller state with multichain account behavior.
+ * This method updates the enabledNetworkMap to mark specified networks as enabled
+ * and disables all networks in other namespaces (multichain account exclusive behavior).
+ * It can handle both a single chain ID or an array of chain IDs.
+ *
+ * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
+ * to be enabled. All other networks will be implicitly disabled.
+ * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
+ */
+export function setEnabledNetworksMultichain(
+  chainIds: string[],
+  namespace: CaipNamespace,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setEnabledNetworksMultichain', [
+      chainIds,
+      namespace,
     ]);
   };
 }
@@ -7122,6 +7140,16 @@ export async function getERC1155BalanceOf(
     userAddress,
     tokenAddress,
     tokenId,
+    networkClientId,
+  ]);
+}
+
+export async function getERC721AssetSymbol(
+  checksummedAddress: string,
+  networkClientId: string,
+): Promise<string> {
+  return await submitRequestToBackground<string>('getERC721AssetSymbol', [
+    checksummedAddress,
     networkClientId,
   ]);
 }
