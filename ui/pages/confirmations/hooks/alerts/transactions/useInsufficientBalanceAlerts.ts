@@ -32,7 +32,7 @@ export function useInsufficientBalanceAlerts({
     chainId,
     selectedGasFeeToken,
     gasFeeTokens,
-    txParams: { value } = {},
+    txParams: { value = '0x0' } = {},
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
