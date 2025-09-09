@@ -434,7 +434,7 @@ export class PageLoadBenchmark {
     const commitSha = execSync('git rev-parse --short HEAD', {
       cwd: __dirname,
       encoding: 'utf8',
-    });
+    }).slice(0, 7);
 
     const output = {
       timestamp: new Date().getTime(),

@@ -7,6 +7,7 @@ import { EncryptionKey, EncryptionResult } from '@metamask/browser-passworder';
 import { ControllerInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';
+import { SeedlessOnboardingControllerInitMessenger } from '../messengers/seedless-onboarding';
 
 const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
   return isDevOrTestBuild() ? Web3AuthNetwork.Devnet : Web3AuthNetwork.Mainnet;
@@ -14,14 +15,10 @@ const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
 
 export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
-  SeedlessOnboardingControllerMessenger
+  SeedlessOnboardingControllerMessenger,
+  SeedlessOnboardingControllerInitMessenger
 > = (request) => {
-  const {
-    controllerMessenger,
-    persistedState,
-    refreshOAuthToken,
-    revokeAndGetNewRefreshToken,
-  } = request;
+  const { initMessenger, controllerMessenger, persistedState } = request;
 
   const encryptor = encryptorFactory(600_000);
 
@@ -32,8 +29,16 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     state: persistedState.SeedlessOnboardingController,
     network,
     passwordOutdatedCacheTTL: 15_000, // 15 seconds
-    refreshJWTToken: refreshOAuthToken,
-    revokeRefreshToken: revokeAndGetNewRefreshToken,
+
+    // This is a temporary workaround to allow the OAuthService to be used
+    // in the seedless onboarding controller. Ideally the controller calls the
+    // service directly using the messenger system, but that requires some
+    // further refactoring in the controller.
+    refreshJWTToken: (...args) =>
+      initMessenger.call('OAuthService:getNewRefreshToken', ...args),
+    revokeRefreshToken: (...args) =>
+      initMessenger.call('OAuthService:revokeAndGetNewRefreshToken', ...args),
+
     encryptor: {
       decrypt: (key, encryptedData) => encryptor.decrypt(key, encryptedData),
       decryptWithDetail: (key, encryptedData) =>
