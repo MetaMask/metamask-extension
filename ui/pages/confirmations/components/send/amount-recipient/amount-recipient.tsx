@@ -32,9 +32,9 @@ export const AmountRecipient = () => {
   const hasError = Boolean(amountError) || Boolean(recipientError);
 
   const onClick = useCallback(() => {
-    handleSubmit(to);
+    handleSubmit();
     captureAmountSelected();
-  }, [captureAmountSelected, handleSubmit, to]);
+  }, [captureAmountSelected, handleSubmit]);
 
   return (
     <Box
