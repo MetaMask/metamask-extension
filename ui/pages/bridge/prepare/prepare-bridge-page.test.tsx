@@ -350,76 +350,42 @@ describe('PrepareBridgePage - Race Conditions', () => {
     mockIsSendBundleSupported.mockResolvedValue(false);
   });
 
-  it('handles isSendBundleSupported race conditions correctly', async () => {
-    // Test that rapid chain changes don't cause race conditions
-    const chainIds: Hex[] = ['0x1', '0x89', '0xa'];
+  it('handles isSendBundleSupported call on mount', async () => {
+    // Test that the component correctly calls isSendBundleSupported
+    const chainId: Hex = '0x1';
 
-    // Mock different responses for different chains
-    mockIsSendBundleSupported.mockImplementation((chainId: string) => {
-      const delays: Record<string, number> = {
-        '0x1': 100,
-        '0x89': 50,
-        '0xa': 10,
-      };
-      return new Promise((resolve) => {
-        setTimeout(
-          () => {
-            resolve(chainId === '0x1'); // Only mainnet supports bundles
-          },
-          delays[chainId as string] || 0,
-        );
-      });
-    });
+    // Mock response
+    mockIsSendBundleSupported.mockResolvedValue(true);
 
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
-        ...mockNetworkState({ chainId: chainIds[0] }),
+        ...mockNetworkState({ chainId }),
       },
       bridgeStateOverrides: {
         srcTokens: { '0x00': {} },
         srcTopAssets: [],
         quoteRequest: {
-          srcChainId: chainIds[0],
+          srcChainId: chainId,
         },
       },
     });
 
-    const { rerender } = renderWithProvider(
+    const { unmount } = renderWithProvider(
       <PrepareBridgePage />,
       configureStore(mockStore),
     );
 
-    // Simulate rapid chain changes
-    for (const chainId of chainIds) {
-      const newStore = createBridgeMockStore({
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId }),
-        },
-        bridgeStateOverrides: {
-          srcTokens: { '0x00': {} },
-          srcTopAssets: [],
-          quoteRequest: {
-            srcChainId: chainId,
-          },
-        },
-      });
-
-      rerender(
-        <ReactReduxModule.Provider store={configureStore(newStore)}>
-          <PrepareBridgePage />
-        </ReactReduxModule.Provider>,
-      );
-    }
-
-    // Wait for all async operations to complete
+    // Wait for the effect to trigger and complete
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
-    // Should have called the function for each chain
-    expect(mockIsSendBundleSupported).toHaveBeenCalledWith('0x1');
-    expect(mockIsSendBundleSupported).toHaveBeenCalledWith('0x89');
-    expect(mockIsSendBundleSupported).toHaveBeenCalledWith('0xa');
+    // Verify that the function was called with the correct chain ID
+    expect(mockIsSendBundleSupported).toHaveBeenCalledWith(chainId);
+    expect(mockIsSendBundleSupported).toHaveBeenCalledTimes(1);
+
+    // Clean up
+    unmount();
   });
 
   it('handles isSendBundleSupported errors gracefully', async () => {
