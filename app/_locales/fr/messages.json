@@ -7176,15 +7176,6 @@
   "welcomeBack": {
     "message": "Nous sommes heureux de vous revoir"
   },
-  "welcomeDescription": {
-    "message": "MetaMask est un portefeuille sécurisé utilisé par des millions de personnes qui rend l’univers du web3 accessible à toutes et à tous."
-  },
-  "welcomeGetStarted": {
-    "message": "Commencer"
-  },
-  "welcomeTitle": {
-    "message": "Bienvenue dans MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "C’est parti !"
   },

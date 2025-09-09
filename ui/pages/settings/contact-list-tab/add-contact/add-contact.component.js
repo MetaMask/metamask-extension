@@ -50,7 +50,7 @@ const AddContact = ({
   addressBook,
   internalAccounts,
   addToAddressBook,
-  history,
+  navigate,
   scanQrCode,
   qrCodeData,
   qrCodeDetected,
@@ -257,10 +257,10 @@ const AddContact = ({
         )}
         onSubmit={async () => {
           await addToAddressBook(newAddress, newName, '', selectedChainId);
-          history.push(CONTACT_LIST_ROUTE);
+          navigate(CONTACT_LIST_ROUTE);
         }}
         onCancel={() => {
-          history.push(CONTACT_LIST_ROUTE);
+          navigate(CONTACT_LIST_ROUTE);
         }}
         submitText={t('save')}
       />
@@ -272,7 +272,7 @@ AddContact.propTypes = {
   addressBook: PropTypes.array,
   internalAccounts: PropTypes.array,
   addToAddressBook: PropTypes.func,
-  history: PropTypes.object,
+  navigate: PropTypes.func.isRequired,
   scanQrCode: PropTypes.func,
   qrCodeData: PropTypes.object,
   qrCodeDetected: PropTypes.func,

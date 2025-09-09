@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import '@testing-library/jest-dom';
 import { MOCK_ADDRESS_BOOK } from '../../../../../test/data/mock-data';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
@@ -22,7 +22,7 @@ describe('AddContact component', () => {
     internalAccounts: [mockAccount1, mockAccount2],
     addToAddressBook: jest.fn(),
     removeFromAddressBook: jest.fn(),
-    history: { push: jest.fn() },
+    navigate: jest.fn(),
     name: mockAccount1.metadata.name,
     address: '0x0000000000000000001',
     chainId: '',
