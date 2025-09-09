@@ -2,6 +2,9 @@
 # Used with dorny/paths-filter action
 
 files-e2e-required:
+  # Include everything by default
+  - '**'
+
   # Exclude doc files
   - '!**/*.md'
   - '!**/*.mdx'
@@ -21,9 +24,6 @@ files-e2e-required:
 
   # Exclude Github files
   - '!.github/**'
-
-  # Include everything by default (after exclusions)
-  - '**'
 
   # Re-include specific E2E related GH files
   # - '.github/workflows/main.yml'

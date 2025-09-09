@@ -53,6 +53,7 @@ jobs:
         id: changes
         with:
           filters: .github/e2e-filter-rules.yml
+          predicate-quantifier: 'every'
           list-files: shell
 
       - name: Determine if E2E needed
