@@ -192,9 +192,7 @@ jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
     ...actual,
-    useDispatch: {
-      dispatch: jest.fn(),
-    },
+    useDispatch: jest.fn().mockReturnValue(jest.fn()),
   };
 });
 
