@@ -30,6 +30,8 @@ export function useGasIncluded7702(
     useState(false);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const checkGasIncluded7702Support = async () => {
       if (
         !smartAccountOptIn ||
@@ -37,40 +39,55 @@ export function useGasIncluded7702(
         !selectedAccount?.address ||
         !fromChain?.chainId
       ) {
-        setIsGasIncluded7702Supported(false);
+        if (!isCancelled) {
+          setIsGasIncluded7702Supported(false);
+        }
         return;
       }
 
       try {
-        // Check if atomic batch is supported for the account
         const atomicBatchResult = await isAtomicBatchSupported({
           address: selectedAccount.address as Hex,
           chainIds: [fromChain.chainId as Hex],
         });
+
+        if (isCancelled) {
+          return;
+        }
 
         const atomicBatchChainSupport = atomicBatchResult?.find(
           (result) =>
             result.chainId.toLowerCase() === fromChain.chainId.toLowerCase(),
         );
 
-        // Check if relay is supported for the chain
         const relaySupportsChain = await isRelaySupported(
           fromChain.chainId as Hex,
         );
 
-        // 7702 is supported if both atomic batch and relay are supported
+        if (isCancelled) {
+          return;
+        }
+
         const is7702Supported = Boolean(
           atomicBatchChainSupport?.isSupported && relaySupportsChain,
         );
 
-        setIsGasIncluded7702Supported(is7702Supported);
+        if (!isCancelled) {
+          setIsGasIncluded7702Supported(is7702Supported);
+        }
       } catch (error) {
-        console.error('Error checking gasless 7702 support:', error);
-        setIsGasIncluded7702Supported(false);
+        if (!isCancelled) {
+          console.error('Error checking gasless 7702 support:', error);
+          setIsGasIncluded7702Supported(false);
+        }
       }
     };
 
     checkGasIncluded7702Support();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [smartAccountOptIn, isSwap, selectedAccount?.address, fromChain?.chainId]);
 
   return isGasIncluded7702Supported;
