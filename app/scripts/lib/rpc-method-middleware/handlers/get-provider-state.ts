@@ -2,13 +2,19 @@ import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
-import type { PendingJsonRpcResponse, Hex } from '@metamask/utils';
+import type {
+  PendingJsonRpcResponse,
+  Hex,
+  JsonRpcRequest,
+} from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper, HandlerRequestType } from './types';
+import { HandlerWrapper } from './types';
 
-export type ProviderStateHandlerRequest = HandlerRequestType<{
+export type ProviderStateHandlerRequest = JsonRpcRequest<{
   isInitializingStreamProvider?: boolean;
-}>;
+}> & {
+  origin: string;
+};
 
 /**
  * @property chainId - The current chain ID.
@@ -68,7 +74,7 @@ async function getProviderStateHandler(
   end: JsonRpcEngineEndCallback,
   { getProviderState: _getProviderState }: Record<string, GetProviderState>,
 ): Promise<void> {
-  const { isInitializingStreamProvider } = req.params;
+  const isInitializingStreamProvider = req.params?.isInitializingStreamProvider;
   res.result = {
     ...(await _getProviderState(req.origin, { isInitializingStreamProvider })),
   };
