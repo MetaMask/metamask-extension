@@ -2,9 +2,14 @@
 # Used with dorny/paths-filter action
 
 files-e2e-required:
-
-  # Include everything
-  - '**'
+  # Include specific E2E related GH files FIRST
+  - '.github/workflows/e2e-chrome.yml'
+  - '.github/workflows/e2e-firefox.yml'
+  - '.github/workflows/run-e2e.yml'
+  - '.github/scripts/git-diff-default-branch.ts'
+  - '.github/scripts/create-e2e-test-report.ts'
+  - '.github/scripts/split-tests-by-timings.ts'
+  - '.github/scripts/validate-e2e-page-object-usage.ts'
 
   # Exclude doc files
   - '!**/*.md'
@@ -23,14 +28,8 @@ files-e2e-required:
   - '!eslint.config.js'
   - '!prettier.config.js'
 
-  # Include specific E2E related GH files FIRST (before broad exclusion)
-  - '.github/workflows/e2e-chrome.yml'
-  - '.github/workflows/e2e-firefox.yml'
-  - '.github/workflows/run-e2e.yml'
-  - '.github/scripts/git-diff-default-branch.ts'
-  - '.github/scripts/create-e2e-test-report.ts'
-  - '.github/scripts/split-tests-by-timings.ts'
-  - '.github/scripts/validate-e2e-page-object-usage.ts'
-
-  # Exclude Github files
+  # Exclude Github files (after specific includes)
   - '!.github/**'
+
+  # Include everything else
+  - '**'
