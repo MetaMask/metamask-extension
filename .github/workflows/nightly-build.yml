@@ -49,7 +49,7 @@ jobs:
       - build-dist-mv2-browserify
       - build-experimental-browserify
       - build-experimental-mv2-browserify
-    runs-on: self-hosted
+    runs-on: ubuntu-latest 
     if: ${{ always() }}
     env:
       OWNER: ${{ github.repository_owner }}
