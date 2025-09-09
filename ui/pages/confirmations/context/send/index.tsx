@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
+import { isHexString } from 'ethereumjs-util';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import { toHex } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
 
@@ -63,7 +65,11 @@ export const SendContextProvider: React.FC<{
   );
 
   const chainId =
-    asset?.address && isEvmAddress(asset?.address) && asset.chainId
+    asset?.address &&
+    isEvmAddress(asset?.address) &&
+    asset.chainId &&
+    !isSolanaChainId(asset.chainId?.toString()) &&
+    !isHexString(asset.chainId.toString())
       ? toHex(asset.chainId)
       : asset?.chainId?.toString();
 
