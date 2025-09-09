@@ -9,7 +9,7 @@ import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import FixtureBuilder from './fixture-builder';
 import { unlockWallet, withFixtures } from './helpers';
 import { PAGES } from './webdriver/driver';
-import { calculateStandardDeviation } from '../utils/benchmark-math-utils.ts';
+import { calculateStandardDeviation } from '../utils/benchmark-math-utils';
 
 const DEFAULT_NUM_BROWSER_LOADS = 10;
 const DEFAULT_NUM_PAGE_LOADS = 10;
