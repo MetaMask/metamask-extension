@@ -59,11 +59,6 @@ export const useSolanaRecipientValidation = () => {
           const result = await validateDomainWithConfusables(address, {
             chainId: effectiveChainId,
             resolveNameLookup,
-            filterResolutions: (resolutions) =>
-              // TODO: Temporary fix to remove ETH resolutions
-              resolutions.filter(
-                (resolution) => !isValidHexAddress(resolution.resolvedAddress),
-              ),
             errorMessages: {
               unknownError: 'solanaUnknownError',
               confusingDomain: 'confusingSolanaDomain',

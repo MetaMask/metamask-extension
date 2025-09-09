@@ -137,7 +137,6 @@ describe('useSolanaRecipientValidation', () => {
         expect.objectContaining({
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           resolveNameLookup: mockResolveNameLookup,
-          filterResolutions: expect.any(Function),
           errorMessages: {
             unknownError: 'solanaUnknownError',
             confusingDomain: 'confusingSolanaDomain',
@@ -151,40 +150,6 @@ describe('useSolanaRecipientValidation', () => {
           resolvedAddress: 'H8UekPGwePSmQ3ttuYGPU1sxKnk7K3SR4VBGp5dAEwQs',
         },
       });
-    });
-
-    it('filters out ETH resolutions for domain names', async () => {
-      mockIsSolanaAddress.mockReturnValue(false);
-      mockIsValidDomainName.mockReturnValue(true);
-      mockIsValidHexAddress
-        .mockReturnValueOnce(true)
-        .mockReturnValueOnce(false);
-
-      const { result } = renderHook();
-      await act(async () => {
-        await result.current.validateSolanaRecipient('example.sol');
-      });
-
-      expect(mockValidateDomainWithConfusables).toHaveBeenCalledWith(
-        'example.sol',
-        expect.objectContaining({
-          filterResolutions: expect.any(Function),
-        }),
-      );
-
-      const { filterResolutions } =
-        mockValidateDomainWithConfusables.mock.calls[0][1];
-      const resolutions = [
-        { resolvedAddress: '0x742d35Cc6634C0532925a3b8D7Cc9b7b1e5b3e' },
-        { resolvedAddress: 'H8UekPGwePSmQ3ttuYGPU1sxKnk7K3SR4VBGp5dAEwQs' },
-      ];
-
-      const filtered = filterResolutions
-        ? filterResolutions(resolutions)
-        : resolutions;
-      expect(filtered).toEqual([
-        { resolvedAddress: 'H8UekPGwePSmQ3ttuYGPU1sxKnk7K3SR4VBGp5dAEwQs' },
-      ]);
     });
 
     it('handles domain validation errors', async () => {
