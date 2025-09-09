@@ -46,7 +46,9 @@ describe('useEvmRecipientValidation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseSnapNameResolution.mockReturnValue(mockResolveNameLookup);
+    mockUseSnapNameResolution.mockReturnValue({
+      lookupDomainAddresses: mockResolveNameLookup,
+    });
     mockFindNetworkClientIdByChainId.mockResolvedValue(
       'networkClientId' as never,
     );
@@ -166,7 +168,7 @@ describe('useEvmRecipientValidation', () => {
       'example.eth',
       {
         chainId: '0x1',
-        resolveNameLookup: mockResolveNameLookup,
+        lookupDomainAddresses: mockResolveNameLookup,
         formatChainId: expect.any(Function),
         errorMessages: {
           unknownError: 'ensUnknownError',

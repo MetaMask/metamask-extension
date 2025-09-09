@@ -44,7 +44,7 @@ export function useSnapNameResolution() {
     [snaps],
   );
 
-  const resolveNameLookup = useCallback(
+  const lookupDomainAddresses = useCallback(
     async (chainId: string, domain: string) => {
       try {
         const filteredSnaps = getFilteredSnaps(chainId, domain);
@@ -87,5 +87,5 @@ export function useSnapNameResolution() {
     [getFilteredSnaps],
   );
 
-  return resolveNameLookup;
+  return { lookupDomainAddresses };
 }

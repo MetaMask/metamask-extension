@@ -37,7 +37,9 @@ describe('useSolanaRecipientValidation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseSnapNameResolution.mockReturnValue(mockResolveNameLookup);
+    mockUseSnapNameResolution.mockReturnValue({
+      lookupDomainAddresses: mockResolveNameLookup,
+    });
   });
 
   describe('validateSolanaRecipient', () => {
@@ -136,7 +138,7 @@ describe('useSolanaRecipientValidation', () => {
         domainAddress,
         expect.objectContaining({
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          resolveNameLookup: mockResolveNameLookup,
+          lookupDomainAddresses: mockResolveNameLookup,
           errorMessages: {
             unknownError: 'solanaUnknownError',
             confusingDomain: 'confusingSolanaDomain',

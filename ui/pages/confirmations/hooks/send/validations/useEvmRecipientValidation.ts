@@ -44,7 +44,7 @@ const validateHexAddress = async (address: string, chainId?: string) => {
 
 export const useEvmRecipientValidation = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const resolveNameLookup = useSnapNameResolution();
+  const { lookupDomainAddresses } = useSnapNameResolution();
 
   const validateEvmRecipient = useCallback(
     async (
@@ -64,7 +64,7 @@ export const useEvmRecipientValidation = () => {
         try {
           const result = await validateDomainWithConfusables(address, {
             chainId: effectiveChainId,
-            resolveNameLookup,
+            lookupDomainAddresses,
             formatChainId: (chainId: string) => {
               const chainIdInt = chainId ? parseInt(chainId, 16) : 1;
               return `eip155:${chainIdInt}`;
@@ -87,7 +87,7 @@ export const useEvmRecipientValidation = () => {
         isLookupLoading: false,
       };
     },
-    [resolveNameLookup],
+    [lookupDomainAddresses],
   );
 
   return {

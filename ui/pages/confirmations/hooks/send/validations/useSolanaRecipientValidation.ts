@@ -36,7 +36,7 @@ const validateSolanaAddress = (address: string) => {
 export const useSolanaRecipientValidation = () => {
   const { chainId } = useSendContext();
   const [isLoading, setIsLoading] = useState(false);
-  const resolveNameLookup = useSnapNameResolution();
+  const { lookupDomainAddresses } = useSnapNameResolution();
 
   const validateSolanaRecipient = useCallback(
     async (
@@ -57,7 +57,7 @@ export const useSolanaRecipientValidation = () => {
         try {
           const result = await validateDomainWithConfusables(address, {
             chainId: effectiveChainId,
-            resolveNameLookup,
+            lookupDomainAddresses,
             errorMessages: {
               unknownError: 'solanaUnknownError',
               confusingDomain: 'confusingSolanaDomain',
@@ -76,7 +76,7 @@ export const useSolanaRecipientValidation = () => {
         isLookupLoading: false,
       };
     },
-    [chainId, resolveNameLookup],
+    [chainId, lookupDomainAddresses],
   );
 
   return {

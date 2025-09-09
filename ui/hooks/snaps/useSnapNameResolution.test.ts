@@ -153,8 +153,8 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const resolveNameLookup = result.current;
-    const results = await resolveNameLookup('eip155:1', 'metamask.eth');
+    const { lookupDomainAddresses } = result.current;
+    const results = await lookupDomainAddresses('eip155:1', 'metamask.eth');
 
     expect(results).toStrictEqual([
       {
@@ -171,8 +171,8 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const resolveNameLookup = result.current;
-    const results = await resolveNameLookup(
+    const { lookupDomainAddresses } = result.current;
+    const results = await lookupDomainAddresses(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       'metamask',
     );
@@ -197,8 +197,8 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const resolveNameLookup = result.current;
-    const results = await resolveNameLookup('eip155:1', 'farcaster:v');
+    const { lookupDomainAddresses } = result.current;
+    const results = await lookupDomainAddresses('eip155:1', 'farcaster:v');
 
     expect(results).toStrictEqual([
       {
@@ -215,8 +215,8 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const resolveNameLookup = result.current;
-    const results = await resolveNameLookup('eip155:1', 'foo.lens');
+    const { lookupDomainAddresses } = result.current;
+    const results = await lookupDomainAddresses('eip155:1', 'foo.lens');
 
     expect(results).toStrictEqual([
       {
