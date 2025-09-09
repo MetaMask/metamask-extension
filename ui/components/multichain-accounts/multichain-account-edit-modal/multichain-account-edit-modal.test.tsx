@@ -116,7 +116,7 @@ describe('MultichainAccountEditModal', () => {
 
   it('dispatches setAccountGroupName action when saving with new name', async () => {
     const store = configureStore(mockDefaultState);
-    store.dispatch = jest.fn().mockResolvedValue(undefined);
+    store.dispatch = jest.fn().mockResolvedValue(true);
 
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
@@ -210,7 +210,7 @@ describe('MultichainAccountEditModal', () => {
 
   it('handles form submission with different account name', async () => {
     const store = configureStore(mockDefaultState);
-    store.dispatch = jest.fn().mockResolvedValue(undefined);
+    store.dispatch = jest.fn().mockResolvedValue(true);
 
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 

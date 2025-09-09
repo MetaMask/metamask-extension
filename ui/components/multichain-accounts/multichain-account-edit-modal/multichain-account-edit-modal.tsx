@@ -19,7 +19,6 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
-import { MetaMaskReduxDispatch } from '../../../store/store';
 
 export type MultichainAccountEditModalProps = {
   isOpen: boolean;
@@ -45,19 +44,9 @@ export const MultichainAccountEditModal = ({
   const handleSave = useCallback(async () => {
     const normalizedAccountName = accountName.trim();
     if (normalizedAccountName && normalizedAccountName !== currentAccountName) {
-      const action = setAccountGroupName(accountGroupId, normalizedAccountName);
-
-      type ThunkType = (
-        dispatch: MetaMaskReduxDispatch,
-        getState: () => unknown,
-        extraArgument: unknown,
-      ) => Promise<boolean>;
-
-      const result = await (action as ThunkType)(
-        dispatch,
-        () => ({}),
-        undefined,
-      );
+      const result = (await dispatch(
+        setAccountGroupName(accountGroupId, normalizedAccountName),
+      )) as unknown as boolean;
 
       if (result) {
         onClose();
