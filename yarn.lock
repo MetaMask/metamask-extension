@@ -5268,22 +5268,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/account-tree-controller@npm:0.8.0"
+"@metamask/account-tree-controller@npm:^0.13.1":
+  version: 0.13.1
+  resolution: "@metamask/account-tree-controller@npm:0.13.1"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/account-api": ^0.9.0
-    "@metamask/accounts-controller": ^32.0.0
-    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/accounts-controller": ^33.0.0
+    "@metamask/keyring-controller": ^23.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/dfba3320e7275e31eb0e85abdcab2af563f517a733ebf1ffe93f4ce26d41a1be1937d75d5db448ccdbb6b38f501355deb02fa747769406b3638409779a7188c7
+  checksum: 10/25b28f2ab16de534526228204fe58f96d65740b96a7c37d2e71866788e0840debd863de84bf1da1a64d61c571750123382c8414fca108676a961bba8bda53bf1
   languageName: node
   linkType: hard
 
@@ -5369,9 +5369,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:74.3.1":
-  version: 74.3.1
-  resolution: "@metamask/assets-controllers@npm:74.3.1"
+"@metamask/assets-controllers@npm:74.3.2":
+  version: 74.3.2
+  resolution: "@metamask/assets-controllers@npm:74.3.2"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5415,13 +5415,13 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/3dc5c114065edc87b81b9b70f374480089d715267bca64d01fe69f4e9e03e1a31161ef2eab509cef9bc8c4bc654e0ca45702038c5560d4c2a8d1bfe6dd89feea
+  checksum: 10/4a6eb22e3a3f1017faed94b9d1228b022ef017fd4b6132b8b468b939a6e3f5c64112b145c449b05eecfedc1a8057a5e9009c927d6d24bbe6529f92921f9b63b1
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A74.3.1#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.1-900afb3754.patch":
-  version: 74.3.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A74.3.1#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.1-900afb3754.patch::version=74.3.1&hash=d212d8"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A74.3.2#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.2-900afb3754.patch":
+  version: 74.3.2
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A74.3.2#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.2-900afb3754.patch::version=74.3.2&hash=d212d8"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5465,7 +5465,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/a692dc4c20ac59f9ccf232ba2db2dfbd7c175753fbb148c95d124da68104d13746d9e88fa3cea02733354f6cce338e9e7a60016fca8da3ecabde1ca61f84d3b9
+  checksum: 10/c57ba9ba2b21ea6625a3768e35e7f9d96ff7f4c8b24118754dd67a36c9bf37e7bfe617b79f7f29687c5665858645651b6b5fca7783db857c423a48383d8fb136
   languageName: node
   linkType: hard
 
@@ -5916,9 +5916,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^17.0.0, @metamask/eth-json-rpc-middleware@npm:^17.0.1":
-  version: 17.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:17.0.1"
+"@metamask/eth-json-rpc-middleware@npm:^17.0.1, @metamask/eth-json-rpc-middleware@npm:^17.1.0":
+  version: 17.1.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:17.1.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^12.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
@@ -5932,7 +5932,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/6a0709479f7187183f99bd76b2724cb72b4155ded506d939b7625ae17f63bff68bee9828e0d76af06e4d4009eecc87b63059e8796947442e96844a42af161e2f
+  checksum: 10/4a2d66a7b38b4a3eb5cbe290815681b803829b5e367a484e2ac9b78fdea70a1c7dce4a8f924140d745a05f945b4dfdd53c883fd2661bc1c22dc563b4f0aafd38
   languageName: node
   linkType: hard
 
@@ -7397,10 +7397,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.3.7":
-  version: 2.3.7
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.7"
-  checksum: 10/f063baf8eba5228affd496d0cfd0e35d123e2e587e25348b92a3e6e19ccbd5de8d980b59f8543fc23b92611d487bc5ef3ff3b25b3216c248619f94c3f1b49d3b
+"@metamask/solana-wallet-snap@npm:^2.3.8":
+  version: 2.3.8
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.8"
+  checksum: 10/e1fa80026a78ccf853c5bdf8493e47ea2edaba6d39e715f2f54030c605271ee238fd15a832b2d876365fdb62d66d35053c5952a39a66c6ae97d5e03ee0a22bf8
   languageName: node
   linkType: hard
 
@@ -31732,14 +31732,14 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.9.0"
-    "@metamask/account-tree-controller": "npm:^0.8.0"
+    "@metamask/account-tree-controller": "npm:^0.13.1"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^32.0.2"
     "@metamask/address-book-controller": "npm:^6.1.0"
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A74.3.1#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.1-900afb3754.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A74.3.2#~/.yarn/patches/@metamask-assets-controllers-npm-74.3.2-900afb3754.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
@@ -31766,7 +31766,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^17.1.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
@@ -31832,7 +31832,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.5.1"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.5.0"
-    "@metamask/solana-wallet-snap": "npm:^2.3.7"
+    "@metamask/solana-wallet-snap": "npm:^2.3.8"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
     "@metamask/superstruct": "npm:^3.2.1"

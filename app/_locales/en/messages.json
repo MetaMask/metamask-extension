@@ -1383,6 +1383,9 @@
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
   },
+  "confusingSolanaDomain": {
+    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
+  },
   "connect": {
     "message": "Connect"
   },
@@ -5090,6 +5093,9 @@
   "resetWalletWarningSocial": {
     "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
+  "resolvedLookup": {
+    "message": "Resolved address of the domain: $1"
+  },
   "restartMetamask": {
     "message": "Restart MetaMask"
   },
@@ -5645,6 +5651,9 @@
   "signingWith": {
     "message": "Signing with"
   },
+  "similarTo": {
+    "message": "$1 is similar to $2"
+  },
   "simulationApproveHeading": {
     "message": "Withdraw"
   },
@@ -6023,6 +6032,9 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
+  },
+  "solanaUnknownError": {
+    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"
