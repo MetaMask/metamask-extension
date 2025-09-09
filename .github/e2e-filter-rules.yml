@@ -1,9 +1,9 @@
 # Filter rules for determining if E2E tests should run if any of those files are modified
 # Used with dorny/paths-filter action
 
+# Note: patterns are evaluated in order, so the more specific patterns should be listed first
+
 files-e2e-required:
-  # Include everything by default
-  - '**'
 
   # Exclude doc files
   - '!**/*.md'
@@ -22,13 +22,7 @@ files-e2e-required:
   - '!eslint.config.js'
   - '!prettier.config.js'
 
-  # Exclude Github files
-  - '!.github/**'
-
-  # Re-include specific E2E related GH files
-  # - '.github/workflows/main.yml'
-  # - '.github/workflows/needs-e2e.yml'
-  # - '.github/e2e-filter-rules.yml'
+  # Include specific E2E related GH files FIRST (before broad exclusion)
   - '.github/workflows/e2e-chrome.yml'
   - '.github/workflows/e2e-firefox.yml'
   - '.github/workflows/run-e2e.yml'
@@ -36,3 +30,10 @@ files-e2e-required:
   - '.github/scripts/create-e2e-test-report.ts'
   - '.github/scripts/split-tests-by-timings.ts'
   - '.github/scripts/validate-e2e-page-object-usage.ts'
+
+  # Exclude Github files (after specific includes)
+  - '!.github/**'
+
+  # Include everything else
+  - '**'
+  
