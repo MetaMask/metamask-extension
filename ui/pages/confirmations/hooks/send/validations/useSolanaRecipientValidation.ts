@@ -34,7 +34,6 @@ const validateSolanaAddress = (address: string) => {
 };
 
 export const useSolanaRecipientValidation = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const { lookupDomainAddresses } = useSnapNameResolution();
 
   const validateSolanaRecipient = useCallback(
@@ -46,13 +45,10 @@ export const useSolanaRecipientValidation = () => {
         passedChainId || 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
       if (isSolanaAddress(address)) {
-        const result = validateSolanaAddress(address);
-        return { ...result, isLookupLoading: false };
+        return validateSolanaAddress(address);
       }
 
       if (isValidDomainName(address)) {
-        setIsLoading(true);
-
         try {
           const result = await validateDomainWithConfusables(address, {
             chainId: effectiveChainId,
@@ -62,17 +58,14 @@ export const useSolanaRecipientValidation = () => {
               confusingDomain: 'confusingSolanaDomain',
             },
           });
-          setIsLoading(false);
           return result;
         } catch (error) {
-          setIsLoading(false);
-          return { error: 'solanaUnknownError', isLookupLoading: false };
+          return { error: 'solanaUnknownError' };
         }
       }
 
       return {
         error: 'invalidAddress',
-        isLookupLoading: false,
       };
     },
     [lookupDomainAddresses],
@@ -80,6 +73,5 @@ export const useSolanaRecipientValidation = () => {
 
   return {
     validateSolanaRecipient,
-    isLookupLoading: isLoading,
   };
 };

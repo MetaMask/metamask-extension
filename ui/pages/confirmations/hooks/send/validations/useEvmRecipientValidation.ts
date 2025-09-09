@@ -38,13 +38,11 @@ const validateHexAddress = async (address: string, chainId?: string) => {
   return {
     error: null,
     resolvedLookup: null,
-    isLookupLoading: false,
     warning: null,
   };
 };
 
 export const useEvmRecipientValidation = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const { lookupDomainAddresses } = useSnapNameResolution();
 
   const validateEvmRecipient = useCallback(
@@ -55,13 +53,10 @@ export const useEvmRecipientValidation = () => {
       const effectiveChainId = passedChainId || '0x1';
 
       if (isValidHexAddress(address)) {
-        const result = await validateHexAddress(address, effectiveChainId);
-        return { ...result, isLookupLoading: false };
+        return await validateHexAddress(address, effectiveChainId);
       }
 
       if (isValidDomainName(address)) {
-        setIsLoading(true);
-
         try {
           const result = await validateDomainWithConfusables(address, {
             chainId: effectiveChainId,
@@ -75,17 +70,14 @@ export const useEvmRecipientValidation = () => {
               confusingDomain: 'confusingEnsDomain',
             },
           });
-          setIsLoading(false);
           return result;
         } catch (error) {
-          setIsLoading(false);
-          return { error: 'ensUnknownError', isLookupLoading: false };
+          return { error: 'ensUnknownError' };
         }
       }
 
       return {
         error: 'invalidAddress',
-        isLookupLoading: false,
       };
     },
     [lookupDomainAddresses],
@@ -93,6 +85,5 @@ export const useEvmRecipientValidation = () => {
 
   return {
     validateEvmRecipient,
-    isLookupLoading: isLoading,
   };
 };

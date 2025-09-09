@@ -40,7 +40,7 @@ export const validateDomainWithConfusables = async (
       : resolutions;
 
     if (!filteredResolutions || filteredResolutions.length === 0) {
-      return { error: errorMessages.unknownError, isLookupLoading: false };
+      return { error: errorMessages.unknownError };
     }
 
     const resolvedLookup = filteredResolutions[0].resolvedAddress;
@@ -71,14 +71,12 @@ export const validateDomainWithConfusables = async (
           error: 'invalidAddress',
           warning: 'confusableZeroWidthUnicode',
           resolvedLookup,
-          isLookupLoading: false,
         };
       }
 
       return {
         confusableCharacters,
         error: null,
-        isLookupLoading: false,
         resolvedLookup,
         warning: errorMessages.confusingDomain,
       };
@@ -88,12 +86,10 @@ export const validateDomainWithConfusables = async (
       error: null,
       resolvedLookup,
       warning: null,
-      isLookupLoading: false,
     };
   } catch (error) {
     return {
       error: options.errorMessages.unknownError,
-      isLookupLoading: false,
     };
   }
 };

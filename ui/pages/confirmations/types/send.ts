@@ -48,7 +48,6 @@ export type RecipientValidationResult = {
     similarTo: string;
   }[];
   error?: string | null;
-  isLookupLoading?: boolean;
   resolvedLookup?: string | null;
   warning?: string | null;
 };

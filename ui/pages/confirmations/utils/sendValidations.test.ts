@@ -42,9 +42,11 @@ describe('validateDomainWithConfusables', () => {
       error: null,
       resolvedLookup: '0x123456789abcdef',
       warning: null,
-      isLookupLoading: false,
     });
-    expect(mockLookupDomainAddresses).toHaveBeenCalledWith('0x1', 'example.eth');
+    expect(mockLookupDomainAddresses).toHaveBeenCalledWith(
+      '0x1',
+      'example.eth',
+    );
   });
 
   it('returns error when no resolutions found', async () => {
@@ -57,7 +59,6 @@ describe('validateDomainWithConfusables', () => {
 
     expect(result).toEqual({
       error: 'Unknown error occurred',
-      isLookupLoading: false,
     });
   });
 
@@ -71,7 +72,6 @@ describe('validateDomainWithConfusables', () => {
 
     expect(result).toEqual({
       error: 'Unknown error occurred',
-      isLookupLoading: false,
     });
   });
 
@@ -131,7 +131,6 @@ describe('validateDomainWithConfusables', () => {
 
     expect(result).toEqual({
       error: 'Unknown error occurred',
-      isLookupLoading: false,
     });
   });
 
@@ -152,7 +151,6 @@ describe('validateDomainWithConfusables', () => {
         { point: 'е', similarTo: 'e' },
       ],
       error: null,
-      isLookupLoading: false,
       resolvedLookup: '0x123456789abcdef',
       warning: 'Domain contains confusing characters',
     });
@@ -173,7 +171,6 @@ describe('validateDomainWithConfusables', () => {
       error: 'invalidAddress',
       warning: 'confusableZeroWidthUnicode',
       resolvedLookup: '0x123456789abcdef',
-      isLookupLoading: false,
     });
   });
 
@@ -223,7 +220,6 @@ describe('validateDomainWithConfusables', () => {
 
     expect(result).toEqual({
       error: 'Unknown error occurred',
-      isLookupLoading: false,
     });
   });
 
@@ -239,7 +235,6 @@ describe('validateDomainWithConfusables', () => {
 
     expect(result).toEqual({
       error: 'Unknown error occurred',
-      isLookupLoading: false,
     });
   });
 });

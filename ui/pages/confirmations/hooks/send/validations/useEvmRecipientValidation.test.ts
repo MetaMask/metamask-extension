@@ -59,7 +59,6 @@ describe('useEvmRecipientValidation', () => {
     const { result } = renderHook();
 
     expect(result.current.validateEvmRecipient).toBeDefined();
-    expect(result.current.isLookupLoading).toBe(false);
   });
 
   it('validates valid hex address successfully', async () => {
@@ -76,7 +75,6 @@ describe('useEvmRecipientValidation', () => {
     expect(validationResult).toEqual({
       error: null,
       resolvedLookup: null,
-      isLookupLoading: false,
       warning: null,
     });
   });
@@ -94,7 +92,6 @@ describe('useEvmRecipientValidation', () => {
 
     expect(validationResult).toEqual({
       error: 'invalidAddress',
-      isLookupLoading: false,
     });
   });
 
@@ -111,7 +108,6 @@ describe('useEvmRecipientValidation', () => {
 
     expect(validationResult).toEqual({
       error: 'invalidAddress',
-      isLookupLoading: false,
     });
   });
 
@@ -130,7 +126,6 @@ describe('useEvmRecipientValidation', () => {
 
     expect(validationResult).toEqual({
       error: 'invalidAddress',
-      isLookupLoading: false,
     });
     expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
     expect(mockGetERC721AssetSymbol).toHaveBeenCalledWith(
@@ -145,7 +140,6 @@ describe('useEvmRecipientValidation', () => {
     mockValidateDomainWithConfusables.mockResolvedValue({
       error: null,
       resolvedLookup: '0x1234567890123456789012345678901234567890',
-      isLookupLoading: false,
       warning: null,
     });
     const { result } = renderHook();
@@ -161,7 +155,6 @@ describe('useEvmRecipientValidation', () => {
     expect(validationResult).toEqual({
       error: null,
       resolvedLookup: '0x1234567890123456789012345678901234567890',
-      isLookupLoading: false,
       warning: null,
     });
     expect(mockValidateDomainWithConfusables).toHaveBeenCalledWith(
@@ -194,9 +187,7 @@ describe('useEvmRecipientValidation', () => {
 
     expect(validationResult).toEqual({
       error: 'ensUnknownError',
-      isLookupLoading: false,
     });
-    expect(result.current.isLookupLoading).toBe(false);
   });
 
   it('uses default chainId when not provided', async () => {
@@ -205,7 +196,6 @@ describe('useEvmRecipientValidation', () => {
     mockValidateDomainWithConfusables.mockResolvedValue({
       error: null,
       resolvedLookup: '0x1234567890123456789012345678901234567890',
-      isLookupLoading: false,
       warning: null,
     });
     const { result } = renderHook();
@@ -228,7 +218,6 @@ describe('useEvmRecipientValidation', () => {
     mockValidateDomainWithConfusables.mockResolvedValue({
       error: null,
       resolvedLookup: '0x1234567890123456789012345678901234567890',
-      isLookupLoading: false,
       warning: null,
     });
     const { result } = renderHook();
@@ -257,7 +246,6 @@ describe('useEvmRecipientValidation', () => {
 
     expect(validationResult).toEqual({
       error: 'invalidAddress',
-      isLookupLoading: false,
     });
   });
 });

@@ -10,6 +10,7 @@ import { useEvmRecipientValidation } from './useEvmRecipientValidation';
 import { useSolanaRecipientValidation } from './useSolanaRecipientValidation';
 
 export const useRecipientValidation = () => {
+  const [isValidationLoading, setIsValidationLoading] = useState(false);
   const t = useI18nContext();
   const { to, chainId } = useSendContext();
   const sendType = useSendType();
@@ -39,6 +40,7 @@ export const useRecipientValidation = () => {
 
   const validateRecipient = useCallback(
     async (address?: string): Promise<RecipientValidationResult> => {
+      setIsValidationLoading(true);
       const emptyResult: RecipientValidationResult = {
         error: null,
         resolvedLookup: null,
@@ -57,6 +59,8 @@ export const useRecipientValidation = () => {
       } else {
         return emptyResult;
       }
+
+      setIsValidationLoading(false);
 
       return {
         confusableCharacters: result.confusableCharacters ?? [],
@@ -106,6 +110,7 @@ export const useRecipientValidation = () => {
     recipientWarning: translatedWarning,
     recipientResolvedLookup: lastResult.resolvedLookup,
     recipientConfusableCharacters: lastResult.confusableCharacters,
+    recipientValidationLoading: isValidationLoading,
     validateRecipient,
   };
 };

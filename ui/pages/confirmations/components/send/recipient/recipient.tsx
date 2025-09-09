@@ -61,9 +61,9 @@ export const Recipient = () => {
     setIsRecipientModalOpen(true);
   }, []);
 
-  const onChange = useCallback(
-    (e) => {
-      const toAddress = e.target.value;
+  const onToChange = useCallback(
+    (address: string) => {
+      const toAddress = address;
       setLocalValue(toAddress);
       updateTo(toAddress);
     },
@@ -78,7 +78,7 @@ export const Recipient = () => {
   }, [captureRecipientSelected, to]);
 
   const clearRecipient = useCallback(() => {
-    setLocalValue(''); // Clear local state
+    setLocalValue('');
     updateTo('');
   }, [updateTo]);
 
@@ -129,10 +129,10 @@ export const Recipient = () => {
             size={ButtonIconSize.Sm}
           />
         }
-        onChange={onChange}
+        onChange={(e) => onToChange(e.target.value)}
         onBlur={captureMetrics}
         ref={recipientInputRef}
-        value={localValue} // Use local state for TextField value
+        value={localValue}
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
       />
@@ -177,7 +177,10 @@ export const Recipient = () => {
             {t('selectRecipient')}
           </ModalHeader>
           <ModalBody>
-            <RecipientList hideModal={closeRecipientModal} />
+            <RecipientList
+              hideModal={closeRecipientModal}
+              onToChange={onToChange}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

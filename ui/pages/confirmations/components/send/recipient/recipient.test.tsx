@@ -33,7 +33,6 @@ describe('Recipient', () => {
   const mockUseRecipients = jest.mocked(useRecipients);
 
   const mockUpdateTo = jest.fn();
-  const mockUpdateToResolvedLookup = jest.fn();
   const mockCaptureRecipientSelected = jest.fn();
 
   const mockStore = configureStore(mockState);
@@ -56,7 +55,6 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '',
       updateTo: mockUpdateTo,
-      updateToResolvedLookup: mockUpdateToResolvedLookup,
     } as unknown as ReturnType<typeof useSendContext>);
     mockUseRecipients.mockReturnValue([]);
   });
@@ -91,7 +89,6 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
-      updateToResolvedLookup: mockUpdateToResolvedLookup,
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByRole } = renderComponent();
@@ -142,7 +139,6 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
-      updateToResolvedLookup: mockUpdateToResolvedLookup,
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByRole } = renderComponent();
@@ -157,7 +153,6 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '',
       updateTo: mockUpdateTo,
-      updateToResolvedLookup: mockUpdateToResolvedLookup,
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByRole } = renderComponent();

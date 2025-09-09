@@ -53,11 +53,9 @@ describe('useRecipientValidation', () => {
     } as unknown as ReturnType<typeof useSendType>);
     mockUseEvmRecipientValidation.mockReturnValue({
       validateEvmRecipient: mockValidateEvmRecipient,
-      isLookupLoading: false,
     });
     mockUseSolanaRecipientValidation.mockReturnValue({
       validateSolanaRecipient: mockValidateSolanaRecipient,
-      isLookupLoading: false,
     });
     mockUseAsyncResult.mockReturnValue({
       value: null,

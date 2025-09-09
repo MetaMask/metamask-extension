@@ -56,7 +56,6 @@ describe('useSolanaRecipientValidation', () => {
 
       expect(validationResult).toEqual({
         error: 'invalidAddress',
-        isLookupLoading: false,
       });
     });
 
@@ -73,7 +72,6 @@ describe('useSolanaRecipientValidation', () => {
 
       expect(validationResult).toEqual({
         error: 'invalidAddress',
-        isLookupLoading: false,
       });
     });
 
@@ -92,7 +90,6 @@ describe('useSolanaRecipientValidation', () => {
         error: null,
         resolvedLookup: null,
         warning: null,
-        isLookupLoading: false,
       });
     });
 
@@ -110,7 +107,6 @@ describe('useSolanaRecipientValidation', () => {
 
       expect(validationResult).toEqual({
         error: 'invalidAddress',
-        isLookupLoading: false,
       });
     });
 
@@ -172,7 +168,6 @@ describe('useSolanaRecipientValidation', () => {
 
       expect(validationResult).toEqual({
         error: 'solanaUnknownError',
-        isLookupLoading: false,
       });
     });
 
@@ -200,49 +195,6 @@ describe('useSolanaRecipientValidation', () => {
           chainId: customChainId,
         }),
       );
-    });
-  });
-
-  describe('isLookupLoading', () => {
-    it('returns false initially', () => {
-      const { result } = renderHook();
-      expect(result.current.isLookupLoading).toBe(false);
-    });
-
-    it('sets loading state during domain validation', async () => {
-      mockIsSolanaAddress.mockReturnValue(false);
-      mockIsValidDomainName.mockReturnValue(true);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let resolveValidation: any;
-      mockValidateDomainWithConfusables.mockImplementation(
-        () =>
-          new Promise((resolve) => {
-            resolveValidation = resolve;
-          }),
-      );
-
-      const { result } = renderHook();
-
-      act(() => {
-        result.current.validateSolanaRecipient('example.sol');
-      });
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
-
-      expect(result.current.isLookupLoading).toBe(true);
-
-      act(() => {
-        resolveValidation({ error: null });
-      });
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
-
-      expect(result.current.isLookupLoading).toBe(false);
     });
   });
 });
