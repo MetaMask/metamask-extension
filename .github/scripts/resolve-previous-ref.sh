@@ -31,6 +31,10 @@ fetch_matching_refs() {
       break
     fi
     page=$((page + 1))
+    if [ "$page" -gt 100 ]; then
+      echo "Error: Exceeded maximum pagination limit (100 pages) while fetching refs for prefix '$prefix'. This may indicate too many matching branches or an API issue." >&2
+      exit 1
+    fi
   done
   echo "$temp_file"
 }
@@ -45,13 +49,14 @@ jq -s 'add | [ .[] | .ref | ltrimstr("refs/heads/") as $name | select($name | te
 # Filter to those with semver strictly lower than current and non-hotfix (patch==0)
 jq --arg semver "$semver" '[ .[] | select( .semver as $v | $semver | split(".") as $c | $v | split(".") as $p | ( ($p[0] | tonumber) < ($c[0] | tonumber) or (($p[0] | tonumber) == ($c[0] | tonumber) and (($p[1] | tonumber) < ($c[1] | tonumber) or (($p[1] | tonumber) == ($c[1] | tonumber) and ($p[2] | tonumber) < ($c[2] | tonumber)))) ) and (($p[2] | tonumber) == 0) ) ]' all_versions.json > filtered_versions.json
 
-# Select the highest lower: first in filtered list, fallback to main if none
+# Select the highest lower: first in filtered list. If none found, fail.
 if [ "$(jq length filtered_versions.json)" -eq 0 ]; then
-  previous_ref="main"
-  echo "No lower non-hotfix versions found, falling back to: ${previous_ref}"
+  echo "Error: No lower non-hotfix versions found; cannot determine previous-version-ref." >&2
+  echo "This likely indicates a missing prior minor release branch (e.g., Version-vX.(Y-1).0 or release/X.(Y-1).0)." >&2
+  exit 1
 else
   highest_lower="$(jq -r '.[0].semver' filtered_versions.json)"
   previous_ref="$(jq -r '.[0].name' filtered_versions.json)"
   echo "Selected highest lower non-hotfix version: ${highest_lower} (branch: ${previous_ref})"
+  echo "previous_ref=${previous_ref}" >> "$GITHUB_OUTPUT"
 fi
-echo "previous_ref=${previous_ref}" >> "$GITHUB_OUTPUT"

@@ -21,15 +21,13 @@ if ! [[ "$semver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
-# Check if hotfix: if patch > 0, skip
+# Determine if hotfix (patch > 0). Hotfixes are now supported and should proceed.
 patch="${semver##*.}"
 if [ "$patch" -gt 0 ]; then
-  echo "Hotfix detected (patch $patch > 0), skipping auto-create-release-pr."
-  echo "proceed=false" >> "$GITHUB_OUTPUT"
-  exit 0
+  echo "Hotfix detected (patch $patch > 0), proceeding with auto-create-release-pr."
+else
+  echo "Not a hotfix (patch=0), proceeding."
 fi
-
-echo "Not a hotfix (patch=0), proceeding."
 echo "proceed=true" >> "$GITHUB_OUTPUT"
 
 # Print values passed to call-create-release-pr (note: previous-version-ref computed in reusable workflow)

@@ -48,12 +48,11 @@ jobs:
           if [ "$patch" -gt 0 ]; then
             echo "Detected hotfix (patch=$patch): using stable for both bases."
             echo "checkout_base=stable" >> "$GITHUB_OUTPUT"
-            echo "release_base=stable" >> "$GITHUB_OUTPUT"
           else
             echo "Detected non-hotfix (patch=0): using main for checkout and stable for release PR base."
             echo "checkout_base=main" >> "$GITHUB_OUTPUT"
-            echo "release_base=stable" >> "$GITHUB_OUTPUT"
           fi
+          echo "release_base=stable" >> "$GITHUB_OUTPUT"
 
   resolve-previous-ref:
     needs: resolve-bases
