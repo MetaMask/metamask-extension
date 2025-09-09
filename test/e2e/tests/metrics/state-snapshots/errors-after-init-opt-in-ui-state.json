@@ -169,6 +169,7 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
+    "productTour": "accountIcon",
     "currentMigrationVersion": "number",
     "accountsAssets": "object",
     "assetsMetadata": "object",
