@@ -1800,6 +1800,14 @@
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
   },
+  "deepLink_Error404_CTA": {
+    "message": "$1 and we'll take you to the right place.",
+    "description": "$1 is a link with the text found in `deepLink_Error404_CTA_LinkText`"
+  },
+  "deepLink_Error404_CTA_LinkText": {
+    "message": "Update to the latest version of MetaMask",
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+  },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
   },
