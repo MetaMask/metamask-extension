@@ -64,7 +64,7 @@ describe('Trezor Hardware', function (this: Suite) {
       },
     );
   });
-  it.only('can transfer an ERC20 token', async function () {
+  it('can transfer an ERC20 token', async function () {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
@@ -82,7 +82,7 @@ describe('Trezor Hardware', function (this: Suite) {
             name: erc20,
             deployerOptions: {
               fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-            }
+            },
           },
         ],
       },
@@ -109,9 +109,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
         await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Transfer token
         await testDappPage.clickERC20TokenTransferButton();
@@ -149,7 +147,7 @@ describe('Trezor Hardware', function (this: Suite) {
             name: erc20,
             deployerOptions: {
               fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-            }
+            },
           },
         ],
       },

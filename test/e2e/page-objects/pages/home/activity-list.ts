@@ -162,14 +162,15 @@ class ActivityListPage {
   }
 
   async checkTxAction(expectedAction: string, expectedNumber: number = 1) {
-    await this.driver.wait(async () => {
-      const transactionActions = await this.driver.findElements({
-        css: this.activityListAction,
-        text: expectedAction,
-      });
-      return transactionActions.length === expectedNumber;
-    }, 60000);
+    const transactionActions = await this.driver.findElements(
+      this.activityListAction,
+    );
 
+    await this.driver.wait(async () => {
+      const transactionActionText =
+        await transactionActions[expectedNumber - 1].getText();
+      return transactionActionText === expectedAction;
+    }, 60000);
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
     );

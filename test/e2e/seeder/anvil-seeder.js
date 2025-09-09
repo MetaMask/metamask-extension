@@ -44,7 +44,9 @@ class AnvilSeeder {
         break;
 
       case 'fromPrivateKey':
-        fromAddress = privateKeyToAccount(deployerOptions.fromPrivateKey).address;
+        fromAddress = privateKeyToAccount(
+          deployerOptions.fromPrivateKey,
+        ).address;
         // Seed the account with ETH for gas
         await testClient.setBalance({
           address: fromAddress,
