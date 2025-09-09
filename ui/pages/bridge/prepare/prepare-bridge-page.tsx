@@ -323,24 +323,29 @@ const PrepareBridgePage = ({
   }, [rotateSwitchTokens]);
 
   // Scroll to bottom of the page when banners are shown
-  const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
-  const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
-  const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
-
+  const alertBannersRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (isInsufficientGasForQuote) {
-      insufficientBalanceBannerRef.current?.scrollIntoView({
+    if (
+      isEstimatedReturnLow ||
+      isInsufficientGasForQuote ||
+      isLowReturnBannerOpen ||
+      tokenAlert ||
+      txAlert ||
+      isUsingHardwareWallet
+    ) {
+      alertBannersRef.current?.scrollIntoView({
         behavior: 'smooth',
-        block: 'start',
+        block: 'end',
       });
     }
-    if (isEstimatedReturnLow) {
-      isEstimatedReturnLowRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }, [isEstimatedReturnLow, isInsufficientGasForQuote, isLowReturnBannerOpen]);
+  }, [
+    isEstimatedReturnLow,
+    isInsufficientGasForQuote,
+    isLowReturnBannerOpen,
+    tokenAlert,
+    txAlert,
+    isUsingHardwareWallet,
+  ]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
@@ -883,117 +888,113 @@ const PrepareBridgePage = ({
             </Column>
           )}
 
-          {/** Alert banners */}
-          {isUsingHardwareWallet &&
-            isTxSubmittable &&
-            hardwareWalletName &&
-            activeQuote && (
-              <BannerAlert
-                marginInline={4}
-                title={t('hardwareWalletSubmissionWarningTitle')}
-                textAlign={TextAlign.Left}
-              >
-                <ul style={{ listStyle: 'disc' }}>
-                  <li>
-                    <Text variant={TextVariant.bodyMd}>
-                      {t('hardwareWalletSubmissionWarningStep1', [
-                        hardwareWalletName,
-                      ])}
-                    </Text>
-                  </li>
-                  <li>
-                    <Text variant={TextVariant.bodyMd}>
-                      {t('hardwareWalletSubmissionWarningStep2', [
-                        hardwareWalletName,
-                      ])}
-                    </Text>
-                  </li>
-                </ul>
-              </BannerAlert>
-            )}
-          {txAlert && activeQuote && (
+      {/** Alert banners */}
+      <Column
+        paddingInline={4}
+        gap={4}
+        backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+      >
+        {isUsingHardwareWallet &&
+          isTxSubmittable &&
+          hardwareWalletName &&
+          activeQuote && (
             <BannerAlert
-              marginInline={4}
-              severity={BannerAlertSeverity.Danger}
-              title={t(txAlert.titleId)}
-              description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
+              title={t('hardwareWalletSubmissionWarningTitle')}
               textAlign={TextAlign.Left}
-            />
+            >
+              <ul style={{ listStyle: 'disc' }}>
+                <li>
+                  <Text variant={TextVariant.bodyMd}>
+                    {t('hardwareWalletSubmissionWarningStep1', [
+                      hardwareWalletName,
+                    ])}
+                  </Text>
+                </li>
+                <li>
+                  <Text variant={TextVariant.bodyMd}>
+                    {t('hardwareWalletSubmissionWarningStep2', [
+                      hardwareWalletName,
+                    ])}
+                  </Text>
+                </li>
+              </ul>
+            </BannerAlert>
           )}
-          {isNoQuotesAvailable && !isQuoteExpired && (
+        {txAlert && activeQuote && (
+          <BannerAlert
+            severity={BannerAlertSeverity.Danger}
+            title={t(txAlert.titleId)}
+            description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
+            textAlign={TextAlign.Left}
+          />
+        )}
+        {isNoQuotesAvailable && !isQuoteExpired && (
+          <BannerAlert
+            severity={BannerAlertSeverity.Danger}
+            description={t('noOptionsAvailableMessage')}
+            textAlign={TextAlign.Left}
+          />
+        )}
+        {isCannotVerifyTokenBannerOpen &&
+          isEvm &&
+          toToken &&
+          toTokenIsNotNative &&
+          occurrences &&
+          Number(occurrences) < 2 && (
             <BannerAlert
-              marginInline={4}
-              severity={BannerAlertSeverity.Danger}
-              description={t('noOptionsAvailableMessage')}
-              textAlign={TextAlign.Left}
-            />
-          )}
-          {isCannotVerifyTokenBannerOpen &&
-            isEvm &&
-            toToken &&
-            toTokenIsNotNative &&
-            occurrences &&
-            Number(occurrences) < 2 && (
-              <BannerAlert
-                severity={BannerAlertSeverity.Warning}
-                title={t('bridgeTokenCannotVerifyTitle')}
-                description={t('bridgeTokenCannotVerifyDescription')}
-                marginInline={4}
-                textAlign={TextAlign.Left}
-                onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
-              />
-            )}
-          {tokenAlert && isTokenAlertBannerOpen && (
-            <BannerAlert
-              ref={tokenAlertBannerRef}
-              marginInline={4}
-              title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
-              severity={
-                tokenAlert.type === TokenFeatureType.MALICIOUS
-                  ? BannerAlertSeverity.Danger
-                  : BannerAlertSeverity.Warning
-              }
-              description={
-                tokenAlert.descriptionId
-                  ? t(tokenAlert.descriptionId)
-                  : tokenAlert.description
-              }
-              textAlign={TextAlign.Left}
-              onClose={() => setIsTokenAlertBannerOpen(false)}
-            />
-          )}
-          {!isLoading &&
-            activeQuote &&
-            !isInsufficientBalance &&
-            isInsufficientGasForQuote && (
-              <BannerAlert
-                ref={isEstimatedReturnLowRef}
-                marginInline={4}
-                title={t('bridgeValidationInsufficientGasTitle', [ticker])}
-                severity={BannerAlertSeverity.Danger}
-                description={t('bridgeValidationInsufficientGasMessage', [
-                  ticker,
-                ])}
-                textAlign={TextAlign.Left}
-                actionButtonLabel={t('buyMoreAsset', [ticker])}
-                actionButtonOnClick={() => openBuyCryptoInPdapp()}
-              />
-            )}
-          {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
-            <BannerAlert
-              ref={insufficientBalanceBannerRef}
-              marginInline={4}
-              title={t('lowEstimatedReturnTooltipTitle')}
               severity={BannerAlertSeverity.Warning}
-              description={t('lowEstimatedReturnTooltipMessage', [
-                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
+              title={t('bridgeTokenCannotVerifyTitle')}
+              description={t('bridgeTokenCannotVerifyDescription')}
+              textAlign={TextAlign.Left}
+              onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
+            />
+          )}
+        {tokenAlert && isTokenAlertBannerOpen && (
+          <BannerAlert
+            title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
+            severity={
+              tokenAlert.type === TokenFeatureType.MALICIOUS
+                ? BannerAlertSeverity.Danger
+                : BannerAlertSeverity.Warning
+            }
+            description={
+              tokenAlert.descriptionId
+                ? t(tokenAlert.descriptionId)
+                : tokenAlert.description
+            }
+            textAlign={TextAlign.Left}
+            onClose={() => setIsTokenAlertBannerOpen(false)}
+          />
+        )}
+        {!isLoading &&
+          activeQuote &&
+          !isInsufficientBalance &&
+          isInsufficientGasForQuote && (
+            <BannerAlert
+              title={t('bridgeValidationInsufficientGasTitle', [ticker])}
+              severity={BannerAlertSeverity.Danger}
+              description={t('bridgeValidationInsufficientGasMessage', [
+                ticker,
               ])}
               textAlign={TextAlign.Left}
-              onClose={() => setIsLowReturnBannerOpen(false)}
+              actionButtonLabel={t('buyMoreAsset', [ticker])}
+              actionButtonOnClick={() => openBuyCryptoInPdapp()}
             />
           )}
-        </Column>
+        {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
+          <BannerAlert
+            title={t('lowEstimatedReturnTooltipTitle')}
+            severity={BannerAlertSeverity.Warning}
+            description={t('lowEstimatedReturnTooltipMessage', [
+              BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
+            ])}
+            textAlign={TextAlign.Left}
+            onClose={() => setIsLowReturnBannerOpen(false)}
+          />
+        )}
+        <div ref={alertBannersRef} />
       </Column>
+
       {showBlockExplorerToast && blockExplorerToken && (
         <div
           style={{
