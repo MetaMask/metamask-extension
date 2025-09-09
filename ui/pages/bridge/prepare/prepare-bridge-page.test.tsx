@@ -353,7 +353,7 @@ describe('PrepareBridgePage - Race Conditions', () => {
     const chainIds = ['0x1', '0x89', '0xa'];
 
     // Mock different responses for different chains
-    mockIsSendBundleSupported.mockImplementation((chainId) => {
+    mockIsSendBundleSupported.mockImplementation((chainId: string) => {
       const delays: Record<string, number> = {
         '0x1': 100,
         '0x89': 50,
