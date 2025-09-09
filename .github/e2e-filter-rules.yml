@@ -1,9 +1,10 @@
 # Filter rules for determining if E2E tests should run if any of those files are modified
 # Used with dorny/paths-filter action
 
-# Note: patterns are evaluated in order, so the more specific patterns should be listed first
-
 files-e2e-required:
+
+  # Include everything
+  - '**'
 
   # Exclude doc files
   - '!**/*.md'
@@ -31,9 +32,5 @@ files-e2e-required:
   - '.github/scripts/split-tests-by-timings.ts'
   - '.github/scripts/validate-e2e-page-object-usage.ts'
 
-  # Exclude Github files (after specific includes)
+  # Exclude Github files
   - '!.github/**'
-
-  # Include everything else
-  - '**'
-  
