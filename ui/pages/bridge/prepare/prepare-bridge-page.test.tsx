@@ -5,6 +5,7 @@ import * as ReactReduxModule from 'react-redux';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHook } from '@testing-library/react-hooks';
+import { Hex } from '@metamask/utils';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -351,7 +352,7 @@ describe('PrepareBridgePage - Race Conditions', () => {
 
   it('handles isSendBundleSupported race conditions correctly', async () => {
     // Test that rapid chain changes don't cause race conditions
-    const chainIds = ['0x1', '0x89', '0xa'];
+    const chainIds: Hex[] = ['0x1', '0x89', '0xa'];
 
     // Mock different responses for different chains
     mockIsSendBundleSupported.mockImplementation((chainId: string) => {
