@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import FileInput from 'react-simple-file-input';
 import classnames from 'classnames';
 import {
   AlignItems,
@@ -75,12 +76,9 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
       addFiles(files);
     };
 
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.target;
+    const onFileChange = (files: FileList) => {
       if (!files) return;
       addFiles(files);
-      // Clear input since file is moved to filelist already
-      e.target.value = '';
     };
 
     return (
@@ -145,12 +143,15 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           >
             PDF, PNG, JPG (MAX. 5MB)
           </Text>
-          <input
+
+          <FileInput
             id="file-uploader-input"
-            type="file"
-            className="hidden"
-            multiple={true}
+            data-testid="file-uploader-input"
             onChange={onFileChange}
+            className="hidden"
+            multiple
+            // don't save the value to the input field to allow reuploading the same file
+            value={''}
             accept={[
               'application/pdf',
               'image/png',
