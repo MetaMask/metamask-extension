@@ -121,7 +121,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           overflowWrap: OverflowWrap.Anywhere,
           minHeight: '24px',
           position: 'relative',
-          cursor: onClick ? 'pointer' : 'default',
+          ...(onClick && { cursor: 'pointer' }),
           ...style,
         }}
         onClick={onClick}
