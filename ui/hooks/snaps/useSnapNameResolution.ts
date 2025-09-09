@@ -56,43 +56,36 @@ export function useSnapNameResolution() {
 
   const lookupDomainAddresses = useCallback(
     async (chainId: string, domain: string) => {
-      try {
-        const filteredSnaps = getFilteredSnaps(chainId, domain);
+      const filteredSnaps = getFilteredSnaps(chainId, domain);
 
-        const responses = await Promise.allSettled(
-          filteredSnaps.map(
-            (id) =>
-              handleSnapRequest({
-                snapId: id,
-                origin: 'metamask',
-                handler: 'onNameLookup',
-                request: {
-                  jsonrpc: '2.0',
-                  method: ' ',
-                  params: {
-                    chainId,
-                    domain,
-                  },
+      const responses = await Promise.allSettled(
+        filteredSnaps.map(
+          (id) =>
+            handleSnapRequest({
+              snapId: id,
+              origin: 'metamask',
+              handler: 'onNameLookup',
+              request: {
+                jsonrpc: '2.0',
+                method: ' ',
+                params: {
+                  chainId,
+                  domain,
                 },
-              }) as Promise<DomainLookupResult>,
-          ),
+              },
+            }) as Promise<DomainLookupResult>,
+        ),
+      );
+
+      const resolutions = responses
+        .filter((response) => response.status === 'fulfilled' && response.value)
+        .flatMap(
+          (response) =>
+            (response as PromiseFulfilledResult<DomainLookupResult>).value
+              .resolvedAddresses,
         );
 
-        const resolutions = responses
-          .filter(
-            (response) => response.status === 'fulfilled' && response.value,
-          )
-          .flatMap(
-            (response) =>
-              (response as PromiseFulfilledResult<DomainLookupResult>).value
-                .resolvedAddresses,
-          );
-
-        return resolutions;
-      } catch (error) {
-        console.error('Error resolving name lookup:', error);
-        return [];
-      }
+      return resolutions;
     },
     [getFilteredSnaps],
   );
