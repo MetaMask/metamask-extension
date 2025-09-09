@@ -104,13 +104,20 @@ export async function bridgeTransaction(
   await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
 
   if (quote.unapproved) {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
-    await activityList.checkTxAction(
-      `Approve ${quote.tokenFrom} for bridge`,
-      2,
-    );
+    await activityList.checkTxAction({
+      action: `Bridged to ${quote.toChain}`,
+      completedTxs: transactionsCount,
+    });
+    await activityList.checkTxAction({
+      action: `Approve ${quote.tokenFrom} for bridge`,
+      completedTxs: transactionsCount,
+      txIndex: 2,
+    });
   } else {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction({
+      action: `Bridged to ${quote.toChain}`,
+      completedTxs: transactionsCount,
+    });
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.checkTxAmountInActivity(
