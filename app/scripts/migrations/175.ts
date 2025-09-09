@@ -16,10 +16,6 @@ type TransactionStateEntry = {
   lastUpdated: number;
 };
 
-type LegacyTransactionsState = {
-  [accountId: string]: TransactionStateEntry;
-};
-
 type NewTransactionsState = {
   [accountId: string]: {
     [chainId: string]: TransactionStateEntry;
