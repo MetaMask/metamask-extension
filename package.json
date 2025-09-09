@@ -178,7 +178,6 @@
     "@fortawesome/fontawesome-free@^5.13.0": "patch:@fortawesome/fontawesome-free@npm%3A5.13.0#./.yarn/patches/@fortawesome-fontawesome-free-npm-5.13.0-f20fc0388d.patch",
     "fast-json-patch@^3.1.0": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "parse5@^7.0.0": "patch:parse5@npm%3A7.1.2#./.yarn/patches/parse5-npm-7.1.2-aa9a92c270.patch",
-    "zxcvbn@^4.4.2": "patch:zxcvbn@npm%3A4.4.2#./.yarn/patches/zxcvbn-npm-4.4.2-6527983856.patch",
     "watchify@^4.0.0": "patch:watchify@npm%3A4.0.0#./.yarn/patches/watchify-npm-4.0.0-4fd965dd49.patch",
     "undeclared-identifiers@^1.1.2": "patch:undeclared-identifiers@npm%3A1.1.2#./.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch",
     "stylelint@^13.6.1": "patch:stylelint@npm%3A13.6.1#./.yarn/patches/stylelint-npm-13.6.1-47aaddf62b.patch",
@@ -440,8 +439,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "xml2js": "^0.6.2",
-    "zxcvbn": "^4.4.2"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",
@@ -558,7 +556,6 @@
     "@types/xml2js": "^0",
     "@types/yargs": "^17.0.32",
     "@types/yargs-parser": "^21.0.3",
-    "@types/zxcvbn": "^4.4.5",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
     "@viem/anvil": "^0.0.10",
