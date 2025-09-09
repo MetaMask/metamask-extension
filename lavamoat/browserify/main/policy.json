@@ -982,7 +982,7 @@
     "@metamask/chain-agnostic-permission": {
       "packages": {
         "@metamask/api-specs": true,
-        "@metamask/chain-agnostic-permission>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -1027,25 +1027,6 @@
         "eslint>fast-deep-equal": true
       }
     },
-    "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
     "@metamask/ens-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1054,7 +1035,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
@@ -1062,7 +1042,8 @@
         "browserify>buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/gas-fee-controller>@metamask/controller-utils": {
@@ -1141,6 +1122,25 @@
         "eslint>fast-deep-equal": true
       }
     },
+    "@metamask/notification-services-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
     "@metamask/permission-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1158,6 +1158,25 @@
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/phishing-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/ppom-validator>@metamask/controller-utils": {
@@ -1217,6 +1236,25 @@
         "eslint>fast-deep-equal": true
       }
     },
+    "@metamask/signature-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
     "@metamask/smart-transactions-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1234,6 +1272,25 @@
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
       }
     },
     "@metamask/delegation-controller": {
@@ -1814,7 +1871,7 @@
       "packages": {
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/notification-services-controller>@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
@@ -1874,7 +1931,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/phishing-controller>@metamask/controller-utils": true,
         "@noble/hashes": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
@@ -2070,7 +2127,7 @@
       "packages": {
         "@metamask/approval-controller": true,
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/signature-controller>@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
@@ -2310,7 +2367,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/user-operation-controller>@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
@@ -2418,33 +2475,21 @@
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
       "packages": {
         "@noble/hashes": true
       }
     },
     "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
       "packages": {
         "@noble/hashes": true
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
       "packages": {
         "@noble/hashes": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
       "packages": {
         "@noble/hashes": true
       }
