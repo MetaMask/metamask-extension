@@ -70,9 +70,9 @@ jobs:
               echo "-> Skipping E2E tests due to 'skip-e2e' tag"
 
             # Skip E2E only if ALL changed files are in safe_to_skip_files filter
-            elif [[ "${{ steps.changes.outputs.safe_to_skip_files_count }}" == "${{ steps.changes.outputs.all_changes_count }}" ]]; then
+            elif [[ "${{ steps.changes.outputs.non_e2e_related_files_count }}" == "${{ steps.changes.outputs.all_changes_count }}" ]]; then
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
-              echo "-> Skipping E2E tests - only safe_to_skip_files_count changes found"
+              echo "-> Skipping E2E tests - only non_e2e_related_files changes found"
 
             else
               echo "-> Running E2E tests - found changes outside 'safe_to_skip_files' categories"

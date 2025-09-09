@@ -38,18 +38,18 @@ config_files: &config_files
   - 'codecov.yml'
 
 # GITHUB CI/CD FILES
-github_ci_files: &github_ci_files
-  - '.github/**/*'
-  - '!.github/workflows/main.yml'
-  - '!.github/workflows/needs-e2e.yml'
-  - '!.github/e2e-filter-rules.yml'
-  - '!.github/workflows/e2e-chrome.yml'
-  - '!.github/workflows/e2e-firefox.yml'
-  - '!.github/workflows/run-e2e.yml'
-  - '!.github/scripts/git-diff-default-branch.ts'
-  - '!.github/scripts/create-e2e-test-report.ts'
-  - '!.github/scripts/split-tests-by-timings.ts'
-  - '!.github/scripts/validate-e2e-page-object-usage.ts'
+# github_ci_files: &github_ci_files
+#   - '.github/**/*'
+#   - '!.github/workflows/main.yml'
+#   - '!.github/workflows/needs-e2e.yml'
+#   - '!.github/e2e-filter-rules.yml'
+#   - '!.github/workflows/e2e-chrome.yml'
+#   - '!.github/workflows/e2e-firefox.yml'
+#   - '!.github/workflows/run-e2e.yml'
+#   - '!.github/scripts/git-diff-default-branch.ts'
+#   - '!.github/scripts/create-e2e-test-report.ts'
+#   - '!.github/scripts/split-tests-by-timings.ts'
+#   - '!.github/scripts/validate-e2e-page-object-usage.ts'
 
 # DEVELOPMENT TOOLS
 dev_tools: &dev_tools
@@ -58,11 +58,11 @@ dev_tools: &dev_tools
   - 'development/generate-attributions/**/*'
 
 # ALL FILTERED FILES - non E2E related files
-safe_to_skip_files:
+non_e2e_related_files:
   - *documentation_files
   - *test_files
   - *config_files
-  - *github_ci_files
+  # - *github_ci_files
   - *dev_tools
 
 # ALL CHANGED FILES
