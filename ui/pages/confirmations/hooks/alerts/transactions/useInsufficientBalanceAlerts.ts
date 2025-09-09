@@ -46,7 +46,7 @@ export function useInsufficientBalanceAlerts({
     selectTransactionAvailableBalance(state, transactionId, chainId),
   );
 
-  const totalValue = sumHexes(value ?? '0x0', ...batchTransactionValues);
+  const totalValue = sumHexes(value, ...batchTransactionValues);
 
   const { hexMaximumTransactionFee } = useSelector((state) =>
     selectTransactionFeeById(state, transactionId),
