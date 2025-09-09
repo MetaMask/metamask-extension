@@ -169,7 +169,7 @@ async function fetchUrlData(url) {
       .get(url, (response) => {
         if (response.statusCode === 302 || response.statusCode === 301) {
           // Handle redirect
-          fetchUrlData(response.headers.location).then(resolve).catch(reject);
+          return fetchUrlData(response.headers.location).then(resolve).catch(reject);
         }
 
         if (response.statusCode !== 200) {
