@@ -393,7 +393,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it.only('should gracefully handle deleted network', async function () {
+  it('should gracefully handle deleted network', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
