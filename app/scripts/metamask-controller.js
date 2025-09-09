@@ -156,6 +156,12 @@ import {
 } from '@metamask/multichain-api-middleware';
 
 import {
+  getCallsStatus,
+  getCapabilities,
+  processSendCalls,
+} from '@metamask/eip-5792-middleware';
+
+import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -264,7 +270,10 @@ import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import {
+  getIsSeedlessOnboardingFeatureEnabled,
+  isGatorPermissionsFeatureEnabled,
+} from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
@@ -407,11 +416,6 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import {
-  getCallsStatus,
-  getCapabilities,
-  processSendCalls,
-} from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
@@ -425,15 +429,18 @@ import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 import { qrKeyringBuilderFactory } from './lib/qr-keyring-builder-factory';
 import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
-import OAuthService from './services/oauth/oauth-service';
-import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
-import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
+import {
+  OAuthServiceInit,
+  SeedlessOnboardingControllerInit,
+} from './controller-init/seedless-onboarding';
 import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
+
+import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1111,20 +1118,6 @@ export default class MetamaskController extends EventEmitter {
     this.onboardingController = new OnboardingController({
       messenger: onboardingControllerMessenger,
       state: initState.OnboardingController,
-    });
-
-    this.oauthService = new OAuthService({
-      env: {
-        googleClientId: process.env.GOOGLE_CLIENT_ID,
-        appleClientId: process.env.APPLE_CLIENT_ID,
-      },
-      webAuthenticator: webAuthenticatorFactory(),
-      bufferedTrace: this.metaMetricsController.bufferedTrace.bind(
-        this.metaMetricsController,
-      ),
-      bufferedEndTrace: this.metaMetricsController.bufferedEndTrace.bind(
-        this.metaMetricsController,
-      ),
     });
 
     const keyringOverrides = this.opts.overrides?.keyrings;
@@ -1967,6 +1960,7 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       AccountTreeController: AccountTreeControllerInit,
+      OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
@@ -2025,6 +2019,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
+    this.oauthService = controllersByName.OAuthService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
@@ -2065,6 +2060,7 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
     this.controllerMessenger.subscribe(
       'NotificationServicesPushController:pushNotificationClicked',
       (notification) => {
@@ -2184,6 +2180,12 @@ export default class MetamaskController extends EventEmitter {
         },
         this.controllerMessenger,
       ),
+      processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
+        ? forwardRequestToSnap.bind(null, {
+            snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
+            handleRequest: this.handleSnapRequest.bind(this),
+          })
+        : undefined,
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -3706,6 +3708,10 @@ export default class MetamaskController extends EventEmitter {
       getTokenSymbol: this.getTokenSymbol.bind(this),
       getTokenStandardAndDetailsByChain:
         this.getTokenStandardAndDetailsByChain.bind(this),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -9464,11 +9470,6 @@ export default class MetamaskController extends EventEmitter {
       trackEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
-      refreshOAuthToken: this.oauthService.getNewRefreshToken.bind(
-        this.oauthService,
-      ),
-      revokeAndGetNewRefreshToken:
-        this.oauthService.revokeAndGetNewRefreshToken.bind(this.oauthService),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
