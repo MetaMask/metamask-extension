@@ -143,9 +143,11 @@ describe('Deep Link', function () {
             const text = await deepLink.getDescriptionText();
             assert.equal(
               text,
-              `We can't find the page you are looking for.
+              `We can't find the page you are looking for.` + signed
+                ? `
 Update to the latest version of MetaMask
-and we'll take you to the right place.`,
+and we'll take you to the right place.`
+                : '',
             );
           }
 
