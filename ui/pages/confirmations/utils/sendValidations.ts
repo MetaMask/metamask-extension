@@ -8,7 +8,7 @@ import { RecipientValidationResult } from '../types/send';
 export type DomainValidationOptions = {
   chainId: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resolveNameLookup: (chainId: string, domain: string) => Promise<any[]>;
+  lookupDomainAddresses: (chainId: string, domain: string) => Promise<any[]>;
   formatChainId?: (chainId: string) => string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filterResolutions?: (resolutions: any[]) => any[];
@@ -25,20 +25,21 @@ export const validateDomainWithConfusables = async (
   try {
     const {
       chainId,
-      resolveNameLookup,
+      lookupDomainAddresses,
       formatChainId,
       filterResolutions,
       errorMessages,
     } = options;
 
     const formattedChainId = formatChainId ? formatChainId(chainId) : chainId;
-    const resolutions = await resolveNameLookup(formattedChainId, address);
+    const resolutions = await lookupDomainAddresses(formattedChainId, address);
 
     // Apply filtering if provided
     const filteredResolutions = filterResolutions
       ? filterResolutions(resolutions)
       : resolutions;
 
+    console.log('OGP - filteredResolutions', filteredResolutions);
     if (!filteredResolutions || filteredResolutions.length === 0) {
       return { error: errorMessages.unknownError, isLookupLoading: false };
     }

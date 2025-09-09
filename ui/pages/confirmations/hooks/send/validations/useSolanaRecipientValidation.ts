@@ -34,7 +34,6 @@ const validateSolanaAddress = (address: string) => {
 };
 
 export const useSolanaRecipientValidation = () => {
-  const { chainId } = useSendContext();
   const [isLoading, setIsLoading] = useState(false);
   const { lookupDomainAddresses } = useSnapNameResolution();
 
@@ -76,7 +75,7 @@ export const useSolanaRecipientValidation = () => {
         isLookupLoading: false,
       };
     },
-    [chainId, lookupDomainAddresses],
+    [lookupDomainAddresses],
   );
 
   return {
