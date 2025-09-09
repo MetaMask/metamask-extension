@@ -5651,6 +5651,9 @@
   "signingWith": {
     "message": "Signing with"
   },
+  "similarTo": {
+    "message": "$1 is similar to $2"
+  },
   "simulationApproveHeading": {
     "message": "Withdraw"
   },
