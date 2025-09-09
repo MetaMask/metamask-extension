@@ -9,13 +9,16 @@ import {
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import Eip7702AndSendCalls from '../page-objects/pages/confirmations/redesign/batch-confirmation';
 import { addToQueue } from './helpers';
 
 type ConfirmationsRejectRuleOptions = {
   driver: Driver;
   only: string[];
   requiresEthAccountsPermission: string[];
+  requiresSmartAccountUpgrade: string[];
 };
+
 // this rule makes sure that all confirmation requests are rejected.
 // it also validates that the JSON-RPC response is an error with
 // error code 4001 (user rejected request)
@@ -26,11 +29,18 @@ export class ConfirmationsRejectRule implements Rule {
 
   private requiresEthAccountsPermission: string[];
 
+  private requiresSmartAccountUpgrade: string[];
+
   constructor(options: ConfirmationsRejectRuleOptions) {
     this.driver = options.driver;
     this.only = options.only;
 
-    this.requiresEthAccountsPermission = options.requiresEthAccountsPermission;
+    this.requiresEthAccountsPermission = [
+      ...options.requiresEthAccountsPermission,
+      ...options.requiresSmartAccountUpgrade,
+    ];
+
+    this.requiresSmartAccountUpgrade = options.requiresSmartAccountUpgrade;
   }
 
   getTitle() {
@@ -88,11 +98,7 @@ export class ConfirmationsRejectRule implements Rule {
               const switchEthereumChainRequest = JSON.stringify({
                 jsonrpc: '2.0',
                 method: 'wallet_switchEthereumChain',
-                params: [
-                  {
-                    chainId: '0x539', // 1337
-                  },
-                ],
+                params: [{ chainId: '0x539' }],
               });
 
               await this.driver.executeScript(
@@ -114,15 +120,23 @@ export class ConfirmationsRejectRule implements Rule {
         resolve,
         reject,
         task: async () => {
+          const requiresSmartAccountUpgrade =
+            this.requiresSmartAccountUpgrade.includes(call.methodName);
           try {
-            await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            if (requiresSmartAccountUpgrade) {
+              // TODO: Having flaky results when handling smart account upgrade screen
+              await this.driver.delay(3000); // Wait for dialog to open
+            }
+            await this.driver.waitAndSwitchToWindowWithTitle(
+              3,
+              WINDOW_TITLES.Dialog,
+            );
 
-            const text = 'Cancel';
-
-            await this.driver.findClickableElements({
-              text: 'Cancel',
-              tag: 'button',
-            });
+            // Handle smart account upgrade splash screen
+            if (requiresSmartAccountUpgrade) {
+              const eip7702 = new Eip7702AndSendCalls(this.driver);
+              await eip7702.clickUseSmartAccountButton();
+            }
 
             const screenshot = await this.driver.driver.takeScreenshot();
             call.attachments = call.attachments || [];
@@ -130,8 +144,13 @@ export class ConfirmationsRejectRule implements Rule {
               type: 'image',
               data: `data:image/png;base64,${screenshot}`,
             });
-            await this.driver.clickElement({ text, tag: 'button' });
-            // make sure to switch back to the dapp or else the next test will fail on the wrong window
+
+            await this.driver.clickElement({
+              text: 'Cancel',
+              tag: 'button',
+            });
+
+            // Ensure we're back on the dapp window
             await switchToOrOpenDapp(this.driver);
           } catch (e) {
             console.log(e);
@@ -141,7 +160,6 @@ export class ConfirmationsRejectRule implements Rule {
     });
   }
 
-  // get all the confirmation calls to make and expect to pass
   getCalls(_: unknown, method: MethodObject) {
     const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;

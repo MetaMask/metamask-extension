@@ -141,7 +141,7 @@ export function getCallsStatus(
   if (!transactions?.length) {
     throw new JsonRpcError(
       EIP5792ErrorCode.UnknownBundleId,
-      `No matching bundle found`,
+      `No matching bundle found.`,
     );
   }
 

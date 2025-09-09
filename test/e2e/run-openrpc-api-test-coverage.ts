@@ -21,6 +21,8 @@ import {
   ACCOUNT_1,
 } from './helpers';
 import transformOpenRPCDocument from './api-specs/transform';
+import { ExpectedErrorRule } from './api-specs/ExpectedErrorRule';
+import { PermittedAccountRule } from './api-specs/PermittedAccountRule';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -43,6 +45,7 @@ async function main() {
           chainId,
           ACCOUNT_1,
         );
+
       const parsedDoc = await parseOpenRPCDocument(doc);
 
       const server = mockServer(port, parsedDoc);
@@ -70,10 +73,6 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           'wallet_swapAsset',
-          // TODO: EIP-5792 methods below are quarantined until we improve openrpc document examples for testing, task to unskip tracked here: https://github.com/MetaMask/MetaMask-planning/issues/5224
-          'wallet_getCapabilities',
-          'wallet_getCallsStatus',
-          'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -92,8 +91,15 @@ async function main() {
               'personal_sign',
               'eth_signTypedData_v4',
               'eth_getEncryptionPublicKey',
-              'wallet_sendCalls',
             ],
+            requiresSmartAccountUpgrade: ['wallet_sendCalls'],
+          }),
+          new PermittedAccountRule({
+            driver,
+            only: ['wallet_getCapabilities'],
+          }),
+          new ExpectedErrorRule({
+            only: ['wallet_getCallsStatus'],
           }),
         ],
       });
