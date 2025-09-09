@@ -61,6 +61,14 @@ async function main() {
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
 
+      /* On EVM, we need to request permissions for `wallet_getCapabilities` method
+      because we don't start with a session, so we use a different rule for it.
+      */
+      const filteredMethodsForEVM = [
+        ...filteredMethods,
+        'wallet_getCapabilities',
+      ];
+
       const testCoverageResults = await testCoverage({
         openrpcDocument: parsedDoc,
         transport,
@@ -79,12 +87,12 @@ async function main() {
         rules: [
           new JsonSchemaFakerRule({
             only: [],
-            skip: filteredMethods,
+            skip: filteredMethodsForEVM,
             numCalls: 2,
           }),
           new ExamplesRule({
             only: [],
-            skip: filteredMethods,
+            skip: filteredMethodsForEVM,
           }),
           new ConfirmationsRejectRule({
             driver,

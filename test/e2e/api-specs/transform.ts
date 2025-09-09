@@ -142,12 +142,9 @@ const transformOpenRPCDocument = (
     (m) => (m as MethodObject).name === 'wallet_getCallsStatus',
   ) as MethodObject;
 
-  getCallsStatus.errors = getCallsStatus.errors
-    ?.filter(
-      (error) =>
-        (error as ErrorObject).code === EIP5792ErrorCode.UnknownBundleId,
-    )
-    .map((error) => ({ ...error, data: null }));
+  getCallsStatus.errors = [
+    { code: 5730, data: null, message: 'No matching bundle found' },
+  ];
 
   const getCapabilities = openrpcDocument.methods.find(
     (m) => (m as MethodObject).name === 'wallet_getCapabilities',
@@ -399,8 +396,7 @@ const transformOpenRPCDocument = (
         // see here: https://github.com/MetaMask/eth-json-rpc-filters/issues/152
         m.name.includes('filter') ||
         m.name.includes('Filter') ||
-        m.name.includes('wallet_getCallsStatus') ||
-        m.name.includes('wallet_getCapabilities')
+        m.name.includes('wallet_getCallsStatus')
       );
     })
     .map((m) => (m as MethodObject).name);

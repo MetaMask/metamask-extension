@@ -119,6 +119,7 @@ export class ConfirmationsRejectRule implements Rule {
         task: async () => {
           const requiresSmartAccountUpgrade =
             this.requiresSmartAccountUpgrade.includes(call.methodName);
+
           try {
             if (requiresSmartAccountUpgrade) {
               // TODO: Having flaky results when handling smart account upgrade screen
