@@ -18,7 +18,7 @@ export const useRecipientValidation = () => {
 
   const [debouncedTo, setDebouncedTo] = useState(to);
   const debouncedSetTo = useCallback(
-    debounce((value) => {
+    debounce((value: string) => {
       setDebouncedTo(value);
     }, 300),
     [],
@@ -31,50 +31,39 @@ export const useRecipientValidation = () => {
   }, [debouncedSetTo]);
 
   useEffect(() => {
-    debouncedSetTo(to);
+    debouncedSetTo(to || '');
   }, [to, debouncedSetTo]);
 
-  const isEvmSendType = useMemo(
-    () => sendType.isEvmSendType,
-    [sendType.isEvmSendType],
-  );
-  const isSolanaSendType = useMemo(
-    () => sendType.isSolanaSendType,
-    [sendType.isSolanaSendType],
-  );
+  const isEvmSendType = sendType.isEvmSendType;
+  const isSolanaSendType = sendType.isSolanaSendType;
 
   const validateRecipient = useCallback(
-    async (address?: string) => {
-      const emptyResult = {
+    async (address?: string): Promise<RecipientValidationResult> => {
+      const emptyResult: RecipientValidationResult = {
         error: null,
         resolvedLookup: null,
         warning: null,
+        confusableCharacters: [],
       };
       if (!address) {
         return emptyResult;
       }
 
-      let result;
+      let result: Partial<RecipientValidationResult> = {};
       if (isEvmSendType) {
         result = await validateEvmRecipient(address, chainId);
       } else if (isSolanaSendType) {
         result = await validateSolanaRecipient(address, chainId);
       } else {
-        result = emptyResult;
+        return emptyResult;
       }
 
-      const finalResult = {
-        confusableCharacters:
-          'confusableCharacters' in result
-            ? (result.confusableCharacters ?? [])
-            : [],
+      return {
+        confusableCharacters: result.confusableCharacters ?? [],
         error: result.error ?? null,
-        resolvedLookup:
-          'resolvedLookup' in result ? (result.resolvedLookup ?? null) : null,
+        resolvedLookup: result.resolvedLookup ?? null,
         warning: result.warning ?? null,
       };
-
-      return finalResult;
     },
     [
       isEvmSendType,
@@ -90,19 +79,33 @@ export const useRecipientValidation = () => {
     [debouncedTo],
   );
 
+  // Persist last known result to avoid "resetting"
+  const [lastResult, setLastResult] = useState<RecipientValidationResult>({
+    error: null,
+    resolvedLookup: null,
+    warning: null,
+    confusableCharacters: [],
+  });
+
+  useEffect(() => {
+    if (value) {
+      setLastResult(value);
+    }
+  }, [value]);
+
   const translatedError = useMemo(() => {
-    return value?.error ? t(value.error) : null;
-  }, [value?.error, t]);
+    return lastResult.error ? t(lastResult.error) : null;
+  }, [lastResult.error, t]);
 
   const translatedWarning = useMemo(() => {
-    return value?.warning ? t(value.warning) : null;
-  }, [value?.warning, t]);
+    return lastResult.warning ? t(lastResult.warning) : null;
+  }, [lastResult.warning, t]);
 
   return {
     recipientError: translatedError,
     recipientWarning: translatedWarning,
-    recipientResolvedLookup: value?.resolvedLookup,
-    recipientConfusableCharacters: value?.confusableCharacters ?? [],
+    recipientResolvedLookup: lastResult.resolvedLookup,
+    recipientConfusableCharacters: lastResult.confusableCharacters,
     validateRecipient,
   };
 };

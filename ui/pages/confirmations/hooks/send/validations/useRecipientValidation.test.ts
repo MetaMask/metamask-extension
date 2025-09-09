@@ -44,7 +44,6 @@ describe('useRecipientValidation', () => {
       updateAsset: jest.fn(),
       updateCurrentPage: jest.fn(),
       updateTo: jest.fn(),
-      updateToResolvedLookup: jest.fn(),
       updateValue: jest.fn(),
       value: '',
     } as unknown as ReturnType<typeof useSendContext>);
@@ -73,7 +72,7 @@ describe('useRecipientValidation', () => {
     expect(result.current).toEqual({
       recipientError: null,
       recipientWarning: null,
-      recipientResolvedLookup: undefined,
+      recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
       validateRecipient: expect.any(Function),
     });
@@ -166,6 +165,7 @@ describe('useRecipientValidation', () => {
         error: null,
         resolvedLookup: null,
         warning: null,
+        confusableCharacters: [],
       });
     });
 
@@ -181,6 +181,7 @@ describe('useRecipientValidation', () => {
         error: null,
         resolvedLookup: null,
         warning: null,
+        confusableCharacters: [],
       });
     });
 

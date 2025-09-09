@@ -65,7 +65,6 @@ describe('AmountRecipient', () => {
       updateAsset: jest.fn(),
       updateCurrentPage: jest.fn(),
       updateTo: jest.fn(),
-      updateToResolvedLookup: jest.fn(),
       updateValue: jest.fn(),
       value: '1',
     } as unknown as ReturnType<typeof SendContext.useSendContext>);

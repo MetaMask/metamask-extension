@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { isSolanaAddress } from '../../../../../../shared/lib/multichain/accounts';
 import { isValidDomainName } from '../../../../../helpers/utils/util';
 import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
+import { useSendContext } from '../../../context/send';
 import { validateDomainWithConfusables } from '../../../utils/sendValidations';
 import { RecipientValidationResult } from '../../../types/send';
 

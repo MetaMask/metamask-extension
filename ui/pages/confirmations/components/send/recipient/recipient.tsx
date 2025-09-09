@@ -42,9 +42,12 @@ export const Recipient = () => {
     recipientWarning,
     recipientResolvedLookup,
   } = useRecipientValidation();
+  const hasConfusableCharacters =
+    recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
-  const { to, updateTo, updateToResolvedLookup } = useSendContext();
+  const { to, updateTo } = useSendContext();
+  const [localValue, setLocalValue] = useState(to || '');
   const { captureRecipientSelected } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
   const useBlockie = useSelector(getUseBlockie);
@@ -61,6 +64,7 @@ export const Recipient = () => {
   const onChange = useCallback(
     (e) => {
       const toAddress = e.target.value;
+      setLocalValue(toAddress);
       updateTo(toAddress);
     },
     [updateTo],
@@ -74,13 +78,15 @@ export const Recipient = () => {
   }, [captureRecipientSelected, to]);
 
   const clearRecipient = useCallback(() => {
+    setLocalValue(''); // Clear local state
     updateTo('');
-    updateToResolvedLookup('');
-  }, [updateTo, updateToResolvedLookup]);
+  }, [updateTo]);
 
   useEffect(() => {
-    updateToResolvedLookup(recipientResolvedLookup);
-  }, [recipientResolvedLookup, updateToResolvedLookup]);
+    if (recipientResolvedLookup) {
+      updateTo(recipientResolvedLookup);
+    }
+  }, [recipientResolvedLookup, updateTo]);
 
   const matchingRecipient = recipients.find(
     (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
@@ -126,7 +132,7 @@ export const Recipient = () => {
         onChange={onChange}
         onBlur={captureMetrics}
         ref={recipientInputRef}
-        value={to}
+        value={localValue} // Use local state for TextField value
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
       />
@@ -138,7 +144,7 @@ export const Recipient = () => {
       {recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
-          {recipientConfusableCharacters.length > 0 &&
+          {hasConfusableCharacters &&
             ` (${recipientConfusableCharacters
               .map(({ point, similarTo }) => t('similarTo', [point, similarTo]))
               .join(', ')})`}

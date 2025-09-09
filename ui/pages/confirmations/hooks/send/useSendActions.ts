@@ -18,23 +18,15 @@ import { useSendType } from './useSendType';
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const {
-    asset,
-    chainId,
-    from,
-    fromAccount,
-    maxValueMode,
-    to,
-    toResolvedLookup,
-    value,
-  } = useSendContext();
+  const { asset, chainId, from, fromAccount, maxValueMode, to, value } =
+    useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(async () => {
     if (!asset) {
       return;
     }
-    const toAddress = toResolvedLookup || to;
+    const toAddress = to;
     if (isEvmSendType) {
       dispatch(
         await submitEvmTransaction({
@@ -68,7 +60,6 @@ export const useSendActions = () => {
     isEvmSendType,
     maxValueMode,
     to,
-    toResolvedLookup,
     value,
   ]);
 
