@@ -5916,9 +5916,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^17.0.0, @metamask/eth-json-rpc-middleware@npm:^17.0.1":
-  version: 17.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:17.0.1"
+"@metamask/eth-json-rpc-middleware@npm:^17.0.1, @metamask/eth-json-rpc-middleware@npm:^17.1.0":
+  version: 17.1.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:17.1.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^12.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
@@ -5932,7 +5932,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/6a0709479f7187183f99bd76b2724cb72b4155ded506d939b7625ae17f63bff68bee9828e0d76af06e4d4009eecc87b63059e8796947442e96844a42af161e2f
+  checksum: 10/4a2d66a7b38b4a3eb5cbe290815681b803829b5e367a484e2ac9b78fdea70a1c7dce4a8f924140d745a05f945b4dfdd53c883fd2661bc1c22dc563b4f0aafd38
   languageName: node
   linkType: hard
 
@@ -7397,10 +7397,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.3.7":
-  version: 2.3.7
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.7"
-  checksum: 10/f063baf8eba5228affd496d0cfd0e35d123e2e587e25348b92a3e6e19ccbd5de8d980b59f8543fc23b92611d487bc5ef3ff3b25b3216c248619f94c3f1b49d3b
+"@metamask/solana-wallet-snap@npm:^2.3.8":
+  version: 2.3.8
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.8"
+  checksum: 10/e1fa80026a78ccf853c5bdf8493e47ea2edaba6d39e715f2f54030c605271ee238fd15a832b2d876365fdb62d66d35053c5952a39a66c6ae97d5e03ee0a22bf8
   languageName: node
   linkType: hard
 
@@ -31758,7 +31758,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^17.1.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
@@ -31824,7 +31824,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.5.1"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.5.0"
-    "@metamask/solana-wallet-snap": "npm:^2.3.7"
+    "@metamask/solana-wallet-snap": "npm:^2.3.8"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
     "@metamask/superstruct": "npm:^3.2.1"
