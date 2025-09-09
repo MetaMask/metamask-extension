@@ -125,10 +125,14 @@ class ActivityListPage {
       `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const confirmedTxs = await this.driver.findElements(
-        this.confirmedTransactions,
-      );
-      return confirmedTxs.length === expectedNumber;
+      try {
+        const confirmedTxs = await this.driver.findElements(
+          this.confirmedTransactions,
+        );
+        return confirmedTxs.length === expectedNumber;
+      } catch (error) {
+        return expectedNumber === 0;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
@@ -161,17 +165,38 @@ class ActivityListPage {
     await this.driver.assertElementNotPresent(this.completedTransactions);
   }
 
-  async checkTxAction(expectedAction: string, expectedNumber: number = 1) {
-    await this.driver.wait(async () => {
-      const transactionActions = await this.driver.findElements({
-        css: this.activityListAction,
-        text: expectedAction,
-      });
-      return transactionActions.length === expectedNumber;
-    }, 60000);
+  /**
+   * Check if a transaction at the specified index displays the expected action text in the activity list.
+   *
+   * @param params - The parameters object containing:
+   * @param params.action - The expected action text to be displayed (e.g., "Send", "Receive", "Swap")
+   * @param params.txIndex - The index of the transaction to check in the activity list
+   * @param params.totalTx - The total number of confirmed transactions expected to be displayed in the activity list
+   * @returns A promise that resolves if the transaction at the specified index displays the expected action text within the timeout period.
+   * @example
+   */
+  async checkTxAction({
+    action,
+    txIndex = 1,
+    totalTx = 1,
+  }: {
+    action: string;
+    txIndex?: number;
+    totalTx?: number;
+  }): Promise<void> {
+    // We need to wait for the total number of tx's to be able to use getText() without race conditions.
+    await this.checkConfirmedTxNumberDisplayedInActivity(totalTx);
 
+    const transactionActions = await this.driver.findElements(
+      this.activityListAction,
+    );
+    await this.driver.wait(async () => {
+      const transactionActionText =
+      await transactionActions[txIndex - 1].getText();
+      return transactionActionText === action;
+    }, 60000);
     console.log(
-      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
+      `Action for transaction ${txIndex} is displayed as ${action}`,
     );
   }
 

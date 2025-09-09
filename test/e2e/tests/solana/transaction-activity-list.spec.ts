@@ -24,8 +24,7 @@ describe('Transaction activity list', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction('Sent', 1);
+        await activityList.checkTxAction({ action: 'Sent' });
         await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
         await activityList.checkNoFailedTransactions();
         await activityList.clickOnActivity(1);
@@ -63,7 +62,7 @@ describe('Transaction activity list', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction('Interaction', 1);
+        await activityList.checkTxAction({ action: 'Interaction', totalTx: 0 });
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
 
