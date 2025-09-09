@@ -111,7 +111,7 @@ buildTypes:
       # EIP-7715 Readable Permissions
       - PERMISSIONS_KERNEL_SNAP_ID: ''
       - GATOR_PERMISSIONS_ENABLED: false
-      - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: '@metamask/gator-permissions-snap'
+      - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: ''
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -334,7 +334,7 @@ env:
   # EIP-7715 Readable Permissions
   - PERMISSIONS_KERNEL_SNAP_ID: ''
   - GATOR_PERMISSIONS_ENABLED: false
-  - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: '@metamask/gator-permissions-snap'
+  - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: ''
 
   ###
   # Meta variables
