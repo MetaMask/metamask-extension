@@ -436,7 +436,6 @@ jobs:
 
   all-e2e-jobs-completed:
     name: All E2E jobs completed
-    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs:
       - e2e-chrome
