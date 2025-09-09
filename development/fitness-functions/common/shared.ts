@@ -1,6 +1,13 @@
+import { ConsoleLogEntry } from "selenium-webdriver/bidi/logEntries";
+
+function splitDiffIntoBlocks(diff: string): string[] {
+  // Behaves like split('diff --git '), but anchored to line starts.
+  // Each block starts right after the token and includes the rest of the header line.
+  return diff.split(/^diff --git /gm).slice(1);
+}
+
 function filterDiffByFilePath(diff: string, regex: RegExp): string {
-  // split by `diff --git` and remove the first element which is empty
-  const diffBlocks = diff.split(`diff --git`).slice(1);
+  const diffBlocks = splitDiffIntoBlocks(diff);
 
   const filteredDiff = diffBlocks
     .map((block) => block.trim())
@@ -18,8 +25,8 @@ function filterDiffByFilePath(diff: string, regex: RegExp): string {
         // if at least one of the two paths matches the regex, filter the
         // corresponding diff block in
         .forEach((path) => {
-          // If at least one of the paths MATCHES the regex, include this block
-          if (regex.test(path)) {
+          if (!regex.test(path)) {
+            // Not excluded, include in check
             shouldCheckBlock = true;
           }
         });
@@ -34,8 +41,7 @@ function filterDiffByFilePath(diff: string, regex: RegExp): string {
 }
 
 function restrictedFilePresent(diff: string, regex: RegExp): boolean {
-  // split by `diff --git` and remove the first element which is empty
-  const diffBlocks = diff.split(`diff --git`).slice(1);
+  const diffBlocks = splitDiffIntoBlocks(diff);
   let jsOrJsxFilePresent = false;
   diffBlocks
     .map((block) => block.trim())
@@ -93,36 +99,20 @@ function filterDiffLineAdditions(diff: string): string {
 // @@ -0,0 +1 @@
 // +new line change as the new file is created
 function filterDiffFileCreations(diff: string): string {
-  // split by `diff --git` and remove the first element which is empty
-  const diffBlocks = diff.split(`diff --git`).slice(1);
+  const diffBlocks = splitDiffIntoBlocks(diff);
 
   const filteredDiff = diffBlocks
     .map((block) => block.trim())
     .filter((block) => {
-      const lines = block.split('\n');
-      if (lines.length < 2) {
-        return false;
-      }
+      const isFileCreationLine =
+        block
+          // get the second line of the block which has the file mode
+          .split('\n')[1]
+          .trim()
+          .substring(0, 13) === 'new file mode';
 
-      // Skip binary diff blocks
-      if (block.includes('Binary files ') || block.includes('GIT binary patch')) {
-        return false;
-      }
+      return isFileCreationLine;
 
-      // Detect creation via explicit "new file mode" on second line
-      const secondLine = lines[1].trim();
-      if (secondLine.startsWith('new file mode')) {
-        return true;
-      }
-
-      // Or via the /dev/null header pair indicating a new file
-      const hasDevNullOld = lines.some((l) => l.startsWith('--- /dev/null'));
-      const hasNewPath = lines.some((l) => l.startsWith('+++ b/'));
-      if (hasDevNullOld && hasNewPath) {
-        return true;
-      }
-
-      return false;
     })
     // prepend `git --diff` to each block
     .map((block) => `diff --git ${block}`)
