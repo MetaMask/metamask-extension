@@ -276,7 +276,7 @@ cat tools/yarn/yarn-config.json
 - ✅ **Multiple hash algorithms**: Now supports SHA-256, SHA-512, and SHA-1
 - ✅ **NPM registry integration**: Checks official npm registry for additional verification
 - ✅ **Better error handling**: Clearer messages about checksum availability
-- ✅ **Yarn Berry support**: Proper handling of Berry'di different distribution model
+- ✅ **Yarn Berry support**: Proper handling of Berry's different distribution model
 
 ### CI/CD Optimizations
 
