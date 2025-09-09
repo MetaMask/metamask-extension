@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Impacto en el precio"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Si no dispones de fondos suficientes para el gas, una parte de tu token de origen se asigna automáticamente para cubrir las comisiones, lo que reducirá la cantidad canjeada. MetaMask no influye ni controla el impacto en el precio."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Depende del tamaño de la operación y de la liquidez disponible en el fondo. MetaMask no influye ni controla el impacto en el precio."
   },
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "No se encontraron cuentas coincidentes"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Recibir en"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Dirección receptora o ENS"
@@ -3377,9 +3371,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Está agregando esta red a MetaMask y otorgando permiso a este sitio para usarla."
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Hora"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 quiere conectarse a $2",
@@ -7222,9 +7213,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Esto aprobará $1 para puentear."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Deberá confirmar dos transacciones en su monedero físico."
   },
   "willApproveAmountForSwapping": {
     "message": "Esto aprobará $1 para canjear."

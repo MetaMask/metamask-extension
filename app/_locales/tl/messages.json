@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Walang nahanap na katugmang account"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Tanggapin sa"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Tatanggap na address o ENS"
   },
@@ -3344,9 +3341,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Idinadagdag mo ang network na ito sa MetaMask at binibigyan ng pahintulot ang site na ito na gamitin ito."
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Oras"
   },
   "multipleSnapConnectionWarning": {
     "message": "Si $1 ay gustong gumamit ng $2 Snaps",
@@ -7172,9 +7166,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Aaprubahan nito ang $1 para sa pag-bridge."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Kakailanganin mong kumpirmahin ang dalawang transaksyon sa iyong hardware wallet."
   },
   "willApproveAmountForSwapping": {
     "message": "Aaprubahan nito ang $1 para sa pag-swap."

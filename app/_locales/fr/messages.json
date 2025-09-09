@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Aucun compte correspondant n’a été trouvé"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Recevoir sur"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Adresse de réception ou ENS"
   },
@@ -3344,9 +3341,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Vous allez ajouter ce réseau à MetaMask et donner à ce site l’autorisation de l’utiliser."
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Temps"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 veut utiliser $2 Snaps",
@@ -7172,9 +7166,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Cela permettra d’approuver $1 pour l’établissement d’une passerelle."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Vous devrez confirmer deux transactions sur votre portefeuille matériel."
   },
   "willApproveAmountForSwapping": {
     "message": "Cela approuvera $1 pour l’échange."

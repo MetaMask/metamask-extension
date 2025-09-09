@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Eşleşen hesap bulunamadı"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Alım adresi:"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alıcı adres veya ENS"
   },
@@ -3344,9 +3341,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Bu ağı MetaMask'e ekliyor ve bu siteye ağı kullanma izni veriyorsunuz."
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Zaman"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snap kullanmak istiyor",
@@ -7172,9 +7166,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Bu, köprü için şunu onaylayacaktır: $1."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Donanım cüzdanınızda iki işlemi onaylamanız gerekecektir."
   },
   "willApproveAmountForSwapping": {
     "message": "Bu, takas için şunu onaylayacaktır: $1."

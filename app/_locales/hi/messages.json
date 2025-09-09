@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "कीमत का असर"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "कीमत का असर यह दर्शाता है कि आपका स्वैप ऑर्डर एसेट के मार्केट प्राइस को कैसे प्रभावित करता है। यदि आपके पास गैस के लिए पर्याप्त फंड नहीं हैं, तो आपके सोर्स टोकन का एक हिस्सा अपने आप ही शुल्क चुकाने के लिए आवंटित कर दिया जाता है, जिससे स्वैप की गई राशि कम हो जाएगी। MetaMask कीमत के असर को न तो प्रभावित करता है और न ही नियंत्रित करता है।"
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "कीमत का असर यह दर्शाता है कि आपका स्वैप ऑर्डर एसेट के मार्केट प्राइस को कैसे प्रभावित करता है। यह ट्रेड के आकार और पूल में उपलब्ध लिक्विडिटी पर निर्भर करता है। MetaMask कीमत के असर को न तो प्रभावित करता है और न ही नियंत्रित करता है।"
   },
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "कोई मैचिंग अकाउंट नहीं मिला"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "पर प्राप्त करें"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "प्राप्ति एड्रेस या ENS"
@@ -3377,9 +3371,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "आप इस नेटवर्क को MetaMask में जोड़ रहे हैं और इस साइट को इसका उपयोग करने की अनुमति दे रहे हैं।"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "समय"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
@@ -7222,9 +7213,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "यह ब्रिजिंग के लिए $1 एप्रूव करेगा।"
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "आपको अपने हार्डवेयर वॉलेट पर दो ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
   "willApproveAmountForSwapping": {
     "message": "स्वैपिंग के लिए यह $1 एप्रूव करेगा।"

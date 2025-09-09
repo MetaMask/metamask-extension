@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "一致するアカウントが見つかりませんでした"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "受取先:"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "受取アドレスまたはENS"
   },
@@ -3344,9 +3341,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "このネットワークをMetaMaskに追加し、サイトがそれを使用することを許可しようとしています。"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "時間"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1が$2 Snapの使用を求めています",
@@ -7172,9 +7166,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "これによりブリッジ用に$1が承認されます。"
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります。"
   },
   "willApproveAmountForSwapping": {
     "message": "これにより、スワップ用に$1が承認されます。"

@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Preisauswirkung"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Die Preisauswirkung spiegelt wider, wie sich Ihre Swap-Order auf den Marktpreis des Assets auswirkt. Falls Sie nicht genügend Guthaben für die Gas-Gebühren haben, wird ein Teil Ihrer Ursprungstokens automatisch zur Deckung der Gebühren verwendet. Dies reduziert den Betrag, der geswappt wird. MetaMask hat keinen Einfluss auf die Preisauswirkung und kontrolliert sie nicht."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Die Preisauswirkung spiegelt wider, wie sich Ihre Swap-Order auf den Marktpreis eines Assets auswirkt. Er hängt von der Trade-Größe und der verfügbaren Liquidität im Pool ab. MetaMask hat keinen Einfluss auf die Preisauswirkung und kontrolliert sie nicht."
   },
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Keine übereinstimmenden Konten gefunden"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Empfangen am"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Empfangsadresse oder ENS"
@@ -3377,9 +3371,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Sie fügen dieses Netzwerk zu MetaMask hinzu und geben dieser Website die Genehmigung, es zu nutzen."
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Zeit"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 möchte $2 Snaps verwenden",
@@ -7222,9 +7213,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Damit wird $1 für Bridging genehmigt."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Sie werden zwei Transaktionen auf Ihrer Hardware-Wallet bestätigen müssen."
   },
   "willApproveAmountForSwapping": {
     "message": "Damit wird $1 für Swapping genehmigt."

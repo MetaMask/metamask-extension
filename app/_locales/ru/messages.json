@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Влияние на цену"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Если у вас недостаточно средств для оплаты газа, часть вашего исходного токена автоматически выделяется на покрытие комиссий, что уменьшает сумму обмена. MetaMask не влияет на цену и не контролирует влияние на нее."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Оно зависит от объёма сделки и доступной ликвидности в пуле. MetaMask не влияет на цену и не контролирует влияние на нее."
   },
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Подходящие счета не найдены"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Получить в"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Адрес получения или ENS"
@@ -3377,9 +3371,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Вы добавляете эту сеть в MetaMask и разрешаете этому сайту использовать ее."
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Время"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 хочет использовать $2 Snaps",
@@ -7222,9 +7213,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Это позволит утвердить $1 для создания моста."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Вам нужно будет подтвердить две транзакции в своем аппаратном кошельке."
   },
   "willApproveAmountForSwapping": {
     "message": "Это позволит утвердить $1 для свопа."

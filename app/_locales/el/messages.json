@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Διακύμανση τιμής"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Η διακύμανση τιμής αντικατοπτρίζει το πώς η εντολή ανταλλαγής σας επηρεάζει την τιμή αγοράς του περιουσιακού στοιχείου. Αν δεν διαθέτετε αρκετά κεφάλαια για τα τέλη συναλλαγών, ένα μέρος του token που προσφέρετε στην ανταλλαγή θα χρησιμοποιηθεί αυτόματα για την κάλυψη των τελών, γεγονός που θα μειώσει την ποσότητα που τελικά ανταλλάσσεται. Το MetaMask δεν επηρεάζει ούτε ελέγχει την διακύμανση τιμής."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Η διακύμανση τιμής αντικατοπτρίζει το πώς η εντολή ανταλλαγής σας επηρεάζει την τιμή αγοράς του περιουσιακού στοιχείου. Εξαρτάται από το μέγεθος της συναλλαγής και τη διαθέσιμη ρευστότητα στη \"δεξαμενή\". Το MetaMask δεν επηρεάζει ούτε ελέγχει την διακύμανση τιμής."
   },
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Δεν βρέθηκαν λογαριασμοί που να ταιριάζουν"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Λήψη σε"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Διεύθυνση λήψης ή ENS"
@@ -3377,9 +3371,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Προσθέτετε αυτό το δίκτυο στο MetaMask και δίνετε σε αυτόν τον ιστότοπο την άδεια να το χρησιμοποιεί."
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Ώρα"
   },
   "multipleSnapConnectionWarning": {
     "message": "Το $1 θέλει να χρησιμοποιήσει $2 Snaps",
@@ -7222,9 +7213,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Αυτό θα εγκρίνει $1 για διασύνδεση."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Θα πρέπει να επιβεβαιώσετε δύο συναλλαγές στο πορτοφόλι υλικού σας."
   },
   "willApproveAmountForSwapping": {
     "message": "Αυτό θα εγκρίνει $1 για ανταλλαγή."
