@@ -1,5 +1,9 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import {
+  BaseController,
+  RestrictedMessenger,
+  StateMetadata,
+} from '@metamask/base-controller';
 import {
   isCaipChainId,
   KnownCaipNamespace,
@@ -89,14 +93,18 @@ const defaultState: NetworkOrderControllerState = {
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<NetworkOrderControllerState> = {
   orderedNetworkList: {
+    includeInStateLogs: false,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   enabledNetworkMap: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
 };
 
