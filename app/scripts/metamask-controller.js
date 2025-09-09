@@ -36,7 +36,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
@@ -129,9 +129,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolScope,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   hasProperty,
@@ -156,6 +154,12 @@ import {
   MultichainApiNotifications,
   walletCreateSession,
 } from '@metamask/multichain-api-middleware';
+
+import {
+  getCallsStatus,
+  getCapabilities,
+  processSendCalls,
+} from '@metamask/eip-5792-middleware';
 
 import {
   Caip25CaveatMutators,
@@ -263,13 +267,12 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -410,11 +413,6 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import {
-  getCallsStatus,
-  getCapabilities,
-  processSendCalls,
-} from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
@@ -426,6 +424,7 @@ import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import { qrKeyringBuilderFactory } from './lib/qr-keyring-builder-factory';
 import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
 import OAuthService from './services/oauth/oauth-service';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
@@ -435,6 +434,7 @@ import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
 } from './lib/transaction/sentinel-api';
+import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -542,8 +542,8 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex();
 
-    // lock to ensure only one seedless password sync is running at once
-    this.syncSeedlessGlobalPasswordMutex = new Mutex();
+    // lock to ensure only one seedless onboarding operation is running at once
+    this.seedlessOperationMutex = new Mutex();
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -765,10 +765,11 @@ export default class MetamaskController extends EventEmitter {
     );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointDegraded',
-      async ({ chainId, endpointUrl }) => {
+      async ({ chainId, endpointUrl, error }) => {
         onRpcEndpointDegraded({
           chainId,
           endpointUrl,
+          error,
           infuraProjectId: opts.infuraProjectId,
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
@@ -962,23 +963,21 @@ export default class MetamaskController extends EventEmitter {
       getChainId: () => this.#getGlobalChainId(),
     });
 
+    const appStateControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AppStateController',
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.approvalController.name}:acceptRequest`,
+        `PreferencesController:getState`,
+      ],
+      allowedEvents: ['PreferencesController:stateChange'],
+    });
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
       state: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AppStateController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `PreferencesController:getState`,
-        ],
-        allowedEvents: [
-          `KeyringController:qrKeyringStateChange`,
-          'PreferencesController:stateChange',
-        ],
-      }),
+      messenger: appStateControllerMessenger,
       extension: this.extension,
     });
 
@@ -1016,6 +1015,8 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:getState',
         'AccountsController:getSelectedAccount',
         'AccountsController:listAccounts',
+        'AccountTrackerController:updateNativeBalances',
+        'AccountTrackerController:updateStakedBalances',
       ],
       allowedEvents: [
         'PreferencesController:stateChange',
@@ -1028,6 +1029,9 @@ export default class MetamaskController extends EventEmitter {
     this.tokenBalancesController = new TokenBalancesController({
       messenger: tokenBalancesMessenger,
       state: initState.TokenBalancesController,
+      useAccountsAPI: false,
+      queryMultipleAccounts:
+        this.preferencesController.state.useMultiAccountBalanceChecker,
       interval: 30000,
     });
 
@@ -1124,41 +1128,36 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
-
     const keyringOverrides = this.opts.overrides?.keyrings;
 
+    const additionalKeyrings = [
+      qrKeyringBuilderFactory(
+        keyringOverrides?.qr || QrKeyring,
+        keyringOverrides?.qrBridge || QrKeyringScannerBridge,
+        {
+          requestScan: async (request) =>
+            appStateControllerMessenger.call(
+              'AppStateController:requestQrCodeScan',
+              request,
+            ),
+        },
+      ),
+    ];
+
     if (isManifestV3 === false) {
-      const additionalKeyringTypes = [
-        keyringOverrides?.lattice || LatticeKeyring,
-        QRHardwareKeyring,
-      ];
-
-      const additionalBridgedKeyringTypes = [
-        {
-          keyring: keyringOverrides?.trezor || TrezorKeyring,
-          bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
-        },
-        {
-          keyring: keyringOverrides?.oneKey || OneKeyKeyring,
-          bridge: keyringOverrides?.oneKeyBridge || TrezorConnectBridge,
-        },
-        {
-          keyring: keyringOverrides?.ledger || LedgerKeyring,
-          bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
-        },
-      ];
-
-      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
-        keyringBuilderFactory(keyringType),
-      );
-
-      additionalBridgedKeyringTypes.forEach((keyringType) =>
-        additionalKeyrings.push(
-          hardwareKeyringBuilderFactory(
-            keyringType.keyring,
-            keyringType.bridge,
-          ),
+      additionalKeyrings.push(
+        keyringBuilderFactory(keyringOverrides?.lattice || LatticeKeyring),
+        hardwareKeyringBuilderFactory(
+          TrezorKeyring,
+          keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          OneKeyKeyring,
+          keyringOverrides?.oneKey || TrezorConnectBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          LedgerKeyring,
+          keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         ),
       );
     } else {
@@ -1843,9 +1842,40 @@ export default class MetamaskController extends EventEmitter {
         const { useExternalServices: currUseExternalServices } = currState;
         if (currUseExternalServices && !prevUseExternalServices) {
           this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController.updateRemoteFeatureFlags();
+          this.remoteFeatureFlagController
+            .updateRemoteFeatureFlags()
+            .catch((error) => {
+              console.error('Failed to update remote feature flags:', error);
+            });
         } else if (!currUseExternalServices && prevUseExternalServices) {
           this.remoteFeatureFlagController.disable();
+        }
+      }, this.preferencesController.state),
+    );
+
+    // MultichainAccountService has subscription for preferences changes
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        if (prevUseExternalServices !== currUseExternalServices) {
+          // Set basic functionality and trigger alignment when enabled
+          // This single call handles both provider disable/enable and alignment
+          // Only call if MultichainAccountService is available (multichain builds)
+          if (this.multichainAccountService) {
+            this.controllerMessenger
+              .call(
+                'MultichainAccountService:setBasicFunctionality',
+                currUseExternalServices,
+              )
+              .catch((error) => {
+                console.error(
+                  'Failed to set basic functionality on MultichainAccountService:',
+                  error,
+                );
+              });
+          }
         }
       }, this.preferencesController.state),
     );
@@ -1940,6 +1970,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
+      ShieldController: ShieldControllerInit,
     };
 
     const {
@@ -1998,6 +2029,17 @@ export default class MetamaskController extends EventEmitter {
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
+    this.shieldController = controllersByName.ShieldController;
+
+    this.getSecurityAlertsConfig = () => {
+      return async (url) => {
+        const getToken = () =>
+          this.controllerMessenger.call(
+            'AuthenticationController:getBearerToken',
+          );
+        return getShieldGatewayConfig(getToken, url);
+      };
+    };
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -2051,10 +2093,8 @@ export default class MetamaskController extends EventEmitter {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
-        } else if (this.isUnlocked()) {
-          return this.getPermittedAccounts(innerOrigin);
         }
-        return []; // changing this is a breaking change
+        return this.getPermittedAccounts(innerOrigin);
       },
       // tx signing
       processTransaction: (transactionParams, dappRequest) =>
@@ -2267,6 +2307,7 @@ export default class MetamaskController extends EventEmitter {
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
         PhishingController: this.phishingController,
+        ShieldController: this.shieldController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -2350,7 +2391,7 @@ export default class MetamaskController extends EventEmitter {
   // initial rollout, such that we can remotely modify polling interval
   getInfuraFeatureFlags() {
     fetchWithCache({
-      url: 'https://swap.api.cx.metamask.io/featureFlags',
+      url: 'https://bridge.api.cx.metamask.io/featureFlags',
       cacheRefreshTime: MINUTE * 20,
     })
       .then(this.onFeatureFlagResponseReceived)
@@ -3364,7 +3405,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
-      keyringController,
       nftController,
       nftDetectionController,
       currencyRateController,
@@ -3530,16 +3570,10 @@ export default class MetamaskController extends EventEmitter {
         this.attemptLedgerTransportCreation.bind(this),
 
       // qr hardware devices
-      submitQRHardwareCryptoHDKey:
-        keyringController.submitQRCryptoHDKey.bind(keyringController),
-      submitQRHardwareCryptoAccount:
-        keyringController.submitQRCryptoAccount.bind(keyringController),
-      cancelSyncQRHardware:
-        keyringController.cancelQRSynchronization.bind(keyringController),
-      submitQRHardwareSignature:
-        keyringController.submitQRSignature.bind(keyringController),
-      cancelQRHardwareSignRequest:
-        keyringController.cancelQRSignRequest.bind(keyringController),
+      completeQrCodeScan:
+        appStateController.completeQrCodeScan.bind(appStateController),
+      cancelQrCodeScan:
+        appStateController.cancelQrCodeScan.bind(appStateController),
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
@@ -3551,6 +3585,10 @@ export default class MetamaskController extends EventEmitter {
         // in the case that the ID is an EVM network client ID.
         return await this.multichainNetworkController.setActiveNetwork(id);
       },
+      findNetworkClientIdByChainId:
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
 
       // active networks by accounts
       getNetworksWithTransactionActivityByAccounts:
@@ -3657,11 +3695,22 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setSelectedAccountGroup(accountGroupId);
       },
 
+      // MultichainAccountService
+      createNextMultichainAccountGroup: async (walletId) => {
+        await this.multichainAccountService.createNextMultichainAccountGroup({
+          entropySource: walletId,
+        });
+      },
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
       getTokenStandardAndDetailsByChain:
         this.getTokenStandardAndDetailsByChain.bind(this),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -4817,7 +4866,7 @@ export default class MetamaskController extends EventEmitter {
       isPasswordSynced = true;
       return isPasswordSynced;
     }
-    const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
+    const releaseLock = await this.seedlessOperationMutex.acquire();
 
     try {
       const isKeyringPasswordValid = await this.keyringController
@@ -4930,7 +4979,8 @@ export default class MetamaskController extends EventEmitter {
         });
 
         // lock app again on error after submitPassword succeeded
-        await this.setLocked();
+        // here we skip the seedless operation lock as we are already in the seedless operation lock
+        await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
         this.metaMetricsController.bufferedEndTrace?.({
@@ -5057,6 +5107,7 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
+      const releaseLock = await this.seedlessOperationMutex.acquire();
       let addNewSeedPhraseBackupSuccess = false;
       try {
         this.metaMetricsController.bufferedTrace?.({
@@ -5090,6 +5141,7 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           data: { success: addNewSeedPhraseBackupSuccess },
         });
+        releaseLock();
       }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
@@ -5110,6 +5162,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} oldPassword - The old password.
    */
   async changePassword(newPassword, oldPassword) {
+    const releaseLock = await this.seedlessOperationMutex.acquire();
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     try {
       await this.keyringController.changePassword(newPassword);
@@ -5143,6 +5196,8 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.error('error while changing password', error);
       throw error;
+    } finally {
+      releaseLock();
     }
   }
 
@@ -5456,6 +5511,11 @@ export default class MetamaskController extends EventEmitter {
       // depends only on keyrings `:stateChange`.
       await this.accountsController.updateAccounts();
 
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      // Init multichain accounts after creating internal accounts.
+      this.multichainAccountService.init();
+      ///: END:ONLY_INCLUDE_IF
+
       // And we re-init the account tree controller too, to use the
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
@@ -5518,28 +5578,17 @@ export default class MetamaskController extends EventEmitter {
         ? { id: keyringId }
         : { type: KeyringTypes.hd };
 
-      const {
-        accounts,
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        entropySource,
-        ///: END:ONLY_INCLUDE_IF
-      } = await this.keyringController.withKeyring(
-        keyringSelector,
-        async ({
-          keyring,
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          metadata,
-          ///: END:ONLY_INCLUDE_IF
-        }) => {
-          const keyringAccounts = await keyring.getAccounts();
-          return {
-            accounts: keyringAccounts,
-            ///: BEGIN:ONLY_INCLUDE_IF(solana)
-            entropySource: metadata.id,
-            ///: END:ONLY_INCLUDE_IF
-          };
-        },
-      );
+      const { accounts, entropySource } =
+        await this.keyringController.withKeyring(
+          keyringSelector,
+          async ({ keyring, metadata }) => {
+            const keyringAccounts = await keyring.getAccounts();
+            return {
+              accounts: keyringAccounts,
+              entropySource: metadata.id,
+            };
+          },
+        );
       let address = accounts[accounts.length - 1];
 
       for (let count = accounts.length; ; count++) {
@@ -5605,7 +5654,6 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
       if (shouldImportSolanaAccount) {
         const solanaClient = await this._getMultichainWalletSnapClient(
           SOLANA_WALLET_SNAP_ID,
@@ -5625,7 +5673,7 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       }
-      ///: END:ONLY_INCLUDE_IF
+
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -6013,7 +6061,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      for (const address of keyring.accounts) {
+      for (const address of await keyring.getAccounts()) {
         this._onAccountRemoved(address);
       }
 
@@ -6357,18 +6405,13 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Gets the sorted permitted accounts for the specified origin. Returns an empty
-   * array if no accounts are permitted or the wallet is locked. Returns any permitted
-   * accounts if the wallet is locked and `ignoreLock` is true. This lock bypass is needed
-   * for the `eth_requestAccounts` & `wallet_getPermission` handlers both of which
-   * return permissioned accounts to the dapp when the wallet is locked.
+   * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @param {object} [options] - The options object
-   * @param {boolean} [options.ignoreLock] - If accounts should be returned even if the wallet is locked.
-   * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
+   * @returns {string[]} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin, { ignoreLock } = {}) {
+  getPermittedAccounts(origin) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -6383,10 +6426,6 @@ export default class MetamaskController extends EventEmitter {
         return [];
       }
       throw err;
-    }
-
-    if (!this.isUnlocked() && !ignoreLock) {
-      return [];
     }
 
     const ethAccounts = getEthAccounts(caveat.value);
@@ -6515,13 +6554,19 @@ export default class MetamaskController extends EventEmitter {
     const bufferedPrivateKey = hexToBytes(add0x(privateKey));
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSecretData(
-        bufferedPrivateKey,
-        SecretType.PrivateKey,
-        {
-          keyringId,
-        },
-      );
+      const releaseLock = await this.seedlessOperationMutex.acquire();
+      try {
+        await this.seedlessOnboardingController.addNewSecretData(
+          bufferedPrivateKey,
+          SecretType.PrivateKey,
+          { keyringId },
+        );
+      } catch (error) {
+        log.error('Error adding new private key backup', error);
+        throw error;
+      } finally {
+        releaseLock();
+      }
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
@@ -6686,6 +6731,15 @@ export default class MetamaskController extends EventEmitter {
       securityAlertsEnabled:
         this.preferencesController.state?.securityAlertsEnabled,
       updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
+      getSecurityAlertResponse:
+        this.appStateController.getAddressSecurityAlertResponse.bind(
+          this.appStateController,
+        ),
+      addSecurityAlertResponse:
+        this.appStateController.addAddressSecurityAlertResponse.bind(
+          this.appStateController,
+        ),
+      getSecurityAlertsConfig: this.getSecurityAlertsConfig(),
       ...otherParams,
     };
   }
@@ -7353,7 +7407,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       setActiveNetwork: async (networkClientId) => {
-        await this.networkController.setActiveNetwork(networkClientId);
         // if the origin has the CAIP-25 permission
         // we set per dapp network selection state
         if (
@@ -7366,6 +7419,8 @@ export default class MetamaskController extends EventEmitter {
             origin,
             networkClientId,
           );
+        } else {
+          await this.networkController.setActiveNetwork(networkClientId);
         }
       },
       getNetworkConfigurationByChainId:
@@ -7493,6 +7548,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
+        this.getSecurityAlertsConfig.bind(this),
       ),
     );
 
@@ -7592,10 +7648,6 @@ export default class MetamaskController extends EventEmitter {
 
         // Miscellaneous
         metamaskState: this.getState(),
-        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
-          this.appStateController,
-        ),
-
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -8700,9 +8752,32 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Locks MetaMask
+   *
+   * @param {object} options - The options for setting the locked state.
+   * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
-  setLocked() {
-    return this.keyringController.setLocked();
+  async setLocked(options = { skipSeedlessOperationLock: false }) {
+    const { skipSeedlessOperationLock } = options;
+    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+
+    let releaseLock;
+    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
+      releaseLock = await this.seedlessOperationMutex.acquire();
+    }
+
+    try {
+      if (isSocialLoginFlow) {
+        await this.seedlessOnboardingController.setLocked();
+      }
+      await this.keyringController.setLocked();
+    } catch (error) {
+      log.error('Error setting locked state', error);
+      throw error;
+    } finally {
+      if (releaseLock) {
+        releaseLock();
+      }
+    }
   }
 
   removePermissionsFor = (subjects) => {
@@ -8949,8 +9024,8 @@ export default class MetamaskController extends EventEmitter {
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
-    await this.tokenBalancesController.updateBalancesByChainId({
-      chainId: transactionMeta.chainId,
+    await this.tokenBalancesController.updateBalances({
+      chainIds: [transactionMeta.chainId],
     });
     endTrace({
       name: TraceName.OnFinishedTransaction,
@@ -9277,7 +9352,7 @@ export default class MetamaskController extends EventEmitter {
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
-        keyringType = QRHardwareKeyring.type;
+        keyringType = QrKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
         keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;

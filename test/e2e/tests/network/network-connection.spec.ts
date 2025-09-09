@@ -35,6 +35,13 @@ const networkConfigs: NetworkConfig[] = [
     testTitle: 'MegaETH Network Connection Tests',
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
   },
+  {
+    name: 'Sei',
+    tokenSymbol: 'SEI',
+    fixtureMethod: (builder) => builder.withNetworkControllerOnSei(),
+    testTitle: 'Sei Network Connection Tests',
+    chainId: CHAIN_IDS.SEI,
+  },
 ];
 
 // Helper function to perform Dapp action and verify
@@ -97,7 +104,7 @@ networkConfigs.forEach((config) => {
 
           await performDappActionAndVerify(
             driver,
-            () => testDapp.findAndClickCreateToken(),
+            () => testDapp.clickCreateToken(),
             config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

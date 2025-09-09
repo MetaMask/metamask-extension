@@ -53,7 +53,6 @@ describe('Metrics', function () {
         await confirmContractDeploymentTransaction(driver);
 
         await createDepositTransaction(driver);
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmDepositTransaction(driver);
 
