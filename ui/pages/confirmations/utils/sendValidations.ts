@@ -39,7 +39,6 @@ export const validateDomainWithConfusables = async (
       ? filterResolutions(resolutions)
       : resolutions;
 
-    console.log('OGP - filteredResolutions', filteredResolutions);
     if (!filteredResolutions || filteredResolutions.length === 0) {
       return { error: errorMessages.unknownError, isLookupLoading: false };
     }
