@@ -16,7 +16,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getSeverityBackground } from '../utils';
 
 export type InlineAlertProps = {
   /** The onClick handler for the inline alerts */
@@ -40,7 +39,6 @@ export default function InlineAlert({
     <Box>
       <Box
         data-testid="inline-alert"
-        backgroundColor={getSeverityBackground(severity)}
         borderRadius={BorderRadius.SM}
         gap={1}
         display={Display.InlineFlex}

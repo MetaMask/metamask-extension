@@ -3,27 +3,9 @@ import {
   AlertSeverity,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  BackgroundColor,
   Severity,
 } from '../../../helpers/constants/design-system';
 import { BannerAlertSeverity } from '../../component-library';
-
-/**
- * Returns the background color based on the severity level.
- *
- * @param severity - The severity level.
- * @returns The background color corresponding to the severity level.
- */
-export function getSeverityBackground(severity: Severity): BackgroundColor {
-  switch (severity) {
-    case Severity.Danger:
-      return BackgroundColor.errorMuted;
-    case Severity.Warning:
-      return BackgroundColor.warningMuted;
-    default:
-      return BackgroundColor.primaryMuted;
-  }
-}
 
 /**
  * Returns the highest severity from an array of alerts.
