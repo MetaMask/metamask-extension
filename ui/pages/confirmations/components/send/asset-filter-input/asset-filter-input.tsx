@@ -25,7 +25,7 @@ export const AssetFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingTop={4} paddingLeft={4} paddingRight={4} paddingBottom={2}>
+    <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
       <TextFieldSearch
         borderRadius={BorderRadius.LG}
         placeholder={placeholder ?? t('searchForAnAssetToSend')}

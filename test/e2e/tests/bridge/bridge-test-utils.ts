@@ -632,9 +632,7 @@ export enum EventTypes {
   SwapBridgePageViewed = 'Unified SwapBridge Page Viewed',
   SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
   SwapBridgeQuotesRequested = 'Unified SwapBridge Quotes Requested',
-  CrossChainQuotesReceived = 'Cross-chain Quotes Received',
-  ActionSubmitted = 'Action Submitted',
-  SwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+  UnifiedSwapBridgeQuotesReceived = 'Unified SwapBridge Quotes Received',
   TransactionAddedAnon = 'Transaction Added Anon',
   TransactionAdded = 'Transaction Added',
   TransactionSubmittedAnon = 'Transaction Submitted Anon',
@@ -645,7 +643,7 @@ export enum EventTypes {
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
-  SwapBridgeTokenFlipped = 'Source and Destination Flipped',
+  SwapBridgeTokenSwitched = 'Unified SwapBridge Source Destination Flipped',
 }
 
 export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);
@@ -748,9 +746,7 @@ export const getBridgeFixtures = (
             EventTypes.SwapBridgePageViewed,
             EventTypes.SwapBridgeInputChanged,
             EventTypes.SwapBridgeQuotesRequested,
-            EventTypes.CrossChainQuotesReceived,
-            EventTypes.ActionSubmitted,
-            EventTypes.SwapBridgeSubmitted,
+            EventTypes.UnifiedSwapBridgeQuotesReceived,
             EventTypes.TransactionAddedAnon,
             EventTypes.TransactionAdded,
             EventTypes.TransactionSubmittedAnon,
@@ -762,7 +758,7 @@ export const getBridgeFixtures = (
             EventTypes.SwapBridgeCompleted,
             EventTypes.UnifiedSwapBridgeSubmitted,
             EventTypes.SwapBridgeInputChanged,
-            EventTypes.SwapBridgeTokenFlipped,
+            EventTypes.SwapBridgeTokenSwitched,
           ],
           { shouldAlwaysMatch: true },
         );

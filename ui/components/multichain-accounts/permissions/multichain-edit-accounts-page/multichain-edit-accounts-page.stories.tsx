@@ -70,6 +70,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
         type: EthAccountType.Eoa,
       },
     ],
+    walletName: 'Wallet 1',
   },
   {
     id: walletTwoGroupId,
@@ -99,6 +100,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
         type: EthAccountType.Eoa,
       },
     ],
+    walletName: 'Wallet 2',
   },
   {
     id: walletThreeGroupId,
@@ -125,6 +127,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
         type: EthAccountType.Eoa,
       },
     ],
+    walletName: 'Wallet 3',
   },
 ];
 
