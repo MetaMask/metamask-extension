@@ -1,8 +1,9 @@
 import { join } from 'node:path';
-import type { WebpackPluginInstance, RuleSetRule } from 'webpack';
+import type { WebpackPluginInstance, RuleSetRule, Chunk } from 'webpack';
 import LavamoatPlugin, {
   exclude as LavamoatExcludeLoader,
-} from '../../../../../../LavaMoat/packages/webpack/src/plugin.js';
+  // @ts-expect-error - types are broken due to git install
+} from '@lavamoat/webpack';
 import type { Args } from '../../cli';
 
 // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
@@ -31,7 +32,7 @@ export const lavamoatPlugin = (args: Args) =>
       reporting: 'none',
     },
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    runtimeConfigurationPerChunk_experimental: (chunk) => {
+    runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
         return { mode: 'null_unsafe' };
