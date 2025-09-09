@@ -73,11 +73,15 @@ export const Recipient = () => {
     captureRecipientSelected();
   }, [captureRecipientSelected, to]);
 
+  const clearRecipient = useCallback(() => {
+    updateTo('');
+    updateToResolvedLookup('');
+  }, [updateTo, updateToResolvedLookup]);
+
   useEffect(() => {
     updateToResolvedLookup(recipientResolvedLookup);
   }, [recipientResolvedLookup, updateToResolvedLookup]);
 
-  // Find matching recipient for the current 'to' address
   const matchingRecipient = recipients.find(
     (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
   );
@@ -110,10 +114,12 @@ export const Recipient = () => {
         }
         endAccessory={
           <ButtonIcon
-            ariaLabel="Open recipient modal"
-            data-testid="open-recipient-modal-btn"
-            iconName={IconName.Book}
-            onClick={openRecipientModal}
+            ariaLabel={to ? 'Clear recipient' : 'Open recipient modal'}
+            data-testid={
+              to ? 'clear-recipient-btn' : 'open-recipient-modal-btn'
+            }
+            iconName={to ? IconName.Close : IconName.Book}
+            onClick={to ? clearRecipient : openRecipientModal}
             size={ButtonIconSize.Sm}
           />
         }
