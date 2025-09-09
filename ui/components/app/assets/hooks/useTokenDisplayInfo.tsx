@@ -125,7 +125,7 @@ export const useTokenDisplayInfo = ({
     };
   }
 
-  // TODO: type for secondary is wrongly set as number | null, when it is a string | null
+  // TODO BIP44 Refactor: type for secondary is wrongly set as number | null, when it is a string | null
   // Just changing it causes a number of errors all over the codebase
   // When BIP44 flag is enabled and stable, this can be refactored to use the type from the new selector
   const nonEvmSecondary = isMultichainAccountsState2Enabled

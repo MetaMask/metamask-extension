@@ -57,6 +57,38 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
 
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  getAssetsBySelectedAccountGroup: jest.fn().mockReturnValue({
+    '0x1': [
+      {
+        assetId: '0x0000000000000000000000000000000000000000',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+      {
+        assetId: '0x309375769E79382beFDEc5bdab51063AeBDC4936',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+      {
+        assetId: '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+    ],
+  }),
+}));
+
 describe('AssetPage', () => {
   const mockStore = {
     localeMessages: {

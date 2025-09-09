@@ -81,6 +81,7 @@ import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { AssetMarketDetails } from './asset-market-details';
 
+// TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
 const AssetPage = ({
   asset,
@@ -208,9 +209,8 @@ const AssetPage = ({
         (!address && !isEvm && item.isNative),
     );
 
-    address = assetWithBalance?.assetId as string;
-
     assetId = assetWithBalance?.assetId;
+    address = assetWithBalance?.assetId as string;
     balance = assetWithBalance?.balance as string;
     tokenFiatAmount = assetWithBalance?.fiat?.balance as number;
     const tokenHexBalance = assetWithBalance?.rawBalance as string;
