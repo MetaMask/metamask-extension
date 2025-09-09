@@ -152,7 +152,7 @@ export const AppHeaderUnlockedContent = ({
         });
       }
 
-      return newValue;
+      return isMenuOpen;
     });
   };
 
