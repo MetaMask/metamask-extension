@@ -170,7 +170,7 @@ async function start(): Promise<void> {
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
-  const exposedContent = `Builds ready [\`${SHORT_SHA1}\`]`;
+  const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
   const benchmarkResults: BenchmarkResults = {};
