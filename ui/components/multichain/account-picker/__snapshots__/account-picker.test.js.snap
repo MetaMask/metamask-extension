@@ -21,43 +21,7 @@ exports[`AccountPicker renders properly 1`] = `
           >
             <div
               class="flex [&>div]:!rounded-none"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="16"
-                    transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="16"
-                    transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="16"
-                    transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+            />
           </div>
           <span
             class="mm-box mm-text multichain-account-picker__label w-full mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"

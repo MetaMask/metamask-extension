@@ -71,7 +71,43 @@ exports[`SendPage render and initialization should render correctly even when a 
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
-                    />
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                      >
+                        <svg
+                          height="32"
+                          width="32"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#2362E1"
+                            height="32"
+                            transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F94301"
+                            height="32"
+                            transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#FA7900"
+                            height="32"
+                            transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                   <span
                     class="mm-box mm-text multichain-account-picker__label w-full multichain-send-page__account-picker__label mm-text--body-md-medium mm-text--ellipsis mm-box--padding-inline-start-1 mm-box--color-text-default"
@@ -203,7 +239,43 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 >
                                   <div
                                     class="flex [&>div]:!rounded-none"
-                                  />
+                                  >
+                                    <div
+                                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                                    >
+                                      <svg
+                                        height="32"
+                                        width="32"
+                                        x="0"
+                                        y="0"
+                                      >
+                                        <rect
+                                          fill="#2362E1"
+                                          height="32"
+                                          transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                                          width="32"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#F94301"
+                                          height="32"
+                                          transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                                          width="32"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#FA7900"
+                                          height="32"
+                                          transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                                          width="32"
+                                          x="0"
+                                          y="0"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
                                 </div>
                                 <div
                                   class="mm-box mm-badge-wrapper__badge-container"
@@ -226,7 +298,43 @@ exports[`SendPage render and initialization should render correctly even when a 
                         >
                           <div
                             class="flex [&>div]:!rounded-none"
-                          />
+                          >
+                            <div
+                              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                            >
+                              <svg
+                                height="32"
+                                width="32"
+                                x="0"
+                                y="0"
+                              >
+                                <rect
+                                  fill="#2362E1"
+                                  height="32"
+                                  transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#F94301"
+                                  height="32"
+                                  transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                />
+                                <rect
+                                  fill="#FA7900"
+                                  height="32"
+                                  transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                                  width="32"
+                                  x="0"
+                                  y="0"
+                                />
+                              </svg>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div
