@@ -110,5 +110,8 @@ export const getIsMultichainAccountsState2Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
   const flags = getMultichainAccountsRemoteFeatureFlags(state);
-  return isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2) || true;
+  return (
+    isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2) ||
+    (true as boolean)
+  );
 };
