@@ -45,8 +45,7 @@ export const MultichainAddressRowsList = ({
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, handleCopy] = useCopyToClipboard();
+  const [, handleCopy] = useCopyToClipboard();
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),

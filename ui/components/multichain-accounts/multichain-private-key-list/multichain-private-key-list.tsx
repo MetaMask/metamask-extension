@@ -78,8 +78,7 @@ const MultichainPrivateKeyList = ({
     [cleanStateVariables],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, handleCopy] = useCopyToClipboard();
+  const [, handleCopy] = useCopyToClipboard();
 
   const accountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
