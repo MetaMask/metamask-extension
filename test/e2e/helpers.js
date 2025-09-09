@@ -215,7 +215,11 @@ async function withFixtures(options, testSuite) {
 
       const hardfork = localNodeOptsNormalized[0].options.hardfork || 'prague';
       for (const contract of contracts) {
-        await seeder.deploySmartContract(contract, hardfork);
+        await seeder.deploySmartContract(
+          contract.name,
+          hardfork,
+          contract.deployerOptions,
+        );
       }
 
       contractRegistry = seeder.getContractRegistry();

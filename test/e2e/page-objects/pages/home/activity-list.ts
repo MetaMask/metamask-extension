@@ -171,7 +171,6 @@ class ActivityListPage {
         await transactionActions[expectedNumber - 1].getText();
       return transactionActionText === expectedAction;
     }, 60000);
-
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
     );
