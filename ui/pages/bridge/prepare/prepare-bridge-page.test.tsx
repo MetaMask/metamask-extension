@@ -10,6 +10,7 @@ import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import * as SelectorsModule from '../../../selectors/multichain/networks';
 import * as NetworkOrderControllerActionsModule from '../../../store/controller-actions/network-order-controller';
 import PrepareBridgePage, {
@@ -370,6 +371,9 @@ describe('PrepareBridgePage - Race Conditions', () => {
     });
 
     const mockStore = createBridgeMockStore({
+      metamaskStateOverrides: {
+        ...mockNetworkState({ chainId: chainIds[0] }),
+      },
       bridgeStateOverrides: {
         srcTokens: { '0x00': {} },
         srcTopAssets: [],
@@ -387,6 +391,9 @@ describe('PrepareBridgePage - Race Conditions', () => {
     // Simulate rapid chain changes
     for (const chainId of chainIds) {
       const newStore = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId }),
+        },
         bridgeStateOverrides: {
           srcTokens: { '0x00': {} },
           srcTopAssets: [],
