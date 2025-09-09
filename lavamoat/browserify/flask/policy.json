@@ -2107,7 +2107,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "@metamask/utils>lodash.memoize": true,
+        "lodash": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
       }
