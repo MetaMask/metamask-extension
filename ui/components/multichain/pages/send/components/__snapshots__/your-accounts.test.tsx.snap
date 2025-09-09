@@ -459,7 +459,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
-                    />                      
+                    />
                   </div>
                   <div
                     class="mm-box mm-badge-wrapper__badge-container"
@@ -483,6 +483,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             <div
               class="flex [&>div]:!rounded-none"
             />
+          </div>
         </div>
         <div
           class="mm-box multichain-account-list-item__content mm-box--display-flex mm-box--flex-direction-column"
