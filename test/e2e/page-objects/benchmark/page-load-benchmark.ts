@@ -396,20 +396,6 @@ export class PageLoadBenchmark {
   }
 
   /**
-   * Calculates the standard deviation of an array of numbers.
-   * Uses the population standard deviation formula.
-   *
-   * @param values - Array of numeric values
-   * @returns The standard deviation value
-   */
-  private calculateStandardDeviation(values: number[]): number {
-    const calculatedMean = mean(values);
-    const squaredDiffs = values.map((val) => Math.pow(val - calculatedMean, 2));
-    const variance = mean(squaredDiffs);
-    return Math.sqrt(variance);
-  }
-
-  /**
    * Calculates the specified percentile value from an array of numbers.
    * Uses the nearest-rank method for percentile calculation.
    *
@@ -421,6 +407,20 @@ export class PageLoadBenchmark {
     const sorted = [...values].sort((a, b) => a - b);
     const index = Math.floor((percentile / 100) * sorted.length);
     return sorted[index];
+  }
+
+  /**
+   * Calculates the standard deviation of an array of numbers.
+   * Uses the population standard deviation formula.
+   *
+   * @param values - Array of numeric values
+   * @returns The standard deviation value
+   */
+  private calculateStandardDeviation(values: number[]): number {
+    const calculatedMean = mean(values);
+    const squaredDiffs = values.map((val) => Math.pow(val - calculatedMean, 2));
+    const variance = mean(squaredDiffs);
+    return Math.sqrt(variance);
   }
 
   /**
