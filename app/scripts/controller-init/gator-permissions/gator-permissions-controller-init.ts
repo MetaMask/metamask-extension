@@ -9,22 +9,34 @@ import { GatorPermissionsControllerMessenger } from '../messengers/gator-permiss
 
 const generateDefaultGatorPermissionsControllerState =
   (): Partial<GatorPermissionsControllerState> => {
-    const snapId = process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
-    const baseGatorPermissionsControllerState: Partial<GatorPermissionsControllerState> =
-      {
-        isGatorPermissionsEnabled: isGatorPermissionsFeatureEnabled(),
-      };
+    const gatorPermissionsProviderSnapId =
+      process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
 
-    try {
-      assertIsValidSnapId(snapId);
-    } catch (error) {
-      return baseGatorPermissionsControllerState;
+    // if GATOR_PERMISSIONS_PROVIDER_SNAP_ID is not specified, GatorPermissionsController will initialize it's default
+    if (gatorPermissionsProviderSnapId !== undefined) {
+      try {
+        assertIsValidSnapId(gatorPermissionsProviderSnapId);
+      } catch (error) {
+        throw new Error(
+          'GATOR_PERMISSIONS_PROVIDER_SNAP_ID must be set to a valid snap id',
+          {
+            cause: error,
+          },
+        );
+      }
     }
 
-    return {
-      ...baseGatorPermissionsControllerState,
-      gatorPermissionsProviderSnapId: snapId,
+    const isGatorPermissionsEnabled = isGatorPermissionsFeatureEnabled();
+
+    const state: Partial<GatorPermissionsControllerState> = {
+      isGatorPermissionsEnabled,
     };
+
+    if (gatorPermissionsProviderSnapId) {
+      state.gatorPermissionsProviderSnapId = gatorPermissionsProviderSnapId;
+    }
+
+    return state;
   };
 
 export const GatorPermissionsControllerInit: ControllerInitFunction<
