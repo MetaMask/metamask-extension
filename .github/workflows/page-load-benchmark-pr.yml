@@ -13,18 +13,12 @@ on:
         required: false
         type: string
         default: '10'
-    secrets:
-      PR_COMMENT_TOKEN:
-        required: true
-      EXTENSION_BENCHMARK_STATS_TOKEN:
-        required: true
 
 jobs:
   page-load-benchmark-pr:
     name: Run Page Load Benchmarks
     runs-on: ubuntu-latest
     env:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -53,11 +47,3 @@ jobs:
         with:
           name: benchmark-results
           path: test-artifacts/benchmarks/benchmark-results.json
-
-      - name: Upload benchmark results (historical data)
-        if: github.ref == 'refs/heads/main'
-        run: .github/scripts/benchmark-stats-commit.sh
-        env:
-          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}

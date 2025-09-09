@@ -26,6 +26,25 @@ export const trimTrailingZeros = (numStr: string) => {
   return numStr.replace(/(\.\d*?[1-9])0+$/gu, '$1').replace(/\.0*$/u, '');
 };
 
+export const removeAdditionalDecimalPlaces = (
+  value: string,
+  decimals: string | number | undefined,
+) => {
+  if (!value) {
+    return undefined;
+  }
+  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
+  const result = value.replace(/^-/u, '').split('.');
+  const intPart = result[0];
+  let fracPart = result[1] ?? '';
+
+  if (fracPart.length > decimalValue) {
+    fracPart = fracPart.slice(0, decimalValue);
+  }
+
+  return fracPart ? `${intPart}.${fracPart}` : intPart;
+};
+
 export const fromTokenMinUnitsNumeric = (
   value: string,
   base: NumericBase,
@@ -69,20 +88,10 @@ export const toTokenMinimalUnit = (
   decimals: number | string = 0,
   base?: NumericBase,
 ) => {
-  const convertedValue = toTokenMinimalUnitNumeric(value, decimals, base)
-    .toBase(10)
-    .toString();
-
-  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
-  const result = String(convertedValue).replace(/^-/u, '').split('.');
-  const intPart = result[0];
-  let fracPart = result[1] ?? '';
-
-  if (fracPart.length > decimalValue) {
-    fracPart = fracPart.slice(0, decimalValue);
-  }
-
-  return fracPart ? `${intPart}.${fracPart}` : intPart;
+  return removeAdditionalDecimalPlaces(
+    toTokenMinimalUnitNumeric(value, decimals, base).toBase(10).toString(),
+    decimals,
+  );
 };
 
 export function formatToFixedDecimals(
@@ -226,13 +235,20 @@ export function isDecimal(value: string) {
   return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
 }
 
-export function convertedCurrency(value: string, conversionRate?: number) {
+export function convertedCurrency(
+  value: string,
+  conversionRate?: number,
+  decimals?: string | number,
+) {
   if (!isDecimal(value) || parseFloat(value) < 0) {
     return undefined;
   }
 
   return trimTrailingZeros(
-    new Numeric(value, 10).applyConversionRate(conversionRate).toString(),
+    removeAdditionalDecimalPlaces(
+      new Numeric(value, 10).applyConversionRate(conversionRate).toString(),
+      decimals,
+    ) ?? '',
   );
 }
 
