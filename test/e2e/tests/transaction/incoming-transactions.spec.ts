@@ -111,8 +111,10 @@ describe('Incoming Transactions', function () {
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.checkTxAction({ action: 'Received', txIndex: 2 });
+        await activityList.checkTxAction({ action: 'Received', txIndex: 1, completedTxs: 2 });
         await activityList.checkTxAmountInActivity('1.23 ETH', 1);
+
+        await activityList.checkTxAction({ action: 'Received', txIndex: 2, completedTxs: 2 });
         await activityList.checkTxAmountInActivity('2.34 ETH', 2);
       },
     );
@@ -166,7 +168,11 @@ describe('Incoming Transactions', function () {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
-        await activityList.checkTxAction({ action: 'Contract interaction' });
+        await activityList.checkTxAction({
+          action: 'Contract interaction',
+          txIndex: 2,
+          completedTxs: 2,
+        });
         await activityList.checkTxAmountInActivity('-4.56 ETH', 2);
       },
     );
