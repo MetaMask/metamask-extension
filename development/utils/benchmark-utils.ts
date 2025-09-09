@@ -8,7 +8,7 @@
  * @param param.prNumber - PR Number.
  * @param [param.optionalLog] - Optional log for extra debug.
  * @param [param.commentToken] - PR secret comment token.
- * @returns A promise with response object or undefined.
+ * @returns A promise with response object or null.
  */
 export async function postCommentWithMetamaskBot({
   commentBody,
