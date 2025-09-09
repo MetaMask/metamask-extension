@@ -104,13 +104,20 @@ export async function bridgeTransaction(
   await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
 
   if (quote.unapproved) {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
-    await activityList.checkTxAction(
-      `Approve ${quote.tokenFrom} for bridge`,
-      2,
-    );
+    await activityList.checkTxAction({
+      action: `Bridged to ${quote.toChain}`,
+      completedTxs: transactionsCount,
+    });
+    await activityList.checkTxAction({
+      action: `Approve ${quote.tokenFrom} for bridge`,
+      completedTxs: transactionsCount,
+      txIndex: 2,
+    });
   } else {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction({
+      action: `Bridged to ${quote.toChain}`,
+      completedTxs: transactionsCount,
+    });
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.checkTxAmountInActivity(
@@ -932,19 +939,45 @@ export const getBridgeL2Fixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withPreferencesControllerSmartTransactionsOptedOut()
-    .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
+    .withBridgeControllerDefaultState()
+    .withTokenListController({
+      tokensChainsCache: {
+        '0xa4b1': {
+          data: {
+            '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
+              name: 'USD Coin',
+              symbol: 'USDC',
+              address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+              decimals: 6,
+            },
+            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
+              name: 'Dai Stablecoin',
+              symbol: 'DAI',
+              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+              decimals: 18,
+            },
+          },
+        },
+        '0xe708': {
+          // Add Linea tokens
+          data: {
+            '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5': {
+              name: 'Bridged Dai Stablecoin Linea',
+              symbol: 'DAI',
+              address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+              decimals: 18,
+            },
+            // Add other Linea tokens as needed
+          },
+        },
+      },
+    })
     .withEnabledNetworks({
       eip155: {
-        '0x1': true, // Ethereum Mainnet
-        '0xa4b1': true, // Arbitrum One
-        '0xe708': true, // Linea Mainnet
-        '0xa': true, // Optimism
-        '0x89': true, // Polygon
-        '0x38': true, // BSC
-        '0xa86a': true, // Avalanche
-        '0x2105': true, // Base
-        '0x144': true, // zkSync Era
+        '0x1': true, // Mainnet
+        '0xe708': true, // Linea (source chain for test)
+        '0xa4b1': true, // Arbitrum One (destination chain for test)
       },
     });
 

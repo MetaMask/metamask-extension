@@ -3712,6 +3712,10 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -3993,6 +3997,8 @@ export default class MetamaskController extends EventEmitter {
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
+      setEnabledNetworksMultichain:
+        this.setEnabledNetworksMultichain.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -7440,6 +7446,12 @@ export default class MetamaskController extends EventEmitter {
       setEnabledNetworks: (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
+      setEnabledNetworksMultichain: (chainIds, namespace) => {
+        this.networkOrderController.setEnabledNetworksMultichain(
+          chainIds,
+          namespace,
+        );
+      },
       getEnabledNetworks: (namespace) => {
         return (
           this.networkOrderController.state.enabledNetworkMap[namespace] || {}
@@ -8828,6 +8840,18 @@ export default class MetamaskController extends EventEmitter {
   setEnabledNetworks = (chainIds, networkId) => {
     try {
       this.networkOrderController.setEnabledNetworks(chainIds, networkId);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
+  setEnabledNetworksMultichain = (chainIds, namespace) => {
+    try {
+      this.networkOrderController.setEnabledNetworksMultichain(
+        chainIds,
+        namespace,
+      );
     } catch (err) {
       log.error(err.message);
       throw err;
