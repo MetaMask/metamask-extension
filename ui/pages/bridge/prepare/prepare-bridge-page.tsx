@@ -215,10 +215,8 @@ const PrepareBridgePage = ({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     activeQuote: activeQuote_,
-    isQuoteGoingToRefresh,
     quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
-  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
@@ -292,8 +290,6 @@ const PrepareBridgePage = ({
       ? selectedDestinationAccount.id
       : undefined,
   );
-
-  const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 

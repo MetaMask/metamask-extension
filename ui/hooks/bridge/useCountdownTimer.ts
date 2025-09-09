@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
@@ -11,26 +11,35 @@ const STEP = 1000;
  *
  * This hook calculates the remaining time until the next refresh interval and updates every second.
  *
- * @returns The remaining time in milliseconds.
+ * @returns The remaining time in seconds.
  */
 export const useCountdownTimer = () => {
   const { quotesLastFetchedMs } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
   const [timeRemaining, setTimeRemaining] = useState(refreshRate);
+  const timeRemainingRef = useRef(refreshRate);
+
+  // Update ref whenever timeRemaining changes
+  useEffect(() => {
+    timeRemainingRef.current = timeRemaining;
+  }, [timeRemaining]);
 
   useEffect(() => {
     if (quotesLastFetchedMs) {
-      setTimeRemaining(refreshRate - (Date.now() - quotesLastFetchedMs) + STEP);
+      const newTimeRemaining =
+        refreshRate - (Date.now() - quotesLastFetchedMs) + STEP;
+      setTimeRemaining(newTimeRemaining);
     }
-  }, [quotesLastFetchedMs]);
+  }, [quotesLastFetchedMs, refreshRate]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining(Math.max(0, timeRemaining - STEP));
+      const newTimeRemaining = Math.max(0, timeRemainingRef.current - STEP);
+      setTimeRemaining(newTimeRemaining);
     }, STEP);
     return () => clearInterval(interval);
-  }, [timeRemaining]);
+  }, []); // Empty dependency array - interval only created once
 
-  return timeRemaining;
+  return Math.floor(timeRemaining / 1000);
 };
