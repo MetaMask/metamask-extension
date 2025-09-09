@@ -110,7 +110,7 @@ buildTypes:
 
       # Enables gator permissions feature
       - GATOR_PERMISSIONS_ENABLED: false
-      - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: ''
+      - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: '@metamask/gator-permissions-snap'
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -332,7 +332,7 @@ env:
 
   # Enables gator permissions feature
   - GATOR_PERMISSIONS_ENABLED: false
-  - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: ''
+  - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: '@metamask/gator-permissions-snap'
 
   ###
   # Meta variables
