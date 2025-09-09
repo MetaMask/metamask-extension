@@ -1420,7 +1420,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls setAccountGroupName in background', () => {
+    it('calls setAccountGroupName in background with correct parameters', async () => {
       const store = mockStore();
       const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
       const newAccountName = 'New Account Name';
@@ -1432,7 +1432,7 @@ describe('Actions', () => {
 
       setBackgroundConnection(background.getApi());
 
-      store.dispatch(
+      await store.dispatch(
         actions.setAccountGroupName(accountGroupId, newAccountName),
       );
 
@@ -1440,6 +1440,27 @@ describe('Actions', () => {
       expect(
         setAccountGroupName.calledWith(accountGroupId, newAccountName),
       ).toStrictEqual(true);
+    });
+
+    it('returns false when the background call fails', async () => {
+      const store = mockStore();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+      const newAccountName = 'New Account Name';
+      const setAccountGroupName = sinon
+        .stub()
+        .rejects(new Error('Failed to set account name'));
+
+      background.getApi = sinon.stub().returns({
+        setAccountGroupName,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const result = await store.dispatch(
+        actions.setAccountGroupName(accountGroupId, newAccountName),
+      );
+
+      expect(result).toStrictEqual(false);
     });
   });
 

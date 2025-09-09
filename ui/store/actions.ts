@@ -2262,7 +2262,7 @@ export function createNextMultichainAccountGroup(
 export function setAccountGroupName(
   accountGroupId: AccountGroupId,
   newAccountName: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setAccountGroupName`);
     try {
@@ -2273,8 +2273,10 @@ export function setAccountGroupName(
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
       await forceUpdateMetamaskState(dispatch);
+      return true;
     } catch (error) {
       logErrorWithMessage(error);
+      return false;
     }
   };
 }

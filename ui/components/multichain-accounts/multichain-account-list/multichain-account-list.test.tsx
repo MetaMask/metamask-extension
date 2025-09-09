@@ -35,6 +35,7 @@ jest.mock('../../../store/actions', () => {
     setAccountGroupName: jest.fn().mockImplementation(() => {
       return async function () {
         await Promise.resolve();
+        return true;
       };
     }),
     setSelectedMultichainAccount: jest.fn().mockImplementation(() => {
@@ -333,7 +334,7 @@ describe('MultichainAccountList', () => {
       }
     });
 
-    // Find and click the confirm button
+    // Find and click the confirmation button
     const confirmButton = screen.getByText('Confirm');
     expect(confirmButton).toBeInTheDocument();
 

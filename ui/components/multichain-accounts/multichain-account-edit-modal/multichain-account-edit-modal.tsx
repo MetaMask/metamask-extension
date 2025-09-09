@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
@@ -18,6 +18,7 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import { MetaMaskReduxDispatch } from '../../../store/store';
 
 export type MultichainAccountEditModalProps = {
   isOpen: boolean;
@@ -37,16 +38,34 @@ export const MultichainAccountEditModal = ({
   );
   const currentAccountName = accountGroup?.metadata.name || '';
   const [accountName, setAccountName] = useState('');
+  const [helpText, setHelpText] = useState('');
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     const normalizedAccountName = accountName.trim();
     if (normalizedAccountName && normalizedAccountName !== currentAccountName) {
-      await dispatch(
-        setAccountGroupName(accountGroupId, normalizedAccountName),
+      const action = setAccountGroupName(accountGroupId, normalizedAccountName);
+
+      type ThunkType = (
+        dispatch: MetaMaskReduxDispatch,
+        getState: () => unknown,
+        extraArgument: unknown,
+      ) => Promise<boolean>;
+
+      const result = await (action as ThunkType)(
+        dispatch,
+        () => ({}),
+        undefined,
       );
+
+      if (result) {
+        onClose();
+      } else {
+        setHelpText(t('accountNameAlreadyInUse'));
+        setShowErrorMessage(true);
+      }
     }
-    onClose();
-  };
+  }, [accountName, currentAccountName, accountGroupId, dispatch, onClose, t]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -69,6 +88,8 @@ export const MultichainAccountEditModal = ({
                 value={accountName}
                 onChange={(e) => setAccountName(e.target.value)}
                 placeholder={currentAccountName}
+                error={showErrorMessage}
+                helpText={helpText}
                 autoFocus
               />
             </Box>

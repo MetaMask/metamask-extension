@@ -10,7 +10,9 @@ import {
 } from './multichain-account-edit-modal';
 
 jest.mock('../../../store/actions', () => ({
-  setAccountGroupName: jest.fn(),
+  setAccountGroupName: jest.fn().mockImplementation(() => {
+    return async () => true; // Return a thunk that resolves to true
+  }),
 }));
 
 describe('MultichainAccountEditModal', () => {
@@ -153,7 +155,6 @@ describe('MultichainAccountEditModal', () => {
     // Check that dispatch was not called
     await waitFor(() => {
       expect(setAccountGroupName).not.toHaveBeenCalled();
-      expect(mockProps.onClose).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -228,5 +229,42 @@ describe('MultichainAccountEditModal', () => {
       );
       expect(mockProps.onClose).toHaveBeenCalled();
     });
+  });
+
+  it('shows error message when account name already exists', async () => {
+    // Mock the setAccountGroupName to return a thunk that resolves to false
+    // indicating a duplicate account name
+    (setAccountGroupName as jest.Mock).mockImplementationOnce(() => {
+      return async () => false; // Return false to simulate duplicate name
+    });
+
+    const store = configureStore(mockDefaultState);
+    renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
+
+    const input = screen.getByPlaceholderText('Account 1');
+    fireEvent.change(input, { target: { value: 'Duplicate Account Name' } });
+
+    const confirmButton = screen.getByText('Confirm');
+    fireEvent.click(confirmButton);
+
+    // Wait for the error message to appear
+    await waitFor(() => {
+      // Check that the error message is displayed
+      expect(
+        screen.getByText('This name is already in use.'),
+      ).toBeInTheDocument();
+
+      // Check that the input field has the error styling
+      const inputContainer = screen.getByTestId('account-name-input');
+      expect(inputContainer).toHaveClass('mm-form-text-field');
+
+      // The modal should remain open and not call onClose
+      expect(mockProps.onClose).not.toHaveBeenCalled();
+    });
+
+    expect(setAccountGroupName).toHaveBeenCalledWith(
+      mockProps.accountGroupId,
+      'Duplicate Account Name',
+    );
   });
 });

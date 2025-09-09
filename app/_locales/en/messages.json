@@ -1513,6 +1513,10 @@
   "connectionRequest": {
     "message": "Connection request"
   },
+  "accountNameAlreadyInUse": {
+    "message": "This name is already in use.",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
+  },
   "connectionsRemovedModalDescription": {
     "message": "Some connections (like hardware wallets and snaps) were removed due to inactivity on this device. You can re-add them anytime in Settings."
   },
