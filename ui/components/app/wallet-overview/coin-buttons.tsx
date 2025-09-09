@@ -419,7 +419,7 @@ const CoinButtons = ({
           Icon={
             displayNewIconButtons ? (
               <Icon
-                name={IconName.Money}
+                name={IconName.Dollar}
                 color={IconColor.iconAlternative}
                 size={IconSize.Md}
               />
@@ -433,7 +433,7 @@ const CoinButtons = ({
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
-          label={t('buyAndSell')}
+          label={t('buy')}
           onClick={handleBuyAndSellOnClick}
           width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
@@ -451,13 +451,13 @@ const CoinButtons = ({
         Icon={
           displayNewIconButtons ? (
             <Icon
-              name={IconName.SwapHorizontal}
+              name={IconName.SwapVertical}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           ) : (
             <Icon
-              name={IconName.SwapHorizontal}
+              name={IconName.SwapVertical}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />

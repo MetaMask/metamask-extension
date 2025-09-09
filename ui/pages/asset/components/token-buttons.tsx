@@ -300,12 +300,12 @@ const TokenButtons = ({
         className="token-overview__button"
         Icon={
           <Icon
-            name={IconName.Money}
+            name={IconName.Dollar}
             color={IconColor.iconAlternative}
             size={IconSize.Md}
           />
         }
-        label={t('buyAndSell')}
+        label={t('buy')}
         data-testid="token-overview-buy"
         onClick={handleBuyAndSellOnClick}
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -332,7 +332,7 @@ const TokenButtons = ({
         className="token-overview__button"
         Icon={
           <Icon
-            name={IconName.SwapHorizontal}
+            name={IconName.SwapVertical}
             color={IconColor.iconAlternative}
             size={IconSize.Md}
           />
