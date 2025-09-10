@@ -6486,7 +6486,7 @@
     "message": "Aggregator"
   },
   "swapAllowSwappingOf": {
-    "message": "Allow exact access to $1 $2 on $3 for swapping",
+    "message": "Allow swapping of $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
   "swapAmountReceived": {

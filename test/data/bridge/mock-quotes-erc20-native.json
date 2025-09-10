@@ -18,7 +18,6 @@
       },
       "destChainId": 42161,
       "destTokenAmount": "991225000000000000",
-      "minDestTokenAmount": "900000000000000000",
       "destAsset": {
         "address": "0x0000000000000000000000000000000000000000",
         "chainId": 42161,
@@ -122,7 +121,6 @@
       },
       "destChainId": 42161,
       "destTokenAmount": "991147696728676903",
-      "minDestTokenAmount": "900000000000000000",
       "destAsset": {
         "address": "0x0000000000000000000000000000000000000000",
         "chainId": 42161,
@@ -226,7 +224,6 @@
       },
       "destChainId": 42161,
       "destTokenAmount": "991112862890876485",
-      "minDestTokenAmount": "900000000000000000",
       "destAsset": {
         "address": "0x0000000000000000000000000000000000000000",
         "chainId": 42161,
@@ -330,7 +327,6 @@
       },
       "destChainId": 42161,
       "destTokenAmount": "990221346602370184",
-      "minDestTokenAmount": "900000000000000000",
       "destAsset": {
         "address": "0x0000000000000000000000000000000000000000",
         "chainId": 42161,
@@ -443,7 +439,6 @@
         "chainAgnosticId": null
       },
       "destTokenAmount": "991147696728676903",
-      "minDestTokenAmount": "900000000000000000",
       "feeData": {
         "metabridge": {
           "amount": "8750000000000000",
@@ -560,7 +555,6 @@
         "active": true,
         "icon": "https://raw.githubusercontent.com/0xsquid/assets/main/images/tokens/eth.svg"
       },
-      "minDestTokenAmount": "900000000000000000",
       "feeData": {
         "metabridge": {
           "amount": "8750000000000000",

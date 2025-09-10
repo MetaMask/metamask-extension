@@ -1,7 +1,6 @@
 [
   {
     "quote": {
-      "minDestTokenAmount": "13984280",
       "requestId": "90ae8e69-f03a-4cf6-bab7-ed4e3431eb37",
       "minDestTokenAmount": "13984280",
       "srcChainId": 10,

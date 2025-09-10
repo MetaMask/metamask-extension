@@ -27,9 +27,7 @@ export const useCountdownTimer = () => {
 
   useEffect(() => {
     if (quotesLastFetchedMs) {
-      const newTimeRemaining =
-        refreshRate - (Date.now() - quotesLastFetchedMs) + STEP;
-      setTimeRemaining(newTimeRemaining);
+      setTimeRemaining(refreshRate - (Date.now() - quotesLastFetchedMs) + STEP);
     }
   }, [quotesLastFetchedMs, refreshRate]);
 
