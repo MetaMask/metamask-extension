@@ -207,10 +207,7 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <PreferredAvatar
-            address={internalAccount.address}
-            className="shrink-0"
-          />
+          <PreferredAvatar address={internalAccount.address} />
         )}
         {internalAccount && (
           <Text
