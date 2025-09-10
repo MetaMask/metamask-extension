@@ -34,9 +34,14 @@ async function main() {
   await withFixtures(
     {
       dapp: true,
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilder()
+        .withPreferencesControllerSmartAccountOptedIn()
+        .build(),
       localNodeOptions: 'none',
       title: 'api-specs coverage',
+      manifestFlags: {
+        testing: { enableSmartAccountOptIn: true },
+      },
       testSpecificMock: mockEip7702FeatureFlag,
     },
     async ({ driver }: { driver: Driver }) => {
@@ -83,7 +88,6 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           'wallet_swapAsset',
-          'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({

@@ -115,14 +115,18 @@ export class ConfirmationsRejectRule implements Rule {
         reject,
         task: async () => {
           try {
+            await this.driver.waitUntilXWindowHandles(3);
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             const text = 'Cancel';
 
-            await this.driver.findClickableElements({
-              text: 'Cancel',
-              tag: 'button',
-            });
+            await this.driver.waitForSelector(
+              {
+                text,
+                tag: 'button',
+              },
+              { timeout: 10000 },
+            );
 
             const screenshot = await this.driver.driver.takeScreenshot();
             call.attachments = call.attachments || [];
