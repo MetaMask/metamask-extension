@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Tooltip } from 'react-tippy';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   AlignItems,
   BorderStyle,
@@ -10,14 +11,12 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   Text,
 } from '../../../component-library';
+import { PreferredAvatar } from '../../../app/preferred-avatar';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { AvatarGroup } from '../../../multichain/avatar-group';
@@ -42,7 +41,6 @@ type TooltipContentProps = {
 const TooltipContent = React.memo<TooltipContentProps>(
   ({ accountGroups, networks }) => {
     const t = useI18nContext();
-    const avatarAccountVariant = AvatarAccountVariant.Blockies;
 
     const displayAccountGroups = accountGroups?.slice(0, TOOLTIP_LIMIT) ?? [];
     const displayNetworks = networks?.slice(0, TOOLTIP_LIMIT) ?? [];
@@ -78,12 +76,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
               paddingInline={2}
               gap={2}
             >
-              <AvatarAccount
-                size={AvatarAccountSize.Xs}
-                address={acc.id}
-                variant={avatarAccountVariant}
-                borderStyle={BorderStyle.none}
-              />
+              <PreferredAvatar size={AvatarAccountSize.Xs} address={acc.id} />
               <Text
                 color={TextColor.overlayInverse}
                 variant={TextVariant.bodyMdMedium}

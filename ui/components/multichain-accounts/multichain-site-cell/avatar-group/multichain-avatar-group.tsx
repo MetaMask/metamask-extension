@@ -1,16 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   AlignItems,
   BorderRadius,
   Display,
 } from '../../../../helpers/constants/design-system';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-} from '../../../component-library';
+import { Box } from '../../../component-library';
+import { PreferredAvatar } from '../../../app/preferred-avatar';
 
 type MultichainAccountAvatarGroupProps = {
   className?: string;
@@ -35,12 +32,10 @@ export const MultichainAccountAvatarGroup: React.FC<
         {visibleMembers.map((member, i) => {
           return (
             <Box borderRadius={BorderRadius.full} key={i}>
-              <AvatarAccount
+              <PreferredAvatar
                 data-testid={`avatar-account-${i}`}
                 size={AvatarAccountSize.Xs}
                 address={member.avatarValue}
-                // TODO: Switch to maskicon once it is available
-                variant={AvatarAccountVariant.Blockies}
               />
             </Box>
           );
