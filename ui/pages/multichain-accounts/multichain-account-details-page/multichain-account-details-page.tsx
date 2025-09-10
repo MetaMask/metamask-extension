@@ -101,7 +101,7 @@ export const MultichainAccountDetailsPage = () => {
           />
         }
       >
-        {t('accountDetails')}
+        {multichainAccount.metadata.name}
       </Header>
       <Content
         className="multichain-account-details-page__content"
