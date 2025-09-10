@@ -99,6 +99,7 @@ export const AccountList = () => {
       <Content className="account-list-page__content">
         <Box
           flexDirection={FlexDirection.Column}
+          paddingTop={1}
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={2}
