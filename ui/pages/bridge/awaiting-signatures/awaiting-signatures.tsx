@@ -122,11 +122,12 @@ export default function AwaitingSignatures() {
                 >
                   1
                 </AvatarBase>
-                {t(isSwap ? 'swapAllowSwappingOf' : 'bridgeAllowSwappingOf', [
-                  fromAmount,
-                  fromToken?.symbol,
-                  fromChain?.name,
-                ])}
+                {t(
+                  isSwap
+                    ? 'unifiedSwapAllowSwappingOf'
+                    : 'bridgeAllowSwappingOf',
+                  [fromAmount, fromToken?.symbol, fromChain?.name],
+                )}
               </li>
               <li>
                 <AvatarBase
