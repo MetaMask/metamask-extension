@@ -66,7 +66,7 @@ describe('FileUploader', () => {
 
   it('should show error when file exceeds maxFileSize', async () => {
     const mockOnChange = jest.fn();
-    const { getByTestId, getByText } = renderWithUserEvent(
+    const { getByTestId } = renderWithUserEvent(
       <FileUploader
         data-testid="file-uploader"
         maxFileSize={1} // 1MB limit

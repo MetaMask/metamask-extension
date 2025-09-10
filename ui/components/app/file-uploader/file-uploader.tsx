@@ -103,17 +103,18 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
 
     const onFileDrop = (e: React.DragEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      const { files } = e.dataTransfer;
-      addFiles(files);
+      const { files: dtFiles } = e.dataTransfer;
+      addFiles(dtFiles);
     };
 
-    const onFileChange = (files: FileList) => {
-      if (!files) {
+    const onFileChange = (fileChangeFiles: FileList) => {
+      if (!fileChangeFiles) {
         return;
       }
-      addFiles(files);
+      addFiles(fileChangeFiles);
     };
 
+    // emit the files to parent when they change
     useEffect(() => {
       onChange?.(files);
     }, [files, onChange]);
