@@ -1467,12 +1467,16 @@
     },
     "@metamask/multichain-account-service": {
       "globals": {
+        "console.error": true,
         "console.warn": true
       },
       "packages": {
         "@metamask/account-api": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true
+        "@metamask/keyring-controller": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/multichain-api-middleware": {
