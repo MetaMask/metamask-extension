@@ -145,7 +145,7 @@ export default function AwaitingSignatures() {
                 {t(isSwap ? 'unifiedSwapFromTo' : 'bridgeFromTo', [
                   fromAmount,
                   fromToken?.symbol,
-                  toChain?.name,
+                  isSwap ? toToken?.symbol : toChain?.name,
                 ])}
               </li>
             </ul>
