@@ -175,4 +175,46 @@ describe('MultichainAccountMenu', () => {
       });
     }
   });
+
+  it('calls handleAccountRenameAction when clicking the rename option', async () => {
+    const mockHandleAccountRenameAction = jest.fn();
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    renderComponent({
+      accountGroupId,
+      isRemovable: false,
+      handleAccountRenameAction: mockHandleAccountRenameAction,
+    });
+
+    const menuButton = document.querySelector(menuButtonSelector);
+    expect(menuButton).not.toBeNull();
+
+    if (menuButton) {
+      await act(async () => {
+        fireEvent.click(menuButton);
+        await waitFor(() => {
+          expect(
+            document.querySelector(popoverOpenSelector),
+          ).toBeInTheDocument();
+        });
+      });
+    }
+
+    // Rename option should be the second menu item
+    const menuItems = document.querySelectorAll(menuItemSelector);
+    expect(menuItems.length).toBe(5);
+
+    const renameOption = menuItems[1];
+    expect(renameOption).not.toBeNull();
+
+    if (renameOption) {
+      await act(async () => {
+        fireEvent.click(renameOption);
+      });
+    }
+
+    expect(mockHandleAccountRenameAction).toHaveBeenCalledWith(accountGroupId);
+    // Verify the popover is closed after clicking rename
+    expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
+  });
 });

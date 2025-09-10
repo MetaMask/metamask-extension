@@ -138,3 +138,12 @@ export const isInstitutionalEVMAccount = (
 export const isBitcoinAccount = (account: InternalAccount): boolean => {
   return getAccountTypeCategory(account) === 'bitcoin';
 };
+
+/**
+ * Checks if an account is a Bitcoin account
+ *
+ * @param account - The internal account object to check.
+ */
+export const isTronAccount = (account: InternalAccount): boolean => {
+  return getAccountTypeCategory(account) === 'tron';
+};

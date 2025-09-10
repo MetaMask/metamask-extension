@@ -133,12 +133,14 @@ const createMockFactory = () => {
         accounts.eip155MultipleSpecific,
         accounts.solana,
       ],
+      walletName: 'Test Wallet 1',
     },
     {
       id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1',
       type: AccountGroupType.MultichainAccount,
       metadata: createGroupMetadata('Test Group 2', 1),
       accounts: [accounts.multiScope],
+      walletName: 'Test Wallet 2',
     },
   ];
 
@@ -150,6 +152,7 @@ const createMockFactory = () => {
         type: AccountGroupType.MultichainAccount,
         metadata: createGroupMetadata('Test Group'),
         accounts: [accounts.emptyScopes],
+        walletName: 'Test Wallet 2',
       },
     ];
 
@@ -160,6 +163,7 @@ const createMockFactory = () => {
         type: AccountGroupType.MultichainAccount,
         metadata: createGroupMetadata('Test Group'),
         accounts: [accounts.undefinedScopes],
+        walletName: 'Test Wallet 2',
       },
     ];
 
@@ -170,6 +174,7 @@ const createMockFactory = () => {
         type: AccountGroupType.MultichainAccount,
         metadata: createGroupMetadata('Test Group'),
         accounts: [accounts.multipleScopes],
+        walletName: 'Test Wallet 3',
       },
     ];
 
@@ -556,6 +561,7 @@ describe('scope-utils', () => {
                 ],
               }),
             ],
+            walletName: 'Test Wallet 3',
           },
         ];
 

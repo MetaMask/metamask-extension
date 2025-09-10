@@ -42,10 +42,10 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getIsSolanaSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   getIsTronSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getIsSolanaSupportEnabled,
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getMetaMaskHdKeyrings,
@@ -171,12 +171,12 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
     ///: END:ONLY_INCLUDE_IF
+    case ACTION_MODES.ADD_SOLANA:
+      return t('addAccountFromNetwork', [t('networkNameSolana')]);
     ///: BEGIN:ONLY_INCLUDE_IF(tron)
     case ACTION_MODES.ADD_TRON:
       return t('addAccountFromNetwork', [t('networkNameTron')]);
     ///: END:ONLY_INCLUDE_IF
-    case ACTION_MODES.ADD_SOLANA:
-      return t('addAccountFromNetwork', [t('networkNameSolana')]);
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     case ACTION_MODES.CREATE_SRP:

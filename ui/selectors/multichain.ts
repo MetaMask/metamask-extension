@@ -12,7 +12,12 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  isCaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
@@ -51,6 +56,7 @@ import {
   getInternalAccounts,
   getSelectedInternalAccount,
   isSolanaAccount,
+  isTronAccount,
 } from './accounts';
 import {
   getSelectedMultichainNetworkConfiguration,
@@ -448,7 +454,17 @@ export function getSelectedAccountMultichainTransactions(
     return undefined;
   }
 
-  return state.metamask.nonEvmTransactions[selectedAccount.id];
+  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id];
+
+  // We need to get the provider config for the selected account to get the correct chainId
+  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
+  const currentChainId = providerConfig.chainId;
+
+  if (isCaipChainId(currentChainId)) {
+    return transactions?.[currentChainId];
+  }
+
+  return undefined;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
@@ -644,6 +660,16 @@ export function getLastSelectedSolanaAccount(state: MultichainState) {
   const nonEvmAccounts = getInternalAccounts(state);
   const sortedNonEvmAccounts = nonEvmAccounts
     .filter((account) => isSolanaAccount(account))
+    .sort(
+      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+    );
+  return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
+}
+
+export function getLastSelectedTronAccount(state: MultichainState) {
+  const nonEvmAccounts = getInternalAccounts(state);
+  const sortedNonEvmAccounts = nonEvmAccounts
+    .filter((account) => isTronAccount(account))
     .sort(
       (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
     );

@@ -52,6 +52,8 @@ import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
+import OAuthService from '../services/oauth/oauth-service';
+import MetaMetricsController from '../controllers/metametrics-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -65,6 +67,7 @@ export type Controller =
   | GasFeeController
   | JsonSnapsRegistry
   | KeyringController
+  | MetaMetricsController
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController
@@ -74,6 +77,7 @@ export type Controller =
   | NetworkOrderController
   | NotificationServicesController
   | NotificationServicesPushController
+  | OAuthService
   | OnboardingController
   | PermissionController<
       PermissionSpecificationConstraint,

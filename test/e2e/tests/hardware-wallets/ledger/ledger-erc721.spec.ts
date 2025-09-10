@@ -1,15 +1,15 @@
 import { Suite } from 'mocha';
-import TestDappPage from '../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import CreateContractModal from '../../page-objects/pages/dialog/create-contract';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import HomePage from '../../page-objects/pages/home/homepage';
-import NFTListPage from '../../page-objects/pages/home/nft-list';
-import SetApprovalForAllTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import TestDappPage from '../../../page-objects/pages/test-dapp';
+import FixtureBuilder from '../../../fixture-builder';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import NFTListPage from '../../../page-objects/pages/home/nft-list';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 
 describe('Ledger Hardware', function (this: Suite) {
   it('can perform actions on an ERC-721 token', async function () {

@@ -89,6 +89,9 @@ const WalletDetails = () => {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const bitcoinClient = useMultichainWalletSnapClient(WalletClientType.Bitcoin);
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const tronClient = useMultichainWalletSnapClient(WalletClientType.Tron);
+  ///: END:ONLY_INCLUDE_IF
 
   const totalBalance = useMemo(
     () =>
@@ -193,6 +196,11 @@ const WalletDetails = () => {
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       else if (clientType === WalletClientType.Bitcoin) {
         client = bitcoinClient;
+      }
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      else if (clientType === WalletClientType.Tron) {
+        client = tronClient;
       }
       ///: END:ONLY_INCLUDE_IF
       else {

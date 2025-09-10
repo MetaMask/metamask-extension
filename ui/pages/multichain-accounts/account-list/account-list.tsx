@@ -30,6 +30,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { useAllWalletAccountsBalances } from '../../../hooks/multichain-accounts/useAccountBalance';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import {
   TextFieldSearch,
@@ -45,6 +46,7 @@ export const AccountList = () => {
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
+  const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
   const [searchPattern, setSearchPattern] = useState<string>('');
 
   const hasMultipleWallets = useMemo(
@@ -97,6 +99,7 @@ export const AccountList = () => {
       <Content className="account-list-page__content">
         <Box
           flexDirection={FlexDirection.Column}
+          paddingTop={1}
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={2}
@@ -125,6 +128,9 @@ export const AccountList = () => {
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
+              formattedAccountGroupBalancesByWallet={
+                formattedAccountGroupBalancesByWallet
+              }
             />
           ) : (
             <Box
