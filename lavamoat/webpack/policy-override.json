@@ -175,6 +175,26 @@
         "addEventListener": true,
         "removeEventListener": true
       }
+    },
+    "@metamask/network-controller": {
+      "packages": {
+        "cockatiel": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+      }
+    },
+    "react-router-dom-v5-compat": {
+      "packages": {
+        "react-router-dom>react-router": true
+      }
     }
   }
 }
