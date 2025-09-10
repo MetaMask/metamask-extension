@@ -1,8 +1,8 @@
 import {
-  AccountActivityServiceMessenger as BackendPlatformAccountActivityServiceMessenger,
+  type AccountActivityServiceMessenger,
+  ACCOUNT_ACTIVITY_SERVICE_ALLOWED_ACTIONS,
+  ACCOUNT_ACTIVITY_SERVICE_ALLOWED_EVENTS,
 } from '@metamask/backend-platform';
-
-export type AccountActivityServiceMessenger = BackendPlatformAccountActivityServiceMessenger;
 
 /**
  * Get a restricted messenger for the Account Activity service. This is scoped to the
@@ -16,27 +16,7 @@ export function getAccountActivityServiceMessenger(
 ): AccountActivityServiceMessenger {
   return messenger.getRestricted({
     name: 'AccountActivityService',
-    allowedActions: [
-      // Actions this service can call on other controllers
-      'AccountsController:getAccountByAddress',
-      'AccountsController:getSelectedAccount',
-      'TokenBalancesController:updateChainPollingConfigs',
-      'TokenBalancesController:getDefaultPollingInterval',
-      // Actions this service provides/registers
-      'AccountActivityService:subscribeAccounts',
-      'AccountActivityService:unsubscribeAccounts',
-    ],
-    allowedEvents: [
-      'AccountsController:accountAdded',
-      'AccountsController:accountRemoved',
-      'AccountsController:selectedAccountChange',
-      'BackendWebSocketService:connectionStateChanged',
-      // Events this service can publish
-      'AccountActivityService:accountSubscribed',
-      'AccountActivityService:accountUnsubscribed',
-      'AccountActivityService:transactionUpdated',
-      'AccountActivityService:balanceUpdated',
-      'AccountActivityService:subscriptionError',
-    ],
+    allowedActions: [...ACCOUNT_ACTIVITY_SERVICE_ALLOWED_ACTIONS],
+    allowedEvents: [...ACCOUNT_ACTIVITY_SERVICE_ALLOWED_EVENTS],
   });
 }
