@@ -1,5 +1,4 @@
 name: Automated RCA
-runs-on: self-hosted
 on:
   issues:
     types: [closed]
