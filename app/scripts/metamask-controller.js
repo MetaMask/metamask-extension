@@ -245,7 +245,6 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import { getIsSmartTransaction } from '../../shared/modules/selectors';
-import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
@@ -365,7 +364,6 @@ import {
 } from './constants/stream';
 
 // Notification controllers
-import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import {
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
@@ -3297,6 +3295,7 @@ export default class MetamaskController extends EventEmitter {
 
     // setup memStore subscription hooks
     this.on('update', updatePublicConfigStore);
+    // Update the store asynchronously, out-of-band
     updatePublicConfigStore(this.getState());
 
     return publicConfigStore;
@@ -3306,10 +3305,18 @@ export default class MetamaskController extends EventEmitter {
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
+   * @param {object} [options] - Options.
+   * @param {boolean} [options.isInitializingStreamProvider] - Whether this method is being used to initialize the StreamProvider (default: false).
    * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[], extensionId: string | undefined }>} An object with relevant state properties.
    */
-  async getProviderState(origin) {
-    const providerNetworkState = await this.getProviderNetworkState(origin);
+  async getProviderState(
+    origin,
+    { isInitializingStreamProvider = false } = {},
+  ) {
+    const providerNetworkState = await this.getProviderNetworkState({
+      origin,
+      isInitializingStreamProvider,
+    });
     const metadata = {};
     if (isManifestV3) {
       const { chrome } = globalThis;
@@ -3330,10 +3337,15 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Retrieves network state information relevant for external providers.
    *
-   * @param {string} origin - The origin identifier for which network state is requested (default: 'metamask').
+   * @param {object} [args] - The arguments to this function.
+   * @param {string} [args.origin] - The origin identifier for which network state is requested (default: 'metamask').
+   * @param {boolean} [args.isInitializingStreamProvider] - Whether this method is being used to initialize the StreamProvider (default: false).
    * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
-  async getProviderNetworkState(origin = METAMASK_DOMAIN) {
+  async getProviderNetworkState({
+    origin = METAMASK_DOMAIN,
+    isInitializingStreamProvider = false,
+  } = {}) {
     const networkClientId = this.controllerMessenger.call(
       'SelectedNetworkController:getNetworkClientIdForDomain',
       origin,
@@ -3349,7 +3361,22 @@ export default class MetamaskController extends EventEmitter {
     const { completedOnboarding } = this.onboardingController.state;
 
     let networkVersion = this.deprecatedNetworkVersions[networkClientId];
-    if (networkVersion === undefined && completedOnboarding) {
+    // We use `metamask_getProviderState` to set the initial state of the
+    // StreamProvider. The StreamProvider allows the UI to make network requests
+    // through the background connection, and it must be initialized before we
+    // can show the UI. However, this creates a problem if the selected network
+    // is slow or unresponsive, because then the network request will hang and
+    // thus we will be unable to show the UI. To get around this, we prevent a
+    // request from occurring during initialization
+    // (`isInitializingStreamProvider` = true). `metamask_getProviderState` is
+    // called each time the memState is updated, so eventually we _will_ make
+    // this request (`isInitializingStreamProvider` = false), and if the network
+    // recovers, the network version will be properly retrieved at that time.
+    if (
+      networkVersion === undefined &&
+      completedOnboarding &&
+      !isInitializingStreamProvider
+    ) {
       try {
         const result = await networkClient.provider.request({
           method: 'net_version',
@@ -3712,6 +3739,10 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -3993,6 +4024,8 @@ export default class MetamaskController extends EventEmitter {
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
+      setEnabledNetworksMultichain:
+        this.setEnabledNetworksMultichain.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -7440,6 +7473,12 @@ export default class MetamaskController extends EventEmitter {
       setEnabledNetworks: (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
+      setEnabledNetworksMultichain: (chainIds, namespace) => {
+        this.networkOrderController.setEnabledNetworksMultichain(
+          chainIds,
+          namespace,
+        );
+      },
       getEnabledNetworks: (namespace) => {
         return (
           this.networkOrderController.state.enabledNetworkMap[namespace] || {}
@@ -7521,10 +7560,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
-
-    if (origin === BaseUrl.Portfolio) {
-      engine.push(createTxVerificationMiddleware(this.networkController));
-    }
 
     engine.push(createTracingMiddleware());
 
@@ -8834,6 +8869,18 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  setEnabledNetworksMultichain = (chainIds, namespace) => {
+    try {
+      this.networkOrderController.setEnabledNetworksMultichain(
+        chainIds,
+        namespace,
+      );
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
   updateHiddenAccountsList = (hiddenAccountList) => {
     try {
       this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
@@ -8980,7 +9027,7 @@ export default class MetamaskController extends EventEmitter {
     this.notifyAllConnections(
       async (origin) => ({
         method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
+        params: await this.getProviderNetworkState({ origin }),
       }),
       API_TYPE.EIP1193,
     );
@@ -8989,7 +9036,7 @@ export default class MetamaskController extends EventEmitter {
   async _notifyChainChangeForConnection(connection, origin) {
     this.notifyConnection(connection, {
       method: NOTIFICATION_NAMES.chainChanged,
-      params: await this.getProviderNetworkState(origin),
+      params: await this.getProviderNetworkState({ origin }),
     });
   }
 

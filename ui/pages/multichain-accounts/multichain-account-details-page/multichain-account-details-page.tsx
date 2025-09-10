@@ -33,6 +33,7 @@ import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accoun
 import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
@@ -69,6 +70,12 @@ export const MultichainAccountDetailsPage = () => {
     );
   };
 
+  const handlePrivateKeysClick = () => {
+    history.push(
+      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+    );
+  };
+
   const handleSmartAccountClick = () => {
     const firstAccountAddress = accountsWithAddresses[0]?.address;
     if (firstAccountAddress) {
@@ -94,7 +101,7 @@ export const MultichainAccountDetailsPage = () => {
           />
         }
       >
-        {t('accountDetails')}
+        {multichainAccount.metadata.name}
       </Header>
       <Content
         className="multichain-account-details-page__content"
@@ -139,6 +146,7 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('privateKeys')}
             value={t('unlockToReveal')}
+            onClick={handlePrivateKeysClick}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
