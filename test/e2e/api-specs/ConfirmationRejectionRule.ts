@@ -10,7 +10,6 @@ import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
 import { addToQueue } from './helpers';
-import Eip7702AndSendCalls from '../page-objects/pages/confirmations/redesign/batch-confirmation';
 
 type ConfirmationsRejectRuleOptions = {
   driver: Driver;
