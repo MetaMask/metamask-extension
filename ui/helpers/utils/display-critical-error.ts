@@ -7,7 +7,6 @@ import {
   maybeGetLocaleContext,
 } from '../../../shared/lib/error-utils';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
