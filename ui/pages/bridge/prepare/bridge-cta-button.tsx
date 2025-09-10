@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isCrossChain } from '@metamask/bridge-controller';
 import {
+  Button,
   ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import {
@@ -98,7 +100,13 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
-      return 'swap';
+      return activeQuote &&
+        isCrossChain(
+          activeQuote.quote.srcChainId,
+          activeQuote.quote.destChainId,
+        )
+        ? 'bridge'
+        : 'swap';
     }
 
     return 'swapSelectToken';
@@ -127,10 +135,10 @@ export const BridgeCTAButton = ({
   }, [wasTxDeclined, isQuoteExpired]);
 
   return activeQuote && !secondaryButtonLabel ? (
-    <ButtonPrimary
+    <Button
       width={BlockSize.Full}
-      size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}
-      variant={TextVariant.bodyMd}
+      size={activeQuote ? ButtonSize.Md : ButtonSize.Lg}
+      variant={ButtonVariant.Primary}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -157,7 +165,7 @@ export const BridgeCTAButton = ({
       }
     >
       {label ? t(label) : ''}
-    </ButtonPrimary>
+    </Button>
   ) : (
     <Row
       alignItems={AlignItems.center}
