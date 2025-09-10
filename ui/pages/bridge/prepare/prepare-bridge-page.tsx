@@ -120,6 +120,7 @@ import { enableAllPopularNetworks } from '../../../store/controller-actions/netw
 import { BridgeInputGroup } from './bridge-input-group';
 import { DestinationAccountPicker } from './components/destination-account-picker';
 import { PrepareBridgePageFooterContents } from './prepare-bridge-page-footer';
+import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -253,8 +254,12 @@ const PrepareBridgePage = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { tokenAlert } = useTokenAlerts();
-  const { selectedDestinationAccount, setSelectedDestinationAccount } =
-    useDestinationAccount();
+  const {
+    selectedDestinationAccount,
+    setSelectedDestinationAccount,
+    isDestinationAccountPickerOpen,
+    setIsDestinationAccountPickerOpen,
+  } = useDestinationAccount();
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
@@ -489,6 +494,16 @@ const PrepareBridgePage = ({
 
   return (
     <>
+      <DestinationAccountPickerModal
+        isOpen={isDestinationAccountPickerOpen}
+        onAccountSelect={(account) => {
+          setSelectedDestinationAccount(account);
+          setIsDestinationAccountPickerOpen(false);
+        }}
+        selectedAccount={selectedDestinationAccount}
+        onClose={() => setIsDestinationAccountPickerOpen(false)}
+      />
+
       <Column className="prepare-bridge-page" gap={isToOrFromSolana ? 2 : 8}>
         <BridgeInputGroup
           header={getFromInputHeader()}
