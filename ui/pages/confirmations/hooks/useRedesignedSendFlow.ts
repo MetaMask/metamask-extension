@@ -7,10 +7,6 @@ type SendRedesignFeatureFlag = {
   enabled: boolean;
 };
 
-export function isDevBuild() {
-  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT;
-}
-
 export const useRedesignedSendFlow = () => {
   const { sendRedesign: sendRedesignFeatureFlag } = useSelector(
     getRemoteFeatureFlags,
@@ -22,7 +18,10 @@ export const useRedesignedSendFlow = () => {
     {}) as SendRedesignFeatureFlag;
 
   // This environment variable is only used for local development to override the remote feature flag
-  if (isDevBuild() && process.env.SEND_REDESIGN_ENABLED === 'true') {
+  if (
+    process.env.SEND_REDESIGN_ENABLED === 'true' &&
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT
+  ) {
     return {
       enabled: true,
     };
