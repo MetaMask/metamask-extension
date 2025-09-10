@@ -7226,10 +7226,6 @@
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
-  "unifiedSwapFromTo": {
-    "message": "Swap $1 $2 to $3",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
   "units": {
     "message": "units"
   },
