@@ -13,7 +13,6 @@ export async function sendMultichainTransactionForReview(
     amount: string;
   },
 ) {
-  console.log('----------', params);
   await handleSnapRequest({
     snapId: fromAccount.metadata?.snap?.id as SnapId,
     origin: 'metamask',
