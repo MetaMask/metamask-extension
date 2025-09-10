@@ -67,7 +67,7 @@ class PhishingWarningPage {
 
   async clickProceedAnywayButton(): Promise<void> {
     console.log('Clicking proceed anyway button on phishing warning page');
-    await this.driver.clickElementAndWaitToDisappear(this.proceedAnywayButton);
+    await this.driver.clickElementAndWaitToDisappear(this.proceedAnywayButton, 5000);
   }
 
   async clickReportDetectionProblemLink(): Promise<void> {
