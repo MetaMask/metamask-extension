@@ -104,7 +104,7 @@ exports[`AssetPickerModal token filtering should filter tokens by chain when mul
   {
     "asset": undefined,
     "assetItemProps": {
-      "isTitleHidden": true,
+      "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
     "handleAssetChange": [Function],
@@ -382,7 +382,7 @@ exports[`AssetPickerModal token filtering should render all tokens from single c
   {
     "asset": undefined,
     "assetItemProps": {
-      "isTitleHidden": true,
+      "isTitleHidden": false,
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
@@ -668,7 +668,7 @@ exports[`AssetPickerModal token filtering should show selected token first when 
       "type": "TOKEN",
     },
     "assetItemProps": {
-      "isTitleHidden": true,
+      "isTitleHidden": false,
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
