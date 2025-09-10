@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
+
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -32,7 +33,8 @@ const CONNECT_APPROVAL_TYPES = [
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
-  const navigate = useNavigate();
+  const history = useHistory();
+  const { search: queryString } = useLocation();
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -51,10 +53,11 @@ export function useConfirmationNavigation() {
         confirmationId,
         confirmations,
         Boolean(approvalFlows?.length),
-        navigate,
+        history,
+        queryString,
       );
     },
-    [confirmations, navigate],
+    [confirmations, history, queryString],
   );
 
   const navigateToIndex = useCallback(
@@ -74,12 +77,13 @@ export function navigateToConfirmation(
   confirmationId: string | undefined,
   confirmations: ApprovalRequest<Record<string, Json>>[],
   hasApprovalFlows: boolean,
-  navigate: ReturnType<typeof useNavigate>,
+  history: ReturnType<typeof useHistory>,
+  queryString: string = '',
 ) {
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
   if (hasApprovalFlows && hasNoConfirmations) {
-    navigate(`${CONFIRMATION_V_NEXT_ROUTE}`, { replace: true });
+    history.replace(`${CONFIRMATION_V_NEXT_ROUTE}`);
     return;
   }
 
@@ -98,45 +102,42 @@ export function navigateToConfirmation(
   const type = nextConfirmation.type as ApprovalType;
 
   if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
-    navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`, {
-      replace: true,
-    });
+    history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
     return;
   }
 
   if (isSignatureTransactionType(nextConfirmation)) {
-    navigate(
+    history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
-      { replace: true },
     );
     return;
   }
 
   if (type === ApprovalType.Transaction) {
-    navigate(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`, {
-      replace: true,
-    });
+    let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
+    if (queryString.length) {
+      url = `${url}${queryString}`;
+    }
+    history.replace(url);
     return;
   }
 
   if (type === ApprovalType.EthDecrypt) {
-    navigate(
+    history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,
-      { replace: true },
     );
     return;
   }
 
   if (type === ApprovalType.EthGetEncryptionPublicKey) {
-    navigate(
+    history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-      { replace: true },
     );
     return;
   }
 
   if (CONNECT_APPROVAL_TYPES.includes(type)) {
-    navigate(`${CONNECT_ROUTE}/${confirmationId}`, { replace: true });
+    history.replace(`${CONNECT_ROUTE}/${confirmationId}`);
     return;
   }
 
@@ -145,11 +146,11 @@ export function navigateToConfirmation(
   )?.tokenId as string;
 
   if (type === ApprovalType.WatchAsset && !tokenId) {
-    navigate(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`, { replace: true });
+    history.replace(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
     return;
   }
 
   if (type === ApprovalType.WatchAsset && tokenId) {
-    navigate(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`, { replace: true });
+    history.replace(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
   }
 }

@@ -36,6 +36,10 @@ import { MultichainAccountCell } from '../../../components/multichain-accounts/m
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
+import {
+  useSingleWalletAccountsBalanceCallback,
+  useSingleWalletDisplayBalance,
+} from '../../../hooks/multichain-accounts/useWalletBalance';
 
 export const WalletDetailsPage = () => {
   const t = useI18nContext();
@@ -46,6 +50,9 @@ export const WalletDetailsPage = () => {
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
   const { multichainAccounts, keyringId, isSRPBackedUp } =
     useWalletInfo(walletId);
+
+  const walletTotalBalance = useSingleWalletDisplayBalance(walletId);
+  const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
 
   useEffect(() => {
     if (!wallet) {
@@ -74,11 +81,11 @@ export const WalletDetailsPage = () => {
           key={`multichain-account-cell-${group.id}`}
           accountId={group.id as AccountGroupId}
           accountName={group.metadata.name}
-          balance="$ n/a"
+          balance={walletAccountBalance(group.id) ?? ''}
           disableHoverEffect={true}
         />
       )),
-    [multichainAccounts],
+    [multichainAccounts, walletAccountBalance],
   );
 
   return (
@@ -97,7 +104,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {t('walletDetails')}
+        {wallet?.metadata.name}
       </Header>
       <Content>
         <Box
@@ -141,7 +148,7 @@ export const WalletDetailsPage = () => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
             >
-              $ n/a
+              {walletTotalBalance ?? '$ n/a'}
             </Text>
           </Box>
           {isEntropyWallet ? (

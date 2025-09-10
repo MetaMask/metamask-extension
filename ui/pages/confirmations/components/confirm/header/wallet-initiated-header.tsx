@@ -4,7 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import {
   Box,
@@ -29,12 +29,14 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { showSendTokenPage } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { navigateToSendRoute } from '../../../utils/send';
+import { useRedesignedSendFlow } from '../../../hooks/useRedesignedSendFlow';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const history = useHistory();
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -63,8 +65,8 @@ export const WalletInitiatedHeader = () => {
     await dispatch(editExistingTransaction(assetType, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
-    navigateToSendRoute(navigate);
-  }, [currentConfirmation, dispatch, navigate]);
+    navigateToSendRoute(history, isSendRedesignEnabled);
+  }, [currentConfirmation, dispatch, history, isSendRedesignEnabled]);
 
   return (
     <Box
