@@ -15,6 +15,7 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -66,6 +67,7 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { getIsSmartTransaction } from '../../../shared/modules/selectors';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -849,5 +851,48 @@ export const getIsUnifiedUIEnabled = createSelector(
             : false,
         )
       : false;
+  },
+);
+
+const getIsGasIncludedSwapSupported = createSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) => getToChain(state)?.chainId,
+    (state) => getBridgeFeatureFlags(state).chains,
+  ],
+  (fromChainId, toChainId, bridgeFeatureFlags) => {
+    if (!fromChainId || !bridgeFeatureFlags) {
+      return false;
+    }
+    const isSwap = !isCrossChain(fromChainId, toChainId);
+    return (
+      isSwap &&
+      // @ts-expect-error TODO add this to bridge-controller type
+      bridgeFeatureFlags[formatChainIdToCaip(fromChainId)]?.isGaslessSwapEnabled
+    );
+  },
+);
+
+export const getIsGasIncluded = createSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) => state,
+    getIsGasIncludedSwapSupported,
+  ],
+  (fromChainId, state, isGasIncludedSwapSupported) => {
+    return (
+      getIsSmartTransaction(state, fromChainId) && isGasIncludedSwapSupported
+    );
+  },
+);
+
+export const getShouldShowMaxButton = createSelector(
+  [getIsGasIncluded, getFromToken],
+  (isGasIncluded, fromToken) => {
+    if (!fromToken?.chainId) {
+      return false;
+    }
+
+    return isNativeAddress(fromToken.address) ? isGasIncluded : true;
   },
 );
