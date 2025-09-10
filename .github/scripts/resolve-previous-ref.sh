@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-semver="$SEMVER"
+# Ensure SEMVER is provided via environment and assign
+semver="${SEMVER:?SEMVER environment variable must be set}"
 
 patch="${semver##*.}"
 if [ "$patch" -gt 0 ]; then
@@ -15,17 +16,20 @@ fi
 # Function to paginate and collect refs for a prefix
 fetch_matching_refs() {
   local prefix="$1"
-  local temp_file="$(mktemp)"
+  local temp_file
+  temp_file="$(mktemp)"
   local page=1
   echo "Fetching branches matching $prefix* (paginated)..." >&2
   while :; do
     echo "Fetching page $page for $prefix..." >&2
+    local resp
     resp="$(mktemp)"
     url="https://api.github.com/repos/${GITHUB_REPOSITORY}/git/matching-refs/heads/${prefix}?per_page=100&page=${page}"
     curl -sS -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "$url" -o "$resp"
 
     cat "$resp" >> "$temp_file"
 
+    local count
     count=$(jq length "$resp")
     if [ "$count" -lt 100 ]; then
       break
