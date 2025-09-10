@@ -25,6 +25,7 @@ jobs:
         env:
           FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
         run: |
+          set -e
           NEXT_SEMVER_VERSION=$(./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION")
           echo "NEXT_SEMVER_VERSION=$NEXT_SEMVER_VERSION" >> $GITHUB_OUTPUT
         working-directory: '.github/scripts'
