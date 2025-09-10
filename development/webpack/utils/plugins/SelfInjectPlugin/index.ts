@@ -27,10 +27,6 @@ const defaultOptions = {
   // It generates the absolute url of the given file as an extension url.
   // e.g., `chrome-extension://<extension-id>/scripts/inpage.js`
   sourceUrlExpression: getRuntimeURLExpression,
-  // The default `nonceExpression` is configured for browser extensions.
-  // It generates the absolute url of a path as an extension url in base64.
-  // e.g., `Y2hyb21lLWV4dGVuc2lvbjovLzxleHRlbnNpb24taWQ+Lw==`
-  nonceExpression: (path: string) => `btoa(${getRuntimeURLExpression(path)})`,
 } satisfies SelfInjectPluginOptions;
 
 /**
@@ -158,7 +154,6 @@ export class SelfInjectPlugin {
       `\`\\n//# sourceURL=\${${this.options.sourceUrlExpression(file)}};\``,
     );
     newSource.add(`;`);
-    newSource.add(`s.nonce=${this.options.nonceExpression('/')};`);
     // add and immediately remove the script to avoid modifying the DOM.
     newSource.add(`d.documentElement.appendChild(s).remove()`);
     newSource.add(`}`);

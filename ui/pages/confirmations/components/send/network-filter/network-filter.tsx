@@ -16,6 +16,8 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Icon,
+  ButtonIconSize,
+  ButtonIcon,
 } from '../../../../../components/component-library';
 import {
   BackgroundColor,
@@ -155,7 +157,17 @@ export const NetworkFilter = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Md}>
-          <ModalHeader endAccessory={<></>}>
+          <ModalHeader
+            endAccessory={
+              <ButtonIcon
+                ariaLabel="Close recipient modal"
+                data-testid="close-recipient-modal-btn"
+                iconName={IconName.Close}
+                onClick={closePopover}
+                size={ButtonIconSize.Sm}
+              />
+            }
+          >
             {t('selectNetworkToFilter')}
           </ModalHeader>
           <ModalBody>

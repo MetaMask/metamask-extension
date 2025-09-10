@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import {
   Box,
@@ -15,55 +15,51 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
+import { useSendContext } from '../../../context/send';
+import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
 import { Amount } from '../amount/amount';
-import { Header } from '../header';
 import { Recipient } from '../recipient';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const [to, setTo] = useState<string | undefined>();
+  const { to } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
   const { amountError } = useAmountValidation();
+  const { recipientError } = useRecipientValidation();
+
+  const hasError = Boolean(amountError) || Boolean(recipientError);
+  const isDisabled = hasError || !to;
 
   const onClick = useCallback(() => {
-    handleSubmit(to);
+    handleSubmit();
     captureAmountSelected();
-  }, [captureAmountSelected, handleSubmit, to]);
-
-  const hasAmountError = Boolean(amountError);
+  }, [captureAmountSelected, handleSubmit]);
 
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.spaceBetween}
-            className="send__body"
-            padding={4}
-          >
-            <Box>
-              <Recipient setTo={setTo} />
-              <Amount />
-            </Box>
-            <Button
-              disabled={hasAmountError}
-              onClick={onClick}
-              size={ButtonSize.Lg}
-              backgroundColor={
-                hasAmountError
-                  ? BackgroundColor.errorDefault
-                  : BackgroundColor.iconDefault
-              }
-            >
-              {amountError ?? t('continue')}
-            </Button>
-          </Box>
-        </div>
-      </div>
-    </div>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      paddingLeft={4}
+      paddingRight={4}
+      style={{ flex: 1 }}
+    >
+      <Box>
+        <Recipient />
+        <Amount />
+      </Box>
+      <Button
+        disabled={isDisabled}
+        onClick={onClick}
+        size={ButtonSize.Lg}
+        backgroundColor={
+          hasError ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
+        }
+        marginBottom={4}
+      >
+        {amountError ?? t('continue')}
+      </Button>
+    </Box>
   );
 };
