@@ -37,9 +37,22 @@ import { Row, Column, Tooltip } from '../layout';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { formatPriceImpact } from '../utils/price-impact';
 import { type DestinationAccount } from '../prepare/types';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+
+const getTimerColor = (timeInSeconds: number) => {
+  if (timeInSeconds <= 3) {
+    return TextColor.errorDefault;
+  }
+
+  if (timeInSeconds <= 5) {
+    return TextColor.warningDefault;
+  }
+
+  return TextColor.textAlternative;
+};
 
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
@@ -100,6 +113,8 @@ export const MultichainBridgeQuoteCard = ({
     priceImpactThresholds,
   ]);
 
+  const secondsUntilNextRefresh = useCountdownTimer();
+
   return (
     <>
       <BridgeQuotesModal
@@ -117,6 +132,15 @@ export const MultichainBridgeQuoteCard = ({
               >
                 {t('multichainQuoteCardRateLabel')}
               </Text>
+
+              {isQuoteGoingToRefresh && (
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={getTimerColor(secondsUntilNextRefresh)}
+                >
+                  {`(0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh})`}
+                </Text>
+              )}
 
               <Tooltip
                 title={t('multichainQuoteCardRateLabel')}

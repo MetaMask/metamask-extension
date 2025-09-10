@@ -47,7 +47,6 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getIsToOrFromSolana,
-  getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
   getIsUnifiedUIEnabled,
@@ -90,7 +89,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getEnabledNetworksByNamespace,
@@ -162,7 +160,7 @@ export const useEnableMissingNetwork = () => {
 const PrepareBridgePage = ({
   onOpenSettings,
 }: {
-  onOpenSettings?: () => void;
+  onOpenSettings: () => void;
 }) => {
   const dispatch = useDispatch();
   const enableMissingNetwork = useEnableMissingNetwork();
@@ -214,10 +212,8 @@ const PrepareBridgePage = ({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     activeQuote: activeQuote_,
-    isQuoteGoingToRefresh,
     quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
-  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
@@ -291,8 +287,6 @@ const PrepareBridgePage = ({
       ? selectedDestinationAccount.id
       : undefined,
   );
-
-  const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -781,23 +775,10 @@ const PrepareBridgePage = ({
                   : {}),
               }}
             >
-              {activeQuote && isQuoteGoingToRefresh && (
-                <Row
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: `calc(100% * (${refreshRate} - ${millisecondsUntilNextRefresh}) / ${refreshRate})`,
-                    height: 4,
-                    maxWidth: '100%',
-                    transition: 'width 1s linear',
-                  }}
-                  backgroundColor={BackgroundColor.primaryMuted}
-                />
-              )}
               {!wasTxDeclined && activeQuote && (
                 <MultichainBridgeQuoteCard
                   onOpenSlippageModal={onOpenSettings}
+                  selectedDestinationAccount={selectedDestinationAccount}
                 />
               )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
