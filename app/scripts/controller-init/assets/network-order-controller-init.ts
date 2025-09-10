@@ -58,7 +58,18 @@ export const validateAndFixNetworkState = (
 
   // ensure EVM only have 1 network or all currently added popular networks (cannot be in-between)
   if (!state?.enabledNetworkMap?.[KnownCaipNamespace.Eip155]) {
-    controller.setEnabledNetworks(['0x1'], KnownCaipNamespace.Eip155);
+    // Check if any other namespace has enabled networks
+    const hasOtherEnabledNetworks = Object.keys(state.enabledNetworkMap || {})
+      .filter((namespace) => namespace !== KnownCaipNamespace.Eip155)
+      .some(
+        (namespace) =>
+          Object.keys(state.enabledNetworkMap[namespace] || {}).length > 0,
+      );
+
+    // Only force EVM mainnet if no other networks are enabled
+    if (!hasOtherEnabledNetworks) {
+      controller.setEnabledNetworks(['0x1'], KnownCaipNamespace.Eip155);
+    }
     return;
   }
 
@@ -66,9 +77,20 @@ export const validateAndFixNetworkState = (
     state?.enabledNetworkMap?.[KnownCaipNamespace.Eip155],
   );
 
-  // ensure we have at least 1 network selected for EVM
+  // ensure we have at least 1 network selected for EVM, unless other namespaces have enabled networks
   if (numberOfSelectedEvmNetworks.length === 0) {
-    controller.setEnabledNetworks(['0x1'], KnownCaipNamespace.Eip155);
+    // Check if any other namespace has enabled networks
+    const hasOtherEnabledNetworks = Object.keys(state.enabledNetworkMap)
+      .filter((namespace) => namespace !== KnownCaipNamespace.Eip155)
+      .some(
+        (namespace) =>
+          Object.keys(state.enabledNetworkMap[namespace]).length > 0,
+      );
+
+    // Only force EVM mainnet if no other networks are enabled
+    if (!hasOtherEnabledNetworks) {
+      controller.setEnabledNetworks(['0x1'], KnownCaipNamespace.Eip155);
+    }
     return;
   }
 
