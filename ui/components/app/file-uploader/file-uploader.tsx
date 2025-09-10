@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import FileInput from 'react-simple-file-input';
 import classnames from 'classnames';
+import { ButtonIconSize } from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -14,17 +15,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, PolymorphicRef } from '../../../components/component-library/box';
-import type { BoxProps } from '../../../components/component-library/box';
-import { Label } from '../../../components/component-library/label';
-import {
-  HelpText,
-  HelpTextSeverity,
-} from '../../../components/component-library/help-text';
-import {
-  FileUploaderProps,
-  FileUploaderComponent,
-} from './file-uploader.types';
+import { Box, PolymorphicRef } from '../../component-library/box';
+import type { BoxProps } from '../../component-library/box';
+import { Label } from '../../component-library/label';
+import { HelpText, HelpTextSeverity } from '../../component-library/help-text';
 import {
   ButtonIcon,
   Icon,
@@ -32,8 +26,11 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import { ButtonIconSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  FileUploaderProps,
+  FileUploaderComponent,
+} from './file-uploader.types';
 
 export const FileUploader: FileUploaderComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -62,7 +59,9 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
 
     const addFiles = (newFiles: FileList) => {
       setError(null);
-      if (!newFiles?.length) return;
+      if (!newFiles?.length) {
+        return;
+      }
 
       const existingFileNames = new Set(
         files ? Array.from(files).map((f) => f.name) : [],
@@ -86,7 +85,9 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
         validFiles.push(file);
       });
 
-      if (!validFiles.length) return;
+      if (!validFiles.length) {
+        return;
+      }
 
       const dt = new DataTransfer();
       // Add existing files first
@@ -107,7 +108,9 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
     };
 
     const onFileChange = (files: FileList) => {
-      if (!files) return;
+      if (!files) {
+        return;
+      }
       addFiles(files);
     };
 
@@ -201,7 +204,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
               helpTextProps?.className ?? '',
             )}
           >
-            {error ? error : helpText}
+            {error || helpText}
           </HelpText>
         )}
         {files && (

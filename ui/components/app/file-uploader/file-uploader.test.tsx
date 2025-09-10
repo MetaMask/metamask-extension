@@ -2,7 +2,7 @@
 // @ts-nocheck types are very broken
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
@@ -13,6 +13,7 @@ class MockDataTransfer {
   items = {
     add: jest.fn(),
   };
+
   files = [] as File[];
 }
 
