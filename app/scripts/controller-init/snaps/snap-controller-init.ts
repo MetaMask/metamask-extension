@@ -35,7 +35,6 @@ type TrackEventHook = (event: TrackingEventPayload) => void;
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.
  * @param request.preinstalledSnaps - The list of preinstalled Snaps.
- * @param request.trackEvent - Event tracking hook.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -48,7 +47,6 @@ export const SnapControllerInit: ControllerInitFunction<
   persistedState,
   removeAllConnections,
   preinstalledSnaps,
-  trackEvent,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
@@ -134,7 +132,10 @@ export const SnapControllerInit: ControllerInitFunction<
     // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
     // properties, but `MetaMetricsEventPayload` uses `Json`, even though
     // `undefined` is supported.
-    trackEvent: trackEvent as TrackEventHook,
+    trackEvent: initMessenger.call.bind(
+      initMessenger,
+      'MetaMetricsController:trackEvent',
+    ) as unknown as TrackEventHook,
   });
 
   return {

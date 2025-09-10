@@ -10,6 +10,7 @@ import {
 } from '@metamask/keyring-controller';
 
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller.ts';
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger
@@ -45,16 +46,23 @@ export function getDeFiPositionsControllerMessenger(
   });
 }
 
+export type AllowedInitializationActions =
+  | RemoteFeatureFlagControllerGetStateAction
+  | MetaMetricsControllerTrackEventAction;
+
 export type DeFiPositionsControllerInitMessenger = ReturnType<
   typeof getDeFiPositionsControllerInitMessenger
 >;
 
 export function getDeFiPositionsControllerInitMessenger(
-  messenger: Messenger<RemoteFeatureFlagControllerGetStateAction, never>,
+  messenger: Messenger<AllowedInitializationActions, never>,
 ) {
   return messenger.getRestricted({
     name: 'DeFiPositionsControllerInit',
     allowedEvents: [],
-    allowedActions: ['RemoteFeatureFlagController:getState'],
+    allowedActions: [
+      'RemoteFeatureFlagController:getState',
+      'MetaMetricsController:trackEvent',
+    ],
   });
 }

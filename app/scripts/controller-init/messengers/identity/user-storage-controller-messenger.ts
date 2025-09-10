@@ -34,6 +34,7 @@ import {
   NetworkControllerRemoveNetworkAction,
   NetworkControllerUpdateNetworkAction,
 } from '@metamask/network-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 
 type MessengerActions =
   // Keyring Requests
@@ -122,5 +123,30 @@ export function getUserStorageControllerMessenger(
       // Network Controller Events
       'NetworkController:networkRemoved',
     ],
+  });
+}
+
+export type AllowedInitializationActions =
+  MetaMetricsControllerTrackEventAction;
+
+export type UserStorageControllerInitMessenger = ReturnType<
+  typeof getUserStorageControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for initializing the User Storage controller.
+ * This is scoped to the actions that are allowed during controller
+ * initialization.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
+export function getUserStorageControllerInitMessenger(
+  messenger: Messenger<AllowedInitializationActions, never>,
+) {
+  return messenger.getRestricted({
+    name: 'UserStorageControllerInit',
+    allowedActions: ['MetaMetricsController:trackEvent'],
+    allowedEvents: [],
   });
 }

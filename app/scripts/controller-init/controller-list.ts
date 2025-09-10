@@ -116,6 +116,7 @@ export type ControllerFlatState = AccountsController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  MetaMetricsController['state'] &
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
