@@ -26,6 +26,30 @@ export interface FileUploaderStyleUtilityProps extends StyleUtilityProps {
    * props to be passed to the FileUploader box
    */
   fileUploaderProps?: Partial<BoxProps<'button'>>;
+  /*
+   * accept to be passed to the FileUploader input
+   */
+  accept?: string;
+  /*
+   * acceptInfo to be rendered below the FileUploader description
+   */
+  acceptInfo?: string;
+  /*
+   * error state to show danger severity in help text
+   */
+  error?: boolean;
+  /*
+   * maxFileSize to be passed to the FileUploader input in MB
+   */
+  maxFileSize?: number;
+  /*
+   * props to be passed to the files container
+   */
+  filesProps?: Partial<BoxProps<'div'>>;
+  /*
+   * onChange to be passed to the FileUploader input
+   */
+  onChange?: (files: FileList | null) => void;
 }
 
 // TODO: Convert to a `type` in a future major version.

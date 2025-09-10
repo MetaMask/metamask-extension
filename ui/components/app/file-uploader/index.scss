@@ -1,0 +1,10 @@
+.mm-box.file-uploader-label {
+  border-style: dashed;
+  border-color: var(--color-border-default);
+
+  &:hover {
+    background-color: var(--color-primary-muted);
+    border-style: solid;
+    border-color: var(--color-primary-default-hover);
+  }
+}

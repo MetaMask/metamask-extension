@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FileInput from 'react-simple-file-input';
 import classnames from 'classnames';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
   BorderRadius,
-  BorderStyle,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   JustifyContent,
   TextAlign,
@@ -36,43 +33,75 @@ import {
   Text,
 } from '../../component-library';
 import { ButtonIconSize } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const FileUploader: FileUploaderComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
-      error,
       helpText,
       helpTextProps,
       id,
       label,
       labelProps,
       fileUploaderProps,
+      accept,
+      acceptInfo,
+      maxFileSize,
+      filesProps,
+      onChange,
       ...props
     }: FileUploaderProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const t = useI18nContext();
     const [files, setFiles] = useState<FileList | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const addFiles = (newFiles: FileList) => {
-      const newFileList = Array.from(newFiles ?? []).filter(
-        (f) => !Array.from(files ?? []).some((f2) => f2.name === f.name),
+      setError(null);
+      if (!newFiles?.length) return;
+
+      const existingFileNames = new Set(
+        files ? Array.from(files).map((f) => f.name) : [],
       );
 
+      // Filter out duplicates and validate file size
+      const validFiles: File[] = [];
+
+      Array.from(newFiles).forEach((file) => {
+        // Skip if duplicate
+        if (existingFileNames.has(file.name)) {
+          return;
+        }
+
+        // Check file size if maxFileSize is specified (in kilobytes)
+        if (maxFileSize && file.size > maxFileSize * 1024 * 1024) {
+          setError(t('fileUploaderMaxFileSizeError', [maxFileSize]));
+          return;
+        }
+
+        validFiles.push(file);
+      });
+
+      if (!validFiles.length) return;
+
       const dt = new DataTransfer();
-      const allFiles = [
-        ...Array.from(files ?? []),
-        ...Array.from(newFileList ?? []),
-      ];
-      Array.from(allFiles).forEach((f) => dt.items.add(f));
+      // Add existing files first
+      if (files) {
+        Array.from(files).forEach((f) => dt.items.add(f));
+      }
+
+      // Add new valid files
+      validFiles.forEach((f) => dt.items.add(f));
+
       setFiles(dt.files);
     };
 
     const onFileDrop = (e: React.DragEvent<HTMLButtonElement>) => {
       e.preventDefault();
       const { files } = e.dataTransfer;
-      console.log('check: onFileDrop', files);
       addFiles(files);
     };
 
@@ -80,6 +109,10 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
       if (!files) return;
       addFiles(files);
     };
+
+    useEffect(() => {
+      onChange?.(files);
+    }, [files, onChange]);
 
     return (
       <Box
@@ -100,16 +133,15 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
         )}
         <Label
           htmlFor="file-uploader-input"
+          className="file-uploader-label"
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           width={BlockSize.Full}
-          gap={2}
           padding={6}
+          gap={2}
           textAlign={TextAlign.Center}
-          borderStyle={BorderStyle.dashed}
-          borderColor={BorderColor.borderDefault}
           borderRadius={BorderRadius.LG}
           borderWidth={1}
           onDragOver={(e) => {
@@ -119,30 +151,26 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           {...fileUploaderProps}
         >
           <Icon
-            name={IconName.CloudUpload}
+            name={IconName.Upload}
             size={IconSize.Xl}
             color={IconColor.iconAlternativeSoft}
           />
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternativeSoft}
-          >
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <Text
-              as="span"
-              variant={TextVariant.inherit}
-              fontWeight={FontWeight.Medium}
+              variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternativeSoft}
             >
-              Click to upload
-            </Text>{' '}
-            or drag and drop
-          </Text>
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternativeSoft}
-          >
-            PDF, PNG, JPG (MAX. 5MB)
-          </Text>
+              {t('fileUploaderDescription')}
+            </Text>
+            {acceptInfo && (
+              <Text
+                variant={TextVariant.bodySmMedium}
+                color={TextColor.textAlternativeSoft}
+              >
+                {acceptInfo}
+              </Text>
+            )}
+          </Box>
 
           <FileInput
             id="file-uploader-input"
@@ -152,15 +180,10 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             multiple
             // don't save the value to the input field to allow reuploading the same file
             value={''}
-            accept={[
-              'application/pdf',
-              'image/png',
-              'image/jpg',
-              'image/jpeg',
-            ].join(',')}
+            accept={accept ?? undefined}
           />
         </Label>
-        {helpText && (
+        {(error || helpText) && (
           <HelpText
             severity={error ? HelpTextSeverity.Danger : undefined}
             marginTop={1}
@@ -170,7 +193,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
               helpTextProps?.className ?? '',
             )}
           >
-            {helpText}
+            {error ? error : helpText}
           </HelpText>
         )}
         {files && (
@@ -179,6 +202,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             flexDirection={FlexDirection.Column}
             gap={2}
             marginTop={4}
+            {...filesProps}
           >
             {Array.from(files).map((file) => (
               <Box
@@ -210,7 +234,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
                   iconName={IconName.Close}
                   size={ButtonIconSize.Sm}
                   color={IconColor.iconAlternative}
-                  ariaLabel="Remove file"
+                  ariaLabel={t('delete')}
                   onClick={() => {
                     setFiles(
                       (() => {

@@ -2452,6 +2452,13 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "fileUploaderDescription": {
+    "message": "Click to upload or drag and drop"
+  },
+  "fileUploaderMaxFileSizeError": {
+    "message": "File size exceeds $1MB. Please upload a smaller file",
+    "description": "$1 is the maximum file size in MB"
+  },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
