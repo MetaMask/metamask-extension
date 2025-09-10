@@ -55,7 +55,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: false
           skip-allow-scripts: true
           fetch-depth: 0
           yarn-custom-url: ${{ vars.YARN_URL }}
