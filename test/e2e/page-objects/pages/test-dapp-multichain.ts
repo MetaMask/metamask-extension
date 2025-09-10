@@ -149,22 +149,12 @@ class TestDappMultichain {
   ): Promise<void> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     for (const [i, scope] of scopes.entries()) {
-      const scopeInput = await this.driver.waitForSelector(
-        this.customScopeInput(i),
-      );
-
-      // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
-      scopeInput.fill(scope);
+      await this.driver.fill(this.customScopeInput(i), scope);
       await this.driver.clickElement(this.addCustomScopeButton(i));
     }
 
     for (const [i, account] of accounts.entries()) {
-      const accountInput = await this.driver.waitForSelector(
-        this.customAccountAddressInput(i),
-      );
-
-      // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
-      accountInput.fill(account);
+      await this.driver.fill(this.customAccountAddressInput(i), account);
       await this.driver.clickElement(this.addCustomAccountAddressInput(i));
     }
 

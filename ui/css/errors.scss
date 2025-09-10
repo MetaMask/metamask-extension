@@ -3,11 +3,12 @@
   border-radius: 4px;
   border-left: var(--color-warning-default) 4px solid;
   background-color: var(--color-warning-muted);
-  color: inherit; // Required to inherit color set from prefers-color-scheme
+  color: inherit;
   display: flex;
   padding: 12px 12px 12px 8px;
   gap: 8px;
   line-height: 24px;
+  height: 92vh;
 
   & h1 {
     font-size: 20px;
@@ -26,7 +27,6 @@
     > span {
       flex: 0 0 auto;
       max-width: 100%;
-      padding-inline-end: 8px;
     }
   }
 
@@ -50,10 +50,6 @@
 
   & p {
     margin: 1em 0;
-
-    &.small {
-      font-size: 12px;
-    }
   }
 
   &__details {
@@ -62,11 +58,84 @@
   }
 
   &__legal-text {
-    max-width: 90%;
-    margin-left: 1em;
-    padding: 0.5em;
+    position: fixed;
+    top: 158px;
+    left: -8px;
+    background-color: var(--color-background-default);
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 320px;
     text-align: left;
-    background-color: black;
-    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--color-text-default);
+    font-size: 14px;
+    line-height: 1.2;
+    z-index: 1000;
+
+    span {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 8px 0;
+      font-weight: 400;
+    }
+  }
+
+  &__report {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+    margin-bottom: 8px;
+  }
+
+  &__report-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    position: relative;
+    margin-right: 4px;
+    background-color: var(--color-background-default);
+    border: 2px solid var(--color-border-default);
+  }
+
+  &__report-checkbox:checked {
+    background-color: var(--color-primary-default);
+    border: none;
+  }
+
+  &__report-checkbox:checked::after {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 10px;
+    border: solid var(--color-primary-inverse);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  &__info {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 4px;
+
+    &-icon {
+      width: 18px;
+      height: 18px;
+      fill: var(--color-primary-default);
+    }
   }
 }

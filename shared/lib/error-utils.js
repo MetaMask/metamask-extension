@@ -89,7 +89,7 @@ export async function maybeGetLocaleContext(currentLocale) {
  *
  * @param {import('../../ui/helpers/utils/display-critical-error').CriticalErrorTranslationKey} errorKey - The key for the error message.
  * @param {ErrorLike} error - The error object to log.
- * @param {{preferredLocale: string, t: (string) => string}} localeContext - The MetaMask state containing the current locale.
+ * @param {{preferredLocale: string, t: (string) => string}} localeContext - The MetaMask state containing the current locale and translation function.
  * @param {string} [supportLink] - The support link to include in the footer.
  * @returns {string} The HTML string for the critical error message.
  */
@@ -98,20 +98,16 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
   const { t } = localeContext;
 
   const legalText = `
-    <span>
-      We will receive a single error report, containing:<br />
-      - Technical diagnostic information.<br />
-      - Your browser, operating system and MetaMask versions.<br />
-      <br />
-      No personal information or other device information will be collected.
-    </span>
-  `;
+    <span>${lodashEscape(t('errorLegalTextSummary'))}</span>
+    <p>${lodashEscape(t('errorLegalTextFirstInfo'))}</p>
+    <p>${lodashEscape(t('errorLegalTextSecondInfo'))} </p>
+    <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
+`;
 
   const footer = supportLink
     ? `
       <p class="critical-error__footer">
         <span>${lodashEscape(t('stillGettingMessage'))}</span>
-        <br />
         <a
           href="${lodashEscape(supportLink)}"
           class="critical-error__link"
@@ -142,23 +138,39 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
         ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
       </p>
       ${detailsRawHtml}
-      <input type="checkbox" checked>
-        ${lodashEscape(t('sendBugReport'))}
+      <label class="critical-error__report">
+        <input
+        id="critical-error-checkbox"
+          type="checkbox"
+          checked
+          class="critical-error__report-checkbox"
+        />
+        <span class="critical-error__report-text">
+          ${lodashEscape(t('reportThisError'))}
+        </span>
         <button
-          id="critical-error__tip-anchor"
-          popovertarget="critical-error__legal-text"
+          id="critical-error-tip-anchor"
+          popovertarget="critical-error-legal-text"
+          type="button"
+          class="critical-error__info"
         >
-          ℹ️
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="critical-error__info-icon">
+            <path d="m11 17h2v-6h-2zm1-8c.2833 0 .5208-.09583.7125-.2875s.2875-.42917.2875-.7125-.0958-.52083-.2875-.7125-.4292-.2875-.7125-.2875-.5208.09583-.7125.2875-.2875.42917-.2875.7125.0958.52083.2875.7125.4292.2875.7125.2875zm0 13c-1.3833 0-2.68333-.2625-3.9-.7875s-2.275-1.2375-3.175-2.1375-1.6125-1.9583-2.1375-3.175-.7875-2.5167-.7875-3.9.2625-2.68333.7875-3.9 1.2375-2.275 2.1375-3.175 1.95833-1.6125 3.175-2.1375 2.5167-.7875 3.9-.7875 2.6833.2625 3.9.7875 2.275 1.2375 3.175 2.1375 1.6125 1.95833 2.1375 3.175.7875 2.5167.7875 3.9-.2625 2.6833-.7875 3.9-1.2375 2.275-2.1375 3.175-1.9583 1.6125-3.175 2.1375-2.5167.7875-3.9.7875zm0-2c2.2333 0 4.125-.775 5.675-2.325s2.325-3.4417 2.325-5.675c0-2.23333-.775-4.125-2.325-5.675s-3.4417-2.325-5.675-2.325c-2.23333 0-4.125.775-5.675 2.325s-2.325 3.44167-2.325 5.675c0 2.2333.775 4.125 2.325 5.675s3.44167 2.325 5.675 2.325z"/>
+          </svg>
         </button>
-      </input>
+      </label>
       <div
         popover
-        anchor="critical-error__tip-anchor"
-        id="critical-error__legal-text"
+        anchor="critical-error-tip-anchor"
+        id="critical-error-legal-text"
         class="critical-error__legal-text"
       >
         ${legalText}
       </div>
+      <button
+        id="critical-error-button"
+        class="critical-error__button-restore button btn-primary"
+        title="Report this error and restart MetaMask">
         ${lodashEscape(t('restartMetamask'))}
       </button>
       ${footer}

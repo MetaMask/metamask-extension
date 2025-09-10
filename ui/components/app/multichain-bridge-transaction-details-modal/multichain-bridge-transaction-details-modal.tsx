@@ -1,12 +1,10 @@
 import React, { useContext } from 'react';
-import { getAccountLink } from '@metamask/etherscan-link';
+import type { Transaction } from '@metamask/keyring-api';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { isNumber } from 'lodash';
-import { getBridgeStatusKey } from '../../../../shared/lib/bridge-status/utils';
 import {
   Display,
   FlexDirection,
@@ -47,7 +45,6 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -62,72 +59,50 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import {
-  ExtendedTransaction,
-  BridgeOriginatedItem,
-} from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
+  isBridgeComplete,
+  isBridgeFailed,
+} from '../../../../shared/lib/bridge-status/utils';
+import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 
 type MultichainBridgeTransactionDetailsModalProps = {
-  transaction: ExtendedTransaction | BridgeOriginatedItem;
+  transaction: Transaction;
+  bridgeHistoryItem: BridgeHistoryItem;
   onClose: () => void;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function MultichainBridgeTransactionDetailsModal({
+const MultichainBridgeTransactionDetailsModal = ({
   transaction,
+  bridgeHistoryItem,
   onClose,
-}: MultichainBridgeTransactionDetailsModalProps): JSX.Element {
+}: MultichainBridgeTransactionDetailsModalProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const { quote, status } = bridgeHistoryItem;
+
   // --- Extract data directly from transaction ---
-  const { id, timestamp, from, bridgeInfo, isBridgeOriginated } = transaction;
-  const chain =
-    transaction.network ??
-    (transaction as ExtendedTransaction).chain ??
-    undefined;
-  // Use TransactionStatus.submitted as the default
-  const sourceTxRawStatus = isBridgeOriginated
-    ? TransactionStatus.submitted
-    : (transaction as ExtendedTransaction).status;
+  const { id, timestamp, from } = transaction;
   const assetData = from?.[0]?.asset;
-  const baseFeeAsset = isBridgeOriginated
-    ? null
-    : (transaction as ExtendedTransaction).fees?.find(
-        (fee) => fee.type === 'base',
-      )?.asset;
+  const baseFeeAsset = transaction.fees?.find(
+    (fee) => fee.type === 'base',
+  )?.asset;
   // --- End direct extraction ---
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const currentBridgeInfo = bridgeInfo || {};
-
-  const sourceTxStatusKey = KEYRING_TRANSACTION_STATUS_KEY[sourceTxRawStatus];
-
-  // Determine final display status key using utility
-  const finalDisplayStatusKey = getBridgeStatusKey(
-    { ...transaction, isBridgeTx: transaction.isBridgeTx ?? false },
-    sourceTxStatusKey,
-  );
 
   // Determine display status text and color based on finalDisplayStatusKey
   let displayStatus = t('bridgeStatusInProgress');
   let statusColor = TextColor.primaryDefault;
 
-  if (finalDisplayStatusKey === TransactionStatus.confirmed) {
+  if (isBridgeComplete(bridgeHistoryItem)) {
     displayStatus = t('bridgeStatusComplete');
     statusColor = TextColor.successDefault;
-  } else if (finalDisplayStatusKey === TransactionStatus.failed) {
+  } else if (isBridgeFailed(transaction, bridgeHistoryItem)) {
     displayStatus = t('bridgeStatusFailed');
     statusColor = TextColor.errorDefault;
   }
 
-  const getChainExplorerUrl = (
-    txHash: string,
-    chainId: string,
-    networkProps?: { blockExplorerUrl?: string },
-  ): string => {
+  const getChainExplorerUrl = (txHash: string, chainId?: string): string => {
     if (!txHash || !chainId) {
       return '';
     }
@@ -160,16 +135,6 @@ function MultichainBridgeTransactionDetailsModal({
 
         if (explorerBaseUrl) {
           blockExplorerUrl = `${explorerBaseUrl}tx/${txHash}`;
-        } else if (networkProps?.blockExplorerUrl) {
-          // Use provided explorer URL if available
-          blockExplorerUrl = getAccountLink(
-            txHash,
-            chainId,
-            {
-              blockExplorerUrl: networkProps.blockExplorerUrl,
-            },
-            undefined,
-          );
         } else {
           // Fallback to Etherscan as a last resort
           blockExplorerUrl = `https://etherscan.io/tx/${txHash}`;
@@ -208,6 +173,11 @@ function MultichainBridgeTransactionDetailsModal({
       return amount.toString();
     }
   };
+
+  const { srcNetwork, destNetwork } = useBridgeChainInfo({
+    bridgeHistoryItem,
+    nonEvmTransaction: transaction,
+  });
 
   return (
     <Modal
@@ -292,7 +262,10 @@ function MultichainBridgeTransactionDetailsModal({
                     }}
                     as="a"
                     externalLink
-                    href={getTransactionUrl(id, chain)}
+                    href={getTransactionUrl(
+                      id,
+                      srcNetwork?.chainId ?? transaction.chain,
+                    )}
                   >
                     {shortenTransactionId(id)}
                     <Icon
@@ -306,7 +279,7 @@ function MultichainBridgeTransactionDetailsModal({
               </Box>
 
               {/* If destination transaction exists, show it */}
-              {currentBridgeInfo?.destTxHash && (
+              {status.destChain?.txHash && (
                 <Box
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
@@ -331,15 +304,11 @@ function MultichainBridgeTransactionDetailsModal({
                       as="a"
                       externalLink
                       href={getChainExplorerUrl(
-                        currentBridgeInfo.destTxHash,
-                        currentBridgeInfo.destChainId?.toString() ?? '',
-                        {
-                          blockExplorerUrl:
-                            currentBridgeInfo.destBlockExplorerUrl,
-                        },
+                        status.destChain.txHash,
+                        status.destChain.chainId?.toString() ?? '',
                       )}
                     >
-                      {shortenTransactionId(currentBridgeInfo.destTxHash)}
+                      {shortenTransactionId(status.destChain.txHash)}
                       <Icon
                         marginLeft={2}
                         name={IconName.Export}
@@ -423,18 +392,26 @@ function MultichainBridgeTransactionDetailsModal({
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
                     className="solana-bridge-transaction-details-modal__network-badge"
-                    name={currentBridgeInfo?.destChainName ?? ''}
+                    name={
+                      destNetwork?.chainId
+                        ? (NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                            destNetwork?.chainId
+                          ] ?? '')
+                        : ''
+                    }
                     src={
                       CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        isNumber(currentBridgeInfo?.destChainId)
-                          ? formatChainIdToHex(currentBridgeInfo?.destChainId)
-                          : (currentBridgeInfo?.destChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP)
+                        destNetwork?.isEvm
+                          ? formatChainIdToHex(destNetwork?.chainId)
+                          : (destNetwork?.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP)
                       ] || ''
                     }
                     borderColor={BorderColor.backgroundDefault}
                   />
                   <Text variant={TextVariant.bodyMd}>
-                    {bridgeInfo?.destChainName ?? ''}
+                    {destNetwork?.chainId
+                      ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork.chainId]
+                      : ''}
                   </Text>
                 </Box>
               </Box>
@@ -479,9 +456,9 @@ function MultichainBridgeTransactionDetailsModal({
               </Box>
 
               {/* Destination Amount - Show only when truly complete */}
-              {finalDisplayStatusKey === TransactionStatus.confirmed &&
-                bridgeInfo?.destAsset &&
-                bridgeInfo?.destTokenAmount && (
+              {isBridgeComplete(bridgeHistoryItem) &&
+                (status.destChain?.amount ?? quote.destTokenAmount) &&
+                quote.destAsset.symbol && (
                   <Box
                     display={Display.Flex}
                     justifyContent={JustifyContent.spaceBetween}
@@ -502,10 +479,10 @@ function MultichainBridgeTransactionDetailsModal({
                         data-testid="transaction-dest-amount"
                       >
                         {formatDestTokenAmount(
-                          bridgeInfo.destTokenAmount,
-                          bridgeInfo.destAsset.decimals,
+                          status.destChain?.amount ?? quote.destTokenAmount,
+                          quote.destAsset.decimals,
                         )}{' '}
-                        {bridgeInfo.destAsset.symbol}
+                        {quote.destAsset.symbol}
                       </Text>
                     </Box>
                   </Box>
@@ -552,7 +529,7 @@ function MultichainBridgeTransactionDetailsModal({
             variant={ButtonVariant.Link}
             onClick={() => {
               global.platform.openTab({
-                url: getTransactionUrl(id, chain),
+                url: getChainExplorerUrl(id, srcNetwork?.chainId),
               });
 
               trackEvent({
@@ -565,7 +542,9 @@ function MultichainBridgeTransactionDetailsModal({
                   location: 'Transaction Details',
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
-                  url_domain: getURLHostName(getTransactionUrl(id, chain)),
+                  url_domain: getURLHostName(
+                    getChainExplorerUrl(id, srcNetwork?.chainId),
+                  ),
                 },
               });
             }}
@@ -577,6 +556,6 @@ function MultichainBridgeTransactionDetailsModal({
       </ModalContent>
     </Modal>
   );
-}
+};
 
 export default MultichainBridgeTransactionDetailsModal;

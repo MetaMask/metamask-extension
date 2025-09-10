@@ -1,55 +1,54 @@
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import {
-  withFixtures,
-  openDapp,
-  WINDOW_TITLES,
-  DAPP_URL,
-  unlockWallet,
-} from '../../helpers';
+import { withFixtures, openDapp, WINDOW_TITLES, DAPP_URL } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import CreateContractModal from '../../page-objects/pages/dialog/create-contract';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
 describe('Multiple ERC20 Watch Asset', function () {
   it('should show multiple erc20 watchAsset token list, only confirms one bug', async function () {
+    const tokenContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        smartContract: [tokenContract, tokenContract, tokenContract],
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes, contractRegistry }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
+        const contracts = contractRegistry.getAllDeployedContractAddresses();
+
         await openDapp(driver, undefined, DAPP_URL);
         const testDapp = new TestDapp(driver);
-
-        // Create multiple tokens
-        for (let i = 0; i < 3; i++) {
-          // Create token
-          await testDapp.findAndClickCreateToken();
-
-          // Confirm token creation
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const createContractModal = new CreateContractModal(driver);
-          await createContractModal.checkPageIsLoaded();
-          await createContractModal.clickConfirm();
-
-          // Wait for token address to populate in dapp
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-          await testDapp.checkPageIsLoaded();
-          await testDapp.checkTokenAddressesCount(i + 1);
-        }
+        await testDapp.checkPageIsLoaded();
 
         // Watch all 3 tokens
+        for (let i = 0; i < 3; i++) {
+          await driver.executeScript(`
+            window.ethereum.request({
+              method: 'wallet_watchAsset',
+              params: {
+                type: 'ERC20',
+                options: {
+                  address: '${contracts[i]}',
+                  symbol: 'TST',
+                  decimals: 4
+                },
+              }
+            })
+          `);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        }
+
         // Switch to watchAsset notification
-        await testDapp.clickAddTokenToWallet();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addTokensPopupModal = new AddTokensModal(driver);
         await addTokensPopupModal.checkPageIsLoaded();
-        await addTokensPopupModal.checkSuggestedTokensCount(3);
+        await addTokensPopupModal.waitUntilXTokens(3);
         await addTokensPopupModal.confirmAddTokens();
 
         // Switch to fullscreen extension
