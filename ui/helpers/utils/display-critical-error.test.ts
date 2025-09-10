@@ -23,8 +23,7 @@ jest.mock('webextension-polyfill', () => ({
 // Mock environment variables before importing the module
 const MOCK_SENTRY_DSN =
   'https://3567c198f8a8412082d32655da2961d0@o124216.ingest.us.sentry.io/273505';
-const MOCK_SENTRY_DSN_DEV =
-  'https://dev123@o124216.ingest.us.sentry.io/273505';
+const MOCK_SENTRY_DSN_DEV = 'https://dev123@o124216.ingest.us.sentry.io/273505';
 
 const originalEnv = process.env;
 process.env = {
@@ -32,7 +31,7 @@ process.env = {
   SENTRY_DSN: MOCK_SENTRY_DSN,
   SENTRY_DSN_DEV: MOCK_SENTRY_DSN_DEV,
   METAMASK_ENVIRONMENT: 'development',
-  IN_TEST: false, // we want to test sentry calls
+  IN_TEST: 'false', // we want to test sentry calls
 };
 
 jest.mock('../../../shared/lib/manifestFlags', () => ({

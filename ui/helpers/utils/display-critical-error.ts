@@ -123,8 +123,10 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
       throw new Error(`Invalid Sentry DSN format: ${sentryDSN}`);
     }
 
+    const envelopeURL: string = sentryEnvelopeURL;
+
     // Send to Sentry envelope API (must match DSN region)
-    await fetch(sentryEnvelopeURL, {
+    await fetch(envelopeURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-sentry-envelope',
