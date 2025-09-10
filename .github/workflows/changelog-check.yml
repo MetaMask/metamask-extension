@@ -1,5 +1,4 @@
 name: Check Changelog
-runs-on: self-hosted
 on:
   pull_request:
     types: [opened, synchronize, labeled, unlabeled]
