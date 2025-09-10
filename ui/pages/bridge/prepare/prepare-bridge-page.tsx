@@ -47,7 +47,6 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getIsToOrFromSolana,
-  getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
   getIsUnifiedUIEnabled,
@@ -64,7 +63,6 @@ import {
   Box,
   ButtonIcon,
   IconName,
-  PopoverPosition,
   Text,
 } from '../../../components/component-library';
 import {
@@ -72,7 +70,6 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
-  FlexDirection,
   IconColor,
   JustifyContent,
   TextAlign,
@@ -87,11 +84,9 @@ import {
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
-import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { Column, Row, Tooltip } from '../layout';
+import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getEnabledNetworksByNamespace,
@@ -103,7 +98,6 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
@@ -123,7 +117,8 @@ import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
-import { DestinationAccountPicker } from './components/destination-account-picker';
+import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
+import { BridgeCTAWarningText } from './bridge-cta-warning-text';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -237,7 +232,6 @@ const PrepareBridgePage = ({
 
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
-  const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedAccount = useSelector(getFromAccount);
 
   const keyring = useSelector(getCurrentKeyring);
@@ -574,6 +568,9 @@ const PrepareBridgePage = ({
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
+          containerProps={{
+            paddingInline: 4,
+          }}
           isTokenListLoading={isFromTokensLoading}
           buttonProps={{ testId: 'bridge-source-button' }}
           onBlockExplorerClick={(token) => {
@@ -585,8 +582,7 @@ const PrepareBridgePage = ({
 
         <Column
           height={BlockSize.Full}
-          paddingTop={4}
-          paddingBottom={4}
+          padding={4}
           gap={4}
           backgroundColor={BackgroundColor.backgroundAlternativeSoft}
           style={{
@@ -773,127 +769,46 @@ const PrepareBridgePage = ({
             </Column>
           )}
 
-          {/** QuoteCard and CTA button */}
-          {(activeQuote || !isLoading) && (
-            <Column
-              marginInline={4}
-              paddingInline={4}
-              alignItems={AlignItems.flexEnd}
-              gap={3}
-              justifyContent={JustifyContent.flexEnd}
-              className={activeQuote ? 'highlight' : ''}
-              style={{
-                paddingBottom: 'revert-layer',
-                paddingTop: undefined,
-                width: 'auto',
-                minHeight: 'max-content',
-                position: 'relative',
-                overflow: 'hidden',
-                marginTop: 'auto',
-                ...(activeQuote && !wasTxDeclined
-                  ? {
-                      boxShadow:
-                        'var(--shadow-size-sm) var(--color-shadow-default)',
-                      backgroundColor: 'var(--color-background-default)',
-                      borderRadius: 8,
-                    }
-                  : {}),
-              }}
-            >
-              {activeQuote && isQuoteGoingToRefresh && (
-                <Row
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: `calc(100% * (${refreshRate} - ${millisecondsUntilNextRefresh}) / ${refreshRate})`,
-                    height: 4,
-                    maxWidth: '100%',
-                    transition: 'width 1s linear',
-                  }}
-                  backgroundColor={BackgroundColor.primaryMuted}
-                />
-              )}
-              {!wasTxDeclined && activeQuote && (
-                <MultichainBridgeQuoteCard
-                  onOpenSlippageModal={onOpenSettings}
-                />
-              )}
-              <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
-                <BridgeCTAButton
-                  onFetchNewQuotes={() => {
-                    debouncedUpdateQuoteRequestInController(quoteParams, {
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      stx_enabled: smartTransactionsEnabled,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_source: fromToken?.symbol ?? '',
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      token_symbol_destination: toToken?.symbol ?? '',
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      security_warnings: [], // TODO populate security warnings
-                    });
-                  }}
-                  needsDestinationAddress={
-                    isToOrFromSolana && !selectedDestinationAccount
-                  }
-                />
-                {activeQuote &&
-                activeQuote.approval &&
-                activeQuote.sentAmount &&
-                activeQuote.quote.srcAsset?.symbol ? (
-                  <Row justifyContent={JustifyContent.center} gap={1}>
-                    <Text
-                      color={TextColor.textAlternativeSoft}
-                      variant={TextVariant.bodyXs}
-                      textAlign={TextAlign.Center}
-                    >
-                      {(() => {
-                        if (isUsingHardwareWallet) {
-                          return t('willApproveAmountForBridgingHardware');
-                        }
-                        if (isSwap) {
-                          return t('willApproveAmountForSwapping', [
-                            formatTokenAmount(
-                              locale,
-                              activeQuote.sentAmount.amount,
-                              activeQuote.quote.srcAsset.symbol,
-                            ),
-                          ]);
-                        }
-                        return t('willApproveAmountForBridging', [
-                          formatTokenAmount(
-                            locale,
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ),
-                        ]);
-                      })()}
-                    </Text>
-                    <Tooltip
-                      display={Display.InlineBlock}
-                      position={PopoverPosition.Top}
-                      offset={[-48, 8]}
-                      title={t('grantExactAccess')}
-                    >
-                      {isUsingHardwareWallet
-                        ? t('bridgeApprovalWarningForHardware', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])
-                        : t('bridgeApprovalWarning', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])}
-                    </Tooltip>
-                  </Row>
-                ) : null}
-              </Footer>
-            </Column>
+          {!wasTxDeclined && activeQuote && (
+            <MultichainBridgeQuoteCard
+              onOpenRecipientModal={() =>
+                setIsDestinationAccountPickerOpen(true)
+              }
+              selectedDestinationAccount={selectedDestinationAccount}
+              onOpenSlippageModal={onOpenSettings}
+            />
           )}
+          <Column
+            style={{ marginTop: activeQuote ? undefined : 'auto' }}
+            alignItems={AlignItems.center}
+            gap={3}
+          >
+            {activeQuote && <BridgeCTAWarningText />}
+
+            <BridgeCTAButton
+              onFetchNewQuotes={() => {
+                debouncedUpdateQuoteRequestInController(quoteParams, {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  stx_enabled: smartTransactionsEnabled,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol_source: fromToken?.symbol ?? '',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol_destination: toToken?.symbol ?? '',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  security_warnings: [], // TODO populate security warnings
+                });
+              }}
+              needsDestinationAddress={
+                isToOrFromSolana && !selectedDestinationAccount
+              }
+            />
+          </Column>
+        </Column>
+      </Column>
 
       {/** Alert banners */}
       <Column
@@ -943,7 +858,6 @@ const PrepareBridgePage = ({
           />
         )}
         {isCannotVerifyTokenBannerOpen &&
-          isEvm &&
           toToken &&
           toTokenIsNotNative &&
           occurrences &&
