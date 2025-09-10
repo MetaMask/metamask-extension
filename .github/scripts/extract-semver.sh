@@ -20,8 +20,5 @@ if ! [[ "$semver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
-# Print values passed to call-create-release-pr (note: previous-version-ref computed in reusable workflow)
-echo "Inputs to call-create-release-pr:"
 echo "  semver-version: ${semver}"
-
 echo "semver=${semver}" >> "$GITHUB_OUTPUT"
