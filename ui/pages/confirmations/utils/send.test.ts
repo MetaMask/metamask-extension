@@ -19,6 +19,7 @@ import {
   trimTrailingZeros,
   removeAdditionalDecimalPlaces,
   getFractionLength,
+  addLeadingZeroIfNeeded,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -237,6 +238,16 @@ describe('Send - utils', () => {
       expect(getFractionLength('0')).toEqual(0);
       expect(getFractionLength('.0001')).toEqual(4);
       expect(getFractionLength('0.075')).toEqual(3);
+    });
+  });
+
+  describe('addLeadingZeroIfNeeded', () => {
+    it('add zero to decimal value if needed', () => {
+      expect(addLeadingZeroIfNeeded(undefined)).toEqual(undefined);
+      expect(addLeadingZeroIfNeeded('')).toEqual('');
+      expect(addLeadingZeroIfNeeded('.001')).toEqual('0.001');
+      expect(addLeadingZeroIfNeeded('0.001')).toEqual('0.001');
+      expect(addLeadingZeroIfNeeded('100')).toEqual('100');
     });
   });
 });
