@@ -46,7 +46,7 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  getIsToOrFromSolana,
+  getIsToOrFromNonEvm,
   getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
@@ -345,7 +345,7 @@ const PrepareBridgePage = ({
     }
   }, [isEstimatedReturnLow, isInsufficientGasForQuote, isLowReturnBannerOpen]);
 
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
@@ -496,7 +496,7 @@ const PrepareBridgePage = ({
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={isToOrFromSolana ? 2 : 8}>
+      <Column className="prepare-bridge-page" gap={isToOrFromNonEvm ? 2 : 8}>
         <BridgeInputGroup
           header={getFromInputHeader()}
           token={fromToken}
@@ -569,7 +569,7 @@ const PrepareBridgePage = ({
 
         <Column
           height={BlockSize.Full}
-          paddingTop={isToOrFromSolana ? 4 : 8}
+          paddingTop={isToOrFromNonEvm ? 4 : 8}
           backgroundColor={BackgroundColor.backgroundAlternativeSoft}
           style={{
             position: 'relative',
@@ -619,7 +619,7 @@ const PrepareBridgePage = ({
                   toToken &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
                       {
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -735,7 +735,7 @@ const PrepareBridgePage = ({
             }}
           />
 
-          {isToOrFromSolana && (
+          {isToOrFromNonEvm && (
             <Box padding={6} paddingBottom={3} paddingTop={3}>
               <DestinationAccountPicker
                 onAccountSelect={setSelectedDestinationAccount}
@@ -819,7 +819,7 @@ const PrepareBridgePage = ({
                     });
                   }}
                   needsDestinationAddress={
-                    isToOrFromSolana && !selectedDestinationAccount
+                    isToOrFromNonEvm && !selectedDestinationAccount
                   }
                 />
                 {activeQuote &&

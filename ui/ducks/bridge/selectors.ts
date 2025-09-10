@@ -131,12 +131,15 @@ const hasBitcoinAccounts = (state: BridgeAppState) => {
 };
 
 // Helper function to check if a chain is Bitcoin
-const isBitcoinChainId = (chainId: string | CaipChainId): boolean => {
+const isBitcoinChainId = (
+  chainId: string | CaipChainId | Hex | number,
+): boolean => {
+  const chainIdStr = String(chainId);
   return [
     MultichainNetworks.BITCOIN,
     MultichainNetworks.BITCOIN_TESTNET,
     MultichainNetworks.BITCOIN_SIGNET,
-  ].includes(chainId as MultichainNetworks);
+  ].includes(chainIdStr as MultichainNetworks);
 };
 
 // only includes networks user has added
@@ -381,11 +384,26 @@ const _getFromNativeBalance = createSelector(
     const { chainId } = fromChain;
     const { decimals, address, assetId } = getNativeAssetForChainId(chainId);
 
-    // Use the balance provided by the multichain balances controller
-    if (isSolanaChainId(chainId)) {
-      const caipAssetType = isNativeAddress(address)
-        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
-        : (assetId ?? address);
+    // Use the balance provided by the multichain balances controller for non-EVM chains
+    if (isSolanaChainId(chainId) || isBitcoinChainId(chainId)) {
+      let caipAssetType: CaipAssetType | string;
+      if (isSolanaChainId(chainId)) {
+        caipAssetType = isNativeAddress(address)
+          ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+          : (assetId ?? address);
+      } else if (isBitcoinChainId(chainId)) {
+        // Determine the correct Bitcoin native currency based on chain
+        const chainIdStr = String(chainId);
+        if (chainIdStr === MultichainNetworks.BITCOIN) {
+          caipAssetType = MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC;
+        } else if (chainIdStr === MultichainNetworks.BITCOIN_TESTNET) {
+          caipAssetType = MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.tBTC;
+        } else {
+          caipAssetType = MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.sBTC;
+        }
+      } else {
+        caipAssetType = assetId ?? address;
+      }
       return nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ?? null;
     }
 
@@ -414,11 +432,26 @@ export const getFromTokenBalance = createSelector(
     const { id } = fromAccount;
     const { chainId, decimals, address, assetId } = fromToken;
 
-    // Use the balance provided by the multichain balances controller
-    if (isSolanaChainId(chainId)) {
-      const caipAssetType = isNativeAddress(address)
-        ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
-        : (assetId ?? address);
+    // Use the balance provided by the multichain balances controller for non-EVM chains
+    if (isSolanaChainId(chainId) || isBitcoinChainId(chainId)) {
+      let caipAssetType: CaipAssetType | string;
+      if (isSolanaChainId(chainId)) {
+        caipAssetType = isNativeAddress(address)
+          ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+          : (assetId ?? address);
+      } else if (isBitcoinChainId(chainId)) {
+        // Determine the correct Bitcoin native currency based on chain
+        const chainIdStr = String(chainId);
+        if (chainIdStr === MultichainNetworks.BITCOIN) {
+          caipAssetType = MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC;
+        } else if (chainIdStr === MultichainNetworks.BITCOIN_TESTNET) {
+          caipAssetType = MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.tBTC;
+        } else {
+          caipAssetType = MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.sBTC;
+        }
+      } else {
+        caipAssetType = assetId ?? address;
+      }
       return (
         nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ??
         fromToken.string ??
@@ -815,6 +848,20 @@ export const needsSolanaAccountForDestination = createDeepEqualSelector(
   },
 );
 
+export const needsBitcoinAccountForDestination = createDeepEqualSelector(
+  getToChain,
+  (state: BridgeAppState) => hasBitcoinAccounts(state),
+  (toChain, hasBitcoinAccount) => {
+    if (!toChain) {
+      return false;
+    }
+
+    const isBitcoinDestination = isBitcoinChainId(toChain.chainId);
+
+    return isBitcoinDestination && !hasBitcoinAccount;
+  },
+);
+
 export const getIsToOrFromSolana = createSelector(
   getFromChain,
   getToChain,
@@ -828,6 +875,43 @@ export const getIsToOrFromSolana = createSelector(
 
     // Only return true if either chain is Solana and the other is EVM
     return toChainIsSolana !== fromChainIsSolana;
+  },
+);
+
+export const getIsToOrFromBitcoin = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsBitcoin = isBitcoinChainId(fromChain.chainId);
+    const toChainIsBitcoin = isBitcoinChainId(toChain.chainId);
+
+    // Only return true if either chain is Bitcoin and the other is not Bitcoin
+    return toChainIsBitcoin !== fromChainIsBitcoin;
+  },
+);
+
+export const getIsToOrFromNonEvm = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
+    const toChainIsSolana = isSolanaChainId(toChain.chainId);
+    const fromChainIsBitcoin = isBitcoinChainId(fromChain.chainId);
+    const toChainIsBitcoin = isBitcoinChainId(toChain.chainId);
+
+    const fromChainIsNonEvm = fromChainIsSolana || fromChainIsBitcoin;
+    const toChainIsNonEvm = toChainIsSolana || toChainIsBitcoin;
+
+    // Return true if one chain is non-EVM and the other is EVM
+    return fromChainIsNonEvm !== toChainIsNonEvm;
   },
 );
 
