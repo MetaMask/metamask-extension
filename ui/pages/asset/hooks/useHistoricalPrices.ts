@@ -8,13 +8,13 @@ import { MINUTE } from '../../../../shared/constants/time';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { getShouldShowFiat } from '../../../selectors';
 import { getHistoricalPrices } from '../../../selectors/assets';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
 import {
   chainSupportsPricing,
   fromIso8601DurationToPriceApiTimePeriod,
 } from '../util';
 import { fetchHistoricalPricesForAsset } from '../../../store/actions';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -91,7 +91,7 @@ const useHistoricalPricesEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(chainId);
   const showFiat: boolean = useSelector(getShouldShowFiat);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -175,7 +175,7 @@ const useHistoricalPricesNonEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(chainId);
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
   const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
@@ -267,7 +267,7 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(chainId);
 
   const historicalPricesEvm = useHistoricalPricesEvm({
     chainId,

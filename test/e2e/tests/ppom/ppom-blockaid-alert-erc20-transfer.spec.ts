@@ -52,7 +52,7 @@ async function mockRequest(
   response: SecurityAlert,
 ): Promise<void> {
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
     .withJsonBodyIncluding({
       method: 'eth_sendTransaction',
       params: [
@@ -83,12 +83,19 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function (this: Suite
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+          .withNetworkController({
+            selectedNetworkClientId: 'networkConfigurationId',
+          })
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
           })
           .withPreferencesController({
             securityAlertsEnabled: true,
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,

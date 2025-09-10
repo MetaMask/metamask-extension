@@ -70,7 +70,7 @@ exports[`NameDetails renders proposed names 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -326,11 +326,47 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
-                  />
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 77);"
+                    >
+                      <svg
+                        height="16"
+                        width="16"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#FB1860"
+                          height="16"
+                          transform="translate(0.19210008248770236 0.5915711789105838) rotate(143.0 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#FA7500"
+                          height="16"
+                          transform="translate(-2.7557679797195904 -8.4018342526145) rotate(382.5 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F93F01"
+                          height="16"
+                          transform="translate(-7.199752352370425 -10.579665389870966) rotate(411.5 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
@@ -509,11 +545,47 @@ exports[`NameDetails renders with no saved name 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
-                  />
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
+                    >
+                      <svg
+                        height="16"
+                        width="16"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#C8144D"
+                          height="16"
+                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#FB1860"
+                          height="16"
+                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#03505E"
+                          height="16"
+                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
@@ -694,11 +766,47 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="name name__recognized_unsaved"
               >
                 <div
-                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
-                  />
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(3, 82, 94);"
+                    >
+                      <svg
+                        height="16"
+                        width="16"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#F5C000"
+                          height="16"
+                          transform="translate(1.6695934255664566 -1.8063309104606964) rotate(439.0 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#2369E1"
+                          height="16"
+                          transform="translate(2.5174423326839017 8.347530486970694) rotate(166.1 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#FB1864"
+                          height="16"
+                          transform="translate(-12.211473117536537 6.428761618147152) rotate(254.1 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 <p
                   class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
@@ -879,11 +987,47 @@ exports[`NameDetails renders with saved name 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
-                  />
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
+                    >
+                      <svg
+                        height="16"
+                        width="16"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#C8144D"
+                          height="16"
+                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#FB1860"
+                          height="16"
+                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#03505E"
+                          height="16"
+                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 <p
                   class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
