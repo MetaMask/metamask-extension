@@ -1,6 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../../store/store';
+import mockDefaultState from '../../../../../../test/data/mock-state.json';
 import { Recipient } from './recipient';
 
 const mockContactRecipient = {
@@ -15,6 +17,9 @@ const mockAccountRecipient = {
 };
 
 describe('Recipient', () => {
+  const store = configureStore(mockDefaultState);
+  const render = (ui: React.ReactElement) => renderWithProvider(ui, store);
+
   it('renders contact recipient with correct information', () => {
     const { getByText } = render(
       <Recipient recipient={mockContactRecipient} onClick={jest.fn()} />,
@@ -77,17 +82,10 @@ describe('Recipient', () => {
     );
   });
 
-  it('renders blockies avatar when useBlockie is true', () => {
+  it('renders an avatar element', () => {
     render(<Recipient recipient={mockContactRecipient} onClick={jest.fn()} />);
 
-    const avatarElement = document.querySelector('.mm-avatar-account');
-    expect(avatarElement).toBeInTheDocument();
-  });
-
-  it('renders jazzicon avatar when useBlockie is false', () => {
-    render(<Recipient recipient={mockContactRecipient} onClick={jest.fn()} />);
-
-    const avatarElement = document.querySelector('.mm-avatar-account');
+    const avatarElement = document.querySelector('[data-testid="avatar"]');
     expect(avatarElement).toBeInTheDocument();
   });
 

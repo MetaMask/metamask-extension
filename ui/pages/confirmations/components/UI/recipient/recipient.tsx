@@ -47,7 +47,11 @@ export const Recipient = ({
       gap={4}
       onClick={() => onClick(recipient)}
     >
-      <PreferredAvatar address={address} size={AvatarAccountSize.Lg} />
+      <PreferredAvatar
+        address={address}
+        size={AvatarAccountSize.Lg}
+        data-testid="avatar"
+      />
       <Box>
         <Text variant={TextVariant.bodyMdMedium}>{recipientName}</Text>
         <Text
