@@ -4,6 +4,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
+import { useTrustSignalMetrics } from '../../../hooks/useTrustSignalMetrics';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -13,7 +14,6 @@ import SetApprovalForAllInfo from './set-approval-for-all-info/set-approval-for-
 import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
-import { useTrustSignalMetrics } from '../../../hooks/useTrustSignalMetrics';
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
