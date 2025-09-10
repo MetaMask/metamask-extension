@@ -7,156 +7,180 @@ exports[`MultichainBridgeQuoteCard should not render when there is no quote 1`] 
 exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+    style="margin-top: auto;"
   >
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            Quote
-          </p>
+          Rate
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          (0:30)
+        </p>
+        <div
+          class="mm-box"
+        >
           <div
-            class="mm-box"
+            class="mm-box mm-box--display-flex"
           >
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
           </div>
         </div>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           1 USDC = &lt;0.000001 USDC
         </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        <button
+          aria-label="More quotes"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         >
-          Bridging
-        </p>
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          >
-            <img
-              alt="OP Mainnet logo"
-              class="mm-avatar-network__network-image"
-              src="./images/optimism.svg"
-            />
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            OP Mainnet
-          </p>
           <span
-            class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-2-right.svg');"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
           />
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          >
-            <img
-              alt="Polygon logo"
-              class="mm-avatar-network__network-image"
-              src="./images/pol-token.svg"
-            />
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            Polygon
-          </p>
-        </div>
+        </button>
       </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           Network fee
         </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          data-testid="network-fees"
-        >
-          $2.52
-        </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            Slippage
-          </p>
-          <button
-            aria-label="Edit slippage"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-            data-testid="slippage-edit-button"
+          <div
+            class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/edit.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
             />
-          </button>
+          </div>
         </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="network-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Slippage
+        </p>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           undefined%
         </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-        >
-          Time
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          1 min
-        </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-alternative"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Rate includes 0.875% fee
-        </p>
         <button
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          aria-label="Edit slippage"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="slippage-edit-button"
         >
-          More quotes
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/edit.svg');"
+          />
         </button>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Minimum received
+        </p>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="minimum-received"
+      />
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative-soft"
+    >
+      Includes 0.875% MM fee. Approves token for bridge.
+    </p>
+    <div
+      class="mm-box"
+    >
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+          style="mask-image: url('./images/icons/info.svg');"
+        />
       </div>
     </div>
   </div>
@@ -166,154 +190,180 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
 exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fee) 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+    style="margin-top: auto;"
   >
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            Quote
-          </p>
+          Rate
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          (0:30)
+        </p>
+        <div
+          class="mm-box"
+        >
           <div
-            class="mm-box"
+            class="mm-box mm-box--display-flex"
           >
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
           </div>
         </div>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           1 USDC = 0.999 USDC
         </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        <button
+          aria-label="More quotes"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         >
-          Bridging
-        </p>
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          >
-            <img
-              alt="OP Mainnet logo"
-              class="mm-avatar-network__network-image"
-              src="./images/optimism.svg"
-            />
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            OP Mainnet
-          </p>
           <span
-            class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-2-right.svg');"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
           />
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          >
-            <img
-              alt="Polygon logo"
-              class="mm-avatar-network__network-image"
-              src="./images/pol-token.svg"
-            />
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            Polygon
-          </p>
-        </div>
+        </button>
       </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           Network fee
         </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          data-testid="network-fees"
-        >
-          $2.52
-        </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            Slippage
-          </p>
-          <button
-            aria-label="Edit slippage"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-            data-testid="slippage-edit-button"
+          <div
+            class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/edit.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
             />
-          </button>
+          </div>
         </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="network-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Slippage
+        </p>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           undefined%
         </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-        >
-          Time
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          1 min
-        </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-alternative"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        />
         <button
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          aria-label="Edit slippage"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="slippage-edit-button"
         >
-          More quotes
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/edit.svg');"
+          />
         </button>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Minimum received
+        </p>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="minimum-received"
+      />
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative-soft"
+    >
+      Approves token for bridge.
+    </p>
+    <div
+      class="mm-box"
+    >
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+          style="mask-image: url('./images/icons/info.svg');"
+        />
       </div>
     </div>
   </div>
@@ -323,157 +373,162 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
 exports[`MultichainBridgeQuoteCard should render the recommended quote while loading new quotes 1`] = `
 <div>
   <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+    style="margin-top: auto;"
   >
     <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            Quote
-          </p>
+          Rate
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-warning-default"
+        >
+          (0:05)
+        </p>
+        <div
+          class="mm-box"
+        >
           <div
-            class="mm-box"
+            class="mm-box mm-box--display-flex"
           >
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
           </div>
         </div>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           1 ETH = 2,444 USDC
         </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        <button
+          aria-label="More quotes"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         >
-          Bridging
-        </p>
-        <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          >
-            <img
-              alt="OP Mainnet logo"
-              class="mm-avatar-network__network-image"
-              src="./images/optimism.svg"
-            />
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            OP Mainnet
-          </p>
           <span
-            class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-2-right.svg');"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
           />
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          >
-            <img
-              alt="Polygon logo"
-              class="mm-avatar-network__network-image"
-              src="./images/pol-token.svg"
-            />
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            Polygon
-          </p>
-        </div>
+        </button>
       </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           Network fee
         </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          data-testid="network-fees"
-        >
-          $2.52
-        </p>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          >
-            Slippage
-          </p>
-          <button
-            aria-label="Edit slippage"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
-            data-testid="slippage-edit-button"
+          <div
+            class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/edit.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
             />
-          </button>
+          </div>
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          undefined%
-        </p>
       </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="network-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          Time
+          Slippage
         </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        <div
+          class="mm-box"
         >
-          1 min
-        </p>
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+          </div>
+        </div>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-alternative"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          Rate includes 0.875% fee
+          1%
         </p>
         <button
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          aria-label="Edit slippage"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="slippage-edit-button"
         >
-          More quotes
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/edit.svg');"
+          />
         </button>
       </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Minimum received
+        </p>
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="minimum-received"
+      >
+        $14.29
+      </p>
     </div>
   </div>
 </div>
