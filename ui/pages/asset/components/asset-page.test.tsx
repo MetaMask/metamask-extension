@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
 import {
   CHAIN_IDS,
@@ -57,6 +57,38 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
 
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  getAssetsBySelectedAccountGroup: jest.fn().mockReturnValue({
+    '0x1': [
+      {
+        assetId: '0x0000000000000000000000000000000000000000',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+      {
+        assetId: '0x309375769E79382beFDEc5bdab51063AeBDC4936',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+      {
+        assetId: '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
+        rawBalance: '0x0',
+        balance: '0',
+        fiat: {
+          balance: 0,
+        },
+      },
+    ],
+  }),
+}));
+
 describe('AssetPage', () => {
   const mockStore = {
     localeMessages: {
@@ -108,8 +140,34 @@ describe('AssetPage', () => {
         eip155: {},
       },
       accountTree: {
-        wallets: {},
-        selectedAccountGroup: 'mock-account-group-id',
+        wallets: {
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+            id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+            type: 'entropy',
+            groups: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+                type: 'multichain-account',
+                accounts: [selectedAccountAddress],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                  hidden: false,
+                  pinned: false,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+              },
+            },
+          },
+        },
+        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
       internalAccounts: {
         accounts: {
@@ -125,6 +183,7 @@ describe('AssetPage', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
         },
         selectedAccount: selectedAccountAddress,
@@ -139,6 +198,7 @@ describe('AssetPage', () => {
           accounts: [],
         },
       ],
+      accountsAssets: {},
     },
   };
 

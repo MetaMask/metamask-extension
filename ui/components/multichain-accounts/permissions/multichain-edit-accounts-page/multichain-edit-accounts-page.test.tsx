@@ -96,6 +96,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
+    walletName: 'Test Wallet 1',
   },
   {
     id: MOCK_GROUP_ID_2,
@@ -118,6 +119,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
+    walletName: 'Test Wallet 2',
   },
   {
     id: MOCK_GROUP_ID_3,
@@ -140,6 +142,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
+    walletName: 'Test Wallet 3',
   },
 ];
 

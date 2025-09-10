@@ -116,6 +116,7 @@ export const AccountPicker = ({
             <PreferredAvatar
               address={address}
               size={showAddress ? AvatarAccountSize.Md : AvatarAccountSize.Xs}
+              className="shrink-0"
             />
           ) : null}
           <Text

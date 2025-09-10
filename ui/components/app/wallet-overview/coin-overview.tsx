@@ -41,10 +41,14 @@ import {
   getParticipateInMetaMetrics,
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
+import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
+import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
+
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
@@ -221,6 +225,9 @@ export const CoinOverview = ({
   const isEvm = useSelector(getMultichainIsEvm);
 
   const tokensMarketData = useSelector(getTokensMarketData);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -291,6 +298,16 @@ export const CoinOverview = ({
       </Box>
     );
 
+    // Early exit for state2 unified view
+    if (isMultichainAccountsState2Enabled) {
+      return (
+        <Box className="wallet-overview__currency-wrapper">
+          <AccountGroupBalanceChange period="1d" />
+          {renderPortfolioButton()}
+        </Box>
+      );
+    }
+
     if (!isEvm) {
       return renderNonEvmView();
     }
@@ -301,6 +318,34 @@ export const CoinOverview = ({
       : renderAggregatedView();
   };
 
+  let balanceSection: React.ReactNode;
+  if (isMultichainAccountsState2Enabled) {
+    balanceSection = (
+      <AccountGroupBalance
+        classPrefix={classPrefix}
+        balanceIsCached={balanceIsCached}
+        handleSensitiveToggle={handleSensitiveToggle}
+      />
+    );
+  } else if (isEvm) {
+    balanceSection = (
+      <LegacyAggregatedBalance
+        classPrefix={classPrefix}
+        account={account}
+        balance={balance}
+        balanceIsCached={balanceIsCached}
+        handleSensitiveToggle={handleSensitiveToggle}
+      />
+    );
+  } else {
+    balanceSection = (
+      <AggregatedBalance
+        classPrefix={classPrefix}
+        balanceIsCached={balanceIsCached}
+        handleSensitiveToggle={handleSensitiveToggle}
+      />
+    );
+  }
   return (
     <WalletOverview
       balance={
@@ -313,21 +358,7 @@ export const CoinOverview = ({
             className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
           >
             <div className={`${classPrefix}-overview__primary-container`}>
-              {isEvm ? (
-                <LegacyAggregatedBalance
-                  classPrefix={classPrefix}
-                  account={account}
-                  balance={balance}
-                  balanceIsCached={balanceIsCached}
-                  handleSensitiveToggle={handleSensitiveToggle}
-                />
-              ) : (
-                <AggregatedBalance
-                  classPrefix={classPrefix}
-                  balanceIsCached={balanceIsCached}
-                  handleSensitiveToggle={handleSensitiveToggle}
-                />
-              )}
+              {balanceSection}
               {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
                   *

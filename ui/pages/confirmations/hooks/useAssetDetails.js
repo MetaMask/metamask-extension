@@ -49,14 +49,21 @@ export function useAssetDetails(
 
     async function getAndSetAssetDetails() {
       dispatch(showLoadingIndication());
-      const assetDetails = await getAssetDetails(
-        tokenAddress,
-        userAddress,
-        transactionData,
-        nfts,
-        chainId,
-      );
-      setCurrentAsset(assetDetails);
+      try {
+        const assetDetails = await getAssetDetails(
+          tokenAddress,
+          userAddress,
+          transactionData,
+          nfts,
+          chainId,
+        );
+        setCurrentAsset(assetDetails);
+      } catch (e) {
+        console.warn('Unable to set asset details', {
+          error: e,
+          transactionData,
+        });
+      }
       dispatch(hideLoadingIndication());
     }
     if (

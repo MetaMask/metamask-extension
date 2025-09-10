@@ -140,6 +140,7 @@ async function main(): Promise<void> {
       }
       // Add area-Sentry label to the bug report issue
       await addAreaSentryLabelToIssue(octokit, labelable);
+      await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
       process.exit(0); // Stop the process and exit with a success status code
     }
 
@@ -165,18 +166,22 @@ async function main(): Promise<void> {
       if (context.payload.action === 'opened') {
         await addNeedsTriageLabelToIssue(octokit, labelable);
       }
+      await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
+
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
       console.log(errorMessage);
 
-      // Add label to indicate issue doesn't match any template
+      // Add label to indicate issue does not match any template
       await addLabelToLabelable(octokit, labelable, invalidIssueTemplateLabel);
+      await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
 
       // Github action shall fail in case issue body doesn't match any template
       core.setFailed(errorMessage);
       process.exit(1);
     }
+
   } else if (labelable.type === LabelableType.PullRequest) {
     if (templateType === TemplateType.PullRequest) {
       console.log("PR matches 'pull-request-template.md' template.");
@@ -428,4 +433,37 @@ function hasChangelogEntry(body: string): boolean {
 
   console.log(`Changelog entry found: ${entry}`);
   return true; // allow any non-empty value, including "null"
+}
+
+// This function checks if issue has both team and severity labels and removes needs-triage label if present
+async function checkAndRemoveNeedsTriageIfFullyLabeled(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  let hasTeamLabel = false;
+  let hasSeverityLabel = false;
+
+  for (const label of issue.labels || []) {
+    // Check for team labels
+    if (
+      label.name.startsWith('team-') ||
+      label.name === externalContributorLabel.name
+    ) {
+      console.log(`Issue contains a team label: ${label.name}`);
+      hasTeamLabel = true;
+    }
+    // Check for severity labels (Sev0-urgent, Sev1-high, etc.)
+    if (/^Sev\d-\w+$/.test(label.name)) {
+      console.log(`Issue contains a severity label: ${label.name}`);
+      hasSeverityLabel = true;
+    }
+  }
+
+  // If both team and severity labels are present, remove needs-triage label
+  if (hasTeamLabel && hasSeverityLabel) {
+    console.log(
+      'Both team and severity labels found. Removing needs-triage label if present...',
+    );
+    await removeLabelFromLabelableIfPresent(octokit, issue, needsTriageLabel);
+  }
 }

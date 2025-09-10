@@ -112,7 +112,7 @@ describe('Security Alerts API', () => {
       addAddressSecurityAlertResponseMock = jest.fn();
     });
 
-    it('should return cached response when available', async () => {
+    it('should return cached response when available and not loading', async () => {
       const cachedResponse = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -132,6 +132,32 @@ describe('Security Alerts API', () => {
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
         TEST_ADDRESS,
       );
+      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+    });
+
+    it('should return cached loading state without making new API call', async () => {
+      const cachedLoadingResponse = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: ResultType.Loading,
+        label: '',
+      };
+      getAddressSecurityAlertResponseMock.mockReturnValue(
+        cachedLoadingResponse,
+      );
+
+      const result = await scanAddressAndAddToCache(
+        TEST_ADDRESS,
+        getAddressSecurityAlertResponseMock,
+        addAddressSecurityAlertResponseMock,
+        SupportedEVMChain.Ethereum,
+      );
+
+      expect(result).toEqual(cachedLoadingResponse);
+      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+        TEST_ADDRESS,
+      );
+      // Should not make any API calls or update cache when loading state is cached
       expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
     });
 
@@ -156,7 +182,19 @@ describe('Security Alerts API', () => {
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
         TEST_ADDRESS,
       );
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+      // Should be called twice: once for loading state, once for result
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        1,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Loading,
+          label: '',
+        },
+      );
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        2,
         TEST_ADDRESS,
         RESPONSE_MOCK,
       );
@@ -180,7 +218,26 @@ describe('Security Alerts API', () => {
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
         TEST_ADDRESS,
       );
-      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+      // Should be called twice: once for loading state, once for clearing on error
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        1,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Loading,
+          label: '',
+        },
+      );
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        2,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.ErrorResult,
+          label: '',
+        },
+      );
     });
   });
 });

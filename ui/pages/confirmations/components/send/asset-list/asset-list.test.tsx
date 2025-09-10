@@ -91,7 +91,7 @@ describe('AssetList', () => {
       updateCurrentPage: jest.fn(),
       updateTo: jest.fn(),
       updateValue: jest.fn(),
-    });
+    } as unknown as ReturnType<typeof useSendContext>);
   });
 
   afterEach(() => {

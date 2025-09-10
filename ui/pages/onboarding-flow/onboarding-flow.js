@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import {
   Routes as Switch,
   Route,
@@ -45,7 +45,6 @@ import {
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-  getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -83,7 +82,6 @@ import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
-import { WelcomePageState } from './welcome/types';
 import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
@@ -104,7 +102,6 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
-  const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -117,8 +114,9 @@ export default function OnboardingFlow() {
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
-  const [welcomePageState, setWelcomePageState] = useState(
-    WelcomePageState.Banner,
+  const isWelcomePage = useMemo(
+    () => pathname === ONBOARDING_WELCOME_ROUTE,
+    [pathname],
   );
 
   useEffect(() => {
@@ -153,21 +151,12 @@ export default function OnboardingFlow() {
         replace: true,
       });
     }
-
-    if (pathname === ONBOARDING_WELCOME_ROUTE) {
-      setWelcomePageState(
-        showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
-      );
-    } else {
-      setWelcomePageState(null);
-    }
   }, [
     isUnlocked,
     completedOnboarding,
     secretRecoveryPhrase,
     pathname,
     navigate,
-    showTermsOfUse,
     isPrimarySeedPhraseBackedUp,
     isFromSettingsSecurity,
   ]);
@@ -256,13 +245,10 @@ export default function OnboardingFlow() {
       }
       justifyContent={JustifyContent.flexStart}
       className={classnames('onboarding-flow', {
-        'onboarding-flow--welcome-banner':
-          welcomePageState === WelcomePageState.Banner,
-        'onboarding-flow--welcome-login':
-          welcomePageState === WelcomePageState.Login,
+        'onboarding-flow--welcome-login': isWelcomePage,
       })}
     >
-      {!isPopup && <OnboardingAppHeader pageState={welcomePageState} />}
+      {!isPopup && <OnboardingAppHeader isWelcomePage={isWelcomePage} />}
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
@@ -344,12 +330,7 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
-            element={
-              <OnboardingWelcome
-                pageState={welcomePageState}
-                setPageState={setWelcomePageState}
-              />
-            }
+            element={<OnboardingWelcome />}
           />
           <Route
             path={ONBOARDING_PIN_EXTENSION_ROUTE}

@@ -33,6 +33,7 @@ import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getShowTestNetworks,
@@ -49,6 +50,9 @@ export const CustomNetworks = React.memo(() => {
   );
   const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isMultichainAccountsFeatureEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
 
@@ -125,7 +129,7 @@ export const CustomNetworks = React.memo(() => {
   const renderedCustomNetworks = useMemo(() => {
     const filteredNetworks = orderedNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
+      if (isEvmNetworkSelected && !isMultichainAccountsFeatureEnabled) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks
@@ -151,13 +155,14 @@ export const CustomNetworks = React.memo(() => {
     orderedNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    isMultichainAccountsFeatureEnabled,
     t,
   ]);
 
   const renderedTestNetworks = useMemo(() => {
     const filteredTestNetworks = orderedTestNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
+      if (isEvmNetworkSelected || isMultichainAccountsFeatureEnabled) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks
@@ -171,6 +176,7 @@ export const CustomNetworks = React.memo(() => {
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    isMultichainAccountsFeatureEnabled,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders

@@ -68,7 +68,7 @@ describe('Transfer custom tokens', function () {
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
-          await activityListPage.checkTxAction(`Sent ${symbol}`);
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
           await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
         },
       );
@@ -127,7 +127,7 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.checkTxAction(`Sent ${symbol}`);
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
           await activityListPage.checkTxAmountInActivity(
             valueWithSymbol('-1.5'),
           );
@@ -188,7 +188,7 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.checkTxAction(`Sent ${symbol}`);
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
           await activityListPage.checkTxAmountInActivity(
             valueWithSymbol('-1.5'),
           );

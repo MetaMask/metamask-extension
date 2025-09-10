@@ -14,6 +14,7 @@ import {
   fetchAssetMetadata,
   toAssetId,
   fetchAssetMetadataForAssetIds,
+  isEvmChainId,
 } from './asset-utils';
 
 jest.mock('@metamask/multichain-network-controller');
@@ -454,6 +455,20 @@ describe('asset-utils', () => {
       const result = await fetchAssetMetadataForAssetIds(['abc' as never]);
       expect(mockFetchWithTimeout).not.toHaveBeenCalled();
       expect(result).toStrictEqual(null);
+    });
+  });
+
+  describe('isEvmChainId', () => {
+    it('should return true for EVM chain ids on caip format', () => {
+      expect(isEvmChainId('eip155:1')).toBe(true);
+    });
+
+    it('should return true for EVM chain ids on hex format', () => {
+      expect(isEvmChainId('0x1')).toBe(true);
+    });
+
+    it('should return false for non-EVM chain ids', () => {
+      expect(isEvmChainId('solana:1')).toBe(false);
     });
   });
 });

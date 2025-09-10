@@ -269,4 +269,74 @@ describe('useFirstTimeInteractionAlert', () => {
 
     expect(alerts).toEqual([]);
   });
+  it('does not return alert when trust signal is still loading', () => {
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Loading,
+      label: null,
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK,
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns alert when trust signal is loaded but address is not verified', () => {
+    // Simulate the trust signal being loaded with non-verified result
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK,
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].key).toBe('firstTimeInteractionTitle');
+  });
+
+  it('does not return alert when trust signal shows verified address', () => {
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Verified,
+      label: null,
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS_2_MOCK,
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    expect(alerts).toEqual([]);
+  });
 });

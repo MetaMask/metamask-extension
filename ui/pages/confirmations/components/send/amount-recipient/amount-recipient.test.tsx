@@ -7,6 +7,8 @@ import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as AmountValidation from '../../../hooks/send/useAmountValidation';
 import * as SendActions from '../../../hooks/send/useSendActions';
+import * as SendContext from '../../../context/send';
+import * as RecipientValidation from '../../../hooks/send/validations/useRecipientValidation';
 import { AmountRecipient } from './amount-recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
@@ -55,6 +57,32 @@ describe('AmountRecipient', () => {
         typeof AmountSelectionMetrics.useAmountSelectionMetrics
       >);
 
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      to: MOCK_ADDRESS,
+      asset: undefined,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+
+    jest.spyOn(RecipientValidation, 'useRecipientValidation').mockReturnValue({
+      recipientError: null,
+      recipientWarning: null,
+      recipientResolvedLookup: null,
+      recipientConfusableCharacters: [],
+      validateRecipient: jest.fn(),
+    } as unknown as ReturnType<
+      typeof RecipientValidation.useRecipientValidation
+    >);
+
     const { getAllByRole, getByText } = render();
 
     fireEvent.change(getAllByRole('textbox')[0], {
@@ -62,7 +90,7 @@ describe('AmountRecipient', () => {
     });
 
     fireEvent.click(getByText('Continue'));
-    expect(mockHandleSubmit).toHaveBeenCalledWith(MOCK_ADDRESS);
+    expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
   });
 

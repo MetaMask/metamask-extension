@@ -11,6 +11,7 @@ export type UseTrustSignalRequest = {
 };
 
 export enum TrustSignalDisplayState {
+  Loading = 'loading',
   Malicious = 'malicious',
   Petname = 'petname',
   Verified = 'verified',
@@ -74,6 +75,8 @@ function getTrustState(
   }
 
   switch (securityAlertResponse.result_type) {
+    case ResultType.Loading:
+      return TrustSignalDisplayState.Loading;
     case ResultType.Malicious:
       return TrustSignalDisplayState.Malicious;
     case ResultType.Warning:

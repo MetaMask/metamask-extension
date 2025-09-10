@@ -1,5 +1,5 @@
 import { Nft } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
@@ -29,7 +29,7 @@ const Asset = () => {
       state,
       undefined, // Defaults to the selected account
       decodedAsset,
-      chainId,
+      chainId as Hex | CaipChainId,
     ),
   );
 

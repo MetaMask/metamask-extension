@@ -1,6 +1,5 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { useCallback } from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 
@@ -42,9 +41,8 @@ export const getEstimatedTotalGas = (
 
 type GetMaxAmountArgs = {
   asset?: Asset;
-  from: string;
   layer1GasFees: Hex;
-  isEvmSendType?: boolean;
+  isEvmNativeSendType?: boolean;
   gasFeeEstimates?: GasFeeEstimatesType;
   rawBalanceNumeric: Numeric;
 };
@@ -53,7 +51,7 @@ const getMaxAmountFn = ({
   asset,
   layer1GasFees,
   gasFeeEstimates,
-  isEvmSendType,
+  isEvmNativeSendType,
   rawBalanceNumeric,
 }: GetMaxAmountArgs) => {
   if (!asset) {
@@ -61,16 +59,9 @@ const getMaxAmountFn = ({
   }
 
   let estimatedTotalGas = new Numeric('0', 10);
-  if (isEvmSendType) {
-    const nativeTokenAddressForChainId = getNativeTokenAddress(
-      asset.chainId as Hex,
-    );
-    if (
-      nativeTokenAddressForChainId.toLowerCase() ===
-      asset.address?.toLowerCase()
-    ) {
-      estimatedTotalGas = getEstimatedTotalGas(layer1GasFees, gasFeeEstimates);
-    }
+
+  if (isEvmNativeSendType) {
+    estimatedTotalGas = getEstimatedTotalGas(layer1GasFees, gasFeeEstimates);
   }
 
   const balance = rawBalanceNumeric.minus(estimatedTotalGas);
@@ -112,17 +103,15 @@ export const useMaxAmount = () => {
   const getMaxAmount = useCallback(() => {
     return getMaxAmountFn({
       asset,
-      from,
       gasFeeEstimates,
-      isEvmSendType,
+      isEvmNativeSendType,
       layer1GasFees: layer1GasFees ?? '0x0',
       rawBalanceNumeric,
     });
   }, [
     asset,
-    from,
     gasFeeEstimates,
-    isEvmSendType,
+    isEvmNativeSendType,
     layer1GasFees,
     rawBalanceNumeric,
   ]);

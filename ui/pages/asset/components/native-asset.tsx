@@ -17,12 +17,9 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNetwork,
-  getMultichainIsEvm,
-} from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import AssetOptions from './asset-options';
-
 import AssetPage from './asset-page';
 
 const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
@@ -37,7 +34,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     getMultichainNetwork,
     selectedAccount,
   );
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(chainId);
   const addressLink = getMultichainAccountUrl(
     selectedAccount.address,
     multichainNetworkForSelectedAccount,
@@ -66,6 +63,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       optionsButton={
         <AssetOptions
           isNativeAsset={true}
+          isEvm={isEvm}
           onClickBlockExplorer={() => {
             trackEvent({
               event: 'Clicked Block Explorer Link',
