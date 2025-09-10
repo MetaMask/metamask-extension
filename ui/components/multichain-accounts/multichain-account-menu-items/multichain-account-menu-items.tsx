@@ -30,7 +30,7 @@ export const MultichainAccountMenuItems = ({
               'multichain-account-cell-menu-item--disabled': isDisabled,
               'multichain-account-cell-menu-item--enabled': !isDisabled,
             })}
-            paddingLeft={8}
+            paddingLeft={4}
             paddingRight={4}
             paddingTop={3}
             paddingBottom={3}
