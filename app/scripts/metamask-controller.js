@@ -47,10 +47,6 @@ import { Messenger } from '@metamask/base-controller';
 import { EnsController } from '@metamask/ens-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
-import {
-  NetworkController,
-  getDefaultNetworkControllerState,
-} from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
   MethodNames,
@@ -81,8 +77,6 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  BlockExplorerUrl,
-  ChainId,
   handleFetch,
 } from '@metamask/controller-utils';
 
@@ -132,7 +126,6 @@ import {
   SolScope,
 } from '@metamask/keyring-api';
 import {
-  hasProperty,
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
@@ -199,7 +192,6 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
-  getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
 
 import {
@@ -415,11 +407,6 @@ import { DeFiPositionsControllerInit } from './controller-init/defi-positions/de
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
-import {
-  onRpcEndpointUnavailable,
-  onRpcEndpointDegraded,
-} from './lib/network-controller/messenger-action-handlers';
-import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
@@ -438,6 +425,7 @@ import { ShieldControllerInit } from './controller-init/shield/shield-controller
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
+import { NetworkControllerInit } from './controller-init/network-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -606,203 +594,17 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
 
-    const networkControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'NetworkController',
-      allowedEvents: [],
-      allowedActions: ['ErrorReportingService:captureException'],
-    });
-
-    let initialNetworkControllerState = initState.NetworkController;
-    const additionalDefaultNetworks = [
-      ChainId['megaeth-testnet'],
-      ChainId['monad-testnet'],
-    ];
-
-    if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState(
-        additionalDefaultNetworks,
-      );
-
-      /** @type {import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']} */
-      const networks =
-        initialNetworkControllerState.networkConfigurationsByChainId;
-
-      // TODO: Consider changing `getDefaultNetworkControllerState` on the
-      // controller side to include some of these tweaks.
-
-      Object.values(networks).forEach((network) => {
-        const id = network.rpcEndpoints[0].networkClientId;
-        // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
-        if (hasProperty(BlockExplorerUrl, id)) {
-          network.blockExplorerUrls = [BlockExplorerUrl[id]];
-        }
-        network.defaultBlockExplorerUrlIndex = 0;
-      });
-
-      // Add failovers for default Infura RPC endpoints
-      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
-      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('linea-mainnet');
-      networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('base-mainnet');
-
-      let network;
-      if (process.env.IN_TEST) {
-        network = {
-          chainId: CHAIN_IDS.LOCALHOST,
-          name: 'Localhost 8545',
-          nativeCurrency: 'ETH',
-          blockExplorerUrls: [],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'networkConfigurationId',
-              url: 'http://localhost:8545',
-              type: 'custom',
-              failoverUrls: [],
-            },
-          ],
-        };
-        networks[CHAIN_IDS.LOCALHOST] = network;
-      } else if (
-        process.env.METAMASK_DEBUG ||
-        process.env.METAMASK_ENVIRONMENT === 'test'
-      ) {
-        network = networks[CHAIN_IDS.SEPOLIA];
-      } else {
-        network = networks[CHAIN_IDS.MAINNET];
-      }
-
-      initialNetworkControllerState.selectedNetworkClientId =
-        network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
-    }
-
-    // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
-    if (
-      initialNetworkControllerState.networkConfigurationsByChainId &&
-      !Object.values(
-        initialNetworkControllerState.networkConfigurationsByChainId,
-      )
-        .flatMap((networkConfiguration) =>
-          networkConfiguration.rpcEndpoints.map(
-            (rpcEndpoint) => rpcEndpoint.networkClientId,
-          ),
-        )
-        .includes(initialNetworkControllerState.selectedNetworkClientId)
-    ) {
-      captureException(
-        new Error(
-          `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
-        ),
-      );
-
-      initialNetworkControllerState.selectedNetworkClientId =
-        initialNetworkControllerState.networkConfigurationsByChainId[
-          CHAIN_IDS.MAINNET
-        ].rpcEndpoints[0].networkClientId;
-    }
-
-    this.networkController = new NetworkController({
-      messenger: networkControllerMessenger,
-      state: initialNetworkControllerState,
-      infuraProjectId: opts.infuraProjectId,
-      getBlockTrackerOptions: () => {
-        return process.env.IN_TEST
-          ? {}
-          : {
-              pollingInterval: 20 * SECOND,
-              // The retry timeout is pretty short by default, and if the endpoint is
-              // down, it will end up exhausting the max number of consecutive
-              // failures quickly.
-              retryTimeout: 20 * SECOND,
-            };
-      },
-      getRpcServiceOptions: (rpcEndpointUrl) => {
-        const maxRetries = 4;
-        const commonOptions = {
-          fetch: globalThis.fetch.bind(globalThis),
-          btoa: globalThis.btoa.bind(globalThis),
-        };
-
-        if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
-          return {
-            ...commonOptions,
-            policyOptions: {
-              maxRetries,
-              // When we fail over to Quicknode, we expect it to be down at
-              // first while it is being automatically activated. If an endpoint
-              // is down, the failover logic enters a "cooldown period" of 30
-              // minutes. We'd really rather not enter that for Quicknode, so
-              // keep retrying longer.
-              maxConsecutiveFailures: (maxRetries + 1) * 14,
-            },
-          };
-        }
-
-        return {
-          ...commonOptions,
-          policyOptions: {
-            maxRetries,
-            // Ensure that the circuit does not break too quickly.
-            maxConsecutiveFailures: (maxRetries + 1) * 7,
-          },
-        };
-      },
-      additionalDefaultNetworks,
-    });
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointUnavailable',
-      async ({ chainId, endpointUrl, error }) => {
-        onRpcEndpointUnavailable({
-          chainId,
-          endpointUrl,
-          error,
-          infuraProjectId: opts.infuraProjectId,
-          trackEvent: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'MetaMetricsController:trackEvent',
-          ),
-          metaMetricsId: this.controllerMessenger.call(
-            'MetaMetricsController:getMetaMetricsId',
-          ),
-        });
-      },
-    );
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointDegraded',
-      async ({ chainId, endpointUrl, error }) => {
-        onRpcEndpointDegraded({
-          chainId,
-          endpointUrl,
-          error,
-          infuraProjectId: opts.infuraProjectId,
-          trackEvent: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'MetaMetricsController:trackEvent',
-          ),
-          metaMetricsId: this.controllerMessenger.call(
-            'MetaMetricsController:getMetaMetricsId',
-          ),
-        });
-      },
-    );
-    this.networkController.initializeProvider();
-
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
+      getNetworkClientById: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkController:getNetworkClientById',
       ),
-      findNetworkClientIdByChainId:
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
+      findNetworkClientIdByChainId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkController:findNetworkClientIdByChainId',
+      ),
     });
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
     this.deprecatedNetworkVersions = {};
 
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
@@ -965,7 +767,7 @@ export default class MetamaskController extends EventEmitter {
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
-      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
+      allowedActions: [`NetworkController:getNetworkClientById`],
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
@@ -1905,7 +1707,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     const existingControllers = [
-      this.networkController,
       this.preferencesController,
       this.gasFeeController,
       this.onboardingController,
@@ -1916,6 +1717,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       MetaMetricsController: MetaMetricsControllerInit,
+      NetworkController: NetworkControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
@@ -1972,6 +1774,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.metaMetricsController = controllersByName.MetaMetricsController;
+    this.networkController = controllersByName.NetworkController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
     this.snapController = controllersByName.SnapController;
@@ -2013,6 +1816,11 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.SeedlessOnboardingController;
     this.networkOrderController = controllersByName.NetworkOrderController;
     this.shieldController = controllersByName.ShieldController;
+
+    this.provider =
+      this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker =
+      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
@@ -9469,10 +9277,10 @@ export default class MetamaskController extends EventEmitter {
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getProvider: () => this.provider,
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      infuraProjectId: this.opts.infuraProjectId,
       updateAccountBalanceForTransactionNetwork:
         this.updateAccountBalanceForTransactionNetwork.bind(this),
       offscreenPromise: this.offscreenPromise,
