@@ -3,7 +3,18 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import TransactionShield from './transaction-shield';
 
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
+}));
+
 describe('Transaction Shield Page', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render', () => {
     const { getByTestId } = renderWithProvider(<TransactionShield />);
 
