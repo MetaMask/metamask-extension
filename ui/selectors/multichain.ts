@@ -7,15 +7,17 @@ import type {
 import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  MultichainTransactionsControllerState,
-  TransactionStateEntry,
-} from '@metamask/multichain-transactions-controller';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  isCaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
@@ -447,7 +449,11 @@ export function getSelectedAccountMultichainTransactions(
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
   const currentChainId = providerConfig.chainId;
 
-  return transactions?.[currentChainId as CaipChainId];
+  if (isCaipChainId(currentChainId)) {
+    return transactions?.[currentChainId];
+  }
+
+  return undefined;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
