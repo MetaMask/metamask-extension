@@ -27,16 +27,27 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('GatorPermissionsControllerInit', () => {
-  const MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID = 'local:http://localhost:8082';
+  const MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID = 'npm:mock-snap-id';
   const GatorPermissionsControllerClassMock = jest.mocked(
     GatorPermissionsController,
   );
+  const originalGatorPermissionProviderSnapId =
+    process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
 
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
     process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID =
       MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
+  });
+
+  afterEach(() => {
+    if (originalGatorPermissionProviderSnapId) {
+      process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID =
+        originalGatorPermissionProviderSnapId;
+    } else {
+      delete process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
+    }
   });
 
   it('returns controller instance', () => {
@@ -101,68 +112,49 @@ describe('GatorPermissionsControllerInit', () => {
     });
   });
 
-  describe('GATOR_PERMISSIONS_PROVIDER_SNAP_ID being set to invalid format', () => {
-    it('handles empty string GATOR_PERMISSIONS_PROVIDER_SNAP_ID', () => {
-      const requestMock = buildInitRequestMock();
-      process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID = '';
-      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+  it('resolves the default when GATOR_PERMISSIONS_PROVIDER_SNAP_ID is not specified', () => {
+    const requestMock = buildInitRequestMock();
 
-      GatorPermissionsControllerInit(requestMock);
+    delete process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
 
-      expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
-        messenger: requestMock.controllerMessenger,
-        state: {
-          isGatorPermissionsEnabled: true,
-          ...requestMock.persistedState.GatorPermissionsController,
-        },
-      });
+    GatorPermissionsControllerInit(requestMock);
+
+    expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
+      messenger: requestMock.controllerMessenger,
+      state: {
+        isGatorPermissionsEnabled: true,
+      },
     });
 
-    it('handles undefined GATOR_PERMISSIONS_PROVIDER_SNAP_ID', () => {
-      const requestMock = buildInitRequestMock();
-      delete process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
-      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+    const calledWithState =
+      GatorPermissionsControllerClassMock.mock.calls[0][0].state;
 
-      GatorPermissionsControllerInit(requestMock);
-
-      expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
-        messenger: requestMock.controllerMessenger,
-        state: {
-          isGatorPermissionsEnabled: true,
-          ...requestMock.persistedState.GatorPermissionsController,
-        },
-      });
+    expect(calledWithState).toEqual({
+      isGatorPermissionsEnabled: true,
     });
 
-    it('handles invalid GATOR_PERMISSIONS_PROVIDER_SNAP_ID format', () => {
-      const requestMock = buildInitRequestMock();
-      process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID = 'invalid-snap-id';
-      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+    // GatorPermissionsController requires that the key does not exist if the snap id is not specified
+    expect(
+      Object.prototype.hasOwnProperty.call(
+        calledWithState,
+        'gatorPermissionsProviderSnapId',
+      ),
+    ).toBe(false);
+  });
 
-      GatorPermissionsControllerInit(requestMock);
+  describe('GATOR_PERMISSIONS_PROVIDER_SNAP_ID incorrectly specified', () => {
+    ['', '   ', 'invalid-snap-id'].forEach((invalidSnapId) => {
+      it(`throws when provided invalid GATOR_PERMISSIONS_PROVIDER_SNAP_ID: ${invalidSnapId}`, () => {
+        const requestMock = buildInitRequestMock();
 
-      expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
-        messenger: requestMock.controllerMessenger,
-        state: {
-          isGatorPermissionsEnabled: true,
-          ...requestMock.persistedState.GatorPermissionsController,
-        },
-      });
-    });
+        process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID =
+          invalidSnapId as string;
 
-    it('handles whitespace-only GATOR_PERMISSIONS_PROVIDER_SNAP_ID', () => {
-      const requestMock = buildInitRequestMock();
-      process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID = '   ';
-      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+        expect(() => GatorPermissionsControllerInit(requestMock)).toThrow(
+          'GATOR_PERMISSIONS_PROVIDER_SNAP_ID must be set to a valid snap id',
+        );
 
-      GatorPermissionsControllerInit(requestMock);
-
-      expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
-        messenger: requestMock.controllerMessenger,
-        state: {
-          isGatorPermissionsEnabled: true,
-          ...requestMock.persistedState.GatorPermissionsController,
-        },
+        expect(GatorPermissionsControllerClassMock).not.toHaveBeenCalled();
       });
     });
   });
