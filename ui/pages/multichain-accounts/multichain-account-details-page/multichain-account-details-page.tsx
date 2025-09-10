@@ -116,7 +116,7 @@ export const MultichainAccountDetailsPage = () => {
             data-testid="avatar"
           />
         </Box>
-        <Box className="multichain-account-details__section">
+        <Box className="multichain-account-details-page__section">
           <AccountDetailsRow
             label={t('accountName')}
             value={multichainAccount.metadata.name}
