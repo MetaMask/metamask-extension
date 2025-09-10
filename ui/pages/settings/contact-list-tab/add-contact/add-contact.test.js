@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import '@testing-library/jest-dom';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -25,7 +25,7 @@ describe('AddContact component', () => {
   const props = {
     addressBook: MOCK_ADDRESS_BOOK,
     internalAccounts: [createMockInternalAccount()],
-    history: { push: jest.fn() },
+    navigate: jest.fn(),
     addToAddressBook: jest.fn(),
     scanQrCode: jest.fn(),
     qrCodeData: { type: 'address', values: { address: '0x123456789abcdef' } },

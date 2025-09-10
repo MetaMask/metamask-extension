@@ -335,7 +335,7 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    navigateToSendRoute(history, { address: nft.address });
+    navigateToSendRoute(history, { address: nft.address, chainId: nftChainId });
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {

@@ -108,7 +108,8 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
 
-      # Enables gator permissions feature
+      # EIP-7715 Readable Permissions
+      - PERMISSIONS_KERNEL_SNAP_ID: ''
       - GATOR_PERMISSIONS_ENABLED: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -328,7 +329,8 @@ env:
 
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
-  # Enables gator permissions feature
+  # EIP-7715 Readable Permissions
+  - PERMISSIONS_KERNEL_SNAP_ID: ''
   - GATOR_PERMISSIONS_ENABLED: false
 
   ###
@@ -395,6 +397,7 @@ env:
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'false'
+
   # URL of Shield gateway
   - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
   # URL of Shield rule engine

@@ -224,7 +224,11 @@ const CoinButtons = ({
   );
 
   const setCorrectChain = useCallback(async () => {
-    if (currentChainId !== chainId && multichainChainId !== chainId) {
+    if (
+      currentChainId !== chainId &&
+      multichainChainId !== chainId &&
+      !isMultichainAccountsState2Enabled
+    ) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -239,7 +243,14 @@ const CoinButtons = ({
         throw err;
       }
     }
-  }, [currentChainId, chainId, networks, dispatch]);
+  }, [
+    isMultichainAccountsState2Enabled,
+    currentChainId,
+    multichainChainId,
+    chainId,
+    networks,
+    dispatch,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -265,7 +276,7 @@ const CoinButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
+    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -334,6 +345,13 @@ const CoinButtons = ({
       handleBridgeOnClick(true);
       return;
     }
+    if (
+      isMultichainAccountsState2Enabled &&
+      chainId === MultichainNetworks.SOLANA
+    ) {
+      handleBridgeOnClick(true);
+      return;
+    }
 
     await setCorrectChain();
 
@@ -365,6 +383,8 @@ const CoinButtons = ({
     setCorrectChain,
     isSwapsChain,
     chainId,
+    isMultichainAccountsState2Enabled,
+    multichainChainId,
     isUnifiedUIEnabled,
     usingHardwareWallet,
     defaultSwapsToken,
