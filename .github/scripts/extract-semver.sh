@@ -13,7 +13,6 @@ else
   echo "Error: Branch name must be Version-vX.Y.Z or release/X.Y.Z where X, Y, Z are numbers. Got: $ref_name" >&2
   exit 1
 fi
-echo "semver=${semver}" >> "$GITHUB_OUTPUT"
 
 # Validate semver format X.Y.Z where X, Y, Z are numbers
 if ! [[ "$semver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -21,14 +20,8 @@ if ! [[ "$semver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
-# Determine if hotfix (patch > 0). Hotfixes are now supported and should proceed.
-patch="${semver##*.}"
-if [ "$patch" -gt 0 ]; then
-  echo "Hotfix detected (patch $patch > 0), proceeding with auto-create-release-pr."
-else
-  echo "Not a hotfix (patch=0), proceeding."
-fi
-
 # Print values passed to call-create-release-pr (note: previous-version-ref computed in reusable workflow)
 echo "Inputs to call-create-release-pr:"
 echo "  semver-version: ${semver}"
+
+echo "semver=${semver}" >> "$GITHUB_OUTPUT"
