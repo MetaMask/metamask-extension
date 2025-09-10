@@ -9,8 +9,8 @@ import {
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
-import Eip7702AndSendCalls from '../page-objects/pages/confirmations/redesign/batch-confirmation';
 import { addToQueue } from './helpers';
+import Eip7702AndSendCalls from '../page-objects/pages/confirmations/redesign/batch-confirmation';
 
 type ConfirmationsRejectRuleOptions = {
   driver: Driver;
@@ -132,8 +132,12 @@ export class ConfirmationsRejectRule implements Rule {
 
             // Handle smart account upgrade splash screen
             if (requiresSmartAccountUpgrade) {
-              const eip7702 = new Eip7702AndSendCalls(this.driver);
-              await eip7702.clickUseSmartAccountButton();
+              const btn = {
+                tag: 'button',
+                text: 'Use smart account',
+              };
+
+              await this.driver.clickElement(btn);
             }
 
             const screenshot = await this.driver.driver.takeScreenshot();

@@ -55,7 +55,7 @@
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --build-type flask",
     "test:e2e:chrome:webpack": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts",
     "test:api-specs": "SELENIUM_BROWSER=chrome tsx test/e2e/run-openrpc-api-test-coverage.ts",
-    "test:api-specs-multichain": "SELENIUM_BROWSER=chrome tsx test/e2e/run-api-specs-multichain.ts",
+    "test:api-specs-multichain": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-api-specs-multichain.ts",
     "test:e2e:swap": "yarn playwright test --project=swap",
     "test:e2e:global": "yarn playwright test --project=global",
     "test:e2e:benchmark": "yarn playwright test --project=benchmark",
