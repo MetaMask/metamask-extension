@@ -20,7 +20,7 @@ export type Asset = (
     }
 ) & {
   /** The hexadecimal chain id */
-  chainId: Hex;
+  chainId: Hex; // TODO BIP44: Can also be a CaipChainId
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */
