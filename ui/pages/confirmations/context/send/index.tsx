@@ -75,9 +75,9 @@ export const SendContextProvider: React.FC<{
   );
 
   const updateAsset = useCallback(
-    (asset: Asset) => {
+    (newAsset: Asset) => {
       updateValue('', false);
-      setAsset(asset);
+      setAsset(newAsset);
     },
     [setAsset, updateValue],
   );

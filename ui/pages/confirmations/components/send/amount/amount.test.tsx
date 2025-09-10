@@ -75,7 +75,7 @@ describe('Amount', () => {
     const { getByRole } = render();
 
     fireEvent.change(getByRole('textbox'), { target: { value: 10.0075 } });
-    expect(mockUpdateValue).not.toHaveBeenCalledWith();
+    expect(mockUpdateValue).not.toHaveBeenCalled();
   });
 
   it('amount value is changed when fiatmode is toggled', async () => {

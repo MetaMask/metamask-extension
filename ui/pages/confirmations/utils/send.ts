@@ -280,7 +280,7 @@ export const navigateToSendRoute = (
 };
 
 export const getFractionLength = (value: string) => {
-  const result = value.replace(/^-/, '').split('.');
+  const result = value.replace(/^-/u, '').split('.');
   const fracPart = result[1] ?? '';
   return fracPart.length;
 };
@@ -289,7 +289,7 @@ export const addLeadingZeroIfNeeded = (value?: string) => {
   if (!value) {
     return value;
   }
-  const result = value.replace(/^-/, '').split('.');
+  const result = value.replace(/^-/u, '').split('.');
   const wholePart = result[0];
   const fracPart = result[1] ?? '';
   if (!wholePart.length) {
