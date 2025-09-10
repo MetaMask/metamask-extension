@@ -142,8 +142,11 @@ async function closePopoverIfPresent(driver: Driver) {
     text: 'Enable',
     tag: 'button',
   };
+  const popoverTourSelector = '[data-testid="tour-cta-button"]';
+
   await driver.clickElementSafe(popoverButtonSelector);
   await driver.clickElementSafe(enableButtonSelector);
+  await driver.clickElementSafe(popoverTourSelector);
 
   // Token Autodetection Independent Announcement
   const tokenAutodetection = {

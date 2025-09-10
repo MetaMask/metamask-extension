@@ -126,6 +126,7 @@ export const ProductTour = ({
             isInverse
             variant={ButtonVariant.Primary}
             size={ButtonBaseSize.Sm}
+            data-testid="tour-cta-button"
             onClick={onClick}
           >
             {t('gotIt')}
