@@ -69,7 +69,7 @@ import {
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
-import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger.ts';
+import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
 
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';

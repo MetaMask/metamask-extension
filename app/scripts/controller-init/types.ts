@@ -13,12 +13,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { Browser } from 'webextension-polyfill';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
-import {
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-} from '../../../shared/constants/metametrics';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
-import ExtensionPlatform from '../platforms/extension';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */

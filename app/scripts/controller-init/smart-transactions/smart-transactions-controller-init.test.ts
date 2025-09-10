@@ -9,7 +9,11 @@ import type {
   BaseRestrictedControllerMessenger,
   ControllerInitRequest,
 } from '../types';
-import type { SmartTransactionsControllerMessenger } from '../messengers/smart-transactions-controller-messenger';
+import {
+  getSmartTransactionsControllerInitMessenger,
+  SmartTransactionsControllerInitMessenger,
+  SmartTransactionsControllerMessenger,
+} from '../messengers/smart-transactions-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import type {
   MetaMetricsEventPayload,
@@ -29,16 +33,17 @@ type MockTransactionController = Pick<
   | 'updateTransaction'
 >;
 
-type TestInitRequest =
-  ControllerInitRequest<SmartTransactionsControllerMessenger> & {
-    getStateUI: () => { metamask: ControllerFlatState };
-    getGlobalNetworkClientId: () => string;
-    getAccountType: (address: string) => Promise<string>;
-    getDeviceModel: (address: string) => Promise<string>;
-    getHardwareTypeForMetric: (address: string) => Promise<string>;
-    trace: jest.Mock;
-    trackEvent: jest.Mock;
-  };
+type TestInitRequest = ControllerInitRequest<
+  SmartTransactionsControllerMessenger,
+  SmartTransactionsControllerInitMessenger
+> & {
+  getStateUI: () => { metamask: ControllerFlatState };
+  getGlobalNetworkClientId: () => string;
+  getAccountType: (address: string) => Promise<string>;
+  getDeviceModel: (address: string) => Promise<string>;
+  getHardwareTypeForMetric: (address: string) => Promise<string>;
+  trace: jest.Mock;
+};
 
 describe('SmartTransactionsController Init', () => {
   const smartTransactionsControllerClassMock = jest.mocked(
@@ -100,6 +105,9 @@ describe('SmartTransactionsController Init', () => {
       baseControllerMessenger: mocks.baseControllerMessenger,
       controllerMessenger:
         mocks.restrictedMessenger as SmartTransactionsControllerMessenger,
+      initMessenger: getSmartTransactionsControllerInitMessenger(
+        mocks.baseControllerMessenger,
+      ),
       getController: jest.fn((name: string) => {
         switch (name) {
           case 'AccountsController':
@@ -329,7 +337,10 @@ describe('SmartTransactionsController Init', () => {
 
     trackMetaMetricsEvent(testPayload);
 
-    expect(fullRequest.trackEvent).toHaveBeenCalledWith(testPayload);
+    expect(fullRequest.initMessenger.call).toHaveBeenCalledWith(
+      'MetaMetricsController:trackEvent',
+      testPayload,
+    );
   });
 
   it('configures getTransactions correctly', () => {
