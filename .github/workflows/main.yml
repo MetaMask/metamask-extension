@@ -262,77 +262,25 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/needs-e2e.yml
 
-  # Gate job that always runs and makes the decision
-  e2e-gate:
+  e2e-chrome:
     needs:
       - needs-e2e
       - build-test-browserify
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
-    if: always()
-    runs-on: ubuntu-latest
-    outputs:
-      should-run: ${{ steps.decide.outputs.should-run }}
-    steps:
-      - id: decide
-        run: |
-          echo "needs-e2e result: ${{ needs.needs-e2e.result }}"
-          echo "needs-e2e output: ${{ needs.needs-e2e.outputs.needs-e2e }}"
-
-          # Check if we should run
-          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
-            # Also check that no dependencies failed
-            if [[ ! "${{ contains(needs.*.result, 'failure') }}" == "true" ]] && \
-              [[ ! "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
-              echo "should-run=true" >> $GITHUB_OUTPUT
-              echo "✅ E2E Chrome should run"
-            else
-              echo "should-run=false" >> $GITHUB_OUTPUT
-              echo "❌ E2E Chrome should not run - some dependencies failed"
-            fi
-          else
-            echo "should-run=false" >> $GITHUB_OUTPUT
-            echo "⏭️ E2E Chrome should not run - not needed"
-          fi
-
-  e2e-chrome:
-    needs: [e2e-gate]
-    if: needs.e2e-gate.outputs.should-run == 'true'
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
   e2e-firefox:
-    needs: [e2e-gate]
-    if: needs.e2e-gate.outputs.should-run == 'true'
+    needs:
+      - needs-e2e
+      - build-test-mv2-browserify
+      - build-test-flask-mv2-browserify
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
-
-  # e2e-chrome:
-  #   needs:
-  #     - needs-e2e
-  #     - build-test-browserify
-  #     - build-test-webpack
-  #     - build-dist-browserify
-  #     - build-test-flask-browserify
-  #   if: |
-  #     !cancelled() &&
-  #     needs.needs-e2e.result == 'success' &&
-  #     needs.needs-e2e.outputs.needs-e2e == 'true'
-  #   uses: ./.github/workflows/e2e-chrome.yml
-  #   secrets:
-  #     PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-
-  # e2e-firefox:
-  #   needs:
-  #     - needs-e2e
-  #     - build-test-mv2-browserify
-  #     - build-test-flask-mv2-browserify
-  #   if: |
-  #     !cancelled() &&
-  #     needs.needs-e2e.result == 'success' &&
-  #     needs.needs-e2e.outputs.needs-e2e == 'true'
-  #   uses: ./.github/workflows/e2e-firefox.yml
 
   build-storybook:
     name: Build storybook
@@ -497,9 +445,10 @@ jobs:
     steps:
       - name: Check that all jobs have passed
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
-            exit 1
+          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
+            [[ "${{ needs.all-e2e-jobs-completed.outputs.PASSED }}" == "true" ]] || exit 1
+          else
+            [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" == "true" ]] || exit 1
           fi
 
   log-merge-group-failure:

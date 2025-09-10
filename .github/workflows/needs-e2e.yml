@@ -79,66 +79,66 @@ jobs:
             fi
           fi
 
-  # prep-e2e:
-  #   # For a `pull_request` event, the branch is `github.head_ref``.
-  #   # For a `push` event, the branch is `github.ref_name`.
-  #   if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'stable' }}
-  #   needs:
-  #     - needs-e2e
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     OWNER: ${{ github.repository_owner }}
-  #     REPOSITORY: ${{ github.event.repository.name }}
-  #     WORKFLOW_ID: main.yml
-  #     DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-  #   steps:
-  #     - name: Checkout and setup environment
-  #       uses: MetaMask/action-checkout-and-setup@v1
-  #       with:
-  #         is-high-risk-environment: false
-  #         skip-allow-scripts: true
-  #         yarn-custom-url: ${{ vars.YARN_URL }}
+  prep-e2e:
+    # For a `pull_request` event, the branch is `github.head_ref``.
+    # For a `push` event, the branch is `github.ref_name`.
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'stable' }}
+    needs:
+      - needs-e2e
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      WORKFLOW_ID: main.yml
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
-  #     - name: Get changed files with git diff
-  #       run: yarn tsx .github/scripts/git-diff-default-branch.ts
+      - name: Get changed files with git diff
+        run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
-  #     - name: Upload changed files artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: changed-files
-  #         path: ./changed-files/
+      - name: Upload changed files artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
 
-  #     - name: Run E2E Page Object Usage Validation
-  #       run: yarn tsx .github/scripts/validate-e2e-page-object-usage.ts
+      - name: Run E2E Page Object Usage Validation
+        run: yarn tsx .github/scripts/validate-e2e-page-object-usage.ts
 
-  #     - name: Get last completed main workflow
-  #       id: get-last-completed-main-workflow
-  #       run: |
-  #         last_completed_main_workflow=$(gh api "/repos/${OWNER}/${REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs?branch=${DEFAULT_BRANCH}&per_page=1&status=success" | jq -r .workflow_runs[0].id)
-  #         echo 'LAST_COMPLETED_MAIN_WORKFLOW='"$last_completed_main_workflow" >> "$GITHUB_OUTPUT"
+      - name: Get last completed main workflow
+        id: get-last-completed-main-workflow
+        run: |
+          last_completed_main_workflow=$(gh api "/repos/${OWNER}/${REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs?branch=${DEFAULT_BRANCH}&per_page=1&status=success" | jq -r .workflow_runs[0].id)
+          echo 'LAST_COMPLETED_MAIN_WORKFLOW='"$last_completed_main_workflow" >> "$GITHUB_OUTPUT"
 
-  #     - name: Download test-e2e-chrome-report
-  #       if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: test-e2e-chrome-report
-  #         path: test/test-results/
-  #         github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-  #         run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
+      - name: Download test-e2e-chrome-report
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        uses: actions/download-artifact@v4
+        with:
+          name: test-e2e-chrome-report
+          path: test/test-results/
+          github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
 
-  #     - name: Download test-e2e-firefox-report
-  #       if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: test-e2e-firefox-report
-  #         path: test/test-results/
-  #         github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-  #         run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
+      - name: Download test-e2e-firefox-report
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        uses: actions/download-artifact@v4
+        with:
+          name: test-e2e-firefox-report
+          path: test/test-results/
+          github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
 
-  #     - name: Upload test-runs-for-splitting
-  #       if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: test-runs-for-splitting
-  #         path: test/test-results/test-runs-*.json
+      - name: Upload test-runs-for-splitting
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-runs-for-splitting
+          path: test/test-results/test-runs-*.json
