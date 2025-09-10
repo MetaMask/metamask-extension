@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.3.0]
 ### Added
-- feat: add network and native token logos for Fraxtal network (#34986)
 - feat: improve new send flow, by merging amount and recipient pages, and by adding the possibility to navigate back to the page when needed (#35416)
 - feat: improve new send flow, by adding Solana compatibility (#35361)
 - feat: improve new send flow, by adding amount fiat conversion and validation functions (#35346)
@@ -19,21 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: improve new send flow, by creating basic pages and navigation (#35106)
 - feat: improve new send flow, by setting up name resolution, including on non-evm networks (#35113)
 - feat: initialize the new send flow behind a feature flag (#35104)
-- feat: add updates to wallet details page to handle multichain accounts (#18331)
 - feat: add a new page to display multichain account details (#35298)
 - feat: improve dapp connection UX when the wallet is locked (#35122)
 - feat: introduce address scanning for simple send transactions (#34978)
 - feat: add new multichain account popup menu (#35064)
-- feat: support smart transactions on Linea network (#35117)
-- feat: add discover button for Solana network (#34498)
-- feat: add account switching functionality for the multichain accounts (#34989)
-- feat: allow social login users to unlock the wallet offline when social login APIs failed (#34996)
-- feat: add price impact information and alert when above a certain threshold (#34951)
-- feat: add new page components and its routing for displaying multichain accounts (#34836)
-- feat: add message to loading page when loading is taking an abnormally long time (#34530)
-- feat: add `scan QR code and download the app` page on onboarding flow (#34825)
-- feat: hide remove imported account button for social login (#34895)
-- feat: unblock gas station for Base network and more accurate `alternateGasFee` capability (#34733)
 
 ### Changed
 - update: display the number of account group instead of addresses for a connected dapp (#35427)
@@ -41,17 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: batch RPC requests for native and ERC20 tokens into a single request to reduce the total number of RPC calls and improve performance (#35283)
 - update: replace portfolio.metamask.io links with app.metamask.io (#35221)
 - update: upgraded @metamask/design-system-react to v0.3.1 for improved security and React 17 compatibility (#35271)
-- update: remove the Solana new feature modal from the onboarding flow (#34988)
-- update: disable transaction resubmission in Extension, since it can lead to transactions being submitted to both Sentinel and as a regular transaction (#35028)
-- update: update Sei Network name from `Sei Network` to `Sei Mainnet` (#34930)
-- update: exclude test assets in production to reduce the bundle size and improve performance (#34690)
-- update: revert PR that set default theme to `dark` instead of `system` (#34274)
 - update: deprecate carousel slides (#35109)
 
 ### Fixed
 - fix: solve some security vulnerabilities caused by out of date dependencies (#34364)
 - fix: resolve visual bug when very long URLs get displayed on the MetaMask warning page (#35179)
-- fix: use a static list of words for blurred SRP to prevent any potential possibility of a "blur reversal attack" (#34288)
 - fix: avoid race condition where the password is being changed while the wallet is locked (#35022)
 - fix: resolve issue where error is shown in the console although user successfully authenticated with Apple login (#35414)
 - fix: fix long account name rendering (#35343)
@@ -61,20 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: handle cases where incorrect nonce value is displayed in the transaction details from last confirmation page when a tx comes from a dapp and have a miss-matched network context (#35204)
 - fix: properly emit transaction lifecycle events even when smart transaction toggle is on (#35196)
 - fix: fix the flickering issue with the batch transaction alert that occurs when there are no simulations but the unused approval alert is triggered (#35019)
-- fix: fix issue preventing ui from loading in old browsers due to use `Promise.withResolvers` (#35175)
 - fix: automatically switch the chain, even when an approval is being displayed on page, and don't cancel pending confirmations while doing so (#35107)
-- fix: fix balance fetching issue due to race condition when displaying balances on the swap page (#35008)
-- fix: ensure that user's email is removed from the state logs (#35119)
-- fix: fix issue with Firefox's private browsing Mode that was causing the extension to fail during initialization (#35040)
-- fix: ensure that everal sensitive items are removed from the state logs (#35003)
-- fix: resolve visual bug when very long URLs get displayed on the confirmations page (#34824)
-- fix: skip the metametrics page if user has already chosen an option (#35036)
-- fix: remove hover state when the snaps UI selector is disabled (#34964)
-- fix: fix a bug that was causing an error when trying to bridge to solana without a solana account on legacy extensions (#34943)
-- fix: hide resimulation alert if transaction is wallet initiated, such that it no longer appears multiple times (#34782)
-- fix: prevent an unhandled exception when attempting to retrieve the account type for a metric event while the wallet is locked (#34406)
-- fix: remove misleading console warning (#34816)
-- fix: fix `MetaMask extension not found` error displayed in the console when connecting to dapps (#34783)
 
 ## [13.2.3]
 ### Fixed
@@ -103,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add support for non-evm deep links (#35228)
 - feat: automatically switch to the last used solana account when opening swap/buy deep link with SOL token set as query parameter (#35390)
 - feat: update network selector to manage selecting a single network or all popular networks (#35264)
+- feat: unblock gas station for Base network and more accurate `alternateGasFee` capability (#34733)
 
 ### Changed
 - update: remove the Solana modal from the initial flow (#34988)
