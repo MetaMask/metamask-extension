@@ -5268,25 +5268,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@0.12.1-preview-236bab4a":
-  version: 0.12.1-preview-236bab4a
-  resolution: "@metamask-previews/account-tree-controller@npm:0.12.1-preview-236bab4a"
+"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@0.13.1-preview-ea6406b3":
+  version: 0.13.1-preview-ea6406b3
+  resolution: "@metamask-previews/account-tree-controller@npm:0.13.1-preview-ea6406b3"
   dependencies:
-    "@metamask/base-controller": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.4.2"
+    fast-deep-equal: "npm:^3.1.3"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/account-api": ^0.9.0
     "@metamask/accounts-controller": ^33.0.0
     "@metamask/keyring-controller": ^23.0.0
-    "@metamask/multichain-account-service": ^0.6.0
+    "@metamask/multichain-account-service": ^0.7.0
     "@metamask/profile-sync-controller": ^24.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/21b980d9b6da7c4710a34cb75dc246960ee8822e126d2aba67940b61852825c0a5402b7811320a0067b1be8a067aa09f9f25d96531b7461cd04bdc7f24b01355
+  checksum: 10/648523ec033358afdcf40f517cc3a16dc77bae30103b4f00170c0a1e3d16ea4c152538c7503f9f423c2b578741b617274336b03ec5296eb28dd703c796f0d859
   languageName: node
   linkType: hard
 
@@ -7019,11 +7021,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@24.0.0-preview-236bab4a":
-  version: 24.0.0-preview-236bab4a
-  resolution: "@metamask-previews/profile-sync-controller@npm:24.0.0-preview-236bab4a"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@24.0.0-preview-ea6406b3":
+  version: 24.0.0-preview-ea6406b3
+  resolution: "@metamask-previews/profile-sync-controller@npm:24.0.0-preview-ea6406b3"
   dependencies:
-    "@metamask/base-controller": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@noble/ciphers": "npm:^1.3.0"
@@ -7032,15 +7034,16 @@ __metadata:
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
+    "@metamask/address-book-controller": ^6.1.1
     "@metamask/keyring-controller": ^23.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/729a4f5c933aec144a529926ed69b45914ed139f54a819c101563b0eab5130c006432f418a78d1866114f7c256145825f2842cc19fbefd1125cebbd43a908a58
+  checksum: 10/689940aef145f57256fd9d150070dd06b7db1a0380dc67c1b9bc25fc4429da77f33343d0bb47eade3fec20fa7af10227d59e05a578a3eb82845a38528f2eb359
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^22.1.0, @metamask/providers@npm:^22.1.1":
+"@metamask/providers@npm:^22.1.0":
   version: 22.1.1
   resolution: "@metamask/providers@npm:22.1.1"
   dependencies:
@@ -31721,7 +31724,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.9.0"
-    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@0.12.1-preview-236bab4a"
+    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@0.13.1-preview-ea6406b3"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^32.0.2"
     "@metamask/address-book-controller": "npm:^6.1.0"
@@ -31804,7 +31807,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.1"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@24.0.0-preview-236bab4a"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@24.0.0-preview-ea6406b3"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
