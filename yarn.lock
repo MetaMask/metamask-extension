@@ -6792,7 +6792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^16.0.0":
+"@metamask/notification-services-controller@npm:16.0.0":
   version: 16.0.0
   resolution: "@metamask/notification-services-controller@npm:16.0.0"
   dependencies:
@@ -6808,6 +6808,25 @@ __metadata:
     "@metamask/keyring-controller": ^22.0.0
     "@metamask/profile-sync-controller": ^23.0.0
   checksum: 10/60e1731d840256716eb67c08b3b386666bd21036839eff57ab63ad92b6a07e7f41baddb2707d4392bb610c9e2e1e29012fa4fd430c43c76d534ea2892f78bbb1
+  languageName: node
+  linkType: hard
+
+"@metamask/notification-services-controller@patch:@metamask/notification-services-controller@npm%3A16.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-16.0.0-7d7a016e6f.patch":
+  version: 16.0.0
+  resolution: "@metamask/notification-services-controller@patch:@metamask/notification-services-controller@npm%3A16.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-16.0.0-7d7a016e6f.patch::version=16.0.0&hash=85563a"
+  dependencies:
+    "@contentful/rich-text-html-renderer": "npm:^16.5.2"
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^11.4.2"
+    bignumber.js: "npm:^9.1.2"
+    firebase: "npm:^11.2.0"
+    loglevel: "npm:^1.8.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/profile-sync-controller": ^23.0.0
+  checksum: 10/60aeacd01d1a69a8d2f775b51f7f96d58ccd28b4ba120af0e437c8ed0e2e9bfbd8c72825ead2b20569fbdbc818d7eeec2708a831574def4a5d0985040cf185a4
   languageName: node
   linkType: hard
 
@@ -31830,7 +31849,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A24.1.0#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch"
-    "@metamask/notification-services-controller": "npm:^16.0.0"
+    "@metamask/notification-services-controller": "patch:@metamask/notification-services-controller@npm%3A16.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-16.0.0-7d7a016e6f.patch"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"

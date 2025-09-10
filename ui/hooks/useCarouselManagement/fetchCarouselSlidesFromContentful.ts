@@ -1,6 +1,9 @@
+import semver from 'semver';
 import { CarouselSlide } from '../../../shared/constants/app-state';
 import { isProduction } from '../../../shared/modules/environment';
+import packageJson from '../../../package.json';
 
+const APP_VERSION = packageJson.version;
 const isProductionEnv = process.env.IN_TEST || isProduction();
 
 const SPACE_ID = process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '';
@@ -26,6 +29,7 @@ type ContentfulBanner = ContentfulSysField & {
     showInExtension?: boolean;
     variableName?: string;
     cardPlacement?: string;
+    extensionMinimumVersionNumber?: string;
   };
 };
 
@@ -76,6 +80,7 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
       priorityPlacement,
       variableName,
       cardPlacement,
+      extensionMinimumVersionNumber,
     } = entry.fields;
 
     const slide: CarouselSlide = {
@@ -93,6 +98,10 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
       cardPlacement,
     };
 
+    if (!isValidMinimumVersion(extensionMinimumVersionNumber)) {
+      continue;
+    }
+
     if (priorityPlacement) {
       prioritySlides.push(slide);
     } else {
@@ -101,4 +110,18 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
   }
 
   return { prioritySlides, regularSlides };
+}
+
+function isValidMinimumVersion(contentfulMinimumVersionNumber?: string) {
+  // Field is not set, show by default
+  if (!contentfulMinimumVersionNumber) {
+    return true;
+  }
+
+  try {
+    return semver.gte(APP_VERSION, contentfulMinimumVersionNumber);
+  } catch {
+    // Invalid mobile version number, not showing banner
+    return false;
+  }
 }
