@@ -20,6 +20,7 @@ type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
     React.ComponentProps<typeof TokenListItem>,
     'isTitleNetworkName' | 'isTitleHidden' | 'nativeCurrencySymbol'
   >;
+  name?: string;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -29,6 +30,7 @@ export default function Asset({
   image,
   symbol,
   string: decimalTokenAmount,
+  name,
   tooltipText,
   tokenFiatAmount,
   chainId,
@@ -74,7 +76,7 @@ export default function Asset({
       }
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
-      title={symbol}
+      title={name ?? symbol}
       tooltipText={tooltipText}
       tokenChainImage={getImageForChainId(chainId)}
       isPrimaryTokenSymbolHidden

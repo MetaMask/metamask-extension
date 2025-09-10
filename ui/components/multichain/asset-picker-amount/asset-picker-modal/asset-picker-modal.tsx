@@ -199,8 +199,6 @@ export function AssetPickerModal({
     network ??
     (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
-  // This indicates whether tokens in the wallet's active network are displayed
-  const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   useEffect(() => {
@@ -697,9 +695,7 @@ export function AssetPickerModal({
                     isTitleNetworkName:
                       // For src cross-chain swaps assets
                       isMultiselectEnabled,
-                    isTitleHidden:
-                      // For dest cross-chain swaps assets
-                      !isSelectedNetworkActive,
+                    isTitleHidden: false,
                   }}
                 />
               </React.Fragment>
