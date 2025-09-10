@@ -1,5 +1,4 @@
 name: 'Check PR Max Lines'
-
 on:
   pull_request:
     types:

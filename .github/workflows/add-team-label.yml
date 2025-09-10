@@ -1,5 +1,5 @@
 name: Add team label
-runs-on: ubuntu-latest
+runs-on: self-hosted
 on:
   pull_request:
     types:

@@ -6143,7 +6143,11 @@ export function completeQrCodeScan(
   scanResult: SerializedUR,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('completeQrCodeScan', [scanResult]);
+    try {
+      await submitRequestToBackground('completeQrCodeScan', [scanResult]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
   };
 }
 

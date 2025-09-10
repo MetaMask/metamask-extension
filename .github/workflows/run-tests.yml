@@ -13,7 +13,7 @@ on:
 jobs:
   test-unit:
     name: Unit tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         shard: [1, 2, 3, 4, 5, 6]
@@ -38,7 +38,7 @@ jobs:
 
   test-webpack:
     name: Webpack tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -60,7 +60,7 @@ jobs:
 
   test-integration:
     name: Integration tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -82,7 +82,7 @@ jobs:
 
   report-coverage:
     name: Report coverage
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - test-unit
       - test-webpack

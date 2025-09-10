@@ -6,7 +6,7 @@ on:
 jobs:
   test-lint:
     name: Test lint
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
