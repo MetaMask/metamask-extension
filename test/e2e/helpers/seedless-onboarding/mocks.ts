@@ -216,6 +216,20 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
+        message: 'Token revoked successfully',
+      },
+    };
+  }
+
+  /**
+   * Mock the Auth Server's Renew Refresh Token endpoint.
+   *
+   * @returns The mock response for the Renew Refresh Token endpoint.
+   */
+  mockAuthServerRenewRefreshToken() {
+    return {
+      statusCode: 200,
+      json: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'new-mock-refresh-token',
@@ -228,6 +242,10 @@ export class OAuthMockttpService {
 
   onPostRevokeToken() {
     return this.mockAuthServerRevokeToken();
+  }
+
+  onPostRenewRefreshToken() {
+    return this.mockAuthServerRenewRefreshToken();
   }
 
   async onPostToprfCommitment(
@@ -361,6 +379,13 @@ export class OAuthMockttpService {
       .always()
       .thenCallback(() => {
         return this.onPostRevokeToken();
+      });
+
+    server
+      .forPost(AuthServer.RenewRefreshToken)
+      .always()
+      .thenCallback(() => {
+        return this.onPostRenewRefreshToken();
       });
 
     // Intercept the TOPRF requests (Authentication, KeyGen, Eval, etc.) and mock the responses
