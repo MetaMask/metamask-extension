@@ -68,7 +68,9 @@ function transformState(
     !hasProperty(state, 'MultichainTransactionsController') ||
     !isObject(state.MultichainTransactionsController)
   ) {
-    console.warn('Skipping migration. MultichainTransactionsController state not found.');
+    console.warn(
+      'Skipping migration. MultichainTransactionsController state not found.',
+    );
     return state;
   }
 
