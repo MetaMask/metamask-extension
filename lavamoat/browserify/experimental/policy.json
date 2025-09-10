@@ -1017,17 +1017,20 @@
     },
     "@metamask/design-system-react": {
       "globals": {
-        "__import__": true,
         "console.warn": true
       },
       "packages": {
+        "@metamask/design-system-react>@metamask/design-system-shared": true,
         "@metamask/jazzicon": true,
-        "@metamask/utils": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
-        "@solana/addresses": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
         "@metamask/design-system-react>tailwind-merge": true
+      }
+    },
+    "@metamask/design-system-react>@metamask/design-system-shared": {
+      "packages": {
+        "@metamask/utils": true
       }
     },
     "@metamask/eip-5792-middleware": {

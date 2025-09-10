@@ -57,6 +57,7 @@ import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useRedesignedSendFlow } from '../../confirmations/hooks/useRedesignedSendFlow';
 
 const TokenButtons = ({
   token,
@@ -76,7 +77,7 @@ const TokenButtons = ({
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
-
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
   const { chainId: multichainChainId } = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
@@ -194,7 +195,7 @@ const TokenButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
+    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -209,7 +210,7 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      navigateToSendRoute(history, {
+      navigateToSendRoute(history, isSendRedesignEnabled, {
         address: token.address,
         chainId: token.chainId,
       });
@@ -231,6 +232,7 @@ const TokenButtons = ({
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
     ///: END:ONLY_INCLUDE_IF
+    isSendRedesignEnabled,
   ]);
 
   const isTestnet = useSelector(getMultichainIsTestnet);
