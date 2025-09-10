@@ -25,9 +25,25 @@ describe('useSendType', () => {
     jest.clearAllMocks();
   });
 
-  it('return correct type for evm aset send', () => {
+  it('return correct type for evm asset send', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,
+      chainId: '0x5',
+    } as unknown as SendContext.SendContextType);
+    const result = renderHook();
+    expect(result).toEqual({
+      isEvmNativeSendType: false,
+      isEvmSendType: true,
+      isNonEvmNativeSendType: false,
+      isNonEvmSendType: false,
+      isSolanaSendType: false,
+    });
+  });
+
+  it('use assetId is address is undefined', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_ASSET, assetId: EVM_ASSET.address, address: undefined },
+      chainId: '0x5',
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
@@ -42,6 +58,7 @@ describe('useSendType', () => {
   it('return correct type for evm native asset send', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,
+      chainId: '0x5',
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
@@ -56,6 +73,7 @@ describe('useSendType', () => {
   it('return correct type for native solana asset send', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_NATIVE_ASSET,
+      chainId: SOLANA_NATIVE_ASSET.chainId,
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
@@ -70,6 +88,7 @@ describe('useSendType', () => {
   it('return correct type for solana asset send', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
+      chainId: SOLANA_NATIVE_ASSET.chainId,
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({

@@ -34,7 +34,6 @@ import {
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
-  SEND_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
@@ -87,6 +86,7 @@ import {
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -335,14 +335,7 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    if (process.env.SEND_REDESIGN_ENABLED) {
-      const queryParams = new URLSearchParams();
-      queryParams.append('address', nft.address);
-      queryParams.append('tokenId', nft.tokenId);
-      history.push(`${SEND_ROUTE}/amount?${queryParams.toString()}`);
-    } else {
-      history.push(SEND_ROUTE);
-    }
+    navigateToSendRoute(history, { address: nft.address, chainId: nftChainId });
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {

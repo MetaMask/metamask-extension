@@ -19,7 +19,7 @@ import {
 import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
-  this.timeout(200000); // This test is very long, so we need an unusually high timeout
+  this.timeout(500000); // This test is very long, so we need an unusually high timeout
   // Run sync, async approve, and async reject flows
   // (in Jest we could do this with test.each, but that does not exist here)
 

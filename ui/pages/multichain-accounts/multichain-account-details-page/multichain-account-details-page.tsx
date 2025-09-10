@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
+import classnames from 'classnames';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -26,8 +27,17 @@ import {
   getMultichainAccountGroupById,
   getNetworkAddressCount,
   getWallet,
+  getInternalAccountsFromGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
+import {
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
+  MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
+import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
@@ -39,16 +49,44 @@ export const MultichainAccountDetailsPage = () => {
   );
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
-  const walletRoute = `/wallet-details/${encodeURIComponent(walletId)}`;
+  const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
+  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
   const isRemovable =
     wallet?.type !== AccountWalletType.Entropy &&
     wallet?.type !== AccountWalletType.Snap;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
+  const accountsWithAddresses = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, accountGroupId),
+  );
+
+  const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
+  const shouldShowBackupReminder = isSRPBackedUp === false;
+
+  const handleAddressesClick = () => {
+    history.push(
+      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+    );
+  };
+
+  const handlePrivateKeysClick = () => {
+    history.push(
+      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+    );
+  };
+
+  const handleSmartAccountClick = () => {
+    const firstAccountAddress = accountsWithAddresses[0]?.address;
+    if (firstAccountAddress) {
+      history.push(
+        `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(firstAccountAddress)}`,
+      );
+    }
+  };
 
   return (
-    <Page className="multichain-account-details">
+    <Page className="multichain-account-details-page">
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -66,7 +104,7 @@ export const MultichainAccountDetailsPage = () => {
         {t('accountDetails')}
       </Header>
       <Content
-        className="multichain-account-details__content"
+        className="multichain-account-details-page__content"
         paddingTop={3}
         gap={4}
       >
@@ -75,7 +113,7 @@ export const MultichainAccountDetailsPage = () => {
           size={AvatarAccountSize.Xl}
           style={{ margin: '0 auto' }}
         />
-        <Box className="multichain-account-details__section">
+        <Box className="multichain-account-details-page__section">
           <AccountDetailsRow
             label={t('accountName')}
             value={multichainAccount.metadata.name}
@@ -83,7 +121,7 @@ export const MultichainAccountDetailsPage = () => {
               <ButtonIcon
                 iconName={IconName.ArrowRight}
                 color={IconColor.iconAlternative}
-                size={ButtonIconSize.Md}
+                size={ButtonIconSize.Sm}
                 ariaLabel={t('accountName')}
                 marginLeft={2}
                 data-testid="account-name-action"
@@ -97,21 +135,23 @@ export const MultichainAccountDetailsPage = () => {
               <ButtonIcon
                 iconName={IconName.ArrowRight}
                 color={IconColor.iconAlternative}
-                size={ButtonIconSize.Md}
+                size={ButtonIconSize.Sm}
                 ariaLabel={t('addresses')}
                 marginLeft={2}
                 data-testid="network-addresses-link"
+                onClick={handleAddressesClick}
               />
             }
           />
           <AccountDetailsRow
             label={t('privateKeys')}
             value={t('unlockToReveal')}
+            onClick={handlePrivateKeysClick}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
                 color={IconColor.iconAlternative}
-                size={ButtonIconSize.Md}
+                size={ButtonIconSize.Sm}
                 ariaLabel={t('privateKeys')}
                 marginLeft={2}
                 data-testid="private-keys-action"
@@ -125,15 +165,16 @@ export const MultichainAccountDetailsPage = () => {
               <ButtonIcon
                 iconName={IconName.ArrowRight}
                 color={IconColor.iconAlternative}
-                size={ButtonIconSize.Md}
+                size={ButtonIconSize.Sm}
                 ariaLabel={t('smartAccountLabel')}
                 marginLeft={2}
                 data-testid="smart-account-action"
+                onClick={handleSmartAccountClick}
               />
             }
           />
         </Box>
-        <Box className="multichain-account-details__section">
+        <Box className="multichain-account-details-page__section">
           <AccountDetailsRow
             label={t('wallet')}
             value={wallet.metadata.name}
@@ -141,7 +182,7 @@ export const MultichainAccountDetailsPage = () => {
               <ButtonIcon
                 iconName={IconName.ArrowRight}
                 color={IconColor.iconAlternative}
-                size={ButtonIconSize.Md}
+                size={ButtonIconSize.Sm}
                 ariaLabel={t('wallet')}
                 marginLeft={2}
                 data-testid="wallet-details-link"
@@ -151,23 +192,19 @@ export const MultichainAccountDetailsPage = () => {
               history.push(walletRoute);
             }}
           />
-          <AccountDetailsRow
-            label={t('secretRecoveryPhrase')}
-            value={t('accountDetailsSrpBackUpMessage')}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Md}
-                ariaLabel={t('accountDetailsSrpBackUpMessage')}
-                marginLeft={2}
-                data-testid="srp-backup-action"
-              />
-            }
-          />
+          {isEntropyWallet ? (
+            <MultichainSrpBackup
+              className={classnames(
+                'multichain-account-details__row',
+                'multichain-account-details-page__srp-button',
+              )}
+              shouldShowBackupReminder={shouldShowBackupReminder}
+              keyringId={keyringId}
+            />
+          ) : null}
         </Box>
         {isRemovable && (
-          <Box className="multichain-account-details__section">
+          <Box className="multichain-account-details-page__section">
             <AccountDetailsRow
               label={t('removeAccount')}
               labelColor={TextColor.errorDefault}

@@ -45,30 +45,32 @@ export type NetworkOrderStateChange = {
 };
 
 // Describes the action for updating the networks list
-export type NetworkOrderControllerupdateNetworksListAction = {
+export type NetworkOrderControllerUpdateNetworksListAction = {
   type: `${typeof controllerName}:updateNetworksList`;
   handler: NetworkOrderController['updateNetworksList'];
 };
 
 // Union of all possible actions for the messenger
 export type NetworkOrderControllerMessengerActions =
-  NetworkOrderControllerupdateNetworksListAction;
+  NetworkOrderControllerUpdateNetworksListAction;
+
+export type NetworkOrderControllerMessengerEvents = NetworkOrderStateChange;
 
 type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerSetActiveNetworkAction;
 
+type AllowedEvents =
+  | NetworkControllerStateChangeEvent
+  | NetworkControllerNetworkRemovedEvent;
+
 // Type for the messenger of NetworkOrderController
 export type NetworkOrderControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   NetworkOrderControllerMessengerActions | AllowedActions,
-  | NetworkOrderStateChange
-  | NetworkControllerStateChangeEvent
-  | NetworkControllerNetworkRemovedEvent,
+  NetworkOrderControllerMessengerEvents | AllowedEvents,
   AllowedActions['type'],
-  | NetworkOrderStateChange['type']
-  | NetworkControllerStateChangeEvent['type']
-  | NetworkControllerNetworkRemovedEvent['type']
+  AllowedEvents['type']
 >;
 
 // Default state for the controller
@@ -83,6 +85,7 @@ const defaultState: NetworkOrderControllerState = {
     [KnownCaipNamespace.Solana]: {
       [SolScope.Mainnet]: true,
     },
+    [KnownCaipNamespace.Bip122]: {},
   },
 };
 
@@ -189,13 +192,6 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
-
-    // The network controller can potentially update to a chain that is not selected in our enabled network map.
-    // This ensures that we fallback to a network that has been added to our network map.
-    const evmChainIds = Object.keys(
-      this.state.enabledNetworkMap[KnownCaipNamespace.Eip155],
-    );
-    this.#switchToEnabledNetworkIfNeeded(evmChainIds);
   }
 
   onNetworkRemoved(networkId: Hex) {
@@ -234,17 +230,18 @@ export class NetworkOrderController extends BaseController<
   }
 
   /**
-   * Sets the enabled networks in the controller state.
-   * This method updates the enabledNetworkMap to mark specified networks as enabled.
+   * Sets the enabled networks in the controller state for a specific namespace.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled
+   * within the given namespace only, leaving other namespaces unchanged.
    * It can handle both a single chain ID or an array of chain IDs.
    *
    * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
-   * to be enabled. All other networks will be implicitly disabled.
-   * @param networkId - The CaipChainId of the currently selected network
+   * to be enabled. All other networks in the namespace will be implicitly disabled.
+   * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
    */
-  setEnabledNetworks(chainIds: string | string[], networkId: CaipChainId) {
-    if (!networkId) {
-      throw new Error('networkId is required to set enabled networks');
+  setEnabledNetworks(chainIds: string | string[], namespace: CaipNamespace) {
+    if (!namespace) {
+      throw new Error('namespace is required to set enabled networks');
     }
     if (!chainIds) {
       throw new Error('chainIds is required to set enabled networks');
@@ -255,56 +252,46 @@ export class NetworkOrderController extends BaseController<
       const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
 
       // Add the enabled networks to the mapping for the specified network type
-      state.enabledNetworkMap[networkId] = enabledNetworks;
+      state.enabledNetworkMap[namespace] = enabledNetworks;
     });
-
-    this.#switchToEnabledNetworkIfNeeded(ids);
   }
 
   /**
-   * Switches to an enabled network if the currently selected network is not in the enabled list.
-   * This is a private helper method that handles the network switching logic.
+   * Sets the enabled networks in the controller state with multichain account behavior.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled
+   * and disables all networks in other namespaces (multichain account exclusive behavior).
+   * It can handle both a single chain ID or an array of chain IDs.
    *
-   * @param chainIds - Array of enabled chain IDs
+   * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
+   * to be enabled. All other networks will be implicitly disabled.
+   * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
    */
-  #switchToEnabledNetworkIfNeeded(chainIds: string[]) {
-    // Early return if no enabled networks
-    if (chainIds.length === 0) {
-      return;
+  setEnabledNetworksMultichain(
+    chainIds: string | string[],
+    namespace: CaipNamespace,
+  ) {
+    if (!namespace) {
+      throw new Error('namespace is required to set enabled networks');
     }
-
-    const { selectedNetworkClientId, networkConfigurationsByChainId } =
-      this.messagingSystem.call('NetworkController:getState');
-
-    const selectedNetworkChainId = Object.values(
-      networkConfigurationsByChainId,
-    ).find(
-      (network) =>
-        network.rpcEndpoints?.[network.defaultRpcEndpointIndex]
-          ?.networkClientId === selectedNetworkClientId,
-    )?.chainId;
-
-    const networkConf = Object.values(networkConfigurationsByChainId).find(
-      (network) => network.chainId === chainIds[0],
-    );
-
-    const clientId =
-      networkConf?.rpcEndpoints?.[networkConf.defaultRpcEndpointIndex]
-        ?.networkClientId;
-
-    if (
-      selectedNetworkChainId &&
-      !chainIds.includes(selectedNetworkChainId) &&
-      clientId
-    ) {
-      // Settimout delay to run this in a seperate 'tick'.
-      // There were some issues related to background state being updated, but persisted state not being updated.
-      setTimeout(() => {
-        this.messagingSystem.call(
-          'NetworkController:setActiveNetwork',
-          clientId,
-        );
-      }, 0);
+    if (!chainIds) {
+      throw new Error('chainIds is required to set enabled networks');
     }
+    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
+
+    this.update((state) => {
+      const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
+
+      // Disable all networks on all namespaces, then enable the specified ones for the given namespace
+      const updatedEnabledNetworkMap = Object.keys(
+        state.enabledNetworkMap,
+      ).reduce((acc, namespaceToUse) => {
+        if (namespaceToUse !== namespace) {
+          return { ...acc, [namespaceToUse]: {} };
+        }
+        return { ...acc, [namespaceToUse]: enabledNetworks };
+      }, {});
+
+      state.enabledNetworkMap = updatedEnabledNetworkMap;
+    });
   }
 }

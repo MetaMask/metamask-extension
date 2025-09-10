@@ -1,12 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import ChangePassword from './change-password';
 
-const mockHistoryPush = jest.fn();
+const mockUseNavigate = jest.fn();
 const mockChangePassword = jest
   .fn()
   .mockImplementation((_newPwd: string, _currentPwd: string) => {
@@ -24,11 +24,9 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
 }));
 
 jest.mock('../../../../store/actions', () => ({
@@ -114,7 +112,7 @@ describe('ChangePassword', () => {
         mockNewPassword,
         mockPassword,
       );
-      expect(mockHistoryPush).toHaveBeenCalledWith(SECURITY_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });
 });

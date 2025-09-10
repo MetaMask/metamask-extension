@@ -12,10 +12,15 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
+
 import {
   PREPARE_SWAP_ROUTE,
-  SEND_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
+import {
+  AddressListQueryParams,
+  AddressListSource,
+} from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import {
   getCurrentKeyring,
   getUseExternalServices,
@@ -23,6 +28,8 @@ import {
   isNonEvmAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -57,10 +64,9 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
+import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
@@ -101,6 +107,12 @@ const CoinButtons = ({
   >;
   const currentChainId = useSelector(getCurrentChainId);
   const displayNewIconButtons = process.env.REMOVE_GNS;
+
+  // Multichain accounts feature flag and selected account group
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const defaultSwapsToken = useSelector((state) =>
     getSwapsDefaultToken(state, chainId.toString()),
@@ -212,7 +224,11 @@ const CoinButtons = ({
   );
 
   const setCorrectChain = useCallback(async () => {
-    if (currentChainId !== chainId && multichainChainId !== chainId) {
+    if (
+      currentChainId !== chainId &&
+      multichainChainId !== chainId &&
+      !isMultichainAccountsState2Enabled
+    ) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -227,7 +243,14 @@ const CoinButtons = ({
         throw err;
       }
     }
-  }, [currentChainId, chainId, networks, dispatch]);
+  }, [
+    isMultichainAccountsState2Enabled,
+    currentChainId,
+    multichainChainId,
+    chainId,
+    networks,
+    dispatch,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -253,7 +276,7 @@ const CoinButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
+    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -263,19 +286,11 @@ const CoinButtons = ({
     // Native Send flow
     await setCorrectChain();
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    if (process.env.SEND_REDESIGN_ENABLED) {
-      let route;
-      if (trackingLocation === 'home') {
-        route = `${SEND_ROUTE}/asset`;
-      } else {
-        const queryParams = new URLSearchParams();
-        queryParams.append('chainId', chainId.toString());
-        route = `${SEND_ROUTE}/amount?${queryParams.toString()}`;
-      }
-      history.push(route);
-    } else {
-      history.push(SEND_ROUTE);
+    let params;
+    if (trackingLocation !== 'home') {
+      params = { chainId: chainId.toString() };
     }
+    navigateToSendRoute(history, params);
   }, [
     chainId,
     account,
@@ -326,12 +341,17 @@ const CoinButtons = ({
       handleBridgeOnClick(true);
       return;
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
       return;
     }
-    ///: END:ONLY_INCLUDE_IF
+    if (
+      isMultichainAccountsState2Enabled &&
+      chainId === MultichainNetworks.SOLANA
+    ) {
+      handleBridgeOnClick(true);
+      return;
+    }
 
     await setCorrectChain();
 
@@ -363,9 +383,43 @@ const CoinButtons = ({
     setCorrectChain,
     isSwapsChain,
     chainId,
+    isMultichainAccountsState2Enabled,
+    multichainChainId,
     isUnifiedUIEnabled,
     usingHardwareWallet,
     defaultSwapsToken,
+  ]);
+
+  const handleReceiveOnClick = useCallback(() => {
+    trace({ name: TraceName.ReceiveModal });
+    trackEvent({
+      event: MetaMetricsEventName.NavReceiveButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Receive',
+        location: trackingLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
+
+    if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
+      // Navigate to the multichain address list page with receive source
+      history.push(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+      );
+    } else {
+      // Show the traditional receive modal
+      setShowReceiveModal(true);
+    }
+  }, [
+    isMultichainAccountsState2Enabled,
+    selectedAccountGroup,
+    history,
+    trackEvent,
+    trackingLocation,
+    chainId,
   ]);
 
   return (
@@ -401,7 +455,6 @@ const CoinButtons = ({
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('buyButton', contents)
           }
-          round={!displayNewIconButtons}
         />
       }
       <IconButton
@@ -433,10 +486,12 @@ const CoinButtons = ({
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
-        round={!displayNewIconButtons}
       />
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
-      {isUnifiedUIEnabled || isTestnet || !isBridgeChain ? null : (
+      {isUnifiedUIEnabled ||
+      isTestnet ||
+      !isBridgeChain ||
+      isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={
@@ -466,7 +521,6 @@ const CoinButtons = ({
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }
-          round={!displayNewIconButtons}
         />
       )}
       <IconButton
@@ -494,7 +548,6 @@ const CoinButtons = ({
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
-        round={!displayNewIconButtons}
       />
       {
         <>
@@ -524,22 +577,7 @@ const CoinButtons = ({
             }
             label={t('receive')}
             width={BlockSize.Full}
-            onClick={() => {
-              trace({ name: TraceName.ReceiveModal });
-              trackEvent({
-                event: MetaMetricsEventName.NavReceiveButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  text: 'Receive',
-                  location: trackingLocation,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  chain_id: chainId,
-                },
-              });
-              setShowReceiveModal(true);
-            }}
-            round={!displayNewIconButtons}
+            onClick={handleReceiveOnClick}
           />
         </>
       }
