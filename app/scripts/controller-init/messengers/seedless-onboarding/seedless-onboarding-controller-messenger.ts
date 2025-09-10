@@ -4,12 +4,14 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import {
+  SeedlessOnboardingController,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerStateChangeEvent,
 } from '@metamask/seedless-onboarding-controller';
 import {
   OAuthServiceGetNewRefreshTokenAction,
-  OAuthServiceRevokeAndGetNewRefreshTokenAction,
+  OAuthServiceRevokeRefreshTokenAction,
+  OAuthServiceRenewRefreshTokenAction,
 } from '../../../services/oauth/types';
 
 type MessengerActions = SeedlessOnboardingControllerGetStateAction;
@@ -34,15 +36,16 @@ export function getSeedlessOnboardingControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ) {
   return messenger.getRestricted({
-    name: 'SeedlessOnboardingController',
+    name: SeedlessOnboardingController.name,
     allowedActions: [],
-    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
+    allowedEvents: [],
   });
 }
 
 type InitActions =
   | OAuthServiceGetNewRefreshTokenAction
-  | OAuthServiceRevokeAndGetNewRefreshTokenAction;
+  | OAuthServiceRevokeRefreshTokenAction
+  | OAuthServiceRenewRefreshTokenAction;
 
 export type SeedlessOnboardingControllerInitMessenger = ReturnType<
   typeof getSeedlessOnboardingControllerInitMessenger
@@ -64,7 +67,8 @@ export function getSeedlessOnboardingControllerInitMessenger(
     allowedEvents: [],
     allowedActions: [
       'OAuthService:getNewRefreshToken',
-      'OAuthService:revokeAndGetNewRefreshToken',
+      'OAuthService:revokeRefreshToken',
+      'OAuthService:renewRefreshToken',
     ],
   });
 }
