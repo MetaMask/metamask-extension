@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.2.3]
+### Fixed
+- fix: fixes bridging on https://portfolio.metamask.io (#35755)
+
 ## [13.2.2]
 ### Fixed
 - fix: fixes issue related to `Routes` component that was leading the app to occasionally crash and force reinstall for some users (#35587)
@@ -492,7 +496,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...HEAD
+[13.2.3]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...v13.2.3
 [13.2.2]: https://github.com/MetaMask/metamask-extension/compare/v13.2.1...v13.2.2
 [13.2.1]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...v13.2.1
 [13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.2...v13.2.0
