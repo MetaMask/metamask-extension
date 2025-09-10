@@ -7,35 +7,34 @@ import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constant
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 import { type ProviderConfigState } from '../../../../shared/modules/selectors/networks';
 import { type FeatureFlagsMetaMaskState } from '../../../../shared/modules/selectors/feature-flags';
-import type {
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-} from '../../../../shared/constants/metametrics';
 import type { FeatureFlags } from '../../lib/smart-transaction/smart-transactions';
 import { ControllerInitFunction, ControllerInitRequest } from '../types';
-import { SmartTransactionsControllerMessenger } from '../messengers/smart-transactions-controller-messenger';
+import {
+  SmartTransactionsControllerInitMessenger,
+  SmartTransactionsControllerMessenger,
+} from '../messengers/smart-transactions-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 
-type SmartTransactionsControllerInitRequest =
-  ControllerInitRequest<SmartTransactionsControllerMessenger> & {
-    getStateUI: () => { metamask: ControllerFlatState };
-    getGlobalNetworkClientId: () => string;
-    getAccountType: (address: string) => Promise<string>;
-    getDeviceModel: (address: string) => Promise<string>;
-    getHardwareTypeForMetric: (address: string) => Promise<string>;
-    trace: TraceCallback;
-    trackEvent: (
-      payload: MetaMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ) => void;
-  };
+type SmartTransactionsControllerInitRequest = ControllerInitRequest<
+  SmartTransactionsControllerMessenger,
+  SmartTransactionsControllerInitMessenger
+> & {
+  getStateUI: () => { metamask: ControllerFlatState };
+  getGlobalNetworkClientId: () => string;
+  getAccountType: (address: string) => Promise<string>;
+  getDeviceModel: (address: string) => Promise<string>;
+  getHardwareTypeForMetric: (address: string) => Promise<string>;
+  trace: TraceCallback;
+};
 
 export const SmartTransactionsControllerInit: ControllerInitFunction<
   SmartTransactionsController,
-  SmartTransactionsControllerMessenger
+  SmartTransactionsControllerMessenger,
+  SmartTransactionsControllerInitMessenger
 > = (request) => {
   const {
     controllerMessenger,
+    initMessenger,
     getController,
     persistedState,
     getStateUI,
@@ -44,7 +43,6 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     getDeviceModel,
     getHardwareTypeForMetric,
     trace,
-    trackEvent,
   } = request as SmartTransactionsControllerInitRequest;
 
   const transactionController = getController(
@@ -61,7 +59,10 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
       ),
     confirmExternalTransaction: (...args) =>
       transactionController.confirmExternalTransaction(...args),
-    trackMetaMetricsEvent: trackEvent as ConstructorParameters<
+    trackMetaMetricsEvent: initMessenger.call.bind(
+      initMessenger,
+      'MetaMetricsController:trackEvent',
+    ) as ConstructorParameters<
       typeof SmartTransactionsController
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,

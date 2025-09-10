@@ -40,6 +40,7 @@ import {
 import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 
 type Actions =
   | GetEndowments
@@ -132,7 +133,8 @@ export function getSnapControllerMessenger(
 
 type InitActions =
   | KeyringControllerGetKeyringsByTypeAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | MetaMetricsControllerTrackEventAction;
 
 export type SnapControllerInitMessenger = ReturnType<
   typeof getSnapControllerInitMessenger
@@ -154,6 +156,7 @@ export function getSnapControllerInitMessenger(
     allowedActions: [
       'KeyringController:getKeyringsByType',
       'PreferencesController:getState',
+      'MetaMetricsController:trackEvent',
     ],
   });
 }

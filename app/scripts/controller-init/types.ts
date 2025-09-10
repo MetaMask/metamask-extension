@@ -10,6 +10,7 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { Browser } from 'webextension-polyfill';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import {
@@ -17,6 +18,7 @@ import {
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
+import ExtensionPlatform from '../platforms/extension';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -73,6 +75,11 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getControllerMessengerCallback`.
    */
   controllerMessenger: ControllerMessengerType;
+
+  /**
+   * The extension browser API.
+   */
+  extension: Browser;
 
   /**
    * Retrieve a controller instance by name.
@@ -179,22 +186,6 @@ export type ControllerInitRequest<
     message: string,
     url?: string,
   ) => Promise<void>;
-
-  /**
-   * Get the MetaMetrics ID.
-   */
-  getMetaMetricsId: () => string;
-
-  /**
-   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
-   *
-   * @param payload - details of the event
-   * @param options - options for handling/routing the event
-   */
-  trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => void;
 
   /**
    * A list of preinstalled Snaps loaded from disk during boot.

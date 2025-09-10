@@ -11,6 +11,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { trace } from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
+import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
 
 /**
  * Initialize the UserStorage controller.
@@ -22,9 +23,10 @@ import { captureException } from '../../../../shared/lib/sentry';
  */
 export const UserStorageControllerInit: ControllerInitFunction<
   UserStorageController,
-  UserStorageControllerMessenger
+  UserStorageControllerMessenger,
+  UserStorageControllerInitMessenger
 > = (request) => {
-  const { controllerMessenger, persistedState, trackEvent } = request;
+  const { controllerMessenger, initMessenger, persistedState } = request;
   const controller = new UserStorageController({
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
@@ -34,7 +36,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
       accountSyncing: {
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
         onAccountAdded: (profileId) => {
-          trackEvent({
+          initMessenger.call('MetaMetricsController:trackEvent', {
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncAdded,
             properties: {
@@ -45,7 +47,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
           });
         },
         onAccountNameUpdated: (profileId) => {
-          trackEvent({
+          initMessenger.call('MetaMetricsController:trackEvent', {
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncNameUpdated,
             properties: {
@@ -64,7 +66,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
             new Error(`Account sync - ${situationMessage}`),
             sentryContext,
           );
-          trackEvent({
+          initMessenger.call('MetaMetricsController:trackEvent', {
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncErroneousSituation,
             properties: {
@@ -80,7 +82,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
       },
       contactSyncing: {
         onContactUpdated: (profileId) => {
-          trackEvent({
+          initMessenger.call('MetaMetricsController:trackEvent', {
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
@@ -95,7 +97,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
           });
         },
         onContactDeleted: (profileId) => {
-          trackEvent({
+          initMessenger.call('MetaMetricsController:trackEvent', {
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
@@ -118,7 +120,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
             new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );
-          trackEvent({
+          initMessenger.call('MetaMetricsController:trackEvent', {
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
