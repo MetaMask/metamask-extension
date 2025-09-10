@@ -22,31 +22,33 @@ export const MultichainAccountMenuItems = ({
       const isDisabled = Boolean(item.disabled);
 
       return (
-        <Box
-          key={item.textKey}
-          className={classnames('multichain-account-cell-menu-item', {
-            'multichain-account-cell-menu-item--with-border': !isLast,
-            'multichain-account-cell-menu-item--disabled': isDisabled,
-            'multichain-account-cell-menu-item--enabled': !isDisabled,
-          })}
-          paddingLeft={8}
-          paddingRight={4}
-          paddingTop={3}
-          paddingBottom={3}
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          onClick={item.onClick}
-        >
-          <Text
-            fontWeight={FontWeight.Medium}
-            variant={TextVariant.bodyMdMedium}
-            color={item.textColor}
+        !isDisabled && (
+          <Box
+            key={item.textKey}
+            className={classnames('multichain-account-cell-menu-item', {
+              'multichain-account-cell-menu-item--with-border': !isLast,
+              'multichain-account-cell-menu-item--disabled': isDisabled,
+              'multichain-account-cell-menu-item--enabled': !isDisabled,
+            })}
+            paddingLeft={8}
+            paddingRight={4}
+            paddingTop={3}
+            paddingBottom={3}
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            onClick={item.onClick}
           >
-            {t(item.textKey)}
-          </Text>
-          <Icon name={item.iconName} size={IconSize.Md} />
-        </Box>
+            <Text
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.bodyMdMedium}
+              color={item.textColor}
+            >
+              {t(item.textKey)}
+            </Text>
+            <Icon name={item.iconName} size={IconSize.Md} />
+          </Box>
+        )
       );
     });
   }, [menuConfig, t]);
