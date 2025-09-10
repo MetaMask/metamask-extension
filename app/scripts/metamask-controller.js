@@ -245,7 +245,6 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import { getIsSmartTransaction } from '../../shared/modules/selectors';
-import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
@@ -365,7 +364,6 @@ import {
 } from './constants/stream';
 
 // Notification controllers
-import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import {
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
@@ -3712,6 +3710,10 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
+          this.assetsContractController,
+        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -3993,6 +3995,8 @@ export default class MetamaskController extends EventEmitter {
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
+      setEnabledNetworksMultichain:
+        this.setEnabledNetworksMultichain.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -7440,6 +7444,12 @@ export default class MetamaskController extends EventEmitter {
       setEnabledNetworks: (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
       },
+      setEnabledNetworksMultichain: (chainIds, namespace) => {
+        this.networkOrderController.setEnabledNetworksMultichain(
+          chainIds,
+          namespace,
+        );
+      },
       getEnabledNetworks: (namespace) => {
         return (
           this.networkOrderController.state.enabledNetworkMap[namespace] || {}
@@ -7521,10 +7531,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
-
-    if (origin === BaseUrl.Portfolio) {
-      engine.push(createTxVerificationMiddleware(this.networkController));
-    }
 
     engine.push(createTracingMiddleware());
 
@@ -8828,6 +8834,18 @@ export default class MetamaskController extends EventEmitter {
   setEnabledNetworks = (chainIds, networkId) => {
     try {
       this.networkOrderController.setEnabledNetworks(chainIds, networkId);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
+  setEnabledNetworksMultichain = (chainIds, namespace) => {
+    try {
+      this.networkOrderController.setEnabledNetworksMultichain(
+        chainIds,
+        namespace,
+      );
     } catch (err) {
       log.error(err.message);
       throw err;
