@@ -143,6 +143,7 @@ jobs:
         run: yarn webpack --env production --generatePolicy
         env:
           INFURA_PROD_PROJECT_ID: 00000000000
+          SEGMENT_PROD_WRITE_KEY: 00000000000
           GOOGLE_PROD_CLIENT_ID: 00000000000
           APPLE_PROD_CLIENT_ID: 00000000000
 
