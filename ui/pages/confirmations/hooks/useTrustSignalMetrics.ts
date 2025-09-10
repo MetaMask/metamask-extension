@@ -87,7 +87,6 @@ export function useTrustSignalMetrics() {
     const ownerId = currentConfirmation?.id ?? '';
 
     if (isSignatureTransactionType(currentConfirmation)) {
-      console.log('updateSignatureEventFragment called');
       updateSignatureEventFragment({ properties });
       if (anonymousProperties.address_label) {
         updateSignatureEventFragment({
