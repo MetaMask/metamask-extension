@@ -74,7 +74,10 @@ export const DestinationAccountPickerModal = ({
   return (
     <Modal
       isOpen={isOpen || (isToOrFromSolana && !selectedAccount)}
-      onClose={onClose}
+      onClose={() => {
+        setSearchQuery('');
+        onClose();
+      }}
       data-testid="destination-account-picker-modal"
     >
       <ModalOverlay />

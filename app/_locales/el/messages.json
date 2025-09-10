@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Δεν βρέθηκαν λογαριασμοί που να ταιριάζουν"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Λήψη σε"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Διεύθυνση λήψης ή ENS"
   },

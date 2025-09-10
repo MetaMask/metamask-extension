@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Подходящие счета не найдены"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Получить в"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Адрес получения или ENS"
   },

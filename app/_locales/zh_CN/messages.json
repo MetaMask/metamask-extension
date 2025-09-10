@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "未找到匹配的账户"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "接收至"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "接收地址或 ENS（Ethereum 域名服务）"
   },

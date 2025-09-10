@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "一致するアカウントが見つかりませんでした"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "受取先:"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "受取アドレスまたはENS"
   },

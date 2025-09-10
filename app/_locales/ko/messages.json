@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "일치하는 계정을 찾을 수 없습니다"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "수신 위치"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "수신 주소 또는 ENS"
   },

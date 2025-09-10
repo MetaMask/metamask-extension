@@ -746,7 +746,9 @@ const PrepareBridgePage = ({
           {isToOrFromSolana && (
             <Box padding={6} paddingBottom={3} paddingTop={3}>
               <DestinationAccountPicker
-                onAccountSelect={setSelectedDestinationAccount}
+                onOpenRecipientModal={() =>
+                  setIsDestinationAccountPickerOpen(true)
+                }
                 selectedSwapToAccount={selectedDestinationAccount}
               />
             </Box>

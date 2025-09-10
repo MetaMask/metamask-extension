@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Walang nahanap na katugmang account"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Tanggapin sa"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Tatanggap na address o ENS"
   },

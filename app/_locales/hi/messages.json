@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "कोई मैचिंग अकाउंट नहीं मिला"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "पर प्राप्त करें"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "प्राप्ति एड्रेस या ENS"
   },
