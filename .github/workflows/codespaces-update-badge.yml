@@ -9,7 +9,7 @@ on:
 
 jobs:
   codespaces-update-badge:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     env:
