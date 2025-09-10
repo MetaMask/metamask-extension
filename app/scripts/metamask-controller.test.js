@@ -3816,6 +3816,12 @@ describe('MetaMaskController', () => {
           metamaskController.seedlessOnboardingController,
           'getSecretDataBackupState',
         );
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'updateBackupMetadataState',
+          )
+          .mockReturnValue();
         jest.spyOn(metamaskController, 'importMnemonicToVault');
         jest.spyOn(
           metamaskController,

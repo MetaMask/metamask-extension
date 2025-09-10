@@ -450,7 +450,7 @@ describe('OAuthService - renewRefreshToken', () => {
     });
 
     expect(fetch).toHaveBeenCalledWith(
-      `${oauthConfig.authServerUrl}/api/v1/oauth/revoke`,
+      `${oauthConfig.authServerUrl}/api/v2/oauth/renew_refresh_token`,
       {
         method: 'POST',
         headers: {
@@ -496,7 +496,7 @@ describe('OAuthService - renewRefreshToken', () => {
         connection: AuthConnection.Google,
         revokeToken: 'MOCK_REVOKE_TOKEN',
       }),
-    ).rejects.toThrow('Failed to revoke refresh token');
+    ).rejects.toThrow('Failed to renew refresh token');
   });
 });
 
@@ -540,7 +540,7 @@ describe('OAuthService - revokeRefreshToken', () => {
     });
 
     expect(fetch).toHaveBeenCalledWith(
-      `${oauthConfig.authServerUrl}/api/v1/oauth/revoke`,
+      `${oauthConfig.authServerUrl}/api/v2/oauth/revoke`,
       {
         method: 'POST',
         headers: {
