@@ -3452,6 +3452,14 @@
   "moreQuotes": {
     "message": "More quotes"
   },
+  "multichainAccountAddressCopied": {
+    "message": "Address copied",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Private key copied",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
@@ -5122,6 +5130,14 @@
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "This key grants full control of your account for the associated chain.",
+    "description": "Description for the banner warning users not to share their private key"
+  },
+  "revealMultichainPrivateKeysBannerTitle": {
+    "message": "Don’t share your private key",
+    "description": "Title for the banner warning users not to share their private key"
   },
   "revealSecretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -7515,6 +7531,10 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
+  },
+  "wrongPassword": {
+    "message": "Wrong password",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Yes"
