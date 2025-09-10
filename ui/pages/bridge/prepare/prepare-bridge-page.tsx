@@ -121,8 +121,8 @@ import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
+import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
-import { isSendBundleSupported } from '../../../store/actions';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -253,38 +253,7 @@ const PrepareBridgePage = ({
     fromChain,
   );
 
-  const [isSendBundleSupportedForChain, setIsSendBundleSupportedForChain] =
-    useState(false);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const checkSendBundleSupport = async () => {
-      if (fromChain?.chainId) {
-        try {
-          const isSupported = await isSendBundleSupported(
-            fromChain.chainId as Hex,
-          );
-          if (!isCancelled) {
-            setIsSendBundleSupportedForChain(isSupported);
-          }
-        } catch (error) {
-          if (!isCancelled) {
-            console.error('Error checking send bundle support:', error);
-            setIsSendBundleSupportedForChain(false);
-          }
-        }
-      } else if (!isCancelled) {
-        setIsSendBundleSupportedForChain(false);
-      }
-    };
-
-    checkSendBundleSupport();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [fromChain?.chainId]);
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);

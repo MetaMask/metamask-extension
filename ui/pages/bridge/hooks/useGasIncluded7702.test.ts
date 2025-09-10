@@ -20,9 +20,7 @@ describe('useGasIncluded7702', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, 'error').mockImplementation(() => {
-      // Suppress console.error in tests
-    });
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
