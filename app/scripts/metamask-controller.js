@@ -5270,7 +5270,7 @@ export default class MetamaskController extends EventEmitter {
 
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
-        id || this.keyringController.getKeyringsByType(KeyringTypes.hd)[0].id;
+        id || this.keyringController.state.keyrings[0].metadata.id;
 
       const multichainAccountWallet = this.messenger.call(
         'MultichainAccountService:getMultichainAccountWallet',
