@@ -10,15 +10,13 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
+import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
-import { OAuthRefreshTokenResult } from '../services/oauth/types';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -208,27 +206,6 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
   initMessenger: InitMessengerType;
-
-  /**
-   * Refresh the OAuth token.
-   */
-  refreshOAuthToken: () => Promise<OAuthRefreshTokenResult>;
-
-  /**
-   * Revoke the current OAuth refresh token and get a new one.
-   */
-  renewRefreshToken: (params: {
-    connection: AuthConnection;
-    revokeToken: string;
-  }) => Promise<{
-    newRefreshToken: string;
-    newRevokeToken: string;
-  }>;
-
-  revokeRefreshToken: (params: {
-    connection: AuthConnection;
-    revokeToken: string;
-  }) => Promise<void>;
 
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
 };

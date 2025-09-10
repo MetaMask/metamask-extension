@@ -2,8 +2,66 @@ import {
   Web3AuthNetwork,
   AuthConnection,
 } from '@metamask/seedless-onboarding-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 
 export const SERVICE_NAME = 'OAuthService';
+
+export type ServiceName = typeof SERVICE_NAME;
+
+/**
+ * Start the OAuth login process for the given social login type.
+ */
+export type OAuthServiceStartOAuthLoginAction = {
+  type: `${ServiceName}:startOAuthLogin`;
+  handler: (authConnection: AuthConnection) => Promise<OAuthLoginResult>;
+};
+
+/**
+ * Get a new refresh token from the Web3Auth Authentication Server.
+ */
+export type OAuthServiceGetNewRefreshTokenAction = {
+  type: `${ServiceName}:getNewRefreshToken`;
+  handler: (options: {
+    connection: AuthConnection;
+    refreshToken: string;
+  }) => Promise<OAuthRefreshTokenResult>;
+};
+
+/**
+ * Revoke the current refresh token and get a new refresh token.
+ */
+export type OAuthServiceRevokeRefreshTokenAction = {
+  type: `${ServiceName}:revokeRefreshToken`;
+  handler: (options: {
+    connection: AuthConnection;
+    revokeToken: string;
+  }) => Promise<void>;
+};
+
+/**
+ * Revoke the current refresh token and get a new refresh token.
+ */
+export type OAuthServiceRenewRefreshTokenAction = {
+  type: `${ServiceName}:renewRefreshToken`;
+  handler: (options: {
+    connection: AuthConnection;
+    revokeToken: string;
+  }) => Promise<{ newRevokeToken: string; newRefreshToken: string }>;
+};
+
+/**
+ * All possible actions for the OAuthService.
+ */
+export type OAuthServiceAction =
+  | OAuthServiceStartOAuthLoginAction
+  | OAuthServiceGetNewRefreshTokenAction
+  | OAuthServiceRevokeRefreshTokenAction
+  | OAuthServiceRenewRefreshTokenAction;
+
+/**
+ * All possible events that the OAuthService can emit.
+ */
+export type OAuthServiceEvent = never;
 
 /**
  * The WebAuthenticator is a type that defines the methods for the Web Authenticator API to launch the OAuth2 login flow.
@@ -91,6 +149,17 @@ export type OAuthConfig = {
 };
 
 export type OAuthServiceOptions = {
+  /**
+   * The messenger used to communicate with other services and controllers.
+   */
+  messenger: RestrictedMessenger<
+    typeof SERVICE_NAME,
+    OAuthServiceAction,
+    OAuthServiceEvent,
+    OAuthServiceAction['type'],
+    OAuthServiceEvent['type']
+  >;
+
   /**
    * The environment variables required for the OAuth login and get JWT Token.
    */

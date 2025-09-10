@@ -5,7 +5,9 @@ import {
 import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import {
+  getSeedlessOnboardingControllerInitMessenger,
   getSeedlessOnboardingControllerMessenger,
+  SeedlessOnboardingControllerInitMessenger,
   SeedlessOnboardingControllerMessenger,
 } from '../messengers/seedless-onboarding';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -15,16 +17,21 @@ import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controll
 jest.mock('@metamask/seedless-onboarding-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SeedlessOnboardingControllerMessenger>
+  ControllerInitRequest<
+    SeedlessOnboardingControllerMessenger,
+    SeedlessOnboardingControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = new Messenger<never, never>();
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getSeedlessOnboardingControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getSeedlessOnboardingControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -67,9 +74,9 @@ describe('SeedlessOnboardingControllerInit', () => {
         importKey: expect.any(Function),
       },
       passwordOutdatedCacheTTL: expect.any(Number),
-      refreshJWTToken: requestMock.refreshOAuthToken,
-      revokeRefreshToken: requestMock.revokeRefreshToken,
-      renewRefreshToken: requestMock.renewRefreshToken,
+      refreshJWTToken: expect.any(Function),
+      revokeRefreshToken: expect.any(Function),
+      renewRefreshToken: expect.any(Function),
     });
   });
 });
