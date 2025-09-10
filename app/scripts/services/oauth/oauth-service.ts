@@ -346,4 +346,19 @@ export default class OAuthService {
     const error = checkForLastError();
     return error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
   }
+
+  async setMarketingConsent(connection: AuthConnection): Promise<boolean> {
+    const state = this.#messenger.call('SeedlessOnboardingController:getState');
+    const { accessToken } = state;
+    let res = false;
+    if (accessToken) {
+      const loginHandler = createLoginHandler(
+        connection,
+        this.#env,
+        this.#webAuthenticator,
+      );
+      res = await loginHandler.postMarketingOptInStatus(accessToken, true);
+    }
+    return res;
+  }
 }

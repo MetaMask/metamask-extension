@@ -1,6 +1,7 @@
 import {
   Web3AuthNetwork,
   AuthConnection,
+  SeedlessOnboardingControllerGetStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import { RestrictedMessenger } from '@metamask/base-controller';
 
@@ -44,7 +45,8 @@ export type OAuthServiceRevokeAndGetNewRefreshTokenAction = {
 export type OAuthServiceAction =
   | OAuthServiceStartOAuthLoginAction
   | OAuthServiceGetNewRefreshTokenAction
-  | OAuthServiceRevokeAndGetNewRefreshTokenAction;
+  | OAuthServiceRevokeAndGetNewRefreshTokenAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 /**
  * All possible events that the OAuthService can emit.

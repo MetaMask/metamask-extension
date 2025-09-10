@@ -3847,6 +3847,9 @@ export default class MetamaskController extends EventEmitter {
       startOAuthLogin: this.oauthService.startOAuthLogin.bind(
         this.oauthService,
       ),
+      setMarketingConsent: this.oauthService.setMarketingConsent.bind(
+        this.oauthService,
+      ),
 
       // SeedlessOnboardingController
       authenticate: this.seedlessOnboardingController.authenticate.bind(

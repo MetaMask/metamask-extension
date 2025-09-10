@@ -25,6 +25,11 @@ export abstract class BaseLoginHandler {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   protected readonly AUTH_SERVER_REVOKE_PATH = '/api/v1/oauth/revoke';
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  protected readonly AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
+    '/api/v1/oauth/marketing_opt_in_status';
+
   constructor(options: LoginHandlerOptions) {
     this.options = options;
   }
@@ -207,5 +212,33 @@ export abstract class BaseLoginHandler {
       await this.options.webAuthenticator.generateCodeVerifierAndChallenge();
     this.codeVerifier = codeVerifier;
     return { codeVerifier, challenge };
+  }
+
+  async postMarketingOptInStatus(
+    accessToken: string,
+    marketingOptInStatus: boolean,
+  ): Promise<boolean> {
+    const requestData = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      opt_in_status: marketingOptInStatus,
+    };
+    const res = await fetch(
+      `${this.options.authServerUrl}${this.AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(requestData),
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error('Failed to post marketing opt in status');
+    }
+
+    return true;
   }
 }

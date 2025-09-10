@@ -27,6 +27,8 @@ import {
   setTermsOfUseLastAgreed,
 } from '../../../store/actions';
 import { getIsSocialLoginFlow } from '../../../selectors';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -75,7 +77,8 @@ export default function WelcomeLogin({
 
       await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
-      if (isSocialLogin) {
+      const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
+      if (!isFireFox && isSocialLogin) {
         await dispatch(setParticipateInMetaMetrics(true));
         await dispatch(setDataCollectionForMarketing(true));
       }

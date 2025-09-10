@@ -56,6 +56,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
+  setMarketingConsent,
 } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
@@ -248,6 +249,9 @@ export default function CreatePassword({
     });
 
     if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
+      if (termsChecked) {
+        await dispatch(setMarketingConsent(socialLoginType));
+      }
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
@@ -429,7 +433,7 @@ export default function CreatePassword({
             alignItems={AlignItems.flexStart}
             isChecked={termsChecked}
             onChange={() => {
-              !isSocialLoginFlow && setTermsChecked(!termsChecked);
+              setTermsChecked(!termsChecked);
             }}
             label={
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>

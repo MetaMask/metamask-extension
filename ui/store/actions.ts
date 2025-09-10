@@ -4116,6 +4116,27 @@ export function setDataCollectionForMarketing(
   };
 }
 
+/**
+ * Sets marketing consent with OAuth service for social login users.
+ *
+ * @param authConnection - The social login provider.
+ */
+export function setMarketingConsent(
+  authConnection: AuthConnection,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      const res = await submitRequestToBackground('setMarketingConsent', [
+        authConnection,
+      ]);
+      return Boolean(res);
+    } catch (error) {
+      logErrorWithMessage(getErrorMessage(error));
+      return false;
+    }
+  };
+}
+
 export function setUseBlockie(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
