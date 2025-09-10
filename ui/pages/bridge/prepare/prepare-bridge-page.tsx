@@ -121,6 +121,7 @@ import { enableAllPopularNetworks } from '../../../store/controller-actions/netw
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
+import { BridgeCTAWarningText } from './bridge-cta-warning-text';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -742,7 +743,7 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             justifyContent={JustifyContent.center}
           >
-            {isLoading && !activeQuote ? (
+            {isLoading && !activeQuote_ ? (
               <>
                 <Text
                   textAlign={TextAlign.Center}
@@ -782,6 +783,7 @@ const PrepareBridgePage = ({
                 />
               )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
+                <BridgeCTAWarningText />
                 <BridgeCTAButton
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
@@ -803,56 +805,6 @@ const PrepareBridgePage = ({
                     isToOrFromSolana && !selectedDestinationAccount
                   }
                 />
-                {activeQuote &&
-                activeQuote.approval &&
-                activeQuote.sentAmount &&
-                activeQuote.quote.srcAsset?.symbol ? (
-                  <Row justifyContent={JustifyContent.center} gap={1}>
-                    <Text
-                      color={TextColor.textAlternativeSoft}
-                      variant={TextVariant.bodyXs}
-                      textAlign={TextAlign.Center}
-                    >
-                      {(() => {
-                        if (isUsingHardwareWallet) {
-                          return t('willApproveAmountForBridgingHardware');
-                        }
-                        if (isSwap) {
-                          return t('willApproveAmountForSwapping', [
-                            formatTokenAmount(
-                              locale,
-                              activeQuote.sentAmount.amount,
-                              activeQuote.quote.srcAsset.symbol,
-                            ),
-                          ]);
-                        }
-                        return t('willApproveAmountForBridging', [
-                          formatTokenAmount(
-                            locale,
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ),
-                        ]);
-                      })()}
-                    </Text>
-                    <Tooltip
-                      display={Display.InlineBlock}
-                      position={PopoverPosition.Top}
-                      offset={[-48, 8]}
-                      title={t('grantExactAccess')}
-                    >
-                      {isUsingHardwareWallet
-                        ? t('bridgeApprovalWarningForHardware', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])
-                        : t('bridgeApprovalWarning', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])}
-                    </Tooltip>
-                  </Row>
-                ) : null}
               </Footer>
             </Column>
           </Row>

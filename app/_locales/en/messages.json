@@ -890,10 +890,10 @@
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
   "bridgeApprovalWarning": {
-    "message": "You are allowing access to the specified amount, $1 $2. The contract will not access any additional funds."
+    "message": "You're allowing access to $1 $2. The contract won't access any additional funds."
   },
   "bridgeApprovalWarningForHardware": {
-    "message": "You will need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
+    "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block explorer link copied!"
@@ -4922,7 +4922,7 @@
     "message": "Rank"
   },
   "rateIncludesMMFee": {
-    "message": "Rate includes $1% fee"
+    "message": "Includes $1% MM fee."
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -7537,13 +7537,13 @@
     "message": "What's this?"
   },
   "willApproveAmountForBridging": {
-    "message": "This will approve $1 for bridging."
+    "message": "Approves token for bridge."
   },
   "willApproveAmountForBridgingHardware": {
     "message": "You’ll need to confirm two transactions on your hardware wallet."
   },
   "willApproveAmountForSwapping": {
-    "message": "This will approve $1 for swapping."
+    "message": "Approves token for swap."
   },
   "withdrawing": {
     "message": "Withdrawing"
