@@ -3751,7 +3751,7 @@
     "description": "Default name of next account to be created on create account screen"
   },
   "newAcountIconMessage": {
-    "message": "Weʼve refreshed account icons to help you tell your accounts apart more easily. Pick your favorite in $1 > $2 > $3.",
+    "message": "Weʼve refreshed account icons to help you tell your accounts apart more easily. You can change the style in $1 > $2 > $3.",
     "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
   },
   "newContact": {
