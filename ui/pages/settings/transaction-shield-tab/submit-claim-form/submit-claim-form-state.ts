@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const useSubmitClaimFormState = () => {
   const [firstName, setFirstName] = useState<string>('');
