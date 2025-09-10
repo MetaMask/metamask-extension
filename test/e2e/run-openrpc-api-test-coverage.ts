@@ -83,6 +83,7 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           'wallet_swapAsset',
+          'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -103,7 +104,6 @@ async function main() {
               'eth_getEncryptionPublicKey',
               'wallet_sendCalls',
             ],
-            requiresSmartAccountUpgrade: ['wallet_sendCalls'],
           }),
           new PermittedAccountRule({
             driver,

@@ -961,6 +961,23 @@ class FixtureBuilder {
     });
   }
 
+  /**
+   * Note: When using this method, you also need to disable the smart account opt in
+   * migration in your test by adding the following manifest flag:
+   * ```
+   * manifestFlags: {
+   *   testing: { enableSmartAccountOptIn: true },
+   * }
+   * ```
+   */
+  withPreferencesControllerSmartAccountOptedIn() {
+    return this.withPreferencesController({
+      preferences: {
+        smartAccountOptIn: true,
+      },
+    });
+  }
+
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;

@@ -174,9 +174,13 @@ async function main() {
       dapp: true,
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToMultichainTestDapp()
+        .withPreferencesControllerSmartAccountOptedIn()
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
+      manifestFlags: {
+        testing: { enableSmartAccountOptIn: true },
+      },
       testSpecificMock: async (server: Mockttp) => {
         // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
         await server
@@ -241,7 +245,6 @@ async function main() {
             driver,
             only: confirmationMethods,
             requiresEthAccountsPermission: [],
-            requiresSmartAccountUpgrade: ['wallet_sendCalls'],
           }),
           new ExpectedErrorRule({
             only: ['wallet_getCallsStatus'],
