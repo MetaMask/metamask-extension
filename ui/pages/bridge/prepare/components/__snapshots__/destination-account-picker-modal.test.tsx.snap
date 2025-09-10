@@ -88,7 +88,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -197,7 +197,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -295,7 +295,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -393,7 +393,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -502,7 +502,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -600,7 +600,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -801,12 +801,48 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
                   class="flex [&>div]:!rounded-none"
-                />
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <div
@@ -863,12 +899,48 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
                   class="flex [&>div]:!rounded-none"
-                />
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#FA6C00"
+                        height="32"
+                        transform="translate(0.012499013728094784 -0.006385319322122122) rotate(489.0 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FB1868"
+                        height="32"
+                        transform="translate(-14.408597140338982 -8.780736166288932) rotate(387.1 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F5BC00"
+                        height="32"
+                        transform="translate(-12.05422484490241 -22.091892032818553) rotate(345.4 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <div
@@ -925,12 +997,48 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
                   class="flex [&>div]:!rounded-none"
-                />
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 92);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#F28A02"
+                        height="32"
+                        transform="translate(5.856796012320635 8.737636484049885) rotate(159.5 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#18ADF2"
+                        height="32"
+                        transform="translate(-10.732044487284895 -4.4515520487224745) rotate(339.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FB1873"
+                        height="32"
+                        transform="translate(16.743885100341735 -17.079268707848318) rotate(454.3 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <div
@@ -987,12 +1095,48 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
                   class="flex [&>div]:!rounded-none"
-                />
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <div
@@ -1049,12 +1193,48 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
                   class="flex [&>div]:!rounded-none"
-                />
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(245, 184, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#C81456"
+                        height="32"
+                        transform="translate(6.080278063321545 4.084834576158491) rotate(206.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#018E8C"
+                        height="32"
+                        transform="translate(-15.505408615168813 -13.011985761210282) rotate(356.3 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#03555E"
+                        height="32"
+                        transform="translate(27.992111032774744 3.078238146270286) rotate(92.1 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <div
@@ -1111,12 +1291,48 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
                   class="flex [&>div]:!rounded-none"
-                />
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <div
