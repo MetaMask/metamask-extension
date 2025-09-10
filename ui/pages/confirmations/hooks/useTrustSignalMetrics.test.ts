@@ -1,7 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react-hooks';
 
-import { useTrustSignalMetrics } from './useTrustSignalMetrics';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import {
   getMockConfirmStateForTransaction,
@@ -9,7 +7,9 @@ import {
 } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/typed_sign';
+// eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
+import { useTrustSignalMetrics } from './useTrustSignalMetrics';
 import * as useTransactionEventFragmentHook from './useTransactionEventFragment';
 import * as useSignatureEventFragmentHook from './useSignatureEventFragment';
 
@@ -24,6 +24,7 @@ const TARGET_ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125'; // Thi
 const SIGNATURE_VERIFYING_CONTRACT_MOCK =
   '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'; // verifyingContract from unapprovedTypedSignMsgV3
 const SECURITY_ALERT_RESPONSE_MOCK = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: ResultType.Malicious,
   label: 'Malicious',
   reason: 'This address is associated with fraudulent activities',
