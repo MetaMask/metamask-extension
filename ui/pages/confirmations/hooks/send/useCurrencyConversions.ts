@@ -1,4 +1,5 @@
 import { CaipAssetType, Hex } from '@metamask/utils';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isNativeAddress } from '@metamask/bridge-controller';
 import { useCallback, useMemo } from 'react';
@@ -29,7 +30,7 @@ const getFiatValueFn = ({ amount, conversionRate }: ConversionArgs) => {
   if (!amount) {
     return '0.00';
   }
-  return convertedCurrency(amount, conversionRate) ?? '0.00';
+  return convertedCurrency(amount, conversionRate, 2) ?? '0.00';
 };
 
 const getFiatDisplayValueFn = ({
@@ -43,11 +44,15 @@ const getFiatDisplayValueFn = ({
   return `${getCurrencySymbol(currentCurrency)} ${amt}`;
 };
 
-const getNativeValueFn = ({ amount, conversionRate }: ConversionArgs) => {
+const getNativeValueFn = ({
+  asset,
+  amount,
+  conversionRate,
+}: ConversionArgs) => {
   if (!amount) {
     return '0';
   }
-  return convertedCurrency(amount, 1 / conversionRate) ?? '0';
+  return convertedCurrency(amount, 1 / conversionRate, asset?.decimals) ?? '0';
 };
 
 const getNativeDisplayValueFn = ({
@@ -57,6 +62,7 @@ const getNativeDisplayValueFn = ({
 }: ConversionArgs) => {
   return `${asset?.symbol} ${formatToFixedDecimals(
     getNativeValueFn({
+      asset,
       amount,
       conversionRate,
     }),
@@ -88,7 +94,11 @@ export const useCurrencyConversions = () => {
   const multichainAssetsRates = useSelector(getAssetsRates);
 
   const conversionRate = useMemo(() => {
-    if (!asset?.address) {
+    if (
+      !asset?.address ||
+      asset.standard === ERC1155 ||
+      asset.standard === ERC721
+    ) {
       return 0;
     }
     if ((asset as Asset)?.fiat?.conversionRate) {
@@ -103,7 +113,7 @@ export const useCurrencyConversions = () => {
           Object.values(contractExchangeRates).find(
             (rate) => rate[asset.address as Hex] !== undefined,
           ) as Record<Hex, number>
-        )[asset.address as Hex] * (conversionRateEvm ?? 0)
+        )?.[asset.address as Hex] * (conversionRateEvm ?? 0)
       );
     }
     return parseFloat(
@@ -138,10 +148,11 @@ export const useCurrencyConversions = () => {
   const getNativeValue = useCallback(
     (amount: string) =>
       getNativeValueFn({
+        asset,
         amount,
         conversionRate,
       }),
-    [conversionRate],
+    [asset, conversionRate],
   );
 
   const getNativeDisplayValue = useCallback(

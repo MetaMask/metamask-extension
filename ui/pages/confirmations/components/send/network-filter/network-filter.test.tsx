@@ -19,8 +19,7 @@ jest.mock('../../../../../components/component-library', () => ({
     ...props
   }: {
     children: React.ReactNode;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
+    [key: string]: unknown;
   }) => (
     <div data-testid="box" {...props}>
       {children}
@@ -33,8 +32,7 @@ jest.mock('../../../../../components/component-library', () => ({
   }: {
     children: React.ReactNode;
     onClick: () => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
+    [key: string]: unknown;
   }) => (
     <button
       data-testid="send-network-filter-toggle"
@@ -42,6 +40,26 @@ jest.mock('../../../../../components/component-library', () => ({
       {...props}
     >
       {children}
+    </button>
+  ),
+  ButtonIcon: ({
+    onClick,
+    iconName,
+    ariaLabel,
+    ...props
+  }: {
+    onClick: () => void;
+    iconName: string;
+    ariaLabel: string;
+    [key: string]: unknown;
+  }) => (
+    <button
+      data-testid="close-recipient-modal-btn"
+      onClick={onClick}
+      aria-label={ariaLabel}
+      {...props}
+    >
+      <div data-testid={`icon-${iconName}`} />
     </button>
   ),
   Modal: ({
@@ -69,8 +87,9 @@ jest.mock('../../../../../components/component-library', () => ({
     <div data-testid="avatar-network" data-name={name} data-src={src} />
   ),
   ButtonBaseSize: { Md: 'md' },
+  ButtonIconSize: { Sm: 'sm' },
   ModalContentSize: { Md: 'md' },
-  IconName: { ArrowDown: 'arrow-down', Global: 'global' },
+  IconName: { ArrowDown: 'arrow-down', Global: 'global', Close: 'close' },
   IconSize: { Sm: 'sm', Xl: 'xl' },
   AvatarNetworkSize: { Sm: 'sm' },
 }));

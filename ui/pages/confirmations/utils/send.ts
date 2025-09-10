@@ -1,4 +1,4 @@
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
+import { ERC1155, ERC20, ERC721 } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
 import {
   TransactionParams,
@@ -24,6 +24,25 @@ import { SEND_ROUTE } from '../../../helpers/constants/routes';
 
 export const trimTrailingZeros = (numStr: string) => {
   return numStr.replace(/(\.\d*?[1-9])0+$/gu, '$1').replace(/\.0*$/u, '');
+};
+
+export const removeAdditionalDecimalPlaces = (
+  value: string,
+  decimals: string | number | undefined,
+) => {
+  if (!value) {
+    return undefined;
+  }
+  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
+  const result = value.replace(/^-/u, '').split('.');
+  const intPart = result[0];
+  let fracPart = result[1] ?? '';
+
+  if (fracPart.length > decimalValue) {
+    fracPart = fracPart.slice(0, decimalValue);
+  }
+
+  return fracPart ? `${intPart}.${fracPart}` : intPart;
 };
 
 export const fromTokenMinUnitsNumeric = (
@@ -69,20 +88,10 @@ export const toTokenMinimalUnit = (
   decimals: number | string = 0,
   base?: NumericBase,
 ) => {
-  const convertedValue = toTokenMinimalUnitNumeric(value, decimals, base)
-    .toBase(10)
-    .toString();
-
-  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
-  const result = String(convertedValue).replace(/^-/u, '').split('.');
-  const intPart = result[0];
-  let fracPart = result[1] ?? '';
-
-  if (fracPart.length > decimalValue) {
-    fracPart = fracPart.slice(0, decimalValue);
-  }
-
-  return fracPart ? `${intPart}.${fracPart}` : intPart;
+  return removeAdditionalDecimalPlaces(
+    toTokenMinimalUnitNumeric(value, decimals, base).toBase(10).toString(),
+    decimals,
+  );
 };
 
 export function formatToFixedDecimals(
@@ -184,9 +193,21 @@ export const submitEvmTransaction = async ({
 }) => {
   const trxnParams = prepareEVMTransaction(asset, { from, to, value });
   const networkClientId = await findNetworkClientIdByChainId(chainId);
+
+  let transactionType;
+  if (isNativeAddress(asset.address ?? asset.assetId)) {
+    transactionType = TransactionType.simpleSend;
+  } else if (asset.standard === ERC20) {
+    transactionType = TransactionType.tokenMethodTransfer;
+  } else if (asset.standard === ERC721) {
+    transactionType = TransactionType.tokenMethodTransferFrom;
+  } else if (asset.standard === ERC1155) {
+    transactionType = TransactionType.tokenMethodSafeTransferFrom;
+  }
+
   return addTransactionAndRouteToConfirmationPage(trxnParams, {
     networkClientId,
-    type: TransactionType.simpleSend,
+    type: transactionType,
   });
 };
 
@@ -214,24 +235,32 @@ export function isDecimal(value: string) {
   return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
 }
 
-export function convertedCurrency(value: string, conversionRate?: number) {
+export function convertedCurrency(
+  value: string,
+  conversionRate?: number,
+  decimals?: string | number,
+) {
   if (!isDecimal(value) || parseFloat(value) < 0) {
     return undefined;
   }
 
   return trimTrailingZeros(
-    new Numeric(value, 10).applyConversionRate(conversionRate).toString(),
+    removeAdditionalDecimalPlaces(
+      new Numeric(value, 10).applyConversionRate(conversionRate).toString(),
+      decimals,
+    ) ?? '',
   );
 }
 
 export const navigateToSendRoute = (
   history: ReturnType<typeof useHistory>,
+  isSendRedesignEnabled: boolean,
   params?: {
     address?: string;
     chainId?: string;
   },
 ) => {
-  if (process.env.SEND_REDESIGN_ENABLED) {
+  if (isSendRedesignEnabled) {
     if (params) {
       const queryParams = new URLSearchParams();
       const { address, chainId } = params;
