@@ -13,7 +13,7 @@ import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { BridgeCTAWarningText } from '../prepare/bridge-cta-warning-text';
+import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
 import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
 describe('MultichainBridgeQuoteCard', () => {
@@ -89,7 +89,7 @@ describe('MultichainBridgeQuoteCard', () => {
           onOpenRecipientModal={() => {}}
           selectedDestinationAccount={null}
         />
-        <BridgeCTAWarningText />
+        <BridgeCTAInfoText />
       </>,
       configureStore(mockStore),
     );
@@ -178,7 +178,7 @@ describe('MultichainBridgeQuoteCard', () => {
           onOpenRecipientModal={() => {}}
           selectedDestinationAccount={null}
         />
-        <BridgeCTAWarningText />
+        <BridgeCTAInfoText />
       </>,
       configureStore(mockStore),
     );

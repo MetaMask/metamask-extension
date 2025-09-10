@@ -60,6 +60,7 @@ export const MultichainBridgeQuoteCard = ({
 }: {
   onOpenSlippageModal: () => void;
   selectedDestinationAccount: DestinationAccount | null;
+  onOpenRecipientModal?: () => void;
 }) => {
   const t = useI18nContext();
   const { activeQuote, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
