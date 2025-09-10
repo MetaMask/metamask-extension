@@ -11,7 +11,6 @@ import type {
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
@@ -59,6 +58,7 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getNativeTokenName } from '../../../../ducks/bridge/utils';
 import {
   getMultichainConversionRate,
   getMultichainCurrencyImage,
@@ -331,7 +331,8 @@ export function AssetPickerModal({
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ],
                 type: AssetType.native,
-                name: getNativeAssetForChainId(token.chainId)?.name,
+                // Add human-readable name for native tokens (e.g., Ether, Binance Coin)
+                name: getNativeTokenName(token.chainId),
               }
             : {
                 ...token,
@@ -354,7 +355,7 @@ export function AssetPickerModal({
         chainId: selectedNetwork.chainId,
         type: AssetType.native,
         // Add human-readable name for native token
-        name: getNativeAssetForChainId(selectedNetwork.chainId)?.name,
+        name: getNativeTokenName(selectedNetwork.chainId),
       };
 
       if (
