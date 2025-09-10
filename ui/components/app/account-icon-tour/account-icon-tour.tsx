@@ -49,7 +49,7 @@ export const AccountIconTour = (props: Props) => {
     <ProductTour
       anchorElement={anchorElement}
       title={t('newAccountIconTitle')}
-      description={t('newAcountIconMessage', [
+      description={t('newAccountIconMessage', [
         <b key="0">{t('settings')}</b>,
         <b key="1">{t('general')}</b>,
         <b key="2">{t('accountIdenticon')}</b>,
