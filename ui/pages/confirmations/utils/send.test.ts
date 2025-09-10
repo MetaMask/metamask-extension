@@ -165,7 +165,7 @@ describe('Send - utils', () => {
         {
           push: mockHistoryPush,
         },
-        true,
+        false,
       );
       expect(mockHistoryPush).toHaveBeenCalled();
     });
