@@ -114,6 +114,10 @@
   "accountName": {
     "message": "Account name"
   },
+  "accountNameAlreadyInUse": {
+    "message": "This name is already in use.",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
+  },
   "accountNameDuplicate": {
     "message": "This account name already exists",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
@@ -4792,7 +4796,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationLimitOrderFilledTitle": {
-    "message": "✅ Limit order filled"
+    "message": "Limit order filled"
   },
   "pushNotificationPositionLiquidatedDescriptionLong": {
     "message": "Your $1 long was closed.",
@@ -4803,7 +4807,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationPositionLiquidatedTitle": {
-    "message": "😟 Position liquidated"
+    "message": "Position liquidated"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
@@ -4814,7 +4818,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationStopLossTriggeredTitle": {
-    "message": "🛑 Stop loss triggered"
+    "message": "Stop loss triggered"
   },
   "pushNotificationTakeProfitTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your take profit.",
@@ -4825,7 +4829,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "📈 Take profit triggered"
+    "message": "Take profit triggered"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "You received $1 $2"

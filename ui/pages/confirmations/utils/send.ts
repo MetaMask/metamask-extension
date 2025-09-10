@@ -254,12 +254,13 @@ export function convertedCurrency(
 
 export const navigateToSendRoute = (
   history: ReturnType<typeof useHistory>,
+  isSendRedesignEnabled: boolean,
   params?: {
     address?: string;
     chainId?: string;
   },
 ) => {
-  if (process.env.SEND_REDESIGN_ENABLED) {
+  if (isSendRedesignEnabled) {
     if (params) {
       const queryParams = new URLSearchParams();
       const { address, chainId } = params;

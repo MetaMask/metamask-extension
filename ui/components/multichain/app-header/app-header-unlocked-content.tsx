@@ -233,8 +233,8 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
               disabled={disableAccountPicker}
-              paddingLeft={2}
-              paddingRight={2}
+              paddingLeft={isMultichainAccountsState2Enabled ? 0 : 2}
+              paddingRight={isMultichainAccountsState2Enabled ? 0 : 2}
             />
             <>{!isMultichainAccountsState2Enabled && CopyButton}</>
           </Text>
