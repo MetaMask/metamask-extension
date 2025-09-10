@@ -10,7 +10,7 @@ import {
 } from '@metamask/keyring-controller';
 
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller.ts';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger

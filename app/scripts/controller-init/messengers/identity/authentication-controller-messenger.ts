@@ -5,7 +5,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../../controllers/metametrics-controller.ts';
+import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../../controllers/metametrics-controller';
 
 type MessengerActions = KeyringControllerGetStateAction | HandleSnapRequest;
 
