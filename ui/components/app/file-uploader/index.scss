@@ -2,7 +2,7 @@
   border-style: dashed;
   border-color: var(--color-border-default);
 
-  &:hover {
+  &:hover, &--dragging {
     background-color: var(--color-primary-muted);
     border-style: solid;
     border-color: var(--color-primary-default-hover);

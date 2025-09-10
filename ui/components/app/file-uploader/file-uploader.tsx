@@ -58,6 +58,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
     const t = useI18nContext();
     const [files, setFiles] = useState<FileList | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
 
     const addFiles = (newFiles: FileList) => {
       setError(null);
@@ -133,7 +134,9 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
         )}
         <Label
           htmlFor="file-uploader-input"
-          className="file-uploader-label"
+          className={classnames('file-uploader-label', {
+            'file-uploader-label--dragging': isDragging,
+          })}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
@@ -146,6 +149,11 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           borderWidth={1}
           onDragOver={(e) => {
             e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
           }}
           onDrop={onFileDrop}
           {...fileUploaderProps}
