@@ -248,12 +248,9 @@ describe('extractEnvelopeUrlFromDsn', () => {
   });
 
   it('should handle different regions', () => {
-    const dsn =
-      'https://key@o123.ingest.eu.sentry.io/456';
+    const dsn = 'https://key@o123.ingest.eu.sentry.io/456';
     const result = extractEnvelopeUrlFromDsn(dsn);
-    expect(result).toBe(
-      'https://o123.ingest.eu.sentry.io/api/456/envelope/',
-    );
+    expect(result).toBe('https://o123.ingest.eu.sentry.io/api/456/envelope/');
   });
 
   it('should return null for invalid DSN', () => {

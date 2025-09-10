@@ -46,14 +46,12 @@ function getSentryTarget() {
     return null;
   }
 
-  if (process.env.METAMASK_ENVIRONMENT !== 'production') {
-    return process.env.SENTRY_DSN_DEV;
+  if (!process.env.SENTRY_DSN) {
+    return null;
   }
 
-  if (!process.env.SENTRY_DSN) {
-    throw new Error(
-      `Missing SENTRY_DSN environment variable in production environment`,
-    );
+  if (process.env.METAMASK_ENVIRONMENT !== 'production') {
+    return process.env.SENTRY_DSN_DEV;
   }
 
   return process.env.SENTRY_DSN;
@@ -120,6 +118,10 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
 
     const envelope = `${JSON.stringify(envelopeHeaders)}\n${JSON.stringify(itemHeader)}\n${eventPayloadString}`;
     const sentryEnvelopeURL = extractEnvelopeUrlFromDsn(sentryDSN);
+
+    if (!sentryEnvelopeURL) {
+      throw new Error(`Invalid Sentry DSN format: ${sentryDSN}`);
+    }
 
     // Send to Sentry envelope API (must match DSN region)
     await fetch(sentryEnvelopeURL, {

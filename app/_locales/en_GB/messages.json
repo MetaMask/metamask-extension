@@ -2327,13 +2327,13 @@
     "message": "Error while getting safe chain list, please continue with caution."
   },
   "errorLegalTextFirstInfo": {
-    "message": "- Technical diagnostic information."
+    "message": "Technical diagnostic information."
   },
   "errorLegalTextNoPersonalInfo": {
     "message": "No personal information or other device information will be collected."
   },
   "errorLegalTextSecondInfo": {
-    "message": "- Your browser, operating system and MetaMask versions."
+    "message": "Your browser, operating system and MetaMask versions."
   },
   "errorLegalTextSummary": {
     "message": "We will receive a single error report, containing:"

@@ -99,8 +99,8 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
 
   const legalText = `
     <span>${lodashEscape(t('errorLegalTextSummary'))}</span>
-    <p>${lodashEscape(t('errorLegalTextFirstInfo'))}</p>
-    <p>${lodashEscape(t('errorLegalTextSecondInfo'))} </p>
+    <p>• ${lodashEscape(t('errorLegalTextFirstInfo'))}</p>
+    <p>• ${lodashEscape(t('errorLegalTextSecondInfo'))}</p>
     <span>${lodashEscape(t('errorLegalTextNoPersonalInfo'))}</span>
 `;
 
