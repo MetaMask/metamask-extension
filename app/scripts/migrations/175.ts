@@ -80,7 +80,11 @@ function transformState(
     !hasProperty(transactionsController, 'nonEvmTransactions') ||
     !isObject(transactionsController.nonEvmTransactions)
   ) {
-    console.warn('Skipping migration. nonEvmTransactions state not found.');
+    global.sentry?.captureException?.(
+      new Error(
+        `Invalid nonEvmTransactions state: ${typeof transactionsController.nonEvmTransactions}`,
+      ),
+    );
     return state;
   }
 
