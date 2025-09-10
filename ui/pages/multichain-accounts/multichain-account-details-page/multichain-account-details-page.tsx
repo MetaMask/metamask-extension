@@ -92,6 +92,10 @@ export const MultichainAccountDetailsPage = () => {
     setIsAccountRenameModalOpen(true);
   };
 
+  const handleWalletAction = () => {
+    history.push(walletRoute);
+  };
+
   return (
     <Page className="multichain-account-details-page">
       <Header
@@ -139,6 +143,7 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('networks')}
             value={`${addressCount} ${addressCount > 1 ? t('addressesLabel') : t('addressLabel')}`}
+            onClick={handleAddressesClick}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
@@ -147,7 +152,6 @@ export const MultichainAccountDetailsPage = () => {
                 ariaLabel={t('addresses')}
                 marginLeft={2}
                 data-testid="network-addresses-link"
-                onClick={handleAddressesClick}
               />
             }
           />
@@ -169,6 +173,7 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('smartAccountLabel')}
             value={t('setUp')}
+            onClick={handleSmartAccountClick}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
@@ -177,7 +182,6 @@ export const MultichainAccountDetailsPage = () => {
                 ariaLabel={t('smartAccountLabel')}
                 marginLeft={2}
                 data-testid="smart-account-action"
-                onClick={handleSmartAccountClick}
               />
             }
           />
@@ -186,6 +190,7 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('wallet')}
             value={wallet.metadata.name}
+            onClick={handleWalletAction}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
@@ -196,9 +201,6 @@ export const MultichainAccountDetailsPage = () => {
                 data-testid="wallet-details-link"
               />
             }
-            onClick={() => {
-              history.push(walletRoute);
-            }}
           />
           {isEntropyWallet ? (
             <MultichainSrpBackup
