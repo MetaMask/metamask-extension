@@ -11,6 +11,7 @@ import type {
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
@@ -330,6 +331,7 @@ export function AssetPickerModal({
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ],
                 type: AssetType.native,
+                name: getNativeAssetForChainId(token.chainId)?.name,
               }
             : {
                 ...token,
@@ -351,6 +353,8 @@ export function AssetPickerModal({
         string: undefined,
         chainId: selectedNetwork.chainId,
         type: AssetType.native,
+        // Add human-readable name for native token
+        name: getNativeAssetForChainId(selectedNetwork.chainId)?.name,
       };
 
       if (
@@ -692,9 +696,7 @@ export function AssetPickerModal({
                   isTokenDisabled={getIsDisabled}
                   isTokenListLoading={isTokenListLoading}
                   assetItemProps={{
-                    isTitleNetworkName:
-                      // For src cross-chain swaps assets
-                      isMultiselectEnabled,
+                    isTitleNetworkName: false,
                     isTitleHidden: false,
                   }}
                 />
