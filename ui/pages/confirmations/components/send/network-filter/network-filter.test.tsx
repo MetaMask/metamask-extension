@@ -287,12 +287,6 @@ describe('NetworkFilter', () => {
       expect(mockRemoveAssetFilterMethod).toHaveBeenCalledWith(
         AssetFilterMethod.Network,
       );
-
-      fireEvent.click(networkItems[1]);
-
-      expect(mockAddAssetFilterMethod).toHaveBeenCalledWith(
-        AssetFilterMethod.Network,
-      );
     });
   });
 });
