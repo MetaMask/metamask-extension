@@ -1277,10 +1277,10 @@ export default class MetamaskController extends EventEmitter {
 
     // Clean up WebSocket connections and account activity subscriptions
     if (this.controllersByName?.AccountActivityService) {
-      this.controllersByName.AccountActivityService.cleanup();
+      this.controllersByName.AccountActivityService.destroy();
     }
-    if (this.webSocketService) {
-      this.webSocketService.disconnect();
+    if (this.backendWebSocketService) {
+      this.backendWebSocketService.destroy();
     }
 
   }

@@ -5548,7 +5548,7 @@ __metadata:
 
 "@metamask/assets-controllers@file:../core/packages/assets-controllers::locator=metamask-crx%40workspace%3A.":
   version: 74.3.3
-  resolution: "@metamask/assets-controllers@file:../core/packages/assets-controllers#../core/packages/assets-controllers::hash=3d10be&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/assets-controllers@file:../core/packages/assets-controllers#../core/packages/assets-controllers::hash=9bc23e&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5592,7 +5592,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/18d8bd3b56ab6f93694531ccc536e864059b318bc908671dede9823b3d5dff771d99e519bbd30be54914da706dc73de94c7e0616b111111a6a001589ab48bd4b
+  checksum: 10/beaeef791e3e3beecafdbbb0b8b68c9638939eff29552547c1b29a5a23f55c1e931e53de876d2e8f7805df1f0c962d051c5be1697e8280957f23f2bdbff5c968
   languageName: node
   linkType: hard
 
@@ -5647,12 +5647,12 @@ __metadata:
 
 "@metamask/backend-platform@file:../core/packages/backend-platform::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/backend-platform@file:../core/packages/backend-platform#../core/packages/backend-platform::hash=56c861&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/backend-platform@file:../core/packages/backend-platform#../core/packages/backend-platform::hash=75b949&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/4df54eddd60b3e584b1edb517838dc413dd0809da16445aa1e1aa15b8315f766f4d36ef4fc525e1e70e8dc32a87ce8b781039f6cc92e515f9f66b77f8e8b53a5
+  checksum: 10/99cb6006650ff1b2fb391973e451e986adb8c8b0326ab30c4fa009bcf3d8dc3abc46f8c8ed59378f4b16c2c154822088a8012b7662e9611e3224c8001dac1cbc
   languageName: node
   linkType: hard
 
