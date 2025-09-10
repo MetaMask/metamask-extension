@@ -54,7 +54,7 @@ export const SendContext = createContext<SendContextType>({
 export const SendContextProvider: React.FC<{
   children: ReactElement[] | ReactElement;
 }> = ({ children }) => {
-  const [asset, updateAsset] = useState<Asset>();
+  const [asset, setAsset] = useState<Asset>();
   const from = useSelector(getSelectedAccount);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
@@ -71,7 +71,15 @@ export const SendContextProvider: React.FC<{
       updateMaxValueMode(maxMode ?? false);
       setValue(val);
     },
-    [updateMaxValueMode, setValue],
+    [setValue, updateMaxValueMode],
+  );
+
+  const updateAsset = useCallback(
+    (asset: Asset) => {
+      updateValue('', false);
+      setAsset(asset);
+    },
+    [setAsset, updateValue],
   );
 
   const chainId =

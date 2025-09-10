@@ -54,6 +54,30 @@ describe('Amount', () => {
     expect(mockUpdateValue).toHaveBeenCalledWith('1');
   });
 
+  it('does not call update value method if number of decimals are more than that in asset', () => {
+    const mockUpdateValue = jest.fn();
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '10.023',
+      rawBalanceNumeric: new Numeric('10.023', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateValue: mockUpdateValue,
+      asset: EVM_ASSET,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      fiatCurrencySymbol: 'USD',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
+    });
+
+    const { getByRole } = render();
+
+    fireEvent.change(getByRole('textbox'), { target: { value: 10.0075 } });
+    expect(mockUpdateValue).not.toHaveBeenCalledWith();
+  });
+
   it('amount value is changed when fiatmode is toggled', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,

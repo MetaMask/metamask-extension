@@ -278,3 +278,9 @@ export const navigateToSendRoute = (
     history.push(SEND_ROUTE);
   }
 };
+
+export const getFractionLength = (value: string) => {
+  const result = value.replace(/^-/, '').split('.');
+  const fracPart = result[1] ?? '';
+  return fracPart.length;
+};
