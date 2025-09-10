@@ -29,4 +29,3 @@ jobs:
       google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
     with:
       semver-version: ${{ needs.extract.outputs.semver }}
-
