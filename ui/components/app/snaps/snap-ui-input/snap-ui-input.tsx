@@ -63,6 +63,7 @@ export const SnapUIInput: FunctionComponent<
       value={value}
       onChange={handleChange}
       label={label}
+      labelProps={{ marginBottom: 0 }}
       disabled={disabled}
       {...props}
     />
