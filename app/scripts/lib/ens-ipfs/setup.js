@@ -9,58 +9,11 @@ const fetchWithTimeout = getFetchWithTimeout();
 
 const supportedTopLevelDomains = ['eth'];
 
-const createHyperliquidReferralHandler = (
-  getPreferencesState,
-  getSelectedAddress,
-  addReferralPassedAccount,
-) => {
-  return async (details) => {
-    const { tabId, url } = details;
-    const { search } = new URL(url);
-    const searchParams = new URLSearchParams(search);
-
-    // Don't override existing referral codes
-    if (searchParams.get('refCode')) {
-      return;
-    }
-
-    // Check user consent state
-    const preferencesState = getPreferencesState();
-    const selectedAddress = getSelectedAddress();
-
-    const {
-      referralApprovedAccounts = [],
-      referralPassedAccounts = [],
-      referralDeclinedAccounts = [],
-    } = preferencesState;
-
-    // Only add referral code if user has approved AND hasn't already been passed for this account
-    const hasApproved = referralApprovedAccounts.includes(selectedAddress);
-    const alreadyPassed = referralPassedAccounts.includes(selectedAddress);
-    const hasDeclined = referralDeclinedAccounts.includes(selectedAddress);
-
-    if (hasApproved && !alreadyPassed && !hasDeclined) {
-      searchParams.set('refCode', 'MM_REF_CODE');
-      const newUrl = `${url.split('?')[0]}?${searchParams.toString()}`;
-
-      await browser.tabs.update(tabId, { url: newUrl });
-
-      // Mark this account as having received the referral code
-      if (addReferralPassedAccount) {
-        addReferralPassedAccount(selectedAddress);
-      }
-    }
-  };
-};
-
 export default function setupEnsIpfsResolver({
   provider,
   getCurrentChainId,
   getIpfsGateway,
   getUseAddressBarEnsResolution,
-  getPreferencesState,
-  getSelectedAddress,
-  addReferralPassedAccount,
 }) {
   // install ENS listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
@@ -69,26 +22,10 @@ export default function setupEnsIpfsResolver({
     types: ['main_frame'],
   });
 
-  // install Hyperliquid referral listener
-  const hyperliquidReferralHandler = createHyperliquidReferralHandler(
-    getPreferencesState,
-    getSelectedAddress,
-    addReferralPassedAccount,
-  );
-
-  browser.webRequest.onBeforeRequest.addListener(hyperliquidReferralHandler, {
-    urls: ['https://app.hyperliquid.xyz/trade*'],
-    types: ['main_frame'],
-  });
-
   // return api object
   return {
-    // uninstall listeners
     remove() {
       browser.webRequest.onErrorOccurred.removeListener(webRequestDidFail);
-      browser.webRequest.onBeforeRequest.removeListener(
-        hyperliquidReferralHandler,
-      );
     },
   };
 
