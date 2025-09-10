@@ -5278,6 +5278,7 @@ export default class MetamaskController extends EventEmitter {
       );
 
       const result = await multichainAccountWallet.discoverAndCreateAccounts();
+
       return { Bitcoin: 0, ...result };
     } catch (error) {
       log.warn(`Failed to add accounts with balance. Error: ${error}`);
