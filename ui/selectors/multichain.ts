@@ -7,10 +7,7 @@ import type {
 import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  MultichainTransactionsControllerState,
-  TransactionStateEntry,
-} from '@metamask/multichain-transactions-controller';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import {
   NetworkConfiguration,
   RpcEndpointType,
