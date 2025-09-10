@@ -1,32 +1,39 @@
-const { strict: assert } = require('assert');
-const { createServer } = require('node:http');
-const { createDeferredPromise } = require('@metamask/utils');
-const { until } = require('selenium-webdriver');
-
-const {
+import { strict as assert } from 'assert';
+import { createServer } from 'node:http';
+import type { Server } from 'node:http';
+import { createDeferredPromise } from '@metamask/utils';
+import { until } from 'selenium-webdriver';
+import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
+import {
   withFixtures,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
   createWebSocketConnection,
   veryLargeDelayMs,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const {
+} from '../../helpers';
+
+import FixtureBuilder from '../../fixture-builder';
+import { Driver } from '../../webdriver/driver';
+import MockedPage from '../../page-objects/pages/mocked-page';
+import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  setupPhishingDetectionMocks,
+  mockConfigLookupOnWarningPage,
+} from './mocks';
+import {
   METAMASK_HOTLIST_DIFF_URL,
   METAMASK_STALELIST_URL,
   BlockProvider,
-} = require('./helpers');
+} from './helpers';
 
-const {
-  setupPhishingDetectionMocks,
-  mockConfigLookupOnWarningPage,
-} = require('./mocks');
+// Common test constants
+const DEFAULT_BLOCKED_DOMAIN =
+  'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947';
 
-/** @typedef {import('../../webdriver/driver').Driver} Driver */
-/** @typedef {import('node:http').Server} Server */
-
-describe('Phishing Detection', function () {
+describe('Phishing Detection', function (this: Suite) {
   describe('Phishing Detection Mock', function () {
     it('should be updated to use v1 of the API', function () {
       // Update the fixture in phishing-controller/mocks.js if this test fails
@@ -45,30 +52,30 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
         },
         dapp: true,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await openDapp(driver);
+
         // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
         await driver.delay(veryLargeDelayMs);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site
         // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.waitForSelector({
-          testId: 'unsafe-continue-loaded',
-        });
-        await driver.clickElement({
-          text: 'Proceed anyway',
-        });
+        const phishingWarningPage = new PhishingWarningPage(driver);
+        await phishingWarningPage.checkPageIsLoaded();
+        await phishingWarningPage.clickProceedAnywayButton();
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       },
     );
@@ -78,13 +85,15 @@ describe('Phishing Detection', function () {
     const DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST = 'http://localhost:8080/';
     const IFRAMED_HOSTNAME = '127.0.0.1';
 
-    const getFixtureOptions = (overrides) => {
+    const getFixtureOptions = (overrides: Record<string, unknown>) => {
       return {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: async (mockServer) => {
+        testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
             blocklist: [IFRAMED_HOSTNAME],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
         },
         dapp: true,
@@ -95,55 +104,45 @@ describe('Phishing Detection', function () {
       };
     };
 
-    function getTest(expectIframe = false) {
-      return async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
-
-        if (expectIframe) {
-          const iframe = await driver.findElement('iframe');
-
-          await driver.switchToFrame(iframe);
-          await driver.clickElement({
-            text: 'Open this warning in a new tab',
-          });
-        }
-
-        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-
-        // we need to wait for this selector to mitigate a race condition on the phishing page site
-        // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.waitForSelector({
-          testId: 'unsafe-continue-loaded',
-        });
-        await driver.clickElement({
-          text: 'Proceed anyway',
-        });
-        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
-      };
-    }
-
     it('should redirect users to the the MetaMask Phishing Detection page when an iframe domain is on the phishing blocklist', async function () {
       await withFixtures(
         getFixtureOptions({
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
         }),
-        // we don't expect the iframe because early-phishing-detection redirects
-        // the top level frame automatically.
-        getTest(false),
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+          await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
+          // we don't expect the iframe because early-phishing-detection redirects
+          // the top level frame automatically.
+          await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+          const phishingWarningPage = new PhishingWarningPage(driver);
+          await phishingWarningPage.checkPageIsLoaded();
+          await phishingWarningPage.clickProceedAnywayButton();
+          await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+        },
       );
     });
 
     it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
       await withFixtures(
         getFixtureOptions({
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           dappPaths: [
             './tests/phishing-controller/mock-page-with-iframe-but-disable-early-detection',
           ],
         }),
-        getTest(true),
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+          await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
+          const phishingWarningPage = new PhishingWarningPage(driver);
+          await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
+
+          await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+          await phishingWarningPage.checkPageIsLoaded();
+          await phishingWarningPage.clickProceedAnywayButton();
+          await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+        },
       );
     });
   });
@@ -152,11 +151,13 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
         },
         dapp: true,
@@ -168,33 +169,22 @@ describe('Phishing Detection', function () {
         },
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
 
-        const iframe = await driver.findElement('iframe');
-
-        await driver.switchToFrame(iframe);
-        await driver.clickElement({
-          text: 'Open this warning in a new tab',
-        });
+        const phishingWarningPage = new PhishingWarningPage(driver);
+        await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site
         // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.waitForSelector({
-          testId: 'unsafe-continue-loaded',
-        });
-        await driver.clickElement({
-          text: 'Proceed anyway',
-        });
+        await phishingWarningPage.checkPageIsLoaded();
+        await phishingWarningPage.clickProceedAnywayButton();
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
-        await driver.assertElementNotPresent(
-          '[data-testid="wallet-balance"]',
-          1000,
-        );
+        await phishingWarningPage.checkPageIsNotLoaded();
       },
     );
   });
@@ -203,27 +193,31 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: (mockServer: Mockttp) => {
           setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
           mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
         dapp: true,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await openDapp(driver);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({ text: 'report a detection problem.' });
+        const phishingWarningPage = new PhishingWarningPage(driver);
+        await phishingWarningPage.checkPageIsLoaded();
+        await phishingWarningPage.clickReportDetectionProblemLink();
 
         // wait for page to load before checking URL.
-        await driver.findElement({
-          text: `Empty page by ${BlockProvider.MetaMask}`,
-        });
+        await new MockedPage(driver).checkDisplayedMessage(
+          `Empty page by ${BlockProvider.MetaMask}`,
+        );
         await driver.waitForUrl({
           url: `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
         });
@@ -238,32 +232,35 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
             blocklist: [phishingSite.hostname],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
         },
         dapp: true,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(phishingSite.href);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({ text: 'report a detection problem.' });
+        const phishingWarningPage = new PhishingWarningPage(driver);
+        await phishingWarningPage.checkPageIsLoaded();
+        await phishingWarningPage.clickReportDetectionProblemLink();
 
         // wait for page to load before checking URL.
-        await driver.findElement({
-          text: `Empty page by ${BlockProvider.MetaMask}`,
-        });
-        assert.equal(
-          await driver.getCurrentUrl(),
-          `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20${encodeURIComponent(
+        await new MockedPage(driver).checkDisplayedMessage(
+          `Empty page by ${BlockProvider.MetaMask}`,
+        );
+        await driver.waitForUrl({
+          url: `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20${encodeURIComponent(
             phishingSite.hostname,
           )}&body=${encodeURIComponent(`${phishingSite.origin}/`)}`,
-        );
+        });
       },
     );
   });
@@ -272,11 +269,13 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
         },
         dapp: true,
@@ -288,21 +287,16 @@ describe('Phishing Detection', function () {
         },
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
 
-        const iframe = await driver.findElement('iframe');
-
-        await driver.switchToFrame(iframe);
-        await driver.clickElement({
-          text: 'Open this warning in a new tab',
-        });
+        const phishingWarningPage = new PhishingWarningPage(driver);
+        await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({
-          text: 'Back to safety',
-        });
+        await phishingWarningPage.checkPageIsLoaded();
+        await phishingWarningPage.clickBackToSafetyButton();
 
         await driver.waitForUrl({
           url: `https://app.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
@@ -316,34 +310,29 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
           await mockServer.forAnyWebSocket().thenEcho();
           await setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
+            blocklist: ['127.0.0.1'],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
         },
         dapp: true,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await driver.openNewPage(testPageURL);
 
         await createWebSocketConnection(driver, 'malicious.localhost');
 
-        await driver.switchToWindowWithTitle(
-          'MetaMask Phishing Detection',
-          10000,
-        );
-
-        await driver.waitForSelector({
-          testId: 'unsafe-continue-loaded',
-        });
-
-        await driver.clickElement({
-          text: 'Back to safety',
-        });
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        const phishingWarningPage = new PhishingWarningPage(driver);
+        await phishingWarningPage.checkPageIsLoaded();
+        await phishingWarningPage.clickBackToSafetyButton();
 
         await driver.waitForUrl({
           url: `https://app.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
@@ -357,17 +346,20 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
           await mockServer.forAnyWebSocket().thenEcho();
           await setupPhishingDetectionMocks(mockServer, {
+            statusCode: 200,
             blockProvider: BlockProvider.MetaMask,
+            blocklist: ['127.0.0.1'],
+            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
           });
         },
         dapp: true,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await driver.openNewPage(testPageURL);
 
@@ -375,9 +367,9 @@ describe('Phishing Detection', function () {
 
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
 
-        const currentUrl = await driver.getCurrentUrl();
-
-        assert.equal(currentUrl, testPageURL);
+        await driver.waitForUrl({
+          url: testPageURL,
+        });
       },
     );
   });
@@ -401,31 +393,19 @@ describe('Phishing Detection', function () {
     const destination = 'https://metamask.github.io/test-dapp/';
     const blocked = '127.0.0.1';
 
-    /**
-     * @type {Server | undefined}
-     */
-    let server;
+    let server: Server | undefined;
+    let driver: Driver | undefined;
+    let fixturePromise: Promise<void> | undefined;
 
     /**
-     * @type {Driver | undefined}
-     */
-    let driver;
-
-    /**
-     * @type {Promise<void> | undefined}
-     */
-    let fixturePromise;
-
-    /**
-     *  Handle requests by setting the given header values and status code.
+     * Handle requests by setting the given header values and status code.
      *
-     * @param {string} name - The name of the header to set.
-     * @param {string} value - The value of the header to set.
-     * @param {typeof redirectableStatusCodes[number]} code - The status code
-     * @returns {void}
+     * @param name - The name of the header to set.
+     * @param value - The value of the header to set.
+     * @param code - The status code
      */
-    function handleRequests(name, value, code) {
-      server.once('request', async function (_request, response) {
+    function handleRequests(name: string, value: string, code: number): void {
+      server?.once('request', async function (_request, response) {
         response.setHeader(name, value).writeHead(code).end(`
         <!doctype html>
         <html>
@@ -463,7 +443,7 @@ describe('Phishing Detection', function () {
     after('Shut down redirect server', async function () {
       if (server) {
         const { promise, resolve } = createDeferredPromise();
-        server.close(() => resolve());
+        server.close(() => resolve(undefined));
         // We need to close all connections to stop the server quickly
         // Otherwise it takes a few seconds for it to close
         server.closeAllConnections();
@@ -471,22 +451,21 @@ describe('Phishing Detection', function () {
       }
     });
     before('Set up fixtures', async function () {
-      /**
-       * @type {{ promise: Promise<Driver>, resolve: (driver: Driver) => void } | undefined
-       */
-      const { promise, resolve } = createDeferredPromise();
+      const { promise, resolve } = createDeferredPromise<Driver>();
       fixturePromise = withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          title: this.test.fullTitle(),
-          testSpecificMock: async (mockServer) => {
+          title: this.test?.fullTitle(),
+          testSpecificMock: async (mockServer: Mockttp) => {
             await setupPhishingDetectionMocks(mockServer, {
+              statusCode: 200,
               blockProvider: BlockProvider.MetaMask,
               blocklist: [blocked],
+              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
             });
           },
         },
-        async (fixtures) => {
+        async (fixtures: { driver: Driver }) => {
           resolve(fixtures.driver); // resolve this `beforeEach`
           await deferredTestSuite.promise; // now wait for all tests to complete
         },
@@ -496,17 +475,19 @@ describe('Phishing Detection', function () {
       // required to ensure MetaMask is fully started before running tests
       // if we had a way of detecting when the offscreen/background were ready
       // we could remove this
-      await unlockWallet(driver);
+      if (driver) {
+        await unlockWallet(driver);
+      }
     });
     after('Shut down fixtures', async function () {
       deferredTestSuite.resolve(); // let the fixtures know tests are complete
       await fixturePromise; // wait for fixtures to shutdown
     });
     afterEach('Ensure listeners are torn down between tests', function () {
-      server.removeAllListeners('request');
+      server?.removeAllListeners('request');
     });
     afterEach('Reset current window to about:blank', async function () {
-      await driver.openNewURL(`about:blank`);
+      await driver?.openNewURL(`about:blank`);
     });
     /* eslint-enable mocha/no-hooks-for-single-case, mocha/no-sibling-hooks */
 
@@ -516,13 +497,20 @@ describe('Phishing Detection', function () {
       // instance for each test.
       // eslint-disable-next-line no-loop-func
       it(`should display the MetaMask Phishing Detection page if a blocked site redirects via HTTP Status Code ${code} to another page`, async function () {
-        const { port } = server.address();
+        const address = server?.address() as { port: number } | null;
+        if (!address) {
+          throw new Error('Server address is null');
+        }
+        const { port } = address;
         const refresh = { name: 'Refresh', value: `0;url="${destination}"` };
         const location = { name: 'Location', value: destination };
         const { name, value } = code === 200 ? refresh : location;
         handleRequests(name, value, code);
         // navigate to the blocked site (it tries to redirect to the destination)
         const blockedUrl = `http://${blocked}:${port}/`;
+        if (!driver) {
+          throw new Error('Driver is not initialized');
+        }
         await driver.openNewURL(blockedUrl);
         // check that the redirect was ultimately _not_ followed and instead
         // went to our "MetaMask Phishing Detection" site
