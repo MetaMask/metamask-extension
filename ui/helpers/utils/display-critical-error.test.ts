@@ -31,7 +31,7 @@ process.env = {
   SENTRY_DSN: MOCK_SENTRY_DSN,
   SENTRY_DSN_DEV: MOCK_SENTRY_DSN_DEV,
   METAMASK_ENVIRONMENT: 'development',
-  IN_TEST: 'false', // we want to test sentry calls
+  IN_TEST: false, // we want to test sentry calls
 };
 
 jest.mock('../../../shared/lib/manifestFlags', () => ({
