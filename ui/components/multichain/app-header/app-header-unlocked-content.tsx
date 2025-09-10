@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import browser from 'webextension-polyfill';
 
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -23,9 +22,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -50,7 +46,6 @@ import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
-  getUseBlockie,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
@@ -73,12 +68,13 @@ import {
   getShowSupportDataConsentModal,
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
+import { PreferredAvatar } from '../../app/preferred-avatar';
+import {
+  getMultichainAccountGroupById,
+  getSelectedAccountGroup,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 type AppHeaderUnlockedContentProps = {
-  popupStatus: boolean;
-  currentNetwork: MultichainNetworkConfiguration;
-  networkOpenCallback: () => void;
-  disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
 };
@@ -93,9 +89,12 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const useBlockie = useSelector(getUseBlockie);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
+  );
+  const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
+  const selectedMultichainAccount = useSelector((state) =>
+    getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
 
   // Used for account picker
@@ -103,6 +102,9 @@ export const AppHeaderUnlockedContent = ({
   const shortenedAddress =
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
+  const accountName = isMultichainAccountsState2Enabled
+    ? selectedMultichainAccount.metadata.name
+    : internalAccount.metadata.name;
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -205,14 +207,9 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
+          <PreferredAvatar
             address={internalAccount.address}
-            size={AvatarAccountSize.Md}
+            className="shrink-0"
           />
         )}
         {internalAccount && (
@@ -225,7 +222,7 @@ export const AppHeaderUnlockedContent = ({
           >
             <AccountPicker
               address={internalAccount.address}
-              name={internalAccount.metadata.name}
+              name={accountName}
               showAvatarAccount={false}
               onClick={() => {
                 handleAccountMenuClick();
@@ -251,11 +248,8 @@ export const AppHeaderUnlockedContent = ({
     disableAccountPicker,
     dispatch,
     internalAccount,
-    t,
     trackEvent,
-    useBlockie,
     CopyButton,
-    copied,
     history,
     isMultichainAccountsState2Enabled,
   ]);
@@ -267,6 +261,7 @@ export const AppHeaderUnlockedContent = ({
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         gap={2}
+        className="min-w-0"
       >
         {AppContent}
       </Box>

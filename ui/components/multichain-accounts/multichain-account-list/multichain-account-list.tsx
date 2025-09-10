@@ -1,6 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
-import { AccountGroupId } from '@metamask/account-api';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../component-library';
@@ -30,15 +34,29 @@ import {
   getHDEntropyIndex,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MultichainAccountMenu } from '../multichain-account-menu';
+import { AddMultichainAccount } from '../add-multichain-account';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
-  selectedAccountGroup: AccountGroupId;
+  selectedAccountGroups: AccountGroupId[];
+  handleAccountClick?: (accountGroupId: AccountGroupId) => void;
+  formattedAccountGroupBalancesByWallet?: Partial<{
+    [walletId: string]: Partial<{
+      [groupId: string]: string; // display balance
+    }>;
+  }>;
+  isInSearchMode?: boolean;
+  displayWalletHeader?: boolean;
 };
 
 export const MultichainAccountList = ({
   wallets,
-  selectedAccountGroup,
+  selectedAccountGroups,
+  handleAccountClick,
+  formattedAccountGroupBalancesByWallet,
+  isInSearchMode = false,
+  displayWalletHeader = true,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -48,8 +66,14 @@ export const MultichainAccountList = ({
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
+  // Convert selectedAccountGroups array to Set for O(1) lookup
+  const selectedAccountGroupsSet = useMemo(
+    () => new Set(selectedAccountGroups),
+    [selectedAccountGroups],
+  );
+
   const walletTree = useMemo(() => {
-    const handleAccountClick = (accountGroupId: AccountGroupId) => {
+    const defaultHandleAccountClick = (accountGroupId: AccountGroupId) => {
       trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.NavAccountSwitched,
@@ -74,6 +98,9 @@ export const MultichainAccountList = ({
       dispatch(setSelectedMultichainAccount(accountGroupId));
       history.push(DEFAULT_ROUTE);
     };
+
+    const handleAccountClickToUse =
+      handleAccountClick ?? defaultHandleAccountClick;
 
     return Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
@@ -103,31 +130,65 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
+            // If prop is provided, attempt render balance. Otherwise do not render balance.
+            const balanceText = formattedAccountGroupBalancesByWallet
+              ? (formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
+                undefined)
+              : '';
+
+            // TODO: Implement logic for removable accounts
+            const isRemovable = false;
+
             return [
               <MultichainAccountCell
                 key={`multichain-account-cell-${groupId}`}
                 accountId={groupId as AccountGroupId}
                 accountName={groupData.metadata.name}
-                balance="$ n/a"
-                selected={selectedAccountGroup === groupId}
-                onClick={handleAccountClick}
+                balance={balanceText ?? ''}
+                selected={selectedAccountGroupsSet.has(
+                  groupId as AccountGroupId,
+                )}
+                onClick={handleAccountClickToUse}
+                endAccessory={
+                  <MultichainAccountMenu
+                    accountGroupId={groupId as AccountGroupId}
+                    isRemovable={isRemovable}
+                  />
+                }
               />,
             ];
           },
         );
 
-        return [...walletsAccumulator, walletHeader, ...groupsItems];
+        if (!isInSearchMode && walletData.type === AccountWalletType.Entropy) {
+          groupsItems.push(
+            <AddMultichainAccount
+              walletId={walletId as AccountWalletId}
+              key={`add-multichain-account-${walletId}`}
+            />,
+          );
+        }
+
+        return [
+          ...walletsAccumulator,
+          displayWalletHeader ? walletHeader : null,
+          ...groupsItems,
+        ];
       },
       [] as React.ReactNode[],
     );
   }, [
+    handleAccountClick,
     wallets,
     trackEvent,
     hdEntropyIndex,
     defaultHomeActiveTabName,
     dispatch,
     history,
-    selectedAccountGroup,
+    formattedAccountGroupBalancesByWallet,
+    isInSearchMode,
+    displayWalletHeader,
+    selectedAccountGroupsSet,
   ]);
 
   return <>{walletTree}</>;

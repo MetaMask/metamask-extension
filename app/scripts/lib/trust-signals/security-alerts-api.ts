@@ -1,13 +1,13 @@
-import { NetworkController } from '@metamask/network-controller';
-import type { AppStateController } from '../../controllers/app-state-controller';
 import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
+  AddAddressSecurityAlertResponse,
+  GetAddressSecurityAlertResponse,
+  ResultType,
   ScanAddressRequest,
   ScanAddressResponse,
   SupportedEVMChain,
 } from './types';
-import { getChainId } from './trust-signals-util';
 
 const TIMEOUT = 5 * SECOND;
 const ENDPOINT_ADDRESS_SCAN = 'address/evm/scan';
@@ -37,19 +37,47 @@ export async function scanAddress(
   return data;
 }
 
+/**
+ * Scans an address for security alerts, using cached response if available,
+ * otherwise making a new API call and caching the result.
+ *
+ * @param address - The address to scan for security alerts
+ * @param getAddressSecurityAlertResponse - Function to retrieve cached security alert response for an address
+ * @param addAddressSecurityAlertResponse - Function to add a new security alert response to the cache
+ * @param chainId - The chainId that the address exists on
+ * @returns Promise that resolves to the security scan response containing result type and label
+ */
 export async function scanAddressAndAddToCache(
   address: string,
-  appStateController: AppStateController,
-  networkController: NetworkController,
+  getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse,
+  addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse,
+  chainId: SupportedEVMChain,
 ): Promise<ScanAddressResponse> {
-  const cachedResponse =
-    appStateController.getAddressSecurityAlertResponse(address);
+  const cachedResponse = getAddressSecurityAlertResponse(address);
   if (cachedResponse) {
     return cachedResponse;
   }
 
-  const chainId = getChainId(networkController);
-  const result = await scanAddress(chainId, address);
-  appStateController.addAddressSecurityAlertResponse(address, result);
-  return result;
+  const loadingResponse: ScanAddressResponse = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: ResultType.Loading,
+    label: '',
+  };
+  addAddressSecurityAlertResponse(address, loadingResponse);
+
+  try {
+    const result = await scanAddress(chainId, address);
+    addAddressSecurityAlertResponse(address, result);
+    return result;
+  } catch (error) {
+    const errorResponse: ScanAddressResponse = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.ErrorResult,
+      label: '',
+    };
+    addAddressSecurityAlertResponse(address, errorResponse);
+    throw error;
+  }
 }

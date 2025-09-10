@@ -1,7 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -12,7 +11,8 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -37,7 +37,11 @@ import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
-import { ScanAddressResponse } from '../lib/trust-signals/types';
+import {
+  ScanAddressResponse,
+  GetAddressSecurityAlertResponse,
+  AddAddressSecurityAlertResponse,
+} from '../lib/trust-signals/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -75,7 +79,7 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  qrHardware: Json;
+  activeQrCodeScanRequest: QrScanRequest | null;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
@@ -106,10 +110,17 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
+export type AppStateControllerRequestQrCodeScanAction = {
+  type: 'AppStateController:requestQrCodeScan';
+  handler: (request: QrScanRequest) => Promise<SerializedUR>;
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
-export type AppStateControllerActions = AppStateControllerGetStateAction;
+export type AppStateControllerActions =
+  | AppStateControllerGetStateAction
+  | AppStateControllerRequestQrCodeScanAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -142,9 +153,7 @@ export type AppStateControllerEvents =
 /**
  * Events that this controller is allowed to subscribe.
  */
-type AllowedEvents =
-  | PreferencesControllerStateChangeEvent
-  | KeyringControllerQRKeyringStateChangeEvent;
+type AllowedEvents = PreferencesControllerStateChangeEvent;
 
 export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
@@ -162,7 +171,6 @@ type PollingTokenType =
 type AppStateControllerInitState = Partial<
   Omit<
     AppStateControllerState,
-    | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
@@ -216,12 +224,12 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   enableEnforcedSimulationsForTransactions: {},
   enforcedSimulationsSlippage: 10,
   enforcedSimulationsSlippageForTransactions: {},
+  activeQrCodeScanRequest: null,
   ...getInitialStateOverrides(),
 });
 
 function getInitialStateOverrides() {
   return {
-    qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
     addressSecurityAlertResponses: {},
@@ -328,7 +336,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  qrHardware: {
+  activeQrCodeScanRequest: {
     persist: false,
     anonymous: true,
   },
@@ -423,6 +431,8 @@ export class AppStateController extends BaseController<
 
   #approvalRequestId: string | null;
 
+  #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
+
   constructor({
     state = {},
     messenger,
@@ -465,19 +475,15 @@ export class AppStateController extends BaseController<
       },
     );
 
-    messenger.subscribe(
-      'KeyringController:qrKeyringStateChange',
-      (qrHardware: Json) =>
-        this.update((currentState) => {
-          // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-          currentState.qrHardware = qrHardware;
-        }),
-    );
-
     const { preferences } = messenger.call('PreferencesController:getState');
     if (typeof preferences.autoLockTimeLimit === 'number') {
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }
+
+    this.messagingSystem.registerActionHandler(
+      'AppStateController:requestQrCodeScan',
+      this.#requestQrCodeScan.bind(this),
+    );
 
     this.#approvalRequestId = null;
   }
@@ -976,6 +982,7 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
+      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
       state.nftsDropdownState = nftsDropdownState;
     });
   }
@@ -998,21 +1005,21 @@ export class AppStateController extends BaseController<
     }
   }
 
-  getAddressSecurityAlertResponse(
+  getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
     address: string,
-  ): ScanAddressResponse | undefined {
+  ): ScanAddressResponse | undefined => {
     return this.state.addressSecurityAlertResponses[address.toLowerCase()];
-  }
+  };
 
-  addAddressSecurityAlertResponse(
+  addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
     address: string,
     addressSecurityAlertResponse: ScanAddressResponse,
-  ): void {
+  ): void => {
     this.update((state) => {
       state.addressSecurityAlertResponses[address.toLowerCase()] =
         addressSecurityAlertResponse;
     });
-  }
+  };
 
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
@@ -1104,6 +1111,67 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
     });
+  }
+
+  /**
+   * Completes a QR code scan by resolving the promise with the scanned data.
+   *
+   * @param scannedData - The data that was scanned from the QR code.
+   * @throws If no QR code scan is in progress.
+   */
+  completeQrCodeScan(scannedData: SerializedUR): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.resolve(scannedData);
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Cancels the current QR code scan, if one is in progress.
+   * This will reject the promise with an error.
+   *
+   * @param error - The error to reject the promise with.
+   * @throws If no QR code scan is in progress.
+   */
+  cancelQrCodeScan(error?: Error): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Requests a QR code scan and returns a promise that resolves with the scanned data.
+   * If a scan is already in progress, it returns the existing promise.
+   *
+   * @param request - The QR code scan request.
+   * @returns The scanned QR code data.
+   */
+  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
+    if (this.#qrCodeScanPromise) {
+      return this.#qrCodeScanPromise.promise;
+    }
+
+    const deferredPromise = createDeferredPromise<SerializedUR>();
+    this.#qrCodeScanPromise = deferredPromise;
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = request;
+    });
+
+    return deferredPromise.promise;
   }
 
   setEnableEnforcedSimulations(enabled: boolean): void {

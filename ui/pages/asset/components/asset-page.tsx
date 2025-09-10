@@ -3,12 +3,14 @@ import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type Hex,
+  isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { isEqual } from 'lodash';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -48,17 +50,15 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
+  getIsMultichainAccountsState2Enabled,
   getIsSwapsChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedInternalAccount,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
   getImageForChainId,
-  getMultichainIsEvm,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
@@ -71,11 +71,17 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { getMultichainNativeAssetType } from '../../../selectors/assets';
+import {
+  getAssetsBySelectedAccountGroup,
+  getMultichainNativeAssetType,
+} from '../../../selectors/assets';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { AssetMarketDetails } from './asset-market-details';
 
+// TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
 const AssetPage = ({
   asset,
@@ -86,11 +92,21 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const history = useHistory();
-  const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(asset.chainId);
+  // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const caipChainId = isCaipChainId(asset.chainId)
+    ? asset.chainId
+    : formatChainIdToCaip(asset.chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  ) as InternalAccount;
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -105,12 +121,11 @@ const AssetPage = ({
     getIsBridgeChain(state, chainId),
   );
 
-  const account = useSelector(getSelectedInternalAccount, isEqual);
   const isSigningEnabled =
-    account.methods.includes(EthMethod.SignTransaction) ||
-    account.methods.includes(EthMethod.SignUserOperation) ||
-    account.methods.includes(SolMethod.SignTransaction) ||
-    account.methods.includes(BtcMethod.SendBitcoin);
+    selectedAccount.methods.includes(EthMethod.SignTransaction) ||
+    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
+    selectedAccount.methods.includes(SolMethod.SignTransaction) ||
+    selectedAccount.methods.includes(BtcMethod.SignPsbt);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -127,7 +142,7 @@ const AssetPage = ({
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
 
   const selectedAccountTokenBalancesAcrossChains =
-    tokenBalances[selectedAccount.address];
+    tokenBalances[selectedAccount.address as Hex];
 
   const multiChainAssets = useMultiChainAssets();
   const mutichainTokenWithFiatAmount = multiChainAssets
@@ -166,7 +181,7 @@ const AssetPage = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const address =
+  let address =
     (() => {
       if (type === AssetType.token) {
         return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
@@ -184,30 +199,52 @@ const AssetPage = ({
     return '';
   })();
 
-  const tokenHexBalance =
-    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
-
-  const balance = calculateTokenBalance({
-    isNative,
-    chainId,
-    address: address as Hex,
-    decimals,
-    nativeBalances,
-    selectedAccountTokenBalancesAcrossChains,
-  });
-
   const { currentPrice } = useCurrentPrice(asset);
 
-  const tokenFiatAmount = currentPrice
-    ? currentPrice * parseFloat(String(balance))
-    : 0;
+  let balance, tokenFiatAmount, assetId;
+  if (isMultichainAccountsState2Enabled) {
+    const assetWithBalance = accountGroupIdAssets[chainId]?.find(
+      (item) =>
+        item.assetId.toLowerCase() === address.toLowerCase() ||
+        // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
+        (!address && !isEvm && item.isNative),
+    );
 
-  // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
-  asset.balance = {
-    value: hexToDecimal(tokenHexBalance),
-    display: String(balance),
-    fiat: String(tokenFiatAmount),
-  };
+    assetId = assetWithBalance?.assetId || '';
+    address = assetWithBalance?.assetId || '';
+    balance = assetWithBalance?.balance ?? '0';
+    tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
+    const tokenHexBalance = assetWithBalance?.rawBalance as string;
+
+    asset.balance = {
+      value: hexToDecimal(tokenHexBalance),
+      display: balance,
+      fiat: String(tokenFiatAmount),
+    };
+  } else {
+    const tokenHexBalance =
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
+
+    balance = calculateTokenBalance({
+      isNative,
+      chainId,
+      address: address as Hex,
+      decimals,
+      nativeBalances,
+      selectedAccountTokenBalancesAcrossChains,
+    });
+
+    tokenFiatAmount = currentPrice
+      ? currentPrice * parseFloat(String(balance))
+      : 0;
+
+    // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
+    asset.balance = {
+      value: hexToDecimal(tokenHexBalance),
+      display: String(balance),
+      fiat: String(tokenFiatAmount),
+    };
+  }
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -218,10 +255,15 @@ const AssetPage = ({
         metaMetricsId,
         isMetaMetricsEnabled,
         isMarketingEnabled,
-        account.address,
+        selectedAccount.address,
         'spending-caps',
       ),
-    [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
+    [
+      selectedAccount.address,
+      isMarketingEnabled,
+      isMetaMetricsEnabled,
+      metaMetricsId,
+    ],
   );
 
   const networkConfigurationsByChainId = useSelector(
@@ -230,25 +272,26 @@ const AssetPage = ({
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
-  const tokenWithFiatAmount = isEvm
-    ? {
-        address: address as Hex,
-        chainId,
-        symbol,
-        image,
-        title: name ?? symbol,
-        tokenFiatAmount: showFiat ? tokenFiatAmount : null,
-        string: balance ? balance.toString() : '',
-        decimals: asset.decimals,
-        aggregators:
-          type === AssetType.token && asset.aggregators
-            ? asset.aggregators
-            : [],
-        isNative: type === AssetType.native,
-        primary: balance ? balance.toString() : '',
-        secondary: balance ? Number(balance) : 0,
-      }
-    : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
+  const tokenWithFiatAmount =
+    isEvm || isMultichainAccountsState2Enabled
+      ? {
+          address: isEvm ? address : assetId,
+          chainId,
+          symbol,
+          image,
+          title: name ?? symbol,
+          tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+          string: balance ? balance.toString() : '',
+          decimals: asset.decimals,
+          aggregators:
+            type === AssetType.token && asset.aggregators
+              ? asset.aggregators
+              : [],
+          isNative: type === AssetType.native,
+          primary: balance ? balance.toString() : '',
+          secondary: balance ? Number(balance) : 0,
+        }
+      : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
 
   const { safeChains } = useSafeChains();
 
@@ -302,7 +345,7 @@ const AssetPage = ({
         {type === AssetType.native ? (
           <CoinButtons
             {...{
-              account,
+              account: selectedAccount,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
@@ -312,7 +355,7 @@ const AssetPage = ({
             }}
           />
         ) : (
-          <TokenButtons token={asset} />
+          <TokenButtons token={asset} account={selectedAccount} />
         )}
       </Box>
       <Box
@@ -331,7 +374,7 @@ const AssetPage = ({
         {[AssetType.token, AssetType.native].includes(type) && (
           <TokenCell
             key={`${symbol}-${address}`}
-            token={tokenWithFiatAmount}
+            token={tokenWithFiatAmount as TokenWithFiatAmount}
             disableHover={true}
             safeChains={safeChains}
           />
