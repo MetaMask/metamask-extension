@@ -141,7 +141,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
@@ -229,7 +229,7 @@
         "ethers>@ethersproject/transactions": true
       }
     },
-    "@ethersproject/hash": {
+    "ethers>@ethersproject/hash": {
       "packages": {
         "ethers>@ethersproject/address": true,
         "ethers>@ethersproject/base64": true,
@@ -339,7 +339,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "ethers>@ethersproject/networks": true,
         "ethers>@ethersproject/properties": true,
@@ -417,13 +417,13 @@
         "@ethersproject/abi>@ethersproject/logger": true
       }
     },
-    "@ethersproject/wallet": {
+    "ethers>@ethersproject/wallet": {
       "packages": {
         "ethers>@ethersproject/abstract-provider": true,
         "ethers>@ethersproject/abstract-signer": true,
         "ethers>@ethersproject/address": true,
         "@ethersproject/bytes": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/hdnode": true,
         "ethers>@ethersproject/json-wallets": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
@@ -451,7 +451,7 @@
     "ethers>@ethersproject/wordlists": {
       "packages": {
         "@ethersproject/bytes": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
         "ethers>@ethersproject/strings": true
@@ -644,7 +644,7 @@
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
       "packages": {
         "ethers>@ethersproject/constants": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "axios": true,
@@ -1017,17 +1017,20 @@
     },
     "@metamask/design-system-react": {
       "globals": {
-        "__import__": true,
         "console.warn": true
       },
       "packages": {
+        "@metamask/design-system-react>@metamask/design-system-shared": true,
         "@metamask/jazzicon": true,
-        "@metamask/utils": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
-        "@solana/addresses": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
         "@metamask/design-system-react>tailwind-merge": true
+      }
+    },
+    "@metamask/design-system-react>@metamask/design-system-shared": {
+      "packages": {
+        "@metamask/utils": true
       }
     },
     "@metamask/eip-5792-middleware": {
@@ -2056,7 +2059,7 @@
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@ethersproject/wallet": true,
+        "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
@@ -2107,7 +2110,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
-        "@metamask/utils>lodash.memoize": true,
+        "lodash": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
       }
@@ -2151,7 +2154,7 @@
         "@ngraveio/bc-ur>cbor-sync": true,
         "@ngraveio/bc-ur>crc": true,
         "@ngraveio/bc-ur>jsbi": true,
-        "@ngraveio/bc-ur>sha.js": true
+        "addons-linter>sha.js": true
       }
     },
     "@noble/ciphers": {
@@ -3161,7 +3164,7 @@
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>md5.js": true,
         "ethereumjs-util>create-hash>ripemd160": true,
-        "@ngraveio/bc-ur>sha.js": true
+        "addons-linter>sha.js": true
       }
     },
     "crypto-browserify>pbkdf2>create-hash": {
@@ -3176,7 +3179,7 @@
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "koa>content-disposition>safe-buffer": true,
-        "@ngraveio/bc-ur>sha.js": true
+        "addons-linter>sha.js": true
       }
     },
     "cron-parser": {
@@ -3476,7 +3479,7 @@
         "ethers>@ethersproject/bytes": true,
         "ethers>@ethersproject/constants": true,
         "@ethersproject/contracts": true,
-        "@ethersproject/hash": true,
+        "ethers>@ethersproject/hash": true,
         "@ethersproject/hdnode": true,
         "ethers>@ethersproject/json-wallets": true,
         "ethers>@ethersproject/keccak256": true,
@@ -3491,7 +3494,7 @@
         "ethers>@ethersproject/strings": true,
         "ethers>@ethersproject/transactions": true,
         "ethers>@ethersproject/units": true,
-        "@ethersproject/wallet": true,
+        "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
       }
@@ -4238,8 +4241,8 @@
         "process": true,
         "crypto-browserify>pbkdf2>ripemd160": true,
         "koa>content-disposition>safe-buffer": true,
-        "@ngraveio/bc-ur>sha.js": true,
-        "@ngraveio/bc-ur>sha.js>to-buffer": true
+        "addons-linter>sha.js": true,
+        "addons-linter>sha.js>to-buffer": true
       }
     },
     "@material-ui/core>popper.js": {
@@ -4948,11 +4951,11 @@
         "browserify>timers-browserify": true
       }
     },
-    "@ngraveio/bc-ur>sha.js": {
+    "addons-linter>sha.js": {
       "packages": {
         "pumpify>inherits": true,
         "koa>content-disposition>safe-buffer": true,
-        "@ngraveio/bc-ur>sha.js>to-buffer": true
+        "addons-linter>sha.js>to-buffer": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-list": {
@@ -5089,7 +5092,7 @@
         "console": true
       }
     },
-    "@ngraveio/bc-ur>sha.js>to-buffer": {
+    "addons-linter>sha.js>to-buffer": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "koa>content-disposition>safe-buffer": true,
