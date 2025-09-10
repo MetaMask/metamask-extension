@@ -269,7 +269,10 @@ jobs:
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
+    if: |
+      always() &&
+      (needs.needs-e2e.result == 'success' || needs.needs-e2e.result == 'skipped') &&
+      needs.needs-e2e.outputs.needs-e2e == 'true'
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -279,7 +282,10 @@ jobs:
       - needs-e2e
       - build-test-mv2-browserify
       - build-test-flask-mv2-browserify
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
+    if: |
+      always() &&
+      (needs.needs-e2e.result == 'success' || needs.needs-e2e.result == 'skipped') &&
+      needs.needs-e2e.outputs.needs-e2e == 'true'
     uses: ./.github/workflows/e2e-firefox.yml
 
   build-storybook:

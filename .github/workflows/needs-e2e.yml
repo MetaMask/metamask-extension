@@ -78,7 +78,6 @@ jobs:
               echo "-> Running E2E tests - found changes outside non_e2e_related_files filter"
             fi
           fi
-          echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
 
   prep-e2e:
     # For a `pull_request` event, the branch is `github.head_ref``.
