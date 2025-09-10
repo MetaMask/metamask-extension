@@ -27,8 +27,7 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('GatorPermissionsControllerInit', () => {
-  const MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID =
-    'npm:@metamask/permissions-kernel-snap';
+  const MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID = 'npm:mock-snap-id';
   const GatorPermissionsControllerClassMock = jest.mocked(
     GatorPermissionsController,
   );
