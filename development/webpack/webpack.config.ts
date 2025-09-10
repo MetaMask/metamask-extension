@@ -104,7 +104,6 @@ const plugins: WebpackPluginInstance[] = [
   new HtmlBundlerPlugin({
     preprocessorOptions: { useWith: false },
     minify: args.minify,
-    integrity: 'auto',
     test: /\.html$/u, // default is eta/html, we only want html
     data: {
       isTest: args.test,
