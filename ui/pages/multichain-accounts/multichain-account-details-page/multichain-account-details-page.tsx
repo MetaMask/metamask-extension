@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
@@ -38,6 +38,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
+import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
@@ -60,6 +61,8 @@ export const MultichainAccountDetailsPage = () => {
   const accountsWithAddresses = useSelector((state) =>
     getInternalAccountsFromGroupById(state, accountGroupId),
   );
+  const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
+    useState(false);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
@@ -85,6 +88,10 @@ export const MultichainAccountDetailsPage = () => {
     }
   };
 
+  const handleAccountNameAction = () => {
+    setIsAccountRenameModalOpen(true);
+  };
+
   return (
     <Page className="multichain-account-details-page">
       <Header
@@ -101,7 +108,7 @@ export const MultichainAccountDetailsPage = () => {
           />
         }
       >
-        {t('accountDetails')}
+        {multichainAccount.metadata.name}
       </Header>
       <Content
         className="multichain-account-details-page__content"
@@ -117,6 +124,7 @@ export const MultichainAccountDetailsPage = () => {
           <AccountDetailsRow
             label={t('accountName')}
             value={multichainAccount.metadata.name}
+            onClick={handleAccountNameAction}
             endAccessory={
               <ButtonIcon
                 iconName={IconName.ArrowRight}
@@ -221,6 +229,13 @@ export const MultichainAccountDetailsPage = () => {
               }
             />
           </Box>
+        )}
+        {isAccountRenameModalOpen && (
+          <MultichainAccountEditModal
+            isOpen={isAccountRenameModalOpen}
+            onClose={() => setIsAccountRenameModalOpen(false)}
+            accountGroupId={multichainAccount.id}
+          />
         )}
       </Content>
     </Page>
