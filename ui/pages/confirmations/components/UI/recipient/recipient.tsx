@@ -1,12 +1,7 @@
 import React from 'react';
-
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Text,
-} from '../../../../../components/component-library';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { Box, Text } from '../../../../../components/component-library';
 import {
   AlignItems,
   Display,
@@ -22,13 +17,11 @@ export const Recipient = ({
   isAccount,
   isSelected,
   recipient,
-  useBlockie,
   onClick,
 }: {
   isAccount?: boolean;
   isSelected?: boolean;
   recipient: RecipientType;
-  useBlockie: boolean;
   onClick: (recipient: RecipientType) => void;
 }) => {
   const { address } = recipient;
@@ -54,15 +47,7 @@ export const Recipient = ({
       gap={4}
       onClick={() => onClick(recipient)}
     >
-      <AvatarAccount
-        address={address}
-        size={AvatarAccountSize.Lg}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-      />
+      <PreferredAvatar address={address} size={AvatarAccountSize.Lg} />
       <Box>
         <Text variant={TextVariant.bodyMdMedium}>{recipientName}</Text>
         <Text
