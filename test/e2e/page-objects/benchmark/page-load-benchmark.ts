@@ -3,6 +3,7 @@ import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
 import { mean } from 'lodash';
+import { DAPP_URL } from '../../constants';
 
 declare global {
   /**
@@ -328,7 +329,7 @@ export class PageLoadBenchmark {
     });
 
     const result: BenchmarkResult = {
-      page: url,
+      page: url === DAPP_URL ? 'Localhost MetaMask Test Dapp' : url,
       run: runNumber,
       metrics,
       timestamp: new Date().getTime(),
