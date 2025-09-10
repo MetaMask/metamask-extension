@@ -55,10 +55,10 @@ exports[`Bridge renders the component with initial props 1`] = `
         style="overflow: auto;"
       >
         <div
-          class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-8 mm-box--flex-direction-column mm-box--width-full"
+          class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
         >
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-6 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
           >
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -138,12 +138,12 @@ exports[`Bridge renders the component with initial props 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-8 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
             style="position: relative;"
           >
             <div
               class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-alternative-soft"
-              style="position: absolute; top: calc(-20px + 1px); right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
+              style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
             >
               <button
                 aria-label="switch-tokens"
@@ -159,7 +159,7 @@ exports[`Bridge renders the component with initial props 1`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-6 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -250,14 +250,14 @@ exports[`Bridge renders the component with initial props 1`] = `
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full mm-box--height-full"
             />
             <div
-              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-6 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+              style="margin-top: auto;"
             >
               <div
-                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
-                style="padding-inline: 16px; position: relative; overflow: hidden;"
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
               >
-                <div
-                  class="mm-box multichain-page-footer mm-box--padding-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
                 >
                   <div
                     style="display: contents;"
@@ -276,6 +276,11 @@ exports[`Bridge renders the component with initial props 1`] = `
               </div>
             </div>
           </div>
+        </div>
+        <div
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative-soft"
+        >
+          <div />
         </div>
       </div>
     </div>

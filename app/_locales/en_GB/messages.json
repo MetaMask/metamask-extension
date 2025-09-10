@@ -514,6 +514,9 @@
   "alertReasonOriginTrustSignalMalicious": {
     "message": "Malicious site"
   },
+  "alertReasonOriginTrustSignalVerified": {
+    "message": "Verified site"
+  },
   "alertReasonOriginTrustSignalWarning": {
     "message": "Suspicious site"
   },
@@ -4796,7 +4799,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationLimitOrderFilledTitle": {
-    "message": "✅ Limit order filled"
+    "message": "Limit order filled"
   },
   "pushNotificationPositionLiquidatedDescriptionLong": {
     "message": "Your $1 long was closed.",
@@ -4807,7 +4810,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationPositionLiquidatedTitle": {
-    "message": "😟 Position liquidated"
+    "message": "Position liquidated"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
@@ -4818,7 +4821,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationStopLossTriggeredTitle": {
-    "message": "🛑 Stop loss triggered"
+    "message": "Stop loss triggered"
   },
   "pushNotificationTakeProfitTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your take profit.",
@@ -4829,7 +4832,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "📈 Take profit triggered"
+    "message": "Take profit triggered"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "You received $1 $2"
@@ -4948,6 +4951,9 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
+  },
+  "recipientEditAriaLabel": {
+    "message": "Edit recipient"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -6480,7 +6486,7 @@
     "message": "Aggregator"
   },
   "swapAllowSwappingOf": {
-    "message": "Allow swapping of $1",
+    "message": "Allow exact access to $1 $2 on $3 for swapping",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
   "swapAmountReceived": {
@@ -7159,15 +7165,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
   },
-  "trustSignalUrlMalicious": {
-    "message": "Malicious site"
-  },
-  "trustSignalUrlSuspicious": {
-    "message": "Suspicious site"
-  },
-  "trustSignalUrlVerified": {
-    "message": "Verified site"
-  },
   "tryAgain": {
     "message": "Try again"
   },
@@ -7228,6 +7225,10 @@
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
+  },
+  "unifiedSwapFromTo": {
+    "message": "Swap $1 $2 to $3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "units": {
     "message": "units"

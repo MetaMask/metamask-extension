@@ -56,11 +56,12 @@ const getTimerColor = (timeInSeconds: number) => {
 
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
+  onOpenRecipientModal,
   selectedDestinationAccount,
 }: {
   onOpenSlippageModal: () => void;
   selectedDestinationAccount: DestinationAccount | null;
-  onOpenRecipientModal?: () => void;
+  onOpenRecipientModal: () => void;
 }) => {
   const t = useI18nContext();
   const { activeQuote, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
@@ -391,6 +392,14 @@ export const MultichainBridgeQuoteCard = ({
               >
                 {selectedDestinationAccount.displayName}
               </Text>
+              <ButtonIcon
+                iconName={IconName.Edit}
+                size={ButtonIconSize.Sm}
+                color={IconColor.iconAlternative}
+                onClick={onOpenRecipientModal}
+                ariaLabel={t('recipientEditAriaLabel')}
+                data-testid="recipient-edit-button"
+              />
             </Row>
           </Row>
         )}
