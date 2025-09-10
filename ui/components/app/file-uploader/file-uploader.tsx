@@ -151,11 +151,11 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           textAlign={TextAlign.Center}
           borderRadius={BorderRadius.LG}
           borderWidth={1}
-          onDragOver={(e) => {
+          onDragOver={(e: React.DragEvent<HTMLButtonElement>) => {
             e.preventDefault();
             setIsDragging(true);
           }}
-          onDragLeave={(e) => {
+          onDragLeave={(e: React.DragEvent<HTMLButtonElement>) => {
             e.preventDefault();
             setIsDragging(false);
           }}
