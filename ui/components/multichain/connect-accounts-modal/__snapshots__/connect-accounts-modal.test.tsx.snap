@@ -163,7 +163,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                                   <rect
                                     fill="#FA4300"
                                     height="32"
-                                    transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
+                                    transform="translate(-1.712066926084717 -0.6920409130150889) rotate(264.3 16 16)"
                                     width="32"
                                     x="0"
                                     y="0"
@@ -222,7 +222,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                           <rect
                             fill="#FA4300"
                             height="32"
-                            transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
+                            transform="translate(-1.712066926084717 -0.6920409130150889) rotate(264.3 16 16)"
                             width="32"
                             x="0"
                             y="0"
