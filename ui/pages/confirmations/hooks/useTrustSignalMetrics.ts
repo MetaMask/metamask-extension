@@ -4,26 +4,25 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
-import { updateEventFragment } from '../../../store/actions';
-import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { isSignatureTransactionType } from '../utils';
 import type { Confirmation, SignatureRequestType } from '../types/confirm';
 import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
+import { useTransactionEventFragment } from './useTransactionEventFragment';
+import { useSignatureEventFragment } from './useSignatureEventFragment';
 
 export type TrustSignalMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   address_alert_response?: ResultType;
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  anonymousProperties?: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    address_label?: string;
-  };
 };
 
+export type TrustSignalMetricsAnonProperties = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_label?: string;
+};
+
+// For transactions, this is the 'to' address. For signatures, this is the verifying contract.
 function getTargetAddress(confirmation: Confirmation): string | null {
   if (!isSignatureTransactionType(confirmation)) {
     const txMeta = confirmation as TransactionMeta;
@@ -41,66 +40,10 @@ function getTargetAddress(confirmation: Confirmation): string | null {
   return null;
 }
 
-function updateTransactionEventFragments(
-  transactionId: string,
-  properties: TrustSignalMetricsProperties,
-): void {
-  const addedFragmentId = `transaction-added-${transactionId}`;
-  const submittedFragmentId = `transaction-submitted-${transactionId}`;
-
-  updateEventFragment(addedFragmentId, { properties });
-  updateEventFragment(submittedFragmentId, { properties });
-
-  // Update anonymous events with sensitive properties (includes address_label)
-  if (properties.anonymousProperties?.address_label) {
-    updateEventFragment(addedFragmentId, {
-      sensitiveProperties: properties,
-    });
-    updateEventFragment(submittedFragmentId, {
-      sensitiveProperties: properties,
-    });
-  }
-}
-
-/**
- * Updates signature event fragments with trust signal metrics
- */
-function updateSignatureEventFragments(
-  confirmation: SignatureRequestType,
-  properties: TrustSignalMetricsProperties,
-): void {
-  // TODO: Implement completely when adding signature support.
-  // const requestId = confirmation?.msgParams?.requestId as number;
-  // if (!requestId) {
-  //   return;
-  // }
-  // const fragmentId = generateSignatureUniqueId(requestId);
-  // updateEventFragment(fragmentId, { properties });
-  // if (properties.anonymousProperties?.address_label) {
-  //   updateEventFragment(fragmentId, {
-  //     sensitiveProperties: properties,
-  //   });
-  // }
-}
-
-function updateConfirmationEventFragments(
-  confirmation: Confirmation,
-  properties: TrustSignalMetricsProperties,
-): void {
-  const confirmationId = confirmation?.id ?? '';
-
-  if (isSignatureTransactionType(confirmation)) {
-    updateSignatureEventFragments(
-      confirmation as SignatureRequestType,
-      properties,
-    );
-    return;
-  }
-  updateTransactionEventFragments(confirmationId, properties);
-}
-
 export function useTrustSignalMetrics() {
   const { currentConfirmation } = useConfirmContext();
+  const { updateSignatureEventFragment } = useSignatureEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const addressToCheck = useMemo(
     () => getTargetAddress(currentConfirmation),
@@ -113,17 +56,20 @@ export function useTrustSignalMetrics() {
       : undefined,
   );
 
-  const properties = useMemo((): TrustSignalMetricsProperties => {
+  const { properties, anonymousProperties } = useMemo((): {
+    properties: TrustSignalMetricsProperties;
+    anonymousProperties: TrustSignalMetricsAnonProperties;
+  } => {
     if (!addressSecurityAlertResponse) {
-      return {};
+      return { properties: {}, anonymousProperties: {} };
     }
 
     return {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      address_alert_response: addressSecurityAlertResponse.result_type,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        address_alert_response: addressSecurityAlertResponse.result_type,
+      },
       anonymousProperties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -137,8 +83,32 @@ export function useTrustSignalMetrics() {
       return;
     }
 
-    updateConfirmationEventFragments(currentConfirmation, properties);
-  }, [properties, currentConfirmation, addressSecurityAlertResponse]);
+    const ownerId = currentConfirmation?.id ?? '';
+
+    if (isSignatureTransactionType(currentConfirmation)) {
+      updateSignatureEventFragment({ properties });
+      if (anonymousProperties.address_label) {
+        updateSignatureEventFragment({
+          sensitiveProperties: anonymousProperties,
+        });
+      }
+    } else {
+      updateTransactionEventFragment({ properties }, ownerId);
+      if (anonymousProperties.address_label) {
+        updateTransactionEventFragment(
+          { sensitiveProperties: anonymousProperties },
+          ownerId,
+        );
+      }
+    }
+  }, [
+    addressSecurityAlertResponse,
+    currentConfirmation,
+    properties,
+    anonymousProperties,
+    updateSignatureEventFragment,
+    updateTransactionEventFragment,
+  ]);
 
   useEffect(() => {
     updateTrustSignalMetrics();
