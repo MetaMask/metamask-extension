@@ -1,4 +1,3 @@
-import { Provider } from '@metamask/network-controller';
 import {
   ActionConstraint,
   Messenger,
@@ -124,13 +123,6 @@ export type ControllerInitRequest<
   ): Promise<string[]>;
 
   /**
-   * Retrieve the provider instance for the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getProvider: () => Provider;
-
-  /**
    * Retrieve a transaction metrics request instance.
    * Includes data and callbacks required to generate metrics.
    */
@@ -147,6 +139,11 @@ export type ControllerInitRequest<
     oneKey?: HardwareTransportBridgeClass;
     ledgerBridge?: HardwareTransportBridgeClass;
   };
+
+  /**
+   * The Infura project ID to use for the network controller.
+   */
+  infuraProjectId: string;
 
   /**
    * Function to update account balance for network of the transaction
