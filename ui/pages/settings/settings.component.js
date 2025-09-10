@@ -529,7 +529,7 @@ class SettingsPage extends PureComponent {
         <Route
           path={TRANSACTION_SHIELD_ROUTE}
           element={<TransactionShield />}
-        />{' '}
+        />
         <Route
           exact
           path={TRANSACTION_SHIELD_CLAIM_ROUTE}
