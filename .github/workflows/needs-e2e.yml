@@ -34,20 +34,8 @@ jobs:
             fi
           fi
 
-      - name: Check skip label
-        id: skip-label
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "SKIP=false" >> "$GITHUB_OUTPUT"
-          if gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name' | grep -qx "skip-e2e"; then
-            echo "SKIP=true" >> "$GITHUB_OUTPUT"
-            echo "-> SKIP=true due to 'skip-e2e' label on PR"
-          fi
-        env:
-          GH_TOKEN: ${{ github.token }}
-
       - name: Check changed files
-        if: steps.skip-tag.outputs.SKIP != 'true' && steps.skip-label.outputs.SKIP != 'true' && (github.event_name == 'pull_request' || github.event_name == 'merge_group')
+        if: steps.skip-tag.outputs.SKIP != 'true' && (github.event_name == 'pull_request' || github.event_name == 'merge_group')
         # v3.0.2
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
         id: changes
@@ -64,8 +52,8 @@ jobs:
           # Only consider skipping for PRs and merge-queue events
           if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
 
-            # Skip if [skip e2e] tag found or label exists on PR
-            if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]] || [[ "${{ steps.skip-label.outputs.SKIP }}" == "true" ]]; then
+            # Skip if [skip e2e] tag found
+            if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]]; then
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
               echo "-> Skipping E2E tests due to 'skip-e2e' tag"
 
