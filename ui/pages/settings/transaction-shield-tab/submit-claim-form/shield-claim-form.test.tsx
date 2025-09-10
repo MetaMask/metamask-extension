@@ -1,6 +1,6 @@
 import React from 'react';
-import SubmitClaimForm from './submit-claim-form';
 import { fireEvent, renderWithProvider } from '../../../../../test/jest';
+import SubmitClaimForm from './submit-claim-form';
 
 describe('Submit Claim Form', () => {
   it('should render', () => {
