@@ -49,6 +49,7 @@ exports[`ConnectPage should render correctly 1`] = `
             </div>
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+              style="word-break: break-word; white-space: normal;"
             >
               metamask.github.io
             </h2>
@@ -463,6 +464,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             </div>
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+              style="word-break: break-word; white-space: normal;"
             >
               metamask.github.io
             </h2>
