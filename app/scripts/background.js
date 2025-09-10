@@ -1141,7 +1141,7 @@ export function setupController(
           category: MetaMetricsEventCategory.PortStream,
           properties: {
             chunkSize: e.chunkSize,
-            numberOfChunks: e.numberOfChunks
+            numberOfChunks: e.numberOfChunks,
           },
         });
       });
