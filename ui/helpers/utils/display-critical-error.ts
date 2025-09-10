@@ -39,17 +39,6 @@ export function extractEnvelopeUrlFromDsn(dsn: string): string | null {
 }
 
 function getSentryTarget() {
-  if (
-    process.env.IN_TEST &&
-    (!process.env.SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
-  ) {
-    return null;
-  }
-
-  if (!process.env.SENTRY_DSN) {
-    return null;
-  }
-
   if (process.env.METAMASK_ENVIRONMENT !== 'production') {
     return process.env.SENTRY_DSN_DEV;
   }
