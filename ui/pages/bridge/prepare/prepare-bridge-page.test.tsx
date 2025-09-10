@@ -5,28 +5,24 @@ import * as ReactReduxModule from 'react-redux';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHook } from '@testing-library/react-hooks';
-import { Hex } from '@metamask/utils';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
-import { mockNetworkState } from '../../../../test/stub/networks';
 import * as SelectorsModule from '../../../selectors/multichain/networks';
 import * as NetworkOrderControllerActionsModule from '../../../store/controller-actions/network-order-controller';
 import PrepareBridgePage, {
   useEnableMissingNetwork,
 } from './prepare-bridge-page';
 
-// Mock the isSendBundleSupported function
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions'),
-  isSendBundleSupported: jest.fn(),
-}));
-
-// Mock the useGasIncluded7702 hook
+// Mock the bridge hooks
 jest.mock('../hooks/useGasIncluded7702', () => ({
   useGasIncluded7702: jest.fn().mockReturnValue(false),
+}));
+
+jest.mock('../hooks/useIsSendBundleSupported', () => ({
+  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
 }));
 
 describe('PrepareBridgePage', () => {
@@ -336,133 +332,5 @@ describe('useEnableMissingNetwork', () => {
 
     hook.result.current('0x1111'); // not popular network
     expect(mocks.mockEnableAllPopularNetworks).not.toHaveBeenCalled();
-  });
-});
-
-describe('PrepareBridgePage - Race Conditions', () => {
-  const mockIsSendBundleSupported = jest.requireMock(
-    '../../../store/actions',
-  ).isSendBundleSupported;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    // Reset the mock to a default resolved value
-    mockIsSendBundleSupported.mockResolvedValue(false);
-  });
-
-  it('handles isSendBundleSupported call on mount', async () => {
-    // Test that the component correctly calls isSendBundleSupported
-    const chainId: Hex = '0x1';
-
-    // Mock response
-    mockIsSendBundleSupported.mockResolvedValue(true);
-
-    const mockStore = createBridgeMockStore({
-      metamaskStateOverrides: {
-        ...mockNetworkState({ chainId }),
-      },
-      bridgeStateOverrides: {
-        srcTokens: { '0x00': {} },
-        srcTopAssets: [],
-        quoteRequest: {
-          srcChainId: chainId,
-        },
-      },
-    });
-
-    const { unmount } = renderWithProvider(
-      <PrepareBridgePage />,
-      configureStore(mockStore),
-    );
-
-    // Wait for the effect to trigger and complete
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
-
-    // Verify that the function was called with the correct chain ID
-    expect(mockIsSendBundleSupported).toHaveBeenCalledWith(chainId);
-    expect(mockIsSendBundleSupported).toHaveBeenCalledTimes(1);
-
-    // Clean up
-    unmount();
-  });
-
-  it('handles isSendBundleSupported errors gracefully', async () => {
-    const testError = new Error('Network error');
-    mockIsSendBundleSupported.mockRejectedValue(testError);
-
-    // Spy on console.error
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
-    const mockStore = createBridgeMockStore({
-      bridgeStateOverrides: {
-        srcTokens: { '0x00': {} },
-        srcTopAssets: [],
-        quoteRequest: {
-          srcChainId: '0x1',
-        },
-      },
-    });
-
-    const { container } = renderWithProvider(
-      <PrepareBridgePage />,
-      configureStore(mockStore),
-    );
-
-    // Wait for async operations
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    });
-
-    // Should have logged the error
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Error checking send bundle support:',
-      testError,
-    );
-
-    // Component should still render
-    expect(container).toBeTruthy();
-
-    consoleErrorSpy.mockRestore();
-  });
-
-  it('handles component unmount during async operations', async () => {
-    // Create a promise that we can control
-    let resolveSendBundle: (value: boolean) => void;
-    const sendBundlePromise = new Promise<boolean>((resolve) => {
-      resolveSendBundle = resolve;
-    });
-
-    mockIsSendBundleSupported.mockReturnValue(sendBundlePromise);
-
-    const mockStore = createBridgeMockStore({
-      bridgeStateOverrides: {
-        srcTokens: { '0x00': {} },
-        srcTopAssets: [],
-        quoteRequest: {
-          srcChainId: '0x1',
-        },
-      },
-    });
-
-    const { unmount } = renderWithProvider(
-      <PrepareBridgePage />,
-      configureStore(mockStore),
-    );
-
-    // Unmount before the promise resolves
-    unmount();
-
-    // Now resolve the promise
-    await act(async () => {
-      if (resolveSendBundle) {
-        resolveSendBundle(true);
-      }
-      await Promise.resolve();
-    });
-
-    // No errors should be thrown
-    // This test passes if no errors occur
   });
 });
