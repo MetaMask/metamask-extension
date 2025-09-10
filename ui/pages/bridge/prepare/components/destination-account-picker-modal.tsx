@@ -104,7 +104,7 @@ export const DestinationAccountPickerModal = ({
             disableStateStyles: true,
           }}
           style={{
-            height: 48,
+            minHeight: 48,
             marginBottom: 12,
             outline: 'none',
           }}

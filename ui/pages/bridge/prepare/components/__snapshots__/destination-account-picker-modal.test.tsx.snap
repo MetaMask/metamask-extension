@@ -55,7 +55,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-width-0"
           data-testid="destination-account-picker-modal-search-input"
-          style="height: 48px; margin-bottom: 12px; outline: none;"
+          style="min-height: 48px; margin-bottom: 12px; outline: none;"
         >
           <svg
             class="inline-block w-5 h-5 text-icon-default"
@@ -768,7 +768,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
         <div
           class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-width-0"
           data-testid="destination-account-picker-modal-search-input"
-          style="height: 48px; margin-bottom: 12px; outline: none;"
+          style="min-height: 48px; margin-bottom: 12px; outline: none;"
         >
           <svg
             class="inline-block w-5 h-5 text-icon-default"
