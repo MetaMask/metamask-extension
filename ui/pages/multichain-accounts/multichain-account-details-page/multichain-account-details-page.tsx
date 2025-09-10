@@ -109,13 +109,12 @@ export const MultichainAccountDetailsPage = () => {
         paddingTop={3}
         gap={4}
       >
-        <Box className="multichain-account-details-page__section">
-          <Box className="flex justify-center">
-            <PreferredAvatar
-              address={accountGroupId}
-              size={AvatarAccountSize.Xl}
-            />
-          </Box>
+        <Box className="flex justify-center">
+          <PreferredAvatar
+            address={accountGroupId}
+            size={AvatarAccountSize.Xl}
+            data-testid="avatar"
+          />
         </Box>
         <Box className="multichain-account-details__section">
           <AccountDetailsRow

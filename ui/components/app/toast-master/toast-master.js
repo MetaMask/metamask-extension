@@ -122,10 +122,7 @@ function ConnectAccountToast() {
         dataTestId="connect-account-toast"
         key="connect-account-toast"
         startAdornment={
-          <PreferredAvatar
-            address={account.address}
-            className="shrink-0 self-center"
-          />
+          <PreferredAvatar address={account.address} className="self-center" />
         }
         text={t('accountIsntConnectedToastText', [
           account?.metadata?.name,
