@@ -114,6 +114,10 @@
   "accountName": {
     "message": "Account name"
   },
+  "accountNameAlreadyInUse": {
+    "message": "This name is already in use.",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
+  },
   "accountNameDuplicate": {
     "message": "This account name already exists",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
@@ -1177,6 +1181,9 @@
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "clearFilters": {
+    "message": "Clear filters"
+  },
   "click": {
     "message": "Click"
   },
@@ -1379,6 +1386,9 @@
   },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
+  },
+  "confusingSolanaDomain": {
+    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
   },
   "connect": {
     "message": "Connect"
@@ -3446,6 +3456,14 @@
   "moreQuotes": {
     "message": "More quotes"
   },
+  "multichainAccountAddressCopied": {
+    "message": "Address copied",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Private key copied",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
@@ -3876,6 +3894,9 @@
   "noThanks": {
     "message": "No thanks"
   },
+  "noTokensMatchingYourFilters": {
+    "message": "No tokens matching your filters"
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -4155,6 +4176,15 @@
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
+  },
+  "onboardingLoginFooter": {
+    "message": "By continuing, I agree to MetaMask’s $1 and $2"
+  },
+  "onboardingLoginFooterPrivacyNotice": {
+    "message": "Privacy notice."
+  },
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "Terms of Use"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -5082,6 +5112,9 @@
   "resetWalletWarningSocial": {
     "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
+  "resolvedLookup": {
+    "message": "Resolved address of the domain: $1"
+  },
   "restartMetamask": {
     "message": "Restart MetaMask"
   },
@@ -5108,6 +5141,14 @@
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "This key grants full control of your account for the associated chain.",
+    "description": "Description for the banner warning users not to share their private key"
+  },
+  "revealMultichainPrivateKeysBannerTitle": {
+    "message": "Don’t share your private key",
+    "description": "Title for the banner warning users not to share their private key"
   },
   "revealSecretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -5204,6 +5245,12 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchAnAcccountOrContact": {
+    "message": "Search an account or contact"
+  },
+  "searchForAnAssetToSend": {
+    "message": "Search for an asset to send"
+  },
   "searchNetworks": {
     "message": "Search networks"
   },
@@ -5215,6 +5262,10 @@
   },
   "searchTokensByNameOrAddress": {
     "message": "Search tokens by name or address"
+  },
+  "searchYourAccounts": {
+    "message": "Search your accounts",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -5363,8 +5414,14 @@
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
   },
+  "selectNetworkToFilter": {
+    "message": "Select network to filter"
+  },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
+  },
+  "selectRecipient": {
+    "message": "Select recipient"
   },
   "selectRpcUrl": {
     "message": "Select RPC URL"
@@ -5621,6 +5678,9 @@
   "signingWith": {
     "message": "Signing with"
   },
+  "similarTo": {
+    "message": "$1 is similar to $2"
+  },
   "simulationApproveHeading": {
     "message": "Withdraw"
   },
@@ -5738,6 +5798,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Edit slippage"
+  },
+  "smartAccount": {
+    "message": "Smart account"
   },
   "smartAccountAccept": {
     "message": "Use smart account"
@@ -5996,6 +6059,9 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
+  },
+  "solanaUnknownError": {
+    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -7456,15 +7522,6 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-  "welcomeDescription": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
-  },
-  "welcomeGetStarted": {
-    "message": "Get started"
-  },
-  "welcomeTitle": {
-    "message": "Welcome to MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Let's get started"
   },
@@ -7485,6 +7542,10 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
+  },
+  "wrongPassword": {
+    "message": "Wrong password",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Yes"

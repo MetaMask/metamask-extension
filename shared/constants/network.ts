@@ -1,5 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
@@ -1457,6 +1458,13 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  ...FEATURED_RPCS.map((rpc) => rpc.chainId),
+];
+
+export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];
