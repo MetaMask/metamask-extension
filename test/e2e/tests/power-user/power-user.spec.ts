@@ -1,6 +1,6 @@
 import { generateWalletState } from '../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
@@ -22,11 +22,16 @@ describe('Power user persona', function () {
         title: this.test?.fullTitle(),
         fixtures: (await generateWalletState(withState, true)).build(),
         manifestFlags: {
-          testing: { disableSync: true },
+          testing: {
+            disableSync: true,
+            infuraProjectId: process.env.INFURA_PROJECT_ID,
+          },
         },
+        useMockingPassThrough: true,
+        disableServerMochaToBackground: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // Confirm the number of accounts in the account list
         new HeaderNavbar(driver).openAccountMenu();
