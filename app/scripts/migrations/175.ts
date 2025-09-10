@@ -68,11 +68,7 @@ function transformState(
     !hasProperty(state, 'MultichainTransactionsController') ||
     !isObject(state.MultichainTransactionsController)
   ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Invalid MultichainTransactionsController state: ${typeof state.MultichainTransactionsController}`,
-      ),
-    );
+    console.warn('Skipping migration. MultichainTransactionsController state not found.');
     return state;
   }
 
@@ -82,11 +78,7 @@ function transformState(
     !hasProperty(transactionsController, 'nonEvmTransactions') ||
     !isObject(transactionsController.nonEvmTransactions)
   ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Invalid nonEvmTransactions state: ${typeof transactionsController.nonEvmTransactions}`,
-      ),
-    );
+    console.warn('Skipping migration. nonEvmTransactions state not found.');
     return state;
   }
 

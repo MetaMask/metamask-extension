@@ -441,13 +441,11 @@ export function getSelectedAccountMultichainTransactions(
     return undefined;
   }
 
-  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id] as
-    | { [chain: CaipChainId]: TransactionStateEntry }
-    | undefined;
+  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id];
 
   // We need to get the provider config for the selected account to get the correct chainId
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  const currentChainId = providerConfig.chainId as MultichainNetworks;
+  const currentChainId = providerConfig.chainId;
 
   return transactions?.[currentChainId as CaipChainId];
 }
