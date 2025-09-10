@@ -1,5 +1,4 @@
 name: 'Check PR Max Lines'
-runs-on: self-hosted
 on:
   pull_request:
     types:
