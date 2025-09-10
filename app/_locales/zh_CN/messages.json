@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "价格影响"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "价格影响反映了您的兑换订单如何影响资产的市场价格。如果您未持有足够的资金支付燃料费，系统将自动分配部分源代币来抵扣费用，这将导致实际兑换数量减少。MetaMask 不会干预或控制价格影响。"
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "价格影响反映您的兑换订单对资产市场价格的影响程度。它取决于交易规模及资金池中的可用流动性。MetaMask 不会干预或控制价格影响。"
   },
@@ -2708,12 +2705,6 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "howQuotesWork": {
-    "message": "报价如何运作"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 MetaMask 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,15 +3374,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "桥接"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "报价"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "时间"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 想连接 $2 个 snap。",
@@ -7234,9 +7216,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "这将会批准 $1 用于桥接。"
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "您将需要在您的硬件钱包上确认两笔交易。"
   },
   "willApproveAmountForSwapping": {
     "message": "这将会批准 $1 用于兑换。"

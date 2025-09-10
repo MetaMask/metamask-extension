@@ -2675,12 +2675,6 @@
   "honeypotTitle": {
     "message": "ハニーポット"
   },
-  "howQuotesWork": {
-    "message": "クォートの仕組み"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "このクォートには、当社が検索した中で最も有利なクォートが含まれています。これは、ブリッジ手数料と$1%のMetaMaskの手数料からガス代を引いた、スワップレートに基づいています。ガス代は、ネットワークの混雑状況とトランザクションの複雑さによって変わります。"
-  },
   "id": {
     "message": "ID"
   },
@@ -3350,15 +3344,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "このネットワークをMetaMaskに追加し、サイトがそれを使用することを許可しようとしています。"
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "ブリッジ"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "クォート"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "時間"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1が$2 Snapの使用を求めています",
@@ -7184,9 +7169,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "これによりブリッジ用に$1が承認されます。"
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります。"
   },
   "willApproveAmountForSwapping": {
     "message": "これにより、スワップ用に$1が承認されます。"

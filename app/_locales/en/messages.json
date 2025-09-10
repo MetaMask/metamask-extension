@@ -4952,9 +4952,6 @@
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
-  "recipientEditAriaLabel": {
-    "message": "Edit recipient"
-  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
@@ -7538,9 +7535,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Approves token for bridge."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "You’ll need to confirm two transactions on your hardware wallet."
   },
   "willApproveAmountForSwapping": {
     "message": "Approves token for swap."
