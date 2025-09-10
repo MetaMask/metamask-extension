@@ -22,7 +22,6 @@ test_files: &test_files
   - '**/*.snap'
   - 'test/jest/**/*'
   - 'test/unit-global/**/*'
-  - 'test/helpers/**/*'
   - 'test/lib/**/*'
   - 'test/stub/**/*'
   - 'test/integration/**/*'
