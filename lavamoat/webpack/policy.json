@@ -770,7 +770,6 @@
       "packages": {
         "@babel/runtime": true,
         "@material-ui/core>@material-ui/utils": true,
-        "@material-ui/core>clsx": true,
         "react-redux>hoist-non-react-statics": true,
         "@material-ui/core>@material-ui/styles>jss-plugin-camel-case": true,
         "@material-ui/core>@material-ui/styles>jss-plugin-default-unit": true,
@@ -786,8 +785,7 @@
     },
     "@material-ui/core>@material-ui/system": {
       "globals": {
-        "console.error": true,
-        "console.warn": true
+        "console.error": true
       },
       "packages": {
         "@babel/runtime": true,
@@ -797,9 +795,7 @@
     },
     "@material-ui/core>@material-ui/utils": {
       "packages": {
-        "@babel/runtime": true,
-        "prop-types": true,
-        "react-redux>react-is": true
+        "@babel/runtime": true
       }
     },
     "@metamask/abi-utils": {
@@ -895,7 +891,6 @@
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
@@ -1574,16 +1569,8 @@
       }
     },
     "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
+        "@metamask/utils": true
       }
     },
     "@metamask/multichain-transactions-controller": {
@@ -1644,14 +1631,7 @@
     },
     "@metamask/notification-services-controller": {
       "globals": {
-        "Constants": true,
         "Intl.NumberFormat": true,
-        "Mocks": true,
-        "NotificationServicesController": true,
-        "NotificationServicesPushController": true,
-        "Processors": true,
-        "UI": true,
-        "Utils": true,
         "addEventListener": true,
         "fetch": true,
         "registration": true,
@@ -1692,8 +1672,7 @@
     },
     "@metamask/permission-controller": {
       "globals": {
-        "console.error": true,
-        "permissionRpcMethods": true
+        "console.error": true
       },
       "packages": {
         "@metamask/base-controller": true,
@@ -1796,7 +1775,6 @@
         "Buffer.from": true,
         "Event": true,
         "Headers": true,
-        "Mocks": true,
         "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
@@ -1820,28 +1798,13 @@
     },
     "@metamask/providers": {
       "globals": {
-        "CustomEvent": true,
-        "Event": true,
-        "addEventListener": true,
-        "chrome.runtime.connect": true,
-        "console": true,
-        "dispatchEvent": true,
-        "document.createElement": true,
-        "document.readyState": true,
-        "ethereum": "write",
-        "location.hostname": true,
-        "removeEventListener": true,
-        "web3": true
+        "console": true
       },
       "packages": {
         "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
-        "@metamask/object-multiplex": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "@metamask/providers>detect-browser": true,
-        "@metamask/providers>extension-port-stream": true,
         "eslint>fast-deep-equal": true,
         "@metamask/providers>is-stream": true,
         "readable-stream": true
@@ -2056,41 +2019,6 @@
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
-        "@metamask/snaps-utils>marked": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "semver": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/snaps-utils": {
-      "globals": {
-        "File": true,
-        "FileReader": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils>@metamask/slip44": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "chalk": true,
-        "cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>fast-xml-parser": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "semver": true,
@@ -2566,7 +2494,6 @@
         "Response": true,
         "TextDecoder": true,
         "TextEncoder": true,
-        "URL": true,
         "__SENTRY_BROWSER_BUNDLE__": true,
         "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
@@ -2574,7 +2501,6 @@
         "document": true,
         "module": true,
         "process": true,
-        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
@@ -2592,15 +2518,6 @@
         "@solana/addresses>@solana/assertions": true,
         "@solana/addresses>@solana/codecs-core": true,
         "@solana/addresses>@solana/codecs-strings": true,
-        "@solana/addresses>@solana/errors": true
-      }
-    },
-    "@solana/addresses>@solana/assertions": {
-      "globals": {
-        "crypto": true,
-        "isSecureContext": true
-      },
-      "packages": {
         "@solana/addresses>@solana/errors": true
       }
     },
@@ -3634,16 +3551,6 @@
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
       }
     },
-    "@metamask/providers>detect-browser": {
-      "globals": {
-        "document": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
     "crypto-browserify>diffie-hellman": {
       "globals": {
         "Buffer": true
@@ -3751,8 +3658,7 @@
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
@@ -3891,16 +3797,6 @@
       "packages": {
         "buffer": true,
         "extension-port-stream>readable-stream": true
-      }
-    },
-    "@metamask/providers>extension-port-stream": {
-      "globals": {
-        "Buffer.from": true,
-        "Buffer.isBuffer": true
-      },
-      "packages": {
-        "buffer": true,
-        "@metamask/providers>extension-port-stream>readable-stream": true
       }
     },
     "fast-json-patch": {
@@ -4081,16 +3977,6 @@
     "he": {
       "globals": {
         "define": true
-      }
-    },
-    "history": {
-      "globals": {
-        "console": true,
-        "document.defaultView": true,
-        "document.querySelector": true
-      },
-      "packages": {
-        "@babel/runtime": true
       }
     },
     "react-router-dom>history": {
@@ -4701,15 +4587,6 @@
         "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": true
       }
     },
-    "prop-types": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "react>object-assign": true,
-        "prop-types>react-is": true
-      }
-    },
     "react-markdown>property-information": {
       "packages": {
         "watchify>xtend": true
@@ -4803,9 +4680,6 @@
       }
     },
     "react": {
-      "globals": {
-        "console": true
-      },
       "packages": {
         "react>object-assign": true
       }
@@ -4915,17 +4789,10 @@
         "addEventListener": true,
         "clearTimeout": true,
         "clipboardData": true,
-        "console": true,
-        "dispatchEvent": true,
+        "console.error": true,
         "document": true,
-        "event": "write",
-        "jest": true,
-        "location.protocol": true,
-        "navigator.userAgent.indexOf": true,
         "removeEventListener": true,
-        "self": true,
-        "setTimeout": true,
-        "top": true
+        "setTimeout": true
       },
       "packages": {
         "react>object-assign": true,
@@ -4981,26 +4848,6 @@
         "react": true
       }
     },
-    "react-redux>hoist-non-react-statics>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "prop-types>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "react-redux>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "react-router-dom>react-router>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
     "react-markdown": {
       "globals": {
         "console.warn": true
@@ -5027,13 +4874,11 @@
       "packages": {
         "@popperjs/core": true,
         "react": true,
-        "react-popper>react-fast-compare": true,
-        "react-popper>warning": true
+        "react-popper>react-fast-compare": true
       }
     },
     "react-redux": {
       "globals": {
-        "console": true,
         "document": true
       },
       "packages": {
@@ -5178,7 +5023,6 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "react-transition-group>dom-helpers": true,
         "prop-types": true,
         "react": true,
         "react-dom": true
@@ -5221,22 +5065,6 @@
       }
     },
     "extension-port-stream>readable-stream": {
-      "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "AggregateError": true,
-        "Blob": true,
-        "queueMicrotask": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "buffer": true,
-        "webpack>events": true,
-        "process": true,
-        "browserify>string_decoder": true
-      }
-    },
-    "@metamask/providers>extension-port-stream>readable-stream": {
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
@@ -5399,12 +5227,7 @@
     },
     "wait-on>rxjs": {
       "globals": {
-        "cancelAnimationFrame": true,
-        "clearInterval": true,
         "clearTimeout": true,
-        "performance": true,
-        "requestAnimationFrame": true,
-        "setInterval.apply": true,
         "setTimeout.apply": true
       },
       "packages": {
@@ -5652,11 +5475,6 @@
         "@metamask/snaps-controllers>tar-stream>streamx": true
       }
     },
-    "react-router-dom>tiny-warning": {
-      "globals": {
-        "console": true
-      }
-    },
     "addons-linter>sha.js>to-buffer": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
@@ -5769,12 +5587,7 @@
       }
     },
     "react-focus-lock>use-sidecar": {
-      "globals": {
-        "console.error": true
-      },
       "packages": {
-        "react-focus-lock>use-sidecar>detect-node-es": true,
-        "react": true,
         "tslib": true
       }
     },
@@ -5864,11 +5677,6 @@
         "process": true,
         "react-markdown>vfile>replace-ext": true,
         "react-markdown>vfile>vfile-message": true
-      }
-    },
-    "react-popper>warning": {
-      "globals": {
-        "console": true
       }
     },
     "@ensdomains/content-hash>multihashes>web-encoding": {
