@@ -25,9 +25,13 @@ export type TrustSignalMetricsAnonProperties = {
 
 // For transactions, this is the 'to' address. For signatures, this is the verifying contract.
 function getTargetAddress(confirmation: Confirmation): string | null {
+  if (!confirmation) {
+    return null;
+  }
+
   if (!isSignatureTransactionType(confirmation)) {
     const txMeta = confirmation as TransactionMeta;
-    return txMeta.txParams.to ?? null;
+    return txMeta.txParams?.to ?? null;
   }
   try {
     const data = (confirmation as SignatureRequestType)?.msgParams?.data;
