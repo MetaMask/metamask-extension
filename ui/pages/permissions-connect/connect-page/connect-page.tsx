@@ -508,7 +508,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           gap={2}
           marginBottom={1}
         >
-          <Text variant={TextVariant.headingLg}>{title}</Text>
+          <Text
+            variant={TextVariant.headingLg}
+            style={{
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
+            }}
+          >
+            {title}
+          </Text>
           {originTrustSignals.state === TrustSignalDisplayState.Verified && (
             <Tooltip
               title={t('alertReasonOriginTrustSignalVerified')}

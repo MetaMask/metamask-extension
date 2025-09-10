@@ -59,6 +59,34 @@ describe('formatCurrencyWithMinThreshold', () => {
   });
 });
 
+describe('formatCurrencyTokenPrice', () => {
+  const testCases = [
+    { value: 0.000000001, expected: '<$0.00000001' },
+    { value: 0.0000123, expected: '$0.0000123' },
+    { value: 0.001, expected: '$0.00100' },
+    { value: 0.999, expected: '$0.999' },
+    { value: 0, expected: '$0.00' },
+    { value: 1, expected: '$1.00' },
+    { value: 1_000_000, expected: '$1.00M' },
+  ];
+
+  it('formats values correctly', () => {
+    const { formatCurrencyTokenPrice } = createFormatters({ locale });
+    testCases.forEach(({ value, expected }) => {
+      expect(formatCurrencyTokenPrice(value, 'USD')).toBe(expected);
+    });
+  });
+
+  it('handles invalid values', () => {
+    const { formatCurrencyTokenPrice } = createFormatters({ locale });
+    [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY].forEach(
+      (input) => {
+        expect(formatCurrencyTokenPrice(input, 'USD')).toBe('');
+      },
+    );
+  });
+});
+
 describe('locale variations', () => {
   describe('en-GB GBP', () => {
     it('formats standard value', () => {

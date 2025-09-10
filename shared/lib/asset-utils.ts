@@ -8,6 +8,7 @@ import {
   isCaipChainId,
   isStrictHexString,
   parseCaipAssetType,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -192,4 +193,20 @@ export const fetchAssetMetadataForAssetIds = async (
   } catch (error) {
     return null;
   }
+};
+
+/**
+ * Checks if the given chain ID is an EVM chain ID
+ *
+ * @param chainId - The chain ID to check. It can be in caip or hex format.
+ * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
+ */
+export const isEvmChainId = (chainId: CaipChainId | Hex) => {
+  const chainIdInCaip = isCaipChainId(chainId)
+    ? chainId
+    : toEvmCaipChainId(chainId);
+
+  // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
+  const { namespace } = parseCaipChainId(chainIdInCaip);
+  return namespace === KnownCaipNamespace.Eip155;
 };

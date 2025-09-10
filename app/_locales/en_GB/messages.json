@@ -114,6 +114,10 @@
   "accountName": {
     "message": "Account name"
   },
+  "accountNameAlreadyInUse": {
+    "message": "This name is already in use.",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
+  },
   "accountNameDuplicate": {
     "message": "This account name already exists",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
@@ -1385,6 +1389,9 @@
   },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
+  },
+  "confusingSolanaDomain": {
+    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
   },
   "connect": {
     "message": "Connect"
@@ -3452,6 +3459,14 @@
   "moreQuotes": {
     "message": "More quotes"
   },
+  "multichainAccountAddressCopied": {
+    "message": "Address copied",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Private key copied",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
@@ -4784,7 +4799,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationLimitOrderFilledTitle": {
-    "message": "✅ Limit order filled"
+    "message": "Limit order filled"
   },
   "pushNotificationPositionLiquidatedDescriptionLong": {
     "message": "Your $1 long was closed.",
@@ -4795,7 +4810,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationPositionLiquidatedTitle": {
-    "message": "😟 Position liquidated"
+    "message": "Position liquidated"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your stop loss.",
@@ -4806,7 +4821,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationStopLossTriggeredTitle": {
-    "message": "🛑 Stop loss triggered"
+    "message": "Stop loss triggered"
   },
   "pushNotificationTakeProfitTriggeredDescriptionLong": {
     "message": "Your $1 long closed at your take profit.",
@@ -4817,7 +4832,7 @@
     "description": "$1 is the asset symbol"
   },
   "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "📈 Take profit triggered"
+    "message": "Take profit triggered"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "You received $1 $2"
@@ -5093,6 +5108,9 @@
   "resetWalletWarningSocial": {
     "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
+  "resolvedLookup": {
+    "message": "Resolved address of the domain: $1"
+  },
   "restartMetamask": {
     "message": "Restart MetaMask"
   },
@@ -5119,6 +5137,14 @@
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "This key grants full control of your account for the associated chain.",
+    "description": "Description for the banner warning users not to share their private key"
+  },
+  "revealMultichainPrivateKeysBannerTitle": {
+    "message": "Don’t share your private key",
+    "description": "Title for the banner warning users not to share their private key"
   },
   "revealSecretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -5648,6 +5674,9 @@
   "signingWith": {
     "message": "Signing with"
   },
+  "similarTo": {
+    "message": "$1 is similar to $2"
+  },
   "simulationApproveHeading": {
     "message": "Withdraw"
   },
@@ -6026,6 +6055,9 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
+  },
+  "solanaUnknownError": {
+    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -7121,15 +7153,6 @@
   "troubleStartingTitle": {
     "message": "MetaMask had trouble starting."
   },
-  "trustSignalUrlMalicious": {
-    "message": "Malicious site"
-  },
-  "trustSignalUrlSuspicious": {
-    "message": "Suspicious site"
-  },
-  "trustSignalUrlVerified": {
-    "message": "Verified site"
-  },
   "tryAgain": {
     "message": "Try again"
   },
@@ -7506,6 +7529,10 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
+  },
+  "wrongPassword": {
+    "message": "Wrong password",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Yes"
