@@ -270,8 +270,8 @@ jobs:
       - build-dist-browserify
       - build-test-flask-browserify
     if: |
-      always() &&
-      (needs.needs-e2e.result == 'success' || needs.needs-e2e.result == 'skipped') &&
+      !cancelled() &&
+      needs.needs-e2e.result == 'success' &&
       needs.needs-e2e.outputs.needs-e2e == 'true'
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
@@ -283,8 +283,8 @@ jobs:
       - build-test-mv2-browserify
       - build-test-flask-mv2-browserify
     if: |
-      always() &&
-      (needs.needs-e2e.result == 'success' || needs.needs-e2e.result == 'skipped') &&
+      !cancelled() &&
+      needs.needs-e2e.result == 'success' &&
       needs.needs-e2e.outputs.needs-e2e == 'true'
     uses: ./.github/workflows/e2e-firefox.yml
 
