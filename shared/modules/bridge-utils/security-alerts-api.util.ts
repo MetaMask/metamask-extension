@@ -163,18 +163,18 @@ export function convertChainIdToBlockAidChainName(
   return CHAIN_ID_TO_SECURITY_API_NAME[chainId] ?? null;
 }
 
-export async function fetchTxAlerts(
-  params: {
-    chainId: AllowedBridgeChainIds;
-    trade: string;
-    accountAddress: string;
-  } | null,
-): Promise<TxAlert | null> {
-  if (!isSecurityAlertsAPIEnabled() || !params) {
+export async function fetchTxAlerts({
+  chainId,
+  trade,
+  accountAddress,
+}: {
+  chainId: AllowedBridgeChainIds;
+  trade: string;
+  accountAddress: string;
+}): Promise<TxAlert | null> {
+  if (!isSecurityAlertsAPIEnabled()) {
     return null;
   }
-
-  const { chainId, trade, accountAddress } = params;
 
   const chain = convertChainIdToBlockAidChainName(chainId);
 
