@@ -1,6 +1,7 @@
 name: Create release bug report issue when release branch gets created
 
-on: create
+on:
+  create:
 
 jobs:
   create-bug-report:
