@@ -107,7 +107,7 @@ export default function AwaitingSignatures() {
             {t('swapConfirmWithHwWallet')}
           </Text>
         )}
-        {needsTwoConfirmations && (
+        {needsTwoConfirmations && activeQuote && (
           <>
             <Text variant={TextVariant.bodyMdBold} marginTop={2}>
               {t('bridgeConfirmTwoTransactions')}
@@ -126,7 +126,11 @@ export default function AwaitingSignatures() {
                   isSwap
                     ? 'unifiedSwapAllowSwappingOf'
                     : 'bridgeAllowSwappingOf',
-                  [fromAmount, fromToken?.symbol, fromChain?.name],
+                  [
+                    activeQuote.sentAmount?.amount,
+                    fromToken?.symbol,
+                    fromChain?.name,
+                  ],
                 )}
               </li>
               <li>
