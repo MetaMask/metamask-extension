@@ -63,7 +63,6 @@ import {
   Box,
   ButtonIcon,
   IconName,
-  PopoverPosition,
   Text,
 } from '../../../components/component-library';
 import {
@@ -87,7 +86,7 @@ import {
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { Column, Row, Tooltip } from '../layout';
+import { Column, Row } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
   getCurrentKeyring,
@@ -119,9 +118,8 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
-import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
-import { BridgeCTAWarningText } from './bridge-cta-warning-text';
+import { PrepareBridgePageFooterContents } from './prepare-bridge-page-footer';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -783,8 +781,7 @@ const PrepareBridgePage = ({
                 />
               )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
-                <BridgeCTAWarningText />
-                <BridgeCTAButton
+                <PrepareBridgePageFooterContents
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

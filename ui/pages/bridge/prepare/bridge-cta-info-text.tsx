@@ -19,7 +19,7 @@ import { Row, Tooltip } from '../layout';
 import { getCurrentKeyring } from '../../../selectors/selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 
-export const BridgeCTAWarningText = () => {
+export const BridgeCTAInfoText = () => {
   const t = useI18nContext();
 
   const { activeQuote } = useSelector(getBridgeQuotes);
