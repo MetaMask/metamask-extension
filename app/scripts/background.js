@@ -1133,19 +1133,14 @@ export function setupController(
          */
         const e = event;
         // send event to sentry with details about the event
-        sentry?.captureException(
-          new Error('Notice: Message too large for Port'),
-          {
-            extra: {
-              originalError: e.originalError,
-              chunkSize: e.chunkSize,
-              // TODO: create a method to get more information about this user's
-              // state, or this message object itself. Can we quickly determine
-              // why it is so big and report it?
-              analysis: null,
-            }
+        controller.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PortStreamChunked,
+          category: MetaMetricsEventCategory.PortStream,
+          properties: {
+            chunkSize: e.chunkSize,
+            numberOfChunks: e.numberOfChunks
           },
-        );
+        });
       });
 
       // communication with popup

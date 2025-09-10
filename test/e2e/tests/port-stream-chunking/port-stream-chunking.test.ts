@@ -1,19 +1,27 @@
-import { largeDelayMs, sentryRegEx, withFixtures } from '../../helpers';
+import assert from 'node:assert';
+import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { Mockttp } from 'mockttp';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
-async function mockSentryTestError(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(sentryRegEx)
-    .withBodyIncluding('Notice: Message too large for Port')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {},
-      };
-    });
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
+async function mockSegment(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [{ type: 'track', event: 'Port Stream Chunked' }],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
 }
 
 describe('Port Stream Chunking', function () {
@@ -32,7 +40,7 @@ describe('Port Stream Chunking', function () {
         value: '0xde0b6b3a7640000',
         gas: '0x5208',
         gasPrice: '0x2540be400',
-        data: '0x' + '11'.repeat(10 ** 6), // big
+        data: `0x${'11'.repeat(10 ** 6)}`, // big
       },
       origin: 'metamask',
       type: 'simpleSend',
@@ -44,9 +52,13 @@ describe('Port Stream Chunking', function () {
       {
         fixtures: new FixtureBuilder()
           .withTransactions(largeTransactions)
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryTestError,
+        testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint }) => {
         await loginWithBalanceValidation(driver);
@@ -54,20 +66,20 @@ describe('Port Stream Chunking', function () {
         // Just check that the balance is displayed (wallet is usable)
         await homepage.checkExpectedBalanceIsDisplayed();
 
-        // Wait for the mocked Sentry endpoint to be called.
-        await driver.wait(async () => {
-          const isPending = await mockedEndpoint.isPending();
-          return isPending === false;
-        }, largeDelayMs);
-
-        const requests = await mockedEndpoint.getSeenRequests();
-        assert.equal(requests.length, 1, 'Expected one request to Sentry.');
-
-        const request = requests[0];
-        const [, , data] = (await request.body.getText()).split('\n');
-        const [error] = JSON.parse(data).exception.values;
-
-        assert.equal(error.value, 'Notice: Message too large for Port');
+        const events = await getEventPayloads(driver, mockedEndpoint);
+        // Firefox will never be chunked
+        if (isFirefox) {
+          assert.deepStrictEqual(events.length, 0);
+        } else {
+          assert.deepStrictEqual(events[0], {
+            category: 'Port Stream',
+            event: 'Port Stream Chunked',
+            properties: {
+              chunkSize: 1 << 26,
+              numberOfChunks: 2,
+            },
+          });
+        }
       },
     );
   });
