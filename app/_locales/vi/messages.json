@@ -1053,8 +1053,8 @@
   "busy": {
     "message": "Đang bận"
   },
-  "buyAndSell": {
-    "message": "Mua/Bán"
+  "buy": {
+    "message": "Mua"
   },
   "buyMoreAsset": {
     "message": "Mua thêm $1",

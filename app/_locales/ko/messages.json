@@ -1053,8 +1053,8 @@
   "busy": {
     "message": "바쁨"
   },
-  "buyAndSell": {
-    "message": "매수/매도"
+  "buy": {
+    "message": "매수"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",

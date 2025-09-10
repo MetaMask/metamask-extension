@@ -1053,7 +1053,7 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "Comprar / vender"
   },
   "buyMoreAsset": {

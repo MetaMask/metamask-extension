@@ -1053,8 +1053,8 @@
   "busy": {
     "message": "Ausgelastet"
   },
-  "buyAndSell": {
-    "message": "Kaufen/Verkaufen"
+  "buy": {
+    "message": "Kaufen"
   },
   "buyMoreAsset": {
     "message": "Mehr $1 kaufen",

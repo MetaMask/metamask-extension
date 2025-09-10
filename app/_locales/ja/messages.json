@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "ビジー状態"
   },
-  "buyAndSell": {
-    "message": "購入・売却"
+  "buy": {
+    "message": "購入"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",

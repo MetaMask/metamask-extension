@@ -1053,8 +1053,8 @@
   "busy": {
     "message": "Занят"
   },
-  "buyAndSell": {
-    "message": "Купить/продать"
+  "buy": {
+    "message": "Купить"
   },
   "buyMoreAsset": {
     "message": "Купить еще $1",

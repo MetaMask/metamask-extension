@@ -543,7 +543,7 @@ const CoinButtons = ({
             Icon={
               displayNewIconButtons ? (
                 <Icon
-                  name={IconName.QrCode}
+                  name={IconName.Received}
                   color={IconColor.iconAlternative}
                   size={IconSize.Md}
                 />

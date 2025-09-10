@@ -1053,8 +1053,8 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buyAndSell": {
-    "message": "Beli/Jual"
+  "buy": {
+    "message": "Beli"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",

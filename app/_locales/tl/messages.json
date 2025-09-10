@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Busy"
   },
-  "buyAndSell": {
-    "message": "Bumili/Magbenta"
+  "buy": {
+    "message": "Bumili"
   },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",

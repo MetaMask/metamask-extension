@@ -1053,8 +1053,8 @@
   "busy": {
     "message": "बिज़ी"
   },
-  "buyAndSell": {
-    "message": "खरीदें/बेचें"
+  "buy": {
+    "message": "खरीदें"
   },
   "buyMoreAsset": {
     "message": "ज्यादा $1 खरीदें",
