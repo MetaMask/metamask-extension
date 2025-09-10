@@ -8,7 +8,6 @@ import { Mockttp } from 'mockttp';
 import {
   withFixtures,
   openDapp,
-  unlockWallet,
   WINDOW_TITLES,
   createWebSocketConnection,
   veryLargeDelayMs,
@@ -475,9 +474,7 @@ describe('Phishing Detection', function (this: Suite) {
       // required to ensure MetaMask is fully started before running tests
       // if we had a way of detecting when the offscreen/background were ready
       // we could remove this
-      if (driver) {
-        await unlockWallet(driver);
-      }
+      await loginWithBalanceValidation(driver);
     });
     after('Shut down fixtures', async function () {
       deferredTestSuite.resolve(); // let the fixtures know tests are complete
@@ -508,14 +505,11 @@ describe('Phishing Detection', function (this: Suite) {
         handleRequests(name, value, code);
         // navigate to the blocked site (it tries to redirect to the destination)
         const blockedUrl = `http://${blocked}:${port}/`;
-        if (!driver) {
-          throw new Error('Driver is not initialized');
-        }
-        await driver.openNewURL(blockedUrl);
+        await driver?.openNewURL(blockedUrl);
         // check that the redirect was ultimately _not_ followed and instead
         // went to our "MetaMask Phishing Detection" site
 
-        await driver.waitForUrl({
+        await driver?.waitForUrl({
           url:
             // http://localhost:9999 is the Phishing Warning page
             `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
