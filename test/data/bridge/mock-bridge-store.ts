@@ -248,6 +248,9 @@ export const createBridgeMockStore = ({
     send: {
       swapsBlockedTokens: [],
     },
+    DNS: {
+      resolutions: [],
+    },
     ...stateOverrides,
     // TODO fix types
   } as unknown as BridgeAppState;

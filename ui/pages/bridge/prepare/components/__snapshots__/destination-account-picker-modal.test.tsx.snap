@@ -81,7 +81,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
           data-testid="destination-account-picker-modal-body"
         >
           <div
-            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item--selected mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
               class="mm-box"
@@ -386,7 +386,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
             </div>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item--selected mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
               class="mm-box"
@@ -593,7 +593,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
             </div>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-container mm-container--max-width-undefined multichain-account-list-item--selected mm-box--padding-2 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <div
               class="mm-box"

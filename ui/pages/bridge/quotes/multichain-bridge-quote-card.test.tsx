@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import React from 'react';
 import {
   RequestStatus,
@@ -12,6 +13,7 @@ import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { BridgeCTAWarningText } from '../prepare/bridge-cta-warning-text';
 import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
 describe('MultichainBridgeQuoteCard', () => {
@@ -81,11 +83,18 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container, queryByText } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <>
+        <MultichainBridgeQuoteCard
+          onOpenSlippageModal={() => {}}
+          onOpenRecipientModal={() => {}}
+          selectedDestinationAccount={null}
+        />
+        <BridgeCTAWarningText />
+      </>,
       configureStore(mockStore),
     );
 
-    expect(queryByText('Rate includes')).not.toBeInTheDocument();
+    expect(queryByText('Includes 0.875% MM fee.')).not.toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -163,11 +172,20 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container, getByText } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <>
+        <MultichainBridgeQuoteCard
+          onOpenSlippageModal={() => {}}
+          onOpenRecipientModal={() => {}}
+          selectedDestinationAccount={null}
+        />
+        <BridgeCTAWarningText />
+      </>,
       configureStore(mockStore),
     );
 
-    expect(getByText('Rate includes 0.875% fee')).toBeInTheDocument();
+    expect(
+      getByText('Includes 0.875% MM fee. Approves token for bridge.'),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -235,7 +253,11 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container, queryByText } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        selectedDestinationAccount={null}
+      />,
       configureStore(mockStore),
     );
 
@@ -261,7 +283,11 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        selectedDestinationAccount={null}
+      />,
       configureStore(mockStore),
     );
 
@@ -286,7 +312,11 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        selectedDestinationAccount={null}
+      />,
       configureStore(mockStore),
     );
 
