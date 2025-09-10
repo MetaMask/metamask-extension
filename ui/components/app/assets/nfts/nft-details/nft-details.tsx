@@ -85,6 +85,7 @@ import {
 } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useRedesignedSendFlow } from '../../../../../pages/confirmations/hooks/useRedesignedSendFlow';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
 import NftDetailInformationRow from './nft-detail-information-row';
@@ -129,6 +130,7 @@ export function NftDetailsComponent({
   const trackEvent = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
   const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
@@ -335,7 +337,10 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    navigateToSendRoute(history, { address: nft.address, chainId: nftChainId });
+    navigateToSendRoute(history, isSendRedesignEnabled, {
+      address: nft.address,
+      chainId: nftChainId,
+    });
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {

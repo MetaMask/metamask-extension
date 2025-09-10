@@ -67,6 +67,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
+import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRedesignedSendFlow';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
@@ -107,6 +108,7 @@ const CoinButtons = ({
   >;
   const currentChainId = useSelector(getCurrentChainId);
   const displayNewIconButtons = process.env.REMOVE_GNS;
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   // Multichain accounts feature flag and selected account group
   const isMultichainAccountsState2Enabled = useSelector(
@@ -224,7 +226,11 @@ const CoinButtons = ({
   );
 
   const setCorrectChain = useCallback(async () => {
-    if (currentChainId !== chainId && multichainChainId !== chainId) {
+    if (
+      currentChainId !== chainId &&
+      multichainChainId !== chainId &&
+      !isMultichainAccountsState2Enabled
+    ) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -239,7 +245,14 @@ const CoinButtons = ({
         throw err;
       }
     }
-  }, [currentChainId, chainId, networks, dispatch]);
+  }, [
+    isMultichainAccountsState2Enabled,
+    currentChainId,
+    multichainChainId,
+    chainId,
+    networks,
+    dispatch,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -265,7 +278,7 @@ const CoinButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
+    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -279,11 +292,12 @@ const CoinButtons = ({
     if (trackingLocation !== 'home') {
       params = { chainId: chainId.toString() };
     }
-    navigateToSendRoute(history, params);
+    navigateToSendRoute(history, isSendRedesignEnabled, params);
   }, [
     chainId,
     account,
     setCorrectChain,
+    isSendRedesignEnabled,
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
     ///: END:ONLY_INCLUDE_IF
@@ -334,6 +348,13 @@ const CoinButtons = ({
       handleBridgeOnClick(true);
       return;
     }
+    if (
+      isMultichainAccountsState2Enabled &&
+      chainId === MultichainNetworks.SOLANA
+    ) {
+      handleBridgeOnClick(true);
+      return;
+    }
 
     await setCorrectChain();
 
@@ -365,6 +386,8 @@ const CoinButtons = ({
     setCorrectChain,
     isSwapsChain,
     chainId,
+    isMultichainAccountsState2Enabled,
+    multichainChainId,
     isUnifiedUIEnabled,
     usingHardwareWallet,
     defaultSwapsToken,
