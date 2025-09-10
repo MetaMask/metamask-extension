@@ -64,9 +64,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -226,7 +224,11 @@ const CoinButtons = ({
   );
 
   const setCorrectChain = useCallback(async () => {
-    if (currentChainId !== chainId && multichainChainId !== chainId) {
+    if (
+      currentChainId !== chainId &&
+      multichainChainId !== chainId &&
+      !isMultichainAccountsState2Enabled
+    ) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -241,7 +243,14 @@ const CoinButtons = ({
         throw err;
       }
     }
-  }, [currentChainId, chainId, networks, dispatch]);
+  }, [
+    isMultichainAccountsState2Enabled,
+    currentChainId,
+    multichainChainId,
+    chainId,
+    networks,
+    dispatch,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -267,7 +276,7 @@ const CoinButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
+    if (!isEvmAccountType(account.type) && !process.env.SEND_REDESIGN_ENABLED) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -332,12 +341,17 @@ const CoinButtons = ({
       handleBridgeOnClick(true);
       return;
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
       return;
     }
-    ///: END:ONLY_INCLUDE_IF
+    if (
+      isMultichainAccountsState2Enabled &&
+      chainId === MultichainNetworks.SOLANA
+    ) {
+      handleBridgeOnClick(true);
+      return;
+    }
 
     await setCorrectChain();
 
@@ -369,6 +383,8 @@ const CoinButtons = ({
     setCorrectChain,
     isSwapsChain,
     chainId,
+    isMultichainAccountsState2Enabled,
+    multichainChainId,
     isUnifiedUIEnabled,
     usingHardwareWallet,
     defaultSwapsToken,

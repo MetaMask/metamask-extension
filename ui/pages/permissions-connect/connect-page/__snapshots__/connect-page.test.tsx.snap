@@ -30,7 +30,7 @@ exports[`ConnectPage should render correctly 1`] = `
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                 >
                   <img
-                    alt="github.io logo"
+                    alt="metamask.github.io logo"
                     class="mm-avatar-favicon__image"
                     src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                   />
@@ -41,7 +41,7 @@ exports[`ConnectPage should render correctly 1`] = `
                 style="z-index: 1; background: transparent;"
               >
                 <img
-                  alt="github.io logo"
+                  alt="metamask.github.io logo"
                   class="mm-avatar-favicon__image"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
@@ -50,7 +50,7 @@ exports[`ConnectPage should render correctly 1`] = `
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
             >
-              github.io
+              metamask.github.io
             </h2>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
@@ -66,6 +66,7 @@ exports[`ConnectPage should render correctly 1`] = `
       </div>
       <div
         class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        style="overflow: auto;"
       >
         <div
           class="mm-box tabs mm-box--justify-content-center mm-box--background-color-transparent"
@@ -371,7 +372,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                 >
                   <img
-                    alt="github.io logo"
+                    alt="metamask.github.io logo"
                     class="mm-avatar-favicon__image"
                     src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                   />
@@ -382,7 +383,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                 style="z-index: 1; background: transparent;"
               >
                 <img
-                  alt="github.io logo"
+                  alt="metamask.github.io logo"
                   class="mm-avatar-favicon__image"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
@@ -391,7 +392,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
             >
-              github.io
+              metamask.github.io
             </h2>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
@@ -407,6 +408,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
       </div>
       <div
         class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        style="overflow: auto;"
       >
         <div
           class="mm-box tabs mm-box--justify-content-center mm-box--background-color-transparent"

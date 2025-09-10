@@ -4,7 +4,13 @@
 import classnames from 'classnames';
 import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import {
+  Route,
+  RouteComponentProps,
+  Switch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -61,9 +67,11 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -145,9 +153,13 @@ import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-ac
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
+import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
+import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
+import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -272,6 +284,13 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
+const GatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -279,11 +298,11 @@ const Connections = mmLazy(
       '../../components/multichain/pages/connections/index.js'
     )) as unknown as DynamicImportType,
 );
-const ReviewPermissions = mmLazy(
+const State2Wrapper = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/review-permissions-page/review-permissions-page.tsx'
+      '../../components/multichain-accounts/state2-wrapper/state2-wrapper.tsx'
     )) as unknown as DynamicImportType,
 );
 
@@ -308,6 +327,12 @@ const MultichainAccountDetailsPage = mmLazy(
       '../multichain-accounts/multichain-account-details-page/index.ts'
     )) as unknown as DynamicImportType,
 );
+const SmartAccountPage = mmLazy(
+  (() =>
+    import(
+      '../multichain-accounts/smart-account-page/index.ts'
+    )) as unknown as DynamicImportType,
+);
 const NonEvmBalanceCheck = mmLazy(
   (() =>
     import(
@@ -315,6 +340,16 @@ const NonEvmBalanceCheck = mmLazy(
     )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
+
+const MemoizedReviewPermissionsWrapper = React.memo(
+  (props: RouteComponentProps) => (
+    <State2Wrapper
+      {...props}
+      state1Component={ReviewPermissions}
+      state2Component={MultichainReviewPermissions}
+    />
+  ),
+);
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
@@ -456,13 +491,8 @@ export default function Routes() {
 
   useEffect(() => {
     const windowType = getEnvironmentType();
-    const { openExtensionInBrowser } = globalThis.platform ?? {};
-    if (
-      showExtensionInFullSizeView &&
-      windowType === ENVIRONMENT_TYPE_POPUP &&
-      openExtensionInBrowser
-    ) {
-      openExtensionInBrowser();
+    if (showExtensionInFullSizeView && windowType === ENVIRONMENT_TYPE_POPUP) {
+      global.platform?.openExtensionInBrowser?.();
     }
   }, [showExtensionInFullSizeView]);
 
@@ -588,10 +618,18 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated
+            path={PERMISSIONS}
+            component={
+              isGatorPermissionsFeatureEnabled()
+                ? GatorPermissionsPage
+                : PermissionsPage
+            }
+            exact
+          />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={ReviewPermissions}
+            component={MemoizedReviewPermissionsWrapper}
             exact
           />
           <Authenticated
@@ -605,6 +643,11 @@ export default function Routes() {
             exact
           />
           <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
+            component={MultichainAccountPrivateKeyListPage}
+            exact
+          />
+          <Authenticated
             path={ADD_WALLET_PAGE_ROUTE}
             component={AddWalletPage}
             exact
@@ -612,6 +655,11 @@ export default function Routes() {
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            component={SmartAccountPage}
             exact
           />
           <Authenticated
