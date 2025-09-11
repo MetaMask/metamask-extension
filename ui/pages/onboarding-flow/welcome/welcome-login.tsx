@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
@@ -26,7 +26,6 @@ import {
   setDataCollectionForMarketing,
   setTermsOfUseLastAgreed,
 } from '../../../store/actions';
-import { getIsSocialLoginFlow } from '../../../selectors';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import LoginOptions from './login-options';
@@ -45,7 +44,6 @@ export default function WelcomeLogin({
   const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
-  const isSocialLogin = useSelector(getIsSocialLoginFlow);
   const dispatch = useDispatch();
 
   const renderMascot = () => {
@@ -78,14 +76,18 @@ export default function WelcomeLogin({
       await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
       const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
-      if (!isFireFox && isSocialLogin) {
+
+      if (
+        !isFireFox &&
+        (loginType === LOGIN_TYPE.APPLE || loginType === LOGIN_TYPE.GOOGLE)
+      ) {
         await dispatch(setParticipateInMetaMetrics(true));
         await dispatch(setDataCollectionForMarketing(true));
       }
 
       await onLogin(loginType, loginOption);
     },
-    [dispatch, loginOption, onLogin, isSocialLogin],
+    [dispatch, loginOption, onLogin],
   );
 
   return (
