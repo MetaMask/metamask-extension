@@ -3338,6 +3338,9 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "maskicons": {
+    "message": "Maskicons"
+  },
   "max": {
     "message": "Max"
   },
@@ -3745,6 +3748,13 @@
   },
   "newAccount": {
     "message": "New account"
+  },
+  "newAccountIconMessage": {
+    "message": "Weʼve refreshed account icons to help you tell your accounts apart more easily. You can change the style in $1 > $2 > $3.",
+    "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
+  },
+  "newAccountIconTitle": {
+    "message": "New account icon"
   },
   "newAccountNumberName": {
     "message": "Account $1",
