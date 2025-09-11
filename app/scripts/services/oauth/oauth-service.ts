@@ -396,6 +396,16 @@ export default class OAuthService {
       throw new Error('Failed to get marketing opt in status');
     }
 
-    return res.json();
+    const data = await res.json();
+
+    if (typeof data === 'boolean') {
+      return data;
+    }
+
+    if (data && typeof data.opt_in_status === 'boolean') {
+      return data.opt_in_status;
+    }
+
+    throw new Error('Invalid marketing opt in status response');
   }
 }
