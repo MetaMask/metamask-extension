@@ -1,15 +1,21 @@
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
-import { selectERC20TokensByChain } from '../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  selectERC20TokensByChain,
+} from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
+import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
+import { MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
@@ -30,6 +36,12 @@ export type UseDisplayNameResponse = {
   displayState: TrustSignalDisplayState;
 };
 
+type UseAccountGroupNamesRequest = UseDisplayNameRequest;
+
+type UseAccountGroupNamesResponse = {
+  name: string | null;
+};
+
 export function useDisplayNames(
   requests: UseDisplayNameRequest[],
 ): UseDisplayNameResponse[] {
@@ -40,6 +52,11 @@ export function useDisplayNames(
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
   const ens = useDomainResolutions(requests);
+  const nameGroupEntries = useAccountGroupNames(requests);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
@@ -49,25 +66,28 @@ export function useDisplayNames(
     const watchedNftName = watchedNFTNames[index];
     const nft = nfts[index];
     const ensName = ens[index];
+    const groupName = nameGroupEntries[index];
 
     let name =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      nameEntry?.name ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      firstPartyContractName ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      nft?.name ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      erc20Token?.name ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      watchedNftName ||
-      ensName ||
-      null;
+      isMultichainAccountsState2Enabled && groupName?.name
+        ? groupName.name
+        : // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          nameEntry?.name ||
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          firstPartyContractName ||
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          nft?.name ||
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          erc20Token?.name ||
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          watchedNftName ||
+          ensName ||
+          null;
 
     const hasPetname = Boolean(nameEntry?.name);
 
@@ -268,4 +288,44 @@ function getDisplayState(
 
   // Default: Unknown state with no name
   return TrustSignalDisplayState.Unknown;
+}
+
+function useAccountGroupNames(
+  requests: UseAccountGroupNamesRequest[],
+): UseAccountGroupNamesResponse[] {
+  // Extract unique ethereum addresses from requests
+  const ethereumAddresses = useMemo(() => {
+    return requests
+      .map(({ type, value }, index) => ({
+        address: type === NameType.ETHEREUM_ADDRESS ? value : null,
+        originalIndex: index,
+      }))
+      .filter((item) => item.address !== null);
+  }, [requests]);
+
+  // Get group names for all addresses at once
+  const groupNamesByAddress = useSelector((state: MultichainAccountsState) => {
+    const groupNames: Record<string, string | null> = {};
+
+    ethereumAddresses.forEach(({ address }) => {
+      if (address) {
+        groupNames[address] = selectAccountGroupNameByInternalAccount(
+          state,
+          address,
+        );
+      }
+    });
+
+    return groupNames;
+  });
+
+  // Map back to original request order
+  return useMemo(() => {
+    return requests.map(({ type, value }) => ({
+      name:
+        type === NameType.ETHEREUM_ADDRESS
+          ? groupNamesByAddress[value] || null
+          : null,
+    }));
+  }, [requests, groupNamesByAddress]);
 }
