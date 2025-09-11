@@ -191,6 +191,9 @@ const AccountListItem = ({
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
 
+  // Only show connected status badge if account is actually connected
+  const shouldShowConnectedStatusBadge = showConnectedStatus && isConnected;
+
   const getIsAggregatedFiatOverviewBalanceProp = () => {
     const isAggregatedFiatOverviewBalance =
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
@@ -241,7 +244,7 @@ const AccountListItem = ({
           <ConnectedStatus
             address={account.address}
             isActive={isActive}
-            showConnectedStatus={showConnectedStatus}
+            showConnectedStatus={shouldShowConnectedStatusBadge}
           />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
