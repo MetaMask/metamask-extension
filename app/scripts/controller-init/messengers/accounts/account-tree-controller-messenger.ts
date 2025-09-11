@@ -23,6 +23,7 @@ type Actions =
   | AccountsControllerListMultichainAccountsAction
   | SnapControllerGet
   | KeyringControllerGetStateAction
+  | UserStorageController.UserStorageControllerGetStateAction
   | UserStorageController.UserStorageControllerPerformGetStorage
   | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntries
   | UserStorageController.UserStorageControllerPerformSetStorage
@@ -33,7 +34,8 @@ type Actions =
 type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
-  | AccountsControllerSelectedAccountChangeEvent;
+  | AccountsControllerSelectedAccountChangeEvent
+  | UserStorageController.UserStorageControllerStateChangeEvent;
 
 export type AccountTreeControllerMessenger = ReturnType<
   typeof getAccountTreeControllerMessenger
@@ -55,12 +57,14 @@ export function getAccountTreeControllerMessenger(
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:selectedAccountChange',
+      'UserStorageController:stateChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccount',
       'AccountsController:getSelectedAccount',
       'AccountsController:setSelectedAccount',
+      'UserStorageController:getState',
       'UserStorageController:performGetStorage',
       'UserStorageController:performGetStorageAllFeatureEntries',
       'UserStorageController:performSetStorage',
