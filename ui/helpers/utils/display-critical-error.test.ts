@@ -253,10 +253,14 @@ describe('extractEnvelopeUrlFromDsn', () => {
 
   it('should throw error for invalid DSN', () => {
     const invalidDsn = 'not-a-valid-url';
-    expect(() => extractEnvelopeUrlFromDsn(invalidDsn)).toThrow('Invalid Sentry DSN format');
+    expect(() => extractEnvelopeUrlFromDsn(invalidDsn)).toThrow(
+      'Invalid Sentry DSN format',
+    );
   });
 
   it('should throw error for empty string', () => {
-    expect(() => extractEnvelopeUrlFromDsn('')).toThrow('Invalid Sentry DSN format');
+    expect(() => extractEnvelopeUrlFromDsn('')).toThrow(
+      'Invalid Sentry DSN format',
+    );
   });
 });
