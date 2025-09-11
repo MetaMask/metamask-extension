@@ -36,6 +36,7 @@ buildTypes:
       - APPLE_PROD_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_PROD_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_PROD_CLIENT_ID
+      - MM_ACCOUNTS_STATE2_OVERRIDE: true
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
