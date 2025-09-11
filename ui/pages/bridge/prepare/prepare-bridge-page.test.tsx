@@ -16,6 +16,15 @@ import PrepareBridgePage, {
   useEnableMissingNetwork,
 } from './prepare-bridge-page';
 
+// Mock the bridge hooks
+jest.mock('../hooks/useGasIncluded7702', () => ({
+  useGasIncluded7702: jest.fn().mockReturnValue(false),
+}));
+
+jest.mock('../hooks/useIsSendBundleSupported', () => ({
+  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+}));
+
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
     const { provider } = createTestProviderTools({
