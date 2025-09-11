@@ -4,11 +4,11 @@ import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/p
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import syncConfirmPath from './syncConfirmPath';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
   useParams: () => ({}),
 }));
 
@@ -35,11 +35,10 @@ describe('syncConfirmPath', () => {
   });
 
   it('should navigate to confirmation route', () => {
-    mockNavigate.mockClear();
     renderHookWithConfirmContextProvider(
       () => syncConfirmPath(unapprovedPersonalSignMsg),
       STATE_MOCK,
     );
-    expect(mockNavigate).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalled();
   });
 });

@@ -4,11 +4,11 @@ import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { SendPages } from '../../constants/send';
 import { useNavigateSendPage } from './useNavigateSendPage';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest
     .fn()
@@ -36,7 +36,7 @@ describe('useNavigateSendPage', () => {
   it('calls updateCurrentPage with "Amount" when goToAmountRecipientPage is called', () => {
     const result = renderHook();
     result.goToAmountRecipientPage();
-    expect(mockNavigate).toHaveBeenCalledWith({
+    expect(mockUseNavigate).toHaveBeenCalledWith({
       pathname: `${SEND_ROUTE}/${SendPages.AMOUNTRECIPIENT}`,
       search: 'searchParams=dummy',
     });
@@ -45,18 +45,18 @@ describe('useNavigateSendPage', () => {
   it('calls updateCurrentPage with "Amount" when goToPreviousPage is called on "Recipient" page', () => {
     const result = renderHook();
     result.goToPreviousPage();
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('calls updateCurrentPage with "Asset" when goToPreviousPage is called on "Amount" page', () => {
     const result = renderHook();
     result.goToPreviousPage();
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('goes back to previous page when goToPreviousPage is called on "Asset" page', () => {
     const result = renderHook();
     result.goToPreviousPage();
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 });
