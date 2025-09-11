@@ -1,115 +1,94 @@
+import { cloneDeep } from 'lodash';
 import { migrate, version } from './175';
 
-const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+const oldVersion = 174;
 
 describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: oldVersion },
       data: {},
     };
+
     const newStorage = await migrate(oldStorage);
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('does nothing if MultichainTransactionsController is missing', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {},
-    };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual({});
-  });
-
-  it('does nothing if MultichainTransactionsController is not an object', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: 'not an object',
+  it('Does nothing if `networkConfigurationsByChainId` is not in the network controller state', async () => {
+    const oldState = {
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
       },
     };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: cloneDeep(oldState),
+    });
+
+    expect(transformedState.data).toStrictEqual(oldState);
   });
 
-  it('does nothing if nonEvmTransactions is not an object', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: 'not an object',
-        },
-      },
-    };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('migrates transactions to the new structure with chainId nesting', async () => {
-    const mockTransaction = { id: '123', type: 'send' };
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-            'account 2': {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
+  it('Updates nativeCurrency to FRAX for the FRAX mainnet and FRAX Testnet in networkConfigurationsByChainId', async () => {
+    const oldState = {
+      NetworkController: {
+        networkConfigurationsByChainId: {
+          '0xfc': {
+            chainId: '0xfc',
+            nativeCurrency: 'frxETH',
+          },
+          '0x9da': {
+            chainId: '0x9da',
+            nativeCurrency: 'frxETH',
           },
         },
       },
     };
 
-    const expectedData = {
-      MultichainTransactionsController: {
-        nonEvmTransactions: {
-          'account 1': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
+    const expectedState = {
+      NetworkController: {
+        networkConfigurationsByChainId: {
+          '0xfc': {
+            chainId: '0xfc',
+            nativeCurrency: 'FRAX',
           },
-          'account 2': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
+          '0x9da': {
+            chainId: '0x9da',
+            nativeCurrency: 'FRAX',
           },
         },
       },
     };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: cloneDeep(oldState),
+    });
+
+    expect(transformedState.data).toStrictEqual(expectedState);
   });
-
-  it('throws error for invalid transaction state entry', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: 'not an array',
-              next: null,
-              lastUpdated: 1234567890,
-            },
+  it('Does nothing if ChainId (0x9da or 0xfc) is not in networkConfigurationsByChainId', async () => {
+    const oldState = {
+      NetworkController: {
+        networkConfigurationsByChainId: {
+          '0x1': {
+            chainId: '0x1',
+            nativeCurrency: 'ETH',
+          },
+          '0x2a': {
+            chainId: '0x2a',
+            nativeCurrency: 'KOVAN',
           },
         },
       },
     };
 
-    await expect(migrate(oldStorage)).rejects.toThrow(
-      'Invalid transaction state entry for account account 1',
-    );
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: cloneDeep(oldState),
+    });
+
+    expect(transformedState.data).toStrictEqual(oldState);
   });
 });
