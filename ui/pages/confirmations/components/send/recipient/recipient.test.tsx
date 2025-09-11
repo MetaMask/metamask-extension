@@ -21,11 +21,19 @@ jest.mock('../recipient-list', () => ({
     onToChange,
   }: {
     hideModal: () => void;
-    onToChange: () => void;
+    onToChange: (address: string) => void;
   }) => {
     return (
-      <div data-testid="recipient-list" onClick={onToChange}>
+      <div data-testid="recipient-list">
         <button onClick={hideModal}>Close Modal</button>
+        <button
+          onClick={() =>
+            onToChange('0x1234567890abcdef1234567890abcdef12345678')
+          }
+          data-testid="select-recipient-btn"
+        >
+          Select Recipient
+        </button>
       </div>
     );
   },
@@ -241,11 +249,16 @@ describe('Recipient', () => {
   });
 
   describe('metrics', () => {
-    it('calls captureRecipientSelected when recipient is selected from modal', () => {
+    it('calls updateTo when recipient is selected from modal', () => {
+      mockUseRecipients.mockReturnValue(mockRecipients);
       const { getByTestId } = renderComponent();
+
       fireEvent.click(getByTestId('open-recipient-modal-btn'));
-      fireEvent.click(getByTestId('recipient-list'));
-      expect(mockSetRecipientInputMethodSelectAccount).toHaveBeenCalled();
+      fireEvent.click(getByTestId('select-recipient-btn'));
+
+      expect(mockUpdateTo).toHaveBeenCalledWith(
+        '0x1234567890abcdef1234567890abcdef12345678',
+      );
     });
   });
 });
