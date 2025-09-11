@@ -5,6 +5,7 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../component-library';
@@ -30,6 +31,7 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import {
+  getAllEnabledNetworksForAllNamespaces,
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
 } from '../../../selectors';
@@ -37,6 +39,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
+import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -69,6 +73,16 @@ export const MultichainAccountList = ({
 
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
+
+  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+
+  const solAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
+  );
+
+  const btcAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
+  );
 
   const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
 
@@ -115,6 +129,17 @@ export const MultichainAccountList = ({
       });
 
       dispatch(setSelectedMultichainAccount(accountGroupId));
+
+      if (enabledNetworks.length === 1) {
+        const chainId = enabledNetworks[0];
+
+        if (chainId === SolScope.Mainnet && !solAccountGroup) {
+          dispatch(enableAllPopularNetworks());
+        } else if (chainId === BtcScope.Mainnet && !btcAccountGroup) {
+          dispatch(enableAllPopularNetworks());
+        }
+      }
+
       history.push(DEFAULT_ROUTE);
     };
 
@@ -209,6 +234,10 @@ export const MultichainAccountList = ({
     isInSearchMode,
     displayWalletHeader,
     selectedAccountGroupsSet,
+    enabledNetworks,
+    solAccountGroup,
+    btcAccountGroup,
+    handleAccountRenameAction,
   ]);
 
   return (
