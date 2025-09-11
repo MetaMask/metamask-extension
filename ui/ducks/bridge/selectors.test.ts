@@ -183,7 +183,7 @@ describe('Bridge selectors', () => {
       });
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(10);
+      expect(result).toHaveLength(11);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
       );
@@ -226,7 +226,7 @@ describe('Bridge selectors', () => {
       };
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );

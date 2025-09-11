@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { type Transaction } from '@metamask/keyring-api';
+import { type CaipChainId } from '@metamask/utils';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -13,7 +14,19 @@ import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
 import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
-import { SOLANA_BLOCK_EXPLORER_URL } from '../../../shared/constants/multichain/networks';
+import {
+  SOLANA_BLOCK_EXPLORER_URL,
+  MultichainNetworks,
+} from '../../../shared/constants/multichain/networks';
+
+// Helper function to check if a chain is Bitcoin
+const isBitcoinChainId = (chainId: string | number | CaipChainId) => {
+  return [
+    MultichainNetworks.BITCOIN,
+    MultichainNetworks.BITCOIN_TESTNET,
+    MultichainNetworks.BITCOIN_SIGNET,
+  ].includes(String(chainId) as MultichainNetworks);
+};
 
 const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
   const { srcChainId, destChainId } = quote;
@@ -75,9 +88,10 @@ export default function useBridgeChainInfo({
   }
 
   // Source chain info
-  const normalizedSrcChainId = isSolanaChainId(srcChainId)
-    ? srcChainIdInCaip
-    : formatChainIdToHex(srcChainId);
+  const normalizedSrcChainId =
+    isSolanaChainId(srcChainId) || isBitcoinChainId(srcChainId)
+      ? srcChainIdInCaip
+      : formatChainIdToHex(srcChainId);
 
   const commonSrcNetworkFields = {
     chainId: srcChainIdInCaip,
@@ -88,11 +102,13 @@ export default function useBridgeChainInfo({
 
   const srcNetwork = {
     ...commonSrcNetworkFields,
-    ...(isSolanaChainId(srcChainIdInCaip)
+    ...(isSolanaChainId(srcChainIdInCaip) || isBitcoinChainId(srcChainIdInCaip)
       ? ({
           isEvm: false,
           nativeCurrency: srcNativeAsset?.assetId,
-          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
+          blockExplorerUrl: isSolanaChainId(srcChainIdInCaip)
+            ? SOLANA_BLOCK_EXPLORER_URL
+            : 'https://blockstream.info/', // Bitcoin block explorer
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,
@@ -107,9 +123,10 @@ export default function useBridgeChainInfo({
   };
 
   // Dest chain info
-  const normalizedDestChainId = isSolanaChainId(destChainId)
-    ? destChainIdInCaip
-    : formatChainIdToHex(destChainId);
+  const normalizedDestChainId =
+    isSolanaChainId(destChainId) || isBitcoinChainId(destChainId)
+      ? destChainIdInCaip
+      : formatChainIdToHex(destChainId);
 
   const commonDestNetworkFields = {
     chainId: destChainIdInCaip,
@@ -120,11 +137,14 @@ export default function useBridgeChainInfo({
 
   const destNetwork = {
     ...commonDestNetworkFields,
-    ...(isSolanaChainId(destChainIdInCaip)
+    ...(isSolanaChainId(destChainIdInCaip) ||
+    isBitcoinChainId(destChainIdInCaip)
       ? ({
           isEvm: false,
           nativeCurrency: destNativeAsset?.assetId,
-          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
+          blockExplorerUrl: isSolanaChainId(destChainIdInCaip)
+            ? SOLANA_BLOCK_EXPLORER_URL
+            : 'https://blockstream.info/', // Bitcoin block explorer
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,
