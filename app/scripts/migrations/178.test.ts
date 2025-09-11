@@ -1,8 +1,8 @@
-import { migrate, version } from './177';
+import { migrate, version } from './178';
 
 const oldVersion = 177;
 
-describe('migration #177', () => {
+describe('migration #178', () => {
   it('should update the version metadata', async () => {
     const oldState = {
       meta: { version: oldVersion },
@@ -28,7 +28,7 @@ describe('migration #177', () => {
     const newState = await migrate(oldState);
     expect(newState).toStrictEqual({
       meta: {
-        version: 177,
+        version: 178,
       },
       data: {
         AppStateController: {
@@ -51,7 +51,7 @@ describe('migration #177', () => {
     const newState = await migrate(oldState);
     expect(newState).toStrictEqual({
       meta: {
-        version: 177,
+        version: 178,
       },
       data: {
         AppStateController: {
