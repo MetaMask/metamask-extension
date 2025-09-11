@@ -440,7 +440,6 @@ import {
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { toMultichainAccountGroupId } from '@metamask/account-api';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5324,13 +5323,6 @@ export default class MetamaskController extends EventEmitter {
       );
 
       const result = await wallet.discoverAndCreateAccounts();
-
-      // We set the selectedAccountGroup as the first grouphere as a temporary fix to the AccountTreeController not setting selectedAccountGroup
-      // when a new vault and keyring are created due to the AccountsController:accountAdded and AccountsController:selectedAccountChange events
-      // firing in the wrong order.
-
-      const groupId = toMultichainAccountGroupId(wallet.id, 0);
-      this.accountTreeController.setSelectedAccountGroup(groupId);
 
       return { Bitcoin: 0, ...result };
     } catch (error) {
