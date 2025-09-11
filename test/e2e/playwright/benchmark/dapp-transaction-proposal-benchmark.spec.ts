@@ -28,7 +28,7 @@ pwTest.describe('Wallet Pop Open Time on Dapp Transaction Proposal', () => {
   });
 
   pwTest('Run wallet pop open time benchmark', async () => {
-    const proposalTypes = ['signTypedDataV4'];
+    const proposalType = 'signTypedDataV4';
 
     const browserLoads = parseInt(
       process.env.BENCHMARK_BROWSER_LOADS || '5',
@@ -40,7 +40,7 @@ pwTest.describe('Wallet Pop Open Time on Dapp Transaction Proposal', () => {
     );
 
     await benchmark.runTransactionProposalBenchmark(
-      proposalTypes,
+      proposalType,
       browserLoads,
       proposalLoads,
     );

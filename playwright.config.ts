@@ -66,6 +66,7 @@ const config: PlaywrightTestConfig = {
       },
     },
     {
+      // TODO: [ffmcgee] update this to only run page load benchmark instead of both specs
       name: 'benchmark',
       testMatch: '/benchmark/**/*.spec.ts',
       use: {

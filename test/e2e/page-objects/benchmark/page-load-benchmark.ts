@@ -1,12 +1,7 @@
 import { promises as fs } from 'fs';
 import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
-import {
-  chromium,
-  type BrowserContext,
-  Browser,
-  type Page,
-} from '@playwright/test';
+import { chromium, type BrowserContext, Browser } from '@playwright/test';
 import { mean } from 'lodash';
 import { DAPP_URL } from '../../constants';
 import FixtureServer from '../../fixture-server';
@@ -104,27 +99,6 @@ export type TransactionProposalMetrics = {
    * Measures how quickly the popup becomes ready for user interaction.
    */
   popupInteractiveTime: number;
-  /**
-   * Memory usage statistics (optional, only available in Chrome).
-   * All values are in bytes.
-   */
-  memoryUsage?: {
-    /**
-     * Currently used JavaScript heap size.
-     * Represents the amount of memory actively used by JavaScript objects.
-     */
-    usedJSHeapSize: number;
-    /**
-     * Total allocated JavaScript heap size.
-     * The total amount of memory allocated for the JavaScript heap.
-     */
-    totalJSHeapSize: number;
-    /**
-     * Maximum JavaScript heap size limit.
-     * The maximum amount of memory that can be allocated for the JavaScript heap.
-     */
-    jsHeapSizeLimit: number;
-  };
 };
 
 /**
@@ -232,6 +206,9 @@ export class PageLoadBenchmark {
   private localNode: Anvil | undefined;
 
   private readonly userDataDirectory = 'temp-benchmark-user-data';
+
+  // TODO: [ffmcgee]: perhaps get this from WALLET_PASSWORD const, in test/e2e/constants.ts;
+  private readonly walletPassword = 'correct horse battery staple';
 
   /**
    * Creates a new PageLoadBenchmark instance.
@@ -387,6 +364,51 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Unlocks the MetaMask wallet using the configured password.
+   * Finds the unlock page and enters the password to unlock the wallet.
+   * This should be called after the extension loads to ensure the wallet is ready for use.
+   */
+  private async unlockWallet() {
+    // TODO: [ffmcgee]: see full interaction on spec run, this may be running without need in further runs.
+    const walletPage = await this.context?.newPage();
+    walletPage?.goto(
+      'chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/home.html',
+    );
+
+    // Check if we're on the unlock page
+    try {
+      await walletPage?.waitForSelector('[data-testid="unlock-page"]', {
+        timeout: 5000,
+      });
+
+      console.log('Wallet is locked, unlocking...');
+
+      // Fill in the password
+      await walletPage?.fill(
+        '[data-testid="unlock-password"]',
+        this.walletPassword,
+      );
+
+      // Click the unlock button
+      await walletPage?.click('[data-testid="unlock-submit"]');
+
+      // Wait for the unlock page to disappear (indicating successful unlock)
+      await walletPage?.waitForSelector('[data-testid="unlock-page"]', {
+        state: 'detached',
+        timeout: 10000,
+      });
+
+      console.log('Wallet unlocked successfully');
+    } catch (error) {
+      // If unlock page selector is not found, wallet might already be unlocked
+      console.log(
+        'Wallet appears to already be unlocked or unlock page not found:',
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  /**
    * Measures performance metrics for a single page load.
    * Navigates to the specified URL, waits for the page to fully load,
    * and collects comprehensive performance data including timing and memory usage.
@@ -485,14 +507,11 @@ export class PageLoadBenchmark {
       await dappPage.goto(DAPP_URL, { waitUntil: 'networkidle' });
       await dappPage.waitForLoadState('domcontentloaded');
 
-      // Wait for dapp to be ready
-      await dappPage.waitForSelector('#connectButton', { timeout: 10000 });
-
       // Record start time for proposal initiation
       const proposalStartTime = Date.now();
 
-      // Trigger the transaction proposal based on type
-      await this.triggerTransactionProposal(dappPage, proposalType);
+      // Trigger the transaction proposal
+      await dappPage.click(`#${proposalType}`);
 
       // Wait for MetaMask popup to appear and measure timing
       const metrics = await this.measurePopupTiming(proposalStartTime);
@@ -508,42 +527,6 @@ export class PageLoadBenchmark {
       return result;
     } finally {
       await dappPage.close();
-    }
-  }
-
-  /**
-   * Triggers a specific type of transaction proposal on the test dapp.
-   * This will trigger the extension to show a popup for the transaction proposal.
-   *
-   * @param dappPage - The Playwright page object for the test dapp
-   * @param proposalType - The type of transaction proposal to trigger
-   */
-  private async triggerTransactionProposal(
-    dappPage: Page,
-    proposalType: string,
-  ) {
-    // First, try to connect to trigger the extension
-    await dappPage.click('#connectButton');
-
-    // Wait a moment for the connection request to be processed
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Now trigger the specific transaction proposal
-    switch (proposalType) {
-      case 'signTypedDataV4':
-        await dappPage.click('#signTypedDataV4');
-        break;
-      case 'signTypedDataV3':
-        await dappPage.click('#signTypedDataV3');
-        break;
-      case 'signMessage':
-        await dappPage.click('#personalSign');
-        break;
-      case 'sendTransaction':
-        await dappPage.click('#sendButton');
-        break;
-      default:
-        throw new Error(`Unsupported proposal type: ${proposalType}`);
     }
   }
 
@@ -568,31 +551,20 @@ export class PageLoadBenchmark {
     // Wait for popup to be fully interactive
     const interactiveStartTime = Date.now();
     await popup.waitForLoadState('networkidle');
-    await popup.waitForSelector('[data-testid="page-container"]', {
-      timeout: 10000,
-    });
+    await popup.waitForSelector('[data-testid="confirmation_message-section"]');
     const interactiveEndTime = Date.now();
     const popupInteractiveDuration = interactiveEndTime - interactiveStartTime;
 
+    // TODO: [ffmcgee] clean these selectors into helper constants
+    await popup.click('[data-testid="confirm-footer-cancel-button"]');
+
     // Calculate total pop open time
     const popOpenTime = popupAppearDuration + popupInteractiveDuration;
-
-    // Collect memory usage if available
-    const memoryUsage = await popup.evaluate(() => {
-      return performance.memory
-        ? {
-            usedJSHeapSize: performance.memory.usedJSHeapSize,
-            totalJSHeapSize: performance.memory.totalJSHeapSize,
-            jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
-          }
-        : undefined;
-    });
 
     return {
       popOpenTime,
       popupAppearTime: popupAppearDuration,
       popupInteractiveTime: popupInteractiveDuration,
-      memoryUsage,
     };
   }
 
@@ -682,12 +654,12 @@ export class PageLoadBenchmark {
    * Creates fresh browser contexts for each browser load to simulate real-world conditions,
    * and measures each proposal type multiple times to gather statistical data.
    *
-   * @param proposalTypes - Array of transaction proposal types to test
+   * @param proposalType - Transaction proposal type to test
    * @param browserLoads - Number of fresh browser contexts to create (default: 10)
    * @param proposalLoads - Number of proposal tests per browser context (default: 10)
    */
   async runTransactionProposalBenchmark(
-    proposalTypes: string[],
+    proposalType: string,
     browserLoads: number = 10,
     proposalLoads: number = 10,
   ) {
@@ -698,25 +670,20 @@ export class PageLoadBenchmark {
     for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
       console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
       await this.waitForExtensionLoad();
+      await this.unlockWallet();
 
-      for (const proposalType of proposalTypes) {
-        for (
-          let proposalLoad = 0;
-          proposalLoad < proposalLoads;
-          proposalLoad++
-        ) {
-          const runNumber = browserLoad * proposalLoads + proposalLoad;
-          console.log(
-            `  Measuring ${proposalType} (run ${runNumber + 1}/${browserLoads * proposalLoads})`,
-          );
+      for (let proposalLoad = 0; proposalLoad < proposalLoads; proposalLoad++) {
+        const runNumber = browserLoad * proposalLoads + proposalLoad;
+        console.log(
+          `  Measuring ${proposalType} (run ${runNumber + 1}/${browserLoads * proposalLoads})`,
+        );
 
-          await this.measureTransactionProposal(proposalType, runNumber);
-          /**
-           * To make sure page setup & teardown doesn't have unexpected results in the next measurement,
-           * we add a small delay between measurements.
-           */
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
+        await this.measureTransactionProposal(proposalType, runNumber);
+        /**
+         * To make sure page setup & teardown doesn't have unexpected results in the next measurement,
+         * we add a small delay between measurements.
+         */
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       await this.clearBrowserData();
     }
@@ -807,10 +774,9 @@ export class PageLoadBenchmark {
       resultsByProposalType,
     )) {
       const metrics = proposalResults.map((r) => r.metrics);
-      const metricKeys = Object.keys(metrics[0]) as (keyof Omit<
-        TransactionProposalMetrics,
-        'memoryUsage'
-      >)[];
+      const metricKeys = Object.keys(
+        metrics[0],
+      ) as (keyof TransactionProposalMetrics)[];
 
       const summary: TransactionProposalSummary = {
         proposalType,
