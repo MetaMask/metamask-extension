@@ -333,26 +333,22 @@ export default function OnboardingWelcome() {
     async (loginType, loginOption) => {
       try {
         if (loginType === LOGIN_TYPE.SRP) {
-          await setIsSocialLoginEnabled(false);
+          await dispatch(setIsSocialLoginEnabled(false));
           if (loginOption === LOGIN_OPTION.NEW) {
             await onCreateClick();
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
             await onImportClick();
           }
-
-          return;
         }
 
         if (isSeedlessOnboardingFeatureEnabled) {
           if (loginOption === LOGIN_OPTION.NEW) {
             await onSocialLoginCreateClick(loginType);
             // if firefox, set isSocialLoginEnabled to false, otherwise set to true
-            isFireFox
-              ? await setIsSocialLoginEnabled(false)
-              : await setIsSocialLoginEnabled(true);
+            await dispatch(setIsSocialLoginEnabled(!isFireFox));
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
             await onSocialLoginImportClick(loginType);
-            await setIsSocialLoginEnabled(false);
+            await dispatch(setIsSocialLoginEnabled(false));
           }
         }
       } catch (error) {
@@ -360,13 +356,14 @@ export default function OnboardingWelcome() {
       }
     },
     [
+      isSeedlessOnboardingFeatureEnabled,
+      dispatch,
       onCreateClick,
       onImportClick,
       onSocialLoginCreateClick,
-      onSocialLoginImportClick,
-      isSeedlessOnboardingFeatureEnabled,
-      handleLoginError,
       isFireFox,
+      onSocialLoginImportClick,
+      handleLoginError,
     ],
   );
 
