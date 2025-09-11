@@ -4147,7 +4147,6 @@ export function setDataCollectionForMarketing(
 export function setIsSocialLoginEnabled(
   isSocialLoginEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  console.log('check: setIsSocialLoginEnabled', isSocialLoginEnabled);
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch({
       type: actionConstants.SET_IS_SOCIAL_LOGIN_ENABLED,

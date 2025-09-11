@@ -147,7 +147,6 @@ export default function reduceMetamask(state = initialState, action) {
         dataCollectionForMarketing: action.value,
       };
     case actionConstants.SET_IS_SOCIAL_LOGIN_ENABLED:
-      console.log('check: SET_IS_SOCIAL_LOGIN_ENABLED', action.value);
       return {
         ...metamaskState,
         isSocialLoginEnabled: action.value,
