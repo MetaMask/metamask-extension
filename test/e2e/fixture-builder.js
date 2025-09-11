@@ -331,6 +331,12 @@ class FixtureBuilder {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
+  withNetworkControllerOnArbitrumGoerli() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'arbitrum-goerli',
+    });
+  }
+
   withNetworkControllerOnLinea() {
     return this.withNetworkController({
       selectedNetworkClientId: 'linea-mainnet',

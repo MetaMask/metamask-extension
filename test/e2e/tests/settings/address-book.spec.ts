@@ -65,7 +65,7 @@ describe('Address Book', function (this: Suite) {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction('Sent', 1);
+        await activityList.checkTxAction({ action: 'Sent' });
         await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 
 import {
   AccountGroupId,
@@ -36,6 +36,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
+import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -65,6 +66,24 @@ export const MultichainAccountList = ({
     getDefaultHomeActiveTabName,
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+
+  const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
+    useState(false);
+
+  const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
+
+  const handleAccountRenameActionModalClose = useCallback(() => {
+    setIsAccountRenameModalOpen(false);
+    setRenameAccountGroupId(undefined);
+  }, [setIsAccountRenameModalOpen, setRenameAccountGroupId]);
+
+  const handleAccountRenameAction = useCallback(
+    (accountGroupId) => {
+      setRenameAccountGroupId(accountGroupId);
+      setIsAccountRenameModalOpen(true);
+    },
+    [setIsAccountRenameModalOpen, setRenameAccountGroupId],
+  );
 
   // Convert selectedAccountGroups array to Set for O(1) lookup
   const selectedAccountGroupsSet = useMemo(
@@ -153,6 +172,7 @@ export const MultichainAccountList = ({
                   <MultichainAccountMenu
                     accountGroupId={groupId as AccountGroupId}
                     isRemovable={isRemovable}
+                    handleAccountRenameAction={handleAccountRenameAction}
                   />
                 }
               />,
@@ -191,5 +211,17 @@ export const MultichainAccountList = ({
     selectedAccountGroupsSet,
   ]);
 
-  return <>{walletTree}</>;
+  return (
+    <>
+      {walletTree}
+      {isAccountRenameModalOpen && (
+        <MultichainAccountEditModal
+          key={renameAccountGroupId}
+          isOpen={isAccountRenameModalOpen}
+          onClose={handleAccountRenameActionModalClose}
+          accountGroupId={renameAccountGroupId as unknown as AccountGroupId}
+        />
+      )}
+    </>
+  );
 };

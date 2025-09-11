@@ -161,20 +161,36 @@ class ActivityListPage {
     await this.driver.assertElementNotPresent(this.completedTransactions);
   }
 
-  async checkTxAction(expectedAction: string, expectedNumber: number = 1) {
+  /**
+   * Check if a transaction at the specified index displays the expected action text in the activity list.
+   *
+   * @param params - The parameters object containing:
+   * @param params.action - The expected action text to be displayed (e.g., "Send", "Receive", "Swap")
+   * @param params.txIndex - The index of the transaction to check in the activity list
+   * @param params.completedTxs - The total number of completed transactions expected to be displayed in the activity list
+   * @returns A promise that resolves if the transaction at the specified index displays the expected action text within the timeout period.
+   */
+  async checkTxAction({
+    action,
+    txIndex = 1,
+    completedTxs = 1,
+  }: {
+    action: string;
+    txIndex?: number;
+    completedTxs?: number;
+  }): Promise<void> {
+    // We need to wait for the total number of tx's to be able to use getText() without race conditions.
+    await this.checkCompletedTxNumberDisplayedInActivity(completedTxs);
+
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
-
     await this.driver.wait(async () => {
       const transactionActionText =
-        await transactionActions[expectedNumber - 1].getText();
-      return transactionActionText === expectedAction;
+        await transactionActions[txIndex - 1].getText();
+      return transactionActionText === action;
     }, 60000);
-
-    console.log(
-      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
-    );
+    console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
   /**
