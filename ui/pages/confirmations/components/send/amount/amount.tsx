@@ -26,6 +26,7 @@ import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversio
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
 import { useSendType } from '../../../hooks/send/useSendType';
+import { getFractionLength } from '../../../utils/send';
 
 export const Amount = () => {
   const t = useI18nContext();
@@ -56,12 +57,19 @@ export const Amount = () => {
   const { amountError } = useAmountValidation();
 
   const onChange = useCallback(
-    (event) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
+      const fractionSize = getFractionLength(newValue);
+      if (
+        (fiatMode && fractionSize > 2) ||
+        (!fiatMode && fractionSize > (asset?.decimals ?? 0))
+      ) {
+        return;
+      }
       updateValue(fiatMode ? getNativeValue(newValue) : newValue);
       setAmount(newValue);
     },
-    [fiatMode, getNativeValue, setAmount, updateValue],
+    [asset, fiatMode, getNativeValue, setAmount, updateValue],
   );
 
   const toggleFiatMode = useCallback(() => {

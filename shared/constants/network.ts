@@ -1,5 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
@@ -354,7 +355,13 @@ export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
 
-export const infuraProjectId = process.env.INFURA_PROJECT_ID;
+// If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
+// so we need to look at process.env.INFURA_PROJECT_ID instead.
+export const infuraProjectId =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: yarn test:api-specs-multichain complains "Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature"
+  globalThis.INFURA_PROJECT_ID ?? process.env.INFURA_PROJECT_ID;
+
 export const getRpcUrl = ({
   network,
   excludeProjectId = false,
@@ -1457,6 +1464,13 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  ...FEATURED_RPCS.map((rpc) => rpc.chainId),
+];
+
+export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

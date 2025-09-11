@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import React from 'react';
 import {
   RequestStatus,
@@ -11,6 +12,8 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
 import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
 describe('MultichainBridgeQuoteCard', () => {
@@ -79,11 +82,19 @@ describe('MultichainBridgeQuoteCard', () => {
         ),
       },
     });
-    const { container } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+    const { container, queryByText } = renderWithProvider(
+      <>
+        <MultichainBridgeQuoteCard
+          onOpenSlippageModal={() => {}}
+          onOpenRecipientModal={() => {}}
+          selectedDestinationAccount={null}
+        />
+        <BridgeCTAInfoText />
+      </>,
       configureStore(mockStore),
     );
 
+    expect(queryByText('Includes 0.875% MM fee.')).not.toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -160,11 +171,21 @@ describe('MultichainBridgeQuoteCard', () => {
         ),
       },
     });
-    const { container } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+    const { container, getByText } = renderWithProvider(
+      <>
+        <MultichainBridgeQuoteCard
+          onOpenSlippageModal={() => {}}
+          onOpenRecipientModal={() => {}}
+          selectedDestinationAccount={null}
+        />
+        <BridgeCTAInfoText />
+      </>,
       configureStore(mockStore),
     );
 
+    expect(
+      getByText('Includes 0.875% MM fee. Approves token for bridge.'),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -182,8 +203,18 @@ describe('MultichainBridgeQuoteCard', () => {
       bridgeSliceOverrides: {
         fromTokenInputValue: 1,
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+        slippage: 1,
       },
       bridgeStateOverrides: {
+        assetExchangeRates: {
+          [toAssetId(
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          ) ?? '']: {
+            exchangeRate: '.99',
+            usdExchangeRate: '.99',
+          },
+        },
         quotes: mockBridgeQuotesNativeErc20,
         quoteRequest: {
           insufficientBal: false,
@@ -222,7 +253,11 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container, queryByText } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        selectedDestinationAccount={null}
+      />,
       configureStore(mockStore),
     );
 
@@ -248,7 +283,11 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        selectedDestinationAccount={null}
+      />,
       configureStore(mockStore),
     );
 
@@ -273,7 +312,11 @@ describe('MultichainBridgeQuoteCard', () => {
       },
     });
     const { container } = renderWithProvider(
-      <MultichainBridgeQuoteCard />,
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        selectedDestinationAccount={null}
+      />,
       configureStore(mockStore),
     );
 

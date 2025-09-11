@@ -4,6 +4,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
+import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { useSendContext } from '../../../context/send';
 import { AssetList } from './asset-list';
 
@@ -60,14 +61,17 @@ jest.mock('../../UI/asset', () => ({
 }));
 jest.mock('../../../hooks/send/useNavigateSendPage');
 jest.mock('../../../context/send');
+jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 
 describe('AssetList', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseNavigateSendPage = jest.mocked(useNavigateSendPage);
   const mockUseSendContext = jest.mocked(useSendContext);
+  const mockUseAssetSelectionMetrics = jest.mocked(useAssetSelectionMetrics);
   const mockGoToAmountRecipientPage = jest.fn();
   const mockUpdateAsset = jest.fn();
   const mockOnClearFilters = jest.fn();
+  const mockCaptureAssetSelected = jest.fn();
 
   const mockTokens = [
     { address: '0x123', chainId: '1', name: 'Token 1' },
@@ -91,8 +95,11 @@ describe('AssetList', () => {
       updateCurrentPage: jest.fn(),
       updateTo: jest.fn(),
       updateValue: jest.fn(),
-    });
+    } as unknown as ReturnType<typeof useSendContext>);
   });
+  mockUseAssetSelectionMetrics.mockReturnValue({
+    captureAssetSelected: mockCaptureAssetSelected,
+  } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -191,6 +198,7 @@ describe('AssetList', () => {
 
     expect(mockUpdateAsset).toHaveBeenCalledWith(mockTokens[0]);
     expect(mockGoToAmountRecipientPage).toHaveBeenCalled();
+    expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
   });
 
   it('renders empty when no assets available', () => {

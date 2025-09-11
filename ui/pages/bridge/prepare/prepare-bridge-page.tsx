@@ -47,7 +47,6 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getIsToOrFromSolana,
-  getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
   getIsUnifiedUIEnabled,
@@ -64,7 +63,6 @@ import {
   Box,
   ButtonIcon,
   IconName,
-  PopoverPosition,
   Text,
 } from '../../../components/component-library';
 import {
@@ -88,9 +86,8 @@ import {
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { Column, Row, Tooltip } from '../layout';
+import { Column, Row } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getEnabledNetworksByNamespace,
@@ -121,8 +118,8 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
-import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
+import { PrepareBridgePageFooterContents } from './prepare-bridge-page-footer';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -162,7 +159,7 @@ export const useEnableMissingNetwork = () => {
 const PrepareBridgePage = ({
   onOpenSettings,
 }: {
-  onOpenSettings?: () => void;
+  onOpenSettings: () => void;
 }) => {
   const dispatch = useDispatch();
   const enableMissingNetwork = useEnableMissingNetwork();
@@ -214,10 +211,8 @@ const PrepareBridgePage = ({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     activeQuote: activeQuote_,
-    isQuoteGoingToRefresh,
     quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
-  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
@@ -291,8 +286,6 @@ const PrepareBridgePage = ({
       ? selectedDestinationAccount.id
       : undefined,
   );
-
-  const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -748,7 +741,7 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             justifyContent={JustifyContent.center}
           >
-            {isLoading && !activeQuote ? (
+            {isLoading && !activeQuote_ ? (
               <>
                 <Text
                   textAlign={TextAlign.Center}
@@ -781,27 +774,14 @@ const PrepareBridgePage = ({
                   : {}),
               }}
             >
-              {activeQuote && isQuoteGoingToRefresh && (
-                <Row
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: `calc(100% * (${refreshRate} - ${millisecondsUntilNextRefresh}) / ${refreshRate})`,
-                    height: 4,
-                    maxWidth: '100%',
-                    transition: 'width 1s linear',
-                  }}
-                  backgroundColor={BackgroundColor.primaryMuted}
-                />
-              )}
               {!wasTxDeclined && activeQuote && (
                 <MultichainBridgeQuoteCard
                   onOpenSlippageModal={onOpenSettings}
+                  selectedDestinationAccount={selectedDestinationAccount}
                 />
               )}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
-                <BridgeCTAButton
+                <PrepareBridgePageFooterContents
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -822,56 +802,6 @@ const PrepareBridgePage = ({
                     isToOrFromSolana && !selectedDestinationAccount
                   }
                 />
-                {activeQuote &&
-                activeQuote.approval &&
-                activeQuote.sentAmount &&
-                activeQuote.quote.srcAsset?.symbol ? (
-                  <Row justifyContent={JustifyContent.center} gap={1}>
-                    <Text
-                      color={TextColor.textAlternativeSoft}
-                      variant={TextVariant.bodyXs}
-                      textAlign={TextAlign.Center}
-                    >
-                      {(() => {
-                        if (isUsingHardwareWallet) {
-                          return t('willApproveAmountForBridgingHardware');
-                        }
-                        if (isSwap) {
-                          return t('willApproveAmountForSwapping', [
-                            formatTokenAmount(
-                              locale,
-                              activeQuote.sentAmount.amount,
-                              activeQuote.quote.srcAsset.symbol,
-                            ),
-                          ]);
-                        }
-                        return t('willApproveAmountForBridging', [
-                          formatTokenAmount(
-                            locale,
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ),
-                        ]);
-                      })()}
-                    </Text>
-                    <Tooltip
-                      display={Display.InlineBlock}
-                      position={PopoverPosition.Top}
-                      offset={[-48, 8]}
-                      title={t('grantExactAccess')}
-                    >
-                      {isUsingHardwareWallet
-                        ? t('bridgeApprovalWarningForHardware', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])
-                        : t('bridgeApprovalWarning', [
-                            activeQuote.sentAmount.amount,
-                            activeQuote.quote.srcAsset.symbol,
-                          ])}
-                    </Tooltip>
-                  </Row>
-                ) : null}
               </Footer>
             </Column>
           </Row>

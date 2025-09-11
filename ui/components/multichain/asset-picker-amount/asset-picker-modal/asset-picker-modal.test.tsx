@@ -103,6 +103,13 @@ jest.mock('lodash', () => ({
   }),
 }));
 
+jest.mock(
+  '../../../../pages/confirmations/hooks/useRedesignedSendFlow',
+  () => ({
+    useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+  }),
+);
+
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;

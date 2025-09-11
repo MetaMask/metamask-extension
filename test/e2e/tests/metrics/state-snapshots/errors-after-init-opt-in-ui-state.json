@@ -382,7 +382,11 @@
     "accountTree": "object",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "isGatorPermissionsEnabled": "boolean",
+    "gatorPermissionsMapSerialized": "string",
+    "gatorPermissionsProviderSnapId": "string",
+    "isFetchingGatorPermissions": "boolean"
   },
   "ramps": "object",
   "send": "object",
