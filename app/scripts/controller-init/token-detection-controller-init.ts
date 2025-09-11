@@ -28,5 +28,9 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
       initMessenger.call('PreferencesController:getState').useExternalServices,
   });
 
-  return { controller };
+  return {
+    memStateKey: null,
+    persistedStateKey: null,
+    controller,
+  };
 };
