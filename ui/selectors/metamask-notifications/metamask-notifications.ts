@@ -5,7 +5,26 @@ import {
   INotification as Notification,
   TRIGGER_TYPES,
   defaultState,
+  processNotification,
 } from '@metamask/notification-services-controller/notification-services';
+import {
+  createMockNotificationEthSent,
+  createMockNotificationEthReceived,
+  createMockNotificationERC20Sent,
+  createMockNotificationERC20Received,
+  createMockNotificationERC721Sent,
+  createMockNotificationERC721Received,
+  createMockNotificationERC1155Sent,
+  createMockNotificationERC1155Received,
+  createMockNotificationLidoReadyToBeWithdrawn,
+  createMockNotificationLidoStakeCompleted,
+  createMockNotificationLidoWithdrawalCompleted,
+  createMockNotificationLidoWithdrawalRequested,
+  createMockNotificationMetaMaskSwapsCompleted,
+  createMockNotificationRocketPoolStakeCompleted,
+  createMockNotificationRocketPoolUnStakeCompleted,
+  createMockFeatureAnnouncementRaw,
+} from '@metamask/notification-services-controller/notification-services/mocks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getRemoteFeatureFlags,
@@ -20,6 +39,25 @@ const getMetamask = (state: NotificationAppState) => ({
   ...defaultState,
   ...state.metamask,
 });
+
+const mockNotifications = [
+  createMockNotificationEthSent(),
+  createMockNotificationEthReceived(),
+  createMockNotificationERC20Sent(),
+  createMockNotificationERC20Received(),
+  createMockNotificationERC721Sent(),
+  createMockNotificationERC721Received(),
+  createMockNotificationERC1155Sent(),
+  createMockNotificationERC1155Received(),
+  createMockNotificationLidoReadyToBeWithdrawn(),
+  createMockNotificationLidoStakeCompleted(),
+  createMockNotificationLidoWithdrawalCompleted(),
+  createMockNotificationLidoWithdrawalRequested(),
+  createMockNotificationMetaMaskSwapsCompleted(),
+  createMockNotificationRocketPoolStakeCompleted(),
+  createMockNotificationRocketPoolUnStakeCompleted(),
+  createMockFeatureAnnouncementRaw(),
+].map((n) => processNotification(n));
 
 /**
  * Get the state of the `defiPositionsEnabled` remote feature flag.
@@ -42,7 +80,7 @@ export function getIsNotificationEnabledByDefaultFeatureFlag(
  */
 export const getMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask): Notification[] => metamask.metamaskNotificationsList,
+  (): Notification[] => mockNotifications,
 );
 
 /**
