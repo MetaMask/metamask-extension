@@ -7,6 +7,7 @@ import {
   selectAccountGroupNameByInternalAccount,
   selectInternalAccountNameByAddress,
 } from '../selectors/accounts';
+import { RootState } from '../selectors/preferences';
 
 function useConfirmationRecipientInfo() {
   const { currentConfirmation } = useConfirmContext();
@@ -21,7 +22,7 @@ function useConfirmationRecipientInfo() {
     selectAccountGroupNameByInternalAccount(state, senderAddress),
   );
 
-  const internalAccountName = useSelector((state: MultichainAccountsState) =>
+  const internalAccountName = useSelector((state: RootState) =>
     selectInternalAccountNameByAddress(state, senderAddress),
   );
 
