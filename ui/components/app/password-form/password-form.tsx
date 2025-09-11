@@ -6,14 +6,10 @@ import {
   FormTextFieldSize,
   IconName,
   InputType,
-  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
@@ -94,17 +90,9 @@ export default function PasswordForm({
         }}
         helpTextProps={{
           color: TextColor.textAlternative,
+          'data-testid': 'short-password-error',
         }}
-        helpText={
-          <Text
-            variant={TextVariant.inherit}
-            as="span"
-            data-testid={'short-password-error'}
-            color={TextColor.textAlternative}
-          >
-            {t('passwordNotLongEnough')}
-          </Text>
-        }
+        helpText={t('passwordNotLongEnough')}
         endAccessory={
           <ButtonIcon
             iconName={showPassword ? IconName.EyeSlash : IconName.Eye}

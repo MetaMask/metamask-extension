@@ -21,13 +21,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import {
-  setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
-  setTermsOfUseLastAgreed,
-} from '../../../store/actions';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -74,16 +68,6 @@ export default function WelcomeLogin({
       setShowLoginOptions(false);
 
       await dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
-
-      const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
-
-      if (
-        !isFireFox &&
-        (loginType === LOGIN_TYPE.APPLE || loginType === LOGIN_TYPE.GOOGLE)
-      ) {
-        await dispatch(setParticipateInMetaMetrics(true));
-        await dispatch(setDataCollectionForMarketing(true));
-      }
 
       await onLogin(loginType, loginOption);
     },

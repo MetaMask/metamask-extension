@@ -20,7 +20,11 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  startOAuthLogin,
+  setIsSocialLoginEnabled,
+} from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
@@ -54,6 +58,8 @@ export default function OnboardingWelcome() {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
+
+  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
@@ -70,7 +76,7 @@ export default function OnboardingWelcome() {
           { replace: true },
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (getBrowserName() === PLATFORM_FIREFOX) {
+        if (isFireFox) {
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -92,6 +98,7 @@ export default function OnboardingWelcome() {
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
     isUserAuthenticatedWithSocialLogin,
+    isFireFox,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -325,18 +332,25 @@ export default function OnboardingWelcome() {
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
-        if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
-          await onCreateClick();
-        } else if (
-          loginOption === LOGIN_OPTION.EXISTING &&
-          loginType === LOGIN_TYPE.SRP
-        ) {
-          await onImportClick();
-        } else if (isSeedlessOnboardingFeatureEnabled) {
+        if (loginType === LOGIN_TYPE.SRP) {
+          await setIsSocialLoginEnabled(false);
+          if (loginOption === LOGIN_OPTION.NEW) {
+            await onCreateClick();
+          } else if (loginOption === LOGIN_OPTION.EXISTING) {
+            await onImportClick();
+          }
+        }
+
+        if (isSeedlessOnboardingFeatureEnabled) {
           if (loginOption === LOGIN_OPTION.NEW) {
             await onSocialLoginCreateClick(loginType);
+            // if firefox, set isSocialLoginEnabled to false, otherwise set to true
+            isFireFox
+              ? await setIsSocialLoginEnabled(false)
+              : await setIsSocialLoginEnabled(true);
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
             await onSocialLoginImportClick(loginType);
+            await setIsSocialLoginEnabled(false);
           }
         }
       } catch (error) {
@@ -350,6 +364,7 @@ export default function OnboardingWelcome() {
       onSocialLoginImportClick,
       isSeedlessOnboardingFeatureEnabled,
       handleLoginError,
+      isFireFox,
     ],
   );
 
