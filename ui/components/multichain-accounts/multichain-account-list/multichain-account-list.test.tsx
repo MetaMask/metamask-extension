@@ -46,6 +46,14 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+jest.mock('../../../store/controller-actions/network-order-controller', () => ({
+  enableAllPopularNetworks: jest.fn().mockImplementation(() => {
+    return async function () {
+      await Promise.resolve();
+    };
+  }),
+}));
+
 const mockSetAccountGroupName = jest.requireMock(
   '../../../store/actions',
 ).setAccountGroupName;
@@ -53,6 +61,10 @@ const mockSetAccountGroupName = jest.requireMock(
 const mockSetSelectedMultichainAccount = jest.requireMock(
   '../../../store/actions',
 ).setSelectedMultichainAccount;
+
+const mockEnableAllPopularNetworks = jest.requireMock(
+  '../../../store/controller-actions/network-order-controller',
+).enableAllPopularNetworks;
 const mockWalletOneEntropySource = '01JKAF3DSGM3AB87EM9N0K41AJ';
 const mockWalletTwoEntropySource = '01JKAF3PJ247KAM6C03G5Q0NP8';
 
@@ -406,5 +418,18 @@ describe('MultichainAccountList', () => {
     // Verify the modal is closed and action was not called
     expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
     expect(mockSetAccountGroupName).not.toHaveBeenCalled();
+  });
+
+  it('calls enableAllPopularNetworks when account is clicked', () => {
+    renderComponent();
+
+    // Find and click the second account cell (wallet two)
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    accountCell.click();
+
+    // Verify that enableAllPopularNetworks was called
+    expect(mockEnableAllPopularNetworks).toHaveBeenCalled();
   });
 });

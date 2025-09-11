@@ -37,6 +37,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
+import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -115,6 +116,7 @@ export const MultichainAccountList = ({
       });
 
       dispatch(setSelectedMultichainAccount(accountGroupId));
+      dispatch(enableAllPopularNetworks());
       history.push(DEFAULT_ROUTE);
     };
 
