@@ -66,10 +66,7 @@ function runHook({
     ? getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta)
     : {};
 
-  const response = renderHookWithProvider(
-    useNonContractAddressAlerts,
-    state,
-  );
+  const response = renderHookWithProvider(useNonContractAddressAlerts, state);
 
   return response.result.current;
 }
@@ -240,12 +237,9 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    const { result } = renderHookWithProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transaction,
-      },
-    );
+    const { result } = renderHookWithProvider(useNonContractAddressAlerts, {
+      currentConfirmation: transaction,
+    });
 
     expect(result.current).toEqual([]);
   });
@@ -288,12 +282,9 @@ describe('useNonContractAddressAlerts', () => {
       };
     });
 
-    const { result } = renderHookWithProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
-    );
+    const { result } = renderHookWithProvider(useNonContractAddressAlerts, {
+      currentConfirmation: transactionWithData,
+    });
 
     await waitFor(() => {
       expect(result.current).toEqual([
@@ -348,12 +339,9 @@ describe('useNonContractAddressAlerts', () => {
       };
     });
 
-    const { result } = renderHookWithProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
-    );
+    const { result } = renderHookWithProvider(useNonContractAddressAlerts, {
+      currentConfirmation: transactionWithData,
+    });
 
     await waitFor(() => {
       expect(result.current).toEqual([]);
@@ -400,12 +388,9 @@ describe('useNonContractAddressAlerts', () => {
       };
     });
 
-    const { result } = renderHookWithProvider(
-      useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
-    );
+    const { result } = renderHookWithProvider(useNonContractAddressAlerts, {
+      currentConfirmation: transactionWithData,
+    });
 
     await waitFor(() => {
       expect(result.current).toEqual([]);

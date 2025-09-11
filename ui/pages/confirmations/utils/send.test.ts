@@ -5,6 +5,7 @@ import {
   findNetworkClientIdByChainId,
   getLayer1GasFeeValue,
 } from '../../../store/actions';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
@@ -19,7 +20,6 @@ import {
   trimTrailingZeros,
   removeAdditionalDecimalPlaces,
 } from './send';
-import {SEND_ROUTE} from "../../../helpers/constants/routes";
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -170,10 +170,7 @@ describe('Send - utils', () => {
 
   describe('navigateToSendRoute', () => {
     it('call useNavigate with send route', () => {
-      navigateToSendRoute(
-        mockUseNavigate,
-        false,
-      );
+      navigateToSendRoute(mockUseNavigate, false);
       expect(mockUseNavigate).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(SEND_ROUTE);
     });

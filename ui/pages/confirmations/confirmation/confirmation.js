@@ -318,9 +318,9 @@ export default function ConfirmationPage({
             ...pendingConfirmation,
           },
           t,
-                  dispatch,
-        navigate,
-        {
+          dispatch,
+          navigate,
+          {
             matchedChain,
             currencySymbolWarning,
             existingNetworkConfiguration:

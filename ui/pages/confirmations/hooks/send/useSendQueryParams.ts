@@ -2,7 +2,11 @@ import { Hex, isHexString } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
+import {
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { toHex } from '../../../../../shared/lib/delegation/utils';
@@ -96,7 +100,9 @@ export const useSendQueryParams = () => {
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
-    navigate(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`, { replace: true });
+    navigate(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`, {
+      replace: true,
+    });
   }, [
     asset,
     navigate,

@@ -94,7 +94,7 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -144,7 +144,7 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -158,7 +158,7 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -170,7 +170,7 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -182,7 +182,7 @@ describe('useConfirmationNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${DECRYPT_MESSAGE_REQUEST_PATH}`,
-        { replace: true }
+        { replace: true },
       );
     });
 

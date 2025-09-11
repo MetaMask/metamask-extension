@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
-import { useSearchParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
 
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { SendPages } from '../../constants/send';
