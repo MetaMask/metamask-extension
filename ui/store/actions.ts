@@ -4144,6 +4144,10 @@ export function setDataCollectionForMarketing(
   };
 }
 
+/**
+ * @deprecated Use setAvatarType instead
+ * @param val - Boolean value for blockie preference
+ */
 export function setUseBlockie(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4157,6 +4161,10 @@ export function setUseBlockie(
       }
     });
   };
+}
+
+export function setAvatarType(value: string) {
+  return setPreference('avatarType', value);
 }
 
 export function setUsePhishDetect(
