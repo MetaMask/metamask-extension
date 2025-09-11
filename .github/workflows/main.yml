@@ -96,7 +96,7 @@ jobs:
   validate-lavamoat-policy:
     needs:
       - prep-deps
-    uses: ./.github/workflows/validate-lavamoat-policy.yml
+    uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   build-dist-browserify:
     uses: ./.github/workflows/run-build.yml
