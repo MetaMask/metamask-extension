@@ -10,31 +10,25 @@ import {
 export const selectAccountGroupNameByInternalAccount = createDeepEqualSelector(
   [
     (state: MultichainAccountsState) => state,
-    (_state: MultichainAccountsState, addresses: string[]) => addresses,
-    (
-      _state: MultichainAccountsState,
-      _addresses: string[],
-      internalAccount: string | undefined,
-    ) => internalAccount,
+    (_state: MultichainAccountsState, internalAccount: string | undefined) =>
+      internalAccount,
   ],
   (
     state: MultichainAccountsState,
-    addresses: string[],
     internalAccount: string | undefined,
   ): string | null => {
-    if (!internalAccount || !addresses?.length) {
+    if (!internalAccount) {
       return null;
     }
-
-    const allAccountGroups = getAccountGroupsByAddress(state, addresses);
-
+    const allAccountGroups = getAccountGroupsByAddress(state, [
+      internalAccount,
+    ]);
     const group = allAccountGroups.find((g: AccountGroupWithInternalAccounts) =>
       g.accounts.some(
         (a: InternalAccount) =>
           a.address?.toLowerCase() === internalAccount.toLowerCase(),
       ),
     );
-
     return group?.metadata?.name ?? null;
   },
 );
@@ -42,28 +36,20 @@ export const selectAccountGroupNameByInternalAccount = createDeepEqualSelector(
 export const selectInternalAccountNameByAddress = createDeepEqualSelector(
   [
     (state: MultichainAccountsState) => state,
-    (_state: MultichainAccountsState, addresses: string[]) => addresses,
-    (
-      _state: MultichainAccountsState,
-      _addresses: string[],
-      address: string | undefined,
-    ) => address,
+    (_state: MultichainAccountsState, address: string | undefined) => address,
   ],
   (
     state: MultichainAccountsState,
-    addresses: string[],
     address: string | undefined,
   ): string | null => {
-    if (!address || !addresses?.length) {
+    if (!address) {
       return null;
     }
-
-    const allAccountGroups = getAccountGroupsByAddress(state, addresses);
+    const allAccountGroups = getAccountGroupsByAddress(state, [address]);
     const allInternalAccounts = allAccountGroups.flatMap(
       (g: AccountGroupWithInternalAccounts) => g.accounts,
     );
     const fromAccount = getAccountByAddress(allInternalAccounts, address);
-
     return fromAccount?.metadata?.name ?? null;
   },
 );

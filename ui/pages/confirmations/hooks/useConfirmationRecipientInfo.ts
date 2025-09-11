@@ -1,8 +1,5 @@
 import { useSelector } from 'react-redux';
-import {
-  accountsWithSendEtherInfoSelector,
-  getIsMultichainAccountsState2Enabled,
-} from '../../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';
 import { useConfirmContext } from '../context/confirm';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
@@ -11,27 +8,21 @@ import {
   selectInternalAccountNameByAddress,
 } from '../selectors/accounts';
 
-function useConfirmationRecipientInfo(): {
-  senderAddress: string;
-  senderName: string;
-} {
+function useConfirmationRecipientInfo() {
   const { currentConfirmation } = useConfirmContext();
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
 
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
-
   const { from } = getConfirmationSender(currentConfirmation);
-
-  const addresses: string[] = allAccounts.map((account) => account.address);
+  const senderAddress = from ?? '';
 
   const accountGroupName = useSelector((state: MultichainAccountsState) =>
-    selectAccountGroupNameByInternalAccount(state, addresses, from),
+    selectAccountGroupNameByInternalAccount(state, senderAddress),
   );
 
   const internalAccountName = useSelector((state: MultichainAccountsState) =>
-    selectInternalAccountNameByAddress(state, addresses, from),
+    selectInternalAccountNameByAddress(state, senderAddress),
   );
 
   const senderName = isMultichainAccountsState2Enabled
@@ -39,7 +30,7 @@ function useConfirmationRecipientInfo(): {
     : internalAccountName;
 
   return {
-    senderAddress: from ?? '',
+    senderAddress,
     senderName: senderName ?? '',
   };
 }
