@@ -350,18 +350,7 @@ export default function OnboardingWelcome() {
         if (loginOption === LOGIN_OPTION.NEW) {
           await onSocialLoginCreateClick(loginType);
           // if firefox, set isSocialLoginFlowEnabledForMetrics to false, otherwise set to true
-          if (!isFireFox) {
-            dispatch(setIsSocialLoginFlowEnabledForMetrics(true));
-            await trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-              properties: {
-                is_metrics_opted_in: true,
-                has_marketing_consent: true,
-                location: 'onboarding_metametrics',
-              },
-            });
-          }
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(!isFireFox));
         } else if (loginOption === LOGIN_OPTION.EXISTING) {
           await onSocialLoginImportClick(loginType);
           dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
@@ -379,7 +368,6 @@ export default function OnboardingWelcome() {
       isFireFox,
       onSocialLoginImportClick,
       handleLoginError,
-      trackEvent,
     ],
   );
 
