@@ -30,8 +30,18 @@ import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 const controllerName = 'DecryptMessageController';
 
 const stateMetadata = {
-  unapprovedDecryptMsgs: { persist: false, anonymous: false },
-  unapprovedDecryptMsgCount: { persist: false, anonymous: false },
+  unapprovedDecryptMsgs: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: false,
+    usedInUi: true,
+  },
+  unapprovedDecryptMsgCount: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: false,
+    usedInUi: true,
+  },
 };
 
 export const managerName = 'DecryptMessageManager';
