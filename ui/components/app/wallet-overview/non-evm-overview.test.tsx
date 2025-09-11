@@ -7,7 +7,7 @@ import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -43,6 +43,7 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
 
 const mockOpenBuyCryptoInPdapp = jest.fn();
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  ...jest.requireActual('../../../hooks/ramps/useRamps/useRamps'),
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,

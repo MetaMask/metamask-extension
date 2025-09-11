@@ -132,6 +132,9 @@ const metamaskDecorator = (story, context) => {
   const currentLocale = context.globals.locale;
   const current = allLocales[currentLocale];
 
+  // Get the initial route from story parameters, default to '/'
+  const initialRoute = context.parameters?.initialRoute || '/';
+
   useEffect(() => {
     const currentTheme = document.documentElement.getAttribute('data-theme');
 
@@ -147,7 +150,7 @@ const metamaskDecorator = (story, context) => {
 
   return (
     <Provider store={store}>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[initialRoute]}>
         <CompatRouter>
           <MetaMetricsProviderStorybook>
             <AlertMetricsProvider

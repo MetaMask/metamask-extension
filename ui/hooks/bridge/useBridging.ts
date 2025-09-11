@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   type BridgeAsset,
   formatChainIdToCaip,
@@ -36,7 +36,7 @@ import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/brid
 import { getMultichainProviderConfig } from '../../selectors/multichain';
 
 const useBridging = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -111,11 +111,11 @@ const useBridging = () => {
       if (isSwap) {
         url += `&${BridgeQueryParams.SWAPS}=true`;
       }
-      history.push(url);
+      navigate(url);
     },
     [
       isBridgeChain,
-      history,
+      navigate,
       metaMetricsId,
       trackEvent,
       isMetaMetricsEnabled,
