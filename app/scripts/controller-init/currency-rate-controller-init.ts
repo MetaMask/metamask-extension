@@ -37,11 +37,11 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
 
   // @ts-expect-error: Accessing private method.
   controller.fetchMultiExchangeRate = (...args) => {
-    const { useExternalServices } = initMessenger.call(
+    const { useCurrencyRateCheck } = initMessenger.call(
       'PreferencesController:getState',
     );
 
-    if (useExternalServices) {
+    if (useCurrencyRateCheck) {
       return originalFetchMultiExchangeRate(...args);
     }
 
