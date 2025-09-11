@@ -16,10 +16,10 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
 }));
 
 const render = () => {
@@ -107,7 +107,7 @@ describe('ConfirmNav', () => {
     const { getByLabelText } = render();
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
   });
 
   it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {

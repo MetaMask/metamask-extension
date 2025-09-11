@@ -8,7 +8,7 @@ import {
 } from '@metamask/utils';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -91,7 +91,7 @@ const AssetPage = ({
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
@@ -106,11 +106,16 @@ const AssetPage = ({
     : formatChainIdToCaip(asset.chainId);
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
+  ) as InternalAccount | null;
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
   }, []);
+
+  // Early return if selectedAccount is null to prevent errors
+  if (!selectedAccount) {
+    return null;
+  }
 
   const { chainId, type, symbol, name, image, decimals } = asset;
 
@@ -318,7 +323,7 @@ const AssetPage = ({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => navigate(DEFAULT_ROUTE)}
           />
         </Box>
         {optionsButton}

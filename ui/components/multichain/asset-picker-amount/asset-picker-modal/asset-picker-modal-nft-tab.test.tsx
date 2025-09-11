@@ -3,7 +3,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import nock from 'nock';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';

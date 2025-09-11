@@ -14,11 +14,11 @@ const MOCK_ADDRESS_2 = '0xd12662965960f3855a09f85396459429a595d741';
 const MOCK_ADDRESS_3 = '4Nd1m5PztHZbA1FtdYzWxTjLdQdHZr4sqoZKxK3x3hJv';
 const MOCK_ADDRESS_4 = '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
 }));
 
 jest.mock('react-redux', () => ({
@@ -43,13 +43,13 @@ describe('useSendQueryParams', () => {
   it('result returns method handleCancel to cancel send', () => {
     const result = renderHook();
     result.handleCancel();
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockUseNavigate).toHaveBeenCalledWith('/');
   });
 
   it('result returns method handleBack to goto previous page', () => {
     const result = renderHook();
     result.handleBack();
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('handleSubmit is able to submit evm send', async () => {
@@ -76,7 +76,7 @@ describe('useSendQueryParams', () => {
     expect(mockSubmitEvmTransaction).toHaveBeenCalled();
 
     await waitFor(() => {
-      expect(mockHistory.push).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         '/confirm-transaction?maxValueMode=true',
       );
     });

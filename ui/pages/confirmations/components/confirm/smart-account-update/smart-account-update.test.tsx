@@ -21,10 +21,10 @@ jest.mock('../../../../../store/actions', () => ({
   setSmartAccountOptIn: jest.fn(),
 }));
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
 }));
 
 const mockDispatch = jest.fn();
@@ -88,6 +88,6 @@ describe('SmartAccountUpdate', () => {
     );
 
     fireEvent.click(getByTestId('smart-account-update-close'));
-    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
+    expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 });

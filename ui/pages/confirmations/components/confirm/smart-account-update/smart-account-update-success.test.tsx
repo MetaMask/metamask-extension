@@ -6,10 +6,10 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
 }));
 
 describe('SmartAccountUpdateSuccess', () => {
@@ -36,6 +36,6 @@ describe('SmartAccountUpdateSuccess', () => {
     );
 
     fireEvent.click(getByRole('button'));
-    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
+    expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 });

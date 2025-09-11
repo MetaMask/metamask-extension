@@ -8,7 +8,7 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
