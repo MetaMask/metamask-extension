@@ -34,8 +34,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Column, Row, Tooltip } from '../layout';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 2];
@@ -45,7 +43,6 @@ export const BridgeTransactionSettingsModal = ({
   isOpen,
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const dispatch = useDispatch();
   const isSolanaSwap = useSelector(getIsSolanaSwap);
@@ -294,14 +291,6 @@ export const BridgeTransactionSettingsModal = ({
                 : (localSlippage ?? Number(customSlippage?.replace(',', '.')));
 
               if (newSlippage !== slippage) {
-                trackCrossChainSwapsEvent({
-                  event: MetaMetricsEventName.InputChanged,
-                  properties: {
-                    input: 'slippage',
-                    value: newSlippage?.toString() ?? 'auto',
-                  },
-                });
-
                 dispatch(setSlippage(newSlippage));
                 onClose();
               }

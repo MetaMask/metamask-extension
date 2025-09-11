@@ -60,6 +60,8 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -141,6 +143,7 @@ import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-ac
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { AccountList } from '../multichain-accounts/account-list';
+import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -209,10 +212,12 @@ const ConfirmTransaction = mmLazy(
 );
 const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/send/index.js'
-    )) as unknown as DynamicImportType,
+  (() => {
+    if (process.env.SEND_REDESIGN_ENABLED) {
+      return import('../confirmations/send/index.ts');
+    }
+    return import('../../components/multichain/pages/send/index.js');
+  }) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
@@ -293,6 +298,12 @@ const WalletDetails = mmLazy(
     )) as unknown as DynamicImportType,
 );
 
+const MultichainAccountDetailsPage = mmLazy(
+  (() =>
+    import(
+      '../multichain-accounts/multichain-account-details-page/index.ts'
+    )) as unknown as DynamicImportType,
+);
 const NonEvmBalanceCheck = mmLazy(
   (() =>
     import(
@@ -514,7 +525,7 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={SEND_ROUTE} component={SendPage} exact />
+          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
@@ -577,6 +588,16 @@ export default function Routes() {
           <Authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
             component={AccountList}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
+            component={MultichainAccountDetailsPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
+            component={WalletDetailsPage}
             exact
           />
           <Authenticated

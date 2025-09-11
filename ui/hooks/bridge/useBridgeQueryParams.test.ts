@@ -1,5 +1,4 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
-import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { BigNumber } from 'ethers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
@@ -10,17 +9,7 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
 const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
-  renderHookWithProvider(
-    () =>
-      useBridgeQueryParams(undefined, {
-        id: 'test-account-id',
-        type: EthAccountType.Eoa,
-        address: '0x30E8ccaD5A980BDF30447f8c2C48e70989D9d293',
-        scopes: [EthScope.Mainnet],
-      } as never),
-    mockStoreState,
-    path,
-  );
+  renderHookWithProvider(() => useBridgeQueryParams(), mockStoreState, path);
 
 let calcLatestSrcBalanceSpy: jest.SpyInstance;
 
@@ -331,7 +320,7 @@ describe('useBridgeQueryParams', () => {
       'fetchAssetMetadataForAssetIds',
     );
 
-    const mockStoreState = createBridgeMockStore({});
+    const mockStoreState = createBridgeMockStore();
 
     const { history, store } = renderUseBridgeQueryParams(mockStoreState);
 

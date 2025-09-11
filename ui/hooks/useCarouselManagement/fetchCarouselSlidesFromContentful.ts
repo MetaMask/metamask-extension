@@ -24,6 +24,8 @@ type ContentfulBanner = ContentfulSysField & {
     endDate?: string;
     priorityPlacement?: boolean;
     showInExtension?: boolean;
+    variableName?: string;
+    cardPlacement?: string;
   };
 };
 
@@ -72,6 +74,8 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
       startDate,
       endDate,
       priorityPlacement,
+      variableName,
+      cardPlacement,
     } = entry.fields;
 
     const slide: CarouselSlide = {
@@ -85,6 +89,8 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
       startDate,
       endDate,
       priorityPlacement,
+      variableName,
+      cardPlacement,
     };
 
     if (priorityPlacement) {

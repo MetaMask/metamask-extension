@@ -110,7 +110,7 @@ const AssetPage = ({
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation) ||
     account.methods.includes(SolMethod.SignTransaction) ||
-    account.methods.includes(BtcMethod.SendBitcoin);
+    account.methods.includes(BtcMethod.SignPsbt);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);

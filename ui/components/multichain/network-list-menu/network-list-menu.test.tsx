@@ -280,7 +280,7 @@ describe('NetworkListMenu', () => {
   });
 
   it('switches networks when an item is clicked', async () => {
-    const origin = 'https://portfolio.metamask.io';
+    const origin = 'https://app.metamask.io';
     const { getByText } = render({
       selectedTabOriginInDomainsState: true,
       isUnlocked: true,
@@ -305,7 +305,7 @@ describe('NetworkListMenu', () => {
       selectedTabOriginInDomainsState: true,
       isUnlocked: true,
       isAccessedFromDappConnectedSitePopover: true,
-      origin: 'https://portfolio.metamask.io',
+      origin: 'https://app.metamask.io',
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks

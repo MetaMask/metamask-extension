@@ -75,6 +75,7 @@ const blocklistedHosts = [
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
   'carrot.megaeth.com',
+  'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
 ];
@@ -142,12 +143,14 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param {boolean} withSolanaWebSocket - If we want to re-route all the ws requests to our Solana Local WS server
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
   { chainId, ethConversionInUsd = 1700 },
+  withSolanaWebSocket,
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -939,6 +942,19 @@ async function setupMocking(
       };
     });
 
+  /**
+   * Solana Websocket
+   * Setup HTTP intercept for WebSocket handshake requests
+   */
+  if (withSolanaWebSocket) {
+    await server
+      .forAnyWebSocket()
+      .matching((req) =>
+        /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
+      )
+      .thenForwardTo('ws://localhost:8088');
+  }
+
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
   const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
@@ -1006,7 +1022,7 @@ async function setupMocking(
    * @param request
    */
   const portfolioRequestsMatcher = (request) =>
-    request.headers.referer === 'https://portfolio.metamask.io/';
+    request.headers.referer === 'https://app.metamask.io/';
 
   /**
    * Tests a request against private domains and returns a set of generic hostnames that

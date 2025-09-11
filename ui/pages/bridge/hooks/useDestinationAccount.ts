@@ -1,52 +1,51 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
-  getSelectedEvmInternalAccount,
-  getSelectedInternalAccount,
-} from '../../../selectors';
-import { getToChain } from '../../../ducks/bridge/selectors';
-import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
+  getAccountGroupNameByInternalAccount,
+  getToChain,
+} from '../../../ducks/bridge/selectors';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import type { DestinationAccount } from '../prepare/types';
 
-export const useDestinationAccount = (isSwap: boolean) => {
+/**
+ * Hook to provide the default internal destination account for a bridge quote
+ *
+ * @returns The default destination account and the setter for the selected destination account.
+ */
+export const useDestinationAccount = () => {
   const [selectedDestinationAccount, setSelectedDestinationAccount] =
     useState<DestinationAccount | null>(null);
-
-  const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
-  const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
-  const currentlySelectedAccount = useSelector(getSelectedInternalAccount);
-
   const toChain = useSelector(getToChain);
-  const isDestinationSolana = toChain && isSolanaChainId(toChain.chainId);
 
-  // Auto-select most recently used account when toChain or account changes
+  // For bridges, use the appropriate account type for the destination chain
+  const defaultInternalDestinationAccount = useSelector((state) =>
+    toChain?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          formatChainIdToCaip(toChain.chainId),
+        )
+      : null,
+  );
+
+  const displayName = useSelector((state) =>
+    getAccountGroupNameByInternalAccount(
+      state,
+      defaultInternalDestinationAccount,
+    ),
+  );
+
   useEffect(() => {
-    if (!toChain) {
-      // If no destination chain selected, clear the destination account
-      setSelectedDestinationAccount(null);
-      return;
-    }
-
-    // Use isSwap parameter to determine behavior
-    // This preserves legacy behavior when unified UI is disabled
-    if (isSwap) {
-      // For swaps, always use the currently selected account
-      setSelectedDestinationAccount(currentlySelectedAccount);
-    } else {
-      // For bridges, use the appropriate account type for the destination chain
-      setSelectedDestinationAccount(
-        isDestinationSolana ? selectedSolanaAccount : selectedEvmAccount,
-      );
-    }
-  }, [
-    isDestinationSolana,
-    selectedSolanaAccount,
-    selectedEvmAccount,
-    toChain,
-    currentlySelectedAccount,
-    isSwap,
-  ]);
+    setSelectedDestinationAccount(
+      defaultInternalDestinationAccount
+        ? {
+            ...defaultInternalDestinationAccount,
+            isExternal: false,
+            displayName: displayName ?? '',
+          }
+        : null,
+    );
+  }, [defaultInternalDestinationAccount, displayName]);
 
   return { selectedDestinationAccount, setSelectedDestinationAccount };
 };

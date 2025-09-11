@@ -1,0 +1,1 @@
+export { Recipient } from './recipient';

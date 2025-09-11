@@ -2,10 +2,9 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
-  AvatarAccount,
-  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -26,10 +25,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
-import {
-  getIsMultichainAccountsState2Enabled,
-  getUseBlockie,
-} from '../../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 const AccountMenuStyle = { height: 'auto' };
 
@@ -49,7 +46,6 @@ export const AccountPicker = ({
   AccountPicker.propTypes = {
     showAvatarAccount: PropTypes.bool,
   };
-  const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = address
     ? shortenAddress(toChecksumHexAddress(address))
     : '';
@@ -78,6 +74,7 @@ export const AccountPicker = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
+      className="w-full"
     >
       <ButtonBase
         className={classnames('multichain-account-picker', className)}
@@ -113,17 +110,13 @@ export const AccountPicker = ({
           }
           alignItems={AlignItems.center}
           gap={showAvatarAccount ? 2 : 0}
+          className="min-w-0"
         >
           {showAvatarAccount ? (
-            <AvatarAccount
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
+            <PreferredAvatar
               address={address}
-              size={showAddress ? Size.MD : Size.XS}
-              borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+              size={showAddress ? AvatarAccountSize.Md : AvatarAccountSize.Xs}
+              className="shrink-0"
             />
           ) : null}
           <Text
@@ -132,7 +125,7 @@ export const AccountPicker = ({
             variant={accountNameFontVariant}
             {...labelProps}
             className={classnames(
-              'multichain-account-picker__label',
+              'multichain-account-picker__label w-full',
               labelProps.className ?? '',
             )}
             style={accountNameStyling}

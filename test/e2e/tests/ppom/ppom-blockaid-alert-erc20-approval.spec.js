@@ -237,7 +237,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
         await driver.clickElement('#maliciousApprovalButton');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');

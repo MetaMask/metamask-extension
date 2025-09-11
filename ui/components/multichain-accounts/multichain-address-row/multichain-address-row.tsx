@@ -67,7 +67,8 @@ export const MultichainAddressRow = ({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      padding={4}
+      paddingTop={4}
+      paddingBottom={4}
       gap={4}
       data-testid="multichain-address-row"
     >

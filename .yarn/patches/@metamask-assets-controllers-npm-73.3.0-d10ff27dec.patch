@@ -1,0 +1,59 @@
+--- a/dist/TokenBalancesController.cjs
++++ b/dist/TokenBalancesController.cjs
+@@ -32,6 +32,7 @@ const metadata = {
+ // region: Helper utilities
+ const draft = (base, fn) => (0, immer_1.produce)(base, fn);
+ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
++const checksum = (addr) => (0, controller_utils_1.toChecksumHexAddress)(addr);
+ // endregion
+ // ────────────────────────────────────────────────────────────────────────────
+ // region: Main controller
+@@ -252,7 +253,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+                     if (chainTokens?.[account]) {
+                         Object.values(chainTokens[account]).forEach((token) => {
+                             var _a, _b;
+-                            const tokenAddress = token.address;
++                            const tokenAddress = checksum(token.address);
+                             ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[tokenAddress] = '0x0';
+                         });
+                     }
+@@ -261,7 +262,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+                     if (detectedChainTokens?.[account]) {
+                         Object.values(detectedChainTokens[account]).forEach((token) => {
+                             var _a, _b;
+-                            const tokenAddress = token.address;
++                            const tokenAddress = checksum(token.address);
+                             ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[tokenAddress] = '0x0';
+                         });
+                     }
+@@ -271,8 +272,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+             aggregated.forEach(({ success, value, account, token, chainId }) => {
+                 var _a, _b;
+                 if (success && value !== undefined) {
+-                    ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[token] =
+-                        (0, controller_utils_1.toHex)(value);
++                    ((_b = ((_a = d.tokenBalances)[account] ?? (_a[account] = {})))[chainId] ?? (_b[chainId] = {}))[checksum(token)] = (0, controller_utils_1.toHex)(value);
+                 }
+             });
+         });
+diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
+index 2c759f2ecc76b0a6f467166a2e4d077dc951445e..ed9bd88af4da25e058c6863aca72932f29313b8c 100644
+--- a/dist/assetsUtil.cjs
++++ b/dist/assetsUtil.cjs
+@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
++function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
+ exports.accountAddressToCaipReference = exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
+@@ -237,7 +238,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
+     const index = url.indexOf('/');
+     const cid = index !== -1 ? url.substring(0, index) : url;
+     const path = index !== -1 ? url.substring(index) : undefined;
+-    const { CID } = await import("multiformats");
++    const { CID } = _interopRequireWildcard(require("multiformats"));
+     // We want to ensure that the CID is v1 (https://docs.ipfs.io/concepts/content-addressing/#identifier-formats)
+     // because most cid v0s appear to be incompatible with IPFS subdomains
+     return {

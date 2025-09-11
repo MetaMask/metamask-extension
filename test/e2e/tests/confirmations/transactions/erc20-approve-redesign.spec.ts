@@ -120,7 +120,6 @@ async function createERC20ApproveTransaction(driver: Driver) {
 }
 
 async function assertApproveDetails(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({

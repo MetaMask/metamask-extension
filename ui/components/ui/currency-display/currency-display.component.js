@@ -22,14 +22,12 @@ export default function CurrencyDisplay({
   style,
   className,
   prefix,
-  prefixComponent,
   hideLabel,
   hideTitle,
   numberOfDecimals,
   denomination,
   currency,
   suffix,
-  prefixComponentWrapperProps = {},
   textProps = {},
   suffixProps = {},
   isAggregatedFiatOverviewBalance = false,
@@ -59,16 +57,6 @@ export default function CurrencyDisplay({
       flexWrap={FlexWrap.Wrap}
       {...props}
     >
-      {prefixComponent ? (
-        <Box
-          className="currency-display-component__prefix"
-          marginInlineEnd={1}
-          variant={TextVariant.inherit}
-          {...prefixComponentWrapperProps}
-        >
-          {prefixComponent}
-        </Box>
-      ) : null}
       <SensitiveText
         as="span"
         className="currency-display-component__text"
@@ -115,11 +103,9 @@ const CurrencyDisplayPropTypes = {
   hideTitle: PropTypes.bool,
   numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   prefix: PropTypes.string,
-  prefixComponent: PropTypes.node,
   style: PropTypes.object,
   suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   value: PropTypes.string,
-  prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
   isAggregatedFiatOverviewBalance: PropTypes.bool,
