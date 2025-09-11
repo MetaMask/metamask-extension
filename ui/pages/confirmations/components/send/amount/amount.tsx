@@ -59,7 +59,11 @@ export const Amount = () => {
   const onChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      if (getFractionLength(newValue) > (asset?.decimals ?? 0)) {
+      const fractionSize = getFractionLength(newValue);
+      if (
+        (fiatMode && fractionSize > 2) ||
+        fractionSize > (asset?.decimals ?? 0)
+      ) {
         return;
       }
       updateValue(fiatMode ? getNativeValue(newValue) : newValue);
