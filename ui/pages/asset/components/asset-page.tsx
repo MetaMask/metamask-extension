@@ -498,6 +498,7 @@ const AssetPage = ({
                 tokenAddress={address}
                 hideNetworkFilter
                 overrideFilterForCurrentChain={type === AssetType.native}
+                tokenChainId={chainId}
               />
             ) : (
               <TransactionList

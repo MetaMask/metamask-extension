@@ -137,8 +137,15 @@ const getTransactionGroupRecipientAddressFilter = (
 
 const getTransactionGroupRecipientAddressFilterAllChain = (
   recipientAddress,
+  chainId,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
+    const isNativeAssetActivityFilter = recipientAddress === "0x0000000000000000000000000000000000000000";
+    const isSimpleSendTx = !txParams.data || txParams?.data === "" || txParams?.data === "0x"|| txParams?.data === "0x0";
+    const isOnSameChain = txParams?.chainId === chainId;
+    if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
+      return true;
+    }
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP &&
@@ -180,12 +187,13 @@ const getFilteredTransactionGroupsAllChains = (
   transactionGroups,
   hideTokenTransactions,
   tokenAddress,
+  tokenChainId,
 ) => {
   if (hideTokenTransactions) {
     return transactionGroups.filter(tokenTransactionFilter);
   } else if (tokenAddress) {
     return transactionGroups.filter(
-      getTransactionGroupRecipientAddressFilterAllChain(tokenAddress),
+      getTransactionGroupRecipientAddressFilterAllChain(tokenAddress, tokenChainId),
     );
   }
   return transactionGroups;
@@ -286,6 +294,7 @@ export const buildUnifiedActivityItems = (
     enabledNetworksFilteredCompletedTransactions,
     hideTokenTransactions,
     tokenAddress,
+    chainId,
   );
 
   // Apply token filter to non‑EVM like nonEvmTransactionsForToken
@@ -348,7 +357,10 @@ export default function UnifiedTransactionList({
   boxProps,
   hideNetworkFilter,
   overrideFilterForCurrentChain = false,
+  tokenChainId,
 }) {
+  console.log({ tokenAddress, hideNetworkFilter, overrideFilterForCurrentChain, tokenChainId });
+  console.log("updated");
   const [daysLimit, setDaysLimit] = useState(PAGE_DAYS_INCREMENT);
   const t = useI18nContext();
   const currentNetworkConfig = useSelector(getCurrentNetwork);
@@ -402,7 +414,7 @@ export default function UnifiedTransactionList({
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
 
-  const chainId = useSelector(getCurrentChainId);
+  // const chainId = useSelector(getCurrentChainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
@@ -455,7 +467,7 @@ export default function UnifiedTransactionList({
       {
         hideTokenTransactions,
         tokenAddress,
-        chainId,
+        chainId: tokenChainId,
         enabledNetworksByNamespace,
       },
     );
@@ -465,7 +477,7 @@ export default function UnifiedTransactionList({
     nonEvmTransactionsForToken,
     hideTokenTransactions,
     tokenAddress,
-    chainId,
+    tokenChainId,
   ]);
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
