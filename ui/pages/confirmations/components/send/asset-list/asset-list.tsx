@@ -18,6 +18,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { type Asset } from '../../../types/send';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
+import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { useSendContext } from '../../../context/send';
 import { Asset as AssetComponent } from '../../UI/asset';
 
@@ -39,6 +40,7 @@ export const AssetList = ({
   const t = useI18nContext();
   const { goToAmountRecipientPage } = useNavigateSendPage();
   const { updateAsset } = useSendContext();
+  const { captureAssetSelected } = useAssetSelectionMetrics();
   const hasFilteredResults = tokens.length > 0 || nfts.length > 0;
   const hasAnyAssets = allTokens.length > 0 || allNfts.length > 0;
 
@@ -46,8 +48,9 @@ export const AssetList = ({
     (asset: Asset) => {
       updateAsset(asset);
       goToAmountRecipientPage();
+      captureAssetSelected(asset);
     },
-    [updateAsset, goToAmountRecipientPage],
+    [updateAsset, goToAmountRecipientPage, captureAssetSelected],
   );
 
   // Show "no results" message only if there are assets available but none match the search
