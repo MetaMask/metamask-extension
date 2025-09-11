@@ -19,11 +19,11 @@ import * as SendType from '../../../hooks/send/useSendType';
 import * as SendContext from '../../../context/send';
 import { Amount } from './amount';
 
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
 }));
 
 const render = (args?: Record<string, unknown>) => {
