@@ -29,7 +29,9 @@ import {
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../../shared/constants/bridge';
+import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { getImageForChainId } from '../../../utils/network';
+import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
 
 type NetworkFilterProps = {
@@ -48,6 +50,8 @@ export const NetworkFilter = ({
   const t = useI18nContext();
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
+  const { addAssetFilterMethod, removeAssetFilterMethod } =
+    useAssetSelectionMetrics();
 
   // Extract and sort unique chain IDs by total fiat balance from tokens only
   const uniqueChainIds = useMemo(() => {
@@ -113,10 +117,21 @@ export const NetworkFilter = ({
 
   const handleNetworkSelection = useCallback(
     (chainId: string | null) => {
+      if (chainId === null) {
+        removeAssetFilterMethod(AssetFilterMethod.Network);
+      } else {
+        addAssetFilterMethod(AssetFilterMethod.Network);
+      }
+
       onChainIdChange?.(chainId);
       closePopover();
     },
-    [onChainIdChange, closePopover],
+    [
+      addAssetFilterMethod,
+      closePopover,
+      onChainIdChange,
+      removeAssetFilterMethod,
+    ],
   );
 
   return (
