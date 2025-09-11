@@ -16,8 +16,8 @@ const tests = [
     },
     result: {
       value: '$2.80',
-      suffix: 'USD',
-      displayValue: '$2.80 USD',
+      suffix: undefined,
+      displayValue: '$2.80',
     },
   },
   {
@@ -27,8 +27,8 @@ const tests = [
     },
     result: {
       value: '$2.80',
-      suffix: 'USD',
-      displayValue: '$2.80 USD',
+      suffix: undefined,
+      displayValue: '$2.80',
     },
   },
   {

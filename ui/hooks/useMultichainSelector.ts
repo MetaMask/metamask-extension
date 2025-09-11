@@ -7,7 +7,7 @@ export function useMultichainSelector<
   TSelected = unknown,
 >(
   selector: (state: TState, account?: InternalAccount) => TSelected,
-  account?: InternalAccount,
+  account?: InternalAccount | null,
 ) {
   return useSelector((state: TState) => {
     // We either pass an account or fallback to the currently selected one

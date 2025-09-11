@@ -69,6 +69,10 @@ import {
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
 import { PreferredAvatar } from '../../app/preferred-avatar';
+import {
+  getMultichainAccountGroupById,
+  getSelectedAccountGroup,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -88,12 +92,19 @@ export const AppHeaderUnlockedContent = ({
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
+  const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
+  const selectedMultichainAccount = useSelector((state) =>
+    getMultichainAccountGroupById(state, selectedMultichainAccountId),
+  );
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
   const shortenedAddress =
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
+  const accountName = isMultichainAccountsState2Enabled
+    ? selectedMultichainAccount.metadata.name
+    : internalAccount.metadata.name;
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -196,10 +207,7 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <PreferredAvatar
-            address={internalAccount.address}
-            className="shrink-0"
-          />
+          <PreferredAvatar address={internalAccount.address} />
         )}
         {internalAccount && (
           <Text
@@ -211,7 +219,7 @@ export const AppHeaderUnlockedContent = ({
           >
             <AccountPicker
               address={internalAccount.address}
-              name={internalAccount.metadata.name}
+              name={accountName}
               showAvatarAccount={false}
               onClick={() => {
                 handleAccountMenuClick();
@@ -225,8 +233,8 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
               disabled={disableAccountPicker}
-              paddingLeft={2}
-              paddingRight={2}
+              paddingLeft={isMultichainAccountsState2Enabled ? 0 : 2}
+              paddingRight={isMultichainAccountsState2Enabled ? 0 : 2}
             />
             <>{!isMultichainAccountsState2Enabled && CopyButton}</>
           </Text>

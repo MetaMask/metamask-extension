@@ -30,20 +30,22 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
 } from '../../../store/actions';
 import {
-  AvatarAccount,
   AvatarAccountSize,
   AvatarNetwork,
   Icon,
   IconName,
 } from '../../component-library';
+import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -120,11 +122,7 @@ function ConnectAccountToast() {
         dataTestId="connect-account-toast"
         key="connect-account-toast"
         startAdornment={
-          <AvatarAccount
-            address={account.address}
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
-          />
+          <PreferredAvatar address={account.address} className="self-center" />
         }
         text={t('accountIsntConnectedToastText', [
           account?.metadata?.name,
@@ -251,8 +249,26 @@ function PermittedNetworkToast() {
 
   const currentNetwork = useSelector(getCurrentNetwork);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
   const history = useHistory();
+
+  // Use dapp's active network if available, otherwise fall back to global network
+  const displayNetwork = dappActiveNetwork || currentNetwork;
+
+  // Get the correct image URL - dapp network structure is different
+  const getNetworkImageUrl = () => {
+    if (dappActiveNetwork) {
+      // For dapp networks, check rpcPrefs.imageUrl first, then fallback to CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      return (
+        dappActiveNetwork.rpcPrefs?.imageUrl ||
+        (dappActiveNetwork.chainId &&
+          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[dappActiveNetwork.chainId])
+      );
+    }
+    // For global network, use existing logic
+    return currentNetwork?.rpcPrefs?.imageUrl || '';
+  };
 
   return (
     isPermittedNetworkToastOpen && (
@@ -262,13 +278,13 @@ function PermittedNetworkToast() {
           <AvatarNetwork
             size={AvatarAccountSize.Md}
             borderColor={BorderColor.transparent}
-            src={currentNetwork?.rpcPrefs.imageUrl || ''}
-            name={currentNetwork?.nickname}
+            src={getNetworkImageUrl()}
+            name={displayNetwork?.name || displayNetwork?.nickname}
           />
         }
         text={t('permittedChainToastUpdate', [
           getURLHost(activeTabOrigin),
-          currentNetwork?.nickname,
+          displayNetwork?.name || displayNetwork?.nickname,
         ])}
         actionText={t('editPermissions')}
         onActionClick={() => {

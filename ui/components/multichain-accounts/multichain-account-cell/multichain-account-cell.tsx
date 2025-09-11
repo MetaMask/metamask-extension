@@ -1,14 +1,7 @@
 import React from 'react';
 import { AccountGroupId } from '@metamask/account-api';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Icon,
-  IconName,
-  Text,
-} from '../../component-library';
+import { Box, Icon, IconName, Text } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
   AlignItems,
   BorderColor,
@@ -16,6 +9,7 @@ import {
   Display,
   IconColor,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -26,6 +20,7 @@ export type MultichainAccountCellProps = {
   balance: string;
   endAccessory?: React.ReactNode;
   selected?: boolean;
+  walletName?: string;
   disableHoverEffect?: boolean;
 };
 
@@ -36,6 +31,7 @@ export const MultichainAccountCell = ({
   balance,
   endAccessory,
   selected = false,
+  walletName,
   disableHoverEffect = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
@@ -69,23 +65,31 @@ export const MultichainAccountCell = ({
             selected ? BorderColor.primaryDefault : BorderColor.transparent
           }
           borderRadius={BorderRadius.XL}
-          padding={1}
         >
-          {/* // TODO: Replace avatar account with one that supports multichain, when available */}
-          <AvatarAccount
-            size={AvatarAccountSize.Md}
-            address={accountId}
-            variant={AvatarAccountVariant.Jazzicon}
-          />
+          <PreferredAvatar address={accountId} />
         </Box>
-        <Text
-          className="multichain-account-cell__account-name"
-          variant={TextVariant.bodyMdMedium}
-          marginLeft={3}
-          ellipsis
-        >
-          {accountName}
-        </Text>
+        <Box>
+          <Text
+            className="multichain-account-cell__account-name"
+            variant={TextVariant.bodyMdMedium}
+            marginLeft={3}
+            ellipsis
+          >
+            {accountName}
+          </Text>
+          {walletName && (
+            <Text
+              className="multichain-account-cell__account-name"
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodySmMedium}
+              marginLeft={3}
+              ellipsis
+            >
+              {walletName}
+            </Text>
+          )}
+        </Box>
+
         {selected && (
           <Icon
             name={IconName.CheckBold}

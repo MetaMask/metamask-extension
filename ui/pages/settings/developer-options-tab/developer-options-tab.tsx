@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import {
   Box,
@@ -52,7 +52,7 @@ import { BackupAndSyncDevSettings } from './backup-and-sync';
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -89,9 +89,9 @@ const DeveloperOptionsTab = () => {
         platform?.openExtensionInBrowser(backUpSRPRoute, null, true);
       }
     } else {
-      history.push(backUpSRPRoute);
+      navigate(backUpSRPRoute);
     }
-  }, [dispatch, history]);
+  }, [dispatch, navigate]);
 
   const handleToggleServiceWorkerAlive = async (
     value: boolean,

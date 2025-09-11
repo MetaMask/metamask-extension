@@ -1,4 +1,4 @@
-.multichain-account-details {
+.multichain-account-details-page {
   max-width: 600px;
 
   &__section {
@@ -16,6 +16,13 @@
         margin-bottom: 0;
       }
     }
+  }
+
+  &__srp-button {
+    cursor: pointer;
+    border: none;
+    padding-left: 12px;
+    padding-right: 20px;
   }
 
   &__remove-button {

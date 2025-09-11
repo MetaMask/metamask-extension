@@ -155,9 +155,7 @@ describe('AccountListItem', () => {
     expect(
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
     ).toBeInTheDocument();
-    expect(
-      document.querySelector('[title="$100,000.00 USD"]'),
-    ).toBeInTheDocument();
+    expect(document.querySelector('[title="$100,000.00"]')).toBeInTheDocument();
     expect(screen.getByTestId('account-network-indicator')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('non-EVM-account-list-item');
@@ -340,7 +338,6 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
 
       it('renders fiat and native balance for non-EVM account', () => {
@@ -370,7 +367,6 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
     });
   });

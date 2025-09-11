@@ -114,6 +114,10 @@
   "accountName": {
     "message": "Account name"
   },
+  "accountNameAlreadyInUse": {
+    "message": "This name is already in use.",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
+  },
   "accountNameDuplicate": {
     "message": "This account name already exists",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
@@ -140,6 +144,9 @@
   },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
+  },
+  "accountSmallCase": {
+    "message": "account"
   },
   "accountTypeNotSupported": {
     "message": "Account type not supported"
@@ -345,6 +352,18 @@
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addressQrCodeModalDescription": {
+    "message": "Use this address to receive tokens and collectibles on $1",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalHeading": {
+    "message": "$1 Address",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalTitle": {
+    "message": "$1 / $2",
+    "description": "$1 is account name, $2 is network name"
+  },
   "addresses": {
     "message": "Addresses",
     "description": "Multichain account menu item for linking to addresses page"
@@ -444,9 +463,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Gas prices are high and estimates are less accurate."
-  },
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
@@ -492,14 +508,14 @@
   "alertReasonMultipleApprovals": {
     "message": "Unnecessary permission"
   },
-  "alertReasonNetworkBusy": {
-    "message": "Network is busy"
-  },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
   },
   "alertReasonOriginTrustSignalMalicious": {
     "message": "Malicious site"
+  },
+  "alertReasonOriginTrustSignalVerified": {
+    "message": "Verified site"
   },
   "alertReasonOriginTrustSignalWarning": {
     "message": "Suspicious site"
@@ -656,6 +672,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "Set the idle time in minutes before MetaMask will become locked."
+  },
+  "available": {
+    "message": "available"
   },
   "average": {
     "message": "Average"
@@ -1165,6 +1184,9 @@
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "clearFilters": {
+    "message": "Clear filters"
+  },
   "click": {
     "message": "Click"
   },
@@ -1367,6 +1389,9 @@
   },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
+  },
+  "confusingSolanaDomain": {
+    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
   },
   "connect": {
     "message": "Connect"
@@ -3146,6 +3171,9 @@
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
+  "ledgerEthAppNftNotSupportedNotification": {
+    "message": "Ledger Nano S can't send or manage Ethereum NFTs. See upgrade options at https://shop.ledger.com/pages/ledger-nano-s-upgrade-program"
+  },
   "ledgerFirefoxNotSupportedDescription1": {
     "message": "We're having trouble connecting to Ledger. Check out our "
   },
@@ -3430,6 +3458,14 @@
   },
   "moreQuotes": {
     "message": "More quotes"
+  },
+  "multichainAccountAddressCopied": {
+    "message": "Address copied",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Private key copied",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
@@ -3854,6 +3890,9 @@
   "noThanks": {
     "message": "No thanks"
   },
+  "noTokensMatchingYourFilters": {
+    "message": "No tokens matching your filters"
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -4133,6 +4172,15 @@
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
+  },
+  "onboardingLoginFooter": {
+    "message": "By continuing, I agree to MetaMask’s $1 and $2"
+  },
+  "onboardingLoginFooterPrivacyNotice": {
+    "message": "Privacy notice."
+  },
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "Terms of Use"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -4742,6 +4790,50 @@
   "publicAddress": {
     "message": "Public address"
   },
+  "pushNotificationLimitOrderFilledDescriptionLong": {
+    "message": "Your $1 long position is now open.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationLimitOrderFilledDescriptionShort": {
+    "message": "Your $1 short position is now open.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "Limit order filled"
+  },
+  "pushNotificationPositionLiquidatedDescriptionLong": {
+    "message": "Your $1 long was closed.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationPositionLiquidatedDescriptionShort": {
+    "message": "Your $1 short was closed.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "Position liquidated"
+  },
+  "pushNotificationStopLossTriggeredDescriptionLong": {
+    "message": "Your $1 long closed at your stop loss.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationStopLossTriggeredDescriptionShort": {
+    "message": "Your $1 short closed at your stop loss.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "Stop loss triggered"
+  },
+  "pushNotificationTakeProfitTriggeredDescriptionLong": {
+    "message": "Your $1 long closed at your take profit.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationTakeProfitTriggeredDescriptionShort": {
+    "message": "Your $1 short closed at your take profit.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "Take profit triggered"
+  },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "You received $1 $2"
   },
@@ -4849,6 +4941,10 @@
   },
   "received": {
     "message": "Received"
+  },
+  "receivingAddress": {
+    "message": "Receiving address",
+    "description": "Page title when viewing addresses for receiving funds"
   },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
@@ -5012,6 +5108,9 @@
   "resetWalletWarningSocial": {
     "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
+  "resolvedLookup": {
+    "message": "Resolved address of the domain: $1"
+  },
   "restartMetamask": {
     "message": "Restart MetaMask"
   },
@@ -5038,6 +5137,14 @@
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "This key grants full control of your account for the associated chain.",
+    "description": "Description for the banner warning users not to share their private key"
+  },
+  "revealMultichainPrivateKeysBannerTitle": {
+    "message": "Don’t share your private key",
+    "description": "Title for the banner warning users not to share their private key"
   },
   "revealSecretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -5134,6 +5241,12 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchAnAcccountOrContact": {
+    "message": "Search an account or contact"
+  },
+  "searchForAnAssetToSend": {
+    "message": "Search for an asset to send"
+  },
   "searchNetworks": {
     "message": "Search networks"
   },
@@ -5145,6 +5258,10 @@
   },
   "searchTokensByNameOrAddress": {
     "message": "Search tokens by name or address"
+  },
+  "searchYourAccounts": {
+    "message": "Search your accounts",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -5293,8 +5410,14 @@
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
   },
+  "selectNetworkToFilter": {
+    "message": "Select network to filter"
+  },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
+  },
+  "selectRecipient": {
+    "message": "Select recipient"
   },
   "selectRpcUrl": {
     "message": "Select RPC URL"
@@ -5451,6 +5574,89 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
+  "shieldEntryModalAssetCoverage": {
+    "message": "$10,000 asset coverage per transaction"
+  },
+  "shieldEntryModalDescription": {
+    "message": "Renews at $1/month, cancel anytime. $2",
+    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Get started"
+  },
+  "shieldEntryModalProtection": {
+    "message": "Protection across all your accounts"
+  },
+  "shieldEntryModalSkip": {
+    "message": "Skip"
+  },
+  "shieldEntryModalSubtitle": {
+    "message": "Transaction Shield, free for 14 days."
+  },
+  "shieldEntryModalSupport": {
+    "message": "Priority customer support"
+  },
+  "shieldTx": {
+    "message": "MetaMask Shield"
+  },
+  "shieldTxCancelDetails": {
+    "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxDetails1Description": {
+    "message": "Secures your assets from risky transactions"
+  },
+  "shieldTxDetails1Title": {
+    "message": "Covers $10,000 in transaction protection"
+  },
+  "shieldTxDetails2Description": {
+    "message": "Get faster, dedicated support anytime"
+  },
+  "shieldTxDetails2Title": {
+    "message": "Priority support"
+  },
+  "shieldTxMembershipActive": {
+    "message": "Active membership"
+  },
+  "shieldTxMembershipBillingDetails": {
+    "message": "Billing details"
+  },
+  "shieldTxMembershipBillingDetailsBillingAccount": {
+    "message": "Billing account"
+  },
+  "shieldTxMembershipBillingDetailsCharges": {
+    "message": "Charges"
+  },
+  "shieldTxMembershipBillingDetailsNextBilling": {
+    "message": "Next billing"
+  },
+  "shieldTxMembershipBillingDetailsPaymentMethod": {
+    "message": "Payment method"
+  },
+  "shieldTxMembershipBillingDetailsViewBillingHistory": {
+    "message": "View billing history"
+  },
+  "shieldTxMembershipCancel": {
+    "message": "Cancel membership"
+  },
+  "shieldTxMembershipFreeTrial": {
+    "message": "Free trial"
+  },
+  "shieldTxMembershipId": {
+    "message": "Member ID"
+  },
+  "shieldTxMembershipInactive": {
+    "message": "Inactive membership"
+  },
+  "shieldTxMembershipResubscribe": {
+    "message": "Resubscribe"
+  },
+  "shieldTxMembershipSubmitCase": {
+    "message": "Submit a claim"
+  },
+  "shieldTxMembershipViewFullBenefits": {
+    "message": "View full benefits"
+  },
   "show": {
     "message": "Show"
   },
@@ -5528,6 +5734,9 @@
   },
   "signingWith": {
     "message": "Signing with"
+  },
+  "similarTo": {
+    "message": "$1 is similar to $2"
   },
   "simulationApproveHeading": {
     "message": "Withdraw"
@@ -5646,6 +5855,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Edit slippage"
+  },
+  "smartAccount": {
+    "message": "Smart account"
   },
   "smartAccountAccept": {
     "message": "Use smart account"
@@ -5904,6 +6116,9 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
+  },
+  "solanaUnknownError": {
+    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -7355,15 +7570,6 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-  "welcomeDescription": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
-  },
-  "welcomeGetStarted": {
-    "message": "Get started"
-  },
-  "welcomeTitle": {
-    "message": "Welcome to MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Let's get started"
   },
@@ -7384,6 +7590,10 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
+  },
+  "wrongPassword": {
+    "message": "Wrong password",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Yes"

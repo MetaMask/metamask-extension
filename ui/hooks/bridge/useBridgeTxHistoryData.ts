@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { StatusTypes } from '@metamask/bridge-controller';
+import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
-import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryItemForTxMetaId } from '../../ducks/bridge-status/selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -36,16 +37,9 @@ export function useBridgeTxHistoryData({
   const history = useHistory();
   const txMeta = transactionGroup.initialTransaction;
   const srcTxMetaId = txMeta.id;
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-  const bridgeHistoryItem = srcTxMetaId
-    ? bridgeHistory[srcTxMetaId]
-    : undefined;
-
-  // By complete, this means BOTH source and dest tx are confirmed
-  const isBridgeComplete = bridgeHistoryItem
-    ? Boolean(bridgeHistoryItem?.status.srcChain.txHash) &&
-      bridgeHistoryItem.status.status === StatusTypes.COMPLETE
-    : null;
+  const bridgeHistoryItem = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
+  );
 
   const isBridgeFailed = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
@@ -64,7 +58,10 @@ export function useBridgeTxHistoryData({
 
   return {
     bridgeTxHistoryItem: bridgeHistoryItem,
-    isBridgeComplete,
+    // By complete, this means BOTH source and dest tx are confirmed
+    isBridgeComplete: bridgeHistoryItem
+      ? isBridgeComplete(bridgeHistoryItem)
+      : null,
     isBridgeFailed,
     showBridgeTxDetails,
   };

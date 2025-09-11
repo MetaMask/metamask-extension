@@ -1,15 +1,18 @@
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
+import { ERC1155, ERC20, ERC721 } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
 import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { addHexPrefix } from 'ethereumjs-util';
 import { isNativeAddress } from '@metamask/bridge-controller';
+import { useHistory } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
+  getLayer1GasFeeValue,
 } from '../../../store/actions';
 import { Asset } from '../types/send';
 import {
@@ -17,6 +20,30 @@ import {
   generateERC20TransferData,
   generateERC721TransferData,
 } from '../send-legacy/send.utils';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
+
+export const trimTrailingZeros = (numStr: string) => {
+  return numStr.replace(/(\.\d*?[1-9])0+$/gu, '$1').replace(/\.0*$/u, '');
+};
+
+export const removeAdditionalDecimalPlaces = (
+  value: string,
+  decimals: string | number | undefined,
+) => {
+  if (!value) {
+    return undefined;
+  }
+  const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
+  const result = value.replace(/^-/u, '').split('.');
+  const intPart = result[0];
+  let fracPart = result[1] ?? '';
+
+  if (fracPart.length > decimalValue) {
+    fracPart = fracPart.slice(0, decimalValue);
+  }
+
+  return fracPart ? `${intPart}.${fracPart}` : intPart;
+};
 
 export const fromTokenMinUnitsNumeric = (
   value: string,
@@ -36,7 +63,10 @@ export const fromTokenMinimalUnitsNumeric = (
 export const fromTokenMinimalUnits = (
   value: string,
   decimals?: number | string,
-) => fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString();
+) =>
+  addHexPrefix(
+    fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString(),
+  );
 
 export const fromTokenMinimalUnitsHexNumeric = (
   value: string,
@@ -45,15 +75,24 @@ export const fromTokenMinimalUnitsHexNumeric = (
 
 export const toTokenMinimalUnitNumeric = (
   value: string,
-  decimals?: number | string,
+  decimals: number | string = 0,
+  base?: NumericBase,
 ) => {
   const decimalValue = parseInt(decimals?.toString() ?? '0', 10);
   const multiplier = Math.pow(10, Number(decimalValue));
-  return new Numeric(value, 16).divide(multiplier, 10);
+  return new Numeric(value, base ?? 16).divide(multiplier, 10);
 };
 
-export const toTokenMinimalUnit = (value: string, decimals?: number | string) =>
-  toTokenMinimalUnitNumeric(value, decimals).toBase(10).toString();
+export const toTokenMinimalUnit = (
+  value: string,
+  decimals: number | string = 0,
+  base?: NumericBase,
+) => {
+  return removeAdditionalDecimalPlaces(
+    toTokenMinimalUnitNumeric(value, decimals, base).toBase(10).toString(),
+    decimals,
+  );
+};
 
 export function formatToFixedDecimals(
   value: string | undefined,
@@ -79,9 +118,8 @@ export function formatToFixedDecimals(
     return strValueArr[0];
   }
 
-  return `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`.replace(
-    /\.?0+$/u,
-    '',
+  return trimTrailingZeros(
+    `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`,
   );
 }
 
@@ -155,20 +193,107 @@ export const submitEvmTransaction = async ({
 }) => {
   const trxnParams = prepareEVMTransaction(asset, { from, to, value });
   const networkClientId = await findNetworkClientIdByChainId(chainId);
+
+  let transactionType;
+  if (isNativeAddress(asset.address ?? asset.assetId)) {
+    transactionType = TransactionType.simpleSend;
+  } else if (asset.standard === ERC20) {
+    transactionType = TransactionType.tokenMethodTransfer;
+  } else if (asset.standard === ERC721) {
+    transactionType = TransactionType.tokenMethodTransferFrom;
+  } else if (asset.standard === ERC1155) {
+    transactionType = TransactionType.tokenMethodSafeTransferFrom;
+  }
+
   return addTransactionAndRouteToConfirmationPage(trxnParams, {
     networkClientId,
-    type: TransactionType.simpleSend,
+    type: transactionType,
   });
+};
+
+export const getLayer1GasFees = async ({
+  asset,
+  chainId,
+  from,
+  value,
+}: {
+  asset: Asset;
+  chainId: Hex;
+  from: Hex;
+  value: string;
+}): Promise<Hex | undefined> => {
+  return (await getLayer1GasFeeValue({
+    chainId,
+    transactionParams: {
+      value: fromTokenMinimalUnits(value, asset.decimals),
+      from,
+    },
+  })) as Hex | undefined;
 };
 
 export function isDecimal(value: string) {
   return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
 }
 
-export function convertedCurrency(value: string, conversionRate?: number) {
-  return new Numeric(value, 10)
-    .applyConversionRate(conversionRate)
-    .toBase(10)
-    .toString()
-    .replace(/\.?0+$/u, '');
+export function convertedCurrency(
+  value: string,
+  conversionRate?: number,
+  decimals?: string | number,
+) {
+  if (!isDecimal(value) || parseFloat(value) < 0) {
+    return undefined;
+  }
+
+  return trimTrailingZeros(
+    removeAdditionalDecimalPlaces(
+      new Numeric(value, 10).applyConversionRate(conversionRate).toString(),
+      decimals,
+    ) ?? '',
+  );
 }
+
+export const navigateToSendRoute = (
+  history: ReturnType<typeof useHistory>,
+  isSendRedesignEnabled: boolean,
+  params?: {
+    address?: string;
+    chainId?: string;
+  },
+) => {
+  if (isSendRedesignEnabled) {
+    if (params) {
+      const queryParams = new URLSearchParams();
+      const { address, chainId } = params;
+      if (address) {
+        queryParams.append('asset', address);
+      }
+      if (chainId) {
+        queryParams.append('chainId', chainId);
+      }
+      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+    } else {
+      history.push(`${SEND_ROUTE}/asset`);
+    }
+  } else {
+    history.push(SEND_ROUTE);
+  }
+};
+
+export const getFractionLength = (value: string) => {
+  const result = value.replace(/^-/u, '').split('.');
+  const fracPart = result[1] ?? '';
+  return fracPart.length;
+};
+
+export const addLeadingZeroIfNeeded = (value?: string) => {
+  if (!value) {
+    return value;
+  }
+  const result = value.replace(/^-/u, '').split('.');
+  const wholePart = result[0];
+  const fracPart = result[1] ?? '';
+  if (!wholePart.length) {
+    return `0.${fracPart}`;
+  }
+  return value;
+};

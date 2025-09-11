@@ -1,4 +1,7 @@
-// Disabled to allow setting up initial state hooks first
+// ESLint complains that we are mixing imports and runtime code, which we are,
+// but we need to initialize React Devtools before importing React (which
+// happens in the UI code).
+/* eslint-disable import/first */
 
 // This import sets up safe intrinsics required for LavaDome to function securely.
 // It must be run before any less trusted code so that no such code can undermine it.
@@ -9,8 +12,16 @@ import '@lavamoat/lavadome-react';
 import './lib/setup-initial-state-hooks';
 import '../../development/wdyr';
 
-// dev only, "react-devtools" import is skipped in prod builds
-import 'react-devtools';
+// Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
+import '../../shared/constants/infura-project-id';
+
+import * as reactDevtoolsCore from 'react-devtools-core';
+
+if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
+  const { initialize, connectToDevTools } = reactDevtoolsCore;
+  initialize();
+  connectToDevTools();
+}
 
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';

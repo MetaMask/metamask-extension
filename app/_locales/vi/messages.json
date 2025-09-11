@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí mạng."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Phí gas cao và ước tính kém chính xác hơn."
-  },
   "alertMessageNoGasPrice": {
     "message": "Chúng tôi không thể tiếp tục giao dịch này cho đến khi bạn cập nhật phí thủ công."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Quyền không cần thiết"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Mạng đang bận"
   },
   "alertReasonNoGasPrice": {
     "message": "Ước tính phí không có sẵn"
@@ -7231,15 +7225,6 @@
   },
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại"
-  },
-  "welcomeDescription": {
-    "message": "Được hàng triệu người tin tưởng, MetaMask là một ví an toàn giúp mọi người tiếp cận thế giới web3."
-  },
-  "welcomeGetStarted": {
-    "message": "Bắt đầu"
-  },
-  "welcomeTitle": {
-    "message": "Chào mừng đến với MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Bắt đầu nào"
