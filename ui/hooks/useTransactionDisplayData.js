@@ -197,14 +197,21 @@ export function useTransactionDisplayData(transactionGroup) {
   useEffect(() => {
     async function getAndSetAssetDetails() {
       if (isTokenCategory && !token) {
-        const assetDetails = await getAssetDetails(
-          recipientAddress,
-          senderAddress,
-          transactionData,
-          knownNfts,
-        );
-        if (mounted.current === true) {
-          setCurrentAssetDetails(assetDetails);
+        try {
+          const assetDetails = await getAssetDetails(
+            recipientAddress,
+            senderAddress,
+            transactionData,
+            knownNfts,
+          );
+          if (mounted.current === true) {
+            setCurrentAssetDetails(assetDetails);
+          }
+        } catch (e) {
+          console.warn('Unable to set asset details', {
+            error: e,
+            transactionData,
+          });
         }
       }
     }

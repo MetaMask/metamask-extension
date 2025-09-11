@@ -422,9 +422,6 @@ jobs:
       - build-test-flask-mv2-browserify
       - build-test-webpack
       - run-tests
-      - needs-e2e
-      - e2e-chrome
-      - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
@@ -442,13 +439,31 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - all-jobs-completed
+      - needs-e2e
+      - e2e-chrome
+      - e2e-firefox
     steps:
       - name: Check that all jobs have passed
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
+          # Check if all non-E2E jobs passed
+          if [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" != "true" ]]; then
+            echo "Non-E2E jobs failed"
             exit 1
           fi
+
+          # Check E2E jobs only if they should have run
+          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
+            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
+              echo "E2E Chrome tests failed"
+              exit 1
+            fi
+            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
+              echo "E2E Firefox tests failed"
+              exit 1
+            fi
+          fi
+
+          echo "All required jobs passed"
 
   log-merge-group-failure:
     name: Log merge group failure

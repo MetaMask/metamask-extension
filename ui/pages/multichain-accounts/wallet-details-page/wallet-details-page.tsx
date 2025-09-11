@@ -104,7 +104,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {t('walletDetails')}
+        {wallet?.metadata.name}
       </Header>
       <Content>
         <Box
