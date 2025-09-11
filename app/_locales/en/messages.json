@@ -1835,6 +1835,9 @@
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
+  "deepLink_thePerpsPage": {
+    "message": "the perps page"
+  },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
@@ -2325,6 +2328,18 @@
   },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
+  },
+  "errorLegalTextFirstInfo": {
+    "message": "Technical diagnostic information."
+  },
+  "errorLegalTextNoPersonalInfo": {
+    "message": "No personal information or other device information will be collected."
+  },
+  "errorLegalTextSecondInfo": {
+    "message": "Your browser, operating system, and MetaMask versions."
+  },
+  "errorLegalTextSummary": {
+    "message": "We will receive a single error report, containing:"
   },
   "errorMessage": {
     "message": "Message: $1",
@@ -4962,6 +4977,9 @@
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
+  "recipientEditAriaLabel": {
+    "message": "Edit recipient"
+  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
@@ -5061,6 +5079,9 @@
   },
   "reportIssue": {
     "message": "Report an issue"
+  },
+  "reportThisError": {
+    "message": "Report this error"
   },
   "requestFrom": {
     "message": "Request from"
