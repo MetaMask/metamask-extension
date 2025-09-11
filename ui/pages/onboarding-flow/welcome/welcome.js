@@ -339,6 +339,8 @@ export default function OnboardingWelcome() {
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
             await onImportClick();
           }
+
+          return;
         }
 
         if (isSeedlessOnboardingFeatureEnabled) {
