@@ -82,7 +82,7 @@ describe('TokenListControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       chainId: '0x1',
-      preventPollingOnNetworkRestart: true,
+      preventPollingOnNetworkRestart: false,
     });
   });
 });

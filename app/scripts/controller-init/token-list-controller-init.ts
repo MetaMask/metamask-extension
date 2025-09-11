@@ -42,8 +42,8 @@ export const TokenListControllerInit: ControllerInitFunction<
 
   const controller = new TokenListController({
     messenger: controllerMessenger,
-    state: persistedState?.TokenListController,
-    preventPollingOnNetworkRestart: isTokenListPollingRequired(
+    state: persistedState.TokenListController,
+    preventPollingOnNetworkRestart: !isTokenListPollingRequired(
       preferencesControllerState,
     ),
     chainId,
