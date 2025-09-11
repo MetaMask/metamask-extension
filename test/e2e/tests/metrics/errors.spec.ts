@@ -71,6 +71,8 @@ const removedBackgroundFields = [
   'PhishingController.phishingLists',
   'PhishingController.stalelistLastFetched',
   'PhishingController.whitelist',
+  // User preference that can vary between test runs
+  'PreferencesController.preferences.avatarType',
 ];
 
 const ignoredConsoleErrors = [
