@@ -55,7 +55,7 @@ const getNativeValueFn = ({
   return (
     convertedCurrency(
       amount,
-      conversionRate !== 0 ? 1 / conversionRate : 0,
+      conversionRate === 0 ? 0 : 1 / conversionRate,
       asset?.decimals,
     ) ?? '0'
   );
@@ -100,7 +100,7 @@ export const useCurrencyConversions = () => {
   const multichainAssetsRates = useSelector(getAssetsRates);
 
   const conversionRate = useMemo(() => {
-    const assetAddress = asset?.assetId ?? asset?.address;
+    const assetAddress = asset?.address ?? asset?.assetId;
     if (
       !asset ||
       !assetAddress ||
