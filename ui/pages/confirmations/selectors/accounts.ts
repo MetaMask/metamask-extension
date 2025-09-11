@@ -1,17 +1,18 @@
-import { InternalAccount } from "@metamask/keyring-internal-api";
-import { createDeepEqualSelector } from "../../../../shared/modules/selectors/util";
-import { getAccountByAddress } from "../../../helpers/utils/util";
-import { getAccountGroupsByAddress } from "../../../selectors/multichain-accounts/account-tree";
-import { AccountGroupWithInternalAccounts, MultichainAccountsState } from "../../../selectors/multichain-accounts/account-tree.types";
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
+import { getAccountByAddress } from '../../../helpers/utils/util';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  AccountGroupWithInternalAccounts,
+  MultichainAccountsState,
+} from '../../../selectors/multichain-accounts/account-tree.types';
 
 /**
  * Selector to get the account group name by an internal account address.
  * Used when multichain accounts state 2 is enabled.
  *
  * @param state - Redux state.
- * @param _state
  * @param addresses - Array of account addresses to filter account groups by.
- * @param _addresses
  * @param internalAccount - The internal account address to find the group name for.
  * @returns The name of the account group that contains the internal account, or null if not found.
  */
@@ -52,9 +53,7 @@ export const selectAccountGroupNameByInternalAccount = createDeepEqualSelector(
  * Used when multichain accounts state 2 is disabled (legacy mode).
  *
  * @param state - Redux state.
- * @param _state
  * @param addresses - Array of account addresses to filter account groups by.
- * @param _addresses
  * @param address - The account address to find the account name for.
  * @returns The metadata name of the internal account, or null if not found.
  */

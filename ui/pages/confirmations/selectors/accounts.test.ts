@@ -1,8 +1,11 @@
-import { MultichainNetworkConfigurationsByChainIdState } from "../../../../shared/modules/selectors/networks";
-import { getAccountByAddress } from "../../../helpers/utils/util";
-import { getAccountGroupsByAddress } from "../../../selectors/multichain-accounts/account-tree";
-import { MultichainAccountsState } from "../../../selectors/multichain-accounts/account-tree.types";
-import { selectAccountGroupNameByInternalAccount, selectInternalAccountNameByAddress } from "./accounts";
+import { MultichainNetworkConfigurationsByChainIdState } from '../../../../shared/modules/selectors/networks';
+import { getAccountByAddress } from '../../../helpers/utils/util';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
+import {
+  selectAccountGroupNameByInternalAccount,
+  selectInternalAccountNameByAddress,
+} from './accounts';
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getAccountGroupsByAddress: jest.fn(),
@@ -31,7 +34,9 @@ describe('selectAccountGroupNameByInternalAccount', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (getAccountGroupsByAddress as unknown as jest.Mock).mockReturnValue(mockAccountGroups);
+    (getAccountGroupsByAddress as unknown as jest.Mock).mockReturnValue(
+      mockAccountGroups,
+    );
   });
 
   it('returns the correct account group name for a matching internal account', () => {
@@ -102,7 +107,9 @@ describe('selectInternalAccountNameByAddress', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (getAccountGroupsByAddress as unknown as jest.Mock).mockReturnValue(mockAccountGroups);
+    (getAccountGroupsByAddress as unknown as jest.Mock).mockReturnValue(
+      mockAccountGroups,
+    );
   });
 
   it('returns the internal account name for a matching address', () => {
@@ -160,11 +167,7 @@ describe('selectInternalAccountNameByAddress', () => {
   });
 
   it('returns null when addresses array is empty', () => {
-    const result = selectInternalAccountNameByAddress(
-      mockState,
-      [],
-      '0x123',
-    );
+    const result = selectInternalAccountNameByAddress(mockState, [], '0x123');
 
     expect(getAccountGroupsByAddress).not.toHaveBeenCalled();
     expect(result).toBeNull();
