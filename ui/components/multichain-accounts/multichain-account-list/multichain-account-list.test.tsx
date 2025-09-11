@@ -139,7 +139,31 @@ describe('MultichainAccountList', () => {
   };
 
   const renderComponent = (props = {}) => {
-    const store = configureStore(mockDefaultState);
+    // Create a custom state that includes the necessary multichain network data
+    const customState = {
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        multichainNetworks: {
+          'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
+          'eip155:137': { chainId: '0x89', name: 'Polygon' },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            name: 'Solana Mainnet',
+          },
+        },
+        enabledNetworkMap: {
+          eip155: { '0x1': true, '0x89': true },
+          solana: {},
+        },
+        preferences: {
+          ...mockDefaultState.metamask.preferences,
+          useMultiAccountBalanceChecker: true,
+        },
+      },
+    };
+
+    const store = configureStore(customState);
 
     return renderWithProvider(
       <MultichainAccountList {...defaultProps} {...props} />,
@@ -420,7 +444,8 @@ describe('MultichainAccountList', () => {
     expect(mockSetAccountGroupName).not.toHaveBeenCalled();
   });
 
-  it('calls enableAllPopularNetworks when account is clicked', () => {
+  it('does not call enableAllPopularNetworks when multiple networks are enabled', () => {
+    // Use the default state which has multiple networks enabled
     renderComponent();
 
     // Find and click the second account cell (wallet two)
@@ -429,7 +454,7 @@ describe('MultichainAccountList', () => {
     );
     accountCell.click();
 
-    // Verify that enableAllPopularNetworks was called
-    expect(mockEnableAllPopularNetworks).toHaveBeenCalled();
+    // Verify that enableAllPopularNetworks was NOT called
+    expect(mockEnableAllPopularNetworks).not.toHaveBeenCalled();
   });
 });
