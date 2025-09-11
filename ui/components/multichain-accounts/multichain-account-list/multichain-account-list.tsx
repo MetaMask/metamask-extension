@@ -140,7 +140,6 @@ export const MultichainAccountList = ({
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textMuted}
-              style={{ fontWeight: '600' }}
             >
               {walletName}
             </Text>
@@ -205,10 +204,11 @@ export const MultichainAccountList = ({
     defaultHomeActiveTabName,
     dispatch,
     history,
-    formattedAccountGroupBalancesByWallet,
     isInSearchMode,
     displayWalletHeader,
+    formattedAccountGroupBalancesByWallet,
     selectedAccountGroupsSet,
+    handleAccountRenameAction,
   ]);
 
   return (
