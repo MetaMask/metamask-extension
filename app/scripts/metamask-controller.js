@@ -3750,6 +3750,13 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setSelectedAccountGroup(accountGroupId);
       },
 
+      setAccountGroupName: (accountGroupId, accountGroupName) => {
+        this.accountTreeController.setAccountGroupName(
+          accountGroupId,
+          accountGroupName,
+        );
+      },
+
       // MultichainAccountService
       createNextMultichainAccountGroup: async (walletId) => {
         await this.multichainAccountService.createNextMultichainAccountGroup({

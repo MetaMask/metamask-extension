@@ -207,10 +207,7 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <PreferredAvatar
-            address={internalAccount.address}
-            className="shrink-0"
-          />
+          <PreferredAvatar address={internalAccount.address} />
         )}
         {internalAccount && (
           <Text
@@ -236,8 +233,8 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
               disabled={disableAccountPicker}
-              paddingLeft={2}
-              paddingRight={2}
+              paddingLeft={isMultichainAccountsState2Enabled ? 0 : 2}
+              paddingRight={isMultichainAccountsState2Enabled ? 0 : 2}
             />
             <>{!isMultichainAccountsState2Enabled && CopyButton}</>
           </Text>
