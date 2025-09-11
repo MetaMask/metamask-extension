@@ -4,7 +4,6 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import {
-  SeedlessOnboardingController,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerStateChangeEvent,
 } from '@metamask/seedless-onboarding-controller';
@@ -36,7 +35,7 @@ export function getSeedlessOnboardingControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ) {
   return messenger.getRestricted({
-    name: SeedlessOnboardingController.name,
+    name: 'SeedlessOnboardingController',
     allowedActions: [],
     allowedEvents: [],
   });
