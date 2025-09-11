@@ -3593,6 +3593,14 @@ export default class MetamaskController extends EventEmitter {
         this.checkIsSeedlessPasswordOutdated.bind(this),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
+      // subscription
+      getSubscriptions: this.subscriptionController.getSubscriptions.bind(
+        this.subscriptionController,
+      ),
+      getSubscriptionPricing: this.subscriptionController.getPricing.bind(
+        this.subscriptionController,
+      ),
+
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),

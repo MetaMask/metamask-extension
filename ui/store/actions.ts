@@ -62,6 +62,7 @@ import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
+import { PricingResponse } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -312,6 +313,28 @@ export function createNewVaultAndSyncWithSocial(
         throw error;
       }
     }
+  };
+}
+
+export function getSubscriptions(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground('getSubscriptions');
+  };
+}
+
+export function getSubscriptionPricing(): ThunkAction<
+  PricingResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground('getSubscriptionPricing');
   };
 }
 
