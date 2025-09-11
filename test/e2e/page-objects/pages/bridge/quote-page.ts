@@ -32,7 +32,7 @@ class BridgeQuotePage {
 
   public tokenButton = '[data-testid="multichain-token-list-button"]';
 
-  private submitButton = { text: 'Submit', tag: 'button' };
+  private submitButton = { text: 'Bridge', tag: 'button' };
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
@@ -93,9 +93,6 @@ class BridgeQuotePage {
     // 1. Network selection modal (if destination is pre-populated and different from desired network)
     // 2. Token picker with network badge (if destination is empty or on the correct network)
 
-    // Wait a moment to see what modal appears
-    await this.driver.delay(500);
-
     // Check if we're in the network selection modal (has network options visible)
     const networkOptionExists = await this.driver.isElementPresent(
       `[data-testid="${quote.toChain}"]`,
@@ -121,12 +118,12 @@ class BridgeQuotePage {
         tag: 'p',
         text: 'Fetching quotes...',
       },
-      { waitAtLeastGuard: 5000 },
+      { waitAtLeastGuard: 1000 },
     );
   };
 
   waitForQuote = async () => {
-    await this.driver.waitForSelector(this.submitButton, { timeout: 60000 });
+    await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
 
   submitQuote = async () => {

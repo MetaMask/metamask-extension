@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../ducks/locale/locale';
 
@@ -14,6 +15,16 @@ const compactTwoDecimals: Intl.NumberFormatOptions = {
   notation: 'compact',
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
+};
+
+const oneSignificantDigit = {
+  minimumSignificantDigits: 1,
+  maximumSignificantDigits: 1,
+};
+
+const threeSignificantDigits = {
+  minimumSignificantDigits: 3,
+  maximumSignificantDigits: 3,
 };
 
 const numberFormatCache: Record<string, Intl.NumberFormat> = {};
@@ -78,12 +89,12 @@ function formatCurrencyWithMinThreshold(
   value: number | bigint | `${number}`,
   currency: Intl.NumberFormatOptions['currency'],
 ) {
-  if (!Number.isFinite(Number(value))) {
+  const minThreshold = 0.01;
+  const number = Number(value);
+
+  if (!Number.isFinite(number)) {
     return '';
   }
-
-  const number = Number(value);
-  const minThreshold = 0.01;
 
   if (number === 0) {
     return formatCurrency(config, 0, currency);
@@ -95,6 +106,37 @@ function formatCurrencyWithMinThreshold(
   }
 
   return formatCurrency(config, number, currency);
+}
+
+function formatCurrencyTokenPrice(
+  config: { locale: string },
+  value: number | bigint | `${number}`,
+  currency: Intl.NumberFormatOptions['currency'],
+) {
+  const minThreshold = 0.00000001;
+  const number = Number(value);
+
+  if (!Number.isFinite(number)) {
+    return '';
+  }
+
+  if (number === 0) {
+    return formatCurrency(config, 0, currency);
+  }
+
+  if (number < minThreshold) {
+    return `<${formatCurrency(config, minThreshold, currency, oneSignificantDigit)}`;
+  }
+
+  if (number < 1) {
+    return formatCurrency(config, number, currency, threeSignificantDigits);
+  }
+
+  if (number < 1_000_000) {
+    return formatCurrency(config, number, currency);
+  }
+
+  return formatCurrencyCompact(config, number, currency);
 }
 
 export function createFormatters({ locale = FALLBACK_LOCALE }) {
@@ -123,11 +165,18 @@ export function createFormatters({ locale = FALLBACK_LOCALE }) {
     formatCurrencyWithMinThreshold: formatCurrencyWithMinThreshold.bind(null, {
       locale,
     }),
+    /**
+     * Format token price with varying precision based on value.
+     *
+     * @param value - Numeric value to format.
+     * @param currency - ISO 4217 currency code.
+     */
+    formatCurrencyTokenPrice: formatCurrencyTokenPrice.bind(null, { locale }),
   };
 }
 
 export function useFormatters() {
   const locale = useSelector(getIntlLocale);
 
-  return createFormatters({ locale });
+  return useMemo(() => createFormatters({ locale }), [locale]);
 }

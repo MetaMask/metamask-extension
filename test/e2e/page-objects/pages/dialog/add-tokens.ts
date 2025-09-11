@@ -28,19 +28,18 @@ class AddTokensModal {
   }
 
   /**
-   * Checks the count of suggested tokens.
+   * Waits for the specified number of suggested tokens to appear.
    *
-   * @param expectedTokenCount - The expected count of suggested tokens.
+   * @param expectedTokenCount - The expected count of suggested tokens to wait for.
    */
-  async checkSuggestedTokensCount(expectedTokenCount: number) {
-    // Confirm the expected number of tokens are present as suggested token list
-    await this.driver.wait(async () => {
-      const multipleSuggestedTokens = await this.driver.findElements(
-        this.tokenListItem,
-      );
-
-      return multipleSuggestedTokens.length === expectedTokenCount;
-    }, 10000);
+  async waitUntilXTokens(expectedTokenCount: number): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const tokens = await this.driver.findElements(this.tokenListItem);
+        return tokens.length === expectedTokenCount;
+      },
+      { timeout: 10000, interval: 100 },
+    );
   }
 
   async confirmAddTokens() {
