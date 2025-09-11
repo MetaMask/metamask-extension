@@ -63,6 +63,7 @@ import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
+import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -83,6 +84,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  GatorPermissionsController: {
+    getMessenger: getGatorPermissionsControllerMessenger,
     getInitMessenger: noop,
   },
   InstitutionalSnapController: {

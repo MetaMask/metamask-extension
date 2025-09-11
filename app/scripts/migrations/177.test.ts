@@ -28,7 +28,7 @@ describe('migration #177', () => {
     const newState = await migrate(oldState);
     expect(newState).toStrictEqual({
       meta: {
-        version: 175,
+        version: 177,
       },
       data: {
         AppStateController: {
@@ -51,7 +51,7 @@ describe('migration #177', () => {
     const newState = await migrate(oldState);
     expect(newState).toStrictEqual({
       meta: {
-        version: 175,
+        version: 177,
       },
       data: {
         AppStateController: {
