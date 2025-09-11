@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "Απασχολημένο"
   },
-  "buyAndSell": {
-    "message": "Αγορά & Πώληση"
+  "buy": {
+    "message": "Αγορά"
   },
   "buyMoreAsset": {
     "message": "Αγοράστε περισσότερα $1",
@@ -2961,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Μια προηγούμενη συναλλαγή εξακολουθεί να είναι σε διαδικασία υπογραφής ή υποβολής"
-  },
-  "jazzAndBlockies": {
-    "message": "Τα Jazzicons και τα Blockies είναι δύο διαφορετικά στυλ μοναδικών εικονιδίων που σας βοηθούν να αναγνωρίζετε έναν λογαριασμό με μια ματιά."
   },
   "jazzicons": {
     "message": "Jazzicons"

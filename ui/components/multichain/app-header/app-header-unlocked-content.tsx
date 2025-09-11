@@ -139,15 +139,21 @@ export const AppHeaderUnlockedContent = ({
     origin &&
     origin !== browser.runtime.id;
 
-  const handleMainMenuOpened = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NavMainMenuOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Home',
-      },
+  const handleMainMenuToggle = () => {
+    setAccountOptionsMenuOpen((previous) => {
+      const isMenuOpen = !previous;
+      if (isMenuOpen) {
+        trackEvent({
+          event: MetaMetricsEventName.NavMainMenuOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            location: 'Home',
+          },
+        });
+      }
+
+      return isMenuOpen;
     });
-    setAccountOptionsMenuOpen(true);
   };
 
   const handleConnectionsRoute = () => {
@@ -284,7 +290,7 @@ export const AppHeaderUnlockedContent = ({
             style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box onClick={() => handleMainMenuOpened()}>
+              <Box onClick={handleMainMenuToggle}>
                 <NotificationsTagCounter noLabel />
               </Box>
             )}
@@ -292,9 +298,7 @@ export const AppHeaderUnlockedContent = ({
               iconName={IconName.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
-              onClick={() => {
-                handleMainMenuOpened();
-              }}
+              onClick={handleMainMenuToggle}
               size={ButtonIconSize.Lg}
             />
           </Box>
@@ -302,7 +306,9 @@ export const AppHeaderUnlockedContent = ({
         <GlobalMenu
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={() => {
+            setAccountOptionsMenuOpen(false);
+          }}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}
