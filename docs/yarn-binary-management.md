@@ -1,36 +1,28 @@
-# Yarn Binary Management for MetaMask Extension
+# Yarn Binary Management
 
-This document describes the secure yarn binary management system for the MetaMask browser extension.
+This document describes how to manage yarn versions for the MetaMask extension project using Corepack, ensuring consistent versions across development and CI/CD environments.
 
-## Purpose
+## Overview
 
-The MetaMask extension requires a specific version of yarn (currently 4.9.4) for builds. Instead of relying on globally installed yarn versions, we use a local, verified yarn binary to ensure:
+The MetaMask extension uses a Corepack-based approach to manage yarn versions. This system:
 
-- **Reproducible builds** across all environments
-- **Security** through checksum verification
-- **Consistency** in CI/CD pipelines
-- **Supply chain security** by reducing external dependencies
+- **Reads version from package.json** - Single source of truth via `packageManager` field
+- **Uses native Node.js tooling** - Leverages built-in `corepack` commands
+- **Commits tarballs for offline use** - No network dependencies in CI/CD
+- **Activates versions automatically** - No manual configuration needed
+- **Works without yarnPath** - Corepack handles version activation
 
 ## Quick Start
 
-### Download the Required Yarn Version
-
 ```bash
-# Download the default version (4.9.4)
+# Download and activate yarn version (reads from package.json)
 yarn yarn-binary:download
 
-# Or use the script directly
-node development/download-yarn-binary.js --yarn-version=4.9.4
-```
+# Or activate existing committed version
+yarn yarn-binary:hydrate
 
-### Verify an Existing Binary
-
-```bash
-# Verify the integrity of the downloaded binary
-yarn yarn-binary:verify
-
-# Or with a specific version
-node development/download-yarn-binary.js --yarn-version=4.9.4 --verify-only
+# Verify installation
+yarn --version  # Should show version from package.json packageManager field
 ```
 
 ## Available Commands
@@ -38,318 +30,234 @@ node development/download-yarn-binary.js --yarn-version=4.9.4 --verify-only
 ### Package.json Scripts
 
 ```bash
-# Download yarn binary (uses default version)
+# Download yarn tarball and activate version
 yarn yarn-binary:download
 
-# Verify existing yarn binary
-yarn yarn-binary:verify
+# Activate existing committed tarball
+yarn yarn-binary:hydrate
 ```
 
-### Direct Script Usage
+### Direct Node.js Scripts
 
 ```bash
-# Download specific version
-node development/download-yarn-binary.js --yarn-version=4.9.4
+# Download and activate (same as yarn yarn-binary:download)
+node development/yarn-corepack-tarball.js
 
-# Force re-download
-node development/download-yarn-binary.js --yarn-version=4.9.4 --force
-
-# Verify only
-node development/download-yarn-binary.js --yarn-version=4.9.4 --verify-only
-
-# Show help
-node development/download-yarn-binary.js --help
+# Activate existing tarball (same as yarn yarn-binary:hydrate)
+node development/yarn-corepack-hydrate.js
 ```
 
-### Node.js Script (Advanced)
+## How It Works
 
-```bash
-# Direct Node.js usage
-node development/download-yarn-binary.js --yarn-version=4.9.4
-node development/download-yarn-binary.js --yarn-version=4.9.4 --force
-node development/download-yarn-binary.js --yarn-version=4.9.4 --verify-only
+### 1. Version Detection
 
-# For CI/CD: Skip config file creation (lightweight)
-node development/download-yarn-binary.js --yarn-version=4.9.4 --no-config=true
-```
-
-## Integration Guide
-
-### For Local Development
-
-1. **Download the yarn binary**:
-
-   ```bash
-   yarn yarn-binary:download
-   ```
-
-2. **Use the local binary** (optional, for consistency):
-
-   ```bash
-   # Add to your shell session
-   export PATH="$(pwd)/tools/yarn/v4.9.4/bin:$PATH"
-
-   # Verify it's working
-   yarn --version  # Should show 4.9.4
-   ```
-
-### For CI/CD (GitHub Actions)
-
-```yaml
-name: Build and Test
-
-on: [push, pull_request]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Download Yarn Binary
-        run: |
-          # Download yarn without config file (lightweight)
-          node development/download-yarn-binary.js --yarn-version=4.9.4 --no-config=true
-
-      - name: Setup Local Yarn
-        run: |
-          # Use the downloaded yarn binary
-          export PATH="$(pwd)/tools/yarn/v4.9.4/bin:$PATH"
-          echo "$(pwd)/tools/yarn/v4.9.4/bin" >> $GITHUB_PATH
-
-      - name: Install Dependencies
-        run: yarn install --immutable
-
-      - name: Build
-        run: yarn build
-```
-
-## Security Features
-
-### Checksum Verification
-
-The system provides comprehensive checksum verification with multiple fallback sources:
-
-1. **Multiple Hash Algorithms**: Supports SHA-256, SHA-512, and SHA-1 verification
-2. **NPM Registry**: Checks official npm registry for package checksums (for reference)
-3. **PGP Signatures**: Attempts to verify against PGP-signed releases (Yarn v1)
-4. **GitHub Release Assets**: Searches for dedicated checksum files
-5. **Integrity Checks**: All downloads are checksummed and stored for later verification
-
-**Note for Yarn Berry (v2+)**: Standalone binaries from `repo.yarnpkg.com` don't provide separate checksum files. The system shows npm registry checksums for reference but explains these are for different files (npm tarball vs standalone binary).
-
-### Security Best Practices
-
-- **Always verify** binaries before use in production
-- **Re-verify periodically** to ensure integrity
-- **Use exact versions** rather than version ranges
-- **Audit the download process** through the configuration file
-
-## Configuration Options
-
-### Default Configuration with Tracking
-
-By default, the system creates a `yarn-config.json` file with portable relative paths:
+The scripts automatically read the yarn version from `package.json`:
 
 ```json
 {
-  "current": "4.9.4",
-  "lastUpdated": "2025-09-08T08:44:39.703Z",
-  "versions": {
-    "4.9.4": {
-      "downloadDate": "2025-09-08T08:44:39.699Z",
-      "binaryPath": "tools/yarn/yarn-4.9.4.cjs",
-      "extractedPath": "tools/yarn/v4.9.4",
-      "checksum": "516deeeced90791213ddcffc8d6712fcea7adff3e8d9879804284ba713462ce2",
-      "verified": false,
-      "repository": "berry",
-      "downloadUrl": "https://repo.yarnpkg.com/4.9.4/packages/yarnpkg-cli/bin/yarn.js"
-    }
-  }
+  "packageManager": "yarn@4.9.4"
 }
 ```
 
-This file can be avoided using the `--no-config=true` parameter.
-**Benefits:**
+### 2. Tarball Creation (if needed)
 
-- ✅ **Portable paths**: Works in any environment (CI/CD, Docker, etc.)
-- ✅ **Version tracking**: Keeps history of all downloaded versions
-- ✅ **Checksum verification**: Enables integrity checking with `--verify-only`
-- ✅ **Audit trail**: Records download dates and sources
-
-### No-Config Mode for CI/CD
-
-For lightweight CI/CD usage, use `--no-config=true`:
+Using `corepack prepare -o`:
 
 ```bash
-node development/download-yarn-binary.js --yarn-version=4.9.4 --no-config=true
+corepack prepare yarn@4.9.4 -o
+# Creates: corepack.tgz (in current directory)
 ```
 
-**Benefits:**
+### 3. Storage and Organization
 
-- ✅ **Faster**: No config file I/O operations
-- ✅ **Cleaner**: No tracking files in containerized environments
-- ✅ **Simple**: Just downloads the binary and exits
-- ✅ **CI-friendly**: Perfect for throwaway build environments
+The script moves the tarball to a organized location:
+
+```bash
+# Moves: corepack.tgz → .yarn/yarn-4.9.4-corepack.tgz
+```
+
+### 4. Activation
+
+Using `corepack hydrate --activate`:
+
+```bash
+corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate
+# Activates the yarn version globally via corepack
+```
+
+### 5. Verification
+
+The script verifies the activation worked:
+
+```bash
+yarn --version  # Should return 4.9.4
+```
+
+## Corepack Commands Used
+
+Our scripts wrap these native Corepack commands:
+
+### Download Process (`yarn-binary:download`)
+
+1. **`corepack prepare yarn@4.9.4 -o`**
+   - Downloads yarn version 4.9.4
+   - Creates `corepack.tgz` in current directory
+   - Contains the complete yarn package manager
+
+2. **File organization** (script handles this)
+   - Moves `corepack.tgz` → `.yarn/yarn-4.9.4-corepack.tgz`
+   - Provides organized storage for version control
+
+3. **`corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate`**
+   - Extracts and installs yarn from the tarball
+   - Activates it as the current yarn version
+   - No configuration files needed
+
+### Hydrate Process (`yarn-binary:hydrate`)
+
+1. **Tarball detection** (script handles this)
+   - Reads version from `package.json`
+   - Locates `.yarn/yarn-[version]-corepack.tgz`
+
+2. **`corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate`**
+   - Activates the existing tarball
+   - No download needed - uses committed file
+
+3. **Verification** (script handles this)
+   - Runs `yarn --version` to confirm activation
+
+## Workflows
+
+### Version Updates
+
+```bash
+# 1. Update package.json
+{
+  "packageManager": "yarn@4.9.5"
+}
+
+# 2. Download and commit new version
+yarn yarn-binary:download
+git add .yarn/yarn-4.9.5-corepack.tgz
+git commit -m "Update yarn to 4.9.5"
+```
+
+### CI/CD Setup
+
+```yaml
+# GitHub Actions example
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: '18'
+
+  - name: Activate committed yarn version
+    run: yarn yarn-binary:hydrate
+
+  - name: Install dependencies
+    run: yarn install
+
+  - name: Build
+    run: yarn build
+```
+
+### Development - Version Switching
+
+```bash
+# Switch to different committed version
+# 1. Edit package.json
+"packageManager": "yarn@4.9.1"
+
+# 2. Activate
+yarn yarn-binary:hydrate
+
+# 3. Verify
+yarn --version  # Shows 4.9.1
+```
 
 ## File Structure
 
-```text
-metamask-extension/
-├── development/
-│   └── download-yarn-binary.js    # Core download and verification logic
-├── tools/
-│   └── yarn/
-│       ├── README.md              # Detailed usage documentation
-│       ├── yarn-config.json       # Version metadata with portable paths (if no-config param was set to true)
-│       ├── yarn-4.9.4.cjs         # Downloaded yarn binary (Berry)
-│       └── v4.9.4/                # Extracted yarn files
-│           └── bin/
-│               └── yarn.js        # Executable yarn binary
-├── docs/
-│   └── yarn-binary-management.md  # This file
-└── package.json                  # Updated with yarn-binary scripts
 ```
+.yarn/
+├── yarn-4.9.1-corepack.tgz    # Committed tarball for 4.9.1
+├── yarn-4.9.4-corepack.tgz    # Committed tarball for 4.9.4
+└── [other yarn files...]
+
+development/
+├── yarn-corepack-tarball.js   # Download & activate script
+└── yarn-corepack-hydrate.js   # Activate existing script
+
+package.json                    # Contains packageManager version
+```
+
+## Advantages
+
+| Aspect | Corepack Approach | Traditional Approach |
+|--------|------------------|---------------------|
+| **Configuration** | ❌ No yarnPath needed | ✅ Requires yarnPath in .yarnrc.yml |
+| **Version Source** | ✅ Single source (package.json) | ⚠️ Multiple places to update |
+| **CI/CD Setup** | ✅ Just hydrate tarball | ⚠️ Complex binary management |
+| **Network Dependency** | ❌ None (committed tarballs) | ⚠️ Downloads in CI |
+| **Native Tooling** | ✅ Uses Node.js corepack | ⚠️ Custom scripts |
+| **Activation** | ✅ Automatic via corepack | ⚠️ Manual configuration |
 
 ## Troubleshooting
 
-### Common Issues
-
-#### "Binary not found" errors
-
-1. Ensure the binary was downloaded:
-
-   ```bash
-   ls tools/yarn/
-   cat tools/yarn/yarn-config.json
-   ```
-
-2. Re-download if needed:
-   ```bash
-   yarn yarn-binary:download --force
-   ```
-
-#### Checksum verification failures
-
-1. **For Yarn v1**: Do not use the binary - it may be compromised
-2. **For Yarn Berry (v2+)**: Check if it's a "no checksums available" warning (common and expected)
-3. Re-download with force:
-   ```bash
-   node development/download-yarn-binary.js --yarn-version=4.9.4 --force
-   ```
-4. For Yarn Berry, manually verify the download is from an official release:
-   ```bash
-   # The script provides a link to verify the release manually
-   # Example: https://github.com/yarnpkg/berry/releases/tag/@yarnpkg%2Fcli%2F4.9.4
-   ```
-5. Check official yarn releases for updated checksums
-6. Consider using a different version temporarily
-
-### Debug Information
-
-To debug issues with the yarn binary management:
+### Tarball Not Found
 
 ```bash
-# Check Node.js version
-node --version  # Should be >= 18.0.0
-
-# Verify script can run
-node development/download-yarn-binary.js --help
-
-# Check downloaded files
-ls -la tools/yarn/
-cat tools/yarn/yarn-config.json
-
-# Test binary directly
-./tools/yarn/v4.9.4/bin/yarn.js --version
+❌ Tarball not found: .yarn/yarn-4.9.5-corepack.tgz
+💡 Run 'yarn yarn-binary:download' to create the tarball first
 ```
 
-## Recent Improvements
+**Solution**: Run `yarn yarn-binary:download` to create the tarball.
 
-### Enhanced Checksum Verification
+### Version Mismatch
 
-- ✅ **Multiple hash algorithms**: Now supports SHA-256, SHA-512, and SHA-1
-- ✅ **NPM registry integration**: Checks official npm registry for additional verification
-- ✅ **Better error handling**: Clearer messages about checksum availability
-- ✅ **Yarn Berry support**: Proper handling of Berry's different distribution model
+If `yarn --version` doesn't match `package.json`, corepack might be auto-managing based on the `packageManager` field. This is expected behavior.
 
-### CI/CD Optimizations
+### First Time Setup
 
-- ✅ **Portable paths**: Config files now use relative paths for cross-platform compatibility
-- ✅ **No-config mode**: `--no-config=true` option for lightweight CI/CD usage
-- ✅ **Backward compatibility**: Existing absolute paths still work
+If you get errors about missing tarballs:
 
-### Enhanced Security
+```bash
+# Download and activate current version
+yarn yarn-binary:download
+```
 
-- ✅ **Manual verification guidance**: Provides GitHub release links for manual verification
-- ✅ **Multiple verification sources**: Attempts multiple checksum sources before giving up
-- ✅ **Clear security messaging**: Explains when checksums aren't available and why
+## Security
 
-## Development Notes
+- **Committed tarballs** - Stored in version control for audit trail
+- **Corepack verification** - Uses Node.js built-in package manager
+- **No external downloads** - CI/CD uses committed files only
+- **Version pinning** - Exact versions specified in package.json
 
-### Extending the System
+## Migration from Old System
 
-The yarn binary management system is designed to be extensible:
+If migrating from the old binary management system:
 
-- **Add new versions**: Simply run with a different version number
-- **Support other tools**: The pattern can be adapted for other binaries
-- **Custom verification**: Extend the checksum verification logic
-- **Integration hooks**: Add pre/post download hooks as needed
+1. **Remove old files**:
+   ```bash
+   rm -rf .yarn/releases/
+   rm .yarn/yarn-config.json
+   ```
 
-### Implementation Details
-
-- **Download source**: Official yarn repositories (`repo.yarnpkg.com` for Berry, GitHub for v1)
-- **Verification**: Multi-algorithm checksums (SHA-256, SHA-512, SHA-1) with multiple sources
-- **Checksum sources**: NPM registry, PGP signatures, GitHub release assets
-- **Storage**: Local tools/yarn directory with portable relative paths
-- **Configuration**: JSON-based version and checksum tracking with CI/CD options
-
-## Migration Guide
-
-### From Global Yarn
-
-If you're currently using a globally installed yarn:
-
-1. **Download the local binary**:
-
+2. **Download new format**:
    ```bash
    yarn yarn-binary:download
    ```
 
-2. **Update scripts** (optional):
-
+3. **Commit new tarballs**:
    ```bash
-   # Instead of: yarn install
-   # Use: ./tools/yarn/v4.9.4/bin/yarn.js install
+   git add .yarn/*-corepack.tgz
+   git commit -m "Migrate to corepack-based yarn management"
    ```
 
-3. **Update CI/CD** to use the local binary
+4. **Update CI/CD** to use `yarn yarn-binary:hydrate`
 
-### From Different Yarn Version
+## Summary
 
-If you need to switch to a different yarn version:
-
-1. **Download the new version**:
-
-   ```bash
-   node development/download-yarn-binary.js --yarn-version=<new version>
-   ```
-
-2. **Update package.json** engines field if needed
-
-3. **Test thoroughly** with the new version
-
-## Support
-
-For issues with the yarn binary management system:
-
-1. **Check this documentation** and the tools/yarn/README.md
-2. **Verify Node.js version** is compatible (>= 18.0.0)
-3. **Check file permissions** on scripts and binaries
-4. **Review the configuration** in tools/yarn/yarn-config.json
-5. **Test with --verify-only** to isolate download vs verification issues
+The Corepack-based yarn management system provides a clean, native approach to version management with minimal configuration and maximum reliability for CI/CD environments.
