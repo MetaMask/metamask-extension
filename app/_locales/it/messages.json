@@ -459,7 +459,7 @@
     "message": "Il rilevamento dei token non è ancora disponibile su questa rete. Importa il token manualmente e assicurati che sia corretto. Ulteriori informazioni su $1"
   },
   "customTokenWarningInTokenDetectionNetwork": {
-    "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $ 1"
+    "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $1"
   },
   "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
     "message": "Assicurati di fidarti di un token prima di importarlo. Scopri come evitare $1. Puoi anche abilitare il rilevamento dei token $2."

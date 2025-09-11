@@ -1,5 +1,5 @@
 import { DecodingDataStateChange } from '@metamask/signature-controller';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
@@ -22,8 +22,12 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
     setLoadingComplete();
   }
 
-  const decodingChangeTypes = (decodingData?.stateChanges ?? []).map(
-    (change: DecodingDataStateChange) => change.changeType,
+  const decodingChangeTypes = useMemo(
+    () =>
+      (decodingData?.stateChanges ?? []).map(
+        (change: DecodingDataStateChange) => change.changeType,
+      ),
+    [decodingData],
   );
 
   const decodingResponse =
@@ -36,7 +40,6 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
     if (!supportedByDecodingAPI) {
       return;
     }
-
     if (decodingLoading) {
       updateSignatureEventFragment({
         properties: {

@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   addToAddressBook,
   showQrScanner,
@@ -36,6 +36,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(AddContact);

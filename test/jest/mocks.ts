@@ -187,6 +187,7 @@ export const getInitialSendStateWithExistingTxState = (
 });
 
 export function createMockInternalAccount({
+  id,
   name = 'Account 1',
   address = MOCK_DEFAULT_ADDRESS,
   type = EthAccountType.Eoa,
@@ -199,6 +200,7 @@ export function createMockInternalAccount({
   },
   options = undefined,
 }: {
+  id?: string;
   name?: string;
   address?: string;
   type?: string;
@@ -240,7 +242,7 @@ export function createMockInternalAccount({
       const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
 
       scopes = [isMainnet ? BtcScope.Mainnet : BtcScope.Testnet];
-      methods = [BtcMethod.SendBitcoin];
+      methods = Object.values(BtcMethod);
       break;
     }
     case SolAccountType.DataAccount:
@@ -253,7 +255,7 @@ export function createMockInternalAccount({
 
   return {
     address,
-    id: uuidv4(),
+    id: id ?? uuidv4(),
     metadata: {
       name: name ?? `${keyringTypeToName(keyringType)} 1`,
       importTime: Date.now(),

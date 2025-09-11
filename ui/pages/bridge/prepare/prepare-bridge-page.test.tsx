@@ -64,7 +64,7 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage />,
+      <PrepareBridgePage onOpenSettings={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -140,7 +140,7 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage />,
+      <PrepareBridgePage onOpenSettings={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -198,7 +198,10 @@ describe('PrepareBridgePage', () => {
     });
 
     expect(() =>
-      renderWithProvider(<PrepareBridgePage />, configureStore(mockStore)),
+      renderWithProvider(
+        <PrepareBridgePage onOpenSettings={jest.fn()} />,
+        configureStore(mockStore),
+      ),
     ).toThrow();
   });
 
@@ -219,7 +222,7 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { getByTestId } = renderWithProvider(
-      <PrepareBridgePage />,
+      <PrepareBridgePage onOpenSettings={jest.fn()} />,
       configureStore(mockStore),
     );
 

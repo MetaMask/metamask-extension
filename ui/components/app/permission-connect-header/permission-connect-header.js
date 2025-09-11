@@ -25,8 +25,7 @@ const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
   const transformOriginToTitle = (rawOrigin) => {
     try {
       const url = new URL(rawOrigin);
-      const parts = url.hostname.split('.');
-      return parts.slice(-2).join('.');
+      return url.hostname;
     } catch (e) {
       return 'Unknown Origin';
     }

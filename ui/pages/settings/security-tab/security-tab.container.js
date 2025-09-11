@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
@@ -129,6 +129,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(SecurityTab);

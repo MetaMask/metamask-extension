@@ -300,6 +300,8 @@ export declare global {
 
   var browser: Browser;
 
+  var INFURA_PROJECT_ID: string | undefined;
+
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

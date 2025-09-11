@@ -11,7 +11,7 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
-} from '../../pages/confirmations/send/send.constants';
+} from '../../pages/confirmations/send-legacy/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
@@ -24,7 +24,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   generateERC20TransferData,
   generateERC721TransferData,
-} from '../../pages/confirmations/send/send.utils';
+} from '../../pages/confirmations/send-legacy/send.utils';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
 import {
   getInitialSendStateWithExistingTxState,

@@ -9,6 +9,7 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   createWebSocketConnection,
+  veryLargeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -56,6 +57,8 @@ describe('Phishing Detection', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
+        // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
+        await driver.delay(veryLargeDelayMs);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site
@@ -302,7 +305,7 @@ describe('Phishing Detection', function () {
         });
 
         await driver.waitForUrl({
-          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+          url: `https://app.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
         });
       },
     );
@@ -343,7 +346,7 @@ describe('Phishing Detection', function () {
         });
 
         await driver.waitForUrl({
-          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+          url: `https://app.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
         });
       },
     );

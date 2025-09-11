@@ -1,0 +1,8 @@
+@use "design-system";
+
+.send-recipient {
+  &:hover {
+    background-color: var(--color-background-hover) !important;
+    cursor: pointer;
+  }
+}

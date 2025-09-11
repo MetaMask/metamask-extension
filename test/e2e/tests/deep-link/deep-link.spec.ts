@@ -212,6 +212,41 @@ describe('Deep Link', function () {
     );
   });
 
+  it('handles /perps route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/perps`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+
+        const url = new URL(signedUrl);
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/perps${url.search}`,
+        });
+
+        await driver.navigate();
+        homePage.checkPageIsLoaded();
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/perps`,
+        });
+      },
+    );
+  });
+
   // this test is skipped because the swap route does not work correctly in
   // the e2e environment. Once swaps/bridge flows are all fully migrated to the
   // route page this test can be re-enabled.

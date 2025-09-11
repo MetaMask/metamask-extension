@@ -11,13 +11,13 @@ import { useSelector } from 'react-redux';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import { isValidDomainName } from '../../../../helpers/utils/util';
-import DomainInput from '../../../confirmations/send/send-content/add-recipient/domain-input';
+import DomainInput from '../../../confirmations/send-legacy/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
-import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
+import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send-legacy/send.constants';
 import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components';
 import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 import { I18nContext } from '../../../../contexts/i18n';
@@ -50,7 +50,7 @@ const AddContact = ({
   addressBook,
   internalAccounts,
   addToAddressBook,
-  history,
+  navigate,
   scanQrCode,
   qrCodeData,
   qrCodeDetected,
@@ -257,10 +257,10 @@ const AddContact = ({
         )}
         onSubmit={async () => {
           await addToAddressBook(newAddress, newName, '', selectedChainId);
-          history.push(CONTACT_LIST_ROUTE);
+          navigate(CONTACT_LIST_ROUTE);
         }}
         onCancel={() => {
-          history.push(CONTACT_LIST_ROUTE);
+          navigate(CONTACT_LIST_ROUTE);
         }}
         submitText={t('save')}
       />
@@ -272,7 +272,7 @@ AddContact.propTypes = {
   addressBook: PropTypes.array,
   internalAccounts: PropTypes.array,
   addToAddressBook: PropTypes.func,
-  history: PropTypes.object,
+  navigate: PropTypes.func.isRequired,
   scanQrCode: PropTypes.func,
   qrCodeData: PropTypes.object,
   qrCodeDetected: PropTypes.func,

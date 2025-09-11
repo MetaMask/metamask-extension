@@ -7,13 +7,10 @@ import {
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
-import AdvancedSettings from '../page-objects/pages/settings/advanced-settings';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
-import SettingsPage from '../page-objects/pages/settings/settings-page';
 import TestDapp from '../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -100,7 +97,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
+          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
+        manifestFlags: {
+          testing: { disableSmartTransactionsOverride: true },
+        },
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
@@ -122,20 +123,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-
-        // disable smart transactions step by step
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openSettingsPage();
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.toggleSmartTransactions();
-        await settingsPage.closeSettingsPage();
 
         // open two dapps
         const dappOne = new TestDapp(driver);

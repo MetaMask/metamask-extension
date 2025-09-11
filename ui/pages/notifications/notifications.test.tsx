@@ -1,9 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import Notifications from './notifications';
 
@@ -61,37 +60,19 @@ const store = mockStore(initialState);
 
 describe('Notifications Component', () => {
   it('renders correctly', () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Notifications />
-        </MemoryRouter>
-      </Provider>,
-    );
+    const { getByTestId } = renderWithProvider(<Notifications />, store);
 
     expect(getByTestId('notifications-page')).toBeInTheDocument();
   });
 
   it('navigates to default route on back button click', () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Notifications />
-        </MemoryRouter>
-      </Provider>,
-    );
+    const { getByTestId } = renderWithProvider(<Notifications />, store);
 
     fireEvent.click(getByTestId('back-button'));
   });
 
   it('navigates to settings on settings button click', () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Notifications />
-        </MemoryRouter>
-      </Provider>,
-    );
+    const { getByTestId } = renderWithProvider(<Notifications />, store);
 
     fireEvent.click(getByTestId('notifications-settings-button'));
   });

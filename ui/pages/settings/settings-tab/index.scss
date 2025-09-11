@@ -5,27 +5,6 @@
     color: var(--color-error-default);
   }
 
-  &__rpc-save-button {
-    align-self: flex-end;
-    padding: 5px;
-    cursor: pointer;
-    width: 25%;
-  }
-
-  &__button--red {
-    border-color: var(--color-error-muted);
-    color: var(--color-error-default);
-
-    &:active {
-      background: var(--color-error-muted-pressed);
-      border-color: var(--color-error-default);
-    }
-
-    &:hover {
-      border-color: var(--color-error-default);
-    }
-  }
-
   &__radio-buttons {
     display: flex;
     align-items: center;

@@ -26,6 +26,8 @@ import {
   WALLET_DETAILS_ROUTE,
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -182,6 +184,26 @@ export function hideAppHeader(props) {
     }),
   );
   if (isMultichainSend) {
+    return true;
+  }
+
+  const isStateTwoMultichainAccountDetailsPage = Boolean(
+    matchPath(location.pathname, {
+      path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      exact: false,
+    }),
+  );
+  if (isStateTwoMultichainAccountDetailsPage) {
+    return true;
+  }
+
+  const isStateTwoMultichainWalletDetailsPage = Boolean(
+    matchPath(location.pathname, {
+      path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+      exact: false,
+    }),
+  );
+  if (isStateTwoMultichainWalletDetailsPage) {
     return true;
   }
 

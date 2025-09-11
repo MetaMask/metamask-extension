@@ -9,7 +9,6 @@ import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
-import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
@@ -40,7 +39,6 @@ function useTransactionAlerts(): Alert[] {
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
-  const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
@@ -56,7 +54,6 @@ function useTransactionAlerts(): Alert[] {
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
       ...multipleApprovalAlerts,
-      ...networkBusyAlerts,
       ...noGasPriceAlerts,
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
@@ -71,7 +68,6 @@ function useTransactionAlerts(): Alert[] {
       gasTooLowAlerts,
       insufficientBalanceAlerts,
       multipleApprovalAlerts,
-      networkBusyAlerts,
       noGasPriceAlerts,
       nonContractAddressAlerts,
       pendingTransactionAlerts,

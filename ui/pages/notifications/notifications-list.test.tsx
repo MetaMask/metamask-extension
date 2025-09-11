@@ -1,10 +1,8 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 
 jest.mock('../../store/actions', () => ({
@@ -40,20 +38,15 @@ const store = mockStore({
 
 describe('NotificationsList', () => {
   it('renders the notifications list page', () => {
-    render(
-      <Provider store={store}>
-        <Router>
-          <MetamaskNotificationsProvider>
-            <NotificationsList
-              activeTab={TAB_KEYS.ALL}
-              notifications={[]}
-              isLoading={false}
-              isError={false}
-              notificationsCount={0}
-            />
-          </MetamaskNotificationsProvider>
-        </Router>
-      </Provider>,
+    renderWithProvider(
+      <NotificationsList
+        activeTab={TAB_KEYS.ALL}
+        notifications={[]}
+        isLoading={false}
+        isError={false}
+        notificationsCount={0}
+      />,
+      store,
     );
 
     expect(screen.getByTestId('notifications-list')).toBeInTheDocument();

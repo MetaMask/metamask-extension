@@ -259,7 +259,7 @@ describe('Selectors', () => {
   });
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
-    const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
+    const SELECTED_ORIGIN = 'https://app.metamask.io';
     const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
     const state = {
       activeTab: {

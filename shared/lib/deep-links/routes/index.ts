@@ -3,6 +3,7 @@ import home from './home';
 import notifications from './notifications';
 import swap from './swap';
 import nonevm from './nonevm';
+import perps from './perps';
 
 import type { Route } from './route';
 
@@ -34,3 +35,4 @@ addRoute(home);
 addRoute(notifications);
 addRoute(swap);
 addRoute(nonevm);
+addRoute(perps);

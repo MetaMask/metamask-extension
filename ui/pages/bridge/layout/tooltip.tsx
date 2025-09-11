@@ -65,7 +65,7 @@ const Tooltip = React.forwardRef(
               />
             )) ?? (
               <Icon
-                name={IconName.Question}
+                name={IconName.Info}
                 color={IconColor.iconAlternativeSoft}
                 size={IconSize.Sm}
               />

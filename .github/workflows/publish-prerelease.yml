@@ -42,7 +42,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: `${context.repo.owner}:${process.env.BRANCH}`,
-              base: 'master',
+              base: 'stable',
             });
             if (prs.data.length > 0) {
               core.exportVariable("PR_NUMBER", prs.data[0].number);
@@ -59,6 +59,13 @@ jobs:
           merge_base_commit_hash="$(git merge-base "${BASE_COMMIT_HASH}" "${HEAD_COMMIT_HASH}")"
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
           echo "The merge base commit hash is '${merge_base_commit_hash}'"
+
+      - name: Page load benchmark comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: ./.github/actions/page-load-benchmark-comment
+        with:
+          head-commit-hash: ${{ env.HEAD_COMMIT_HASH }}
+          pr-comment-token: ${{ secrets.PR_COMMENT_TOKEN }}
 
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}

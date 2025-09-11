@@ -275,7 +275,6 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
         await driver.clickElement('#maliciousSetApprovalForAll');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');

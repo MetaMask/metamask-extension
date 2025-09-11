@@ -1,10 +1,6 @@
 import React from 'react';
 
-import { useSelector } from 'react-redux';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   BannerAlert,
   BannerAlertSeverity,
   Box,
@@ -19,14 +15,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  BorderColor,
   Display,
   FlexDirection,
   FontWeight,
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getUseBlockie } from '../../../selectors';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { AddressCopyButton } from '../../multichain';
 
 export type AccountRemoveModalProps = {
@@ -45,7 +40,6 @@ export const AccountRemoveModal = ({
   accountAddress,
 }: AccountRemoveModalProps) => {
   const t = useI18nContext();
-  const useBlockie = useSelector(getUseBlockie);
 
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
@@ -59,16 +53,7 @@ export const AccountRemoveModal = ({
             alignItems={AlignItems.center}
             flexDirection={FlexDirection.Column}
           >
-            <AvatarAccount
-              borderColor={BorderColor.transparent}
-              size={AvatarAccountSize.Md}
-              address={accountAddress}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-            />
+            <PreferredAvatar address={accountAddress} />
             <Text
               variant={TextVariant.bodyLgMedium}
               marginTop={2}

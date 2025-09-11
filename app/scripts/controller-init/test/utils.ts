@@ -15,6 +15,8 @@ export function buildControllerInitRequestMock(): jest.Mocked<
   >
 > {
   return {
+    // @ts-expect-error: Partial mock.
+    extension: {},
     getCronjobControllerStorageManager: jest.fn(),
     getController: jest.fn(),
     getFlatState: jest.fn(),
@@ -28,10 +30,6 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     removeAllConnections: jest.fn(),
     setupUntrustedCommunicationEip1193: jest.fn(),
     showNotification: jest.fn(),
-    trackEvent: jest.fn(),
-    getMetaMetricsId: jest.fn(),
     preinstalledSnaps: [],
-    refreshOAuthToken: jest.fn(),
-    revokeAndGetNewRefreshToken: jest.fn(),
   };
 }

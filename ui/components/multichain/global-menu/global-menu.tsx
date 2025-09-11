@@ -67,6 +67,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -92,6 +93,10 @@ export const GlobalMenu = ({
   const { notificationsReadCount } = useReadNotificationsCounter();
 
   const account = useSelector(getSelectedInternalAccount);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
@@ -238,11 +243,13 @@ export const GlobalMenu = ({
             closeMenu={closeMenu}
             address={account.address}
           />
-          <ViewExplorerMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            account={account}
-          />
+          {isMultichainAccountsState2Enabled ? null : (
+            <ViewExplorerMenuItem
+              metricsLocation={METRICS_LOCATION}
+              closeMenu={closeMenu}
+              account={account}
+            />
+          )}
         </>
       )}
       <Box
@@ -355,7 +362,7 @@ export const GlobalMenu = ({
         ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
-          dispatch(lockMetamask());
+          dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           history.push(DEFAULT_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,

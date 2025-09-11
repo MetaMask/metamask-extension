@@ -104,13 +104,20 @@ export async function bridgeTransaction(
   await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
 
   if (quote.unapproved) {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
-    await activityList.checkTxAction(
-      `Approve ${quote.tokenFrom} for bridge`,
-      2,
-    );
+    await activityList.checkTxAction({
+      action: `Bridged to ${quote.toChain}`,
+      completedTxs: transactionsCount,
+    });
+    await activityList.checkTxAction({
+      action: `Approve ${quote.tokenFrom} for bridge`,
+      completedTxs: transactionsCount,
+      txIndex: 2,
+    });
   } else {
-    await activityList.checkTxAction(`Bridged to ${quote.toChain}`);
+    await activityList.checkTxAction({
+      action: `Bridged to ${quote.toChain}`,
+      completedTxs: transactionsCount,
+    });
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.checkTxAmountInActivity(
@@ -128,7 +135,7 @@ export async function bridgeTransaction(
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
-    .forGet(`https://portfolio.metamask.io/bridge`)
+    .forGet(`https://app.metamask.io/bridge`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -500,7 +507,7 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
 
 async function mockSwapAggregatorLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet('bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata')
     .always()
     .thenCallback(() => {
       return {
@@ -544,7 +551,9 @@ export async function mockGasPricesMainnet(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -556,7 +565,7 @@ export async function mockSwapAggregatorMetadataLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/59144/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -569,7 +578,7 @@ export async function mockSwapTokensLinea(mockServer: Mockttp) {
 
 export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/42161/tokens')
     .withQuery({ includeBlockedTokens: 'true' })
     .always()
     .thenCallback(() => {
@@ -582,7 +591,9 @@ export async function mockSwapTokensArbitrum(mockServer: Mockttp) {
 
 export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/42161/aggregatorMetadata')
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/42161/aggregatorMetadata',
+    )
     .always()
     .thenCallback(() => {
       return {
@@ -621,9 +632,7 @@ export enum EventTypes {
   SwapBridgePageViewed = 'Unified SwapBridge Page Viewed',
   SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
   SwapBridgeQuotesRequested = 'Unified SwapBridge Quotes Requested',
-  CrossChainQuotesReceived = 'Cross-chain Quotes Received',
-  ActionSubmitted = 'Action Submitted',
-  SwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+  UnifiedSwapBridgeQuotesReceived = 'Unified SwapBridge Quotes Received',
   TransactionAddedAnon = 'Transaction Added Anon',
   TransactionAdded = 'Transaction Added',
   TransactionSubmittedAnon = 'Transaction Submitted Anon',
@@ -634,7 +643,7 @@ export enum EventTypes {
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
-  SwapBridgeTokenFlipped = 'Source and Destination Flipped',
+  SwapBridgeTokenSwitched = 'Unified SwapBridge Source Destination Flipped',
 }
 
 export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);
@@ -654,6 +663,7 @@ export const getBridgeFixtures = (
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -736,9 +746,7 @@ export const getBridgeFixtures = (
             EventTypes.SwapBridgePageViewed,
             EventTypes.SwapBridgeInputChanged,
             EventTypes.SwapBridgeQuotesRequested,
-            EventTypes.CrossChainQuotesReceived,
-            EventTypes.ActionSubmitted,
-            EventTypes.SwapBridgeSubmitted,
+            EventTypes.UnifiedSwapBridgeQuotesReceived,
             EventTypes.TransactionAddedAnon,
             EventTypes.TransactionAdded,
             EventTypes.TransactionSubmittedAnon,
@@ -750,7 +758,7 @@ export const getBridgeFixtures = (
             EventTypes.SwapBridgeCompleted,
             EventTypes.UnifiedSwapBridgeSubmitted,
             EventTypes.SwapBridgeInputChanged,
-            EventTypes.SwapBridgeTokenFlipped,
+            EventTypes.SwapBridgeTokenSwitched,
           ],
           { shouldAlwaysMatch: true },
         );
@@ -765,6 +773,7 @@ export const getBridgeFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
@@ -793,6 +802,7 @@ export const getQuoteNegativeCasesFixtures = (
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -813,6 +823,7 @@ export const getQuoteNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -838,6 +849,7 @@ export const getBridgeNegativeCasesFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
       eip155: {
@@ -859,6 +871,7 @@ export const getBridgeNegativeCasesFixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -925,19 +938,46 @@ export const getBridgeL2Fixtures = (
     inputChainId: CHAIN_IDS.MAINNET,
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
-    .withBridgeControllerDefaultState()
+    .withPreferencesControllerSmartTransactionsOptedOut()
     .withNetworkControllerOnLineaLocahost()
+    .withBridgeControllerDefaultState()
+    .withTokenListController({
+      tokensChainsCache: {
+        '0xa4b1': {
+          data: {
+            '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
+              name: 'USD Coin',
+              symbol: 'USDC',
+              address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+              decimals: 6,
+            },
+            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
+              name: 'Dai Stablecoin',
+              symbol: 'DAI',
+              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+              decimals: 18,
+            },
+          },
+        },
+        '0xe708': {
+          // Add Linea tokens
+          data: {
+            '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5': {
+              name: 'Bridged Dai Stablecoin Linea',
+              symbol: 'DAI',
+              address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+              decimals: 18,
+            },
+            // Add other Linea tokens as needed
+          },
+        },
+      },
+    })
     .withEnabledNetworks({
       eip155: {
-        '0x1': true, // Ethereum Mainnet
-        '0xa4b1': true, // Arbitrum One
-        '0xe708': true, // Linea Mainnet
-        '0xa': true, // Optimism
-        '0x89': true, // Polygon
-        '0x38': true, // BSC
-        '0xa86a': true, // Avalanche
-        '0x2105': true, // Base
-        '0x144': true, // zkSync Era
+        '0x1': true, // Mainnet
+        '0xe708': true, // Linea (source chain for test)
+        '0xa4b1': true, // Arbitrum One (destination chain for test)
       },
     });
 
@@ -969,6 +1009,7 @@ export const getBridgeL2Fixtures = (
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
       },
+      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,

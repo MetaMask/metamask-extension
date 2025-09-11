@@ -1655,11 +1655,19 @@ describe('Transaction metrics', () => {
       const transactionMetaForSwap = {
         ...mockTransactionMeta,
         type: TransactionType.swap,
+        assetsFiatValues: {
+          sending: '100',
+          receiving: '100',
+        },
       } as TransactionMeta;
 
       const transactionMetaForBridge = {
         ...mockTransactionMeta,
         type: TransactionType.bridge,
+        assetsFiatValues: {
+          sending: '200',
+          receiving: '200',
+        },
       } as TransactionMeta;
 
       await fn(mockTransactionMetricsRequest, {
@@ -1673,6 +1681,8 @@ describe('Transaction metrics', () => {
       expect(propertiesForSwap).toStrictEqual(
         expect.objectContaining({
           transaction_type: 'mm_swap',
+          simulation_sending_assets_total_value: '100',
+          simulation_receiving_assets_total_value: '100',
         }),
       );
 
@@ -1687,6 +1697,8 @@ describe('Transaction metrics', () => {
       expect(propertiesForBridge).toStrictEqual(
         expect.objectContaining({
           transaction_type: 'mm_bridge',
+          simulation_sending_assets_total_value: '200',
+          simulation_receiving_assets_total_value: '200',
         }),
       );
     });

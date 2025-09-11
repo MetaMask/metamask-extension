@@ -2,16 +2,6 @@ import React from 'react';
 import type { ButtonIconProps } from '../button-icon/button-icon.types';
 import type { HeaderBaseStyleUtilityProps } from '../header-base';
 
-/**
- * Makes all props optional so that if a prop object is used not ALL required props need to be passed
- * TODO: Move to appropriate place in app as this will be highly reusable
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-type MakePropsOptional<T> = {
-  [K in keyof T]?: T[K];
-};
-
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ModalHeaderProps extends HeaderBaseStyleUtilityProps {
@@ -31,7 +21,7 @@ export interface ModalHeaderProps extends HeaderBaseStyleUtilityProps {
   /**
    * The props to pass to the back `ButtonIcon`
    */
-  backButtonProps?: ButtonIconProps<'button'>;
+  backButtonProps?: Partial<ButtonIconProps<'button'>>;
   /**
    * The start (left) content area of ModalHeader
    * Default to have the back `ButtonIcon` when `onBack` is passed, but passing a  `startAccessory` will override this
@@ -45,7 +35,7 @@ export interface ModalHeaderProps extends HeaderBaseStyleUtilityProps {
   /**
    * The props to pass to the close `ButtonIcon`
    */
-  closeButtonProps?: MakePropsOptional<ButtonIconProps<'button'>>;
+  closeButtonProps?: Partial<ButtonIconProps<'button'>>;
   /**
    * The end (right) content area of ModalHeader
    * Default to have the close `ButtonIcon` when `onClose` is passed, but passing a  `endAccessory` will override this

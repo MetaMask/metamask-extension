@@ -31,13 +31,13 @@ import {
   SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
   INVALID_HEX_DATA_ERROR,
-} from '../../pages/confirmations/send/send.constants';
+} from '../../pages/confirmations/send-legacy/send.constants';
 
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
-} from '../../pages/confirmations/send/send.utils';
+} from '../../pages/confirmations/send-legacy/send.utils';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,

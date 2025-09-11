@@ -10,14 +10,10 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
+import { Browser } from 'webextension-polyfill';
+import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
-import {
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-} from '../../../shared/constants/metametrics';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
-import { OAuthRefreshTokenResult } from '../services/oauth/types';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -74,6 +70,11 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getControllerMessengerCallback`.
    */
   controllerMessenger: ControllerMessengerType;
+
+  /**
+   * The extension browser API.
+   */
+  extension: Browser;
 
   /**
    * Retrieve a controller instance by name.
@@ -182,22 +183,6 @@ export type ControllerInitRequest<
   ) => Promise<void>;
 
   /**
-   * Get the MetaMetrics ID.
-   */
-  getMetaMetricsId: () => string;
-
-  /**
-   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
-   *
-   * @param payload - details of the event
-   * @param options - options for handling/routing the event
-   */
-  trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => void;
-
-  /**
    * A list of preinstalled Snaps loaded from disk during boot.
    */
   preinstalledSnaps: PreinstalledSnap[];
@@ -207,19 +192,6 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
   initMessenger: InitMessengerType;
-
-  /**
-   * Refresh the OAuth token.
-   */
-  refreshOAuthToken: () => Promise<OAuthRefreshTokenResult>;
-
-  /**
-   * Revoke the current OAuth refresh token and get a new one.
-   */
-  revokeAndGetNewRefreshToken: () => Promise<{
-    newRefreshToken: string;
-    newRevokeToken: string;
-  }>;
 
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
 };

@@ -1,0 +1,24 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.add-multichain-account {
+  &__icon-box {
+    width: 32px;
+    height: 32px;
+
+    &__icon-loading {
+      animation: spin 1.2s linear infinite;
+    }
+  }
+
+  &__text {
+    font-weight: 600;
+  }
+}

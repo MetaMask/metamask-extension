@@ -7,6 +7,7 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
+const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -25,6 +26,8 @@ const {
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
+const LocalWebSocketServer = require('./websocket-server').default;
+const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -121,11 +124,16 @@ async function withFixtures(options, testSuite) {
     testSpecificMock = function () {
       // do nothing.
     },
+    useMockingPassThrough,
     useBundler,
     usePaymaster,
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
+    withSolanaWebSocket = {
+      server: false,
+      mocks: [],
+    },
   } = options;
 
   // Normalize localNodeOptions
@@ -151,6 +159,8 @@ async function withFixtures(options, testSuite) {
 
   let localNode;
   const localNodes = [];
+
+  let localWebSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -255,7 +265,20 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
+
+    if (withSolanaWebSocket.server) {
+      localWebSocketServer = LocalWebSocketServer.getServerInstance();
+      localWebSocketServer.start();
+      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
+    }
+
+    // Decide between the regular setupMocking and the passThrough version
+    const mockingSetupFunction = useMockingPassThrough
+      ? setupMockingPassThrough
+      : setupMocking;
+
+    // Use the mockingSetupFunction we just chose
+    const { mockedEndpoint, getPrivacyReport } = await mockingSetupFunction(
       mockServer,
       testSpecificMock,
       {
@@ -263,7 +286,9 @@ async function withFixtures(options, testSuite) {
         ethConversionInUsd,
         monConversionInUsd,
       },
+      withSolanaWebSocket,
     );
+
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -438,6 +463,10 @@ async function withFixtures(options, testSuite) {
           }
         })(),
       );
+
+      if (withSolanaWebSocket.server) {
+        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
+      }
 
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');

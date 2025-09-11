@@ -358,10 +358,10 @@
     "message": "Rejte Tout"
   },
   "rejectTxsDescription": {
-    "message": "Ou se sou rejte $ 1 yon anpil nan tranzaksyon yo."
+    "message": "Ou se sou rejte $1 yon anpil nan tranzaksyon yo."
   },
   "rejectTxsN": {
-    "message": "Rejete $ 1 tranzaksyon"
+    "message": "Rejete $1 tranzaksyon"
   },
   "rejected": {
     "message": "Rejete"

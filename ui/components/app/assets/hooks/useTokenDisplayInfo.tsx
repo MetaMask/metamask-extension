@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { isCaipChainId } from '@metamask/utils';
 import {
+  getIsMultichainAccountsState2Enabled,
   getIsTestnet,
-  getSelectedAccount,
   getShowFiatInTestnets,
   getTokenList,
   selectERC20TokensByChain,
@@ -10,7 +12,6 @@ import {
 import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
-  getMultichainIsEvm,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
@@ -18,6 +19,9 @@ import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { useFormatters } from '../../../../helpers/formatters';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -28,13 +32,23 @@ export const useTokenDisplayInfo = ({
   token,
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(token.chainId);
   const tokenList = useSelector(getTokenList) || {};
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const caipChainId = isCaipChainId(token.chainId)
+    ? token.chainId
+    : formatChainIdToCaip(token.chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  );
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
   const showFiat = useMultichainSelector(
     makeGetMultichainShouldShowFiatByChainId(token.chainId),
     selectedAccount,
@@ -48,26 +62,19 @@ export const useTokenDisplayInfo = ({
   const shouldShowFiat =
     showFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const secondaryThreshold = 0.01;
-
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat &&
     token.tokenFiatAmount !== null &&
     token.tokenFiatAmount !== undefined
-      ? formatWithThreshold(
-          Number(token.tokenFiatAmount),
-          secondaryThreshold,
-          locale,
-          {
-            style: 'currency',
-            currency: fixCurrencyToUSD ? 'USD' : currentCurrency.toUpperCase(),
-          },
+      ? formatCurrencyWithMinThreshold(
+          token.tokenFiatAmount,
+          fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
       : undefined;
 
   const formattedPrimary = formatWithThreshold(
-    Number(isEvm ? token.string : token.primary),
+    Number((isEvm ? token.string : token.primary) || token.balance),
     0.00001,
     locale,
     {
@@ -117,12 +124,20 @@ export const useTokenDisplayInfo = ({
       tokenChainImage: tokenChainImage as string,
     };
   }
+
+  // TODO BIP44 Refactor: type for secondary is wrongly set as number | null, when it is a string | null
+  // Just changing it causes a number of errors all over the codebase
+  // When BIP44 flag is enabled and stable, this can be refactored to use the type from the new selector
+  const nonEvmSecondary = isMultichainAccountsState2Enabled
+    ? (secondary as unknown as number)
+    : token.secondary;
+
   // TODO non-evm assets. this is only the native token
   return {
     title: token.title,
     tokenImage: token.image,
     primary: formattedPrimary,
-    secondary: showFiat ? token.secondary : null,
+    secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };

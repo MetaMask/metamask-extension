@@ -1,5 +1,7 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureStore from '../../../store/store';
 import { NotificationsSettingsAccount } from './notifications-settings-account';
 
 jest.mock('@metamask/controller-utils', () => ({
@@ -12,8 +14,10 @@ describe('NotificationsSettingsAccount', () => {
     const testAddress = '0x7830c87C02e56AFf27FA8Ab1241711331FA86F43';
     const testName = 'Account Name';
 
-    render(
+    const store = configureStore({});
+    renderWithProvider(
       <NotificationsSettingsAccount address={testAddress} name={testName} />,
+      store,
     );
 
     expect(screen.getByText(testName)).toBeInTheDocument();
@@ -23,7 +27,11 @@ describe('NotificationsSettingsAccount', () => {
   it('renders the component with only an address', () => {
     const testAddress = '0x7830c87C02e56AFf27FA8Ab1241711331FA86F43';
 
-    render(<NotificationsSettingsAccount address={testAddress} />);
+    const store = configureStore({});
+    renderWithProvider(
+      <NotificationsSettingsAccount address={testAddress} />,
+      store,
+    );
 
     expect(screen.getByText(/0x7830c...86F43/u)).toBeInTheDocument();
     expect(

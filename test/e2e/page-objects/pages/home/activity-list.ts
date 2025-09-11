@@ -7,6 +7,12 @@ class ActivityListPage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
+  private readonly completedTransactionItems =
+    '.transaction-list__completed-transactions .activity-list-item';
+
+  private readonly activityTab =
+    '[data-testid="account-overview__activity-tab"]';
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -49,6 +55,11 @@ class ActivityListPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async openActivityTab(): Promise<void> {
+    console.log('Opening activity tab');
+    await this.driver.clickElement(this.activityTab);
   }
 
   /**
@@ -150,20 +161,36 @@ class ActivityListPage {
     await this.driver.assertElementNotPresent(this.completedTransactions);
   }
 
-  async checkTxAction(expectedAction: string, expectedNumber: number = 1) {
+  /**
+   * Check if a transaction at the specified index displays the expected action text in the activity list.
+   *
+   * @param params - The parameters object containing:
+   * @param params.action - The expected action text to be displayed (e.g., "Send", "Receive", "Swap")
+   * @param params.txIndex - The index of the transaction to check in the activity list
+   * @param params.completedTxs - The total number of completed transactions expected to be displayed in the activity list
+   * @returns A promise that resolves if the transaction at the specified index displays the expected action text within the timeout period.
+   */
+  async checkTxAction({
+    action,
+    txIndex = 1,
+    completedTxs = 1,
+  }: {
+    action: string;
+    txIndex?: number;
+    completedTxs?: number;
+  }): Promise<void> {
+    // We need to wait for the total number of tx's to be able to use getText() without race conditions.
+    await this.checkCompletedTxNumberDisplayedInActivity(completedTxs);
+
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
-
     await this.driver.wait(async () => {
       const transactionActionText =
-        await transactionActions[expectedNumber - 1].getText();
-      return transactionActionText === expectedAction;
+        await transactionActions[txIndex - 1].getText();
+      return transactionActionText === action;
     }, 60000);
-
-    console.log(
-      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
-    );
+    console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
   /**
@@ -260,6 +287,41 @@ class ActivityListPage {
     await this.driver.waitForSelector({
       tag: 'div',
       text: warningText,
+    });
+  }
+
+  async checkCompletedTransactionItems(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const confirmedTxes = await this.driver.findElements(
+        this.completedTransactionItems,
+      );
+      return confirmedTxes.length === expectedNumber;
+    }, 10000);
+  }
+
+  async getAllTransactionAmounts(): Promise<string[]> {
+    console.log('Getting all transaction amounts');
+    const transactionAmounts = await this.driver.findElements(
+      this.transactionAmountsInActivity,
+    );
+    const amounts = await Promise.all(
+      transactionAmounts.map(async (amount) => await amount.getText()),
+    );
+
+    console.log('Transaction amounts found', amounts);
+    return amounts;
+  }
+
+  async checkTransactionAmount(transactionAmount: string): Promise<void> {
+    console.log('Validate transaction amount');
+    await this.driver.waitForSelector({
+      css: this.transactionAmountsInActivity,
+      text: transactionAmount,
     });
   }
 

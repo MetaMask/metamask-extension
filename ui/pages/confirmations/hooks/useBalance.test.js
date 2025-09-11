@@ -33,6 +33,13 @@ const renderUseBalance = (fromAddress, stateVariables = {}) => {
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      enabledNetworkMap: {
+        eip155: {
+          '0x5': true,
+        },
+      },
+      isEvmSelected: true,
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       ...stateVariables,
     },
   };

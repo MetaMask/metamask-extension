@@ -44,6 +44,9 @@ describe('useTokensWithFiltering', () => {
   it('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: 'account-1',
+        },
         completedOnboarding: true,
         allDetectedTokens: {
           '0x1': {

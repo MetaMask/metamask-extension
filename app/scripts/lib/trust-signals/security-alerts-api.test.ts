@@ -2,9 +2,6 @@ import nock from 'nock';
 import { SECOND } from '../../../../shared/constants/time';
 import { scanAddress, scanAddressAndAddToCache } from './security-alerts-api';
 import { SupportedEVMChain, ResultType } from './types';
-import * as trustSignalsUtil from './trust-signals-util';
-
-jest.mock('./trust-signals-util');
 
 const TEST_ADDRESS = '0x1234567890123456789012345678901234567890';
 const TEST_CHAIN = SupportedEVMChain.Ethereum;
@@ -107,59 +104,65 @@ describe('Security Alerts API', () => {
   });
 
   describe('scanAddressAndAddToCache', () => {
-    let mockAppStateController: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    let mockNetworkController: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    const mockedGetChainId = jest.mocked(trustSignalsUtil.getChainId);
+    let getAddressSecurityAlertResponseMock: jest.Mock;
+    let addAddressSecurityAlertResponseMock: jest.Mock;
 
     beforeEach(() => {
-      mockAppStateController = {
-        getAddressSecurityAlertResponse: jest.fn(),
-        addAddressSecurityAlertResponse: jest.fn(),
-      };
-
-      mockNetworkController = {
-        state: {
-          providerConfig: {
-            chainId: '0x1', // Ethereum mainnet
-          },
-        },
-      };
-
-      // Default mock for getChainId
-      mockedGetChainId.mockReturnValue(SupportedEVMChain.Ethereum);
+      getAddressSecurityAlertResponseMock = jest.fn();
+      addAddressSecurityAlertResponseMock = jest.fn();
     });
 
-    it('should return cached response when available', async () => {
+    it('should return cached response when available and not loading', async () => {
       const cachedResponse = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: ResultType.Benign,
         label: 'Cached safe address',
       };
-      mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
-        cachedResponse,
+      getAddressSecurityAlertResponseMock.mockReturnValue(cachedResponse);
+
+      const result = await scanAddressAndAddToCache(
+        TEST_ADDRESS,
+        getAddressSecurityAlertResponseMock,
+        addAddressSecurityAlertResponseMock,
+        SupportedEVMChain.Ethereum,
+      );
+
+      expect(result).toEqual(cachedResponse);
+      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+        TEST_ADDRESS,
+      );
+      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+    });
+
+    it('should return cached loading state without making new API call', async () => {
+      const cachedLoadingResponse = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: ResultType.Loading,
+        label: '',
+      };
+      getAddressSecurityAlertResponseMock.mockReturnValue(
+        cachedLoadingResponse,
       );
 
       const result = await scanAddressAndAddToCache(
         TEST_ADDRESS,
-        mockAppStateController,
-        mockNetworkController,
+        getAddressSecurityAlertResponseMock,
+        addAddressSecurityAlertResponseMock,
+        SupportedEVMChain.Ethereum,
       );
 
-      expect(result).toEqual(cachedResponse);
-      expect(
-        mockAppStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESS);
-      expect(
-        mockAppStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
-      expect(mockedGetChainId).not.toHaveBeenCalled();
+      expect(result).toEqual(cachedLoadingResponse);
+      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+        TEST_ADDRESS,
+      );
+      // Should not make any API calls or update cache when loading state is cached
+      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
     });
 
     it('should scan address and cache result when not cached', async () => {
-      mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
-        undefined,
-      );
+      getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
 
       const scope = nock(BASE_URL)
         .post('/address/evm/scan', {
@@ -170,95 +173,71 @@ describe('Security Alerts API', () => {
 
       const result = await scanAddressAndAddToCache(
         TEST_ADDRESS,
-        mockAppStateController,
-        mockNetworkController,
+        getAddressSecurityAlertResponseMock,
+        addAddressSecurityAlertResponseMock,
+        SupportedEVMChain.Ethereum,
       );
 
       expect(result).toEqual(RESPONSE_MOCK);
-      expect(
-        mockAppStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESS);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
-      expect(
-        mockAppStateController.addAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESS, RESPONSE_MOCK);
-      expect(scope.isDone()).toBe(true);
-    });
-
-    it('should handle different chain IDs correctly', async () => {
-      mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
-        undefined,
-      );
-      mockedGetChainId.mockReturnValue(SupportedEVMChain.Polygon);
-
-      const scope = nock(BASE_URL)
-        .post('/address/evm/scan', {
-          chain: SupportedEVMChain.Polygon,
-          address: TEST_ADDRESS,
-        })
-        .reply(200, RESPONSE_MOCK);
-
-      const result = await scanAddressAndAddToCache(
+      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
         TEST_ADDRESS,
-        mockAppStateController,
-        mockNetworkController,
       );
-
-      expect(result).toEqual(RESPONSE_MOCK);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
-      expect(
-        mockAppStateController.addAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESS, RESPONSE_MOCK);
+      // Should be called twice: once for loading state, once for result
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        1,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Loading,
+          label: '',
+        },
+      );
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        2,
+        TEST_ADDRESS,
+        RESPONSE_MOCK,
+      );
       expect(scope.isDone()).toBe(true);
     });
 
-    it('should throw error when chain ID is not found', async () => {
-      mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
-        undefined,
-      );
-      mockedGetChainId.mockImplementation(() => {
-        throw new Error('Chain ID not found');
-      });
-
-      await expect(
-        scanAddressAndAddToCache(
-          TEST_ADDRESS,
-          mockAppStateController,
-          mockNetworkController,
-        ),
-      ).rejects.toThrow('Chain ID not found');
-
-      expect(
-        mockAppStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESS);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
-      expect(
-        mockAppStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('should not cache result when scan fails', async () => {
-      mockAppStateController.getAddressSecurityAlertResponse.mockReturnValue(
-        undefined,
-      );
+    it('throw error when scan fails', async () => {
+      getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
 
       nock(BASE_URL).post('/address/evm/scan').replyWithError('Network error');
 
       await expect(
         scanAddressAndAddToCache(
           TEST_ADDRESS,
-          mockAppStateController,
-          mockNetworkController,
+          getAddressSecurityAlertResponseMock,
+          addAddressSecurityAlertResponseMock,
+          SupportedEVMChain.Ethereum,
         ),
       ).rejects.toThrow('Network error');
 
-      expect(
-        mockAppStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESS);
-      expect(mockedGetChainId).toHaveBeenCalledWith(mockNetworkController);
-      expect(
-        mockAppStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
+      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+        TEST_ADDRESS,
+      );
+      // Should be called twice: once for loading state, once for clearing on error
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        1,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Loading,
+          label: '',
+        },
+      );
+      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+        2,
+        TEST_ADDRESS,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.ErrorResult,
+          label: '',
+        },
+      );
     });
   });
 });

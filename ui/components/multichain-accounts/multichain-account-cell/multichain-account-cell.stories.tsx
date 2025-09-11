@@ -65,7 +65,7 @@ export default {
     },
   },
   args: {
-    accountId: '0x1234567890abcdef',
+    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     accountName: 'Account 1',
     balance: '$2,400.00',
     selected: false,
@@ -86,7 +86,7 @@ Default.storyName = 'Default';
 
 export const Selected = Template.bind({});
 Selected.args = {
-  accountId: '0x1234567890abcdef',
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Selected Account',
   balance: '$2,400.00',
   selected: true,
@@ -94,14 +94,14 @@ Selected.args = {
 
 export const WithoutBalance = Template.bind({});
 WithoutBalance.args = {
-  accountId: '0x2345678901abcdef',
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Account 2',
   balance: undefined,
 };
 
 export const WithoutEndAccessory = Template.bind({});
 WithoutEndAccessory.args = {
-  accountId: '0x5678901234abcdef',
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Account Without Menu',
   balance: '$2,400.00',
   endAccessory: undefined,
@@ -109,7 +109,7 @@ WithoutEndAccessory.args = {
 
 export const WithLongAccountName = Template.bind({});
 WithLongAccountName.args = {
-  accountId: '0x3456789012abcdef',
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName:
     'This is a very long account name that might need to be truncated',
   balance: '$2,400.00',
@@ -117,7 +117,7 @@ WithLongAccountName.args = {
 
 export const Clickable = Template.bind({});
 Clickable.args = {
-  accountId: '0x4567890123abcdef',
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Clickable Account',
   balance: '$2,400.00',
   onClick: () => console.log('Account cell clicked'),
@@ -125,7 +125,7 @@ Clickable.args = {
 
 export const SelectedAndClickable = Template.bind({});
 SelectedAndClickable.args = {
-  accountId: '0x6789012345abcdef',
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Selected Clickable Account',
   balance: '$2,400.00',
   selected: true,
@@ -135,14 +135,14 @@ SelectedAndClickable.args = {
 export const MultipleAccounts: StoryFn<typeof MultichainAccountCell> = () => (
   <div style={{ width: '360px', margin: '0 auto' }}>
     <MultichainAccountCell
-      accountId="0x1234567890abcdef"
+      accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
       accountName="Main Account"
       balance="$2,400.00"
       onClick={() => console.log('Main account clicked')}
       endAccessory={<MoreOptionsAccessory />}
     />
     <MultichainAccountCell
-      accountId="0x2345678901abcdef"
+      accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
       accountName="Savings"
       balance="$105,400,720.00"
       onClick={() => console.log('Savings account clicked')}
@@ -150,21 +150,21 @@ export const MultipleAccounts: StoryFn<typeof MultichainAccountCell> = () => (
       selected={true}
     />
     <MultichainAccountCell
-      accountId="0x3456789012abcdef"
+      accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
       accountName="Trading"
       balance="$22,400.00"
       onClick={() => console.log('Trading account clicked')}
       endAccessory={<MoreOptionsAccessory />}
     />
     <MultichainAccountCell
-      accountId="0x3456789012abcdef"
+      accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
       accountName="Second trading account"
       balance="$178,256,100.00"
       onClick={() => console.log('Second trading account clicked')}
       endAccessory={<MoreOptionsAccessory />}
     />
     <MultichainAccountCell
-      accountId="0x3456789012abcdef"
+      accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
       accountName="Second savings account"
       balance="1722.943 ETH"
       onClick={() => console.log('Second savings account clicked')}

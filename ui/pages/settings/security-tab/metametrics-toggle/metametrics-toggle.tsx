@@ -48,7 +48,6 @@ const MetametricsToggle = ({
   const useExternalServices = useSelector(getUseExternalServices);
 
   const handleUseParticipateInMetaMetrics = async () => {
-    console.log('handleUseParticipateInMetaMetrics', participateInMetaMetrics);
     if (participateInMetaMetrics) {
       await disableMetametrics();
       trackEvent({

@@ -28,7 +28,7 @@ function getNftContractsByChainByAccount(state: NftState) {
  * @param state - Metamask state.
  * @returns All NFTs owned by the user, keyed by chain ID then account address.
  */
-function getNftsByChainByAccount(state: NftState) {
+export function getNftsByChainByAccount(state: NftState) {
   return state.metamask.allNfts ?? {};
 }
 

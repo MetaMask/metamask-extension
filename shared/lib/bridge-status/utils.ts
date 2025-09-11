@@ -1,62 +1,26 @@
-import { StatusTypes } from '@metamask/bridge-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 
-/**
- * Internal type defining the relevant parts of a transaction object
- * needed for bridge status utility functions.
- */
-type BridgeTransaction = {
-  isBridgeTx: boolean;
-  bridgeInfo?: {
-    status?: string;
-    destTxHash?: string;
-  };
-};
-
-export function isBridgeComplete(transaction: BridgeTransaction): boolean {
+export function isBridgeComplete({
+  status,
+  quote,
+}: BridgeHistoryItem): boolean {
   return Boolean(
-    transaction.isBridgeTx &&
-      transaction.bridgeInfo &&
-      (transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
-        transaction.bridgeInfo.status === 'COMPLETE') &&
-      typeof transaction.bridgeInfo.destTxHash === 'string' &&
-      transaction.bridgeInfo.destTxHash.length > 0,
+    isCrossChain(quote.srcChainId, quote.destChainId) &&
+      status.srcChain.txHash &&
+      status.status === StatusTypes.COMPLETE,
   );
 }
 
 export function isBridgeFailed(
-  transaction: BridgeTransaction,
-  baseStatusKey: string,
-): boolean {
+  transaction: Transaction,
+  { quote, status }: BridgeHistoryItem,
+) {
   const bridgeFailed = Boolean(
-    transaction.isBridgeTx &&
-      transaction.bridgeInfo &&
-      (transaction.bridgeInfo.status === StatusTypes.FAILED ||
-        transaction.bridgeInfo.status === 'FAILED'),
+    isCrossChain(quote.srcChainId, quote.destChainId) &&
+      status.status === StatusTypes.FAILED,
   );
-  const baseFailed = baseStatusKey === TransactionStatus.failed;
 
-  return bridgeFailed || baseFailed;
-}
-
-export function getBridgeStatusKey(
-  transaction: BridgeTransaction,
-  baseStatusKey: string,
-): string {
-  if (!transaction.isBridgeTx || !transaction.bridgeInfo) {
-    return baseStatusKey;
-  }
-
-  if (isBridgeFailed(transaction, baseStatusKey)) {
-    return TransactionStatus.failed;
-  }
-
-  if (
-    isBridgeComplete(transaction) &&
-    baseStatusKey === TransactionStatus.confirmed
-  ) {
-    return TransactionStatus.confirmed;
-  }
-
-  return TransactionStatus.submitted;
+  return bridgeFailed || transaction.status === TransactionStatus.Failed;
 }

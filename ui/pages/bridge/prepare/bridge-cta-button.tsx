@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isCrossChain } from '@metamask/bridge-controller';
 import {
+  Button,
   ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import {
@@ -26,11 +28,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Row } from '../layout';
 
 export const BridgeCTAButton = ({
@@ -65,10 +62,6 @@ export const BridgeCTAButton = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  const tradeProperties = useTradeProperties();
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
@@ -107,7 +100,13 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
-      return 'submit';
+      return activeQuote &&
+        isCrossChain(
+          activeQuote.quote.srcChainId,
+          activeQuote.quote.destChainId,
+        )
+        ? 'bridge'
+        : 'swap';
     }
 
     return 'swapSelectToken';
@@ -136,10 +135,10 @@ export const BridgeCTAButton = ({
   }, [wasTxDeclined, isQuoteExpired]);
 
   return activeQuote && !secondaryButtonLabel ? (
-    <ButtonPrimary
+    <Button
       width={BlockSize.Full}
-      size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}
-      variant={TextVariant.bodyMd}
+      size={activeQuote ? ButtonSize.Md : ButtonSize.Lg}
+      variant={ButtonVariant.Primary}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -150,18 +149,6 @@ export const BridgeCTAButton = ({
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
             setIsSubmitting(true);
-
-            quoteRequestProperties &&
-              requestMetadataProperties &&
-              tradeProperties &&
-              trackCrossChainSwapsEvent({
-                event: MetaMetricsEventName.ActionSubmitted,
-                properties: {
-                  ...quoteRequestProperties,
-                  ...requestMetadataProperties,
-                  ...tradeProperties,
-                },
-              });
             await submitBridgeTransaction(activeQuote);
           } finally {
             setIsSubmitting(false);
@@ -178,7 +165,7 @@ export const BridgeCTAButton = ({
       }
     >
       {label ? t(label) : ''}
-    </ButtonPrimary>
+    </Button>
   ) : (
     <Row
       alignItems={AlignItems.center}

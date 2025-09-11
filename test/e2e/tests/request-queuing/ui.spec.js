@@ -1,16 +1,18 @@
 const { strict: assert } = require('assert');
-const { Browser } = require('selenium-webdriver');
+const { Browser, By } = require('selenium-webdriver');
 const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const {
   default: NetworkManager,
   NetworkId,
 } = require('../../page-objects/pages/network-manager');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
-  unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
@@ -98,6 +100,11 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
   await driver.clickElement('#sendButton');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.waitForSelector({
+    tag: 'h3',
+    text: 'Transfer request',
+  });
 }
 
 async function selectDappClickPersonalSign(driver, dappUrl) {
@@ -167,6 +174,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
+  this.timeout(500000); // This test is very long, so we need an unusually high timeout
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -192,7 +200,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -207,7 +215,9 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8546"]',
+        );
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -271,7 +281,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -289,10 +299,19 @@ describe('Request-queue UI changes', function () {
 
         // Trigger a send confirmation on the second dapp, do not confirm or reject
         await selectDappClickSend(driver, DAPP_ONE_URL);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForSelector(
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
+        );
 
         if (!IS_FIREFOX) {
           // Trigger a send confirmation on the third dapp, do not confirm or reject
           await selectDappClickSend(driver, DAPP_TWO_URL);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.waitForSelector(
+            By.xpath("//p[normalize-space(.)='1 of 3']"),
+          );
         }
 
         // Switch to the Notification window, ensure first transaction still showing
@@ -347,19 +366,27 @@ describe('Request-queue UI changes', function () {
           // Start on the last joined network, whose send transaction was just confirmed
           await networkManager.openNetworkManager();
           await networkManager.selectTab('Custom');
-          await driver.clickElement('[data-testid="Localhost 7777"]');
+          await driver.clickElementAndWaitToDisappear(
+            '[data-testid="Localhost 7777"]',
+          );
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
+        // Validate second network, where transaction was rejected
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8546"]',
+        );
 
         await validateBalanceAndActivity(driver, '25', 0);
 
+        // Validate first network, where transaction was confirmed
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8545"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8545"]',
+        );
 
         await validateBalanceAndActivity(driver, '24.9998');
       },
@@ -395,7 +422,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -408,8 +435,16 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Open Network Manager and delete custom network
         const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
+
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+
+        // Open Network Manager and delete custom network
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
 
@@ -456,7 +491,7 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -522,7 +557,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -572,10 +607,12 @@ describe('Request-queue UI changes', function () {
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
+          .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-              '0x539': true,
+              '0x2105': true,
+              '0xe708': true,
             },
           })
           .build(),
@@ -598,7 +635,12 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '85,000.00',
+        );
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -615,8 +657,7 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
 
         // Kill local node servers
         await localNodes[0].quit();

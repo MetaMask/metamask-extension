@@ -27,6 +27,7 @@ const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
 const mockEnableAllPopularNetworks = jest.fn();
 const mockEnableSingleNetwork = jest.fn();
+const mockSetEnabledNetworksMultichain = jest.fn();
 const mockAddPermittedChain = jest.fn();
 const mockShowPermittedNetworkToast = jest.fn();
 
@@ -81,6 +82,10 @@ jest.mock('../../../store/controller-actions/network-order-controller', () => ({
   enableSingleNetwork: () => {
     mockEnableSingleNetwork();
     return { type: 'ENABLE_SINGLE_NETWORKS' };
+  },
+  setEnabledNetworksMultichain: () => {
+    mockSetEnabledNetworksMultichain();
+    return { type: 'SET_ENABLED_NETWORKS_MULTICHAIN' };
   },
 }));
 
@@ -280,7 +285,7 @@ describe('NetworkListMenu', () => {
   });
 
   it('switches networks when an item is clicked', async () => {
-    const origin = 'https://portfolio.metamask.io';
+    const origin = 'https://app.metamask.io';
     const { getByText } = render({
       selectedTabOriginInDomainsState: true,
       isUnlocked: true,
@@ -305,7 +310,7 @@ describe('NetworkListMenu', () => {
       selectedTabOriginInDomainsState: true,
       isUnlocked: true,
       isAccessedFromDappConnectedSitePopover: true,
-      origin: 'https://portfolio.metamask.io',
+      origin: 'https://app.metamask.io',
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks

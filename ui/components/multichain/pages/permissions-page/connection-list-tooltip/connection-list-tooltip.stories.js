@@ -7,9 +7,9 @@ export default {
 
 const connection = {
   extensionId: null,
-  iconUrl: 'https://portfolio.metamask.io/favicon.png',
+  iconUrl: 'https://app.metamask.io/favicon.png',
   name: 'MetaMask Portfolio',
-  origin: 'https://portfolio.metamask.io',
+  origin: 'https://app.metamask.io',
   subjectType: 'website',
   addresses: [
     '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B',

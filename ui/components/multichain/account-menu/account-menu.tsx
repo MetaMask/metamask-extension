@@ -42,11 +42,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
@@ -110,10 +108,8 @@ export const ACTION_MODES = {
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   // Displays the add account form controls (for solana account)
   ADD_SOLANA: 'add-solana',
-  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
   CREATE_SRP: 'create-srp',
@@ -164,10 +160,8 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
       return t('addAccountFromNetwork', [t('networkNameSolana')]);
-    ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     case ACTION_MODES.CREATE_SRP:
@@ -252,13 +246,11 @@ export const AccountMenu = ({
   );
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
   const handleMultichainSnapAccountCreation = async (
@@ -449,34 +441,30 @@ export const AccountMenu = ({
                 {t('addNewEthereumAccountLabel')}
               </ButtonLink>
             </Box>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(solana)
-              solanaSupportEnabled && (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onClick={async () => {
-                      await handleMultichainSnapAccountCreation(
-                        solanaWalletSnapClient,
-                        {
-                          scope: MultichainNetworks.SOLANA,
-                          entropySource: primaryKeyring.metadata.id,
-                        },
-                        ACTION_MODES.ADD_SOLANA,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-solana-account"
-                  >
-                    {t('addNewSolanaAccountLabel')}
-                  </ButtonLink>
-                </Box>
-              )
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {solanaSupportEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  startIconProps={{ size: IconSize.Md }}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onClick={async () => {
+                    await handleMultichainSnapAccountCreation(
+                      solanaWalletSnapClient,
+                      {
+                        scope: MultichainNetworks.SOLANA,
+                        entropySource: primaryKeyring.metadata.id,
+                      },
+                      ACTION_MODES.ADD_SOLANA,
+                    );
+                  }}
+                  data-testid="multichain-account-menu-popover-add-solana-account"
+                >
+                  {t('addNewSolanaAccountLabel')}
+                </ButtonLink>
+              </Box>
+            )}
             {
               ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
               bitcoinSupportEnabled && (

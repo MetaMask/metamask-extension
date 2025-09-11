@@ -4,7 +4,7 @@ import { createMockNotificationEthSent } from '@metamask/notification-services-c
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
 
 import * as UseNotificationModule from '../../hooks/metamask-notifications/useNotifications';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
