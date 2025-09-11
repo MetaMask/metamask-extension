@@ -42,9 +42,9 @@ describe('SendInner', () => {
       updateCurrentPage: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
-    const { getByTestId } = render();
+    const { getByTestId, queryByTestId } = render();
     expect(getByTestId('asset-page')).toBeInTheDocument();
-    expect(getByTestId('amount-recipient-page')).not.toBeInTheDocument();
+    expect(queryByTestId('amount-recipient-page')).not.toBeInTheDocument();
   });
 
   it('render AmountRecipient page when current page in path is amount-recipient', () => {
@@ -53,7 +53,8 @@ describe('SendInner', () => {
       updateCurrentPage: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
-    const { getByText } = render();
-    expect(getByText('Amount')).toBeInTheDocument();
+    const { getByText, queryByTestId } = render();
+    expect(getByText('Amount recipient page')).toBeInTheDocument();
+    expect(queryByTestId('asset-page')).not.toBeInTheDocument();
   });
 });
