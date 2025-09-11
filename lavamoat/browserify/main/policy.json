@@ -911,14 +911,6 @@
         "immer": true
       }
     },
-    "@metamask/ppom-validator>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
@@ -1710,7 +1702,7 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/ppom-validator>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "await-semaphore": true,
         "browserify>buffer": true,
