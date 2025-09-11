@@ -13,24 +13,19 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
   const controller = new TokenDetectionController({
     // @ts-expect-error: TODO: Investigate type mismatch.
     messenger: controllerMessenger,
-    getBalancesInSingleCall: (...args) => initMessenger.call(
-      'AssetsContractController:getBalancesInSingleCall',
-      ...args,
-    ),
-    trackMetaMetricsEvent: (...args) => initMessenger.call(
-      'MetaMetricsController:trackEvent',
-      ...args,
-    ),
+    getBalancesInSingleCall: (...args) =>
+      initMessenger.call(
+        'AssetsContractController:getBalancesInSingleCall',
+        ...args,
+      ),
+    trackMetaMetricsEvent: (...args) =>
+      initMessenger.call('MetaMetricsController:trackEvent', ...args),
     useAccountsAPI: true,
     platform: 'extension',
     useTokenDetection: () =>
-      initMessenger.call(
-        'PreferencesController:getState',
-      ).useTokenDetection,
+      initMessenger.call('PreferencesController:getState').useTokenDetection,
     useExternalServices: () =>
-      initMessenger.call(
-        'PreferencesController:getState',
-      ).useExternalServices,
+      initMessenger.call('PreferencesController:getState').useExternalServices,
   });
 
   return { controller };
