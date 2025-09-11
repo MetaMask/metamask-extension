@@ -17,6 +17,7 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bri
 import {
   SOLANA_BLOCK_EXPLORER_URL,
   MultichainNetworks,
+  BITCOIN_BLOCK_EXPLORER_URL,
 } from '../../../shared/constants/multichain/networks';
 
 // Helper function to check if a chain is Bitcoin
@@ -108,7 +109,7 @@ export default function useBridgeChainInfo({
           nativeCurrency: srcNativeAsset?.assetId,
           blockExplorerUrl: isSolanaChainId(srcChainIdInCaip)
             ? SOLANA_BLOCK_EXPLORER_URL
-            : 'https://blockstream.info/', // Bitcoin block explorer
+            : BITCOIN_BLOCK_EXPLORER_URL,
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,
