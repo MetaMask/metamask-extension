@@ -1,50 +1,45 @@
 import { useSelector } from 'react-redux';
-import { getAccountByAddress } from '../../../helpers/utils/util';
 import {
   accountsWithSendEtherInfoSelector,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';
 import { useConfirmContext } from '../context/confirm';
-import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
+import {
+  selectAccountGroupNameByInternalAccount,
+  selectInternalAccountNameByAddress,
+} from '../selectors/accounts';
 
-function useConfirmationRecipientInfo() {
+function useConfirmationRecipientInfo(): {
+  senderAddress: string;
+  senderName: string;
+} {
   const { currentConfirmation } = useConfirmContext();
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
-  const allAccountGroups = useSelector((state: MultichainAccountsState) =>
-    getAccountGroupsByAddress(
-      state,
-      allAccounts.map((a) => a.address),
-    ),
-  );
-
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
 
-  let senderAddress: string | undefined;
-  let senderName: string | undefined;
+  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
-  if (currentConfirmation) {
-    const { from } = getConfirmationSender(currentConfirmation);
-    senderAddress = from;
-    if (isMultichainAccountsState2Enabled) {
-      const group = allAccountGroups.find((g) =>
-        g.accounts.some(
-          (a) => a.address?.toLowerCase() === from?.toLowerCase(),
-        ),
-      );
-      senderName = group?.metadata?.name;
-    } else {
-      const allInternalAccounts = allAccountGroups.flatMap((g) => g.accounts);
-      const fromAccount = getAccountByAddress(allInternalAccounts, from);
-      senderName = fromAccount?.metadata?.name;
-    }
-  }
+  const { from } = getConfirmationSender(currentConfirmation);
+
+  const addresses: string[] = allAccounts.map((account) => account.address);
+
+  const accountGroupName = useSelector((state: MultichainAccountsState) =>
+    selectAccountGroupNameByInternalAccount(state, addresses, from),
+  );
+
+  const internalAccountName = useSelector((state: MultichainAccountsState) =>
+    selectInternalAccountNameByAddress(state, addresses, from),
+  );
+
+  const senderName = isMultichainAccountsState2Enabled
+    ? accountGroupName
+    : internalAccountName;
 
   return {
-    senderAddress: senderAddress ?? '',
+    senderAddress: from ?? '',
     senderName: senderName ?? '',
   };
 }
