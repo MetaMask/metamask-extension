@@ -98,6 +98,7 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.executeScript(
                 `window.ethereum.request(${switchEthereumChainRequest})`,
               );
+              await this.driver.delay(3500);
             }
           } catch (e) {
             console.log(e);
