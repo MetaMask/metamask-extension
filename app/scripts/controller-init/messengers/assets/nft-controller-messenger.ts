@@ -19,6 +19,7 @@ import {
 } from '@metamask/assets-controllers';
 import { AddApprovalRequest } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 
 type Actions =
   | AddApprovalRequest
@@ -72,5 +73,29 @@ export function getNftControllerMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'PhishingController:bulkScanUrls',
     ],
+  });
+}
+
+export type AllowedInitializationActions =
+  MetaMetricsControllerTrackEventAction;
+
+export type NftControllerInitMessenger = ReturnType<
+  typeof getNftControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for initializing the NFT controller. This is scoped
+ * to the actions that are allowed during controller initialization.
+ *
+ * @param messenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
+export function getNftControllerInitMessenger(
+  messenger: Messenger<AllowedInitializationActions, never>,
+) {
+  return messenger.getRestricted({
+    name: 'NftControllerInit',
+    allowedActions: ['MetaMetricsController:trackEvent'],
+    allowedEvents: [],
   });
 }

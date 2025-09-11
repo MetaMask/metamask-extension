@@ -237,7 +237,7 @@ jobs:
 
   page-load-benchmark-pr:
     needs:
-      - build-dist-browserify
+      - build-test-browserify
     if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
     uses: ./.github/workflows/page-load-benchmark-pr.yml
     with:

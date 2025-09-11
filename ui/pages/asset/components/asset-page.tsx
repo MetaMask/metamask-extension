@@ -1,5 +1,7 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
   type Hex,
@@ -9,15 +11,20 @@ import {
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import useMultiChainAssets from '../../../components/app/assets/hooks/useMultichainAssets';
 import TokenCell from '../../../components/app/assets/token-cell';
+import {
+  TokenFiatDisplayInfo,
+  type TokenWithFiatAmount,
+} from '../../../components/app/assets/types';
 import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
 import TransactionList from '../../../components/app/transaction-list';
+import UnifiedTransactionList from '../../../components/app/transaction-list/unified-transaction-list.component';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import {
   AvatarNetwork,
@@ -34,13 +41,13 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import {
   AlignItems,
+  BorderColor,
   Display,
   FlexDirection,
   IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -58,28 +65,22 @@ import {
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
+  getAssetsBySelectedAccountGroup,
+  getMultichainNativeAssetType,
+} from '../../../selectors/assets';
+import {
   getImageForChainId,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import {
-  TokenFiatDisplayInfo,
-  type TokenWithFiatAmount,
-} from '../../../components/app/assets/types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
-import { Asset } from '../types/asset';
-import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import {
-  getAssetsBySelectedAccountGroup,
-  getMultichainNativeAssetType,
-} from '../../../selectors/assets';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
+import { useCurrentPrice } from '../hooks/useCurrentPrice';
+import { Asset } from '../types/asset';
+import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
-import { AssetMarketDetails } from './asset-market-details';
 
 // TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
@@ -295,6 +296,11 @@ const AssetPage = ({
 
   const { safeChains } = useSafeChains();
 
+  const isBIP44FeatureFlagEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
+
   return (
     <Box
       marginLeft="auto"
@@ -487,14 +493,18 @@ const AssetPage = ({
             <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
-            {type === AssetType.native ? (
+            {showUnifiedTransactionList ? (
+              <UnifiedTransactionList
+                tokenAddress={address}
+                hideNetworkFilter
+                tokenChainIdOverride={chainId}
+              />
+            ) : (
               <TransactionList
                 tokenAddress={address}
                 hideNetworkFilter
-                overrideFilterForCurrentChain={true}
+                overrideFilterForCurrentChain={type === AssetType.native}
               />
-            ) : (
-              <TransactionList tokenAddress={address} hideNetworkFilter />
             )}
           </Box>
         </Box>
