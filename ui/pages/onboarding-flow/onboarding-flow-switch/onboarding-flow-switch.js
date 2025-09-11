@@ -51,14 +51,11 @@ export default function OnboardingFlowSwitch() {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
-  if (
-    seedPhraseBackedUp !== null ||
-    (isUnlocked && isSocialLoginFlow && isFirefox)
-  ) {
+  if (seedPhraseBackedUp !== null || (isUnlocked && isSocialLoginFlow)) {
     return (
       <Navigate
         to={
-          isParticipateInMetaMetricsSet
+          isParticipateInMetaMetricsSet || !isFirefox
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS
         }
