@@ -242,6 +242,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showNativeTokenAsMainBalance: true,
       showConfirmationAdvancedDetails: true,
       privacyMode: false,
+      avatarType: true,
     },
     useExternalServices: false,
     selectedAddress: false,
