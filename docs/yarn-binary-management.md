@@ -184,7 +184,7 @@ yarn --version  # Shows 4.9.1
 
 ## File Structure
 
-```
+```text
 .yarn/
 ├── yarn-4.9.1-corepack.tgz    # Committed tarball for 4.9.1
 ├── yarn-4.9.4-corepack.tgz    # Committed tarball for 4.9.4
