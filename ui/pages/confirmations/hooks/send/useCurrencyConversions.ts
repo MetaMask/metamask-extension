@@ -127,12 +127,7 @@ export const useCurrencyConversions = () => {
     return parseFloat(
       multichainAssetsRates[assetAddress as CaipAssetType]?.rate ?? 0,
     );
-  }, [
-    asset?.address,
-    contractExchangeRates,
-    conversionRateEvm,
-    multichainAssetsRates,
-  ]);
+  }, [asset, contractExchangeRates, conversionRateEvm, multichainAssetsRates]);
 
   const getFiatValue = useCallback(
     (amount: string) =>
