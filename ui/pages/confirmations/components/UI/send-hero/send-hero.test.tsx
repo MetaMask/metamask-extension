@@ -107,7 +107,7 @@ describe('SendHero', () => {
 
     expect(getByTestId('box')).toBeInTheDocument();
     expect(getByTestId('badge-wrapper')).toBeInTheDocument();
-    expect(getByTestId('avatar-token')).toBeInTheDocument();
+    expect(getByTestId('nft-image')).toBeInTheDocument();
     expect(getByTestId('avatar-network')).toBeInTheDocument();
     expect(getAllByTestId('text')).toHaveLength(1);
   });
@@ -116,7 +116,7 @@ describe('SendHero', () => {
     const erc1155Asset = { ...mockNFTAsset, standard: AssetStandard.ERC1155 };
     const { getByTestId } = render(<SendHero asset={erc1155Asset} />);
 
-    expect(getByTestId('avatar-token')).toBeInTheDocument();
+    expect(getByTestId('nft-image')).toBeInTheDocument();
   });
 
   it('renders wrapped component with correct styling', () => {
@@ -189,17 +189,17 @@ describe('NFTHero', () => {
   it('renders NFT image with asset image', () => {
     const { getByTestId } = render(<SendHero asset={mockNFT} />);
 
-    const avatarToken = getByTestId('avatar-token');
-    expect(avatarToken).toHaveAttribute('data-src', mockNFT.image);
-    expect(avatarToken).toHaveAttribute('data-name', mockNFT.symbol);
+    const image = getByTestId('nft-image');
+    expect(image).toHaveAttribute('src', mockNFT.image);
+    expect(image).toHaveAttribute('alt', mockNFT.name);
   });
 
   it('renders collection image when asset image is missing', () => {
     const nftWithoutImage = { ...mockNFT, image: undefined };
     const { getByTestId } = render(<SendHero asset={nftWithoutImage} />);
 
-    const avatarToken = getByTestId('avatar-token');
-    expect(avatarToken).toHaveAttribute('data-name', mockNFT.symbol);
+    const image = getByTestId('nft-image');
+    expect(image).toHaveAttribute('src', mockNFT.collection.imageUrl);
   });
 
   it('renders network badge when chainId exists', () => {
@@ -221,8 +221,17 @@ describe('NFTHero', () => {
   it('handles image error by hiding image', () => {
     const { getByTestId } = render(<SendHero asset={mockNFT} />);
 
-    const avatarToken = getByTestId('avatar-token');
-    expect(avatarToken).toBeInTheDocument();
+    const image = getByTestId('nft-image') as HTMLImageElement;
+    const mockNextSibling = { classList: { remove: jest.fn() } };
+    Object.defineProperty(image, 'nextElementSibling', {
+      value: mockNextSibling,
+      writable: true,
+    });
+
+    image.dispatchEvent(new Event('error'));
+
+    expect(image.style.display).toBe('none');
+    expect(mockNextSibling.classList.remove).toHaveBeenCalledWith('hidden');
   });
 
   it('does not render network badge when chainId is missing', () => {
@@ -238,10 +247,8 @@ describe('NFTHero', () => {
       image: undefined,
       collection: { name: 'Cool Collection' },
     };
-    const { getByTestId } = render(<SendHero asset={nftWithoutImages} />);
+    const { queryByTestId } = render(<SendHero asset={nftWithoutImages} />);
 
-    const avatarToken = getByTestId('avatar-token');
-    expect(avatarToken).toBeInTheDocument();
-    expect(avatarToken).toHaveAttribute('data-name', mockNFT.symbol);
+    expect(queryByTestId('nft-image')).not.toBeInTheDocument();
   });
 });
