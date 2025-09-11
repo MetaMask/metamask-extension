@@ -11,7 +11,7 @@ import {
 describe('MultichainAccountCell', () => {
   const store = configureStore(mockDefaultState);
   const defaultProps: MultichainAccountCellProps = {
-    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     accountName: 'Test Account',
     balance: '$2,400.00',
     endAccessory: <span data-testid="end-accessory">More</span>,
