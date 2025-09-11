@@ -23,6 +23,12 @@ jest.mock('../components/send/asset', () => ({
   Asset: () => <div data-testid="asset-page">Asset page</div>,
 }));
 
+jest.mock('../components/send/amount-recipient', () => ({
+  AmountRecipient: () => (
+    <div data-testid="amount-recipient-page">Amount recipient page</div>
+  ),
+}));
+
 const mockStore = configureMockStore([])(mockState);
 
 const render = () => {
@@ -38,6 +44,7 @@ describe('SendInner', () => {
 
     const { getByTestId } = render();
     expect(getByTestId('asset-page')).toBeInTheDocument();
+    expect(getByTestId('amount-recipient-page')).not.toBeInTheDocument();
   });
 
   it('render AmountRecipient page when current page in path is amount-recipient', () => {

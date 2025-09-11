@@ -4,6 +4,7 @@ import { SendHero } from './send-hero';
 import { AssetStandard } from '../../../types/send';
 
 jest.mock('../../../../../components/component-library', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AvatarToken: ({ src, name, size, showHalo }: any) => (
     <div
       data-testid="avatar-token"
@@ -13,6 +14,7 @@ jest.mock('../../../../../components/component-library', () => ({
       data-show-halo={showHalo}
     />
   ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AvatarNetwork: ({ size, name, src }: any) => (
     <div
       data-testid="avatar-network"
@@ -27,12 +29,14 @@ jest.mock('../../../../../components/component-library', () => ({
   AvatarTokenSize: {
     Xl: 'xl',
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   BadgeWrapper: ({ badge, children }: any) => (
     <div data-testid="badge-wrapper">
       {badge && <div data-testid="badge">{badge}</div>}
       {children}
     </div>
   ),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Box: ({ children, as, src, alt, style, onError, ...props }: any) => {
     if (as === 'img') {
       return (
@@ -52,6 +56,7 @@ jest.mock('../../../../../components/component-library', () => ({
       </div>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Text: ({ variant, color, marginLeft, children }: any) => (
     <div
       data-testid="text"

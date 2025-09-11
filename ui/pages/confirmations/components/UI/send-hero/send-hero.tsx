@@ -19,13 +19,6 @@ import {
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
 
-export const SendHero = ({ asset }: { asset: Asset }) => {
-  if (asset?.standard && NFT_STANDARDS.includes(asset.standard)) {
-    return <NFTHero asset={asset} />;
-  }
-  return <TokenHero asset={asset} />;
-};
-
 const NFTHero = ({ asset }: { asset: Asset }) => {
   const nftData = asset;
   const { collection, name, image } = nftData;
@@ -123,4 +116,11 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
       </Text>
     </Box>
   );
+};
+
+export const SendHero = ({ asset }: { asset: Asset }) => {
+  if (asset?.standard && NFT_STANDARDS.includes(asset.standard)) {
+    return <NFTHero asset={asset} />;
+  }
+  return <TokenHero asset={asset} />;
 };
