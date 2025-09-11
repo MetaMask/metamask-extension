@@ -140,6 +140,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     accountGroupIdAssets,
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
+    enabledNetworksByNamespace,
   ]);
 
   useEffect(() => {
