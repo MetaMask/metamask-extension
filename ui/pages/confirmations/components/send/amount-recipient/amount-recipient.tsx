@@ -17,12 +17,14 @@ import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
 import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
+import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
+import { Asset } from '../../../types/send';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const { to } = useSendContext();
+  const { to, asset } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
   const { amountError } = useAmountValidation();
@@ -46,6 +48,7 @@ export const AmountRecipient = () => {
       style={{ flex: 1 }}
     >
       <Box>
+        <SendHero asset={asset as Asset} />
         <Recipient />
         <Amount />
       </Box>
