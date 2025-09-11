@@ -19,9 +19,11 @@ import {
   MultichainBalancesController,
   NftController,
   NftDetectionController,
+  TokenBalancesController,
   TokenDetectionController,
   TokenListController,
   TokenRatesController,
+  TokensController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
@@ -96,8 +98,10 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | TokenBalancesController
   | TokenDetectionController
   | TokenListController
+  | TokensController
   | TransactionController
   | InstitutionalSnapController
   | UserStorageController
@@ -144,9 +148,11 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
-  TransactionController['state'] &
+  TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
+  TokensController['state'] &
+  TransactionController['state'] &
   SwapsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &

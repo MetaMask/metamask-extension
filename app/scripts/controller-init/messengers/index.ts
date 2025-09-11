@@ -79,9 +79,25 @@ import {
   getTokenDetectionControllerInitMessenger,
   getTokenDetectionControllerMessenger,
 } from './token-detection-controller-messenger';
+import {
+  getTokensControllerInitMessenger,
+  getTokensControllerMessenger,
+} from './tokens-controller-messenger';
+import {
+  getTokenBalancesControllerInitMessenger,
+  getTokenBalancesControllerMessenger,
+} from './token-balances-controller-messenger';
 
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type {
+  TokenBalancesControllerMessenger,
+  TokenBalancesControllerInitMessenger,
+} from './token-balances-controller-messenger';
+export {
+  getTokenBalancesControllerMessenger,
+  getTokenBalancesControllerInitMessenger,
+} from './token-balances-controller-messenger';
 export type {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
@@ -98,6 +114,14 @@ export {
   getTokenListControllerMessenger,
   getTokenListControllerInitMessenger,
 } from './token-list-controller-messenger';
+export type {
+  TokensControllerMessenger,
+  TokensControllerInitMessenger,
+} from './tokens-controller-messenger';
+export {
+  getTokensControllerMessenger,
+  getTokensControllerInitMessenger,
+} from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -196,6 +220,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
   },
+  TokenBalancesController: {
+    getMessenger: getTokenBalancesControllerMessenger,
+    getInitMessenger: getTokenBalancesControllerInitMessenger,
+  },
   TokenDetectionController: {
     getMessenger: getTokenDetectionControllerMessenger,
     getInitMessenger: getTokenDetectionControllerInitMessenger,
@@ -203,6 +231,10 @@ export const CONTROLLER_MESSENGERS = {
   TokenListController: {
     getMessenger: getTokenListControllerMessenger,
     getInitMessenger: getTokenListControllerInitMessenger,
+  },
+  TokensController: {
+    getMessenger: getTokensControllerMessenger,
+    getInitMessenger: getTokensControllerInitMessenger,
   },
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,

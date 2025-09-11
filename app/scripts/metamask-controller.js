@@ -2,10 +2,8 @@ import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import {
   CurrencyRateController,
-  TokensController,
   RatesController,
   fetchMultiExchangeRate,
-  TokenBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -439,6 +437,8 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
 import { TokenListControllerInit } from './controller-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
+import { TokensControllerInit } from './controller-init/tokens-controller-init';
+import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -848,31 +848,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: preferencesMessenger,
     });
 
-    const tokensControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokensController',
-      allowedActions: [
-        'ApprovalController:addRequest',
-        'NetworkController:getNetworkClientById',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccount',
-        'AccountsController:listAccounts',
-      ],
-      allowedEvents: [
-        'NetworkController:networkDidChange',
-        'AccountsController:selectedEvmAccountChange',
-        'PreferencesController:stateChange',
-        'TokenListController:stateChange',
-        'NetworkController:stateChange',
-        'KeyringController:accountRemoved',
-      ],
-    });
-    this.tokensController = new TokensController({
-      state: initState.TokensController,
-      provider: this.provider,
-      messenger: tokensControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-    });
-
     const dataDeletionService = new DataDeletionService();
     const metaMetricsDataDeletionMessenger =
       this.controllerMessenger.getRestricted({
@@ -971,35 +946,6 @@ export default class MetamaskController extends EventEmitter {
         usdConversionRate: null,
       };
     };
-
-    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenBalancesController',
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'TokensController:getState',
-        'PreferencesController:getState',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:listAccounts',
-        'AccountTrackerController:updateNativeBalances',
-        'AccountTrackerController:updateStakedBalances',
-      ],
-      allowedEvents: [
-        'PreferencesController:stateChange',
-        'TokensController:stateChange',
-        'NetworkController:stateChange',
-        'KeyringController:accountRemoved',
-      ],
-    });
-
-    this.tokenBalancesController = new TokenBalancesController({
-      messenger: tokenBalancesMessenger,
-      state: initState.TokenBalancesController,
-      useAccountsAPI: false,
-      queryMultipleAccounts:
-        this.preferencesController.state.useMultiAccountBalanceChecker,
-      interval: 30000,
-    });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -1873,6 +1819,8 @@ export default class MetamaskController extends EventEmitter {
       NftDetectionController: NftDetectionControllerInit,
       TokenListController: TokenListControllerInit,
       TokenDetectionController: TokenDetectionControllerInit,
+      TokensController: TokensControllerInit,
+      TokenBalancesController: TokenBalancesControllerInit,
       TokenRatesController: TokenRatesControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
@@ -1939,8 +1887,10 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainAssetsRatesController;
     this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
+    this.tokenBalancesController = controllersByName.TokenBalancesController;
     this.tokenListController = controllersByName.TokenListController;
     this.tokenDetectionController = controllersByName.TokenDetectionController;
+    this.tokensController = controllersByName.TokensController;
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
