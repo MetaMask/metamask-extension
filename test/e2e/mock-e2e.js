@@ -1006,6 +1006,22 @@ async function setupMocking(
       };
     });
 
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            sendRedesign: {
+              enabled: false,
+            },
+          },
+        ],
+      };
+    });
+
   // On Ramp Content
   const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
   await server
