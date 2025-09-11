@@ -41,7 +41,9 @@ describe('selectAccountGroupNameByInternalAccount', () => {
   it('returns the correct account group name for a matching internal account', () => {
     const result = selectAccountGroupNameByInternalAccount(mockState, '0x123');
 
-    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, ['0x123']);
+    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, [
+      '0x123',
+    ]);
     expect(result).toBe('Group 1');
   });
 
@@ -52,7 +54,9 @@ describe('selectAccountGroupNameByInternalAccount', () => {
       '0x000',
     );
 
-    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, ['0x000']);
+    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, [
+      '0x000',
+    ]);
     expect(result).toBeNull();
   });
 
@@ -95,7 +99,9 @@ describe('selectInternalAccountNameByAddress', () => {
 
     const result = selectInternalAccountNameByAddress(mockState, '0x123');
 
-    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, ['0x123']);
+    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, [
+      '0x123',
+    ]);
     expect(getAccountByAddress).toHaveBeenCalledWith(
       expect.arrayContaining(mockAccountGroups[0].accounts),
       '0x123',
@@ -108,7 +114,9 @@ describe('selectInternalAccountNameByAddress', () => {
 
     const result = selectInternalAccountNameByAddress(mockState, '0x000');
 
-    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, ['0x000']);
+    expect(getAccountGroupsByAddress).toHaveBeenCalledWith(mockState, [
+      '0x000',
+    ]);
     expect(getAccountByAddress).toHaveBeenCalledWith(
       expect.arrayContaining(mockAccountGroups[0].accounts),
       '0x000',
