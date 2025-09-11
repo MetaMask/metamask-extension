@@ -178,7 +178,7 @@ export default function AssetList({
                   // Only use this component for the native token of the active network
                   <TokenListItem
                     chainId={token.chainId}
-                    title={token.symbol}
+                    title={token.name ?? token.symbol}
                     primary={primaryCurrencyValue}
                     tokenSymbol={token.symbol}
                     secondary={secondaryCurrencyValue}
@@ -187,6 +187,7 @@ export default function AssetList({
                     tokenChainImage={getImageForChainId(token.chainId)}
                     nativeCurrencySymbol={nativeCurrencySymbol}
                     {...assetItemProps}
+                    isTitleNetworkName={false}
                   />
                 ) : (
                   <AssetComponent

@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buyAndSell": {
-    "message": "Al/Sat"
+  "buy": {
+    "message": "Al"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -2934,9 +2934,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Önceki bir işlemin imzalanması veya gönderilmesi devam ediyor"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons ve Blockies, bir bakışta bir hesabı tanımlamana yardımcı olan iki farklı benzersiz simge stilidir."
   },
   "jazzicons": {
     "message": "Jazzicons"
