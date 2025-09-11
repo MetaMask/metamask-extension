@@ -47,7 +47,6 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getIsToOrFromNonEvm,
-  getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
   getIsUnifiedUIEnabled,
