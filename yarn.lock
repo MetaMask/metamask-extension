@@ -5256,15 +5256,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-api@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/account-api@npm:0.9.0"
+"@metamask/account-api@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metamask/account-api@npm:0.10.0"
   dependencies:
-    "@metamask/keyring-api": "npm:^20.0.0"
+    "@metamask/keyring-api": "npm:^21.0.0"
     "@metamask/keyring-utils": "npm:^3.1.0"
     "@metamask/superstruct": "npm:^3.1.0"
     uuid: "npm:^9.0.1"
-  checksum: 10/17c5c78a0849ec2b1bae717d5227b7f3498903034bc41e93eb28513704f418b1e365a3a2ebd05d4a8a24c3912ab4abf2c6c0a3c55342ed0a9a40432b3aab0b34
+  checksum: 10/a22a57d9ad056f31261c1064a0e2461737ebe3c39f0ddfe1e7c43fb002e7f1999f38f3792b3fcf4b65a442d8a8e84e5550811d80bddf9a03319902dc49164165
   languageName: node
   linkType: hard
 
@@ -6412,6 +6412,18 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/f261205687c9aa1c39a2221e30a6edd4f530d2b0afd86a8ab13ea23d2af2a0bf1c89a8c4ad5646368e3b06909613d64195c335063319edd018636c9fa6ee63ee
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-api@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/keyring-api@npm:21.0.0"
+  dependencies:
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/896f3f54080f0a450d47df63bfae93d2dd4e7e1bb8aa35c365e46ea6fd32c3fa27753611de095e9f6feae5d526e911e665628c8b304cb2120cb870f2e82ab095
   languageName: node
   linkType: hard
 
@@ -31726,7 +31738,7 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
-    "@metamask/account-api": "npm:^0.9.0"
+    "@metamask/account-api": "npm:^0.10.0"
     "@metamask/account-tree-controller": "npm:^0.13.1"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^32.0.2"
