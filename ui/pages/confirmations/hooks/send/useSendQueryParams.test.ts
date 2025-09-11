@@ -10,7 +10,7 @@ import {
   MOCK_NFT1155,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import * as SendContext from '../../context/send';

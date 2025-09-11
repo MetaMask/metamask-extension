@@ -2,8 +2,7 @@ import { Hex, isHexString } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { toHex } from '../../../../../shared/lib/delegation/utils';
@@ -45,8 +44,8 @@ export const useSendQueryParams = () => {
     updateTo,
     value,
   } = useSendContext();
-  const history = useHistory();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const multiChainAssets = useMultiChainAssets();
   const evmTokens: Record<Hex, Record<Hex, Asset[]>> = useSelector(
@@ -97,10 +96,10 @@ export const useSendQueryParams = () => {
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
-    history.replace(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`);
+    navigate(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`, { replace: true });
   }, [
     asset,
-    history,
+    navigate,
     maxValueMode,
     paramAmount,
     paramAsset,

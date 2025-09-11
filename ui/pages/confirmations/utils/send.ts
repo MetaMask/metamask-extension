@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
 import { isNativeAddress } from '@metamask/bridge-controller';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
@@ -253,7 +253,7 @@ export function convertedCurrency(
 }
 
 export const navigateToSendRoute = (
-  history: ReturnType<typeof useHistory>,
+  navigate: ReturnType<typeof useNavigate>,
   isSendRedesignEnabled: boolean,
   params?: {
     address?: string;
@@ -270,11 +270,11 @@ export const navigateToSendRoute = (
       if (chainId) {
         queryParams.append('chainId', chainId);
       }
-      history.push(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
+      navigate(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
     } else {
-      history.push(`${SEND_ROUTE}/asset`);
+      navigate(`${SEND_ROUTE}/asset`);
     }
   } else {
-    history.push(SEND_ROUTE);
+    navigate(SEND_ROUTE);
   }
 };

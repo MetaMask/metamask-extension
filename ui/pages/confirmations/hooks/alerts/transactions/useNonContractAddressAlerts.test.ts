@@ -7,13 +7,12 @@ import {
 import { waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 
 import { readAddressAsContract } from '../../../../../../shared/modules/contract-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -25,16 +24,6 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
   useDispatch: jest.fn(),
-}));
-
-const messageIdMock = '12345';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({
-    id: messageIdMock,
-  }),
-  useLocation: jest.fn(),
 }));
 
 jest.mock('react', () => ({
@@ -77,7 +66,7 @@ function runHook({
     ? getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta)
     : {};
 
-  const response = renderHookWithConfirmContextProvider(
+  const response = renderHookWithProvider(
     useNonContractAddressAlerts,
     state,
   );
@@ -90,14 +79,8 @@ describe('useNonContractAddressAlerts', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const mockReadAddressAsContract =
     readAddressAsContract as jest.MockedFunction<typeof readAddressAsContract>;
-  const useLocationMock = jest.mocked(useLocation);
-
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useLocationMock.mockReturnValue({
-      search: '',
-    } as unknown as ReturnType<typeof useLocationMock>);
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -257,7 +240,7 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
       {
         currentConfirmation: transaction,
@@ -305,7 +288,7 @@ describe('useNonContractAddressAlerts', () => {
       };
     });
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
       {
         currentConfirmation: transactionWithData,
@@ -365,7 +348,7 @@ describe('useNonContractAddressAlerts', () => {
       };
     });
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
       {
         currentConfirmation: transactionWithData,
@@ -417,7 +400,7 @@ describe('useNonContractAddressAlerts', () => {
       };
     });
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
       {
         currentConfirmation: transactionWithData,

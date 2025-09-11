@@ -19,12 +19,22 @@ import {
   trimTrailingZeros,
   removeAdditionalDecimalPlaces,
 } from './send';
+import {SEND_ROUTE} from "../../../helpers/constants/routes";
 
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
     findNetworkClientIdByChainId: jest.fn().mockResolvedValue('mainnet'),
     getLayer1GasFeeValue: jest.fn(),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -159,15 +169,13 @@ describe('Send - utils', () => {
   });
 
   describe('navigateToSendRoute', () => {
-    it('call history.push with send route', () => {
-      const mockHistoryPush = jest.fn();
+    it('call useNavigate with send route', () => {
       navigateToSendRoute(
-        {
-          push: mockHistoryPush,
-        },
+        mockUseNavigate,
         false,
       );
-      expect(mockHistoryPush).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(SEND_ROUTE);
     });
   });
 
