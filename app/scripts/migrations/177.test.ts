@@ -3,7 +3,7 @@ import { migrate, version } from './177';
 const oldVersion = 176;
 const newVersion = version;
 
-describe('migration #176', () => {
+describe('migration #177', () => {
   it('updates the version metadata', async () => {
     const oldState = {
       meta: { version: oldVersion },
