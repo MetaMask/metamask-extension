@@ -251,14 +251,12 @@ describe('extractEnvelopeUrlFromDsn', () => {
     expect(result).toBe('https://o123.ingest.eu.sentry.io/api/456/envelope/');
   });
 
-  it('should return null for invalid DSN', () => {
+  it('should throw error for invalid DSN', () => {
     const invalidDsn = 'not-a-valid-url';
-    const result = extractEnvelopeUrlFromDsn(invalidDsn);
-    expect(result).toBeNull();
+    expect(() => extractEnvelopeUrlFromDsn(invalidDsn)).toThrow('Invalid Sentry DSN format');
   });
 
-  it('should return null for empty string', () => {
-    const result = extractEnvelopeUrlFromDsn('');
-    expect(result).toBeNull();
+  it('should throw error for empty string', () => {
+    expect(() => extractEnvelopeUrlFromDsn('')).toThrow('Invalid Sentry DSN format');
   });
 });

@@ -101,6 +101,7 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     const eventPayloadString = JSON.stringify(eventPayload);
     const itemHeader = {
       type: 'event',
+      length: eventPayloadString.length,
     };
 
     const envelope = `${JSON.stringify(envelopeHeaders)}\n${JSON.stringify(itemHeader)}\n${eventPayloadString}`;
