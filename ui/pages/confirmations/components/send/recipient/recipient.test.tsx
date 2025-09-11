@@ -16,11 +16,19 @@ jest.mock('../../../hooks/send/validations/useRecipientValidation');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
 jest.mock('../recipient-list', () => ({
-  RecipientList: ({ hideModal }: { hideModal: () => void }) => (
-    <div data-testid="recipient-list">
-      <button onClick={hideModal}>Close Modal</button>
-    </div>
-  ),
+  RecipientList: ({
+    hideModal,
+    onToChange,
+  }: {
+    hideModal: () => void;
+    onToChange: () => void;
+  }) => {
+    return (
+      <div data-testid="recipient-list" onClick={onToChange}>
+        <button onClick={hideModal}>Close Modal</button>
+      </div>
+    );
+  },
 }));
 
 describe('Recipient', () => {
@@ -34,6 +42,9 @@ describe('Recipient', () => {
 
   const mockUpdateTo = jest.fn();
   const mockCaptureRecipientSelected = jest.fn();
+  const mockSetRecipientInputMethodManual = jest.fn();
+  const mockSetRecipientInputMethodSelectContact = jest.fn();
+  const mockSetRecipientInputMethodSelectAccount = jest.fn();
 
   const mockStore = configureStore(mockState);
 
@@ -45,6 +56,11 @@ describe('Recipient', () => {
     mockUseI18nContext.mockReturnValue((key: string) => key.toUpperCase());
     mockUseRecipientSelectionMetrics.mockReturnValue({
       captureRecipientSelected: mockCaptureRecipientSelected,
+      setRecipientInputMethodManual: mockSetRecipientInputMethodManual,
+      setRecipientInputMethodSelectContact:
+        mockSetRecipientInputMethodSelectContact,
+      setRecipientInputMethodSelectAccount:
+        mockSetRecipientInputMethodSelectAccount,
     } as unknown as ReturnType<typeof useRecipientSelectionMetrics>);
     mockUseRecipientValidation.mockReturnValue({
       recipientConfusableCharacters: [],
@@ -174,5 +190,14 @@ describe('Recipient', () => {
     fireEvent.click(button);
 
     expect(document.activeElement).not.toBe(input);
+  });
+
+  describe('metrics', () => {
+    it('calls captureRecipientSelected when recipient is selected from modal', () => {
+      const { getByTestId } = renderComponent();
+      fireEvent.click(getByTestId('open-recipient-modal-btn'));
+      fireEvent.click(getByTestId('recipient-list'));
+      expect(mockSetRecipientInputMethodSelectAccount).toHaveBeenCalled();
+    });
   });
 });

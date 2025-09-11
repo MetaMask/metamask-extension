@@ -115,16 +115,16 @@ exports[`MultichainConnectPage should render correctly 1`] = `
                     style="min-width: 0; flex: 1; overflow: hidden;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--padding-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="flex [&>div]:!rounded-none"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 121, 1);"
                           >
                             <svg
                               height="32"
@@ -133,25 +133,25 @@ exports[`MultichainConnectPage should render correctly 1`] = `
                               y="0"
                             >
                               <rect
-                                fill="#2362E1"
+                                fill="#FB182B"
                                 height="32"
-                                transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                                transform="translate(-3.8375659682281573 -7.729920834190221) rotate(314.3 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#F94301"
+                                fill="#2339E1"
                                 height="32"
-                                transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                                transform="translate(-19.46949588758067 5.5952401536807) rotate(224.1 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#FA7900"
+                                fill="#F2D602"
                                 height="32"
-                                transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                                transform="translate(11.272402434216547 -28.26152662443702) rotate(303.2 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -358,16 +358,16 @@ exports[`MultichainConnectPage should render with existing permissions correctly
                     style="min-width: 0; flex: 1; overflow: hidden;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--padding-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="flex [&>div]:!rounded-none"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 121, 1);"
                           >
                             <svg
                               height="32"
@@ -376,25 +376,25 @@ exports[`MultichainConnectPage should render with existing permissions correctly
                               y="0"
                             >
                               <rect
-                                fill="#2362E1"
+                                fill="#FB182B"
                                 height="32"
-                                transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                                transform="translate(-3.8375659682281573 -7.729920834190221) rotate(314.3 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#F94301"
+                                fill="#2339E1"
                                 height="32"
-                                transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                                transform="translate(-19.46949588758067 5.5952401536807) rotate(224.1 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#FA7900"
+                                fill="#F2D602"
                                 height="32"
-                                transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                                transform="translate(11.272402434216547 -28.26152662443702) rotate(303.2 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -601,16 +601,16 @@ exports[`MultichainConnectPage should render with multichain origin request corr
                     style="min-width: 0; flex: 1; overflow: hidden;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--padding-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="flex [&>div]:!rounded-none"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 121, 1);"
                           >
                             <svg
                               height="32"
@@ -619,25 +619,25 @@ exports[`MultichainConnectPage should render with multichain origin request corr
                               y="0"
                             >
                               <rect
-                                fill="#2362E1"
+                                fill="#FB182B"
                                 height="32"
-                                transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                                transform="translate(-3.8375659682281573 -7.729920834190221) rotate(314.3 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#F94301"
+                                fill="#2339E1"
                                 height="32"
-                                transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                                transform="translate(-19.46949588758067 5.5952401536807) rotate(224.1 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#FA7900"
+                                fill="#F2D602"
                                 height="32"
-                                transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                                transform="translate(11.272402434216547 -28.26152662443702) rotate(303.2 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
