@@ -660,6 +660,7 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       expect(controller.state.preferences).toStrictEqual({
         autoLockTimeLimit: undefined,
+        avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         privacyMode: false,
         showFiatInTestnets: false,
@@ -690,6 +691,7 @@ describe('preferences controller', () => {
       controller.setPreference('showConfirmationAdvancedDetails', true);
       expect(controller.getPreferences()).toStrictEqual({
         autoLockTimeLimit: undefined,
+        avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,

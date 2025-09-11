@@ -15,11 +15,11 @@ import {
   SensitiveTextLength,
 } from '../../../../component-library';
 import { getUseCurrencyRateCheck } from '../../../../../selectors';
-import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { TokenFiatDisplayInfo } from '../../types';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -39,7 +39,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
     const t = useI18nContext();
-    const isEvm = useSelector(getMultichainIsEvm);
+    const isEvm = isEvmChainId(token.chainId);
     const { type, rpcUrl } = useSelector(getProviderConfig);
 
     const isOriginalNativeToken = useIsOriginalNativeTokenSymbol(

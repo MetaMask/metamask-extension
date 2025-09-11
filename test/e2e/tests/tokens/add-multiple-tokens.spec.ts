@@ -48,7 +48,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addTokensPopupModal = new AddTokensModal(driver);
         await addTokensPopupModal.checkPageIsLoaded();
-        await addTokensPopupModal.checkSuggestedTokensCount(3);
+        await addTokensPopupModal.waitUntilXTokens(3);
         await addTokensPopupModal.confirmAddTokens();
 
         // Switch to fullscreen extension
@@ -59,7 +59,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         // Check all three tokens have been added to the token list.
         const tokenList = new AssetListPage(driver);
         await tokenList.checkTokenItemNumber(4); // 3 tokens plus ETH
-        await tokenList.checkTokenExistsInList('Ethereum');
+        await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('TST');
       },
     );
