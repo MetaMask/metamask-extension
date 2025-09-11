@@ -92,6 +92,10 @@ jest.mock('../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
+  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+}));
+
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
   observe: () => null,
