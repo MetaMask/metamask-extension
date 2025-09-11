@@ -503,20 +503,11 @@ export class PageLoadBenchmark {
   }
 
   /**
-   * Clear browser data, local storage and session storage between browser loads
-   * to simulate fresh browser state.
+   * Clear browser data between browser loads to simulate fresh browser state.
    */
   private async clearBrowserData() {
     await this.context?.clearCookies();
     await this.context?.clearPermissions();
-    // Clear local storage and session storage
-    const pages = await this.context?.pages();
-    for (const page of pages || []) {
-      await page.evaluate(() => {
-        localStorage.clear();
-        sessionStorage.clear();
-      });
-    }
   }
 
   /**
