@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { SubjectType } from '@metamask/permission-controller';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   AlignItems,
@@ -63,8 +68,23 @@ export default class PermissionPageContainerContent extends PureComponent {
     const { origin, subjectType } = subjectMetadata;
     const displayOrigin =
       subjectType === SubjectType.Website ? getURLHost(origin) : origin;
+
+    // permissionDiffMap is expected to be present when an incremental permission request is made
+    // This occurs when a "wallet_switchEthereumChain" request comes in and we already have a set of permissions
+    const permissionDiffMap = request.diff?.permissionDiffMap;
+    // Extract the requested chain IDs from the permission diff, specifically from the CAIP-25 endowment permission
+    // This represents the new chains being requested in addition to existing permissions
+    const permissionDiffRequestedChainIds = getPermittedEthChainIds(
+      permissionDiffMap?.[Caip25EndowmentPermissionName]?.[
+        Caip25CaveatType
+      ] ?? {
+        requiredScopes: {},
+        optionalScopes: {},
+      },
+    );
     return (
       <Box
+        className="permission-page-container-content"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.flexStart}
@@ -72,7 +92,7 @@ export default class PermissionPageContainerContent extends PureComponent {
         height={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         <Box
           display={Display.Flex}
@@ -107,11 +127,20 @@ export default class PermissionPageContainerContent extends PureComponent {
           borderRadius={BorderRadius.XL}
         >
           <PermissionsConnectPermissionList
-            isLegacySwitchEthereumChain={request.isLegacySwitchEthereumChain}
+            isRequestApprovalPermittedChains={Boolean(
+              request.diff?.permissionDiffMap,
+            )}
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}
-            requestedChainIds={requestedChainIds}
+            // On an incremental permission request, we only want to render the newly requested chains in the UI
+            // permissionDiffRequestedChainIds will only have content when an incremental permission request is made
+            // Otherwise, we fall back to the original requestedChainIds for initial permission requests
+            requestedChainIds={
+              permissionDiffRequestedChainIds.length > 0
+                ? permissionDiffRequestedChainIds
+                : requestedChainIds
+            }
           />
         </Box>
       </Box>

@@ -254,20 +254,8 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
-  },
   "gasLimitTooLow": {
     "message": "Datakraftsgrense må være minst 21000"
-  },
-  "gasPrice": {
-    "message": "Bensinpris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Datakraftspris ekstremt lav "
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Datakraftpris angir mengden Ether du er villig til å betale for hver datakraftenhet."
   },
   "gasUsed": {
     "message": "Brukt datakraft "
@@ -303,9 +291,6 @@
   "import": {
     "message": "Importer",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importér konto"
   },
   "importAccountMsg": {
     "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
@@ -707,9 +692,6 @@
   "unlock": {
     "message": "Lås opp"
   },
-  "unlockMessage": {
-    "message": "Det desentraliserte internett venter deg"
-  },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
   },
@@ -733,8 +715,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Null bensinpris for fremskynding"
   }
 }

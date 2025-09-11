@@ -2,8 +2,11 @@ import React, {
   useState,
   useEffect,
   MouseEvent as ReactMouseEvent,
+  CSSProperties,
 } from 'react';
 import classnames from 'classnames';
+import { State } from '@metamask/snaps-sdk';
+import { isObject } from '@metamask/utils';
 import {
   Box,
   ButtonBase,
@@ -32,28 +35,38 @@ import {
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUISelectorProps = {
+  className?: string;
   name: string;
   title: string;
-  options: { value: string; disabled: boolean }[];
+  options: { key?: string; value: State; disabled: boolean }[];
   optionComponents: React.ReactNode[];
   form?: string;
   label?: string;
   error?: string;
   disabled?: boolean;
+  onSelect?: (value: State) => void;
+  style?: CSSProperties;
+  itemStyle?: CSSProperties;
 };
 
 type SelectorItemProps = {
-  value: string;
+  className?: string;
+  value: State;
   children: React.ReactNode;
-  onSelect: (value: string) => void;
   disabled?: boolean;
+  selected: boolean;
+  onSelect: (value: State) => void;
+  style?: CSSProperties;
 };
 
 const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
+  className,
   value,
   children,
+  selected,
   onSelect,
   disabled,
+  style,
 }) => {
   const handleClick = () => {
     onSelect(value);
@@ -61,8 +74,15 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
 
   return (
     <ButtonBase
-      className="snap-ui-renderer__selector-item"
-      backgroundColor={BackgroundColor.transparent}
+      className={
+        className
+          ? classnames('snap-ui-renderer__selector-item', className)
+          : 'snap-ui-renderer__selector-item'
+      }
+      data-testid="snap-ui-renderer__selector-item"
+      backgroundColor={
+        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+      }
       borderRadius={BorderRadius.LG}
       paddingTop={2}
       paddingBottom={2}
@@ -79,16 +99,33 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         textAlign: 'inherit',
         height: 'inherit',
         minHeight: '48px',
-        maxHeight: '64px',
+        maxHeight: '58px',
+        position: 'relative',
+        ...style,
       }}
       disabled={disabled}
     >
       {children}
+      {selected && (
+        <Box
+          borderRadius={BorderRadius.pill}
+          backgroundColor={BackgroundColor.primaryDefault}
+          marginRight={3}
+          style={{
+            position: 'absolute',
+            height: 'calc(100% - 8px)',
+            width: '4px',
+            top: '4px',
+            left: '4px',
+          }}
+        />
+      )}
     </ButtonBase>
   );
 };
 
 export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+  className,
   name,
   title,
   options,
@@ -97,10 +134,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   label,
   error,
   disabled,
+  onSelect,
+  style,
+  itemStyle,
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue(name, form) as string;
+  const initialValue = getValue(name, form);
 
   const [selectedOptionValue, setSelectedOption] = useState(initialValue);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,6 +148,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
       setSelectedOption(initialValue);
+      onSelect?.(initialValue);
     }
   }, [initialValue]);
 
@@ -118,14 +159,23 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 
   const handleModalClose = () => setIsModalOpen(false);
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: State) => {
     setSelectedOption(value);
+    onSelect?.(value);
     handleInputChange(name, value, form);
     handleModalClose();
   };
 
-  const selectedOptionIndex = options.findIndex(
-    (option) => option.value === selectedOptionValue,
+  /**
+   * Find the index of the selected option in the options array.
+   * If the option is an object, use the provided key to compare the values.
+   * If the option is a primitive, compare the values directly.
+   */
+  const selectedOptionIndex = options.findIndex((option) =>
+    option.key && isObject(option.value)
+      ? option.value[option.key as keyof typeof option.value] ===
+        selectedOptionValue?.[option.key as keyof typeof selectedOptionValue]
+      : option.value === selectedOptionValue,
   );
 
   const selectedOption = optionComponents[selectedOptionIndex];
@@ -135,13 +185,20 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
+        style={{
+          overflow: 'hidden',
+        }}
         className={classnames({
           'snap-ui-renderer__field': label !== undefined,
         })}
       >
         {label && <Label htmlFor={name}>{label}</Label>}
         <ButtonBase
-          className="snap-ui-renderer__selector"
+          className={
+            className
+              ? classnames('snap-ui-renderer__selector', className)
+              : 'snap-ui-renderer__selector'
+          }
           backgroundColor={BackgroundColor.backgroundDefault}
           borderRadius={BorderRadius.LG}
           paddingTop={2}
@@ -166,7 +223,8 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             textAlign: 'inherit',
             height: 'inherit',
             minHeight: '48px',
-            maxHeight: '64px',
+            maxHeight: '58px',
+            ...style,
           }}
         >
           {selectedOption}
@@ -197,9 +255,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             >
               {optionComponents.map((component, index) => (
                 <SelectorItem
+                  className={className && `${className}-item`}
                   value={options[index].value}
                   disabled={options[index]?.disabled}
                   onSelect={handleSelect}
+                  selected={index === selectedOptionIndex}
+                  key={index}
+                  style={itemStyle}
                 >
                   {component}
                 </SelectorItem>

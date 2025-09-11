@@ -63,7 +63,7 @@ describe('Block Explorer Tests', () => {
   describe('getMultichainAccountUrl', () => {
     it('returns the correct account URL for Ethereum mainnet', () => {
       const address = '0x1234567890abcdef';
-      const expectedUrl = `https://etherscan.io/address/${address}`;
+      const expectedUrl = `https://etherscan.io/address/${address}#asset-multichain`;
 
       const result = getMultichainAccountUrl(address, mockEvmNetwork);
 
@@ -72,7 +72,7 @@ describe('Block Explorer Tests', () => {
 
     it('returns the correct account URL for Binance Smart Chain', () => {
       const address = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
-      const expectedUrl = `https://blockstream.info/address/${address}`;
+      const expectedUrl = `https://mempool.space/address/${address}`;
 
       const result = getMultichainAccountUrl(address, mockNonEvmNetwork);
 

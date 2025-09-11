@@ -27,6 +27,7 @@ const Tab = (props) => {
     // eslint-disable-next-line no-unused-vars
     children,
     textProps,
+    disabled,
     ...rest
   } = props;
 
@@ -36,13 +37,16 @@ const Tab = (props) => {
       data-testid={dataTestId}
       onClick={(event) => {
         event.preventDefault();
-        onClick(tabIndex);
+        if (!disabled) {
+          onClick(tabIndex);
+        }
       }}
       key={tabKey}
       {...rest}
       className={classnames('tab', className, {
         'tab--single': isSingleTab,
         'tab--active': isActive,
+        'tab--disabled': disabled,
         [activeClassName]: activeClassName && isActive,
         ...rest?.className,
       })}
@@ -57,6 +61,7 @@ const Tab = (props) => {
         color={TextColor.inherit}
         {...textProps}
         className={classnames(buttonClassName, textProps?.className)}
+        disabled={disabled}
       >
         {name}
       </Text>
@@ -77,6 +82,8 @@ Tab.propTypes = {
   tabIndex: PropTypes.number, // required, but added using React.cloneElement
   children: PropTypes.node, // required, but we are not rendering it explicitly
   textProps: PropTypes.object, // props to spread to the Text component
+  width: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 Tab.defaultProps = {

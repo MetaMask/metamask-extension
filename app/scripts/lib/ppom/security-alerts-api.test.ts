@@ -21,6 +21,8 @@ const REQUEST_MOCK = {
 };
 
 const RESPONSE_MOCK = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Errored,
   reason: BlockaidReason.maliciousDomain,
   description: 'Test Description',
@@ -92,6 +94,33 @@ describe('Security Alerts API', () => {
 
       const isEnabled = isSecurityAlertsAPIEnabled();
       expect(isEnabled).toBe(false);
+    });
+
+    it('uses getSecurityAlertsConfig', async () => {
+      const newUrl = 'https://proxy.com/validate/0x1';
+      const authorization = 'Bearer token';
+      const getSecurityAlertsConfigMock = (_url: string) => {
+        return Promise.resolve({
+          newUrl,
+          authorization,
+        });
+      };
+
+      await validateWithSecurityAlertsAPI(
+        CHAIN_ID_MOCK,
+        REQUEST_MOCK,
+        getSecurityAlertsConfigMock,
+      );
+
+      // Check for new URL and authorization header.
+      expect(fetchMock).toHaveBeenCalledWith(
+        newUrl,
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: authorization,
+          }),
+        }),
+      );
     });
   });
 });

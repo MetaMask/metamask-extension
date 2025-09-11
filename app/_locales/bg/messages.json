@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
-  },
   "gasLimitTooLow": {
     "message": "Ограничението за газ трябва да бъде поне 21000"
-  },
-  "gasPrice": {
-    "message": "Цената на газа (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Цена на газа е изключително ниска"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Цената на газа определя количеството етер, което сте готови да платите за всяка единица газ."
   },
   "gasUsed": {
     "message": "Използван газ"
@@ -312,9 +300,6 @@
   "import": {
     "message": "Импортиране",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Импортиране на акаунт"
   },
   "importAccountMsg": {
     "message": "Импортираните акаунти няма да бъдат свързани с първоначално създадената ви фраза за метаМаск акаунт. Научете повече за импортираните акаунти"
@@ -647,9 +632,6 @@
   "terms": {
     "message": "Условия за ползване"
   },
-  "tips": {
-    "message": "Дарения"
-  },
   "to": {
     "message": "На"
   },
@@ -728,9 +710,6 @@
   "unlock": {
     "message": "Отключване"
   },
-  "unlockMessage": {
-    "message": "Децентрализираната мрежа очаква"
-  },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."
   },
@@ -754,8 +733,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Вашата лична фраза зародиш"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Нулева цена на газ при ускоряване"
   }
 }

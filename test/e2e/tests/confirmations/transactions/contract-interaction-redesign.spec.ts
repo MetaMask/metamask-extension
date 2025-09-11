@@ -17,11 +17,7 @@ import {
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');
-const {
-  defaultGanacheOptionsForType2Transactions,
-  WINDOW_TITLES,
-  withFixtures,
-} = require('../../../helpers');
+const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
 const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');
@@ -40,6 +36,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -59,7 +58,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -82,19 +80,22 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             })
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           title: this.test?.fullTitle(),
         },
         async ({
           driver,
           contractRegistry,
-          ganacheServer,
+          localNodes,
         }: TestSuiteArguments) => {
           // Seed the Trezor account with balance
-          await ganacheServer?.setAccountBalance(
+          (await localNodes?.[0]?.setAccountBalance(
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
-          );
+          )) ?? console.error('localNodes is undefined or empty');
 
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
@@ -128,8 +129,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withNetworkControllerOnOptimism()
             .build(),
           localNodeOptions: {
-            ...defaultGanacheOptionsForType2Transactions,
-            network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
           },
           smartContract,
@@ -164,7 +163,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -185,7 +183,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -194,7 +191,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await createDepositTransaction(driver);
 
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // re open advanced details
@@ -214,7 +210,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -223,7 +218,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await createDepositTransaction(driver);
 
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
@@ -239,7 +233,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -250,7 +243,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await createDepositTransaction(driver);
 
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           // re open advanced details
           await toggleAdvancedDetails(driver);

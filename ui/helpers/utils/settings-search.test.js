@@ -74,8 +74,6 @@ const t = (key) => {
       return 'Security & privacy';
     case 'revealSeedWords':
       return 'Reveal Secret Recovery Phrase';
-    case 'showIncomingTransactions':
-      return 'Show incoming transactions';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -138,6 +136,12 @@ const t = (key) => {
       return 'Show balance and token price checker';
     case 'currencyRateCheckToggleDescription':
       return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
+    case 'watch-only':
+      return 'Watch Ethereum Accounts (Beta)';
+    case 'bitcoin-support':
+      return 'Enable "Add a new Bitcoin account (Beta)"';
+    case 'backupAndSync':
+      return 'Backup and Sync';
     default:
       return '';
   }
@@ -146,7 +150,7 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 5;
       const NUM_OF_HIDDEN_SETTINGS = 1;
 
       expect(getSettingsRoutes()).toHaveLength(
@@ -166,6 +170,12 @@ describe('Settings Search Utils', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
     });
 
+    it('returns "Backup And Sync" section count', () => {
+      expect(
+        getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
+      ).toStrictEqual(3);
+    });
+
     it('returns "Contact" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
@@ -173,7 +183,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(21);
+      ).toStrictEqual(22);
     });
 
     it('returns "Network" section count', () => {

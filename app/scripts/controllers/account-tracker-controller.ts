@@ -29,6 +29,7 @@ import {
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
+import { toHex } from '@metamask/controller-utils';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
@@ -48,9 +49,12 @@ import { PreferencesControllerGetStateAction } from './preferences-controller';
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
 
+export type StakedBalance = string;
+
 type Account = {
   address: string;
   balance: string | null;
+  stakedBalance?: StakedBalance;
 };
 
 /**
@@ -114,10 +118,28 @@ export type AccountTrackerControllerGetStateAction = ControllerGetStateAction<
 >;
 
 /**
+ * Action to update native balances.
+ */
+export type AccountTrackerUpdateNativeBalancesAction = {
+  type: `${typeof controllerName}:updateNativeBalances`;
+  handler: AccountTrackerController['updateNativeBalances'];
+};
+
+/**
+ * Action to update staked balances.
+ */
+export type AccountTrackerUpdateStakedBalancesAction = {
+  type: `${typeof controllerName}:updateStakedBalances`;
+  handler: AccountTrackerController['updateStakedBalances'];
+};
+
+/**
  * Actions exposed by the {@link AccountTrackerController}.
  */
 export type AccountTrackerControllerActions =
-  AccountTrackerControllerGetStateAction;
+  | AccountTrackerControllerGetStateAction
+  | AccountTrackerUpdateNativeBalancesAction
+  | AccountTrackerUpdateStakedBalancesAction;
 
 /**
  * Event emitted when the state of the {@link AccountTrackerController} changes.
@@ -264,6 +286,9 @@ export default class AccountTrackerController extends BaseController<
         }
       },
     );
+
+    // Register message handlers
+    this._registerMessageHandlers();
   }
 
   resetState(): void {
@@ -295,8 +320,12 @@ export default class AccountTrackerController extends BaseController<
     });
 
     // remove first to avoid double add
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
     // add listener
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.#blockTracker.addListener('latest', this.#updateForBlock);
     // fetch account balances
     this.updateAccounts();
@@ -307,6 +336,8 @@ export default class AccountTrackerController extends BaseController<
    */
   stop(): void {
     // remove listener
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
   }
 
@@ -426,6 +457,8 @@ export default class AccountTrackerController extends BaseController<
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
     const updateForBlock = (blockNumber: string) =>
       this.#updateForBlockByNetworkClientId(networkClientId, blockNumber);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     blockTracker.addListener('latest', updateForBlock);
 
     this.#listeners[networkClientId] = updateForBlock;
@@ -443,6 +476,8 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     blockTracker.removeListener('latest', this.#listeners[networkClientId]);
 
     delete this.#listeners[networkClientId];
@@ -703,6 +738,37 @@ export default class AccountTrackerController extends BaseController<
     }
   }
 
+  async updateAccountByAddress({
+    address,
+    networkClientId,
+  }: {
+    address?: string;
+    networkClientId?: NetworkClientId;
+  } = {}): Promise<void> {
+    const { completedOnboarding } = this.messagingSystem.call(
+      'OnboardingController:getState',
+    );
+    if (!completedOnboarding) {
+      return;
+    }
+
+    const selectedAddress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      address ||
+      this.messagingSystem.call('AccountsController:getSelectedAccount')
+        .address;
+
+    if (!selectedAddress) {
+      return;
+    }
+
+    const { chainId, provider } =
+      this.#getCorrectNetworkClient(networkClientId);
+
+    await this.#updateAccount(selectedAddress, provider, chainId);
+  }
+
   /**
    * Updates the current balance of an account.
    *
@@ -829,5 +895,84 @@ export default class AccountTrackerController extends BaseController<
         ),
       );
     }
+  }
+
+  /**
+   * Updates the balances of multiple native tokens in a single batch operation.
+   * This is more efficient than calling updateNativeToken multiple times as it
+   * triggers only one state update.
+   *
+   * @param balances - Array of balance updates, each containing address, chainId, and balance.
+   */
+  updateNativeBalances(
+    balances: { address: string; chainId: Hex; balance: string }[],
+  ) {
+    this.update((state) => {
+      balances.forEach(({ address, chainId, balance }) => {
+        // Ensure the chainId exists in the state
+        if (!state.accountsByChainId[chainId]) {
+          state.accountsByChainId[chainId] = {};
+        }
+        // Ensure the address exists for this chain
+        if (!state.accountsByChainId[chainId][address]) {
+          state.accountsByChainId[chainId][address] = {
+            address,
+            balance: '0x0',
+          };
+        }
+        // Update the balance
+        if (balance) {
+          state.accountsByChainId[chainId][address].balance = toHex(balance);
+        }
+      });
+    });
+  }
+
+  /**
+   * Updates the staked balances of multiple accounts in a single batch operation.
+   * This is more efficient than updating staked balances individually as it
+   * triggers only one state update.
+   *
+   * @param stakedBalances - Array of staked balance updates, each containing address, chainId, and stakedBalance.
+   */
+  updateStakedBalances(
+    stakedBalances: {
+      address: string;
+      chainId: Hex;
+      stakedBalance: StakedBalance;
+    }[],
+  ) {
+    this.update((state) => {
+      stakedBalances.forEach(({ address, chainId, stakedBalance }) => {
+        // Ensure the chainId exists in the state
+        if (!state.accountsByChainId[chainId]) {
+          state.accountsByChainId[chainId] = {};
+        }
+        // Ensure the address exists for this chain
+        if (!state.accountsByChainId[chainId][address]) {
+          state.accountsByChainId[chainId][address] = {
+            address,
+            balance: '0x0',
+          };
+        }
+        // Update the staked balance
+        if (stakedBalance) {
+          state.accountsByChainId[chainId][address].stakedBalance =
+            toHex(stakedBalance);
+        }
+      });
+    });
+  }
+
+  _registerMessageHandlers() {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateNativeBalances` as const,
+      this.updateNativeBalances.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateStakedBalances` as const,
+      this.updateStakedBalances.bind(this),
+    );
   }
 }

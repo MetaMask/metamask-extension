@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../../../../../shared/modules/string-utils';
 import { Box, Text } from '../../../../../../../components/component-library';
 import { NftItem } from '../../../../../../../components/multichain/nft-item';
@@ -16,10 +17,22 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { getNftImageAlt } from '../../../../../../../helpers/utils/nfts';
+import {
+  getNftImage,
+  getNftImageAlt,
+} from '../../../../../../../helpers/utils/nfts';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
+import { ellipsify } from '../../../../../send-legacy/send.utils';
+import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
+
+export const generateTokenIdDisplay = (tokenId: string) => {
+  if (tokenId.length >= 10) {
+    return ellipsify(tokenId, 4, 4);
+  }
+
+  return tokenId;
+};
 
 const NFTSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
@@ -33,7 +46,11 @@ const NFTSendHeading = () => {
     assetName,
     tokenImage,
     tokenId: assetTokenId,
+    tokenURI,
   } = useAssetDetails(tokenAddress, userAddress, data, chainId);
+  // Attempt to fetch image and name from tokenURI
+  const { image: imageFromTokenURI, name: nameFromTokenURI } =
+    useFetchNftDetailsFromTokenURI(tokenURI);
   const nfts: Nft[] = useSelector((state) =>
     getNFTsByChainId(state, chainId),
   ) as Nft[];
@@ -46,18 +63,28 @@ const NFTSendHeading = () => {
         assetTokenId === tokenId.toString(),
     );
   const imageOriginal = (nft as Nft | undefined)?.imageOriginal;
-  const image = (nft as Nft | undefined)?.image;
+  const image = getNftImage((nft as Nft | undefined)?.image);
   const nftImageAlt = nft ? getNftImageAlt(nft) : '';
-  const nftSrcUrl = imageOriginal ?? (image || '');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const nftSrcUrl = imageOriginal ?? (image || imageFromTokenURI || '');
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const currentChain = networkConfigurations[chainId];
+  const tokenIdDisplay =
+    assetTokenId && `#${generateTokenIdDisplay(assetTokenId)}`;
 
   const TokenImage = (
     <Box style={{ width: '48px' }}>
       <NftItem
-        src={tokenImage}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        src={tokenImage || imageFromTokenURI}
         alt={nftImageAlt}
-        name={assetName}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        name={assetName || nameFromTokenURI}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}
         networkSrc={
@@ -83,7 +110,7 @@ const NFTSendHeading = () => {
 
   const TokenID = (
     <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-      {`#${assetTokenId}`}
+      {tokenIdDisplay}
     </Text>
   );
 

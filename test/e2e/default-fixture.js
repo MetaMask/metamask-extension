@@ -20,9 +20,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       AuthenticationController: {
         isSignedIn: true,
       },
-      UserStorageController: {
-        isProfileSyncingEnabled: true,
-      },
       NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
@@ -54,6 +51,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
             },
           },
         },
@@ -88,10 +86,18 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
           },
           {
-            networkId: '0x539',
+            networkId: inputChainId,
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
+        enabledNetworkMap: {
+          eip155: {
+            [inputChainId]: true,
+          },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
+        },
       },
       AccountOrderController: {
         pinnedAccountList: [],
@@ -107,7 +113,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
-        qrHardware: {},
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
@@ -118,29 +123,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
       },
-      BridgeController: {
-        bridgeState: {
-          bridgeFeatureFlags: {
-            extensionConfig: {
-              support: false,
-              chains: {
-                '0x1': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                '0xa': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                '0xe708': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      BridgeController: {},
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
@@ -148,6 +131,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             conversionDate: 1665507600.0,
             conversionRate: 1700.0,
             usdConversionRate: 1700.0,
+          },
+          MON: {
+            conversionDate: 1665507600.0,
+            conversionRate: 0.2,
+            usdConversionRate: 0.2,
           },
         },
       },
@@ -162,6 +150,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
+        tracesBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
         participateInMetaMetrics: false,
@@ -263,9 +252,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
       },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
-      },
       SelectedNetworkController: {
         domains: {},
       },
@@ -295,10 +281,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
+      MultichainAccountService: {},
       TransactionController: {
         transactions: {},
       },

@@ -1,0 +1,31 @@
+name: Auto Create Release PR
+
+on:
+  create:
+
+jobs:
+  extract:
+    if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) }}
+    runs-on: ubuntu-latest
+    outputs:
+      semver: ${{ steps.out.outputs.semver }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - id: out
+        shell: bash
+        run: |
+          .github/scripts/extract-semver.sh
+
+  call-create-release-pr:
+    needs: extract
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/create-release-pr.yml
+    secrets:
+      github-token: ${{ secrets.PR_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+    with:
+      semver-version: ${{ needs.extract.outputs.semver }}

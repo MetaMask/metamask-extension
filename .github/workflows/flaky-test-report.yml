@@ -1,0 +1,20 @@
+name: Flaky test report
+
+on:
+  schedule:
+    # Once every day from Monday-Friday at 08:00 UTC
+    - cron: 0 8 * * 1-5
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  flaky-test-report:
+    uses: MetaMask/github-tools/.github/workflows/flaky-test-report.yml@main
+    with:
+      repository: ${{ github.event.repository.name }}
+      workflow_id: main.yml
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      slack-webhook-flaky-tests: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS }}

@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Browser } from 'selenium-webdriver';
 import {
   withFixtures,
   openActionMenuAndStartSendFlow,
@@ -12,6 +13,7 @@ import {
 import { SWAP_SEND_QUOTES_RESPONSE_TST_ETH } from './mocks/erc20-data';
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Swap-Send ERC20', function () {
   describe('to non-contract address with data that matches swap data signature', function (this: Suite) {
@@ -20,11 +22,11 @@ describe('Swap-Send ERC20', function () {
         getSwapSendFixtures(
           this.test?.fullTitle(),
           SWAP_SEND_QUOTES_RESPONSE_TST_ETH,
-          '?sourceAmount=100000&sourceToken=0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947&destinationToken=0x0000000000000000000000000000000000000000&sender=0x5cfe73b6021e818b776b421b1c4db2474086a7e1&recipient=0xc427D562164062a23a5cFf596A4a3208e72Acd28&slippage=2',
+          '?sourceAmount=100000&sourceToken=0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947&destinationToken=0x0000000000000000000000000000000000000000&sender=0x5cfe73b6021e818b776b421b1c4db2474086a7e1&recipient=0xc427D562164062a23a5cFf596A4a3208e72Acd28&slippage=2',
         ),
-        async ({ driver, ganacheServer }) => {
+        async ({ driver }) => {
           const swapSendPage = new SwapSendPage(driver);
-          await logInWithBalanceValidation(driver, ganacheServer);
+          await logInWithBalanceValidation(driver);
 
           // START SWAP AND SEND FLOW
           await openActionMenuAndStartSendFlow(driver);
@@ -39,7 +41,19 @@ describe('Swap-Send ERC20', function () {
             4000,
           );
 
-          await swapSendPage.verifyMaxButtonClick(['TST', 'TST'], ['10', '10']);
+          // We made this due to a change on Firefox v125
+          // The 2 decimals are not displayed with values which are "rounded",
+          if (isFirefox) {
+            await swapSendPage.verifyMaxButtonClick(
+              ['TST', 'TST'],
+              ['10', '10'],
+            );
+          } else {
+            await swapSendPage.verifyMaxButtonClick(
+              ['TST', 'TST'],
+              ['10.0000', '10.0000'],
+            );
+          }
 
           await swapSendPage.fillAmountInput('10');
 
@@ -93,7 +107,7 @@ describe('Swap-Send ERC20', function () {
           //   '-$0.00',
           // );
           await swapSendPage.verifyHistoryEntry(
-            'Send TST as ETH',
+            'Sent TST as ETH',
             'Confirmed',
             '-10 TST',
             '',

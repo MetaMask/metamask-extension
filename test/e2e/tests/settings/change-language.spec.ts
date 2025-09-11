@@ -12,16 +12,19 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const selectors = {
-  labelSpanish: { tag: 'p', text: 'Idioma actual' },
-  currentLanguageLabel: { tag: 'p', text: 'Current language' },
+  currentLanguageDansk: { tag: 'p', text: 'Nuværende sprog' },
+  currentLanguageDeutsch: { tag: 'p', text: 'Aktuelle Sprache' },
+  currentLanguageEnglish: { tag: 'p', text: 'Current language' },
+  currentLanguageMagyar: { tag: 'p', text: 'Aktuális nyelv' },
+  currentLanguageSpanish: { tag: 'p', text: 'Idioma actual' },
+  currentLanguageवर्तमान: { tag: 'p', text: 'वर्तमान भाषा' },
   advanceText: { text: 'Avanceret', tag: 'div' },
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
   dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
-  accountTooltipText: '[data-original-title="क्लिपबोर्ड पर कॉपी करें"]',
-  bridgeTooltipText: '[data-original-title="इस नेटवर्क पर उपलब्ध नहीं है"]',
   hyperText: { text: 'Tudjon meg többet', tag: 'a' },
+  discoverText: { text: 'खोजें', tag: 'a' },
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
@@ -36,20 +39,20 @@ describe('Settings - general tab', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
-        await generalSettings.check_pageIsLoaded();
+        await generalSettings.checkPageIsLoaded();
 
         // Change language to Spanish and validate that the word has changed correctly
         await generalSettings.changeLanguage('Español');
         const isLanguageLabelChanged = await driver.isElementPresent(
-          selectors.labelSpanish,
+          selectors.currentLanguageSpanish,
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
         // Refresh the page and validate that the language is still Spanish
         await driver.refresh();
-        await generalSettings.check_pageIsLoaded();
+        await generalSettings.checkPageIsLoaded();
         assert.equal(
-          await driver.isElementPresent(selectors.labelSpanish),
+          await driver.isElementPresent(selectors.currentLanguageSpanish),
           true,
           'Language did not change after refresh',
         );
@@ -57,7 +60,7 @@ describe('Settings - general tab', function (this: Suite) {
         // Change language back to English and validate that the word has changed correctly
         await generalSettings.changeLanguage('English');
         const isLabelTextChanged = await driver.isElementPresent(
-          selectors.currentLanguageLabel,
+          selectors.currentLanguageEnglish,
         );
         assert.equal(isLabelTextChanged, true, 'Language did not change');
       },
@@ -74,13 +77,18 @@ describe('Settings - general tab', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
-        await generalSettings.check_pageIsLoaded();
+        await generalSettings.checkPageIsLoaded();
 
         // Select "Dansk" language
         await generalSettings.changeLanguage('Dansk');
+        const isLanguageLabelChanged = await driver.isElementPresent(
+          selectors.currentLanguageDansk,
+        );
+        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
+
         await driver.clickElement(selectors.advanceText);
         const advancedSettings = new AdvancedSettings(driver);
-        await advancedSettings.check_pageIsLoaded();
+        await advancedSettings.checkPageIsLoaded();
 
         // Confirm that the language change is reflected in search box water text
         const isWaterTextChanged = await driver.isElementPresent(
@@ -125,19 +133,24 @@ describe('Settings - general tab', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
-        await generalSettings.check_pageIsLoaded();
+        await generalSettings.checkPageIsLoaded();
 
         // Select "Deutsch" language
         await generalSettings.changeLanguage('Deutsch');
+        const isLanguageLabelChanged = await driver.isElementPresent(
+          selectors.currentLanguageDeutsch,
+        );
+        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
+
         await new SettingsPage(driver).closeSettingsPage();
 
         const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed();
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed();
         await homepage.startSendFlow();
 
         const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        await sendToPage.checkPageIsLoaded();
         // use wrong address for recipient to allow error message to show
         await sendToPage.fillRecipient(
           '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
@@ -166,33 +179,27 @@ describe('Settings - general tab', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
-        await generalSettings.check_pageIsLoaded();
+        await generalSettings.checkPageIsLoaded();
 
         // Select "मानक हिन्दी" language
         await generalSettings.changeLanguage('मानक हिन्दी');
+
+        const isLabelTextChanged = await driver.isElementPresent(
+          selectors.currentLanguageवर्तमान,
+        );
+        assert.equal(isLabelTextChanged, true, 'Language did not change');
+
         await new SettingsPage(driver).closeSettingsPage();
         const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed();
-
-        // Validate the account tooltip
-        const isAccountTooltipChanged = await driver.isElementPresent(
-          selectors.accountTooltipText,
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed();
+        const isDiscoverButtonTextChanged = await driver.isElementPresent(
+          selectors.discoverText,
         );
         assert.equal(
-          isAccountTooltipChanged,
+          isDiscoverButtonTextChanged,
           true,
-          'Language changes is not reflected on the account toolTip',
-        );
-
-        // Validate the bridge tooltip
-        const isBridgeTooltipChanged = await driver.isElementPresent(
-          selectors.bridgeTooltipText,
-        );
-        assert.equal(
-          isBridgeTooltipChanged,
-          true,
-          'Language changes is not reflected on the bridge toolTip',
+          'Language change is not reflected in headers',
         );
       },
     );
@@ -208,14 +215,19 @@ describe('Settings - general tab', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
-        await generalSettings.check_pageIsLoaded();
+        await generalSettings.checkPageIsLoaded();
 
         // Select "Magyar" language
         await generalSettings.changeLanguage('Magyar');
+        const isLabelTextChanged = await driver.isElementPresent(
+          selectors.currentLanguageMagyar,
+        );
+        assert.equal(isLabelTextChanged, true, 'Language did not change');
+
         await new SettingsPage(driver).closeSettingsPage();
         const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed();
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed();
         await homepage.goToNftTab();
 
         // Validate the hypertext
@@ -241,7 +253,7 @@ describe('Settings - general tab', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
-        await generalSettings.check_pageIsLoaded();
+        await generalSettings.checkPageIsLoaded();
 
         // Select "العربية" language and validate that the header text has changed
         await generalSettings.changeLanguage('العربية');

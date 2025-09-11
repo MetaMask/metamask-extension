@@ -1,63 +1,16 @@
 @use "design-system";
 
 .unlock-page {
-  color: var(--color-text-default);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 357px;
-  padding: 30px;
-  font-weight: 400;
-
-  &__container {
-    display: flex;
-    align-self: stretch;
-    justify-content: center;
-    flex: 1 0 auto;
-    background: var(--color-background-default);
-  }
+  max-width: 400px;
 
   &__mascot-container {
-    margin-top: 24px;
     position: relative;
 
     &__beta {
-      background: var(--color-primary-default);
-      color: var(--color-primary-inverse);
-      padding: 3px 6px;
-      font-size: 16px;
       position: absolute;
       bottom: 10px;
       right: 0;
-      border-radius: 10px;
-      text-transform: uppercase;
-    }
-  }
-
-  &__form {
-    width: 100%;
-    margin: 56px 0 8px;
-  }
-
-  &__links {
-    margin-top: 15px;
-    width: 100%;
-    text-align: center;
-    font-size: 0.75rem;
-  }
-
-  &__link {
-    font-size: unset;
-    font-weight: bold;
-  }
-
-  &__support {
-    margin-top: 25px;
-    font-size: 0.75rem;
-
-    a {
-      color: var(--color-primary-default);
     }
   }
 }
+

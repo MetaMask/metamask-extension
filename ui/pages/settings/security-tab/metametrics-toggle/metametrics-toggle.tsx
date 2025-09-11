@@ -6,7 +6,7 @@ import {
   useEnableMetametrics,
   useDisableMetametrics,
 } from '../../../../hooks/useMetametrics';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/backup-and-sync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -39,21 +39,22 @@ const MetametricsToggle = ({
   const { disableMetametrics, error: disableMetametricsError } =
     useDisableMetametrics();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = enableMetametricsError || disableMetametricsError;
 
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const useExternalServices = useSelector(getUseExternalServices);
 
   const handleUseParticipateInMetaMetrics = async () => {
-    console.log('handleUseParticipateInMetaMetrics', participateInMetaMetrics);
     if (participateInMetaMetrics) {
       await disableMetametrics();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOffMetaMetrics,
         properties: {
-          isProfileSyncingEnabled,
+          isProfileSyncingEnabled: isBackupAndSyncEnabled,
           participateInMetaMetrics,
         },
       });
@@ -62,7 +63,11 @@ const MetametricsToggle = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_metrics_opted_in: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_marketing_consent: false,
           location: 'Settings',
         },
@@ -73,7 +78,7 @@ const MetametricsToggle = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOnMetaMetrics,
         properties: {
-          isProfileSyncingEnabled,
+          isProfileSyncingEnabled: isBackupAndSyncEnabled,
           participateInMetaMetrics,
         },
       });

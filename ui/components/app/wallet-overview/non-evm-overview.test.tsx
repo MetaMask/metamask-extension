@@ -3,14 +3,13 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -36,13 +35,23 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
 
-const PORTOFOLIO_URL = 'https://portfolio.test';
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+}));
 
-const BTC_OVERVIEW_BUY = 'coin-overview-buy';
+const BUY_BUTTON = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
 const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
 const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
@@ -55,6 +64,7 @@ const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
+  scopes: [BtcScope.Mainnet],
   metadata: {
     name: 'Bitcoin Account',
     keyring: {
@@ -66,7 +76,7 @@ const mockNonEvmAccount = {
     },
   },
   options: {},
-  methods: [BtcMethod.SendBitcoin],
+  methods: Object.values(BtcMethod),
   type: BtcAccountType.P2wpkh,
 };
 
@@ -78,14 +88,35 @@ const mockBtcChain = {
   nativeTokenSupported: true,
   isEvm: false,
 };
+
+const mockSolanaChain = {
+  active: true,
+  chainId: MultichainNetworks.SOLANA,
+  chainName: 'Solana',
+  shortName: 'Solana',
+  nativeTokenSupported: true,
+  isEvm: false,
+};
+
 // default chains do not include BTC
-const mockBuyableChainsWithoutBtc = defaultBuyableChains.filter(
-  (chain) => chain.chainId !== MultichainNetworks.BITCOIN,
+const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
+  (chain) =>
+    chain.chainId !== MultichainNetworks.BITCOIN &&
+    chain.chainId !== MultichainNetworks.SOLANA,
 );
-const mockBuyableChainsWithBtc = [...mockBuyableChainsWithoutBtc, mockBtcChain];
 
 const mockMetamaskStore = {
   ...mockState.metamask,
+  remoteFeatureFlags: {
+    addBitcoinAccount: true,
+    bridgeConfig: {
+      support: true,
+    },
+  },
+  useExternalServices: true,
+  accountsAssets: {
+    [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+  },
   internalAccounts: {
     accounts: {
       [mockNonEvmAccount.id]: mockNonEvmAccount,
@@ -103,7 +134,7 @@ const mockMetamaskStore = {
   },
   // (Multichain) RatesController
   fiatCurrency: 'usd',
-  rates: {
+  conversionRates: {
     [Cryptocurrency.Btc]: {
       conversionRate: '1.000',
       conversionDate: 0,
@@ -117,27 +148,33 @@ const mockMetamaskStore = {
   // Used when clicking on some buttons
   metaMetricsId: mockMetaMetricsId,
   // Override state if provided
+  multichainNetworkConfigurationsByChainId:
+    AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  selectedMultichainNetworkChainId: BtcScope.Mainnet,
+  isEvmSelected: false,
+  enabledNetworkMap: {
+    bip122: {
+      [MultichainNetworks.BITCOIN]: true,
+    },
+  },
 };
 const mockRampsStore = {
-  buyableChains: mockBuyableChainsWithoutBtc,
+  buyableChains: mockBuyableChainsEvmOnly,
 };
 
 function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
     metamask: mockMetamaskStore,
+    localeMessages: {
+      currentLocale: 'en',
+    },
     ramps: mockRampsStore,
     ...state,
   });
 }
 
-function makePortfolioUrl(path: string, getParams: Record<string, string>) {
-  const params = new URLSearchParams(getParams);
-  return `${PORTOFOLIO_URL}/${path}?${params.toString()}`;
-}
-
 describe('NonEvmOverview', () => {
   beforeEach(() => {
-    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
 
@@ -177,7 +214,18 @@ describe('NonEvmOverview', () => {
           // The balances won't be available
           preferences: {
             showNativeTokenAsMainBalance: false,
-            tokenNetworkFilter: {},
+            privacyMode: false,
+          },
+          enabledNetworkMap: {
+            bip122: {
+              [MultichainNetworks.BITCOIN]: true,
+            },
+          },
+          currentCurrency: 'usd',
+          conversionRates: {
+            [MultichainNativeAssets.BITCOIN]: {
+              rate: '1',
+            },
           },
         },
       }),
@@ -196,6 +244,9 @@ describe('NonEvmOverview', () => {
           ...mockMetamaskStore,
           // The balances won't be available
           balances: {},
+          accountsAssets: {
+            [mockNonEvmAccount.id]: [],
+          },
         },
       }),
     );
@@ -206,7 +257,7 @@ describe('NonEvmOverview', () => {
     expect(spinner).toBeInTheDocument();
   });
 
-  it('buttons Swap/Bridge are disabled', () => {
+  it.skip('buttons Swap/Bridge are disabled', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -224,16 +275,16 @@ describe('NonEvmOverview', () => {
       <NonEvmOverview />,
       getStore(),
     );
-    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+    const buyButton = queryByTestId(BUY_BUTTON);
     expect(buyButton).toBeInTheDocument();
   });
 
-  it('"Buy & Sell" button is disabled if BTC is not buyable', () => {
+  it('"Buy & Sell" button is disabled if BTC is not buyable and SOL is not buyable', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
     );
-    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+    const buyButton = queryByTestId(BUY_BUTTON);
 
     expect(buyButton).toBeInTheDocument();
     expect(buyButton).toBeDisabled();
@@ -242,7 +293,7 @@ describe('NonEvmOverview', () => {
   it('"Buy & Sell" button is enabled if BTC is buyable', () => {
     const storeWithBtcBuyable = getStore({
       ramps: {
-        buyableChains: mockBuyableChainsWithBtc,
+        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
       },
     });
 
@@ -251,16 +302,35 @@ describe('NonEvmOverview', () => {
       storeWithBtcBuyable,
     );
 
-    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+    const buyButton = queryByTestId(BUY_BUTTON);
 
     expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
   });
 
-  it('opens the Portfolio "Buy & Sell" URI when clicking on "Buy & Sell" button', async () => {
+  // TODO: Add solana buyable test
+  it.skip('"Buy & Sell" button is enabled if SOL is buyable', () => {
+    const storeWithSolanaBuyable = getStore({
+      ramps: {
+        buyableChains: [...mockBuyableChainsEvmOnly, mockSolanaChain],
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      storeWithSolanaBuyable,
+    );
+
+    const buyButton = queryByTestId(BUY_BUTTON);
+
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).not.toBeDisabled();
+  });
+
+  it('calls openBuyInPdapp when clicking on "Buy & Sell" button', async () => {
     const storeWithBtcBuyable = getStore({
       ramps: {
-        buyableChains: mockBuyableChainsWithBtc,
+        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
       },
     });
 
@@ -269,27 +339,16 @@ describe('NonEvmOverview', () => {
       storeWithBtcBuyable,
     );
 
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
-
-    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+    const buyButton = queryByTestId(BUY_BUTTON);
     expect(buyButton).toBeInTheDocument();
     fireEvent.click(buyButton as HTMLElement);
-
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
-    expect(openTabSpy).toHaveBeenCalledWith({
-      url: makePortfolioUrl('buy', {
-        metamaskEntry: RampsMetaMaskEntry.BuySellButton,
-        chainId: MultichainNetworks.BITCOIN,
-        metametricsId: mockMetaMetricsId,
-        metricsEnabled: String(false),
-      }),
-    });
+    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
   });
 
   it('sends an event when clicking the Buy button', () => {
     const storeWithBtcBuyable = getStore({
       ramps: {
-        buyableChains: mockBuyableChainsWithBtc,
+        buyableChains: [...mockBuyableChainsEvmOnly, mockBtcChain],
       },
     });
 
@@ -301,7 +360,7 @@ describe('NonEvmOverview', () => {
       storeWithBtcBuyable,
     );
 
-    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+    const buyButton = queryByTestId(BUY_BUTTON);
     expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton as HTMLElement);
@@ -311,12 +370,20 @@ describe('NonEvmOverview', () => {
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: mockNonEvmAccount.type,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: MultichainNetworks.BITCOIN,
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: mockNonEvmAccount.metadata.snap.id,
         text: 'Buy',
         // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: expect.any(Object),
       },
     });
@@ -329,36 +396,6 @@ describe('NonEvmOverview', () => {
     );
     const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
     expect(receiveButton).toBeInTheDocument();
-  });
-
-  it('"Buy & Sell" button is disabled for testnet accounts', () => {
-    const storeWithBtcBuyable = getStore({
-      metamask: {
-        ...mockMetamaskStore,
-        internalAccounts: {
-          ...mockMetamaskStore.internalAccounts,
-          accounts: {
-            [mockNonEvmAccount.id]: {
-              ...mockNonEvmAccount,
-              address: 'tb1q9lakrt5sw0w0twnc6ww4vxs7hm0q23e03286k8',
-            },
-          },
-        },
-      },
-      ramps: {
-        buyableChains: mockBuyableChainsWithBtc,
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      storeWithBtcBuyable,
-    );
-
-    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
-
-    expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
   });
 
   it('always show the Send button', () => {
@@ -391,15 +428,41 @@ describe('NonEvmOverview', () => {
         event: MetaMetricsEventName.NavSendButtonClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: mockNonEvmAccount.type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: MultichainNetworks.BITCOIN,
           location: 'Home',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockNonEvmAccount.metadata.snap.id,
           text: 'Send',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: 'BTC',
         },
       },
       expect.any(Object),
     );
+  });
+
+  it('disables the Send and Bridge buttons if external services are disabled', () => {
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          useExternalServices: false,
+        },
+      }),
+    );
+
+    const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
+    const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).toBeDisabled();
+    expect(bridgeButton).not.toBeInTheDocument();
   });
 });

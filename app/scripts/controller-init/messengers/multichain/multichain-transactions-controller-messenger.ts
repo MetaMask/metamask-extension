@@ -6,10 +6,12 @@ import {
   AccountsControllerAccountTransactionsUpdatedEvent,
 } from '@metamask/accounts-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
-  | HandleSnapRequest;
+  | HandleSnapRequest
+  | KeyringControllerGetStateAction;
 
 type Events =
   | AccountsControllerAccountAddedEvent
@@ -40,6 +42,7 @@ export function getMultichainTransactionsControllerMessenger(
     allowedActions: [
       'AccountsController:listMultichainAccounts',
       'SnapController:handleRequest',
+      'KeyringController:getState',
     ],
   });
 }

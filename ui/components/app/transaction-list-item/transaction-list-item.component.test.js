@@ -1,30 +1,40 @@
+import { NameType } from '@metamask/name-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../../../test/data/mock-state.json';
-import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {
-  getConversionRate,
-  getSelectedAccount,
-  getTokenExchangeRates,
-  getPreferences,
-  getShouldShowFiat,
-  getCurrentNetwork,
-} from '../../../selectors';
-import { renderWithProvider } from '../../../../test/jest';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+  TrustSignalDisplayState,
+  useTrustSignals,
+} from '../../../hooks/useTrustSignals';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import { getTokens } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
+import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { abortTransactionSigning } from '../../../store/actions';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import { getTokens } from '../../../ducks/metamask/metamask';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import {
+  getConversionRate,
+  getCurrentNetwork,
+  getNames,
+  getPreferences,
+  getSelectedAccount,
+  getShouldShowFiat,
+  getTokenExchangeRates,
+  getSelectedInternalAccount,
+  getMarketData,
+} from '../../../selectors';
+import { getNftContractsByAddressByChain } from '../../../selectors/nft';
+import { abortTransactionSigning } from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -62,20 +72,25 @@ jest.mock('react-redux', () => {
     useDispatch: jest.fn(),
   };
 });
-
-jest.mock('../../../hooks/bridge/useBridgeTxHistoryData', () => {
-  return {
-    ...jest.requireActual('../../../hooks/bridge/useBridgeTxHistoryData'),
-    useBridgeTxHistoryData: jest.fn(() => ({
-      bridgeTxHistoryItem: undefined,
-      isBridgeComplete: false,
-      showBridgeTxDetails: false,
-    })),
-  };
-});
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(),
+}));
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useTrustSignals', () => ({
+  useTrustSignals: jest.fn(),
+  TrustSignalDisplayState: {
+    Malicious: 'malicious',
+    Petname: 'petname',
+    Verified: 'verified',
+    Warning: 'warning',
+    Recognized: 'recognized',
+    Unknown: 'unknown',
+  },
 }));
 
 setBackgroundConnection({
@@ -97,6 +112,8 @@ jest.mock('../../../store/actions.ts', () => ({
 
 const mockStore = configureStore();
 
+const useTrustSignalsMock = jest.mocked(useTrustSignals);
+
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
     return 1;
@@ -116,6 +133,28 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.tokens ?? [];
   } else if (selector === selectBridgeHistoryForAccount) {
     return opts.bridgeHistory ?? {};
+  } else if (selector === getSelectedInternalAccount) {
+    return opts.selectedInternalAccount ?? { address: '0xDefaultAddress' };
+  } else if (selector === getNames) {
+    return {
+      [NameType.ETHEREUM_ADDRESS]: {
+        '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+          '0x5': {
+            name: 'TestName2',
+          },
+        },
+      },
+    };
+  } else if (selector === getNftContractsByAddressByChain) {
+    return {
+      '0x5': {
+        '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+          name: 'iZUMi Bond USD',
+        },
+      },
+    };
+  } else if (selector === getMarketData) {
+    return opts.marketData ?? {};
   }
   return undefined;
 };
@@ -124,6 +163,13 @@ describe('TransactionListItem', () => {
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+    );
+
+    useTrustSignalsMock.mockImplementation((requests) =>
+      requests.map(() => ({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      })),
     );
   });
 
@@ -261,5 +307,57 @@ describe('TransactionListItem', () => {
     expect(abortTransactionSigning).toHaveBeenCalledWith(
       transactionGroupSigning.primaryTransaction.id,
     );
+  });
+
+  it('should render pending legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId, getByText } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockLegacySwapTxGroup,
+          primaryTransaction: {
+            ...mockLegacySwapTxGroup.primaryTransaction,
+            status: TransactionStatus.approved,
+          },
+        }}
+      />,
+      mockStore(mockState),
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNISigningCancel',
+    );
+    expect(getByText('Signing')).toBeInTheDocument();
+  });
+
+  it('should render confirmed legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={mockLegacySwapTxGroup} />,
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNIConfirmed-2 USDC',
+    );
+  });
+
+  it('should render failed legacy swap tx summary', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { queryByTestId, getByText } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockLegacySwapTxGroup,
+          primaryTransaction: {
+            ...mockLegacySwapTxGroup.primaryTransaction,
+            status: TransactionStatus.failed,
+          },
+        }}
+      />,
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to UNIFailed-2 USDC',
+    );
+    expect(getByText('Failed')).toBeInTheDocument();
   });
 });

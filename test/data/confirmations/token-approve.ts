@@ -1,10 +1,40 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { Interface } from '@ethersproject/abi';
 import {
   CHAIN_ID,
   CONTRACT_INTERACTION_SENDER_ADDRESS,
   genUnapprovedContractInteractionConfirmation,
 } from './contract-interaction';
+
+export function buildApproveTransactionData(
+  address: string,
+  amountOrTokenId: number,
+): Hex {
+  return new Interface([
+    'function approve(address spender, uint256 amountOrTokenId)',
+  ]).encodeFunctionData('approve', [address, amountOrTokenId]) as Hex;
+}
+
+export function buildPermit2ApproveTransactionData(
+  token: string,
+  spender: string,
+  amount: number,
+  expiration: number,
+): Hex {
+  return new Interface([
+    'function approve(address token, address spender, uint160 amount, uint48 nonce)',
+  ]).encodeFunctionData('approve', [token, spender, amount, expiration]) as Hex;
+}
+
+export function buildIncreaseAllowanceTransactionData(
+  address: string,
+  amount: number,
+): Hex {
+  return new Interface([
+    'function increaseAllowance(address spender, uint256 addedValue)',
+  ]).encodeFunctionData('increaseAllowance', [address, amount]) as Hex;
+}
 
 export const genUnapprovedApproveConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,

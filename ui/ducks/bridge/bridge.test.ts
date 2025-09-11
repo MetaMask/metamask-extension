@@ -1,18 +1,21 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { setBackgroundConnection } from '../../store/background-connection';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-} from '../../../shared/types/bridge';
-import * as util from '../../helpers/utils/util';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
+  BRIDGE_DEFAULT_SLIPPAGE,
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import * as controllerUtils from '@metamask/controller-utils';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import { toAssetId } from '../../../shared/lib/asset-utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import bridgeReducer from './bridge';
 import {
-  setBridgeFeatureFlags,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
@@ -28,6 +31,7 @@ import {
 const middleware = [thunk];
 
 describe('Ducks - Bridge', () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const store = configureMockStore<any>(middleware)(createBridgeMockStore());
 
@@ -61,32 +65,54 @@ describe('Ducks - Bridge', () => {
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setToChainId');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toChainId).toStrictEqual(actionPayload);
+      expect(newState.toChainId).toStrictEqual(
+        formatChainIdToCaip(actionPayload),
+      );
     });
   });
 
   describe('setFromToken', () => {
     it('calls the "bridge/setFromToken" action', () => {
       const state = store.getState().bridge;
-      const actionPayload = { symbol: 'SYMBOL', address: '0x13341432' };
+      const actionPayload = {
+        symbol: 'SYMBOL',
+        address: '0x13341432',
+        chainId: MultichainNetworks.SOLANA,
+      };
       store.dispatch(setFromToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setFromToken');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.fromToken).toStrictEqual(actionPayload);
+      expect(newState.fromToken).toStrictEqual(
+        expect.objectContaining(actionPayload),
+      );
     });
   });
 
   describe('setToToken', () => {
     it('calls the "bridge/setToToken" action', () => {
       const state = store.getState().bridge;
-      const actionPayload = { symbol: 'SYMBOL', address: '0x13341431' };
+      const actionPayload = {
+        symbol: 'SYMBOL',
+        address: '0x13341431',
+        chainId: '0xa',
+      };
 
       store.dispatch(setToToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setToToken');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toToken).toStrictEqual(actionPayload);
+      expect(newState.toToken).toStrictEqual(
+        expect.objectContaining({
+          ...actionPayload,
+          balance: '0',
+          assetId: 'eip155:10/erc20:0x13341431',
+          chainId: '0xa',
+          image:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
+          string: '0',
+        }),
+      );
     });
   });
 
@@ -100,17 +126,6 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/setFromTokenInputValue');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.fromTokenInputValue).toStrictEqual(actionPayload);
-    });
-  });
-
-  describe('setBridgeFeatureFlags', () => {
-    it('should call setBridgeFeatureFlags in the background', async () => {
-      const mockSetBridgeFeatureFlags = jest.fn();
-      setBackgroundConnection({
-        [BridgeBackgroundAction.SET_FEATURE_FLAGS]: mockSetBridgeFeatureFlags,
-      } as never);
-      store.dispatch(setBridgeFeatureFlags() as never);
-      expect(mockSetBridgeFeatureFlags).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -132,7 +147,10 @@ describe('Ducks - Bridge', () => {
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
+        txAlert: null,
         toTokenUsdExchangeRate: null,
+        fromTokenBalance: null,
+        fromNativeBalance: null,
       });
     });
   });
@@ -145,11 +163,27 @@ describe('Ducks - Bridge', () => {
       } as never);
 
       store.dispatch(
-        updateQuoteRequestParams({
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        }) as never,
+        updateQuoteRequestParams(
+          {
+            srcChainId: 1,
+            srcTokenAddress: zeroAddress(),
+            destTokenAddress: undefined,
+          },
+          {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            stx_enabled: false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol_source: 'ETH',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol_destination: 'ETH',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            security_warnings: [],
+          },
+        ) as never,
       );
 
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
@@ -159,13 +193,27 @@ describe('Ducks - Bridge', () => {
           srcTokenAddress: zeroAddress(),
           destTokenAddress: undefined,
         },
-        expect.anything(),
+        {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          stx_enabled: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol_source: 'ETH',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol_destination: 'ETH',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          security_warnings: [],
+        },
       );
     });
   });
 
   describe('resetBridgeState', () => {
     it('dispatches action to the bridge controller', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore({
@@ -181,10 +229,7 @@ describe('Ducks - Bridge', () => {
       mockStore.dispatch(resetBridgeState() as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith(
-        undefined,
-        expect.anything(),
-      );
+      expect(mockResetBridgeState).toHaveBeenCalledWith();
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
@@ -197,24 +242,30 @@ describe('Ducks - Bridge', () => {
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
+        txAlert: null,
         toTokenExchangeRate: null,
         wasTxDeclined: false,
         toTokenUsdExchangeRate: null,
+        fromTokenBalance: null,
+        fromNativeBalance: null,
       });
     });
   });
 
   describe('setDestTokenExchangeRates', () => {
     it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore(),
       );
       const state = mockStore.getState().bridge;
       const fetchTokenExchangeRatesSpy = jest
-        .spyOn(util, 'fetchTokenExchangeRates')
+        .spyOn(controllerUtils, 'handleFetch')
         .mockResolvedValue({
-          '0x0000000000000000000000000000000000000000': 0.356628,
+          [getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET).assetId]: {
+            price: 0.356628,
+          },
         });
 
       await mockStore.dispatch(
@@ -227,9 +278,12 @@ describe('Ducks - Bridge', () => {
 
       expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
       expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
-        'usd',
-        ['0x0000000000000000000000000000000000000000'],
-        CHAIN_IDS.LINEA_MAINNET,
+        'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155%3A59144%2Fslip44%3A60&includeMarketData=true&vsCurrency=usd',
+        {
+          headers: { 'X-Client-Id': 'extension' },
+          method: 'GET',
+          signal: undefined,
+        },
       );
 
       const actions = mockStore.getActions();
@@ -249,16 +303,21 @@ describe('Ducks - Bridge', () => {
     });
 
     it('fetches token prices and updates dest exchange rates in state, erc20 dest token', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore(),
       );
       const state = mockStore.getState().bridge;
       const fetchTokenExchangeRatesSpy = jest
-        .spyOn(util, 'fetchTokenExchangeRates')
+        .spyOn(controllerUtils, 'handleFetch')
         .mockResolvedValue({
-          '0x0000000000000000000000000000000000000000': 0.356628,
-          '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359': 0.999881,
+          [toAssetId(
+            '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
+            formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          ) as never]: {
+            price: 0.999881,
+          },
         });
 
       await mockStore.dispatch(
@@ -272,9 +331,12 @@ describe('Ducks - Bridge', () => {
 
       expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
       expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
-        'usd',
-        ['0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'],
-        CHAIN_IDS.LINEA_MAINNET,
+        'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155%3A59144%2Ferc20%3A0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&includeMarketData=true&vsCurrency=usd',
+        {
+          headers: { 'X-Client-Id': 'extension' },
+          method: 'GET',
+          signal: undefined,
+        },
       );
 
       const actions = mockStore.getActions();

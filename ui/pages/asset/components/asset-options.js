@@ -20,6 +20,7 @@ const AssetOptions = ({
   onViewTokenDetails,
   tokenSymbol,
   isNativeAsset,
+  isEvm,
 }) => {
   const t = useContext(I18nContext);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
@@ -35,6 +36,8 @@ const AssetOptions = ({
     setAssetOptionsOpen(false);
     onClickBlockExplorer();
   };
+
+  const shouldShowHideTokenButton = isEvm && !isNativeAsset;
 
   return (
     <div ref={ref}>
@@ -68,7 +71,7 @@ const AssetOptions = ({
                 : [t('blockExplorerAssetAction')],
             )}
           </MenuItem>
-          {isNativeAsset ? null : (
+          {shouldShowHideTokenButton && (
             <MenuItem
               iconName={IconName.Trash}
               data-testid="asset-options__hide"
@@ -104,6 +107,7 @@ const isNotFunc = (p) => {
 
 AssetOptions.propTypes = {
   isNativeAsset: PropTypes.bool,
+  isEvm: PropTypes.bool,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onRemove: (props) => {
     if (props.isNativeAsset === false && isNotFunc(props.onRemove)) {

@@ -8,12 +8,14 @@ import SnapListPage from '../../page-objects/pages/snap-list-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Create and remove Snap Account', function (this: Suite) {
   it('create snap account and remove it by removing snap', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -27,7 +29,7 @@ describe('Create and remove Snap Account', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('SSK Account');
+        await headerNavbar.checkAccountLabel('SSK Account');
 
         // Navigate to account snaps list page.
         await headerNavbar.openSnapListPage();
@@ -35,13 +37,14 @@ describe('Create and remove Snap Account', function (this: Suite) {
 
         // Remove the snap and check snap is successfully removed
         await snapListPage.removeSnapByName('MetaMask Simple Snap Keyring');
-        await snapListPage.check_noSnapInstalledMessageIsDisplayed();
+        await snapListPage.checkNoSnapInstalledMessageIsDisplayed();
+        await snapListPage.clickBackButton();
 
         // Assert that the snap account is removed from the account list
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
           'SSK Account',
         );
       },

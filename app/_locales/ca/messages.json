@@ -254,20 +254,8 @@
   "gasLimit": {
     "message": "Límit de gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "El límit de gas és la màxima quantitat d'unitats de gas que estàs disposat a gastar."
-  },
   "gasLimitTooLow": {
     "message": "El límit de gas ha de ser al menys 21000"
-  },
-  "gasPrice": {
-    "message": "Preu del Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Preu del Gas Extremadament Baix"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "El preu del gas especifica la quantitat d'Ether que estàs disposat a pagar per cada unitat de gas."
   },
   "gasUsed": {
     "message": "Gas utilitzat"
@@ -303,9 +291,6 @@
   "import": {
     "message": "Importa",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importa compte"
   },
   "importAccountMsg": {
     "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
@@ -632,9 +617,6 @@
   "terms": {
     "message": "Condicions d'ús"
   },
-  "tips": {
-    "message": "Propines"
-  },
   "to": {
     "message": "A"
   },
@@ -707,9 +689,6 @@
   "unlock": {
     "message": "Desbloqueja"
   },
-  "unlockMessage": {
-    "message": "La web descentralitzada està esperant"
-  },
   "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."
   },
@@ -733,8 +712,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "La teva frase privada de seeds"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Gas a cost zero accelerant-se"
   }
 }

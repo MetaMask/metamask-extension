@@ -8,8 +8,7 @@ import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
-import EditNetworkModal from '../../page-objects/pages/dialog/edit-network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
@@ -22,6 +21,7 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
@@ -78,19 +78,19 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkLocalNodeBalanceIsDisplayed();
 
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
 
         // check rpc number
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
-        await selectNetworkDialog.check_networkRPCNumber(2);
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
+        await selectNetworkDialog.checkNetworkRPCNumber(2);
       },
     );
   });
@@ -162,7 +162,7 @@ describe('MultiRpc:', function (this: Suite) {
       async ({ driver, mockedEndpoint }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         const usedUrlBeforeSwitch = await mockedEndpoint[1].getSeenRequests();
 
@@ -178,21 +178,20 @@ describe('MultiRpc:', function (this: Suite) {
         // check that requests are sent on the background for the rpc https://responsive-rpc.test/
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
-        await selectNetworkDialog.check_networkRPCNumber(2);
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
+        await selectNetworkDialog.checkNetworkRPCNumber(2);
 
         // select second rpc for Arbitrum network in the network dialog
         await selectNetworkDialog.selectRPC('Arbitrum mainnet 2');
-        await homePage.check_pageIsLoaded();
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await homePage.checkPageIsLoaded();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         // check that the second rpc is selected in the network dialog
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
         // check the url first request send on the background to the mocked rpc after switch
@@ -258,33 +257,32 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await selectNetworkDialog.openNetworkListOptions('0xa4b1');
+        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
 
-        const editNetworkModal = new EditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        const editNetworkModal = new AddEditNetworkModal(driver);
+        await editNetworkModal.checkPageIsLoaded();
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
         );
 
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
       },
     );
   });
@@ -346,39 +344,39 @@ describe('MultiRpc:', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await importSRPOnboardingFlow({ driver });
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
           driver,
         );
-        await onboardingPrivacySettingsPage.check_pageIsLoaded();
+        await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.navigateToGeneralSettings();
 
         // open edit network modal during onboarding and select the second rpc
         await onboardingPrivacySettingsPage.openEditNetworkModal(
           'Arbitrum One',
         );
-        const editNetworkModal = new EditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        const editNetworkModal = new AddEditNetworkModal(driver);
+        await editNetworkModal.checkPageIsLoaded();
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
         );
         await onboardingPrivacySettingsPage.navigateBackToSettingsPage();
-        await onboardingPrivacySettingsPage.check_pageIsLoaded();
+        await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         // finish onboarding and check the network successfully edited message is displayed
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
       },
     );
   });

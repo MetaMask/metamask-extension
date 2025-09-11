@@ -15,6 +15,7 @@ import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -35,6 +36,7 @@ import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -409,6 +411,20 @@ export function checkExistingAddresses(address, list = []) {
   return list.some(matchesAddress);
 }
 
+export function checkExistingAllTokens(
+  address,
+  chainId,
+  accountAddress,
+  list = {},
+) {
+  if (!address) {
+    return false;
+  }
+  return list?.[chainId]?.[accountAddress]?.some(
+    (obj) => obj.address.toLowerCase() === address.toLowerCase(),
+  );
+}
+
 export function bnGreaterThan(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
@@ -688,8 +704,11 @@ export const getDedupedSnaps = (request, permissions) => {
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
+const REGEX_LTR_OVERRIDE = /\u202D/giu;
+const REGEX_RTL_OVERRIDE = /\u202E/giu;
+
 /**
- * The method escape RTL character in string
+ * The method escapes LTR and RTL override unicode in the string
  *
  * @param {*} value
  * @returns {(string|*)} escaped string or original param value
@@ -701,8 +720,10 @@ export const sanitizeString = (value) => {
   if (!lodash.isString(value)) {
     return value;
   }
-  const regex = /\u202E/giu;
-  return value.replace(regex, '\\u202E');
+
+  return value
+    .replace(REGEX_LTR_OVERRIDE, '\\u202D')
+    .replace(REGEX_RTL_OVERRIDE, '\\u202E');
 };
 
 /**
@@ -713,6 +734,36 @@ export const sanitizeString = (value) => {
  */
 export const isAbleToExportAccount = (keyringType = '') => {
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
+};
+
+export const isAbleToRevealSrp = (accountToExport, keyrings) => {
+  const {
+    metadata: {
+      keyring: { type },
+      snap,
+    },
+    options: { entropySource },
+  } = accountToExport;
+
+  // All hd keyrings can reveal their srp.
+  if (type === KeyringTypes.hd) {
+    return true;
+  }
+
+  // We only consider 1st-party Snaps that have an entropy source.
+  if (
+    type === KeyringTypes.snap &&
+    isMultichainWalletSnap(snap?.id) &&
+    entropySource
+  ) {
+    const keyringId = entropySource;
+    return keyrings.some(
+      (keyring) =>
+        keyring.type === KeyringTypes.hd && keyring.metadata.id === keyringId,
+    );
+  }
+
+  return false;
 };
 
 /**
@@ -799,6 +850,48 @@ export const getAvatarFallbackLetter = (subjectName) => {
 };
 
 /**
+ * Check whether raw origin URL is an IP address.
+ *
+ * Note: IPv6 addresses are expected to be wrapped in brackets (e.g. [fe80::1])
+ * because of how URL formatting works.
+ *
+ * @param {string} rawOriginUrl - Raw origin (URL) with protocol that is potentially an IP address
+ * @returns Boolean, true if the origin is an IP address, false otherwise.
+ */
+export const isIpAddress = (rawOriginUrl) => {
+  if (typeof rawOriginUrl === 'string') {
+    return Boolean(
+      rawOriginUrl.match(/^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu),
+    );
+  }
+
+  return false;
+};
+
+/**
+ * Transforms full raw URLs to something that can be used as title.
+ * Basically, it removes subdomain and protocol prefixes.
+ *
+ * Note: For IP address origins, full IP address without protocol will be returned.
+ *
+ * @param {string} rawOrigin - Raw origin (URL) with protocol.
+ * @returns User friendly title extracted from raw URL.
+ */
+export const transformOriginToTitle = (rawOrigin) => {
+  try {
+    const url = new URL(rawOrigin);
+
+    if (isIpAddress(url.hostname)) {
+      return url.hostname;
+    }
+
+    return url.hostname;
+  } catch (e) {
+    return 'Unknown Origin';
+  }
+};
+
+/**
  * Get abstracted Snap permissions filtered by weight.
  *
  * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
@@ -846,5 +939,5 @@ export const getCalculatedTokenAmount1dAgo = (
 ) => {
   return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
     ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
-    : tokenFiatBalance ?? 0;
+    : (tokenFiatBalance ?? 0);
 };

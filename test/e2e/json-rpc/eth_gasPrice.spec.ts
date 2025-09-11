@@ -3,7 +3,6 @@ import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
 
 describe('eth_gasPrice', function () {
   it('executes gas price json rpc call', async function () {
@@ -13,16 +12,13 @@ describe('eth_gasPrice', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // eth_gasPrice
         await driver.openNewPage(`http://127.0.0.1:8080`);

@@ -1,10 +1,13 @@
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
+  BlockSize,
+  BorderColor,
   TextColor,
   IconColor,
   TextVariant,
@@ -18,19 +21,26 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentNetwork,
+  getIpfsGateway,
+  getNetworkConfigurationIdByChainId,
+} from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
-  SEND_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
   setRemoveNftMessage,
   setNewNftAddedMessage,
+  setActiveNetworkWithError,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
@@ -68,18 +78,34 @@ import {
 } from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
+import {
+  addUrlProtocolPrefix,
+  isWebUrl,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { getImageForChainId } from '../../../../../selectors/multichain';
+import { useRedesignedSendFlow } from '../../../../../pages/confirmations/hooks/useRedesignedSendFlow';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+import { navigateToSendRoute } from '../../../../../pages/confirmations/utils/send';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
+import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
-export default function NftDetails({ nft }: { nft: Nft }) {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function NftDetailsComponent({
+  nft,
+  nftChainId,
+}: {
+  nft: Nft;
+  nftChainId: string;
+}) {
   const {
-    image,
+    image: _image,
     imageOriginal,
     name,
     description,
@@ -92,6 +118,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     rarityRank,
     topBid,
     attributes,
+    tokenURI,
   } = nft;
 
   const t = useI18nContext();
@@ -103,14 +130,35 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const trackEvent = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
+
+  const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
+  const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
+  const { defaultRpcEndpointIndex } = nftChainNetwork;
+  const { networkClientId: nftNetworkClientId } =
+    nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
+  const nftChainImage = getImageForChainId(nftChainId as string);
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
+  const { image: imageFromTokenURI, name: nameFromTokenURI } =
+    useFetchNftDetailsFromTokenURI(tokenURI);
+
   const nftImageAlt = getNftImageAlt(nft);
-  const nftSrcUrl = imageOriginal ?? image;
+  const image = getNftImage(_image);
+  const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+
   const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
+
   const nftImageURL = useGetAssetImageUrl(
     imageOriginal ?? image ?? undefined,
     ipfsGateway,
@@ -148,6 +196,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     }
     // return the one that is available
     const topBidValue =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       topBid?.price?.amount?.native ||
       collection?.topBid?.price?.amount?.native;
     if (!topBidValue) {
@@ -159,6 +209,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
 
   const getTopBidSourceDomain = () => {
     return (
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       topBid?.source?.url ||
       (collection?.topBid?.sourceDomain
         ? `https://${collection.topBid?.sourceDomain}`
@@ -173,6 +225,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
       },
     });
@@ -181,7 +235,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const onRemove = async () => {
     let isSuccessfulEvent = false;
     try {
-      await dispatch(removeAndIgnoreNft(address, tokenId));
+      await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('success'));
       isSuccessfulEvent = true;
@@ -194,10 +248,18 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_contract_address: address,
           tokenId: tokenId.toString(),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.NFT,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_standard: standard,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: currentNetwork,
           isSuccessful: isSuccessfulEvent,
         },
@@ -209,9 +271,9 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const prevNft = usePrevious(nft);
   useEffect(() => {
     if (!isEqual(prevNft, nft)) {
-      checkAndUpdateSingleNftOwnershipStatus(nft);
+      checkAndUpdateSingleNftOwnershipStatus(nft, nftNetworkClientId);
     }
-  }, [nft, prevNft]);
+  }, [nft, nftNetworkClientId, prevNft]);
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
@@ -240,19 +302,45 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const sendDisabled =
     standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
 
+  const setCorrectChain = async () => {
+    // If we aren't presently on the chain of the nft, change to it
+    if (nftChainId !== currentChain.chainId) {
+      try {
+        const networkConfigurationId = networks[nftChainId as Hex];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+      } catch (err) {
+        console.error(`Failed to switch chains for NFT.
+          Target chainId: ${nftChainId}, Current chainId: ${
+            currentChain.chainId
+          }.
+          ${
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            err
+          }`);
+        throw err;
+      }
+    }
+  };
+
   const onSend = async () => {
+    await setCorrectChain();
     await dispatch(
       startNewDraftTransaction({
         type: AssetType.NFT,
         details: {
           ...nft,
-          tokenId: Number(nft.tokenId),
-          image: nft.image ?? undefined,
+          tokenId: nft.tokenId as unknown as number,
+          image: nft.image ?? imageFromTokenURI ?? undefined,
+          name: nft.name ?? nameFromTokenURI ?? undefined,
         },
       }),
     );
     // We only allow sending one NFT at a time
-    history.push(SEND_ROUTE);
+    navigateToSendRoute(history, isSendRedesignEnabled, {
+      address: nft.address,
+      chainId: nftChainId,
+    });
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {
@@ -265,8 +353,12 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return getShortDateFormatterV2().format(date);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const hasPriceSection = getCurrentHighestBidValue() || lastSale?.timestamp;
   const hasCollectionSection =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     collection?.name || collection?.tokenCount || collection?.creator;
   const hasAttributesSection = attributes && attributes?.length !== 0;
 
@@ -304,15 +396,9 @@ export default function NftDetails({ nft }: { nft: Nft }) {
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
-
-  const renderShortTokenId = (text: string, chars: number) => {
-    if (text.length <= MAX_TOKEN_ID_LENGTH) {
-      return text;
-    }
-    return `${text.slice(0, chars)}...${text.slice(-chars)}`;
-  };
-
-  const nftItemSrc = isImageHosted ? image : nftImageURL;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   return (
     <Page>
@@ -337,6 +423,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
               }
               return global.platform.openTab({ url: openSeaLink });
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onRemove={onRemove}
           />
         </Box>
@@ -350,8 +438,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             <NftItem
               src={nftItemSrc as string | undefined}
               alt={nftImageAlt}
-              networkName={currentChain.nickname ?? ''}
-              networkSrc={currentChain.rpcPrefs?.imageUrl}
+              networkName={nftChainNetwork.name ?? ''}
+              networkSrc={nftChainImage}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}
               detailView
@@ -360,16 +448,20 @@ export default function NftDetails({ nft }: { nft: Nft }) {
           </Box>
         </Box>
         <Box>
+          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {name || collection?.name ? (
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
-                variant={TextVariant.headingMd}
-                fontWeight={FontWeight.Bold}
+                variant={TextVariant.headingSm}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.textDefault}
                 fontStyle={FontStyle.Normal}
                 style={{ fontSize: '24px' }}
                 data-testid="nft-details__name"
               >
+                {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+                {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
                 {name || collection?.name}
               </Text>
               {collection?.openseaVerificationStatus === 'verified' ? (
@@ -402,8 +494,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                     variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextTitleStyle={{
-                    fontSize: '10px',
-                    lineHeight: '16px',
+                    fontSize: '12px',
+                    lineHeight: '20px',
                   }}
                   value={
                     lastSale?.price?.amount?.usd &&
@@ -427,7 +519,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                         : TextAlign.Center,
                   }}
                   frameTextValueStyle={{
-                    fontSize: hasLastSalePrice ? '16px' : '10px',
+                    fontSize: hasLastSalePrice ? '16px' : '12px',
                     lineHeight: hasLastSalePrice ? '24px' : '16px',
                   }}
                   icon={
@@ -456,8 +548,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                     variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextTitleStyle={{
-                    fontSize: '10px',
-                    lineHeight: '16px',
+                    fontSize: '12px',
+                    lineHeight: '20px',
                   }}
                   value={
                     collection?.floorAsk?.price?.amount?.usd &&
@@ -481,7 +573,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                         : TextAlign.Center,
                   }}
                   frameTextValueStyle={{
-                    fontSize: hasFloorAskPrice ? '16px' : '10px',
+                    fontSize: hasFloorAskPrice ? '16px' : '12px',
                     lineHeight: hasFloorAskPrice ? '24px' : '16px',
                   }}
                   icon={
@@ -514,8 +606,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                   variant: TextVariant.bodyMdMedium,
                 }}
                 frameTextTitleStyle={{
-                  fontSize: '10px',
-                  lineHeight: '16px',
+                  fontSize: '12px',
+                  lineHeight: '20px',
                 }}
                 value={`#${rarityRank}`}
                 frameTextValueProps={{
@@ -539,8 +631,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                   variant: TextVariant.bodyMdMedium,
                 }}
                 frameTextTitleStyle={{
-                  fontSize: '10px',
-                  lineHeight: '16px',
+                  fontSize: '12px',
+                  lineHeight: '20px',
                 }}
                 buttonAddressValue={
                   <button
@@ -652,18 +744,30 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             }
           />
           {hasPriceSection ? (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingMd}
+            <>
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('price')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('price')}
+                </Text>
+              </Box>
+            </>
           ) : null}
           <NftDetailInformationRow
             title={t('lastSold')}
@@ -710,18 +814,30 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             }
           />
           {hasCollectionSection ? (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingMd}
+            <>
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('notificationItemCollection')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('notificationItemCollection')}
+                </Text>
+              </Box>
+            </>
           ) : null}
           <NftDetailInformationRow
             title={t('collectionName')}
@@ -765,6 +881,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                 data-testid="nft-address-copy"
                 onClick={() => {
                   (handleAddressCopy as (text: string) => void)?.(
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                     collection?.creator || '',
                   );
                 }}
@@ -774,21 +892,33 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             }
           />
           {hasAttributesSection ? (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingMd}
+            <>
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('attributes')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('attributes')}
+                </Text>
+              </Box>
+            </>
           ) : null}
           <Box
-            marginTop={4}
+            marginTop={2}
             display={Display.Flex}
             gap={2}
             flexWrap={FlexWrap.Wrap}
@@ -806,26 +936,25 @@ export default function NftDetails({ nft }: { nft: Nft }) {
                     variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextTitleStyle={{
-                    fontSize: '14px',
-                    lineHeight: '22px',
+                    fontSize: '16px',
+                    lineHeight: '24px',
                   }}
                   value={value}
                   frameTextValueProps={{
                     color: TextColor.textDefault,
-                    variant: TextVariant.bodyMd,
+                    variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextValueStyle={{
-                    fontSize: '14px',
+                    fontSize: '16px',
                   }}
                 />
               );
             })}
           </Box>
-          <Box marginTop={4}>
+          <Box>
             <Text
               color={TextColor.textAlternative}
-              variant={TextVariant.bodySm}
-              as="h6"
+              variant={TextVariant.bodyXs}
             >
               {t('nftDisclaimer')}
             </Text>
@@ -835,6 +964,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
       {isCurrentlyOwned === true ? (
         <Footer className="nft-details__content">
           <ButtonPrimary
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSend}
             disabled={sendDisabled}
             size={ButtonPrimarySize.Lg}
@@ -851,3 +982,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     </Page>
   );
 }
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function NftDetails({ nft }: { nft: Nft }) {
+  const { chainId } = useParams();
+
+  return <NftDetailsComponent nft={nft} nftChainId={chainId ?? ''} />;
+}
+
+export default NftDetails;

@@ -48,6 +48,7 @@ import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
+import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -55,6 +56,7 @@ import {
   getTemplateState,
 } from './templates';
 
+const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
 
 /**
@@ -209,7 +211,7 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
   }
 
   return (
-    <Box style={{ width: '100%', position: 'relative' }}>
+    <Box style={{ width: '100%', position: 'relative', overflow: 'hidden' }}>
       <Nav confirmationId={confirmation?.id} />
       {requiresSnapHeader && (
         <SnapAuthorshipHeader snapId={origin} onCancel={onCancel} />
@@ -297,6 +299,11 @@ export default function ConfirmationPage({
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
+
+  const hasHeaderMaybe = isSnapDialog;
+  const hasHeader =
+    isSnapCustomUIDialog ||
+    CONFIRMATION_TYPES_WITH_HEADER.includes(pendingConfirmation?.type);
 
   const INPUT_STATE_CONFIRMATIONS = [ApprovalType.SnapDialogPrompt];
 
@@ -494,100 +501,105 @@ export default function ConfirmationPage({
 
   return (
     <ConfirmContextProvider>
-      <div className="confirmation-page">
-        <Header
-          confirmation={pendingConfirmation}
-          isSnapCustomUIDialog={isSnapCustomUIDialog}
-          onCancel={handleSnapDialogCancel}
-        />
-        <Box
-          className="confirmation-page__content"
-          padding={isSnapCustomUIDialog ? 0 : 4}
-          style={{
-            overflowY: 'auto',
-          }}
-        >
-          {isSnapCustomUIDialog ? (
-            <SnapUIRenderer
-              snapId={pendingConfirmation?.origin}
-              interfaceId={pendingConfirmation?.requestData.id}
-              isPrompt={isSnapPrompt}
-              inputValue={
-                isSnapPrompt && inputStates[pendingConfirmation?.type]
-              }
-              onInputChange={isSnapPrompt && onInputChange}
-              placeholder={
-                isSnapPrompt && pendingConfirmation?.requestData.placeholder
-              }
-              onCancel={handleSnapDialogCancel}
-              useFooter={isSnapDefaultDialog}
-            />
-          ) : (
-            <MetaMaskTemplateRenderer sections={templatedValues.content} />
-          )}
-          {showWarningModal && (
-            <ConfirmationWarningModal
-              onSubmit={async () => {
-                const res = await templatedValues.onSubmit();
-                await handleSubmitResult(res);
-                setShowWarningModal(false);
-              }}
-              onCancel={templatedValues.onCancel}
-            />
-          )}
-        </Box>
-        {!isSnapDefaultDialog && (
-          <ConfirmationFooter
-            alerts={
-              alertState[pendingConfirmation.id] &&
-              Object.values(alertState[pendingConfirmation.id])
-                .filter((alert) => alert.dismissed === false)
-                .map((alert, idx, filtered) => (
-                  <Callout
-                    key={alert.id}
-                    severity={alert.severity}
-                    dismiss={() => dismissAlert(alert.id)}
-                    isFirst={idx === 0}
-                    isLast={idx === filtered.length - 1}
-                    isMultiple={filtered.length > 1}
-                  >
-                    <MetaMaskTemplateRenderer sections={alert.content} />
-                  </Callout>
-                ))
-            }
-            style={
-              isSnapDialog
-                ? {
-                    boxShadow:
-                      'var(--shadow-size-lg) var(--color-shadow-default)',
-                  }
-                : {}
-            }
-            actionsStyle={
-              isSnapDialog
-                ? {
-                    borderTop: 0,
-                  }
-                : {}
-            }
-            onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
-            onCancel={templatedValues.onCancel}
-            submitText={templatedValues.submitText}
-            cancelText={templatedValues.cancelText}
-            loadingText={loadingText || templatedValues.loadingText}
-            loading={loading}
-            submitAlerts={submitAlerts.map((alert, idx) => (
-              <Callout
-                key={alert.id}
-                severity={alert.severity}
-                isFirst={idx === 0}
-              >
-                <MetaMaskTemplateRenderer sections={alert.content} />
-              </Callout>
-            ))}
+      <TemplateAlertContextProvider
+        confirmationId={pendingConfirmation.id}
+        onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
+      >
+        <div className="confirmation-page">
+          <Header
+            confirmation={pendingConfirmation}
+            isSnapCustomUIDialog={isSnapCustomUIDialog}
+            onCancel={handleSnapDialogCancel}
           />
-        )}
-      </div>
+          <Box
+            className="confirmation-page__content"
+            padding={hasHeader || hasHeaderMaybe ? 0 : 4}
+            style={{
+              overflowY: 'auto',
+            }}
+          >
+            {isSnapCustomUIDialog ? (
+              <SnapUIRenderer
+                snapId={pendingConfirmation?.origin}
+                interfaceId={pendingConfirmation?.requestData.id}
+                isPrompt={isSnapPrompt}
+                inputValue={
+                  isSnapPrompt && inputStates[pendingConfirmation?.type]
+                }
+                onInputChange={isSnapPrompt && onInputChange}
+                placeholder={
+                  isSnapPrompt && pendingConfirmation?.requestData.placeholder
+                }
+                onCancel={handleSnapDialogCancel}
+                useFooter={isSnapDefaultDialog}
+              />
+            ) : (
+              <MetaMaskTemplateRenderer sections={templatedValues.content} />
+            )}
+            {showWarningModal && (
+              <ConfirmationWarningModal
+                onSubmit={async () => {
+                  const res = await templatedValues.onSubmit();
+                  await handleSubmitResult(res);
+                  setShowWarningModal(false);
+                }}
+                onCancel={templatedValues.onCancel}
+              />
+            )}
+          </Box>
+          {!isSnapDefaultDialog && (
+            <ConfirmationFooter
+              alerts={
+                alertState[pendingConfirmation.id] &&
+                Object.values(alertState[pendingConfirmation.id])
+                  .filter((alert) => alert.dismissed === false)
+                  .map((alert, idx, filtered) => (
+                    <Callout
+                      key={alert.id}
+                      severity={alert.severity}
+                      dismiss={() => dismissAlert(alert.id)}
+                      isFirst={idx === 0}
+                      isLast={idx === filtered.length - 1}
+                      isMultiple={filtered.length > 1}
+                    >
+                      <MetaMaskTemplateRenderer sections={alert.content} />
+                    </Callout>
+                  ))
+              }
+              style={
+                isSnapDialog
+                  ? {
+                      boxShadow:
+                        'var(--shadow-size-lg) var(--color-shadow-default)',
+                    }
+                  : {}
+              }
+              actionsStyle={
+                isSnapDialog
+                  ? {
+                      borderTop: 0,
+                    }
+                  : {}
+              }
+              onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
+              onCancel={templatedValues.onCancel}
+              submitText={templatedValues.submitText}
+              cancelText={templatedValues.cancelText}
+              loadingText={loadingText || templatedValues.loadingText}
+              loading={loading}
+              submitAlerts={submitAlerts.map((alert, idx) => (
+                <Callout
+                  key={alert.id}
+                  severity={alert.severity}
+                  isFirst={idx === 0}
+                >
+                  <MetaMaskTemplateRenderer sections={alert.content} />
+                </Callout>
+              ))}
+            />
+          )}
+        </div>
+      </TemplateAlertContextProvider>
     </ConfirmContextProvider>
   );
 }

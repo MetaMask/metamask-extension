@@ -1,10 +1,13 @@
 import { useSelector } from 'react-redux';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import {
+  selectBridgeHistoryForApprovalTxId,
+  selectBridgeHistoryItemForTxMetaId,
+} from '../../../ducks/bridge-status/selectors';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
@@ -14,26 +17,45 @@ import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
  */
 export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   const { primaryTransaction } = transactionGroup;
-  const chainId = useSelector(getCurrentChainId);
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
+  // If the primary transaction is a bridge transaction, use the bridge history item for the primary transaction id
+  // Otherwise, assume that the primary transaction is an approval transaction and use the bridge history item that has the approvalTxId
+  const bridgeHistoryItemForPrimaryTxId = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, primaryTransaction.id),
+  );
+  const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
+    selectBridgeHistoryForApprovalTxId(state, primaryTransaction.id),
+  );
   const bridgeHistoryItem: BridgeHistoryItem | undefined =
-    bridgeHistory[primaryTransaction.id];
+    bridgeHistoryItemForPrimaryTxId ?? bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
-    primaryTransaction.sourceTokenAddress,
-    bridgeHistoryItem?.pricingData?.amountSent,
-    primaryTransaction.sourceTokenSymbol,
+    bridgeHistoryItem?.quote.srcAsset.address ??
+      primaryTransaction.sourceTokenAddress,
+    bridgeHistoryItem?.pricingData?.amountSent ??
+      primaryTransaction.sourceTokenAmount,
+    bridgeHistoryItem?.quote.srcAsset.symbol ??
+      primaryTransaction.sourceTokenSymbol,
     {},
     true,
-    chainId,
+    primaryTransaction.chainId,
   );
 
   return {
-    category: TransactionGroupCategory.bridge,
+    category:
+      primaryTransaction.type === TransactionType.bridge
+        ? TransactionGroupCategory.bridge
+        : TransactionGroupCategory.swap,
     displayCurrencyAmount,
-    sourceTokenSymbol: primaryTransaction.sourceTokenSymbol,
-    sourceTokenAmountSent: bridgeHistoryItem?.pricingData?.amountSent,
+    sourceTokenSymbol:
+      bridgeHistoryItem?.quote.srcAsset.symbol ??
+      primaryTransaction.sourceTokenSymbol,
+    sourceTokenAmountSent:
+      bridgeHistoryItem?.pricingData?.amountSent ??
+      primaryTransaction.sourceTokenAmount,
+    destinationTokenSymbol:
+      bridgeHistoryItem?.quote.destAsset.symbol ??
+      primaryTransaction.destinationTokenSymbol,
   };
 }

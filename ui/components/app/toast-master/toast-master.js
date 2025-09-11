@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import classnames from 'classnames';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -17,57 +18,58 @@ import {
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
-  SEND_ROUTE,
-  SWAPS_ROUTE,
-  PREPARE_SWAP_ROUTE,
+  SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
+  getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getSelectedAccount,
-  getSwitchedNetworkDetails,
   getUseNftDetection,
 } from '../../../selectors';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
-  clearSwitchedNetworkDetails,
   hidePermittedNetworkToast,
 } from '../../../store/actions';
 import {
-  AvatarAccount,
   AvatarAccountSize,
   AvatarNetwork,
   Icon,
   IconName,
 } from '../../component-library';
+import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
+import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
-  selectSwitchedNetworkNeverShowMessage,
+  selectNewSrpAdded,
+  selectPasswordChangeToast,
+  selectShowCopyAddressToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
-  setSwitchedNetworkNeverShowMessage,
+  setShowNewSrpAddedToast,
+  setShowPasswordChangeToast,
+  setShowCopyAddressToast,
 } from './utils';
 
 export function ToastMaster() {
   const location = useLocation();
 
   const onHomeScreen = location.pathname === DEFAULT_ROUTE;
-  const onSendScreen = location.pathname === SEND_ROUTE;
-  const onSwapsScreen =
-    location.pathname === SWAPS_ROUTE ||
-    location.pathname === PREPARE_SWAP_ROUTE;
+  const onSettingsScreen = location.pathname.startsWith(SETTINGS_ROUTE);
 
   if (onHomeScreen) {
     return (
@@ -76,17 +78,18 @@ export function ToastMaster() {
         <ConnectAccountToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <SwitchedNetworkToast />
         <NftEnablementToast />
         <PermittedNetworkToast />
+        <NewSrpAddedToast />
+        <CopyAddressToast />
       </ToastContainer>
     );
   }
 
-  if (onSendScreen || onSwapsScreen) {
+  if (onSettingsScreen) {
     return (
       <ToastContainer>
-        <SwitchedNetworkToast />
+        <PasswordChangeToast />
       </ToastContainer>
     );
   }
@@ -119,11 +122,7 @@ function ConnectAccountToast() {
         dataTestId="connect-account-toast"
         key="connect-account-toast"
         startAdornment={
-          <AvatarAccount
-            address={account.address}
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
-          />
+          <PreferredAvatar address={account.address} className="self-center" />
         }
         text={t('accountIsntConnectedToastText', [
           account?.metadata?.name,
@@ -211,51 +210,6 @@ function PrivacyPolicyToast() {
   );
 }
 
-function SwitchedNetworkToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const switchedNetworkDetails = useSelector(getSwitchedNetworkDetails);
-  const switchedNetworkNeverShowMessage = useSelector(
-    selectSwitchedNetworkNeverShowMessage,
-  );
-
-  const isShown = switchedNetworkDetails && !switchedNetworkNeverShowMessage;
-  const hasOrigin = Boolean(switchedNetworkDetails?.origin);
-
-  function getMessage() {
-    if (hasOrigin) {
-      return t('switchedNetworkToastMessage', [
-        switchedNetworkDetails.nickname,
-        getURLHost(switchedNetworkDetails.origin),
-      ]);
-    }
-    return t('switchedNetworkToastMessageNoOrigin', [
-      switchedNetworkDetails.nickname,
-    ]);
-  }
-
-  return (
-    isShown && (
-      <Toast
-        key="switched-network-toast"
-        startAdornment={
-          <AvatarNetwork
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
-            src={switchedNetworkDetails?.imageUrl || ''}
-            name={switchedNetworkDetails?.nickname}
-          />
-        }
-        text={getMessage()}
-        actionText={t('switchedNetworkToastDecline')}
-        onActionClick={setSwitchedNetworkNeverShowMessage}
-        onClose={() => dispatch(clearSwitchedNetworkDetails())}
-      />
-    )
-  );
-}
-
 function NftEnablementToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -295,8 +249,26 @@ function PermittedNetworkToast() {
 
   const currentNetwork = useSelector(getCurrentNetwork);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
   const history = useHistory();
+
+  // Use dapp's active network if available, otherwise fall back to global network
+  const displayNetwork = dappActiveNetwork || currentNetwork;
+
+  // Get the correct image URL - dapp network structure is different
+  const getNetworkImageUrl = () => {
+    if (dappActiveNetwork) {
+      // For dapp networks, check rpcPrefs.imageUrl first, then fallback to CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      return (
+        dappActiveNetwork.rpcPrefs?.imageUrl ||
+        (dappActiveNetwork.chainId &&
+          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[dappActiveNetwork.chainId])
+      );
+    }
+    // For global network, use existing logic
+    return currentNetwork?.rpcPrefs?.imageUrl || '';
+  };
 
   return (
     isPermittedNetworkToastOpen && (
@@ -306,13 +278,13 @@ function PermittedNetworkToast() {
           <AvatarNetwork
             size={AvatarAccountSize.Md}
             borderColor={BorderColor.transparent}
-            src={currentNetwork?.rpcPrefs.imageUrl || ''}
-            name={currentNetwork?.nickname}
+            src={getNetworkImageUrl()}
+            name={displayNetwork?.name || displayNetwork?.nickname}
           />
         }
         text={t('permittedChainToastUpdate', [
           getURLHost(activeTabOrigin),
-          currentNetwork?.nickname,
+          displayNetwork?.name || displayNetwork?.nickname,
         ])}
         actionText={t('editPermissions')}
         onActionClick={() => {
@@ -320,6 +292,118 @@ function PermittedNetworkToast() {
           history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
+      />
+    )
+  );
+}
+
+function NewSrpAddedToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showNewSrpAddedToast = useSelector(selectNewSrpAdded);
+  const autoHideDelay = 5 * SECOND;
+
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
+  const latestHdKeyringNumber = hdKeyrings.length;
+
+  // This will close the toast if the user clicks the account menu.
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const dismissElement = document.querySelector(
+        '[data-testid="account-menu-icon"]',
+      );
+      if (dismissElement && dismissElement.contains(event.target)) {
+        dispatch(setShowNewSrpAddedToast(false));
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dispatch]);
+
+  return (
+    showNewSrpAddedToast && (
+      <Toast
+        key="new-srp-added-toast"
+        text={t('importWalletSuccess', [latestHdKeyringNumber])}
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowNewSrpAddedToast(false))}
+        autoHideTime={autoHideDelay}
+        onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
+      />
+    )
+  );
+}
+
+const PasswordChangeToast = () => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showPasswordChangeToast = useSelector(selectPasswordChangeToast);
+  const autoHideToastDelay = 5 * SECOND;
+
+  return (
+    showPasswordChangeToast !== null && (
+      <Toast
+        dataTestId={
+          showPasswordChangeToast === PasswordChangeToastType.Success
+            ? 'password-change-toast-success'
+            : 'password-change-toast-error'
+        }
+        className={classnames({
+          'toasts-container--password-change-toast--error':
+            showPasswordChangeToast === PasswordChangeToastType.Errored,
+        })}
+        key="password-change-toast"
+        text={
+          showPasswordChangeToast === PasswordChangeToastType.Success
+            ? t('securityChangePasswordToastSuccess')
+            : t('securityChangePasswordToastError')
+        }
+        startAdornment={
+          showPasswordChangeToast ===
+          PasswordChangeToastType.Success ? undefined : (
+            <Icon name={IconName.Danger} color={IconColor.iconDefault} />
+          )
+        }
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => {
+          dispatch(setShowPasswordChangeToast(null));
+        }}
+        onClose={() => {
+          dispatch(setShowPasswordChangeToast(null));
+        }}
+      />
+    )
+  );
+};
+
+function CopyAddressToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
+  const autoHideToastDelay = 2 * SECOND;
+
+  return (
+    showCopyAddressToast && (
+      <Toast
+        key="copy-address-toast"
+        text={t('addressCopied')}
+        startAdornment={
+          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowCopyAddressToast(false))}
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
+        dataTestId="copy-address-toast"
       />
     )
   );

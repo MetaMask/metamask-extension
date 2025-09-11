@@ -15,16 +15,21 @@ export function buildControllerInitRequestMock(): jest.Mocked<
   >
 > {
   return {
+    getCronjobControllerStorageManager: jest.fn(),
     getController: jest.fn(),
     getFlatState: jest.fn(),
     getGlobalChainId: jest.fn().mockReturnValue(CHAIN_ID_MOCK),
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
+    updateAccountBalanceForTransactionNetwork: jest.fn(),
     offscreenPromise: Promise.resolve(),
     persistedState: {},
     removeAllConnections: jest.fn(),
     setupUntrustedCommunicationEip1193: jest.fn(),
     showNotification: jest.fn(),
+    trackEvent: jest.fn(),
+    getMetaMetricsId: jest.fn(),
+    preinstalledSnaps: [],
   };
 }

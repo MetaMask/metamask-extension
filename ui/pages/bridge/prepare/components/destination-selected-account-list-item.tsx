@@ -1,78 +1,60 @@
 import React from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { shortenAddress } from '../../../../helpers/utils/util';
 
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Text,
-} from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 
 import {
   AlignItems,
   BackgroundColor,
-  BorderColor,
   Display,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-import { getUseBlockie } from '../../../../selectors';
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { type DestinationAccount } from '../types';
 
 type DestinationSelectedAccountListItemProps = {
-  account: InternalAccount;
-  selected: boolean;
+  account: DestinationAccount;
+  selected?: boolean;
   onClick?: () => void;
 };
 
 const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
-  const useBlockie = useSelector(getUseBlockie);
+  const t = useI18nContext();
 
   return (
     <Box
       display={Display.Flex}
-      padding={4}
       backgroundColor={
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
-      className={classnames('multichain-account-list-item', {
-        'multichain-account-list-item--selected': selected,
+      className={classnames('multichain-account-list-item px-4 gap-2', {
+        'multichain-account-list-item--selected': Boolean(selected),
       })}
       onClick={onClick}
       alignItems={AlignItems.center}
       style={{ pointerEvents: 'none' }}
     >
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Md}
-        address={account.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
-
-      <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {account.metadata.name}
-        </Text>
-
+      <PreferredAvatar address={account.address} />
+      <Box
+        display={Display.Flex}
+        style={{ flexDirection: 'column', maxWidth: 'calc(100% - 60px)' }}
+      >
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
           data-testid="account-list-address"
+          marginBottom={1}
         >
-          {shortenAddress(normalizeSafeAddress(account.address))}
+          {t('destinationAccountPickerReceiveAt')}
+        </Text>
+
+        <Text variant={TextVariant.bodyMdMedium} marginBottom={1} ellipsis>
+          {account.displayName}
         </Text>
       </Box>
     </Box>

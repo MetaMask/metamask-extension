@@ -10,7 +10,7 @@ export type TranslateFunction = (arg: string) => string;
 // usually in the case of native tokens for L1 networks
 export const networkTitleOverrides = (
   t: TranslateFunction, // translate function from useI18nContext() hook
-  token: TokenFiatDisplayInfo,
+  token: Partial<TokenFiatDisplayInfo>,
 ) => {
   switch (token.title) {
     case CURRENCY_SYMBOLS.ETH:

@@ -2,27 +2,28 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import {
-  getNetworkConfigurationIdByChainId,
-  getTokenList,
-} from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getImageForChainId,
+} from '../../../../selectors/multichain';
+import { selectERC20TokensByChain } from '../../../../selectors/selectors';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
   tooltipText?: string;
   assetItemProps?: Pick<
     React.ComponentProps<typeof TokenListItem>,
-    'isTitleNetworkName' | 'isTitleHidden'
+    'isTitleNetworkName' | 'isTitleHidden' | 'nativeCurrencySymbol'
   >;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Asset({
   address,
   image,
@@ -36,21 +37,13 @@ export default function Asset({
   const locale = useSelector(getIntlLocale);
 
   const currency = useSelector(getCurrentCurrency);
-  const tokenList = useSelector(getTokenList);
-  const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   const isTokenChainIdInWallet = Boolean(
     chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
   );
-  const tokenData = address
-    ? Object.values(tokenList).find(
-        (token) =>
-          isEqualCaseInsensitive(token.symbol, symbol) &&
-          isEqualCaseInsensitive(token.address, address),
-      )
-    : undefined;
 
-  const title = tokenData?.name || symbol;
-  const tokenImage = tokenData?.iconUrl || image;
+  const cachedTokens = useSelector(selectERC20TokensByChain);
+
   const formattedFiat = useTokenFiatAmount(
     address ?? undefined,
     decimalTokenAmount,
@@ -73,10 +66,15 @@ export default function Asset({
       key={`${chainId}-${symbol}-${address}`}
       chainId={chainId}
       tokenSymbol={symbol}
-      tokenImage={tokenImage}
+      tokenImage={
+        image ??
+        cachedTokens?.[chainId]?.data?.[
+          ((address as string) ?? '').toLowerCase()
+        ]?.iconUrl
+      }
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
-      title={title}
+      title={symbol}
       tooltipText={tooltipText}
       tokenChainImage={getImageForChainId(chainId)}
       isPrimaryTokenSymbolHidden

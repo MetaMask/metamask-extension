@@ -23,6 +23,9 @@ main() {
   # `plugin-allow-scripts.cjs` defined in the .yarnrc file
   export PATH="${SCRIPT_DIRECTORY}/generate-attributions/node_modules/.bin:${PATH}"
 
+  # Unset the root postinstall script to prevent it from installing devDependencies
+  node ./unset-postinstall.js
+
   # Switching to the project directory explicitly, so that we can use paths
   # relative to the project root irrespective of where this script was run.
   cd "${PROJECT_DIRECTORY}"
@@ -44,10 +47,10 @@ main() {
   yarn generate-attribution -o "${PROJECT_DIRECTORY}" -b "${PROJECT_DIRECTORY}"
 
   # Check if the script is running in a CI environment (GitHub Actions sets the CI variable to true)
-  if [ -z "${CI:-}" ]; then
+  if [ -z "${CI:-}" ] || [ "${FORCE_CLEANUP:-}" = "true" ]; then
     # If not running in CI, restore the allow-scripts plugin and development dependencies.
     cd "${PROJECT_DIRECTORY}"
-    git checkout -- .yarnrc.yml .yarn
+    git checkout -- .yarnrc.yml .yarn package.json
     yarn
   fi
 }

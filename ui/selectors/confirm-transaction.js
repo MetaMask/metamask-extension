@@ -22,13 +22,9 @@ import {
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
-  subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
-import {
-  getProviderConfig,
-  getCurrentChainId,
-} from '../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
@@ -52,14 +48,12 @@ export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  getCurrentChainId,
   (
     unapprovedTxs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    chainId,
   ) =>
     txHelper(
       unapprovedTxs,
@@ -67,7 +61,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      chainId,
     ) || [],
 );
 
@@ -77,36 +70,19 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  getCurrentChainId,
   (
     unapprovedTxs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    chainId,
-  ) => {
-    const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
-      (acc, address) => {
-        const transactions = { ...acc };
-
-        if (unapprovedTxs[address].chainId === chainId) {
-          transactions[address] = unapprovedTxs[address];
-        }
-
-        return transactions;
-      },
-      {},
-    );
-
-    return {
-      ...filteredUnapprovedTxs,
-      ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
-      ...unapprovedEncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
-    };
-  },
+  ) => ({
+    ...unapprovedTxs,
+    ...unapprovedPersonalMsgs,
+    ...unapprovedDecryptMsgs,
+    ...unapprovedEncryptionPublicKeyMsgs,
+    ...unapprovedTypedMessages,
+  }),
 );
 
 export const unconfirmedMessagesHashSelector = createSelector(
@@ -281,8 +257,13 @@ export function selectTransactionFeeById(state, transactionId) {
 }
 
 // Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
-export function selectTransactionAvailableBalance(state, transactionId) {
-  const accounts = getMetaMaskAccounts(state);
+// chainId is optional parameter here
+export function selectTransactionAvailableBalance(
+  state,
+  transactionId,
+  chainId,
+) {
+  const accounts = getMetaMaskAccounts(state, chainId);
   const sender = selectTransactionSender(state, transactionId);
 
   return accounts[sender]?.balance;
@@ -291,24 +272,6 @@ export function selectTransactionAvailableBalance(state, transactionId) {
 export function selectIsMaxValueEnabled(state, transactionId) {
   return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
 }
-
-export const selectMaxValue = createSelector(
-  selectTransactionFeeById,
-  selectTransactionAvailableBalance,
-  (transactionFee, balance) =>
-    balance && transactionFee.hexMaximumTransactionFee
-      ? subtractHexes(balance, transactionFee.hexMaximumTransactionFee)
-      : undefined,
-);
-
-/** @type {state: any, transactionId: string => string} */
-export const selectTransactionValue = createSelector(
-  selectIsMaxValueEnabled,
-  selectMaxValue,
-  selectTransactionMetadata,
-  (isMaxValueEnabled, maxValue, transactionMetadata) =>
-    isMaxValueEnabled ? maxValue : transactionMetadata?.txParams?.value,
-);
 
 const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
 

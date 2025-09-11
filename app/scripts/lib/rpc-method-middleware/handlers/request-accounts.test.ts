@@ -1,12 +1,9 @@
-import { rpcErrors } from '@metamask/rpc-errors';
-import {
+import type {
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { deferredPromise } from '../../util';
 import * as Util from '../../util';
-import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
 
 jest.mock('../../util', () => ({
@@ -28,19 +25,47 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const getAccounts = jest.fn().mockReturnValue([]);
-  const getUnlockPromise = jest.fn();
   const sendMetrics = jest.fn();
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',
+    accountsByChainId: {
+      '0x1': {
+        '0x01': {
+          address: '0x01',
+          balance: 'null',
+        },
+      },
+      '0x2': {
+        '0x02': {
+          address: '0x02',
+          balance: 'null',
+        },
+        '0x03': {
+          address: '0x03',
+          balance: 'null',
+        },
+      },
+    },
     accounts: {
-      '0x1': {},
-      '0x2': {},
-      '0x3': {},
+      '0x01': {
+        address: '0x01',
+        balance: 'null',
+      },
+      '0x02': {
+        address: '0x02',
+        balance: 'null',
+      },
+      '0x03': {
+        address: '0x03',
+        balance: 'null',
+      },
     },
   };
-  const requestCaip25ApprovalForOrigin = jest.fn().mockResolvedValue({});
-  const grantPermissionsForOrigin = jest.fn().mockReturnValue({});
+  const getCaip25PermissionFromLegacyPermissionsForOrigin = jest
+    .fn()
+    .mockResolvedValue({});
+  const requestPermissionsForOrigin = jest.fn().mockReturnValue({});
   const response: PendingJsonRpcResponse<string[]> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -51,11 +76,10 @@ const createMockedHandler = () => {
   ) =>
     requestEthereumAccounts.implementation(request, response, next, end, {
       getAccounts,
-      getUnlockPromise,
       sendMetrics,
       metamaskState,
-      requestCaip25ApprovalForOrigin,
-      grantPermissionsForOrigin,
+      getCaip25PermissionFromLegacyPermissionsForOrigin,
+      requestPermissionsForOrigin,
     });
 
   return {
@@ -63,11 +87,10 @@ const createMockedHandler = () => {
     next,
     end,
     getAccounts,
-    getUnlockPromise,
     sendMetrics,
     metamaskState,
-    requestCaip25ApprovalForOrigin,
-    grantPermissionsForOrigin,
+    getCaip25PermissionFromLegacyPermissionsForOrigin,
+    requestPermissionsForOrigin,
     handler,
   };
 };
@@ -81,18 +104,10 @@ describe('requestEthereumAccountsHandler', () => {
     const { handler, getAccounts } = createMockedHandler();
 
     await handler(baseRequest);
-    expect(getAccounts).toHaveBeenCalledWith({ ignoreLock: true });
+    expect(getAccounts).toHaveBeenCalled();
   });
 
   describe('eip155 account permissions exist', () => {
-    it('waits for the wallet to unlock', async () => {
-      const { handler, getUnlockPromise, getAccounts } = createMockedHandler();
-      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
-
-      await handler(baseRequest);
-      expect(getUnlockPromise).toHaveBeenCalledWith(true);
-    });
-
     it('returns the accounts', async () => {
       const { handler, response, getAccounts } = createMockedHandler();
       getAccounts.mockReturnValue(['0xdead', '0xbeef']);
@@ -100,47 +115,23 @@ describe('requestEthereumAccountsHandler', () => {
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
     });
-
-    it('blocks subsequent requests if there is currently a request waiting for the wallet to be unlocked', async () => {
-      const { handler, getUnlockPromise, getAccounts, end, response } =
-        createMockedHandler();
-      const { promise, resolve } = deferredPromise();
-      getUnlockPromise.mockReturnValue(promise);
-      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
-
-      handler(baseRequest);
-      expect(response).toStrictEqual({
-        id: 0,
-        jsonrpc: '2.0',
-        result: undefined,
-      });
-      expect(end).not.toHaveBeenCalled();
-
-      await flushPromises();
-
-      await handler(baseRequest);
-      expect(response.error).toStrictEqual(
-        rpcErrors.resourceUnavailable(
-          `Already processing eth_requestAccounts. Please wait.`,
-        ),
-      );
-      expect(end).toHaveBeenCalledTimes(1);
-      resolve?.();
-    });
   });
 
   describe('eip155 account permissions do not exist', () => {
-    it('requests the CAIP-25 approval', async () => {
-      const { handler, requestCaip25ApprovalForOrigin } = createMockedHandler();
+    it('gets the CAIP-25 permission object to request approval for', async () => {
+      const { handler, getCaip25PermissionFromLegacyPermissionsForOrigin } =
+        createMockedHandler();
 
       await handler({ ...baseRequest, origin: 'http://test.com' });
-      expect(requestCaip25ApprovalForOrigin).toHaveBeenCalledWith();
+      expect(
+        getCaip25PermissionFromLegacyPermissionsForOrigin,
+      ).toHaveBeenCalledWith();
     });
 
     it('throws an error if the CAIP-25 approval is rejected', async () => {
-      const { handler, requestCaip25ApprovalForOrigin, end } =
+      const { handler, requestPermissionsForOrigin, end } =
         createMockedHandler();
-      requestCaip25ApprovalForOrigin.mockRejectedValue(
+      requestPermissionsForOrigin.mockRejectedValue(
         new Error('approval rejected'),
       );
 
@@ -151,14 +142,16 @@ describe('requestEthereumAccountsHandler', () => {
     it('grants the CAIP-25 approval', async () => {
       const {
         handler,
-        requestCaip25ApprovalForOrigin,
-        grantPermissionsForOrigin,
+        getCaip25PermissionFromLegacyPermissionsForOrigin,
+        requestPermissionsForOrigin,
       } = createMockedHandler();
 
-      requestCaip25ApprovalForOrigin.mockResolvedValue({ foo: 'bar' });
+      getCaip25PermissionFromLegacyPermissionsForOrigin.mockReturnValue({
+        foo: 'bar',
+      });
 
       await handler({ ...baseRequest, origin: 'http://test.com' });
-      expect(grantPermissionsForOrigin).toHaveBeenCalledWith({ foo: 'bar' });
+      expect(requestPermissionsForOrigin).toHaveBeenCalledWith({ foo: 'bar' });
     });
 
     it('returns the newly granted and properly ordered eth accounts', async () => {
@@ -180,18 +173,26 @@ describe('requestEthereumAccountsHandler', () => {
       MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
 
       await handler(baseRequest);
-      expect(sendMetrics).toHaveBeenCalledWith({
-        category: 'inpage_provider',
-        event: 'Dapp Viewed',
-        properties: {
-          is_first_visit: true,
-          number_of_accounts: 3,
-          number_of_accounts_connected: 2,
+      expect(sendMetrics).toHaveBeenCalledWith(
+        {
+          category: 'inpage_provider',
+          event: 'Dapp Viewed',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_first_visit: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_accounts: 3,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_accounts_connected: 2,
+          },
+          referrer: {
+            url: 'http://test.com',
+          },
         },
-        referrer: {
-          url: 'http://test.com',
+        {
+          excludeMetaMetricsId: true,
         },
-      });
+      );
     });
 
     it('does not emit the dapp viewed metrics event when shouldEmitDappViewedEvent returns false', async () => {

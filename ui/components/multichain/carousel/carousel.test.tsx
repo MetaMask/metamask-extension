@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { Carousel } from './carousel';
-import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
+import { MARGIN_VALUES, MAX_SLIDES, WIDTH_VALUES } from './constants';
 
 jest.mock('react-responsive-carousel', () => ({
   Carousel: ({
@@ -27,9 +27,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('reselect', () => ({
-  createSelector: jest.fn(),
-  createDeepEqualSelector: jest.fn(),
-  createSelectorCreator: jest.fn(() => jest.fn()),
+  ...jest.requireActual('reselect'),
   lruMemoize: jest.fn(),
 }));
 
@@ -68,7 +66,7 @@ describe('Carousel', () => {
     expect(images[1]).toHaveAttribute('src', 'image2.jpg');
   });
 
-  it('should handle slide removal', async () => {
+  it('should handle slide removal', () => {
     const mockOnClose = jest.fn();
     const { container, rerender } = render(
       <Carousel slides={mockSlides} onClose={mockOnClose} />,
@@ -82,7 +80,7 @@ describe('Carousel', () => {
     fireEvent.click(closeButtons[0]);
     expect(mockOnClose).toHaveBeenCalledWith(false, '1');
 
-    const remainingSlides = mockSlides.filter((slide) => slide.id !== '1');
+    const remainingSlides = mockSlides.filter((s) => s.id !== '1');
     rerender(<Carousel slides={remainingSlides} onClose={mockOnClose} />);
 
     const updatedCloseButtons = container.querySelectorAll(
@@ -107,6 +105,7 @@ describe('Carousel', () => {
     if (!dots || dots.length === 0) {
       throw new Error('Carousel dots not found');
     }
+
     fireEvent.click(dots[1]);
 
     const slides = container.querySelectorAll('.mm-carousel-slide');
@@ -136,17 +135,15 @@ describe('Carousel', () => {
     expect(slides[0]).toHaveStyle({
       width: 'calc(98% - 16px)',
     });
-
     expect(slides[1]).toHaveStyle({
       width: WIDTH_VALUES.STANDARD_SLIDE,
     });
 
-    // Check margins for first slide
+    // first slide margins
     expect(slides[0]).toHaveStyle({
       margin: `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} 16px`,
     });
-
-    // Check margins for subsequent slides
+    // subsequent slide margins
     expect(slides[1]).toHaveStyle({
       margin: `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} ${MARGIN_VALUES.ZERO}`,
     });
@@ -164,6 +161,7 @@ describe('Carousel', () => {
 
   it('should handle slide click with href', () => {
     const mockOpenTab = jest.fn();
+    // @ts-expect-error mocking platform
     global.platform = {
       openTab: mockOpenTab,
       closeCurrentWindow: jest.fn(),
@@ -182,18 +180,14 @@ describe('Carousel', () => {
     if (!slide) {
       throw new Error('Slide not found');
     }
-    fireEvent.click(slide);
 
+    fireEvent.click(slide);
     expect(mockOpenTab).toHaveBeenCalledWith({ url: 'https://example.com' });
   });
 
   it('should handle slide click with onClick', () => {
     const mockOnClick = jest.fn();
-    const slidesWithClick = [
-      {
-        ...mockSlides[0],
-      },
-    ];
+    const slidesWithClick = [{ ...mockSlides[0] }];
 
     const { container } = render(
       <Carousel slides={slidesWithClick} onClick={mockOnClick} />,
@@ -203,17 +197,14 @@ describe('Carousel', () => {
     if (!slide) {
       throw new Error('Slide not found');
     }
-    fireEvent.click(slide);
 
+    fireEvent.click(slide);
     expect(mockOnClick).toHaveBeenCalledWith('1');
   });
 
   it('should not show close button for undismissable slides', () => {
     const undismissableSlides = [
-      {
-        ...mockSlides[0],
-        undismissable: true,
-      },
+      { ...mockSlides[0], undismissable: true },
       mockSlides[1],
     ];
 
@@ -228,37 +219,20 @@ describe('Carousel', () => {
   });
 
   it('should limit the number of slides to MAX_SLIDES', () => {
-    const manySlides = [
-      ...mockSlides,
-      {
-        id: '3',
-        title: 'Slide 3',
-        description: 'Description 3',
-        image: 'image3.jpg',
-      },
-      {
-        id: '4',
-        title: 'Slide 4',
-        description: 'Description 4',
-        image: 'image4.jpg',
-      },
-      {
-        id: '5',
-        title: 'Slide 5',
-        description: 'Description 5',
-        image: 'image5.jpg',
-      },
-      {
-        id: '6',
-        title: 'Slide 6',
-        description: 'Description 6',
-        image: 'image6.jpg',
-      },
-    ];
+    const createSlide = (id: string) => ({
+      id,
+      title: `Slide ${id}`,
+      description: `Description ${id}`,
+      image: `imagejpg`,
+    });
+    const slides = [...Array(MAX_SLIDES)].map((_, i) => createSlide(`${i}`));
+    slides.push(createSlide('1 more than max!'));
+    slides.push(createSlide('2 more than max!'));
+    slides.push(createSlide('3 more than max!'));
 
-    const { container } = render(<Carousel slides={manySlides} />);
+    const { container } = render(<Carousel slides={slides} />);
 
     const visibleSlides = container.querySelectorAll('.mm-carousel-slide');
-    expect(visibleSlides).toHaveLength(5);
+    expect(visibleSlides).toHaveLength(MAX_SLIDES);
   });
 });

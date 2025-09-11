@@ -7,22 +7,27 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
+const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
+const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
+const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
-  DEFAULT_GANACHE_ETH_BALANCE_DEC,
 } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
+const LocalWebSocketServer = require('./websocket-server').default;
+const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -40,15 +45,61 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 /**
+ * Normalizes the localNodeOptions into a consistent format to handle different data structures.
+ * Case 1: A string: localNodeOptions = 'anvil'
+ * Case 2: Array of strings: localNodeOptions = ['anvil', 'bitcoin']
+ * Case 3: Array of objects: localNodeOptions =
+ * [
+ *  { type: 'anvil', options: {anvilOpts}},
+ *  { type: 'bitcoin',options: {bitcoinOpts}},
+ * ]
+ * Case 4: Options object without type: localNodeOptions = {options}
+ *
+ * @param {string | object | Array} localNodeOptions - The input local node options.
+ * @returns {Array} The normalized local node options.
+ */
+function normalizeLocalNodeOptions(localNodeOptions) {
+  if (typeof localNodeOptions === 'string') {
+    // Case 1: Passing a string
+    return [{ type: localNodeOptions, options: {} }];
+  } else if (Array.isArray(localNodeOptions)) {
+    return localNodeOptions.map((node) => {
+      if (typeof node === 'string') {
+        // Case 2: Array of strings
+        return { type: node, options: {} };
+      }
+      if (typeof node === 'object' && node !== null) {
+        // Case 3: Array of objects
+        return {
+          type: node.type || 'anvil',
+          options: node.options || {},
+        };
+      }
+      throw new Error(`Invalid localNodeOptions entry: ${node}`);
+    });
+  }
+  if (typeof localNodeOptions === 'object' && localNodeOptions !== null) {
+    // Case 4: Passing an options object without type
+    return [
+      {
+        type: 'anvil',
+        options: localNodeOptions,
+      },
+    ];
+  }
+  throw new Error(`Invalid localNodeOptions type: ${typeof localNodeOptions}`);
+}
+
+/**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {Ganache | undefined} ganacheServer - The Ganache server.
- * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
+ * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('ganache', 'anvil'...).
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
+ * @property {string} extensionId - The extension ID (useful for connecting via `externally_connectable`).
  */
 
 /**
@@ -60,7 +111,7 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
-    localNodeOptions,
+    localNodeOptions = 'anvil',
     smartContract,
     driverOptions,
     dappOptions,
@@ -68,27 +119,31 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
-    disableGanache,
     disableServerMochaToBackground = false,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
+    useMockingPassThrough,
     useBundler,
     usePaymaster,
     ethConversionInUsd,
+    monConversionInUsd,
     manifestFlags,
+    withSolanaWebSocket = {
+      server: false,
+      mocks: [],
+    },
   } = options;
 
+  // Normalize localNodeOptions
+  const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
+
   const fixtureServer = new FixtureServer();
-  let ganacheServer;
-  if (!disableGanache) {
-    ganacheServer = new Ganache();
-  }
+
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -99,47 +154,85 @@ async function withFixtures(options, testSuite) {
 
   let webDriver;
   let driver;
+  let extensionId;
   let failed = false;
-  try {
-    if (!disableGanache) {
-      await ganacheServer.start(localNodeOptions);
-    }
-    let contractRegistry;
 
-    if (smartContract && !disableGanache) {
-      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+  let localNode;
+  const localNodes = [];
+
+  let localWebSocketServer;
+
+  try {
+    // Start servers based on the localNodes array
+    for (let i = 0; i < localNodeOptsNormalized.length; i++) {
+      const nodeType = localNodeOptsNormalized[i].type;
+      const nodeOptions = localNodeOptsNormalized[i].options || {};
+
+      switch (nodeType) {
+        case 'anvil':
+          localNode = new Anvil();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'ganache':
+          localNode = new Ganache();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'none':
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${nodeType}'. Cannot start the server.`,
+          );
+      }
+    }
+
+    let contractRegistry;
+    let seeder;
+
+    // We default the smart contract seeder to the first node client
+    // If there's a future need to deploy multiple smart contracts in multiple clients
+    // this assumption is no longer correct and the below code needs to be modified accordingly
+    if (smartContract) {
+      switch (localNodeOptsNormalized[0].type) {
+        case 'anvil':
+          seeder = new AnvilSeeder(localNodes[0].getProvider());
+          break;
+
+        case 'ganache':
+          seeder = new GanacheSeeder(localNodes[0].getProvider());
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${localNodeOptsNormalized[0].type}'. Cannot deploy smart contracts.`,
+          );
+      }
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
-      await Promise.all(
-        contracts.map((contract) =>
-          ganacheSeeder.deploySmartContract(contract),
-        ),
-      );
-      contractRegistry = ganacheSeeder.getContractRegistry();
+
+      const hardfork = localNodeOptsNormalized[0].options.hardfork || 'prague';
+      for (const contract of contracts) {
+        await seeder.deploySmartContract(contract, hardfork);
+      }
+
+      contractRegistry = seeder.getContractRegistry();
     }
 
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (localNodeOptions?.concurrent) {
-      localNodeOptions.concurrent.forEach(async (ganacheSettings) => {
-        const { port, chainId, ganacheOptions2 } = ganacheSettings;
-        const server = new Ganache();
-        secondaryGanacheServer.push(server);
-        await server.start({
-          blockTime: 2,
-          chain: { chainId },
-          port,
-          vmErrorsOnRPCResponse: false,
-          mnemonic:
-            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-          ...ganacheOptions2,
-        });
-      });
-    }
-
-    if (!disableGanache && useBundler) {
-      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+    if (localNodes[0] && useBundler) {
+      await initBundler(
+        bundlerServer,
+        localNodes[0],
+        usePaymaster,
+        localNodeOptsNormalized,
+      );
     }
 
     await phishingPageServer.start();
@@ -172,14 +265,30 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
+
+    if (withSolanaWebSocket.server) {
+      localWebSocketServer = LocalWebSocketServer.getServerInstance();
+      localWebSocketServer.start();
+      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
+    }
+
+    // Decide between the regular setupMocking and the passThrough version
+    const mockingSetupFunction = useMockingPassThrough
+      ? setupMockingPassThrough
+      : setupMocking;
+
+    // Use the mockingSetupFunction we just chose
+    const { mockedEndpoint, getPrivacyReport } = await mockingSetupFunction(
       mockServer,
       testSpecificMock,
       {
-        chainId: localNodeOptions?.chainId || 1337,
+        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
         ethConversionInUsd,
+        monConversionInUsd,
       },
+      withSolanaWebSocket,
     );
+
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -189,7 +298,12 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    driver = (await buildWebDriver(driverOptions)).driver;
+    const wd = await buildWebDriver({
+      ...driverOptions,
+      disableServerMochaToBackground,
+    });
+    driver = wd.driver;
+    extensionId = wd.extensionId;
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -220,13 +334,13 @@ async function withFixtures(options, testSuite) {
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
-      driver: driverProxy ?? driver,
-      contractRegistry,
-      ganacheServer,
-      secondaryGanacheServer,
-      mockedEndpoint,
       bundlerServer,
+      contractRegistry,
+      driver: driverProxy ?? driver,
+      localNodes,
+      mockedEndpoint,
       mockServer,
+      extensionId,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -297,56 +411,76 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Add information to the end of the error message that should surface in the "Tests" tab of CircleCI
-    if (process.env.CIRCLE_NODE_INDEX) {
-      error.message += `\n  (Ran on CircleCI Node ${process.env.CIRCLE_NODE_INDEX} of ${process.env.CIRCLE_NODE_TOTAL}, Job ${process.env.CIRCLE_JOB})`;
-    }
-
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      await fixtureServer.stop();
-      if (ganacheServer) {
-        await ganacheServer.quit();
-      }
+      const shutdownTasks = [fixtureServer.stop()];
 
-      if (localNodeOptions?.concurrent) {
-        secondaryGanacheServer.forEach(async (server) => {
-          await server.quit();
-        });
+      for (const server of localNodes) {
+        if (server) {
+          shutdownTasks.push(server.quit());
+        }
       }
 
       if (useBundler) {
-        await bundlerServer.stop();
+        shutdownTasks.push(bundlerServer.stop());
       }
 
       if (webDriver) {
-        await driver.quit();
+        shutdownTasks.push(driver.quit());
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
-            await new Promise((resolve, reject) => {
-              dappServer[i].close((error) => {
-                if (error) {
-                  return reject(error);
-                }
-                return resolve();
-              });
-            });
+            shutdownTasks.push(
+              new Promise((resolve, reject) => {
+                dappServer[i].close((error) => {
+                  if (error) {
+                    return reject(error);
+                  }
+                  return resolve();
+                });
+                // We need to close all connections to stop the server quickly
+                // Otherwise it takes a few seconds for it to close
+                dappServer[i].closeAllConnections();
+              }),
+            );
           }
         }
       }
       if (phishingPageServer.isRunning()) {
-        await phishingPageServer.quit();
+        shutdownTasks.push(phishingPageServer.quit());
       }
 
-      // Since mockServer could be stop'd at another location,
-      // use a try/catch to avoid an error
-      try {
-        await mockServer.stop();
-      } catch (e) {
-        console.log('mockServer already stopped');
+      shutdownTasks.push(
+        (async () => {
+          // Since mockServer could be stop'd at another location,
+          // use a try/catch to avoid an error
+          try {
+            await mockServer.stop();
+          } catch (e) {
+            console.log('mockServer already stopped');
+          }
+        })(),
+      );
+
+      if (withSolanaWebSocket.server) {
+        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
+      }
+
+      const results = await Promise.allSettled(shutdownTasks);
+      const failures = results.filter((result) => result.status === 'rejected');
+      for (const { reason } of failures) {
+        console.error('Failed to shut down:', reason);
+      }
+      if (failures.length) {
+        // A test error may get overridden here by the shutdown error, but this is OK because a
+        // shutdown error indicates a bug in our test tooling that might invalidate later tests.
+        // eslint-disable-next-line no-unsafe-finally
+        throw new AggregateError(
+          failures.map((failure) => failure.reason),
+          'Failed to shut down test servers',
+        );
       }
     }
   }
@@ -354,12 +488,16 @@ async function withFixtures(options, testSuite) {
 
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
   InstalledExtensions: 'Extensions',
   Dialog: 'MetaMask Dialog',
   Phishing: 'MetaMask Phishing Detection',
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
+  TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
+  MultichainTestDApp: 'Multichain Test Dapp',
+  SolanaTestDApp: 'Solana Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });
@@ -396,6 +534,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
   return contract
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
+};
+const openPopupWithActiveTabOrigin = async (driver, origin = DAPP_URL) => {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
+  );
+
+  // Resize the popup window after it's opened
+  await driver.driver.manage().window().setRect({ width: 400, height: 600 });
 };
 
 const openDappConnectionsPage = async (driver) => {
@@ -460,56 +606,17 @@ const PRIVATE_KEY_TWO =
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
-const defaultGanacheOptions = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-    },
-  ],
-};
-
-const defaultGanacheOptionsForType2Transactions = {
-  ...defaultGanacheOptions,
-  // EVM version that supports type 2 transactions (EIP1559)
-  hardfork: 'london',
-};
-
 const multipleGanacheOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
     },
     {
       secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
     },
   ],
-};
-
-const multipleGanacheOptionsForType2Transactions = {
-  ...multipleGanacheOptions,
-  // EVM version that supports type 2 transactions (EIP1559)
-  hardfork: 'london',
-};
-
-const generateGanacheOptions = ({
-  secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-  ...otherProps
-}) => {
-  const accounts = [
-    {
-      secretKey,
-      balance,
-    },
-  ];
-
-  return {
-    accounts,
-    ...otherProps, // eg: hardfork
-  };
 };
 
 // Edit priority gas fee form
@@ -523,6 +630,7 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  console.log('Opening action menu and starting send flow');
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
@@ -595,17 +703,13 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {Ganache | Anvil} [localNode] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
-const locateAccountBalanceDOM = async (
-  driver,
-  ganacheServer,
-  address = null,
-) => {
+const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (ganacheServer) {
-    const balance = await ganacheServer.getBalance(address);
+  if (localNode) {
+    const balance = await localNode.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -680,10 +784,10 @@ async function createWebSocketConnection(driver, hostname) {
   }
 }
 
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
+const logInWithBalanceValidation = async (driver, localNode) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, localNode);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -825,25 +929,30 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+async function initBundler(
+  bundlerServer,
+  localNodeServer,
+  usePaymaster,
+  localNodeOptsNormalized,
+) {
   try {
-    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+    const nodeType = localNodeOptsNormalized[0].type;
+    const seeder =
+      nodeType === 'ganache'
+        ? new GanacheSeeder(localNodeServer.getProvider())
+        : new AnvilSeeder(localNodeServer.getProvider());
 
-    await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+    await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
-    await ganacheSeeder.deploySmartContract(
-      SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
-    );
+    await seeder.deploySmartContract(SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY);
 
     if (usePaymaster) {
-      await ganacheSeeder.deploySmartContract(
-        SMART_CONTRACTS.VERIFYING_PAYMASTER,
-      );
+      await seeder.deploySmartContract(SMART_CONTRACTS.VERIFYING_PAYMASTER);
 
-      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+      await seeder.paymasterDeposit(convertETHToHexGwei(1));
     }
 
-    await ganacheSeeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
+    await seeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
 
     await bundlerServer.start();
   } catch (error) {
@@ -884,20 +993,17 @@ module.exports = {
   withFixtures,
   createDownloadFolder,
   openDapp,
+  openPopupWithActiveTabOrigin,
   openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
-  multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
   convertETHToHexGwei,

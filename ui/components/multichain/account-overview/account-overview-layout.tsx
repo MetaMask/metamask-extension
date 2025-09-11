@@ -1,40 +1,27 @@
-import React, { useEffect, useContext, useState, useCallback } from 'react';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { isEqual } from 'lodash';
-///: END:ONLY_INCLUDE_IF
-import { removeSlide, updateSlides } from '../../../store/actions';
+
+import { removeSlide, setSelectedAccount } from '../../../store/actions';
 import { Carousel } from '..';
 import {
-  getSelectedAccountCachedBalance,
   getAppIsLoading,
-  getSlides,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getSwapsDefaultToken,
-  ///: END:ONLY_INCLUDE_IF
+  getRemoteFeatureFlags,
+  hasCreatedSolanaAccount,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useBridging from '../../../hooks/bridge/useBridging';
-///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
+import { CreateSolanaAccountModal } from '../create-solana-account-modal';
+import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
+import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
-import {
-  FUND_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  CARD_SLIDE,
-  CASH_SLIDE,
-  ZERO_BALANCE,
-} from './constants';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -45,69 +32,56 @@ export const AccountOverviewLayout = ({
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
   const dispatch = useDispatch();
-  const slides = useSelector(getSlides);
-  const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isLoading = useSelector(getAppIsLoading);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+  const isCarouselEnabled = Boolean(remoteFeatureFlags?.carouselBanners);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-  ///: END:ONLY_INCLUDE_IF
+  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
+    useState(false);
+  const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
+  const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
 
-  const hasZeroBalance = totalBalance === ZERO_BALANCE;
+  const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
+    useState(false);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const { openBridgeExperience } = useBridging();
-  ///: END:ONLY_INCLUDE_IF
+  const { slides } = useCarouselManagement({ enabled: isCarouselEnabled });
 
-  useEffect(() => {
-    const fundSlide = {
-      ...FUND_SLIDE,
-      undismissable: hasZeroBalance,
-    };
-
-    const defaultSlides = [
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      BRIDGE_SLIDE,
-      ///: END:ONLY_INCLUDE_IF
-      CARD_SLIDE,
-      CASH_SLIDE,
-    ];
-
-    if (hasZeroBalance) {
-      defaultSlides.unshift(fundSlide);
-    } else {
-      defaultSlides.splice(2, 0, fundSlide);
-    }
-
-    dispatch(updateSlides(defaultSlides));
-  }, [hasZeroBalance]);
+  const slideById = useMemo(() => {
+    const m = new Map<string, CarouselSlide>();
+    slides.forEach((s: CarouselSlide) => m.set(s.id, s));
+    return m;
+  }, [slides]);
 
   const handleCarouselClick = (id: string) => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    if (id === 'bridge') {
-      openBridgeExperience(
-        'Carousel',
-        defaultSwapsToken,
-        location.pathname.includes('asset') ? '&token=native' : '',
-      );
+    const slide = slideById.get(id);
+    const key = slide?.variableName ?? id;
+
+    if (key === 'solana') {
+      if (hasSolanaAccount && selectedSolanaAccount) {
+        dispatch(setSelectedAccount(selectedSolanaAccount.address));
+      } else {
+        setShowCreateSolanaAccountModal(true);
+      }
     }
-    ///: END:ONLY_INCLUDE_IF
+
+    if (key === 'downloadMobileApp') {
+      setShowDownloadMobileAppModal(true);
+    }
 
     trackEvent({
       event: MetaMetricsEventName.BannerSelect,
       category: MetaMetricsEventCategory.Banner,
       properties: {
-        banner_name: id,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        banner_name: key,
       },
     });
   };
 
   const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
-    if (id === 'fund' && hasZeroBalance) {
-      return;
-    }
     if (isLastSlide) {
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
@@ -125,6 +99,8 @@ export const AccountOverviewLayout = ({
             event: MetaMetricsEventName.BannerDisplay,
             category: MetaMetricsEventCategory.Banner,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               banner_name: slide.id,
             },
           });
@@ -138,14 +114,27 @@ export const AccountOverviewLayout = ({
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
-      <Carousel
-        slides={slides}
-        isLoading={isLoading}
-        onClick={handleCarouselClick}
-        onClose={handleRemoveSlide}
-        onRenderSlides={handleRenderSlides}
-      />
+
+      {isCarouselEnabled && (
+        <Carousel
+          slides={slides}
+          isLoading={isLoading}
+          onClick={handleCarouselClick}
+          onClose={handleRemoveSlide}
+          onRenderSlides={handleRenderSlides}
+        />
+      )}
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
+      {showCreateSolanaAccountModal && (
+        <CreateSolanaAccountModal
+          onClose={() => setShowCreateSolanaAccountModal(false)}
+        />
+      )}
+      {showDownloadMobileAppModal && (
+        <DownloadMobileAppModal
+          onClose={() => setShowDownloadMobileAppModal(false)}
+        />
+      )}
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -7,13 +7,21 @@ import {
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
+
+// Copied from `@metamask/snaps-controllers`, since it is not exported.
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json | undefined>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
 
 /**
  * Initialize the Snap controller.
@@ -26,6 +34,8 @@ import { getBooleanFlag } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.
+ * @param request.preinstalledSnaps - The list of preinstalled Snaps.
+ * @param request.trackEvent - Event tracking hook.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -37,6 +47,8 @@ export const SnapControllerInit: ControllerInitFunction<
   controllerMessenger,
   persistedState,
   removeAllConnections,
+  preinstalledSnaps,
+  trackEvent,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
@@ -44,7 +56,13 @@ export const SnapControllerInit: ControllerInitFunction<
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
 
-  function getMnemonic() {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const forcePreinstalledSnaps = getBooleanFlag(
+    process.env.FORCE_PREINSTALLED_SNAPS,
+  );
+  ///: END:ONLY_INCLUDE_IF
+
+  async function getMnemonicSeed() {
     const keyrings = initMessenger.call(
       'KeyringController:getKeyringsByType',
       KeyringType.hdKeyTree,
@@ -52,14 +70,13 @@ export const SnapControllerInit: ControllerInitFunction<
 
     if (
       !keyrings[0] ||
-      !hasProperty(keyrings[0], 'mnemonic') ||
-      !(keyrings[0].mnemonic instanceof Uint8Array)
+      !hasProperty(keyrings[0], 'seed') ||
+      !(keyrings[0].seed instanceof Uint8Array)
     ) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    // `SnapController` expects a promise.
-    return Promise.resolve(keyrings[0].mnemonic);
+    return keyrings[0].seed;
   }
 
   /**
@@ -98,6 +115,10 @@ export const SnapControllerInit: ControllerInitFunction<
       allowLocalSnaps,
       requireAllowlist,
       rejectInvalidPlatformVersion,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      forcePreinstalledSnaps,
+      ///: END:ONLY_INCLUDE_IF
+      useCaip25Permission: true,
     },
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected
@@ -105,13 +126,15 @@ export const SnapControllerInit: ControllerInitFunction<
     // TODO: Look into the type mismatch.
     encryptor: encryptorFactory(600_000),
 
-    getMnemonic,
+    getMnemonicSeed,
 
-    // @ts-expect-error: `PREINSTALLED_SNAPS` is readonly, but the controller
-    // expects a mutable array.
-    // TODO: Update the controller to accept a readonly array.
-    preinstalledSnaps: PREINSTALLED_SNAPS,
+    preinstalledSnaps,
     getFeatureFlags,
+
+    // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
+    // properties, but `MetaMetricsEventPayload` uses `Json`, even though
+    // `undefined` is supported.
+    trackEvent: trackEvent as TrackEventHook,
   });
 
   return {

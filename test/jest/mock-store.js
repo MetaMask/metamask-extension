@@ -1,12 +1,8 @@
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
-import { DEFAULT_BRIDGE_STATE } from '../../app/scripts/controllers/bridge/constants';
-import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
-import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
-import { mockTokenData } from '../data/bridge/mock-token-data';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -139,12 +135,18 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: false,
+        },
+      },
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
         tokenNetworkFilter: {},
         showMultiRpcModal: false,
       },
+      enabledNetworkMap: {},
       transactions: [
         {
           id: 6571648590592143,
@@ -267,6 +269,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
             address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -280,6 +283,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '15e69915-2a1a-4019-93b3-916e11fd432f': {
             address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
@@ -293,6 +297,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '784225f4-d30b-4e77-a900-c8bbce735b88': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -306,6 +311,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
           '36eb02e0-7925-47f0-859f-076608f09b69': {
             address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe6',
@@ -323,6 +329,7 @@ export const createSwapsMockStore = () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -359,10 +366,18 @@ export const createSwapsMockStore = () => {
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
             '2f8d4a878cfa04a6e60d46362f5644deab66572d',
           ],
+          metadata: {
+            id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            name: '',
+          },
         },
         {
           type: KeyringType.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
+          metadata: {
+            id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+            name: '',
+          },
         },
       ],
       ...mockNetworkState({
@@ -704,85 +719,6 @@ export const createSwapsMockStore = () => {
         },
       },
       gasLoadingAnimationIsShowing: false,
-    },
-  };
-};
-
-export const createBridgeMockStore = (
-  {
-    featureFlagOverrides = {},
-    bridgeSliceOverrides = {},
-    bridgeStateOverrides = {},
-    bridgeStatusStateOverrides = {},
-    metamaskStateOverrides = {},
-  } = {
-    featureFlagOverrides: {},
-    bridgeSliceOverrides: {},
-    bridgeStateOverrides: {},
-    bridgeStatusStateOverrides: {},
-    metamaskStateOverrides: {},
-  },
-) => {
-  const swapsStore = createSwapsMockStore();
-  return {
-    ...swapsStore,
-    // For initial state of dest asset picker
-    swaps: {
-      ...swapsStore.swaps,
-      topAssets: [],
-    },
-    bridge: {
-      toChainId: null,
-      sortOrder: 'cost_ascending',
-      ...bridgeSliceOverrides,
-    },
-    localeMessages: { currentLocale: 'es_419' },
-    metamask: {
-      ...swapsStore.metamask,
-      ...mockNetworkState(
-        { chainId: CHAIN_IDS.MAINNET },
-        { chainId: CHAIN_IDS.LINEA_MAINNET },
-      ),
-      gasFeeEstimates: {
-        estimatedBaseFee: '0.00010456',
-        [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
-          suggestedMaxFeePerGas: '0.00018456',
-          suggestedMaxPriorityFeePerGas: '0.0001',
-        },
-      },
-      currencyRates: {
-        ETH: { conversionRate: 2524.25 },
-        usd: { conversionRate: 1 },
-      },
-      marketData: {
-        '0x1': {
-          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-            currency: 'usd',
-            price: 2.3,
-          },
-        },
-      },
-      ...mockTokenData,
-      ...metamaskStateOverrides,
-      bridgeState: {
-        ...DEFAULT_BRIDGE_STATE,
-        bridgeFeatureFlags: {
-          ...featureFlagOverrides,
-          extensionConfig: {
-            support: false,
-            chains: {},
-            ...featureFlagOverrides.extensionConfig,
-          },
-        },
-        ...bridgeStateOverrides,
-      },
-      bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_STATE,
-        ...bridgeStatusStateOverrides,
-      },
-    },
-    send: {
-      swapsBlockedTokens: [],
     },
   };
 };

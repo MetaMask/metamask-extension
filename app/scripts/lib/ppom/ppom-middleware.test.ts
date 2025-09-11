@@ -2,12 +2,11 @@ import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
 import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -27,6 +26,8 @@ const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   securityAlertId: SECURITY_ALERT_ID_MOCK,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Malicious,
   reason: BlockaidReason.permitFarming,
 };
@@ -35,6 +36,8 @@ const REQUEST_MOCK = {
   params: [],
   id: '',
   jsonrpc: '2.0' as const,
+  origin: 'test.com',
+  networkClientId: 'networkClientId',
 };
 
 const createMiddleware = (
@@ -42,7 +45,7 @@ const createMiddleware = (
     chainId?: Hex | null;
     error?: Error;
     securityAlertsEnabled?: boolean;
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateSecurityAlertResponse?: any;
   } = {
@@ -69,10 +72,9 @@ const createMiddleware = (
   }
 
   const networkController = {
-    state: {
-      ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
-      ...(chainId === null ? { providerConfig: {} } : undefined),
-    },
+    getNetworkConfigurationByNetworkClientId: jest
+      .fn()
+      .mockReturnValue({ chainId: chainId || CHAIN_IDS.MAINNET }),
   };
 
   const appStateController = {
@@ -83,23 +85,25 @@ const createMiddleware = (
     listAccounts: () => [{ address: INTERNAL_ACCOUNT_ADDRESS }],
   };
 
-  return createPPOMMiddleware(
-    // TODO: Replace `any` with type
+  const middlewareFunction = createPPOMMiddleware(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ppomController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preferenceController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     networkController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,
   );
+  return { middlewareFunction, networkController };
 };
 
 describe('PPOMMiddleware', () => {
@@ -123,10 +127,35 @@ describe('PPOMMiddleware', () => {
     };
   });
 
+  it('gets the network configuration for the request networkClientId', async () => {
+    const { middlewareFunction, networkController } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+
+    await flushPromises();
+
+    expect(
+      networkController.getNetworkConfigurationByNetworkClientId,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      networkController.getNetworkConfigurationByNetworkClientId,
+    ).toHaveBeenCalledWith('networkClientId');
+  });
+
   it('adds checking chain response to confirmation requests while validation is in progress', async () => {
     const updateSecurityAlertResponse = jest.fn();
 
-    const middlewareFunction = createMiddleware({
+    const { middlewareFunction } = createMiddleware({
       updateSecurityAlertResponse,
     });
 
@@ -149,7 +178,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation if the user has not enabled the preference', async () => {
-    const middlewareFunction = createMiddleware({
+    const { middlewareFunction } = createMiddleware({
       securityAlertsEnabled: false,
     });
 
@@ -167,7 +196,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation when request is not for confirmation method', async () => {
-    const middlewareFunction = createMiddleware();
+    const { middlewareFunction } = createMiddleware();
 
     const req = {
       ...REQUEST_MOCK,
@@ -186,7 +215,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation when request is send to users own account', async () => {
-    const middlewareFunction = createMiddleware();
+    const { middlewareFunction } = createMiddleware();
 
     const req = {
       ...REQUEST_MOCK,
@@ -206,7 +235,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('does not do validation for SIWE signature', async () => {
-    const middlewareFunction = createMiddleware({
+    const { middlewareFunction } = createMiddleware({
       securityAlertsEnabled: true,
     });
 
@@ -234,7 +263,7 @@ describe('PPOMMiddleware', () => {
   });
 
   it('calls next method', async () => {
-    const middlewareFunction = createMiddleware();
+    const { middlewareFunction } = createMiddleware();
     const nextMock = jest.fn();
 
     await middlewareFunction(
@@ -252,7 +281,7 @@ describe('PPOMMiddleware', () => {
 
     const nextMock = jest.fn();
 
-    const middlewareFunction = createMiddleware({ error });
+    const { middlewareFunction } = createMiddleware({ error });
 
     const req = {
       ...REQUEST_MOCK,

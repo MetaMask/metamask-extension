@@ -1,0 +1,207 @@
+# This workflow is meant to better structure the main.yaml one for redability reasons.
+# It is not meant to be a reusable workflow.
+
+name: E2E Chrome
+
+on:
+  workflow_call:
+    secrets:
+      PR_COMMENT_TOKEN:
+        required: true
+
+jobs:
+  test-e2e-chrome-browserify:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix:
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    with:
+      test-suite-name: test-e2e-chrome-browserify
+      build-artifact: build-test-browserify
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix:
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    with:
+      test-suite-name: test-e2e-chrome-webpack
+      build-artifact: build-test-webpack
+      build-command: yarn build:test:webpack
+      test-command: yarn test:e2e:chrome:webpack
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-multiple-providers:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-multiple-providers
+      build-artifact: build-test-browserify
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome:multi-provider
+
+  test-e2e-chrome-rpc:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-rpc
+      build-artifact: build-test-browserify
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome:rpc
+
+  test-e2e-chrome-flask:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix:
+        index: [0, 1, 2, 3, 4]
+    with:
+      test-suite-name: test-e2e-chrome-flask
+      build-artifact: build-test-flask-browserify
+      build-command: yarn build:test:flask
+      test-command: yarn test:e2e:chrome:flask
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-chrome-vault-decryption:
+    # This if statement is equivalent to IS_FORK
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-vault-decryption
+      build-artifact: build-dist-browserify
+      test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
+
+  test-e2e-chrome-api-specs:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-api-specs
+      build-artifact: build-test-browserify
+      build-command: yarn build:test
+      test-command: yarn test:api-specs
+      test-artifacts-path: html-report
+
+  test-e2e-chrome-api-specs-alert-on-failure:
+    needs:
+      - test-e2e-chrome-api-specs
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      HTML_REPORT_PATH: html-report
+      JOB_NAME: test-e2e-chrome-api-specs
+    steps:
+      - name: Download html report
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.JOB_NAME }}
+          path: ${{ env.HTML_REPORT_PATH }}
+
+      - name: Upload html report to S3
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.HTML_REPORT_PATH }}
+          path: ${{ env.HTML_REPORT_PATH }}
+
+      - name: Comment on PR with html report
+        run: |
+          gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
+
+  test-e2e-chrome-api-specs-multichain:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-chrome-api-specs-multichain
+      build-artifact: build-test-flask-browserify
+      build-command: yarn build:test:flask
+      test-command: yarn test:api-specs-multichain
+      test-artifacts-path: html-report-multichain
+
+  test-e2e-chrome-api-specs-multichain-alert-on-failure:
+    needs:
+      - test-e2e-chrome-api-specs-multichain
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      HTML_REPORT_PATH: html-report-multichain
+      JOB_NAME: test-e2e-chrome-api-specs-multichain
+    steps:
+      - name: Download html report
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.JOB_NAME }}
+          path: ${{ env.HTML_REPORT_PATH }}
+
+      - name: Upload html report to S3
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.HTML_REPORT_PATH }}
+          path: ${{ env.HTML_REPORT_PATH }}
+
+      - name: Comment on PR with html report
+        run: |
+          gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
+
+  test-e2e-chrome-report:
+    needs:
+      - test-e2e-chrome-browserify
+      - test-e2e-chrome-webpack
+      - test-e2e-chrome-multiple-providers
+      - test-e2e-chrome-rpc
+      - test-e2e-chrome-flask
+      - test-e2e-chrome-vault-decryption
+      - test-e2e-chrome-api-specs
+      - test-e2e-chrome-api-specs-multichain
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      # For a `pull_request` event, the branch is `github.head_ref`.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      TEST_RUNS_PATH: test/test-results/test-runs-chrome.json
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: test-e2e-chrome*
+          merge-multiple: true
+
+      - name: Create test report
+        run: yarn tsx .github/scripts/create-e2e-test-report.ts
+
+      - name: Upload test runs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-e2e-chrome-report
+          path: ${{ env.TEST_RUNS_PATH }}

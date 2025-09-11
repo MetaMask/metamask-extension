@@ -37,19 +37,25 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type ControllersToInitialize =
+  | 'AuthenticationController'
   | 'CronjobController'
+  | 'DeFiPositionsController'
   | 'ExecutionService'
   | 'MultichainAssetsController'
-  | 'MultiChainAssetsRatesController'
+  | 'MultichainAssetsRatesController'
   | 'MultichainBalancesController'
+  | 'MultichainNetworkController'
   | 'MultichainTransactionsController'
+  | 'NotificationServicesController'
+  | 'NotificationServicesPushController'
   | 'RateLimitController'
   | 'SnapsRegistry'
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
   | 'PPOMController'
-  | 'TransactionController';
+  | 'TransactionController'
+  | 'UserStorageController';
 
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
@@ -59,7 +65,7 @@ type InitFunction<Name extends ControllersToInitialize> =
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
 
-type InitFunctions = Partial<{
+export type InitFunctions = Partial<{
   [name in ControllersToInitialize]: InitFunction<name>;
 }>;
 
@@ -148,10 +154,10 @@ export function initControllers({
     const persistedStateKey =
       persistedStateKeyRaw === null
         ? undefined
-        : persistedStateKeyRaw ?? controllerName;
+        : (persistedStateKeyRaw ?? controllerName);
 
     const memStateKey =
-      memStateKeyRaw === null ? undefined : memStateKeyRaw ?? controllerName;
+      memStateKeyRaw === null ? undefined : (memStateKeyRaw ?? controllerName);
 
     // @ts-expect-error: Union too complex.
     partialControllersByName[controllerName] = controller;

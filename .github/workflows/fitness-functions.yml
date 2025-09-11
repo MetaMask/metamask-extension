@@ -11,13 +11,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Run fitness functions
         env:

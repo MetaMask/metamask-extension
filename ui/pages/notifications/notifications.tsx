@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -30,25 +30,13 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
-import { NotificationsList } from './notifications-list';
+import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
 export type Notification = NotificationServicesController.Types.INotification;
 
 const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
   NotificationServicesController.Constants;
-
-// NOTE - Tab filters could change once we support more notifications.
-export const enum TAB_KEYS {
-  // Shows all notifications
-  ALL = 'notifications-all-tab',
-
-  // These are only on-chain notifications (no snaps or feature announcements)
-  WALLET = 'notifications-wallet-tab',
-
-  // These are 3rd party notifications (snaps, feature announcements, web3 alerts)
-  WEB3 = 'notifications-other-tab',
-}
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
@@ -146,8 +134,10 @@ export const filterNotifications = (
   return notifications;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -178,7 +168,7 @@ export default function Notifications() {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
             data-testid="back-button"
           />
@@ -189,7 +179,7 @@ export default function Notifications() {
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             onClick={() => {
-              history.push(NOTIFICATIONS_SETTINGS_ROUTE);
+              navigate(NOTIFICATIONS_SETTINGS_ROUTE);
             }}
             data-testid="notifications-settings-button"
           />

@@ -3,7 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import AdvancedTab from '.';
 
@@ -11,6 +11,9 @@ const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
 const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
 const mockSetStxPrefEnabled = jest.fn();
+const mockSetManageInstitutionalWallets = jest.fn();
+const mockSetDismissSmartAccountSuggestionEnabled = jest.fn();
+const mockSetUseSmartAccount = jest.fn();
 const mockDisplayErrorInSettings = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
@@ -20,6 +23,10 @@ jest.mock('../../../store/actions.ts', () => {
     setShowFiatConversionOnTestnetsPreference: () =>
       mockSetShowFiatConversionOnTestnetsPreference,
     setSmartTransactionsPreferenceEnabled: () => mockSetStxPrefEnabled,
+    setManageInstitutionalWallets: () => mockSetManageInstitutionalWallets,
+    setDismissSmartAccountSuggestionEnabled: () =>
+      mockSetDismissSmartAccountSuggestionEnabled,
+    setSmartAccountOptIn: () => mockSetUseSmartAccount,
   };
 });
 
@@ -102,7 +109,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle show fiat on test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testShowFiatOnTestnets = queryAllByRole('checkbox')[2];
+    const testShowFiatOnTestnets = queryAllByRole('checkbox')[4];
 
     fireEvent.click(testShowFiatOnTestnets);
 
@@ -112,11 +119,21 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[3];
+    const testNetworkToggle = queryAllByRole('checkbox')[5];
 
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('should toggle manage institutional wallets', () => {
+    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const manageInstitutionalWalletsToggle = queryAllByRole('checkbox')[6];
+
+    fireEvent.click(manageInstitutionalWalletsToggle);
+
+    expect(mockSetManageInstitutionalWallets).toHaveBeenCalled();
   });
 
   describe('renderToggleStxOptIn', () => {
@@ -131,6 +148,42 @@ describe('AdvancedTab Component', () => {
       const toggleButton = queryByTestId('settings-page-stx-opt-in-toggle');
       fireEvent.click(toggleButton);
       expect(mockSetStxPrefEnabled).toHaveBeenCalled();
+    });
+  });
+
+  describe('renderToggleUseSmartAccount', () => {
+    it('should render the toggle button for smart account opt-in', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const toggleButton = queryByTestId(
+        'advanced-setting-smart-account-optin',
+      );
+      expect(toggleButton).toBeInTheDocument();
+    });
+
+    it('should call setSmartAccountOptIn when the toggle button is clicked', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const toggleButton = queryByTestId('settings-page-smart-account-optin');
+      fireEvent.click(toggleButton);
+      expect(mockSetUseSmartAccount).toHaveBeenCalled();
+    });
+  });
+
+  describe('renderToggleDismissSmartAccountSuggestion', () => {
+    it('should render the toggle button for Dismiss Smart Account Suggestion', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const toggleButton = queryByTestId(
+        'advanced-setting-dismiss-smart-account-suggestion-enabled',
+      );
+      expect(toggleButton).toBeInTheDocument();
+    });
+
+    it('should call setSmartTransactionsOptInStatus when the toggle button is clicked', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const toggleButton = queryByTestId(
+        'settings-page-dismiss-smart-account-suggestion-enabled-toggle',
+      );
+      fireEvent.click(toggleButton);
+      expect(mockSetDismissSmartAccountSuggestionEnabled).toHaveBeenCalled();
     });
   });
 

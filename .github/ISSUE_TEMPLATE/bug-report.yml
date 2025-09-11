@@ -1,138 +1,139 @@
 name: Bug Report
 description: Using MetaMask, but it's not working as you expect?
-title: "[Bug]: "
-labels: ["type-bug"]
+title: '[Bug]: '
+labels: ['type-bug']
+type: 'Bug'
 body:
- - type: markdown
-   attributes:
-     value: |
-       Thanks for taking the time to fill out this bug report!
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
 
-       ## **Before Submitting:**
+        ## **Before Submitting:**
 
-       * Please search to make sure this issue has not been opened already.
-       * If this is a question about how to integrate MetaMask with your project, please ask in our [Community forum](https://community.metamask.io/c/developer-questions/) instead. This will get your question answered more quickly and make it easier for other devs to find the answer in the future.
- - type: textarea
-   id: what-happened
-   attributes:
-     label: Describe the bug
-     description: What happened?
-     placeholder: A clear and concise description of what the bug is
-   validations:
-     required: true
- - type: textarea
-   id: expected-behavior
-   attributes:
-     label: Expected behavior
-     description: What did you expect to happen?
- - type: textarea
-   id: screenshot-recording
-   attributes:
-     label: Screenshots/Recordings
-     description: Please include screenshots/recordings if applicable!
- - type: textarea
-   id: reproduce
-   attributes:
-     label: Steps to reproduce
-     description: "List all steps needed to reproduce the problem:"
-     placeholder: |
-       1. Go to '...'
-       2. Click on '...'
-       3. Scroll down to '...'
-       4. See error
-   validations:
-     required: true
- - type: textarea
-   id: error
-   attributes:
-     label: Error messages or log output
-     description: Please copy and paste any relevant error messages or log output. This will be automatically formatted, so there is no need for backticks.
-     render: shell
- - type: dropdown
-   id: stage
-   attributes:
-     label: Detection stage
-     description: At what stage was the bug detected?
-     options:
-       - In production (default)
-       - In beta
-       - During release testing
-       - On main branch
-       - On a feature branch
-   validations:
-     required: true
- - type: input
-   id: version
-   attributes:
-     label: Version
-     description: What version of MetaMask are you running? You can find the version in "Settings" > "About"
-     placeholder: "7.1.0"
-   validations:
-     required: true
- - type: dropdown
-   id: build
-   attributes:
-     label: Build type
-     description: Are you using a testing or development build of MetaMask? If so, please select the type of build you are using.
-     options:
-       - Beta
-       - Flask
-       - Other (please specify exactly where you obtained this build in "Additional Context" section)
- - type: dropdown
-   id: browsers
-   attributes:
-     label: Browser
-     description: Which browsers have you seen the problem on?
-     multiple: true
-     options:
-       - Chrome
-       - Firefox
-       - Microsoft Edge
-       - Brave
-       - Other (please elaborate in the "Additional Context" section)
-   validations:
-     required: true
- - type: dropdown
-   id: os
-   attributes:
-     label: Operating system
-     description: Which operating systems have you seen the problem on?
-     multiple: true
-     options:
-       - Windows
-       - MacOS
-       - Linux
-       - Other (please elaborate in the "Additional Context" section)
-   validations:
-     required: true
- - type: dropdown
-   id: hardware-wallet
-   attributes:
-     label: Hardware wallet
-     description: Are you using any of these hardware wallets? Please include the firmware version in the "Additional context" section below for any that you select here.
-     multiple: true
-     options:
-       - Ledger
-       - Trezor
-       - Keystone
-       - GridPlus Lattice1
-       - AirGap Vault
-       - imToken
-       - OneKey
-       - Other (please elaborate in the "Additional Context" section)
- - type: textarea
-   id: additional
-   attributes:
-     label: Additional context
-     description: Add any other context about the problem here, e.g. related issues, additional error messages or logs, or any potentially relevant details about the environment or situation the bug occurred in.
- - type: textarea
-   id: severity
-   attributes:
-     label: Severity
-     description: |
-       To be added after bug submission by internal support / PM:
-     placeholder: |
-       - How critical is the impact of this bug on a user?
-       - Add stats if available on % of customers impacted
-       - Is this visible to all users?
-       - Is this tech debt?
+        * Please search to make sure this issue has not been opened already.
+        * If this is a question about how to integrate MetaMask with your project, please ask in our [Community forum](https://community.metamask.io/c/developer-discussion/) instead. This will get your question answered more quickly and make it easier for other devs to find the answer in the future.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Describe the bug
+      description: What happened?
+      placeholder: A clear and concise description of what the bug is
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+  - type: textarea
+    id: screenshot-recording
+    attributes:
+      label: Screenshots/Recordings
+      description: Please include screenshots/recordings if applicable!
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: 'List all steps needed to reproduce the problem:'
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error messages or log output
+      description: Please copy and paste any relevant error messages or log output. This will be automatically formatted, so there is no need for backticks.
+      render: shell
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Detection stage
+      description: At what stage was the bug detected?
+      options:
+        - In production (default)
+        - In public beta
+        - During release testing
+        - On main branch
+        - On a feature branch
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of MetaMask are you running? You can find the version in "Settings" > "About"
+      placeholder: '13.0.0'
+    validations:
+      required: true
+  - type: dropdown
+    id: build
+    attributes:
+      label: Build type
+      description: Are you using a testing or development build of MetaMask? If so, please select the type of build you are using.
+      options:
+        - Beta
+        - Flask
+        - Other (please specify exactly where you obtained this build in "Additional Context" section)
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Browser
+      description: Which browsers have you seen the problem on?
+      multiple: true
+      options:
+        - Chrome
+        - Firefox
+        - Microsoft Edge
+        - Brave
+        - Other (please elaborate in the "Additional Context" section)
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      description: Which operating systems have you seen the problem on?
+      multiple: true
+      options:
+        - Windows
+        - MacOS
+        - Linux
+        - Other (please elaborate in the "Additional Context" section)
+    validations:
+      required: true
+  - type: dropdown
+    id: hardware-wallet
+    attributes:
+      label: Hardware wallet
+      description: Are you using any of these hardware wallets? Please include the firmware version in the "Additional context" section below for any that you select here.
+      multiple: true
+      options:
+        - Ledger
+        - Trezor
+        - Keystone
+        - GridPlus Lattice1
+        - AirGap Vault
+        - imToken
+        - OneKey
+        - Other (please elaborate in the "Additional Context" section)
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here, e.g. related issues, additional error messages or logs, or any potentially relevant details about the environment or situation the bug occurred in.
+  - type: textarea
+    id: severity
+    attributes:
+      label: Severity
+      description: |
+        To be added after bug submission by internal support / PM:
+      placeholder: |
+        - How critical is the impact of this bug on a user?
+        - Add stats if available on % of customers impacted
+        - Is this visible to all users?
+        - Is this tech debt?

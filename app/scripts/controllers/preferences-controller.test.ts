@@ -4,8 +4,8 @@
 import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
+import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
-import { Hex } from '@metamask/utils';
 import {
   SnapKeyringAccountAssetListUpdatedEvent,
   SnapKeyringAccountBalancesUpdatedEvent,
@@ -52,6 +52,7 @@ const setupController = ({
     | SnapKeyringAccountAssetListUpdatedEvent
     | SnapKeyringAccountBalancesUpdatedEvent
     | SnapKeyringAccountTransactionsUpdatedEvent
+    | MultichainNetworkControllerNetworkDidChangeEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
     messenger.getRestricted({
@@ -85,6 +86,7 @@ const setupController = ({
       'SnapKeyring:accountAssetListUpdated',
       'SnapKeyring:accountBalancesUpdated',
       'SnapKeyring:accountTransactionsUpdated',
+      'MultichainNetworkController:networkDidChange',
     ],
     allowedActions: [],
   });
@@ -150,6 +152,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -195,6 +201,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -246,6 +256,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -281,6 +295,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -472,45 +490,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setIncomingTransactionsPreferences', () => {
-    const { controller } = setupController({});
-    const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
-
-    it('should have default value combined', () => {
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-
-    it('should update incomingTransactionsPreferences with given value set', () => {
-      controller.setIncomingTransactionsPreferences(
-        CHAIN_IDS.LINEA_MAINNET,
-        false,
-      );
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-  });
-
   describe('AccountsController:stateChange subscription', () => {
     const { controller, messenger, accountsController } = setupController({});
     it('sync the identities with the accounts in the accounts controller', () => {
@@ -524,6 +503,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -578,21 +561,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setBitcoinSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      controller.setBitcoinSupportEnabled(true);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
-
-      controller.setBitcoinSupportEnabled(false);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -614,6 +582,7 @@ describe('preferences controller', () => {
       expect(controller.state.useAddressBarEnsResolution).toStrictEqual(true);
       expect(controller.state.openSeaEnabled).toStrictEqual(true);
       expect(controller.state.useNftDetection).toStrictEqual(true);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(true);
     });
 
     it('useExternalServices to false', () => {
@@ -626,6 +595,7 @@ describe('preferences controller', () => {
       expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
       expect(controller.state.openSeaEnabled).toStrictEqual(false);
       expect(controller.state.useNftDetection).toStrictEqual(false);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
     });
   });
 
@@ -652,21 +622,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setWatchEthereumAccountEnabled(true);
       expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(true);
-    });
-  });
-
-  describe('bitcoinTestnetSupportEnabled', () => {
-    it('defaults bitcoinTestnetSupportEnabled to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
-        false,
-      );
-    });
-
-    it('setBitcoinTestnetSupportEnabled to true', () => {
-      const { controller } = setupController({});
-      controller.setBitcoinTestnetSupportEnabled(true);
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
     });
   });
 
@@ -714,11 +669,13 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        shouldShowAggregatedBalancePopover: true,
+        skipDeepLinkInterstitial: false,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -741,12 +698,14 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        skipDeepLinkInterstitial: false,
         privacyMode: false,
-        shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -843,18 +802,18 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setSolanaSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+  describe('manageInstitutionalWallets', () => {
+    it('defaults manageInstitutionalWallets to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(false);
     });
+  });
 
-    it('sets the solanaSupportEnabled property in state to true and then false', () => {
-      controller.setSolanaSupportEnabled(true);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
-
-      controller.setSolanaSupportEnabled(false);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+  describe('setManageInstitutionalWallets', () => {
+    it('sets manageInstitutionalWallets to true', () => {
+      const { controller } = setupController({});
+      controller.setManageInstitutionalWallets(true);
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
     });
   });
 });

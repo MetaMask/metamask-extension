@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import { capitalize } from 'lodash';
-import { Transaction, TransactionStatus } from '@metamask/keyring-api';
+import {
+  Transaction,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/keyring-api';
 import {
   Display,
   FlexDirection,
@@ -30,10 +34,19 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventLinkType,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import {
+  KEYRING_TRANSACTION_STATUS_KEY,
+  useMultichainTransactionDisplay,
+} from '../../../hooks/useMultichainTransactionDisplay';
+import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -44,19 +57,36 @@ import {
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
-  addressLink: string;
+  userAddress: string;
+  networkConfig: MultichainProviderConfig;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
-  addressLink,
+  userAddress,
+  networkConfig,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+  const {
+    from,
+    to,
+    isRedeposit,
+    baseFee,
+    priorityFee,
+    status,
+    chain,
+    type,
+    timestamp,
+    id,
+  } = useMultichainTransactionDisplay(transaction, networkConfig);
+
+  const getStatusColor = (txStatus: string) => {
+    switch (txStatus?.toLowerCase()) {
       case TransactionStatus.Confirmed:
         return TextColor.successDefault;
       case TransactionStatus.Unconfirmed:
@@ -67,36 +97,83 @@ export function MultichainTransactionDetailsModal({
         return TextColor.textDefault;
     }
   };
+  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
-  const getAssetDisplay = (asset: typeof fromAsset) => {
+  const accountComponent = (label: string, address?: string) =>
+    address ? (
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+          {label}
+        </Text>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+          <ButtonLink
+            size={ButtonLinkSize.Inherit}
+            textProps={{
+              variant: TextVariant.bodyMd,
+              alignItems: AlignItems.flexStart,
+            }}
+            as="a"
+            externalLink
+            href={getAddressUrl(address, chain)}
+          >
+            {shortenAddress(address)}
+            <Icon
+              marginLeft={2}
+              name={IconName.Export}
+              size={IconSize.Sm}
+              color={IconColor.primaryDefault}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  getAddressUrl(address as string, chain),
+                )
+              }
+            />
+          </ButtonLink>
+        </Box>
+      </Box>
+    ) : null;
+
+  const amountComponent = (
+    asset:
+      | {
+          amount: string;
+          unit: string;
+        }
+      | undefined,
+    label: string,
+    dataTestId: string,
+  ) => {
     if (!asset) {
       return null;
     }
-    if (asset.fungible === true) {
-      return `${asset.amount} ${asset.unit}`;
-    }
-    if (asset.fungible === false) {
-      return asset.id;
-    }
-    return null;
+
+    return (
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+          {label}
+        </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexEnd}
+        >
+          <Text variant={TextVariant.bodyMd} data-testid={dataTestId}>
+            {asset.amount} {asset.unit}
+          </Text>
+        </Box>
+      </Box>
+    );
   };
 
-  if (!transaction?.from?.[0] || !transaction?.to?.[0]) {
-    return null;
-  }
-
-  // We only support 1 recipient for "from" and "to" for now:
-  const {
-    id: txId,
-    from: [{ address: fromAddress, asset: fromAsset }],
-    to: [{ address: toAddress }],
-    fees: [{ asset: feeAsset }],
-    fees,
-    timestamp,
-    status,
-    chain,
-    type,
-  } = transaction;
+  const typeToTitle: Partial<Record<TransactionType, string>> = {
+    // TODO: Add support for other transaction types
+    [TransactionType.Send]: t('send'),
+    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Swap]: t('swap'),
+    [TransactionType.Unknown]: t('interaction'),
+  };
 
   return (
     <Modal
@@ -116,7 +193,7 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(type)}
+            {capitalize(isRedeposit ? t('redeposit') : typeToTitle[type])}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
@@ -134,20 +211,28 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* Status */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('status')}
-              </Text>
-              <Text variant={TextVariant.bodyMd} color={getStatusColor(status)}>
-                {capitalize(status)}
-              </Text>
-            </Box>
+            {status && (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('status')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={getStatusColor(status)}
+                >
+                  {capitalize(t(statusKey))}
+                </Text>
+              </Box>
+            )}
 
             {/* Transaction ID */}
             <Box
@@ -170,17 +255,19 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(txId, chain)}
+                  href={getTransactionUrl(id, chain)}
                 >
-                  {shortenTransactionId(txId)}
+                  {shortenTransactionId(id)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
                     size={IconSize.Sm}
                     color={IconColor.primaryDefault}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getTransactionUrl(txId, chain),
+                        getTransactionUrl(id, chain),
                       )
                     }
                   />
@@ -196,130 +283,29 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* From */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('from')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
-              >
-                <ButtonLink
-                  size={ButtonLinkSize.Inherit}
-                  textProps={{
-                    variant: TextVariant.bodyMd,
-                    alignItems: AlignItems.flexStart,
-                  }}
-                  as="a"
-                  externalLink
-                  href={getTransactionUrl(txId, chain)}
-                >
-                  {shortenAddress(fromAddress)}
-                  <Icon
-                    marginLeft={2}
-                    name={IconName.Export}
-                    size={IconSize.Sm}
-                    color={IconColor.primaryDefault}
-                    onClick={() =>
-                      navigator.clipboard.writeText(
-                        getAddressUrl(fromAddress, chain),
-                      )
-                    }
-                  />
-                </ButtonLink>
-              </Box>
-            </Box>
+            {type === TransactionType.Send
+              ? accountComponent(t('from'), userAddress)
+              : accountComponent(t('from'), from?.address)}
 
-            {/* To */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('to')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
-              >
-                <ButtonLink
-                  size={ButtonLinkSize.Inherit}
-                  textProps={{
-                    variant: TextVariant.bodyMd,
-                    alignItems: AlignItems.flexStart,
-                  }}
-                  as="a"
-                  externalLink
-                  href={getTransactionUrl(txId, chain)}
-                >
-                  {shortenAddress(toAddress)}
-                  <Icon
-                    marginLeft={2}
-                    name={IconName.Export}
-                    size={IconSize.Sm}
-                    color={IconColor.primaryDefault}
-                    onClick={() =>
-                      navigator.clipboard.writeText(
-                        getAddressUrl(toAddress, chain),
-                      )
-                    }
-                  />
-                </ButtonLink>
-              </Box>
-            </Box>
-
-            {/* Amount */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('amount')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.flexEnd}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  data-testid="transaction-amount"
-                >
-                  {getAssetDisplay(fromAsset)}
-                </Text>
-              </Box>
-            </Box>
-
-            {/* Network Fee */}
-            {fees?.length > 0 && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('networkFee')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  alignItems={AlignItems.flexEnd}
-                >
-                  <Text variant={TextVariant.bodyMd}>
-                    {getAssetDisplay(feeAsset)}
-                  </Text>
-                </Box>
-              </Box>
+            {/* Amounts per token */}
+            <>
+              {accountComponent(t('to'), to?.address)}
+              {amountComponent(
+                type === TransactionType.Swap ? from : to,
+                t('amount'),
+                'transaction-amount',
+              )}
+            </>
+            {/* Base Fees */}
+            {amountComponent(baseFee, t('networkFee'), 'transaction-base-fee')}
+            {/* Priority Fees */}
+            {amountComponent(
+              priorityFee,
+              t('priorityFee'),
+              'transaction-priority-fee',
             )}
           </Box>
         </Box>
@@ -334,7 +320,23 @@ export function MultichainTransactionDetailsModal({
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
-              openBlockExplorer(addressLink, 'Transaction Details', trackEvent);
+              global.platform.openTab({
+                url: getTransactionUrl(id, chain),
+              });
+
+              trackEvent({
+                event: MetaMetricsEventName.ExternalLinkClicked,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  link_type: MetaMetricsEventLinkType.AccountTracker,
+                  location: 'Transaction Details',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  url_domain: getURLHostName(getTransactionUrl(id, chain)),
+                },
+              });
             }}
             endIconName={IconName.Export}
           >

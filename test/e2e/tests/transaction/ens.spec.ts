@@ -12,9 +12,7 @@ import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
 
-  // Having 2 versions of the address is a bug(#25286)
-  const shortSampleAddress = '0x1111...1111';
-  const shortSampleAddresV2 = '0x11111...11111';
+  const shortSampleAddress = '0x11111...11111';
   const chainId = 1;
 
   // ENS Contract Addresses and Function Signatures
@@ -81,7 +79,14 @@ describe('ENS', function (this: Suite) {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
@@ -90,25 +95,25 @@ describe('ENS', function (this: Suite) {
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed('20');
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed('20');
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
         const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        await sendToPage.checkPageIsLoaded();
         await sendToPage.fillRecipient(sampleEnsDomain);
 
         // verify that ens domain resolves to the correct address
-        await sendToPage.check_ensAddressResolution(
+        await sendToPage.checkEnsAddressResolution(
           sampleEnsDomain,
           shortSampleAddress,
         );
 
         // Verify the resolved ENS address can be used as the recipient address
-        await sendToPage.check_ensAddressAsRecipient(
+        await sendToPage.checkEnsAddressAsRecipient(
           sampleEnsDomain,
-          shortSampleAddresV2,
+          shortSampleAddress,
         );
       },
     );

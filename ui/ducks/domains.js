@@ -14,7 +14,7 @@ import {
 } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { handleSnapRequest } from '../store/actions';
-import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send/send.constants';
+import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send-legacy/send.constants';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
 
@@ -326,7 +326,7 @@ export async function fetchResolutions({ domain, chainId, state }) {
     filteredNameLookupSnapsIds.map((snapId) => {
       return handleSnapRequest({
         snapId,
-        origin: '',
+        origin: 'metamask',
         handler: 'onNameLookup',
         request: {
           jsonrpc: '2.0',

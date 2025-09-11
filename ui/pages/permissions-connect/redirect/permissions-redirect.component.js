@@ -6,6 +6,7 @@ import {
   Display,
   TextVariant,
   BlockSize,
+  BorderColor,
   FlexDirection,
   BackgroundColor,
   BorderRadius,
@@ -54,7 +55,10 @@ export default function PermissionsRedirect({ subjectMetadata }) {
         justifyContent={JustifyContent.center}
         width={BlockSize.Full}
         height={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderRadius={BorderRadius.XS}
+        border={`1px solid ${BorderColor.borderMuted}`}
+        boxShadow="var(--shadow-size-lg) var(--color-shadow-default)"
       >
         <Box display={Display.Flex} marginBottom={4}>
           <Text variant={TextVariant.headingMd}>{t('connecting')}</Text>
@@ -90,7 +94,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
           />
         </Box>
       </Box>
-      <Box backgroundColor={BackgroundColor.backgroundAlternative} padding={4}>
+      <Box backgroundColor={BackgroundColor.backgroundDefault} padding={4}>
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <PermissionsConnectFooter />
           <Box

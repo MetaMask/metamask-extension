@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Gas-raja"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Polttoaineraja tarkoittaa suurinta mahdollista polttoainemäärää, jonka olet valmis kuluttamaan."
-  },
   "gasLimitTooLow": {
     "message": "Gas-rajan tulee olla vähintään 21 000"
-  },
-  "gasPrice": {
-    "message": "Gas-hinta (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas-hinta erittäin alhainen"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Polttoaineen hinta määrittää Ether-määrän, jonka olet valmis maksamaan jokaisesta polttoaineyksiköstä."
   },
   "gasUsed": {
     "message": "Käytetty bensaa"
@@ -312,9 +300,6 @@
   "import": {
     "message": "Tuo",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Tuo tili"
   },
   "importAccountMsg": {
     "message": "Tuotuja tilejä ei liitetä alkuperäisen MetaMask-tilisi siemenlauseeseen. Lue lisää tuoduista tileistä"
@@ -644,9 +629,6 @@
   "terms": {
     "message": "Käyttöehdot"
   },
-  "tips": {
-    "message": "Tipit"
-  },
   "to": {
     "message": "Kohde"
   },
@@ -725,9 +707,6 @@
   "unlock": {
     "message": "Poista lukitus"
   },
-  "unlockMessage": {
-    "message": "Hajautettu verkko odottaa"
-  },
   "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."
   },
@@ -751,8 +730,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Sinun yksityinen siemenlauseesi"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Polttoaine ei maksa kiihdytyksen yhteydessä"
   }
 }

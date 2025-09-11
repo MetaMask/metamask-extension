@@ -1,34 +1,24 @@
-import React, { ReactNode, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { EthMethod } from '@metamask/keyring-api';
-import { isEqual } from 'lodash';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
-  getDataCollectionForMarketing,
-  getIsBridgeChain,
-  getIsSwapsChain,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getSelectedInternalAccount,
-  getSwapsDefaultToken,
-  getMarketData,
-  getCurrencyRates,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedAccount,
-  getIsTestnet,
-  getShowFiatInTestnets,
-} from '../../../selectors';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+  type CaipAssetType,
+  type Hex,
+  isCaipChainId,
+  parseCaipAssetType,
+} from '@metamask/utils';
+import React, { ReactNode, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import useMultiChainAssets from '../../../components/app/assets/hooks/useMultichainAssets';
+import TokenCell from '../../../components/app/assets/token-cell';
+import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
+import TransactionList from '../../../components/app/transaction-list';
+import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -39,65 +29,59 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AddressCopyButton } from '../../../components/multichain';
-import { AssetType } from '../../../../shared/constants/transaction';
-import TokenCell from '../../../components/app/assets/token-cell';
-import TransactionList from '../../../components/app/transaction-list';
-import { getPricePrecision, localizeLargeNumber } from '../util';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../../../ducks/metamask/metamask';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
-import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+  BorderColor,
+} from '../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import {
+  getDataCollectionForMarketing,
+  getIsBridgeChain,
+  getIsMultichainAccountsState2Enabled,
+  getIsSwapsChain,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
+  getShowFiatInTestnets,
+} from '../../../selectors';
 import {
   getImageForChainId,
+  getMultichainIsTestnet,
+  getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import {
+  TokenFiatDisplayInfo,
+  type TokenWithFiatAmount,
+} from '../../../components/app/assets/types';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
+import { Asset } from '../types/asset';
+import { useCurrentPrice } from '../hooks/useCurrentPrice';
+import {
+  getAssetsBySelectedAccountGroup,
+  getMultichainNativeAssetType,
+} from '../../../selectors/assets';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { AssetMarketDetails } from './asset-market-details';
 
-/** Information about a native or token asset */
-export type Asset = (
-  | {
-      type: AssetType.native;
-      /** Whether the symbol has been verified to match the chain */
-      isOriginalNativeSymbol: boolean;
-      decimals: number;
-    }
-  | {
-      type: AssetType.token;
-      /** The token's contract address */
-      address: string;
-      /** The number of decimal places to move left when displaying balances */
-      decimals: number;
-      /** An array of token list sources the asset appears in, e.g. [1inch,Sushiswap]  */
-      aggregators?: string[];
-    }
-) & {
-  /** The hexadecimal chain id */
-  chainId: Hex;
-  /** The asset's symbol, e.g. 'ETH' */
-  symbol: string;
-  /** The asset's name, e.g. 'Ethereum' */
-  name?: string;
-  /** A URL to the asset's image */
-  image: string;
-  /** True if the asset implements ERC721 */
-  isERC721?: boolean;
-  balance?: { value: string; display: string; fiat: string };
-};
-
+// TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
 const AssetPage = ({
   asset,
@@ -108,36 +92,43 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const history = useHistory();
-  const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
+  const isEvm = isEvmChainId(asset.chainId);
+  // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
+  const nativeAssetType = useSelector(getMultichainNativeAssetType);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const caipChainId = isCaipChainId(asset.chainId)
+    ? asset.chainId
+    : formatChainIdToCaip(asset.chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  ) as InternalAccount;
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AssetDetails });
+  }, []);
 
   const { chainId, type, symbol, name, image, decimals } = asset;
 
-  // These need to be specific to the asset and not the current chain
-  const defaultSwapsToken = useSelector(
-    (state) => getSwapsDefaultToken(state, chainId),
-    isEqual,
-  );
+  const isNative = type === AssetType.native;
+
   const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, chainId),
   );
 
-  const account = useSelector(getSelectedInternalAccount, isEqual);
   const isSigningEnabled =
-    account.methods.includes(EthMethod.SignTransaction) ||
-    account.methods.includes(EthMethod.SignUserOperation);
+    selectedAccount.methods.includes(EthMethod.SignTransaction) ||
+    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
+    selectedAccount.methods.includes(SolMethod.SignTransaction) ||
+    selectedAccount.methods.includes(BtcMethod.SignPsbt);
 
-  const marketData = useSelector(getMarketData);
-  const currencyRates = useSelector(getCurrencyRates);
-
-  const isTestnet = useSelector(getIsTestnet);
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    selectedAccount,
-  );
+  const isTestnet = useMultichainSelector(getMultichainIsTestnet);
+  const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
   const isMainnet = !isTestnet;
   // Check if show conversion is enabled
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
@@ -149,64 +140,113 @@ const AssetPage = ({
   ) as Record<Hex, Hex>;
 
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
+
   const selectedAccountTokenBalancesAcrossChains =
-    tokenBalances[selectedAccount.address];
+    tokenBalances[selectedAccount.address as Hex];
+
+  const multiChainAssets = useMultiChainAssets();
+  const mutichainTokenWithFiatAmount = multiChainAssets
+    .filter((item) => item.chainId === chainId && item.address !== undefined)
+    .find((item) => {
+      switch (type) {
+        case AssetType.native:
+          return item.isNative;
+        case AssetType.token:
+          return item.address === asset.address;
+        default:
+          return false;
+      }
+    }) ?? {
+    // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
+    // Root cause: There is a race condition where when switching from a non-EVM network
+    // to an EVM network, the mutichainTokenWithFiatAmount is undefined
+    // This is a workaround to avoid the error
+    // Look into the isEvm selector
+    // We might be switching network before account.
+    address: '',
+    chainId: '',
+    symbol: '',
+    title: '',
+    image: '',
+    tokenFiatAmount: 0,
+    string: '',
+    decimals: 0,
+    aggregators: [],
+    isNative: false,
+    primary: '',
+    secondary: 0,
+  };
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const address =
-    type === AssetType.token
-      ? toChecksumHexAddress(asset.address)
-      : getNativeTokenAddress(chainId);
+  let address =
+    (() => {
+      if (type === AssetType.token) {
+        return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+      }
+      return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
+    })() ?? '';
 
-  const tokenHexBalance =
-    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
+  const shouldShowContractAddress = type === AssetType.token;
+  const contractAddress = (() => {
+    if (shouldShowContractAddress) {
+      return isEvm
+        ? toChecksumHexAddress(asset.address)
+        : parseCaipAssetType(address as CaipAssetType).assetReference;
+    }
+    return '';
+  })();
 
-  const balance = calculateTokenBalance({
-    isNative: type === AssetType.native,
-    chainId,
-    address: address as Hex,
-    decimals,
-    nativeBalances,
-    selectedAccountTokenBalancesAcrossChains,
-  });
+  const { currentPrice } = useCurrentPrice(asset);
 
-  // Market and conversion rate data
-  const baseCurrency = marketData[chainId]?.[address]?.currency;
-  const tokenMarketPrice = marketData[chainId]?.[address]?.price || undefined;
-  const tokenExchangeRate =
-    type === AssetType.native
-      ? currencyRates[symbol]?.conversionRate
-      : currencyRates[baseCurrency]?.conversionRate || 0;
+  let balance, tokenFiatAmount, assetId;
+  if (isMultichainAccountsState2Enabled) {
+    const assetWithBalance = accountGroupIdAssets[chainId]?.find(
+      (item) =>
+        item.assetId.toLowerCase() === address.toLowerCase() ||
+        // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
+        (!address && !isEvm && item.isNative),
+    );
 
-  // Calculate fiat amount
-  const tokenFiatAmount =
-    tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
+    assetId = assetWithBalance?.assetId || '';
+    address = assetWithBalance?.assetId || '';
+    balance = assetWithBalance?.balance ?? '0';
+    tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
+    const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
-  const currentPrice =
-    tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
-      ? tokenExchangeRate * tokenMarketPrice
-      : undefined;
+    asset.balance = {
+      value: hexToDecimal(tokenHexBalance),
+      display: balance,
+      fiat: String(tokenFiatAmount),
+    };
+  } else {
+    const tokenHexBalance =
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
 
-  const tokenMarketDetails = marketData[chainId]?.[address];
-  const shouldDisplayMarketData =
-    conversionRate > 0 &&
-    tokenMarketDetails &&
-    (tokenMarketDetails.marketCap > 0 ||
-      tokenMarketDetails.totalVolume > 0 ||
-      tokenMarketDetails.circulatingSupply > 0 ||
-      tokenMarketDetails.allTimeHigh > 0 ||
-      tokenMarketDetails.allTimeLow > 0);
+    balance = calculateTokenBalance({
+      isNative,
+      chainId,
+      address: address as Hex,
+      decimals,
+      nativeBalances,
+      selectedAccountTokenBalancesAcrossChains,
+    });
 
-  // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
+    tokenFiatAmount = currentPrice
+      ? currentPrice * parseFloat(String(balance))
+      : 0;
 
-  asset.balance = {
-    value: hexToDecimal(tokenHexBalance),
-    display: String(balance),
-    fiat: String(tokenFiatAmount),
-  };
+    // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
+    asset.balance = {
+      value: hexToDecimal(tokenHexBalance),
+      display: String(balance),
+      fiat: String(tokenFiatAmount),
+    };
+  }
+
+  const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
     () =>
       getPortfolioUrl(
@@ -215,17 +255,45 @@ const AssetPage = ({
         metaMetricsId,
         isMetaMetricsEnabled,
         isMarketingEnabled,
-        account.address,
+        selectedAccount.address,
         'spending-caps',
       ),
-    [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
+    [
+      selectedAccount.address,
+      isMarketingEnabled,
+      isMetaMetricsEnabled,
+      metaMetricsId,
+    ],
   );
 
   const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
+    getMultichainNetworkConfigurationsByChainId,
   );
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
+
+  const tokenWithFiatAmount =
+    isEvm || isMultichainAccountsState2Enabled
+      ? {
+          address: isEvm ? address : assetId,
+          chainId,
+          symbol,
+          image,
+          title: name ?? symbol,
+          tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+          string: balance ? balance.toString() : '',
+          decimals: asset.decimals,
+          aggregators:
+            type === AssetType.token && asset.aggregators
+              ? asset.aggregators
+              : [],
+          isNative: type === AssetType.native,
+          primary: balance ? balance.toString() : '',
+          secondary: balance ? Number(balance) : 0,
+        }
+      : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
+
+  const { safeChains } = useSafeChains();
 
   return (
     <Box
@@ -238,9 +306,10 @@ const AssetPage = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        paddingTop={1}
+        paddingBottom={3}
         paddingLeft={2}
         paddingRight={4}
-        paddingBottom={1}
       >
         <Box display={Display.Flex}>
           <ButtonIcon
@@ -251,71 +320,77 @@ const AssetPage = ({
             iconName={IconName.ArrowLeft}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
-          <Text data-testid="asset-name" color={TextColor.textAlternative}>
-            {name && symbol && name !== symbol
-              ? `${name} (${symbol})`
-              : name ?? symbol}
-          </Text>
         </Box>
         {optionsButton}
+      </Box>
+      <Box paddingLeft={4}>
+        <Text
+          data-testid="asset-name"
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.textAlternative}
+        >
+          {name && symbol && name !== symbol
+            ? `${name} (${symbol})`
+            : (name ?? symbol)}
+        </Text>
       </Box>
       <AssetChart
         chainId={chainId}
         address={address}
         currentPrice={currentPrice}
         currency={currency}
+        asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
-      <Box marginTop={4}>
+      <Box marginTop={4} paddingLeft={4} paddingRight={4}>
         {type === AssetType.native ? (
           <CoinButtons
             {...{
-              account,
+              account: selectedAccount,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
               isSwapsChain,
               isBridgeChain,
               chainId,
-              defaultSwapsToken,
             }}
           />
         ) : (
-          <TokenButtons token={asset} />
+          <TokenButtons token={asset} account={selectedAccount} />
         )}
       </Box>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        paddingTop={5}
+        paddingTop={3}
       >
-        <Text variant={TextVariant.headingMd} paddingBottom={2} paddingLeft={4}>
+        <Text
+          variant={TextVariant.headingSm}
+          paddingBottom={1}
+          paddingTop={1}
+          paddingLeft={4}
+        >
           {t('yourBalance')}
         </Text>
         {[AssetType.token, AssetType.native].includes(type) && (
           <TokenCell
             key={`${symbol}-${address}`}
-            token={{
-              address: address as Hex,
-              chainId,
-              symbol,
-              image,
-              tokenFiatAmount:
-                showFiat && tokenMarketPrice ? tokenFiatAmount : null,
-              string: balance ? balance.toString() : '',
-              decimals: asset.decimals,
-              aggregators:
-                type === AssetType.token && asset.aggregators
-                  ? asset.aggregators
-                  : [],
-              isNative: type === AssetType.native,
-            }}
+            token={tokenWithFiatAmount as TokenWithFiatAmount}
+            disableHover={true}
+            safeChains={safeChains}
           />
         )}
         <Box
           marginTop={2}
+          marginBottom={2}
+          borderColor={BorderColor.borderMuted}
+          marginInline={4}
+          style={{ height: '1px', borderBottomWidth: 0 }}
+        ></Box>
+        <Box
+          marginTop={2}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          gap={7}
+          gap={4}
         >
           {[AssetType.token, AssetType.native].includes(type) && (
             <Box
@@ -324,7 +399,7 @@ const AssetPage = ({
               paddingLeft={4}
               paddingRight={4}
             >
-              <Text variant={TextVariant.headingMd} paddingBottom={4}>
+              <Text variant={TextVariant.headingSm} paddingBottom={2}>
                 {t('tokenDetails')}
               </Text>
               <Box
@@ -335,24 +410,25 @@ const AssetPage = ({
                 {renderRow(
                   t('network'),
                   <Text
+                    variant={TextVariant.bodyMdMedium}
                     display={Display.Flex}
                     alignItems={AlignItems.center}
-                    gap={1}
+                    gap={2}
                     data-testid="asset-network"
                   >
                     <AvatarNetwork
                       src={tokenChainImage}
                       name={networkName}
-                      size={AvatarNetworkSize.Sm}
+                      size={AvatarNetworkSize.Xs}
                     />
                     {networkName}
                   </Text>,
                 )}
-                {type === AssetType.token && (
+                {shouldShowContractAddress && (
                   <Box>
                     {renderRow(
                       t('contractAddress'),
-                      <AddressCopyButton address={address} shorten />,
+                      <AddressCopyButton address={contractAddress} shorten />,
                     )}
                     <Box
                       display={Display.Flex}
@@ -362,17 +438,19 @@ const AssetPage = ({
                       {asset.decimals !== undefined &&
                         renderRow(
                           t('tokenDecimal'),
-                          <Text>{asset.decimals}</Text>,
+                          <Text variant={TextVariant.bodyMdMedium}>
+                            {asset.decimals}
+                          </Text>,
                         )}
                       {asset.aggregators && asset.aggregators.length > 0 && (
                         <Box>
                           <Text
-                            color={TextColor.textAlternative}
                             variant={TextVariant.bodyMdMedium}
+                            color={TextColor.textAlternative}
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>
+                          <Text variant={TextVariant.bodyMdMedium}>
                             {asset.aggregators
                               .map((agg) =>
                                 agg.replace(/^metamask$/iu, 'MetaMask'),
@@ -384,101 +462,39 @@ const AssetPage = ({
                     </Box>
                   </Box>
                 )}
-                {renderRow(
-                  t('spendingCaps'),
-                  <ButtonLink
-                    className="asset-page__spending-caps mm-text--body-md-medium"
-                    href={portfolioSpendingCapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('editInPortfolio')}
-                  </ButtonLink>,
-                )}
-              </Box>
-            </Box>
-          )}
-          {shouldDisplayMarketData && (
-            <Box paddingLeft={4} paddingRight={4}>
-              <Text variant={TextVariant.headingMd} paddingBottom={4}>
-                {t('marketDetails')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={2}
-              >
-                {tokenMarketDetails.marketCap > 0 &&
+                {shouldShowSpendingCaps &&
                   renderRow(
-                    t('marketCap'),
-                    <Text data-testid="asset-market-cap">
-                      {localizeLargeNumber(
-                        t,
-                        tokenExchangeRate * tokenMarketDetails.marketCap,
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.totalVolume > 0 &&
-                  renderRow(
-                    t('totalVolume'),
-                    <Text>
-                      {localizeLargeNumber(
-                        t,
-                        tokenExchangeRate * tokenMarketDetails.totalVolume,
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.circulatingSupply > 0 &&
-                  renderRow(
-                    t('circulatingSupply'),
-                    <Text>
-                      {localizeLargeNumber(
-                        t,
-                        tokenMarketDetails.circulatingSupply,
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.allTimeHigh > 0 &&
-                  renderRow(
-                    t('allTimeHigh'),
-                    <Text>
-                      {formatCurrency(
-                        `${tokenExchangeRate * tokenMarketDetails.allTimeHigh}`,
-                        currency,
-                        getPricePrecision(
-                          tokenExchangeRate * tokenMarketDetails.allTimeHigh,
-                        ),
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.allTimeLow > 0 &&
-                  renderRow(
-                    t('allTimeLow'),
-                    <Text>
-                      {formatCurrency(
-                        `${tokenExchangeRate * tokenMarketDetails.allTimeLow}`,
-                        currency,
-                        getPricePrecision(
-                          tokenExchangeRate * tokenMarketDetails.allTimeLow,
-                        ),
-                      )}
-                    </Text>,
+                    t('spendingCaps'),
+                    <ButtonLink
+                      className="asset-page__spending-caps mm-text--body-md-medium"
+                      href={portfolioSpendingCapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('editInPortfolio')}
+                    </ButtonLink>,
                   )}
               </Box>
             </Box>
           )}
-          <Box marginBottom={8}>
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              variant={TextVariant.headingMd}
-            >
+          <AssetMarketDetails asset={asset} address={address} />
+          <Box
+            borderColor={BorderColor.borderMuted}
+            marginInline={4}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
+          <Box marginBottom={4}>
+            <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
             {type === AssetType.native ? (
-              <TransactionList hideTokenTransactions />
+              <TransactionList
+                tokenAddress={address}
+                hideNetworkFilter
+                overrideFilterForCurrentChain={true}
+              />
             ) : (
-              <TransactionList tokenAddress={address} />
+              <TransactionList tokenAddress={address} hideNetworkFilter />
             )}
           </Box>
         </Box>
@@ -496,7 +512,7 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
       >
         {leftColumn}
       </Text>
-      {rightColumn}
+      <Text variant={TextVariant.bodyMdMedium}>{rightColumn}</Text>
     </Box>
   );
 }

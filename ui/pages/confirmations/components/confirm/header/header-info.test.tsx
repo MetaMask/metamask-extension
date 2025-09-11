@@ -28,7 +28,12 @@ const cases = [
       properties: {
         action: 'Confirm Screen',
         location: MetaMetricsEventLocation.SignatureConfirmation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         signature_type: 'eth_signTypedData_v4',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
       },
     },
   },
@@ -41,7 +46,12 @@ const cases = [
       properties: {
         action: 'Confirm Screen',
         location: MetaMetricsEventLocation.Transaction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_type: TransactionType.contractInteraction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
       },
     },
   },

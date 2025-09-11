@@ -8,8 +8,7 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
-import { mocked4BytesSetApprovalForAll } from './erc721-revoke-set-approval-for-all-redesign';
-import { TestSuiteArguments } from './shared';
+import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -66,7 +65,7 @@ async function createTransactionAndAssertDetails(
   const setApprovalForAllConfirmation =
     new SetApprovalForAllTransactionConfirmation(driver);
 
-  await setApprovalForAllConfirmation.check_revokeSetApprovalForAllTitle();
+  await setApprovalForAllConfirmation.checkRevokeSetApprovalForAllTitle();
 
   await setApprovalForAllConfirmation.clickScrollToBottomButton();
   await setApprovalForAllConfirmation.clickFooterConfirmButton();

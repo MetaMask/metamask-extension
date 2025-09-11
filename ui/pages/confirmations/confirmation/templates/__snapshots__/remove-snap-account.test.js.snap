@@ -6,7 +6,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="mm-box confirmation-page__content mm-box--padding-4"
+      class="mm-box confirmation-page__content mm-box--padding-0"
       style="overflow-y: auto;"
     >
       <div
@@ -61,14 +61,14 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
           style="flex-grow: 1;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--width-full"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
             >
               <div
                 class="mm-box mm-box--padding-bottom-2"
@@ -83,7 +83,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                 </div>
               </div>
               <h2
-                class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--color-text-default"
+                class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-bottom-2 mm-box--color-text-default"
               >
                 Remove account
               </h2>
@@ -92,220 +92,238 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                 style="box-shadow: var(--shadow-size-lg) var(--color-shadow-default);"
               >
                 <div
-                  class="mm-box multichain-account-list-item multichain-account-list-item--selected mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
+                  class="mm-box multichain-account-list-item items-center multichain-account-list-item--selected mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
+                  data-testid="account-item"
                 >
                   <div
                     class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+                    data-testid="account-list-item-selected-indicator"
                   />
                   <div
-                    class="mm-box mm-box--display-flex mm-box--sm:display-none"
-                    data-testid="account-list-item-badge"
+                    class="mm-box flex w-full gap-2 items-center"
                   >
-                    <button
-                      class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
-                      data-testid="multichain-badge-status"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--sm:display-none"
+                      data-testid="account-list-item-badge"
                     >
-                      <div>
-                        <div
-                          aria-describedby="tippy-tooltip-1"
-                          class=""
-                          data-original-title="Not connected"
-                          data-tooltipped=""
-                          style="display: flex;"
-                          tabindex="0"
-                        >
+                      <button
+                        class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                        data-testid="multichain-badge-status"
+                      >
+                        <div>
                           <div
-                            class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+                            aria-describedby="tippy-tooltip-1"
+                            class=""
+                            data-original-title="Not connected"
+                            data-tooltipped=""
+                            style="display: flex;"
+                            tabindex="0"
                           >
                             <div
-                              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                              class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                             >
                               <div
-                                class="mm-avatar-account__jazzicon"
+                                class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
                               >
                                 <div
-                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                                  class="flex [&>div]:!rounded-none"
                                 >
-                                  <svg
-                                    height="32"
-                                    width="32"
-                                    x="0"
-                                    y="0"
+                                  <div
+                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
                                   >
-                                    <rect
-                                      fill="#18CDF2"
+                                    <svg
                                       height="32"
-                                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
                                       width="32"
                                       x="0"
                                       y="0"
-                                    />
-                                    <rect
-                                      fill="#035E56"
-                                      height="32"
-                                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
-                                      width="32"
-                                      x="0"
-                                      y="0"
-                                    />
-                                    <rect
-                                      fill="#F26602"
-                                      height="32"
-                                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
-                                      width="32"
-                                      x="0"
-                                      y="0"
-                                    />
-                                  </svg>
+                                    >
+                                      <rect
+                                        fill="#18CDF2"
+                                        height="32"
+                                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                                        width="32"
+                                        x="0"
+                                        y="0"
+                                      />
+                                      <rect
+                                        fill="#035E56"
+                                        height="32"
+                                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                                        width="32"
+                                        x="0"
+                                        y="0"
+                                      />
+                                      <rect
+                                        fill="#F26602"
+                                        height="32"
+                                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                                        width="32"
+                                        x="0"
+                                        y="0"
+                                      />
+                                    </svg>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div
-                              class="mm-box mm-badge-wrapper__badge-container"
-                              style="bottom: -1px; right: 2px;"
-                            >
                               <div
-                                class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                                class="mm-box mm-badge-wrapper__badge-container"
+                                style="bottom: -10%; right: -20%;"
+                              >
+                                <div
+                                  class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-none mm-box--sm:display-flex"
+                    >
+                      <div
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                      >
+                        <div
+                          class="flex [&>div]:!rounded-none"
+                        >
+                          <div
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                          >
+                            <svg
+                              height="32"
+                              width="32"
+                              x="0"
+                              y="0"
+                            >
+                              <rect
+                                fill="#18CDF2"
+                                height="32"
+                                transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                                width="32"
+                                x="0"
+                                y="0"
                               />
+                              <rect
+                                fill="#035E56"
+                                height="32"
+                                transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                                width="32"
+                                x="0"
+                                y="0"
+                              />
+                              <rect
+                                fill="#F26602"
+                                height="32"
+                                transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                                width="32"
+                                x="0"
+                                y="0"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box multichain-account-list-item__content mm-box--display-flex mm-box--flex-direction-column"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                        >
+                          <div
+                            class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+                          >
+                            <button
+                              class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
+                            >
+                              Test Account
+                            </button>
+                          </div>
+                          <div
+                            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
+                          >
+                            <div
+                              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                              data-testid="first-currency-display"
+                              title="966.988 GoerliETH"
+                            >
+                              <span
+                                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                                data-testid="account-value-and-suffix"
+                              >
+                                966.988
+                              </span>
+                              <span
+                                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                              >
+                                GoerliETH
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </button>
-                  </div>
-                  <div
-                    class="mm-box mm-box--display-none mm-box--sm:display-flex"
-                  >
-                    <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                    >
-                      <div
-                        class="mm-avatar-account__jazzicon"
-                      >
-                        <div
-                          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-                        >
-                          <svg
-                            height="32"
-                            width="32"
-                            x="0"
-                            y="0"
-                          >
-                            <rect
-                              fill="#18CDF2"
-                              height="32"
-                              transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#035E56"
-                              height="32"
-                              transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#F26602"
-                              height="32"
-                              transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="mm-box multichain-account-list-item__content mm-box--display-flex mm-box--flex-direction-column"
-                  >
-                    <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-                    >
                       <div
                         class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          <button
-                            class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
+                          <p
+                            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                            data-testid="account-list-address"
                           >
-                            Test Account
-                          </button>
+                            0x0DCD5...3E7bc
+                          </p>
                         </div>
                         <div
-                          class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
+                          class="mm-box network-indicator"
                         >
                           <div
-                            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                            data-testid="first-currency-display"
-                            title="966.988 GoerliETH"
+                            class="mm-box"
+                            data-testid="account-network-indicator"
                           >
-                            <span
-                              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                              data-testid="account-value-and-suffix"
-                            >
-                              966.988
-                            </span>
-                            <span
-                              class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                            >
-                              GoerliETH
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-                    >
-                      <div
-                        class="mm-box mm-box--display-flex mm-box--align-items-center"
-                      >
-                        <p
-                          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-                          data-testid="account-list-address"
-                        >
-                          0x0DCD5...3E7bc
-                        </p>
-                      </div>
-                      <div
-                        class="mm-box multichain-account-list-item__avatar-currency mm-box--display-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center"
-                      >
-                        <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
-                        >
-                          G
-                        </div>
-                        <div
-                          class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-                        >
-                          <div
-                            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                            data-testid="second-currency-display"
-                            title="966.988 GoerliETH"
-                          >
-                            <span
-                              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                              data-testid="account-value-and-suffix"
-                            >
-                              966.988
-                            </span>
-                            <span
-                              class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                            >
-                              GoerliETH
-                            </span>
+                            <div>
+                              <div
+                                aria-describedby="tippy-tooltip-2"
+                                class=""
+                                data-original-title="This can be changed in "Settings > Alerts""
+                                data-tooltipped=""
+                                style="display: inline;"
+                                tabindex="0"
+                              >
+                                <div
+                                  class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                                  data-testid="avatar-group"
+                                >
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--rounded-full"
+                                      style="margin-left: 0px;"
+                                    >
+                                      <div
+                                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                                      >
+                                        G
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+                  />
                 </div>
               </div>
               <p
@@ -327,13 +345,13 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
         style="border-top: 0;"
       >
         <button
-          class="button btn--rounded btn-secondary"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="confirmation-cancel-button"
         >
           Cancel
         </button>
         <button
-          class="button btn--rounded btn-primary"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="confirmation-submit-button"
         >
           Remove

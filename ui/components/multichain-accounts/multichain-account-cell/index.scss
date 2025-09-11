@@ -1,0 +1,41 @@
+.multichain-account-cell {
+  &__account-avatar {
+    width: 40px;
+    height: 40px;
+    border-width: 2.2px;
+    flex-shrink: 0;
+  }
+
+  &__account-name {
+    font-weight: 600;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__account-balance {
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  &:hover:not(.multichain-account-cell--no-hover) {
+    background: var(--color-background-default-hover);
+
+    .multichain-account-cell__account-avatar {
+      border-color: var(--color-primary-default);
+    }
+
+    .multichain-account-cell__account-name {
+      color: var(--color-primary-default);
+    }
+
+    .multichain-account-cell__end_accessory .multichain-account-cell-popover-menu-button {
+      background: var(--color-primary-muted);
+    }
+
+    .multichain-account-cell__end_accessory .multichain-account-cell-popover-menu-button-icon {
+      background-color: var(--color-primary-default);
+    }
+  }
+}

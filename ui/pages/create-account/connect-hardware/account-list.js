@@ -2,7 +2,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 
-import Button from '../../../components/ui/button';
+import {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+} from '../../../components/component-library';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
@@ -19,14 +23,14 @@ class AccountList extends Component {
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
-      this.props.getPage(this.props.device, 1, this.props.selectedPath);
+      this.props.getPage(this.props.device, 1, this.props.selectedPath, false);
     } else {
       this.props.onAccountRestriction();
     }
   };
 
   goToPreviousPage = () => {
-    this.props.getPage(this.props.device, -1, this.props.selectedPath);
+    this.props.getPage(this.props.device, -1, this.props.selectedPath, false);
   };
 
   setPath(pathValue) {
@@ -50,7 +54,7 @@ class AccountList extends Component {
         <div className="hw-connect__hdPath">
           <Dropdown
             className="hw-connect__hdPath__select"
-            options={hdPaths[device.toLowerCase()]}
+            options={hdPaths[device]}
             selectedOption={pathValue || selectedPath}
             onChange={(value) => {
               this.setPath(value);
@@ -73,7 +77,7 @@ class AccountList extends Component {
       HardwareDeviceNames.lattice,
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.oneKey,
-    ].includes(device.toLowerCase());
+    ].includes(device);
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
@@ -205,16 +209,17 @@ class AccountList extends Component {
     return (
       <div className="new-external-account-form__buttons">
         <Button
-          type="secondary"
-          large
-          className="new-external-account-form__button"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          block
           onClick={this.props.onCancel.bind(this)}
         >
           {this.context.t('cancel')}
         </Button>
         <Button
-          type="primary"
-          large
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          block
           className="new-external-account-form__button unlock"
           disabled={disabled}
           onClick={this.props.onUnlockAccounts.bind(

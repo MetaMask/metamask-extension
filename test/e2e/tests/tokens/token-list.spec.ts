@@ -4,14 +4,11 @@ import { zeroAddress } from 'ethereumjs-util';
 import { Browser } from 'selenium-webdriver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
@@ -30,7 +27,6 @@ describe('Token List', function () {
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
     localNodeOptions: {
-      ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
   };
@@ -47,18 +43,22 @@ describe('Token List', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
-        await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await homePage.checkPageIsLoaded();
+        await assetListPage.importCustomTokenByChain(
+          chainId,
+          tokenAddress,
+          symbol,
+        );
 
-        await assetListPage.check_tokenGeneralChangePercentageNotPresent(
+        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
         );
-        await assetListPage.check_tokenGeneralChangePercentageNotPresent(
+        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
           tokenAddress,
         );
       },
@@ -100,19 +100,23 @@ describe('Token List', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
 
-        await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await homePage.checkPageIsLoaded();
+        await assetListPage.importCustomTokenByChain(
+          chainId,
+          tokenAddress,
+          symbol,
+        );
 
-        await assetListPage.check_tokenGeneralChangePercentage(
+        await assetListPage.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
         );
-        await assetListPage.check_tokenGeneralChangePercentage(
+        await assetListPage.checkTokenGeneralChangePercentage(
           tokenAddress,
           '+0.05%',
         );
@@ -120,9 +124,9 @@ describe('Token List', function () {
         // We made this due to a change on Firefox v125
         // The 2 decimals are not displayed with values which are "rounded",
         if (isFirefox) {
-          await assetListPage.check_tokenGeneralChangeValue('+$50');
+          await assetListPage.checkTokenGeneralChangeValue('+$50');
         } else {
-          await assetListPage.check_tokenGeneralChangeValue('+$50.00');
+          await assetListPage.checkTokenGeneralChangeValue('+$50.00');
         }
       },
     );

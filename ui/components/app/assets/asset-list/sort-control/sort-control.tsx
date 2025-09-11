@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box, Text } from '../../../../component-library';
@@ -18,7 +18,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
-import { getPreferences } from '../../../../../selectors';
+import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
@@ -47,7 +47,7 @@ export const SelectableListItem = ({
           'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -74,37 +74,43 @@ type SortControlProps = {
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { tokenSortConfig } = useSelector(getPreferences);
+  const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const dispatch = useDispatch();
 
-  const handleSort = (
-    key: string,
-    sortCallback: keyof SortingCallbacksT,
-    order: SortOrder,
-  ) => {
-    dispatch(
-      setTokenSortConfig({
-        key,
-        sortCallback,
-        order,
-      }),
-    );
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.TokenSortPreference,
-      properties: {
-        [MetaMetricsUserTrait.TokenSortPreference]: key,
-      },
-    });
-    handleClose();
-  };
+  const handleSort = useCallback(
+    (key: string, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
+      dispatch(
+        setTokenSortConfig({
+          key,
+          sortCallback,
+          order,
+        }),
+      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.TokenSortPreference,
+        properties: {
+          [MetaMetricsUserTrait.TokenSortPreference]: key,
+        },
+      });
+      handleClose();
+    },
+    [dispatch, handleClose, trackEvent],
+  );
+
   return (
     <>
       <SelectableListItem
-        isSelected={tokenSortConfig?.key === 'symbol'}
-        onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
+        isSelected={
+          // TODO: consolidate name and title fields in token to avoid this switch
+          tokenSortConfig?.key === 'name' || tokenSortConfig?.key === 'title'
+        }
+        onClick={() =>
+          // TODO: consolidate name and title fields in token to avoid this switch
+          handleSort('title', 'alphaNumeric', 'asc')
+        }
         testId="sortByAlphabetically"
       >
         {t('sortByAlphabetically')}

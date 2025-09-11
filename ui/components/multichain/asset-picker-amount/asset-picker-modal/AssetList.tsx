@@ -1,19 +1,11 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
 import classnames from 'classnames';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import {
-  getCurrentNetwork,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../../ducks/metamask/metamask';
+import { isStrictHexString, type CaipChainId } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -27,7 +19,20 @@ import {
 import { TokenListItem } from '../..';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainCurrentChainId,
+  getImageForChainId,
+  getMultichainCurrentNetwork,
+  getMultichainNativeCurrency,
+  getMultichainSelectedAccountCachedBalance,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  type SafeChain,
+  useSafeChains,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -46,7 +51,10 @@ type AssetListProps = {
   isTokenDisabled?: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => boolean;
-  network?: NetworkConfiguration | AddNetworkFields;
+  network?:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
   isTokenListLoading?: boolean;
   assetItemProps?: Pick<
     React.ComponentProps<typeof TokenListItem>,
@@ -54,6 +62,8 @@ type AssetListProps = {
   >;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AssetList({
   handleAssetChange,
   asset,
@@ -65,7 +75,7 @@ export default function AssetList({
 }: AssetListProps) {
   const t = useI18nContext();
 
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
   // If a network is provided, display tokens in that network
   // Otherwise, assume tokens in the current network are displayed
   const networkToUse = network ?? currentNetwork;
@@ -73,10 +83,12 @@ export default function AssetList({
   const isSelectedNetworkActive =
     networkToUse.chainId === currentNetwork.chainId;
 
-  const chainId = useSelector(getCurrentChainId);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const currentCurrency = useSelector(getCurrentCurrency);
+  const chainId = useMultichainSelector(getMultichainCurrentChainId);
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const balanceValue = useMultichainSelector(
+    getMultichainSelectedAccountCachedBalance,
+  );
+  const currentCurrency = useSelector(getMultichainCurrentCurrency);
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -86,6 +98,21 @@ export default function AssetList({
   const [secondaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: nativeCurrency,
   });
+
+  const { safeChains } = useSafeChains();
+  const safeChainDetails: SafeChain | undefined = useMemo(
+    () =>
+      safeChains?.find((chain) => {
+        const decimalChainId =
+          isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
+        if (typeof decimalChainId === 'number') {
+          return chain.chainId === decimalChainId.toString();
+        }
+        return undefined;
+      }),
+    [safeChains, chainId],
+  );
+  const nativeCurrencySymbol = safeChainDetails?.nativeCurrency?.symbol;
 
   return (
     <Box className="tokens-main-view-modal">
@@ -158,6 +185,7 @@ export default function AssetList({
                     tokenImage={token.image}
                     isPrimaryTokenSymbolHidden
                     tokenChainImage={getImageForChainId(token.chainId)}
+                    nativeCurrencySymbol={nativeCurrencySymbol}
                     {...assetItemProps}
                   />
                 ) : (
@@ -166,7 +194,10 @@ export default function AssetList({
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
-                    assetItemProps={assetItemProps}
+                    assetItemProps={{
+                      ...assetItemProps,
+                      nativeCurrencySymbol,
+                    }}
                   />
                 )}
               </Box>

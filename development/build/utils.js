@@ -119,6 +119,7 @@ Good luck on your endeavors.`,
  * @returns {ENVIRONMENT} The current build environment.
  */
 function getEnvironment({ buildTarget }) {
+  const branch = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME;
   // get environment slug
   if (buildTarget === BUILD_TARGETS.PROD) {
     return ENVIRONMENT.PRODUCTION;
@@ -126,13 +127,11 @@ function getEnvironment({ buildTarget }) {
     return ENVIRONMENT.DEVELOPMENT;
   } else if (isTestBuild(buildTarget)) {
     return ENVIRONMENT.TESTING;
-  } else if (
-    /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
-  ) {
+  } else if (/^Version-v(\d+)[.](\d+)[.](\d+)/u.test(branch)) {
     return ENVIRONMENT.RELEASE_CANDIDATE;
-  } else if (process.env.CIRCLE_BRANCH === 'main') {
+  } else if (branch === 'main') {
     return ENVIRONMENT.STAGING;
-  } else if (process.env.CIRCLE_PULL_REQUEST) {
+  } else if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
     return ENVIRONMENT.PULL_REQUEST;
   }
   return ENVIRONMENT.OTHER;
@@ -293,7 +292,7 @@ function getBuildName({
 function makeSelfInjecting(filePath) {
   const fileContents = readFileSync(filePath, 'utf8');
   const textContent = JSON.stringify(fileContents);
-  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};s.nonce=btoa((globalThis.browser||chrome).runtime.getURL('/'));d.documentElement.appendChild(s).remove();}`;
+  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
   writeFileSync(filePath, js, 'utf8');
 }
 

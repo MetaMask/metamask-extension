@@ -1,9 +1,13 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
+import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
+import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
+import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -20,7 +24,15 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'App Installed' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'App Installed',
+            properties: {
+              category: 'App',
+            },
+          },
+        ],
       })
       .thenCallback(() => {
         return {
@@ -36,7 +48,7 @@ describe('App Installed Events', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -45,21 +57,41 @@ describe('App Installed Events', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickIAgreeButton();
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.checkPageIsLoaded();
+          await onboardingMetricsPage.clickIAgreeButton();
+        }
+
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.checkLoginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
+
+        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+        await onboardingPasswordPage.checkPageIsLoaded();
+        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.checkPageIsLoaded();
+        await secureWalletPage.revealAndConfirmSRP();
+
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.checkPageIsLoaded();
+          await onboardingMetricsPage.clickIAgreeButton();
+        }
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].properties, {
           category: 'App',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
         });
       },
@@ -71,7 +103,7 @@ describe('App Installed Events', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -79,14 +111,30 @@ describe('App Installed Events', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.checkPageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.checkLoginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
+
+        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+        await onboardingPasswordPage.checkPageIsLoaded();
+        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.checkPageIsLoaded();
+        await secureWalletPage.revealAndConfirmSRP();
+
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.checkPageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         const mockedRequests = await getEventPayloads(
           driver,

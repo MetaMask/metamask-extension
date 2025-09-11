@@ -1,16 +1,34 @@
-import type { Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  isStrictHexString,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import {
+  ChainId,
+  type TxData,
+  BridgeClientId,
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+  isNativeAddress,
+  isSolanaChainId,
+  formatChainIdToHex,
+} from '@metamask/bridge-controller';
+import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import type { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
-import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
+import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import type { TokenPayload, BridgeToken } from './types';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -73,21 +91,37 @@ export const getTxGasEstimates = async ({
 };
 
 const fetchTokenExchangeRates = async (
-  chainId: string,
+  chainId: Hex | CaipChainId | ChainId,
   currency: string,
+  signal?: AbortSignal,
   ...tokenAddresses: string[]
 ) => {
-  const exchangeRates = await fetchTokenExchangeRatesUtil(
-    currency,
-    tokenAddresses,
-    chainId,
-  );
-  return Object.keys(exchangeRates).reduce(
-    (acc: Record<string, number | undefined>, address) => {
-      acc[address.toLowerCase()] = exchangeRates[address];
+  const assetIds = tokenAddresses
+    .map((address) => toAssetId(address, formatChainIdToCaip(chainId)))
+    .filter(Boolean);
+  if (assetIds.length === 0) {
+    return {};
+  }
+  const queryParams = new URLSearchParams({
+    assetIds: assetIds.join(','),
+    includeMarketData: 'true',
+    vsCurrency: currency,
+  });
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
+  const tokenV3PriceResponse = (await handleFetch(url, {
+    method: 'GET',
+    headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
+    signal,
+  })) as Record<CaipAssetType, { price: number }>;
+
+  return Object.entries(tokenV3PriceResponse).reduce(
+    (acc, [k, curr]) => {
+      acc[k as CaipAssetType] = curr.price;
       return acc;
     },
-    {},
+    {} as Record<CaipAssetType, number>,
   );
 };
 
@@ -95,33 +129,32 @@ const fetchTokenExchangeRates = async (
 // rate is not available in the TokenRatesController, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
-  chainId: Hex;
+  chainId: Hex | CaipChainId | ChainId;
   tokenAddress: string;
   currency: string;
+  signal?: AbortSignal;
 }) => {
-  const { chainId, tokenAddress, currency } = request;
+  const { chainId, tokenAddress, currency, signal } = request;
   const exchangeRates = await fetchTokenExchangeRates(
     chainId,
     currency,
+    signal,
     tokenAddress,
   );
-  const exchangeRate =
-    exchangeRates?.[tokenAddress.toLowerCase()] ??
-    exchangeRates?.[getAddress(tokenAddress)];
-  return exchangeRate;
+  const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
+  return assetId ? exchangeRates?.[assetId] : undefined;
 };
 
 // This extracts a token's exchange rate from the marketData state object
 // These exchange rates are against the native asset of the chain
 export const exchangeRateFromMarketData = (
-  chainId: string,
+  chainId: Hex | ChainId | CaipChainId,
   tokenAddress: string,
   marketData?: Record<string, ContractMarketData>,
 ) =>
-  (
-    marketData?.[chainId]?.[tokenAddress.toLowerCase() as Hex] ??
-    marketData?.[chainId]?.[getAddress(tokenAddress) as Hex]
-  )?.price;
+  isStrictHexString(tokenAddress) && isStrictHexString(chainId)
+    ? marketData?.[chainId]?.[tokenAddress]?.price
+    : undefined;
 
 export const tokenAmountToCurrency = (
   amount: string | BigNumber,
@@ -159,7 +192,106 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 };
 
 export const isNetworkAdded = (
-  v: NetworkConfiguration | AddNetworkFields | undefined,
+  v:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
+    | undefined,
 ): v is NetworkConfiguration =>
   v !== undefined &&
   'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+
+const getTokenImage = (payload: TokenPayload['payload']) => {
+  if (!payload) {
+    return '';
+  }
+  const { image, iconUrl, icon, chainId, address, assetId } = payload;
+  const caipChainId = formatChainIdToCaip(chainId);
+  // If the token is native, return the SVG image asset
+  if (isNativeAddress(address)) {
+    if (isSolanaChainId(chainId)) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
+    }
+    return CHAIN_ID_TOKEN_IMAGE_MAP[
+      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+    ];
+  }
+  // If the token is not native, return the image from the payload
+  const imageFromPayload = image ?? iconUrl ?? icon;
+  if (imageFromPayload) {
+    return imageFromPayload;
+  }
+  // If there's no image from the payload, build the asset image URL and return it
+  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
+  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
+};
+
+export const toBridgeToken = (
+  payload: TokenPayload['payload'],
+): BridgeToken | null => {
+  if (!payload) {
+    return null;
+  }
+  const caipChainId = formatChainIdToCaip(payload.chainId);
+  return {
+    ...payload,
+    balance: payload.balance ?? '0',
+    string: payload.string ?? '0',
+    chainId: payload.chainId,
+    image: getTokenImage(payload),
+    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
+  };
+};
+const createBridgeTokenPayload = (
+  tokenData: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    name?: string;
+    assetId?: string;
+  },
+  chainId: ChainId | Hex,
+): TokenPayload['payload'] | null => {
+  const { assetId, ...rest } = tokenData;
+  return toBridgeToken({
+    ...rest,
+    chainId,
+  });
+};
+
+export const getDefaultToToken = (
+  { chainId: targetChainId }: NetworkConfiguration | AddNetworkFields,
+  fromToken: NonNullable<TokenPayload['payload']>,
+) => {
+  const commonPair =
+    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[
+      targetChainId as keyof typeof BRIDGE_CHAINID_COMMON_TOKEN_PAIR
+    ];
+
+  if (commonPair) {
+    // If source is native token, default to USDC on same chain
+    if (isNativeAddress(fromToken.address)) {
+      return createBridgeTokenPayload(commonPair, targetChainId);
+    }
+
+    // If source is USDC (or other common pair token), default to native token
+    if (fromToken.address?.toLowerCase() === commonPair.address.toLowerCase()) {
+      const nativeAsset = getNativeAssetForChainId(targetChainId);
+      if (nativeAsset) {
+        return createBridgeTokenPayload(nativeAsset, targetChainId);
+      }
+    }
+
+    // For any other token, default to USDC
+    return createBridgeTokenPayload(commonPair, targetChainId);
+  }
+
+  // Last resort: native token
+  const nativeAsset = getNativeAssetForChainId(targetChainId);
+  if (nativeAsset) {
+    // return nativeAsset
+    return createBridgeTokenPayload(nativeAsset, targetChainId);
+  }
+
+  return null;
+};

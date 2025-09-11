@@ -25,16 +25,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { SEND_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { showSendTokenPage } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
+import { navigateToSendRoute } from '../../../utils/send';
+import { useRedesignedSendFlow } from '../../../hooks/useRedesignedSendFlow';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -63,9 +65,8 @@ export const WalletInitiatedHeader = () => {
     await dispatch(editExistingTransaction(assetType, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
-
-    history.push(SEND_ROUTE);
-  }, [currentConfirmation, dispatch, history]);
+    navigateToSendRoute(history, isSendRedesignEnabled);
+  }, [currentConfirmation, dispatch, history, isSendRedesignEnabled]);
 
   return (
     <Box
@@ -81,6 +82,8 @@ export const WalletInitiatedHeader = () => {
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleBackButtonClick}
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}

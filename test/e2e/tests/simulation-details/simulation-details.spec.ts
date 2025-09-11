@@ -1,14 +1,15 @@
 import { hexToNumber } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import FixtureBuilder from '../../fixture-builder';
 import {
   createDappTransaction,
   Fixtures,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
@@ -43,15 +44,6 @@ import {
 } from './mock-request-send-eth';
 import { MockRequestResponse } from './types';
 
-const TX_SENTINEL_URL =
-  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/';
-
-const mockNetworkRequest = async (mockServer: Mockttp) => {
-  await mockServer.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
-    '1': { name: 'Mainnet', confirmations: true },
-  });
-};
-
 async function withFixturesForSimulationDetails(
   {
     title,
@@ -62,19 +54,17 @@ async function withFixturesForSimulationDetails(
     inputChainId?: string;
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
-  test: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
+  runTestWithFixtures: (
+    args: Pick<Fixtures, 'driver' | 'mockServer'>,
+  ) => Promise<void>,
 ) {
-  const testSpecificMock = async (mockServer: MockttpServer) => {
-    await mockNetworkRequest(mockServer);
-    await mockRequests(mockServer);
-  };
   await withFixtures(
     {
       fixtures: new FixtureBuilder({ inputChainId })
         .withPermissionControllerConnectedToTestDapp()
         .build(),
       title,
-      testSpecificMock,
+      testSpecificMock: mockRequests,
       dapp: true,
       localNodeOptions: {
         hardfork: 'london',
@@ -82,8 +72,8 @@ async function withFixturesForSimulationDetails(
       },
     },
     async ({ driver, mockServer }) => {
-      await unlockWallet(driver);
-      await test({ driver, mockServer });
+      await loginWithBalanceValidation(driver);
+      await runTestWithFixtures({ driver, mockServer });
     },
   );
 }
@@ -114,7 +104,7 @@ async function expectBalanceChange(
   });
 }
 
-export async function mockRequest(
+async function mockRequest(
   server: Mockttp,
   { request, response }: MockRequestResponse,
 ) {
@@ -124,8 +114,8 @@ export async function mockRequest(
     .thenJson(200, response);
 }
 
-describe('Simulation Details', () => {
-  it('renders send eth transaction', async function (this: Mocha.Context) {
+describe('Simulation Details', function () {
+  it('renders send eth transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
@@ -140,7 +130,7 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('renders buy ERC20 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC20 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, BUY_ERC20_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC20_REQUEST_2_MOCK);
@@ -157,7 +147,7 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('renders buy ERC721 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC721 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, BUY_ERC721_REQUEST_1_MOCK);
       await mockRequest(mockServer, BUY_ERC721_REQUEST_2_MOCK);
@@ -180,10 +170,16 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('renders buy ERC1155 transaction', async function (this: Mocha.Context) {
+  it('renders buy ERC1155 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_1_MOCK);
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_2_MOCK);
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_1_MOCK as MockRequestResponse,
+      );
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_2_MOCK as MockRequestResponse,
+      );
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
@@ -203,7 +199,7 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('renders no changes transaction', async function (this: Mocha.Context) {
+  it('renders no changes transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, NO_CHANGES_REQUEST_MOCK);
     };
@@ -221,7 +217,7 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('displays error message if transaction will fail or revert', async function (this: Mocha.Context) {
+  it('displays error message if transaction will fail or revert', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, INSUFFICIENT_GAS_REQUEST_MOCK);
     };
@@ -239,7 +235,7 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('does not display if chain is not supported', async function (this: Mocha.Context) {
+  it('does not display if chain is not supported', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     };
@@ -261,7 +257,7 @@ describe('Simulation Details', () => {
     );
   });
 
-  it('displays generic error message', async function (this: Mocha.Context) {
+  it('displays generic error message', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, MALFORMED_TRANSACTION_REQUEST_MOCK);
     };

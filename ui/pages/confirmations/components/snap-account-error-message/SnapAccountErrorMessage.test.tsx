@@ -11,6 +11,7 @@ const store = configureStore({
 });
 
 // If you're using some kind of global variable (like `global.platform` in your component), you might want to mock it.
+// @ts-expect-error mocking platform
 global.platform = {
   openTab: jest.fn(),
   closeCurrentWindow: jest.fn(),

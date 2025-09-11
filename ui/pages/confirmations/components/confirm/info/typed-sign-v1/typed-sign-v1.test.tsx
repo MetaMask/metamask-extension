@@ -6,6 +6,8 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../test/data/confirmations/helper';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../../helpers/constants/design-system';
 import TypedSignInfoV1 from './typed-sign-v1';
 
 jest.mock(
@@ -100,5 +102,32 @@ describe('TypedSignInfo', () => {
     expect(
       queryByText('This is the site asking for your signature.'),
     ).toBeDefined();
+  });
+
+  it('display network info if there is an alert on that field', () => {
+    const state = {
+      ...getMockTypedSignConfirmStateForRequest(unapprovedTypedSignMsgV1),
+      confirmAlerts: {
+        alerts: {
+          [unapprovedTypedSignMsgV1.id]: [
+            {
+              key: 'networkSwitchInfo',
+              field: RowAlertKey.Network,
+              severity: Severity.Info,
+              message: 'dummy message',
+              reason: 'dummy reason',
+            },
+          ],
+        },
+        confirmed: {},
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithConfirmContextProvider(
+      <TypedSignInfoV1 />,
+      mockStore,
+    );
+    expect(getByText('Network')).toBeInTheDocument();
+    expect(getByText('Goerli')).toBeInTheDocument();
   });
 });

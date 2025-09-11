@@ -1,23 +1,24 @@
 import { pick } from 'lodash';
 import { isPlainObject } from '@metamask/controller-utils';
 import {
-  Caveat,
-  CaveatSpecificationConstraint,
+  type Caveat,
   invalidParams,
   MethodNames,
-  PermissionController,
-  PermissionSpecificationConstraint,
-  RequestedPermissions,
-  ValidPermission,
+  type RequestedPermissions,
+  type ValidPermission,
 } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
-  Caip25CaveatValue,
+  type Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
-import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
-import {
+} from '@metamask/chain-agnostic-permission';
+import type {
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
+import type {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
@@ -26,6 +27,12 @@ import {
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
+import type {
+  GetAccounts,
+  GetCaip25PermissionFromLegacyPermissionsForOrigin,
+  GrantedPermissions,
+  RequestPermissionsForOrigin,
+} from './types';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.RequestPermissions],
@@ -33,19 +40,9 @@ export const requestPermissionsHandler = {
   hookNames: {
     getAccounts: true,
     requestPermissionsForOrigin: true,
-    requestCaip25ApprovalForOrigin: true,
-    grantPermissionsForOrigin: true,
+    getCaip25PermissionFromLegacyPermissionsForOrigin: true,
   },
 };
-
-type AbstractPermissionController = PermissionController<
-  PermissionSpecificationConstraint,
-  CaveatSpecificationConstraint
->;
-
-type GrantedPermissions = Awaited<
-  ReturnType<AbstractPermissionController['requestPermissions']>
->[0];
 
 /**
  * Request Permissions implementation to be used in JsonRpcEngine middleware.
@@ -56,9 +53,8 @@ type GrantedPermissions = Awaited<
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
- * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
- * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
- * @param options.requestPermissionsForOrigin - A hook that requests permissions for the origin.
+ * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that returns a CAIP-25 permission from a legacy `eth_accounts` and `endowment:permitted-chains` permission.
+ * @param options.requestPermissionsForOrigin - A hook that requests CAIP-25 permissions for the origin.
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -69,22 +65,11 @@ async function requestPermissionsImplementation(
   {
     getAccounts,
     requestPermissionsForOrigin,
-    requestCaip25ApprovalForOrigin,
-    grantPermissionsForOrigin,
+    getCaip25PermissionFromLegacyPermissionsForOrigin,
   }: {
-    getAccounts: () => string[];
-    requestPermissionsForOrigin: (
-      requestedPermissions: RequestedPermissions,
-    ) => Promise<[GrantedPermissions]>;
-    requestCaip25ApprovalForOrigin: (
-      requestedPermissions?: RequestedPermissions,
-    ) => Promise<RequestedPermissions>;
-    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) => {
-      [Caip25EndowmentPermissionName]: ValidPermission<
-        typeof Caip25EndowmentPermissionName,
-        Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-      >;
-    };
+    getAccounts: GetAccounts;
+    requestPermissionsForOrigin: RequestPermissionsForOrigin;
+    getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
   },
 ) {
   const { params } = req;
@@ -93,7 +78,9 @@ async function requestPermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  const [requestedPermissions] = params;
+  let [requestedPermissions] = params;
+  delete requestedPermissions[Caip25EndowmentPermissionName];
+
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
   > = pick(requestedPermissions, [
@@ -105,51 +92,46 @@ async function requestPermissionsImplementation(
 
   const hasCaip25EquivalentPermissions =
     Object.keys(caip25EquivalentPermissions).length > 0;
-  const hasOtherRequestedPermissions =
-    Object.keys(requestedPermissions).length > 0;
+
+  if (hasCaip25EquivalentPermissions) {
+    const caip25Permission = getCaip25PermissionFromLegacyPermissionsForOrigin(
+      caip25EquivalentPermissions,
+    );
+    requestedPermissions = {
+      ...requestedPermissions,
+      ...caip25Permission,
+    };
+  }
 
   let grantedPermissions: GrantedPermissions = {};
 
-  let caip25Approval;
+  const [frozenGrantedPermissions] =
+    await requestPermissionsForOrigin(requestedPermissions);
+
+  grantedPermissions = { ...frozenGrantedPermissions };
+
   if (hasCaip25EquivalentPermissions) {
-    try {
-      caip25Approval = await requestCaip25ApprovalForOrigin(
-        caip25EquivalentPermissions,
+    const caip25Endowment = grantedPermissions[Caip25EndowmentPermissionName];
+
+    if (!caip25Endowment) {
+      throw new Error(
+        `could not find ${Caip25EndowmentPermissionName} permission.`,
       );
-    } catch (error) {
-      return end(error as unknown as Error);
     }
-  }
 
-  if (hasOtherRequestedPermissions || !hasCaip25EquivalentPermissions) {
-    try {
-      const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
-        requestedPermissions,
-      );
-      grantedPermissions = { ...frozenGrantedPermissions };
-    } catch (error) {
-      return end(error as unknown as Error);
-    }
-  }
-
-  if (caip25Approval) {
-    const grantedCaip25Permissions = grantPermissionsForOrigin(caip25Approval);
-    const caip25Endowment =
-      grantedCaip25Permissions[Caip25EndowmentPermissionName];
-
-    const caip25CaveatValue = caip25Endowment?.caveats?.find(
+    const caip25CaveatValue = caip25Endowment.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     )?.value as Caip25CaveatValue | undefined;
-
     if (!caip25CaveatValue) {
       throw new Error(
         `could not find ${Caip25CaveatType} in granted ${Caip25EndowmentPermissionName} permission.`,
       );
     }
 
+    delete grantedPermissions[Caip25EndowmentPermissionName];
     // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
-    const ethAccounts = getAccounts();
+    const ethAccounts = getAccounts(origin);
 
     grantedPermissions[RestrictedMethods.eth_accounts] = {
       ...caip25Endowment,
@@ -163,6 +145,7 @@ async function requestPermissionsImplementation(
     };
 
     const ethChainIds = getPermittedEthChainIds(caip25CaveatValue);
+
     if (ethChainIds.length > 0) {
       grantedPermissions[PermissionNames.permittedChains] = {
         ...caip25Endowment,

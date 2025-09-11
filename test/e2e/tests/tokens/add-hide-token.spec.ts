@@ -36,14 +36,14 @@ describe('Add hide token', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.check_tokenItemNumber(2);
-        await assetListPage.check_tokenAmountIsDisplayed('0 TST');
+        await assetListPage.checkTokenItemNumber(2);
+        await assetListPage.checkTokenAmountIsDisplayed('0 TST');
 
         await assetListPage.hideToken('TST');
-        await assetListPage.check_tokenItemNumber(1);
+        await assetListPage.checkTokenItemNumber(1);
       },
     );
   });

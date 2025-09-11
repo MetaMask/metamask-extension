@@ -1,4 +1,6 @@
 import browser from 'webextension-polyfill';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { t } from '../../../shared/lib/translate';
 import ExtensionPlatform from './extension';
 
 const TEST_URL =
@@ -131,23 +133,30 @@ describe('extension platform', () => {
         `Transaction 1 failed! ${errorMessage}`,
       );
     });
+  });
 
-    it('should show failed transaction without nonce', async () => {
+  describe('showTransactionNotification', () => {
+    it('shows failed transaction with EthAppNftNotSupported error message', async () => {
       const txMeta = {
-        txParams: {},
-        error: { message: 'Error message' },
+        status: TransactionStatus.failed,
+        txParams: { nonce: '0x1' },
+        error: { message: 'EthAppNftNotSupported' },
+      };
+      const rpcPrefs = {
+        chainId: 1,
       };
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
         extensionPlatform,
         '_showNotification',
       );
+      const expectedErrorMessage = t('ledgerEthAppNftNotSupportedNotification');
 
-      await extensionPlatform._showFailedTransaction(txMeta);
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
 
       expect(showNotificationSpy).toHaveBeenCalledWith(
         'Failed transaction',
-        `Transaction failed! ${txMeta.error.message}`,
+        `Transaction 1 failed! ${expectedErrorMessage}`,
       );
     });
   });

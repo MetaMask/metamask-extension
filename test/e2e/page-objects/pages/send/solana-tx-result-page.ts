@@ -17,7 +17,7 @@ class SolanaTxresultPage {
     this.driver = driver;
   }
 
-  async check_isViewTransactionLinkDisplayed() {
+  async checkIsViewTransactionLinkDisplayed() {
     try {
       await this.driver.findClickableElement(this.viewTransactionLink);
       return true;
@@ -27,7 +27,7 @@ class SolanaTxresultPage {
     }
   }
 
-  async check_TransactionStatus(sent: boolean): Promise<boolean> {
+  async checkTransactionStatus(sent: boolean): Promise<boolean> {
     const statusText = sent ? 'Sent' : 'Transaction failed';
     try {
       await this.driver.findElement({
@@ -41,12 +41,13 @@ class SolanaTxresultPage {
     }
   }
 
-  async check_TransactionStatusText(
+  async checkTransactionStatusText(
     amount: string,
     sent: boolean,
+    tokenName: string = 'SOL',
   ): Promise<boolean> {
     const displayedText = sent
-      ? `${amount}  was successfully sent`
+      ? `${amount} ${tokenName} was successfully sent`
       : `Unable to send ${amount}`;
     const txStatusText = {
       text: displayedText,

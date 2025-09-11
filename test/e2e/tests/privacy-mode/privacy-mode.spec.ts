@@ -8,7 +8,6 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
-import { Ganache } from '../../seeder/ganache';
 
 describe('Privacy Mode', function () {
   it('should hide fiat balance and token balance when privacy mode is activated', async function () {
@@ -17,25 +16,19 @@ describe('Privacy Mode', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.togglePrivacyBalance();
-        await homePage.check_expectedBalanceIsDisplayed('••••••', '••••••');
+        await homePage.checkExpectedBalanceIsDisplayed('••••••', '••••••');
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         const accountList = new AccountListPage(driver);
-        await accountList.check_pageIsLoaded();
-        await accountList.check_balanceIsPrivateEverywhere();
+        await accountList.checkPageIsLoaded();
+        await accountList.checkBalanceIsPrivateEverywhere();
       },
     );
   });
@@ -56,16 +49,16 @@ describe('Privacy Mode', function () {
         await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.togglePrivacyBalance();
-        await homePage.check_expectedBalanceIsDisplayed('25 ETH');
+        await homePage.checkExpectedBalanceIsDisplayed('25 ETH');
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         const accountList = new AccountListPage(driver);
-        await accountList.check_pageIsLoaded();
-        await accountList.check_accountBalanceDisplayed('25');
+        await accountList.checkPageIsLoaded();
+        await accountList.checkAccountBalanceDisplayed('$42,500');
       },
     );
   });

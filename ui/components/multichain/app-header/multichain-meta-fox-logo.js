@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+
 import { useHistory } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useTheme } from '../../../hooks/useTheme';
@@ -16,6 +17,10 @@ export const MultichainMetaFoxLogo = () => {
   const history = useHistory();
   const theme = useTheme();
 
+  const onClick = useCallback(async () => {
+    history.push(DEFAULT_ROUTE);
+  }, [history]);
+
   return (
     <Box
       display={[Display.None, Display.Flex]}
@@ -25,11 +30,7 @@ export const MultichainMetaFoxLogo = () => {
       data-testid="app-header-logo"
       justifyContent={JustifyContent.center}
     >
-      <Logo
-        unsetIconHeight
-        onClick={async () => history.push(DEFAULT_ROUTE)}
-        theme={theme}
-      />
+      <Logo unsetIconHeight onClick={onClick} theme={theme} />
     </Box>
   );
 };

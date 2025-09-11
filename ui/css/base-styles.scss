@@ -13,6 +13,9 @@ body {
   padding: 0;
   font-size: 16px;
   overflow: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html {
@@ -33,11 +36,9 @@ html {
     &:not([data-theme]) {
       color: var(--brand-colors-white);
       background-color: var(--brand-colors-grey-grey900);
-    }
 
-    @include design-system.screen-sm-max {
-      &:not([data-theme]) {
-        background-color: var(--brand-colors-grey-grey800);
+      body {
+        color: var(--brand-colors-white);
       }
     }
   }

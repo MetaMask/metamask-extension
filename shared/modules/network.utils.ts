@@ -1,6 +1,27 @@
-import { isStrictHexString } from '@metamask/utils';
+import {
+  type Hex,
+  type CaipChainId,
+  KnownCaipNamespace,
+  isStrictHexString,
+  parseCaipChainId,
+  add0x,
+} from '@metamask/utils';
 import { convertHexToDecimal } from '@metamask/controller-utils';
-import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
+import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+
+import {
+  CHAIN_IDS,
+  MAX_SAFE_CHAIN_ID,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
+
+type RpcEndpoint = {
+  name?: string;
+  url: string;
+  networkClientId: string;
+};
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -91,3 +112,124 @@ export function convertNetworkId(value: unknown): string | null {
   }
   return null;
 }
+
+/**
+ * Convert an eip155 CAIP chain ID to a hex chain ID.
+ *
+ * @param id - The CAIP chain ID to convert.
+ * @returns The hex chain ID.
+ */
+export function convertCaipToHexChainId(id: CaipChainId): Hex {
+  const { namespace, reference } = parseCaipChainId(id);
+  if (namespace === KnownCaipNamespace.Eip155) {
+    return add0x(parseInt(reference, 10).toString(16));
+  }
+
+  throw new Error(
+    `Unsupported CAIP chain ID namespace: ${namespace}. Only eip155 is supported.`,
+  );
+}
+
+/**
+ * Sorts a list of networks based on the order of their chain IDs.
+ *
+ * @param networks - The networks to sort.
+ * @param sortedChainIds - The chain IDs to sort by.
+ * @returns The sorted list of networks.
+ */
+export const sortNetworks = (
+  networks: Record<string, MultichainNetworkConfiguration>,
+  sortedChainIds: { networkId: string }[],
+): MultichainNetworkConfiguration[] =>
+  Object.values(networks).sort((a, b) => {
+    const indexA = sortedChainIds.findIndex(
+      ({ networkId }) => networkId === a.chainId,
+    );
+    const indexB = sortedChainIds.findIndex(
+      ({ networkId }) => networkId === b.chainId,
+    );
+
+    // If the chainId is not found, assign Infinity to place it at the bottom
+    const adjustedIndexA = indexA === -1 ? Infinity : indexA;
+    const adjustedIndexB = indexB === -1 ? Infinity : indexB;
+
+    return adjustedIndexA - adjustedIndexB;
+  });
+
+/**
+ * Get the network icon for the given chain ID.
+ *
+ * @param networkConfiguration - The network configuration to get the icon for.
+ * @returns The URL of the network icon.
+ */
+export const getNetworkIcon = (
+  networkConfiguration: MultichainNetworkConfiguration,
+) => {
+  return networkConfiguration.isEvm
+    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+        convertCaipToHexChainId(networkConfiguration.chainId)
+      ]
+    : MULTICHAIN_TOKEN_IMAGE_MAP[networkConfiguration.chainId];
+};
+
+/**
+ * Get the RPC data for the given chain ID.
+ *
+ * @param chainId - The chain ID to get the RPC data for.
+ * @param evmNetworks - The network configurations for EVM networks.
+ * @returns The RPC data for the chain ID.
+ */
+export const getRpcDataByChainId = (
+  chainId: CaipChainId,
+  evmNetworks: Record<Hex, NetworkConfiguration>,
+): {
+  rpcEndpoints: RpcEndpoint[];
+  defaultRpcEndpoint: RpcEndpoint;
+} => {
+  const hexChainId = convertCaipToHexChainId(chainId);
+
+  if (!evmNetworks[hexChainId]) {
+    throw new Error(
+      `Network configuration not found for chain ID: ${chainId} (${hexChainId})`,
+    );
+  }
+
+  const evmNetworkConfig = evmNetworks[hexChainId];
+  const { rpcEndpoints, defaultRpcEndpointIndex } = evmNetworkConfig;
+  const defaultRpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+  return {
+    rpcEndpoints,
+    defaultRpcEndpoint,
+  };
+};
+
+/**
+ * Sorts a list of test networks based on the predefined priority.
+ * And then sorts the rest of the networks in alphabetical order.
+ *
+ * @param networks - The networks to sort.
+ * @param priorityList - The list of CAIP Chain IDs to prioritize.
+ * @returns The sorted list of networks.
+ */
+export const sortNetworksByPrioity = (
+  networks: MultichainNetworkConfiguration[],
+  priorityList: CaipChainId[],
+) => {
+  return networks.sort((networkA, networkB) => {
+    const indexA = priorityList.indexOf(networkA.chainId);
+    const indexB = priorityList.indexOf(networkB.chainId);
+
+    if (indexA !== -1 && indexB !== -1) {
+      // if both are in the priority list, networkA will go first then networkB
+      return indexA - indexB;
+    } else if (indexA !== -1) {
+      // if networkA in the priority list and the networkB not in the list, networkA will go first
+      return -1;
+    } else if (indexB !== -1) {
+      // if networkB in the priority list and the networkA not in the list, networkB will go first
+      return 1;
+    }
+    // if both are not in the priority list, sort by name
+    return networkA.name.localeCompare(networkB.name);
+  });
+};

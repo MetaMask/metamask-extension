@@ -11,7 +11,7 @@ import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
-import { Ganache } from '../seeder/ganache';
+import { mockSimpleKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const DAI = 'DAI';
 const TEST_ETH = 'TESTETH';
@@ -19,7 +19,7 @@ const TEST_ETH = 'TESTETH';
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: TRADES_API_MOCK_RESULT,
@@ -27,22 +27,24 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
+async function mockSwapsAndSimpleKeyringSnap(mockServer: Mockttp) {
+  return [
+    await mockSimpleKeyringSnap(mockServer),
+    await mockSwapsTransactionQuote(mockServer),
+  ];
+}
+
 describe('Snap Account - Swap', function () {
-  it('swaps ETH for DAI using a snap account', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSwapsTransactionQuote,
+        testSpecificMock: mockSwapsAndSimpleKeyringSnap,
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

@@ -1,24 +1,27 @@
 import { createSelector } from 'reselect';
-import { Hex } from '@metamask/utils';
-import {
-  BridgeHistoryItem,
-  BridgeStatusAppState,
-} from '../../../shared/types/bridge-status';
-import { getSelectedAddress } from '../../selectors';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { type BridgeStatusAppState } from '../../../shared/types/bridge-status';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 
-export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask.bridgeStatusState;
+const selectBridgeHistory = (state: BridgeStatusAppState) =>
+  state.metamask.txHistory;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
+ * If no address is provided, return all bridge history items for all addresses
+ *
+ * @param _ - the state object
+ * @param selectedAddress - The address to filter the bridge history items by
+ * @returns A mapping of srcTxMetaId to txHistoryItem for the selected address
  */
 export const selectBridgeHistoryForAccount = createSelector(
-  [getSelectedAddress, selectBridgeStatusState],
-  (selectedAddress, bridgeStatusState) => {
-    const { txHistory } = bridgeStatusState;
-
+  [(_, selectedAddress?: string) => selectedAddress, selectBridgeHistory],
+  (selectedAddress, txHistory) => {
+    if (!selectedAddress) {
+      return txHistory;
+    }
     return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, txMetaId) => {
         const txHistoryItem = txHistory[txMetaId];
@@ -28,6 +31,60 @@ export const selectBridgeHistoryForAccount = createSelector(
         return acc;
       },
       {},
+    );
+  },
+);
+
+export const selectBridgeHistoryItemForTxMetaId = createSelector(
+  [selectBridgeHistory, (_, txMetaId?: string) => txMetaId],
+  (bridgeHistory, txMetaId) => {
+    if (!txMetaId) {
+      return undefined;
+    }
+    return bridgeHistory[txMetaId];
+  },
+);
+
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a bridge history item for a given approval tx id
+ */
+export const selectBridgeHistoryForApprovalTxId = createSelector(
+  [selectBridgeHistory, (_, approvalTxId: string) => approvalTxId],
+  (bridgeHistory, approvalTxId) => {
+    return Object.values(bridgeHistory).find(
+      (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
+    );
+  },
+);
+
+export const selectReceivedSwapsTokenAmountFromTxMeta = createSelector(
+  [
+    selectBridgeHistoryItemForTxMetaId,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    (_, __, txMeta) => txMeta,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    (_, __, ___, approvalTxMeta) => approvalTxMeta,
+  ],
+  (bridgeHistoryItem, txMeta, approvalTxMeta) => {
+    if (!bridgeHistoryItem) {
+      return null;
+    }
+    const {
+      quote: { destAsset },
+      account,
+    } = bridgeHistoryItem;
+
+    return getSwapsTokensReceivedFromTxMeta(
+      destAsset.symbol,
+      txMeta,
+      destAsset.address,
+      account,
+      destAsset.decimals,
+      approvalTxMeta,
+      destAsset.chainId,
     );
   },
 );
@@ -45,7 +102,7 @@ export const selectIncomingBridgeHistory = createSelector(
         const hexDestChainId = new Numeric(
           bridgeHistoryItem.quote.destChainId,
           10,
-        ).toPrefixedHexString() as Hex;
+        ).toPrefixedHexString();
 
         return hexDestChainId === currentChainId;
       })

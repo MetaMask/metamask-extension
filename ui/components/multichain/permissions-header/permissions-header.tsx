@@ -43,6 +43,7 @@ export const PermissionsHeader = ({
           iconName={IconName.ArrowLeft}
           className="connections-header__start-accessory"
           color={IconColor.iconDefault}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onClick={() => (history as any).goBack()}
           size={ButtonIconSize.Sm}

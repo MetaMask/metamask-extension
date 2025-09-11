@@ -21,6 +21,7 @@ import {
   getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -51,6 +52,7 @@ import {
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -80,6 +82,7 @@ export default function AwaitingSwap({
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
@@ -209,6 +212,9 @@ export default function AwaitingSwap({
         event: 'Quotes Timed Out',
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties,
+        properties: {
+          hd_entropy_index: hdEntropyIndex,
+        },
       });
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
@@ -272,16 +278,34 @@ export default function AwaitingSwap({
     }
   }, [dispatch, errorKey]);
 
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    if (isBeta()) {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="90"
+        height="90"
+      />
+    );
+  };
+
   return (
     <div className="awaiting-swap">
       <div className="awaiting-swap__content">
-        {!(swapComplete || errorKey) && (
-          <Mascot
-            animationEventEmitter={animationEventEmitter.current}
-            width="90"
-            height="90"
-          />
-        )}
+        {!(swapComplete || errorKey) && renderMascot()}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div
           className="awaiting-swap__header"

@@ -1,0 +1,194 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DeFiDetailsPage renders defi asset page 1`] = `
+<div>
+  <div
+    class="mm-box main-container asset__container"
+  >
+    <div
+      class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
+    >
+      <button
+        aria-label="Back"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="defi-details-page-back-button"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+      </button>
+    </div>
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+    >
+      <h2
+        class="mm-box mm-text mm-text--heading-lg mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
+        data-testid="defi-details-page-title"
+      >
+        Lido
+      </h2>
+      <div
+        class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
+        style="align-self: center;"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
+        >
+          <img
+            alt="Lido logo"
+            class="mm-avatar-token__token-image"
+            src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png"
+          />
+        </div>
+        <div
+          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+          >
+            <img
+              alt="Custom Mainnet RPC logo"
+              class="mm-avatar-network__network-image"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-bottom-4 mm-box--padding-left-4"
+    >
+      <span
+        class="mm-box mm-text mm-box--color-text-alternative-soft mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        data-testid="defi-details-page-market-value"
+      >
+        $20,000.00
+      </span>
+    </div>
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4"
+    >
+      <hr />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box"
+      >
+        <div
+          class="mm-box"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative-soft"
+            data-testid="defi-details-list-stake-position"
+          >
+            Staked
+          </p>
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+          >
+            <a
+              class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+              data-testid="multichain-token-list-button"
+              style="height: 62px; cursor: auto; background-color: transparent; transition: background-color 0.2s ease-in-out;"
+            >
+              <div
+                class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
+                style="align-self: center;"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
+                >
+                  <img
+                    alt="Liquid staked Ether 2.0 logo"
+                    class="mm-avatar-token__token-image"
+                    src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                  >
+                    <img
+                      alt="Custom Mainnet RPC logo"
+                      class="mm-avatar-network__network-image"
+                      src="./images/eth_logo.svg"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+                style="flex-grow: 1; overflow: hidden;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex"
+                  >
+                    <div
+                      class="token-cell-title--ellipsis"
+                    >
+                      <div
+                        aria-describedby="tippy-tooltip-1"
+                        class=""
+                        data-original-title="null"
+                        data-tooltipped=""
+                        style="display: inline;"
+                        tabindex="0"
+                      >
+                        <span
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+                          data-testid="multichain-token-list-item-token-name"
+                        >
+                          Liquid staked Ether 2.0
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                    data-testid="multichain-token-list-item-secondary-value"
+                    style="white-space: nowrap; padding-inline-start: 8px;"
+                  >
+                    $20,000.00
+                  </p>
+                </div>
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
+                      style="mask-image: url('./images/icons/triangle-up.svg');"
+                    />
+                    <p
+                      class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
+                      data-testid="token-increase-decrease-percentage-0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+                    data-testid="multichain-token-list-item-value"
+                  >
+                    10
+                     
+                    Liquid staked Ether 2.0
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

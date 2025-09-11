@@ -1,4 +1,5 @@
 import { Token, TokenListToken } from '@metamask/assets-controllers';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import type {
   AssetType,
   TokenStandard,
@@ -14,7 +15,7 @@ export type NFT = {
   address: string;
   description: string | null;
   favorite: boolean;
-  image?: string;
+  image?: string | string[];
   isCurrentlyOwned: boolean;
   name: string | null;
   standard: TokenStandard;
@@ -25,6 +26,7 @@ export type NFT = {
   imageOriginal?: string;
   ipfsImageUpdated?: string;
   collection?: Record<string, string | number | boolean>;
+  chainId: string;
 };
 
 /**
@@ -35,8 +37,8 @@ export type NFT = {
 export type ERC20Asset = {
   type: AssetType.token;
   image: string;
-} & Pick<TokenListToken, 'address' | 'symbol'> &
-  Pick<TokenWithFiatAmount, 'chainId'>;
+  chainId: Hex | CaipChainId;
+} & Pick<TokenListToken, 'address' | 'symbol'>;
 
 export type NativeAsset = {
   type: AssetType.native;
@@ -47,11 +49,14 @@ export type NativeAsset = {
   symbol: typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP extends Record<string, infer V>
     ? V
     : never; // only allow wallet's hardcoded symbols
-} & Pick<TokenWithFiatAmount, 'chainId'>;
+  chainId: Hex | CaipChainId;
+};
 
 /**
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number

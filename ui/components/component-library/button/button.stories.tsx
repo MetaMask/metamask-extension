@@ -122,10 +122,14 @@ export const SizeStory: StoryFn<typeof Button> = (args) => (
 SizeStory.storyName = 'Size';
 
 export const Danger: StoryFn<typeof Button> = (args) => (
-  <Box display={Display.Flex} gap={1}>
-    <Button {...args}>Normal</Button>
-    {/* Test Anchor tag to match exactly as button */}
-    <Button as="a" {...args} href="#" danger>
+  <Box display={Display.Flex} gap={4}>
+    <Button danger>
+      Danger
+    </Button>
+    <Button variant={ButtonVariant.Secondary} danger>
+      Danger
+    </Button>
+    <Button {...args} variant={ButtonVariant.Link} danger>
       Danger
     </Button>
   </Box>

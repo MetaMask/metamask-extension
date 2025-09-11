@@ -1,5 +1,6 @@
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -7,23 +8,33 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import { getPermittedAccountsForCurrentTab } from '../../../selectors';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  isSolanaAccount,
+} from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
+import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 
-// TODO: get this into one of the larger definitions of state type
-type State = Omit<MetaMaskReduxState, 'appState'> & {
-  appState: {
-    showNftDetectionEnablementToast?: boolean;
-  };
-  metamask: {
-    newPrivacyPolicyToastClickedOrClosed?: boolean;
-    newPrivacyPolicyToastShownDate?: number;
-    onboardingDate?: number;
-    showNftDetectionEnablementToast?: boolean;
-    surveyLinkLastClickedOrClosed?: number;
-    switchedNetworkNeverShowMessage?: boolean;
-  };
+type State = {
+  appState: Partial<
+    Pick<
+      MetaMaskReduxState['appState'],
+      | 'showNftDetectionEnablementToast'
+      | 'showNewSrpAddedToast'
+      | 'showPasswordChangeToast'
+      | 'showCopyAddressToast'
+    >
+  >;
+  metamask: Partial<
+    Pick<
+      MetaMaskReduxState['metamask'],
+      | 'newPrivacyPolicyToastClickedOrClosed'
+      | 'newPrivacyPolicyToastShownDate'
+      | 'onboardingDate'
+      | 'surveyLinkLastClickedOrClosed'
+    >
+  >;
 };
 
 /**
@@ -32,8 +43,8 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
  * @param state - The application state containing the necessary survey data.
  * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
-export function selectShowSurveyToast(state: State): boolean {
-  if (state.metamask?.surveyLinkLastClickedOrClosed) {
+export function selectShowSurveyToast(state: Pick<State, 'metamask'>): boolean {
+  if (state.metamask.surveyLinkLastClickedOrClosed) {
     return false;
   }
 
@@ -50,9 +61,9 @@ export function selectShowSurveyToast(state: State): boolean {
  * @param state - The application state containing the privacy policy data.
  * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
  */
-export function selectShowPrivacyPolicyToast(state: State): {
+export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
   showPrivacyPolicyToast: boolean;
-  newPrivacyPolicyToastShownDate?: number;
+  newPrivacyPolicyToastShownDate?: number | null;
 } {
   const {
     newPrivacyPolicyToastClickedOrClosed,
@@ -74,36 +85,68 @@ export function selectShowPrivacyPolicyToast(state: State): {
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
 }
 
-export function selectNftDetectionEnablementToast(state: State): boolean {
-  return Boolean(state.appState?.showNftDetectionEnablementToast);
+export function selectNftDetectionEnablementToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showNftDetectionEnablementToast);
 }
 
 // If there is more than one connected account to activeTabOrigin,
 // *BUT* the current account is not one of them, show the banner
 export function selectShowConnectAccountToast(
-  state: State,
+  state: State & Pick<MetaMaskReduxState, 'activeTab'>,
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-  const isEvmAccount = isEvmAccountType(account?.type);
+  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
-  return (
+  // We only support connection with EVM or Solana accounts
+  // This check prevents Bitcoin snap accounts from showing the toast
+  const isEvmAccount = isEvmAccountType(account?.type);
+  const isSolanaAccountSelected = isSolanaAccount(account);
+  const isConnectableAccount = isEvmAccount || isSolanaAccountSelected;
+
+  const showConnectAccountToast =
     allowShowAccountSetting &&
     account &&
-    state.activeTab?.origin &&
-    isEvmAccount &&
+    state.activeTab.origin &&
+    isConnectableAccount &&
     connectedAccounts.length > 0 &&
-    !connectedAccounts.some((address) => address === account.address)
-  );
+    !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
+
+  return showConnectAccountToast;
 }
 
 /**
- * Retrieves user preference to never see the "Switched Network" toast
+ * Retrieves user preference to see the "New SRP Added" toast
  *
  * @param state - Redux state object.
  * @returns Boolean preference value
  */
-export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
-  return Boolean(state.metamask.switchedNetworkNeverShowMessage);
+export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
+  return Boolean(state.appState.showNewSrpAddedToast);
+}
+
+/**
+ * Retrieves user preference to see the "Password Change Error" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectPasswordChangeToast(
+  state: Pick<State, 'appState'>,
+): PasswordChangeToastType | null {
+  return state.appState.showPasswordChangeToast || null;
+}
+
+/**
+ * Retrieves user preference to see the "Copy Address" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowCopyAddressToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showCopyAddressToast);
 }

@@ -1,0 +1,267 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionList renders TransactionList component correctly 1`] = `
+<div>
+  <div
+    class="mm-box transaction-list"
+  >
+    <div
+      class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        data-testid="sort-by-popover-toggle"
+      >
+        <span
+          class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        >
+          Goerli
+        </span>
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </button>
+    </div>
+    <div
+      class="mm-box transaction-list__transactions"
+    >
+      <div
+        class="mm-box transaction-list__completed-transactions"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--padding-top-2 mm-box--padding-inline-4 mm-box--color-text-alternative"
+        >
+          May 12
+        </p>
+        <div
+          class="mm-box activity-list-item transaction-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+          data-testid="activity-list-item"
+          tabindex="0"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+          >
+            <div
+              class="mm-box mm-box--display-inline-flex"
+            >
+              <div
+                class="mm-box mm-badge-wrapper mm-box--display-block"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/received.svg');"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network activity-tx__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    data-testid="activity-tx-network-badge"
+                  >
+                    G
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
+            >
+              <div
+                class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                    data-testid="activity-list-item-action"
+                  >
+                    Received
+                  </p>
+                </div>
+                <div
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                >
+                  <div
+                    class="transaction-status-label transaction-status-label--confirmed"
+                  >
+                    Confirmed
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box activity-list-item__right-content mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--height-min"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text activity-list-item__primary-currency mm-text--body-md-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-right mm-box--color-text-default"
+                    data-testid="transaction-list-item-primary-currency"
+                    title="18.75 GoerliETH"
+                  >
+                    18.75 GoerliETH
+                  </p>
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-right mm-box--color-text-alternative"
+                  data-testid="transaction-list-item-secondary-currency"
+                >
+                  18.75 ETH
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionList renders TransactionList component with props hideNetworkFilter correctly 1`] = `
+<div>
+  <div
+    class="mm-box transaction-list"
+  >
+    <div
+      class="mm-box transaction-list__transactions"
+    >
+      <div
+        class="mm-box transaction-list__completed-transactions"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--padding-top-2 mm-box--padding-inline-4 mm-box--color-text-alternative"
+        >
+          May 12
+        </p>
+        <div
+          class="mm-box activity-list-item transaction-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+          data-testid="activity-list-item"
+          tabindex="0"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+          >
+            <div
+              class="mm-box mm-box--display-inline-flex"
+            >
+              <div
+                class="mm-box mm-badge-wrapper mm-box--display-block"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/received.svg');"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network activity-tx__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    data-testid="activity-tx-network-badge"
+                  >
+                    G
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
+            >
+              <div
+                class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                    data-testid="activity-list-item-action"
+                  >
+                    Received
+                  </p>
+                </div>
+                <div
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+                >
+                  <div
+                    class="transaction-status-label transaction-status-label--confirmed"
+                  >
+                    Confirmed
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box activity-list-item__right-content mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--height-min"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text activity-list-item__primary-currency mm-text--body-md-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-right mm-box--color-text-default"
+                    data-testid="transaction-list-item-primary-currency"
+                    title="18.75 GoerliETH"
+                  >
+                    18.75 GoerliETH
+                  </p>
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-right mm-box--color-text-alternative"
+                  data-testid="transaction-list-item-secondary-currency"
+                >
+                  18.75 ETH
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionList renders TransactionList component with props hideTokenTransactions correctly 1`] = `
+<div>
+  <div
+    class="mm-box transaction-list"
+  >
+    <div
+      class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        data-testid="sort-by-popover-toggle"
+      >
+        <span
+          class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        >
+          Goerli
+        </span>
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
+        />
+      </button>
+    </div>
+    <div
+      class="mm-box nfts-tab__link mm-box--margin-top-12 mm-box--margin-bottom-12 mm-box--padding-top-6 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-alternative"
+      >
+        No activity yet
+      </p>
+    </div>
+  </div>
+</div>
+`;

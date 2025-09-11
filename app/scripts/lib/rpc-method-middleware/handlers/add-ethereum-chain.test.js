@@ -63,6 +63,7 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const mocks = {
+    isAddFlow: true,
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
     setNetworkClientIdForDomain: jest.fn(),
     getNetworkConfigurationByChainId: jest.fn(),
@@ -77,8 +78,10 @@ const createMockedHandler = () => {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 123 }],
     }),
-    requestPermittedChainsPermissionForOrigin: jest.fn(),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+    rejectApprovalRequestsForOrigin: jest.fn(),
+    setTokenNetworkFilter: jest.fn(),
+    setEnabledNetworks: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -186,11 +189,13 @@ describe('addEthereumChainHandler', () => {
       {
         autoApprove: true,
         getCaveat: mocks.getCaveat,
+        isAddFlow: true,
         setActiveNetwork: mocks.setActiveNetwork,
-        requestPermittedChainsPermissionForOrigin:
-          mocks.requestPermittedChainsPermissionForOrigin,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        rejectApprovalRequestsForOrigin: mocks.rejectApprovalRequestsForOrigin,
+        setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+        setEnabledNetworks: mocks.setEnabledNetworks,
       },
     );
   });
@@ -253,11 +258,14 @@ describe('addEthereumChainHandler', () => {
           {
             autoApprove: true,
             getCaveat: mocks.getCaveat,
+            isAddFlow: true,
             setActiveNetwork: mocks.setActiveNetwork,
-            requestPermittedChainsPermissionForOrigin:
-              mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
+            setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+            setEnabledNetworks: mocks.setEnabledNetworks,
           },
         );
       });
@@ -300,11 +308,14 @@ describe('addEthereumChainHandler', () => {
           {
             autoApprove: false,
             getCaveat: mocks.getCaveat,
+            isAddFlow: true,
             setActiveNetwork: mocks.setActiveNetwork,
-            requestPermittedChainsPermissionForOrigin:
-              mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
+            setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+            setEnabledNetworks: mocks.setEnabledNetworks,
           },
         );
       });

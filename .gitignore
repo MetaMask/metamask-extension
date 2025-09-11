@@ -6,6 +6,7 @@ yarn-error.log
 node_modules
 package-lock.json
 
+playwright-report
 audit.json
 
 app/bower_components
@@ -52,6 +53,9 @@ notes.txt
 .metamaskrc
 .metamaskprodrc
 
+# Customized manifest configuration
+.manifest-overrides*.json
+
 # Test results
 test-results/
 
@@ -77,10 +81,13 @@ lavamoat/**/policy-debug.json
 # Attributions
 licenseInfos.json
 
+# Branding
+/app/images/branding
+
 # API Spec tests
 html-report/
+html-report-multichain/
 
-/app/images/branding
 /changed-files
 
 # UI Integration tests

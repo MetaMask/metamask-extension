@@ -53,7 +53,6 @@ export const ExecutionServiceInit: ControllerInitFunction<
       memStateKey: null,
       persistedStateKey: null,
       controller: new OffscreenExecutionService({
-        // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
         messenger: controllerMessenger,
         setupSnapProvider,
         offscreenPromise,
@@ -68,7 +67,6 @@ export const ExecutionServiceInit: ControllerInitFunction<
     memStateKey: null,
     persistedStateKey: null,
     controller: new IframeExecutionService({
-      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
       messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
       setupSnapProvider,

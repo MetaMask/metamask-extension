@@ -15,6 +15,7 @@ export const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map(
  * @property {string} address - The address of the selected 'TOKEN' or
  *  'NFT' contract.
  * @property {string} [symbol] - The symbol of the token.
+ * @property {string|null} [name] - The name of the token.
  * @property {number} [decimals] - The number of decimals of the selected
  *  'ERC20' asset.
  * @property {number} [tokenId] - The id of the selected 'NFT' asset.

@@ -1,4 +1,37 @@
 {
+  "accountTree": {
+    "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+    "wallets": {
+      "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+        "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
+        "type": "entropy",
+        "groups": {
+          "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+            "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+            "type": "multichain-account",
+            "accounts": [
+              "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+              "07c2cfec-36c9-46c4-8115-3836d3ac9047"
+            ],
+            "metadata": {
+              "name": "Account 1",
+              "entropy": {
+                "groupIndex": 0
+              },
+              "hidden": false,
+              "pinned": false
+            }
+          }
+        },
+        "metadata": {
+          "name": "Wallet 1",
+          "entropy": {
+            "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+          }
+        }
+      }
+    }
+  },
   "accounts": { "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {} },
   "accountsByChainId": {},
   "addSnapAccountEnabled": false,
@@ -13,6 +46,7 @@
       }
     }
   },
+  "addressSecurityAlertResponses": {},
   "advancedGasFee": {},
   "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
   "allDetectedTokens": {},
@@ -57,13 +91,6 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
-  "bridgeState": {
-    "bridgeFeatureFlags": {
-      "extensionConfig": {
-        "support": false
-      }
-    }
-  },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
@@ -92,9 +119,16 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
+  "enableEnforcedSimulations": "boolean",
+  "enableEnforcedSimulationsForTransactions": "object",
   "enableMV3TimestampSave": true,
-  "encryptionKey": "{\"key\":{\"alg\":\"A256GCM\",\"ext\":true,\"k\":\"IWP6tqC2WeYfTxhHhTFU2m1hhO9GD5YhgYe2iRzu5GU\",\"key_ops\":[\"encrypt\",\"decrypt\"],\"kty\":\"oct\"},\"derivationOptions\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}}}",
-  "encryptionSalt": "6AA1VP9N1aU5bglaSiAhmE9PdLH3YCqiKJagv+wQCR8=",
+  "enabledNetworkMap": {
+    "eip155": {
+      "0xaa36a7": true
+    }
+  },
+  "enforcedSimulationsSlippage": "number",
+  "enforcedSimulationsSlippageForTransactions": "object",
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "estimatedGasFeeTimeBounds": {},
@@ -119,13 +153,6 @@
   },
   "ignoredNfts": [],
   "ignoredTokens": [],
-  "incomingTransactionsPreferences": {
-    "0x1": true,
-    "0xe708": true,
-    "0x5": true,
-    "0xaa36a7": true,
-    "0xe705": true
-  },
   "interfaces": {},
   "internalAccounts": {
     "accounts": {
@@ -141,6 +168,7 @@
           "eth_signTypedData_v4"
         ],
         "type": "eip155:eoa",
+        "scopes": ["eip155:0"],
         "metadata": {
           "name": "Account 1",
           "keyring": { "type": "HD Key Tree" },
@@ -152,6 +180,7 @@
   },
   "ipfsGateway": "dweb.link",
   "isAccountMenuOpen": false,
+  "isEvmSelected": true,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
   "isNetworkMenuOpen": false,
@@ -171,6 +200,20 @@
   "lostIdentities": {},
   "metaMetricsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
   "methodData": {},
+  "multichainNetworkConfigurationsByChainId": {
+    "bip122:000000000019d6689c085ae165831e93": {
+      "chainId": "bip122:000000000019d6689c085ae165831e93",
+      "name": "Bitcoin",
+      "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+      "isEvm": false
+    },
+    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "name": "Solana",
+      "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+      "isEvm": false
+    }
+  },
   "nameSources": {},
   "names": {
     "ethereumAddress": {
@@ -203,6 +246,16 @@
     }
   },
   "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
+  "networksWithTransactionActivity": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "namespace": "eip155",
+      "activeChain": ["0x5"]
+    },
+    "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "namespace": "solana",
+      "activeChain": []
+    }
+  },
   "nextNonce": null,
   "nftsDetectionNoticeDismissed": false,
   "nftsDropdownState": {},
@@ -227,7 +280,6 @@
     "showFiatInTestnets": false,
     "showTestNetworks": false,
     "smartTransactionsOptInStatus": true,
-    "petnamesEnabled": true,
     "showConfirmationAdvancedDetails": false,
     "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
@@ -242,31 +294,11 @@
   "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",
   "previousMigrationVersion": 0,
-  "previousUserTraits": {
-    "address_book_entries": 1,
-    "install_date_ext": "",
-    "ledger_connection_type": "u2f",
-    "networks_added": [],
-    "networks_without_ticker": [],
-    "nft_autodetection_enabled": false,
-    "number_of_accounts": 1,
-    "number_of_nft_collections": 0,
-    "number_of_nfts": 0,
-    "number_of_tokens": 0,
-    "undefined": false,
-    "three_box_enabled": false,
-    "theme": "os",
-    "token_detection_enabled": true,
-    "desktop_enabled": false,
-    "security_providers": ["blockaid"],
-    "petname_addresses_count": 1
-  },
   "providerConfig": {
     "type": "sepolia",
     "chainId": "0xaa36a7",
     "ticker": "SepoliaETH"
   },
-  "qrHardware": {},
   "recoveryPhraseReminderHasBeenShown": false,
   "recoveryPhraseReminderLastShown": 1715943225448,
   "securityAlertsEnabled": true,
@@ -287,6 +319,7 @@
     }
   },
   "selectedAddress": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
+  "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "showAccountBanner": true,
   "showBetaHeader": false,
@@ -439,8 +472,6 @@
     "swapsStxGetTransactionsRefreshTime": 10000,
     "swapsStxMaxFeeMultiplier": 2
   },
-  "switchedNetworkDetails": null,
-  "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1715944006161,
   "theme": "os",
   "tokenBalances": {
@@ -454,6 +485,7 @@
   "tokenList": {},
   "tokens": [],
   "tokensChainsCache": {},
+  "tracesBeforeMetricsOptIn": [],
   "traits": {},
   "transactions": [],
   "trezorModel": null,

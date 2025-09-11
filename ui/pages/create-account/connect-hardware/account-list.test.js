@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import AccountList from './account-list';
@@ -55,7 +55,7 @@ const render = () => {
       ledger: LEDGER_HD_PATHS,
       lattice: LATTICE_HD_PATHS,
       trezor: TREZOR_HD_PATHS,
-      onekey: TREZOR_HD_PATHS,
+      oneKey: TREZOR_HD_PATHS,
     },
     onPathChange: jest.fn(),
     onAccountChange: jest.fn(),

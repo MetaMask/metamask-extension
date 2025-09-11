@@ -104,7 +104,7 @@ const SnapUIRendererComponent = ({
     );
   }
 
-  const { state: initialState, context } = interfaceState;
+  const { state: initialState } = interfaceState;
 
   // The renderer should only have a footer if there is a default cancel action
   // or if the footer component has been used.
@@ -115,7 +115,6 @@ const SnapUIRendererComponent = ({
       snapId={snapId}
       interfaceId={interfaceId}
       initialState={initialState}
-      context={context}
     >
       <Box
         className="snap-ui-renderer__content"

@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTokens } from '../../../ducks/metamask/metamask';
+import { getTokensByChainId } from '../../../ducks/metamask/metamask';
 import { getAssetDetails } from '../../../helpers/utils/token-util';
 import {
   hideLoadingIndication,
@@ -22,7 +22,10 @@ export function useAssetDetails(
 
   // state selectors
   const nfts = useSelector((state) => selectNftsByChainId(state, chainId));
-  const tokens = useSelector(getTokens, isEqual);
+  const tokens = useSelector(
+    (state) => getTokensByChainId(state, chainId),
+    isEqual,
+  );
   const currentToken = tokens.find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
   );
@@ -46,13 +49,21 @@ export function useAssetDetails(
 
     async function getAndSetAssetDetails() {
       dispatch(showLoadingIndication());
-      const assetDetails = await getAssetDetails(
-        tokenAddress,
-        userAddress,
-        transactionData,
-        nfts,
-      );
-      setCurrentAsset(assetDetails);
+      try {
+        const assetDetails = await getAssetDetails(
+          tokenAddress,
+          userAddress,
+          transactionData,
+          nfts,
+          chainId,
+        );
+        setCurrentAsset(assetDetails);
+      } catch (e) {
+        console.warn('Unable to set asset details', {
+          error: e,
+          transactionData,
+        });
+      }
       dispatch(hideLoadingIndication());
     }
     if (
@@ -64,6 +75,7 @@ export function useAssetDetails(
       getAndSetAssetDetails();
     }
   }, [
+    chainId,
     dispatch,
     prevTokenAddress,
     prevTransactionData,
@@ -91,6 +103,7 @@ export function useAssetDetails(
       toAddress,
       tokenAmount,
       decimals,
+      tokenURI,
     } = currentAsset;
 
     return {
@@ -104,6 +117,7 @@ export function useAssetDetails(
       tokenImage: image,
       userBalance: balance,
       assetName: name,
+      tokenURI,
     };
   }
 

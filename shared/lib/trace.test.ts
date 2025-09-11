@@ -1,22 +1,19 @@
-import {
-  setMeasurement,
-  Span,
-  startSpan,
-  startSpanManual,
-  withIsolationScope,
-} from '@sentry/browser';
+import type * as Sentry from '@sentry/browser';
 import { endTrace, trace, TraceName } from './trace';
 
-jest.mock('@sentry/browser', () => ({
+jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
   setMeasurement: jest.fn(),
-}));
+});
+
+const { setMeasurement, startSpan, startSpanManual, withIsolationScope } =
+  global.sentry as typeof Sentry;
 
 const NAME_MOCK = TraceName.Transaction;
 const ID_MOCK = 'testId';
-const PARENT_CONTEXT_MOCK = {} as Span;
+const PARENT_CONTEXT_MOCK = {} as Sentry.Span;
 
 const TAGS_MOCK = {
   tag1: 'value1',
@@ -47,14 +44,15 @@ describe('Trace', () => {
       setMeasurement: setMeasurementMock,
     };
 
-    startSpanMock.mockImplementation((_, fn) => fn({} as Span));
+    startSpanMock.mockImplementation((_, fn) => fn({} as Sentry.Span));
 
     startSpanManualMock.mockImplementation((_, fn) =>
-      fn({} as Span, () => {
+      fn({} as Sentry.Span, () => {
         // Intentionally empty
       }),
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     withIsolationScopeMock.mockImplementation((fn: any) =>
       fn({ setTag: setTagMock }),
@@ -196,7 +194,7 @@ describe('Trace', () => {
   describe('endTrace', () => {
     it('ends Sentry span matching name and specified ID', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Span;
+      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -219,7 +217,7 @@ describe('Trace', () => {
 
     it('ends Sentry span matching name and default ID', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Span;
+      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -241,7 +239,7 @@ describe('Trace', () => {
 
     it('ends Sentry span with custom timestamp', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Span;
+      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {
@@ -265,7 +263,7 @@ describe('Trace', () => {
 
     it('does not end Sentry span if name and ID does not match', () => {
       const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Span;
+      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
 
       startSpanManualMock.mockImplementationOnce((_, fn) =>
         fn(spanMock, () => {

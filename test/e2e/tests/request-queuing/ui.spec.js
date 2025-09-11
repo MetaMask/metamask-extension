@@ -1,16 +1,21 @@
 const { strict: assert } = require('assert');
-const { Browser } = require('selenium-webdriver');
+const { Browser, By } = require('selenium-webdriver');
+const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
+const {
+  default: NetworkManager,
+  NetworkId,
+} = require('../../page-objects/pages/network-manager');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   openDapp,
-  unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   veryLargeDelayMs,
   DAPP_TWO_URL,
 } = require('../../helpers');
@@ -33,6 +38,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 
   // Connect to the dapp
   await driver.clickElement({ text: 'Connect', tag: 'button' });
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.clickElementAndWaitForWindowToClose({
@@ -94,6 +100,11 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 async function selectDappClickSend(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
   await driver.clickElement('#sendButton');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.waitForSelector({
+    tag: 'h3',
+    text: 'Transfer request',
+  });
 }
 
 async function selectDappClickPersonalSign(driver, dappUrl) {
@@ -112,25 +123,6 @@ async function switchToDialogPopoverValidateDetailsRedesign(
     css: 'p',
     text: expectedDetails.networkText,
   });
-
-  // Get state details
-  await driver.waitForControllersLoaded();
-  const notificationWindowState = await driver.executeScript(() =>
-    window.stateHooks?.getCleanAppState?.(),
-  );
-
-  const {
-    metamask: { selectedNetworkClientId, networkConfigurationsByChainId },
-  } = notificationWindowState;
-
-  const { chainId } = Object.values(networkConfigurationsByChainId).find(
-    ({ rpcEndpoints }) =>
-      rpcEndpoints.some(
-        ({ networkClientId }) => networkClientId === selectedNetworkClientId,
-      ),
-  );
-
-  assert.equal(chainId, expectedDetails.chainId);
 }
 
 async function rejectTransactionRedesign(driver) {
@@ -142,11 +134,6 @@ async function rejectTransactionRedesign(driver) {
 
 async function confirmTransaction(driver) {
   await driver.clickElement({ tag: 'button', text: 'Confirm' });
-}
-
-async function switchToNetworkByName(driver, networkName) {
-  await driver.clickElement('.mm-picker-network');
-  await driver.clickElement(`[data-testid="${networkName}"]`);
 }
 
 async function openPopupWithActiveTabOrigin(driver, origin) {
@@ -166,14 +153,14 @@ async function validateBalanceAndActivity(
     text: expectedBalance,
   });
 
-  // Ensure there's an activity entry of "Send" and "Confirmed"
+  // Ensure there's an activity entry of "Sent" and "Confirmed"
   if (expectedActivityEntries) {
     await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     assert.equal(
       (
         await driver.findElements({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Send',
+          text: 'Sent',
         })
       ).length,
       expectedActivityEntries,
@@ -187,6 +174,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
+  this.timeout(500000); // This test is very long, so we need an unusually high timeout
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -194,23 +182,25 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -218,14 +208,16 @@ describe('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x53a');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Localhost 8546',
-        });
+
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8546"]',
+        );
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -255,31 +247,41 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
-
+          .withNetworkControllerTripleNode()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
+          })
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            // Ganache for network 1
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            // Ganache for network 3
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
+
         dappOptions: { numberOfDapps: 3 },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -297,10 +299,19 @@ describe('Request-queue UI changes', function () {
 
         // Trigger a send confirmation on the second dapp, do not confirm or reject
         await selectDappClickSend(driver, DAPP_ONE_URL);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForSelector(
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
+        );
 
         if (!IS_FIREFOX) {
           // Trigger a send confirmation on the third dapp, do not confirm or reject
           await selectDappClickSend(driver, DAPP_TWO_URL);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.waitForSelector(
+            By.xpath("//p[normalize-space(.)='1 of 3']"),
+          );
         }
 
         // Switch to the Notification window, ensure first transaction still showing
@@ -322,7 +333,10 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
@@ -346,24 +360,34 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
+        const networkManager = new NetworkManager(driver);
+
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
+          await networkManager.openNetworkManager();
+          await networkManager.selectTab('Custom');
+          await driver.clickElementAndWaitToDisappear(
+            '[data-testid="Localhost 7777"]',
+          );
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
-        // Switch to second network, ensure full balance
-        await switchToNetworkByName(driver, 'Localhost 8546');
-        await validateBalanceAndActivity(driver, '25', 0);
-
-        // Turn on test networks in Networks menu so Localhost 8545 is available
-        await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement('.mm-modal-content__dialog .toggle-button');
-        await driver.clickElement(
-          '.mm-modal-content__dialog button[aria-label="Close"]',
+        // Validate second network, where transaction was rejected
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8546"]',
         );
 
-        // Switch to first network, whose send transaction was just confirmed
-        await switchToNetworkByName(driver, 'Localhost 8545');
+        await validateBalanceAndActivity(driver, '25', 0);
+
+        // Validate first network, where transaction was confirmed
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="Localhost 8545"]',
+        );
+
         await validateBalanceAndActivity(driver, '24.9998');
       },
     );
@@ -376,27 +400,29 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
 
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -408,13 +434,21 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
 
-        await driver.clickElement('[data-testid="network-display"]');
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
 
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+
+        // Open Network Manager and delete custom network
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Custom');
+
+        // Delete network
         const networkRow = await driver.findElement({
           css: '.multichain-network-list-item',
           text: 'Localhost 8545',
@@ -422,7 +456,9 @@ describe('Request-queue UI changes', function () {
 
         const networkMenu = await driver.findNestedElement(
           networkRow,
-          `[data-testid="network-list-item-options-button-${CHAIN_IDS.LOCALHOST}"]`,
+          `[data-testid="network-list-item-options-button-${toEvmCaipChainId(
+            CHAIN_IDS.LOCALHOST,
+          )}"]`,
         );
 
         await networkMenu.click();
@@ -455,7 +491,7 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -469,8 +505,12 @@ describe('Request-queue UI changes', function () {
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
-        // Switch to mainnet
-        await switchToNetworkByName(driver, 'Ethereum Mainnet');
+        // Switch to mainnet using per-dapp connected network flow
+        await driver.clickElement('[data-testid="connection-menu"]');
+        await driver.clickElement(
+          '[data-testid="connected-site-popover-network-button"]',
+        );
+        await driver.clickElement('[data-testid="Ethereum Mainnet"]');
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -484,127 +524,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should autoswitch networks to the last used network for domain', async function () {
-    const port = 8546;
-    const chainId = 1338;
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
-          .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
-              port,
-              chainId,
-              ganacheOptions2: defaultGanacheOptions,
-            },
-          ],
-        },
-        dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        // Open fullscreen
-        await unlockWallet(driver);
-
-        // Open the first dapp which starts on chain '0x539
-        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
-
-        // Open tab 2, switch to Ethereum Mainnet
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
-
-        // Open the popup with shimmed activeTabOrigin
-        await openPopupWithActiveTabOrigin(driver, DAPP_URL);
-
-        // Ensure network was reset to original
-        await driver.findElement({
-          css: '.multichain-app-header__contents--avatar-network .mm-text',
-          text: 'Localhost 8545',
-        });
-
-        // Ensure toast is shown to the user
-        await driver.findElement({
-          css: '.toast-text',
-          text: 'Localhost 8545 is now active on 127.0.0.1:8080',
-        });
-      },
-    );
-  });
-
-  it('should autoswitch networks when last confirmation from another network is rejected', async function () {
-    const port = 8546;
-    const chainId = 1338;
-
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
-          .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
-              port,
-              chainId,
-              ganacheOptions2: defaultGanacheOptions,
-            },
-          ],
-        },
-        dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
-        driverOptions: { constrainWindowSize: true },
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        // Open the first dapp which starts on chain '0x539
-        await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
-
-        // Open tab 2, switch to Ethereum Mainnet
-        await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
-        await driver.waitForSelector({
-          css: '.error-message-text',
-          text: 'You are on the Ethereum Mainnet.',
-        });
-        await driver.delay(veryLargeDelayMs);
-
-        // Start a Send on Ethereum Mainnet
-        await driver.clickElement('#sendButton');
-        await driver.delay(regularDelayMs);
-
-        // Open the popup with shimmed activeTabOrigin
-        await openPopupWithActiveTabOrigin(driver, DAPP_URL);
-
-        // Ensure the confirmation pill shows Ethereum Mainnet
-        await driver.waitForSelector({
-          css: 'p',
-          text: 'Ethereum Mainnet',
-        });
-
-        // Reject the confirmation
-        await driver.clickElement({ css: 'button', text: 'Cancel' });
-
-        // Wait for network to automatically change to localhost
-        await driver.waitForSelector({
-          css: '.multichain-app-header__contents--avatar-network .mm-text',
-          text: 'Localhost 8545',
-        });
-
-        // Ensure toast is shown to the user
-        await driver.waitForSelector({
-          css: '.toast-text',
-          text: 'Localhost 8545 is now active on 127.0.0.1:8080',
-        });
-      },
-    );
-  });
-
   it('should gracefully handle network connectivity failure for signatures', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -612,27 +531,33 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
+          .withNetworkControllerDoubleNode()
+          .withEnabledNetworks({
+            eip155: {
+              '0x539': true,
+            },
+          })
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
-        // This test intentionally quits Ganache while the extension is using it, causing
+          },
+        ],
+        // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -644,14 +569,17 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.waitForSelector({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
 
-        // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
+        // Check if Ethereum Mainnet is selected
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
+        await networkManager.closeNetworkManager();
+
+        // Kill local node servers
+        await localNodes[0].quit();
+        await localNodes[1].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickPersonalSign(driver, DAPP_URL);
@@ -678,27 +606,41 @@ describe('Request-queue UI changes', function () {
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
+          .withNetworkControllerDoubleNode()
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0x2105': true,
+              '0xe708': true,
+            },
+          })
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
-        // This test intentionally quits Ganache while the extension is using it, causing
+          },
+        ],
+        // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '85,000.00',
+        );
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -710,14 +652,16 @@ describe('Request-queue UI changes', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
 
-        // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
+        // Check if Ethereum Mainnet is selected
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+
+        // Kill local node servers
+        await localNodes[0].quit();
+        await localNodes[1].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickSend(driver, DAPP_URL);

@@ -1,16 +1,12 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 describe('Permissions Page when Dapp Switch to an enabled and non permissioned network', function () {
   it('should switch to the chain when dapp tries to switch network to an enabled network after showing updated permissions page', async function () {
@@ -20,28 +16,30 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Open Dapp One and check the chainId
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const chainIdRequest: string = JSON.stringify({
           method: 'eth_chainId',
         });
@@ -55,9 +53,9 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
 
         // Switch to ethereum network and check the chainId on testdapp
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await homePage.checkLocalNodeBalanceIsDisplayed();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
           await driver.executeScript(
@@ -88,10 +86,10 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
           driver,
         );
-        await reviewPermissionsConfirmation.check_pageIsLoaded();
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
         await reviewPermissionsConfirmation.confirmReviewPermissions();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const chainIdAfterSwitch: string = await driver.executeScript(
           `return window.ethereum.request(${chainIdRequest})`,
         );
@@ -101,11 +99,11 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await homePage.check_pageIsLoaded();
-        await switchToNetworkFlow(driver, 'Localhost 8546', true);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         const chainIdAfterManualSwitch: string = await driver.executeScript(
           `return window.ethereum.request(${chainIdRequest})`,
         );

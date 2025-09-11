@@ -27,7 +27,6 @@ import {
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
 import { useNfts } from '../../../../hooks/useNfts';
-import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -38,6 +37,9 @@ import {
   getSendAnalyticProperties,
   updateSendAsset,
 } from '../../../../ducks/send';
+import { getNftImage } from '../../../../helpers/utils/nfts';
+import { useRedesignedSendFlow } from '../../../../pages/confirmations/hooks/useRedesignedSendFlow';
+import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
 import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -51,6 +53,8 @@ type AssetPickerModalNftTabProps = {
   renderSearch: () => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModalNftTab({
   searchQuery,
   onClose,
@@ -64,8 +68,12 @@ export function AssetPickerModalNftTab({
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
-  const { currentlyOwnedNfts } = useNfts();
+  const { currentlyOwnedNfts } = useNfts({
+    overridePopularNetworkFilter: true,
+  });
+
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -90,25 +98,42 @@ export function AssetPickerModalNftTab({
         event: MetaMetricsEventName.sendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_destination_asset_picker_modal: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_nft: true,
         },
         sensitiveProperties: {
           ...sendAnalytics,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_symbol: nft.name,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_address: nft.address,
         },
       },
       { excludeMetaMetricsId: false },
     );
+
+    const nftWithSimplifiedImage = {
+      ...nft,
+      image: getNftImage(nft.image),
+    };
+
     await dispatch(
       updateSendAsset({
         type: AssetType.NFT,
-        details: nft,
+        details: nftWithSimplifiedImage,
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    history.push(SEND_ROUTE);
+    navigateToSendRoute(history, isSendRedesignEnabled, {
+      address: nft.address,
+      chainId: nft.chainId,
+    });
     onClose && onClose();
   };
 
@@ -129,6 +154,8 @@ export function AssetPickerModalNftTab({
       {hasAnyNfts ? (
         <>
           <Box>
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <NftGrid nfts={filteredNfts} handleNftClick={handleNftClick} />
           </Box>
           {nftsStillFetchingIndication && (
@@ -154,11 +181,8 @@ export function AssetPickerModalNftTab({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <Box justifyContent={JustifyContent.center}>
-              <img src="./images/no-nfts.svg" />
-            </Box>
             <Box
-              marginTop={4}
+              marginTop={12}
               marginBottom={12}
               display={Display.Flex}
               justifyContent={JustifyContent.center}
@@ -167,10 +191,9 @@ export function AssetPickerModalNftTab({
               className="nfts-tab__link"
             >
               <Text
-                color={TextColor.textMuted}
-                variant={TextVariant.headingSm}
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMdMedium}
                 textAlign={TextAlign.Center}
-                as="h4"
               >
                 {t('noNFTs')}
               </Text>

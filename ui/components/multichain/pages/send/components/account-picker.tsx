@@ -2,9 +2,10 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EthAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
-import { Label } from '../../../../component-library';
+import { Box, Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
+  AlignItems,
   BlockSize,
   BorderColor,
   Display,
@@ -14,7 +15,9 @@ import {
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
+
+const AccountListItemProps = { showOptions: false };
 
 export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);
@@ -24,14 +27,19 @@ export const SendPageAccountPicker = () => {
 
   const sendStage = useSelector(getSendStage);
   const disabled = SEND_STAGES.EDIT === sendStage;
-  const accountListItemProps = { showOptions: false };
   const onAccountListMenuClose = useCallback(() => {
     setShowAccountPicker(false);
   }, []);
 
   return (
     <SendPageRow>
-      <Label paddingBottom={2}>{t('from')}</Label>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        <Label paddingBottom={2}>{t('from')}</Label>
+      </Box>
       <AccountPicker
         className="multichain-send-page__account-picker"
         address={internalAccount.address}
@@ -40,8 +48,8 @@ export const SendPageAccountPicker = () => {
         showAddress
         borderColor={BorderColor.borderMuted}
         borderWidth={1}
-        paddingTop={4}
-        paddingBottom={4}
+        paddingTop={3}
+        paddingBottom={3}
         paddingLeft={3}
         block
         justifyContent={JustifyContent.flexStart}
@@ -64,7 +72,7 @@ export const SendPageAccountPicker = () => {
       />
       {showAccountPicker ? (
         <AccountListMenu
-          accountListItemProps={accountListItemProps}
+          accountListItemProps={AccountListItemProps}
           showAccountCreation={false}
           onClose={onAccountListMenuClose}
           allowedAccountTypes={[EthAccountType.Eoa, EthAccountType.Erc4337]}

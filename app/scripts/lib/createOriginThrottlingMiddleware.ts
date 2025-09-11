@@ -17,15 +17,16 @@ export const REJECTION_THRESHOLD_IN_MS = 30000;
 export const BLOCKING_THRESHOLD_IN_MS = 60000;
 
 export const BLOCKABLE_METHODS: Set<string> = new Set([
+  MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
   MESSAGE_TYPE.ETH_SEND_TRANSACTION,
   MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
   MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
   MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
   MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
   MESSAGE_TYPE.PERSONAL_SIGN,
-  MESSAGE_TYPE.WATCH_ASSET,
-  MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
   MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+  MESSAGE_TYPE.WALLET_SEND_CALLS,
+  MESSAGE_TYPE.WATCH_ASSET,
 ]);
 
 const TEST_ORIGINS = [
@@ -83,7 +84,16 @@ export default function createOriginThrottlingMiddleware({
 
     next((callback: () => void) => {
       if ('error' in res && res.error && isUserRejectedError(res.error)) {
+        const extraData = res.error?.data as { cause?: string };
+        // Any rejection caused by rejectAllApprovals is not evaluated as user rejection for now
+        if (extraData?.cause === 'rejectAllApprovals') {
+          callback();
+          return;
+        }
+
         // User rejected the request
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const throttledOriginState = getThrottledOriginState(origin) || {
           rejections: 0,
           lastRejection: 0,

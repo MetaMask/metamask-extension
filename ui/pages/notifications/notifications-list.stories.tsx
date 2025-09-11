@@ -4,7 +4,7 @@ import {
   type NotificationsListProps,
 } from './notifications-list';
 import { Meta } from '@storybook/react';
-import { TAB_KEYS } from './notifications';
+import { TAB_KEYS } from './notifications-list';
 
 export default {
   title: 'Pages/Notifications/NotificationsListStates',

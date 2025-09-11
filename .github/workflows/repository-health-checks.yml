@@ -1,0 +1,64 @@
+name: Repository health checks
+
+on:
+  workflow_call:
+
+jobs:
+  repository-health-checks:
+    name: Repository health checks
+    runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: ShellCheck Lint
+        if: ${{ !cancelled() }}
+        run: ./development/shellcheck.sh
+
+      - name: Validate changelog
+        if: ${{ !startsWith(env.BRANCH, 'Version-v') && !startsWith(env.BRANCH, 'release/') }}
+        run: yarn lint:changelog
+
+      - name: Validate release candidate changelog
+        if: ${{ startsWith(env.BRANCH, 'Version-v') || startsWith(env.BRANCH, 'release/') }}
+        run: .github/scripts/validate-changelog-in-rc.sh
+
+      - name: Lint lockfile
+        if: ${{ !cancelled() }}
+        run: yarn lint:lockfile
+
+      - name: Check yarn resolutions
+        if: ${{ !cancelled() }}
+        run: yarn --check-resolutions
+
+      - name: Run audit
+        if: ${{ !cancelled() }}
+        run: yarn audit
+
+      - name: Detect yarn lock deduplications
+        if: ${{ !cancelled() }}
+        run: yarn dedupe --check
+
+      - name: Run depcheck
+        if: ${{ !cancelled() }}
+        run: yarn depcheck
+
+      - name: Validate allow-scripts config
+        if: ${{ !cancelled() }}
+        run: yarn allow-scripts auto
+
+      - name: Check working tree
+        if: ${{ !cancelled() }}
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi

@@ -61,7 +61,7 @@ export const DefaultStory: StoryFn<typeof ModalContent> = (args) => {
         <ModalContent {...args}>
           <ModalHeader>Modal Header</ModalHeader>
           <ModalBody>
-            <Text>Modal Content</Text>
+            <Text>Modal Body</Text>
           </ModalBody>
           <ModalFooter
             onSubmit={handleOnClick}

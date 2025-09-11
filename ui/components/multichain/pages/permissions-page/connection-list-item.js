@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
@@ -25,14 +25,50 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import { getPermittedChainsForSelectedTab } from '../../../../selectors';
+import {
+  getAllPermittedChainsForSelectedTab,
+  getIsMultichainAccountsState2Enabled,
+} from '../../../../selectors';
+import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, connection.origin),
+  const permittedChains = useSelector((state) =>
+    getAllPermittedChainsForSelectedTab(state, connection.origin),
   );
+  const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
+
+  const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
+
+  const accountAddressSet = useMemo(() => {
+    if (!isState2Enabled) {
+      return null;
+    }
+    const set = new Set();
+    (accountGroups ?? []).forEach((group) => {
+      (group.accounts ?? []).forEach((account) => {
+        set.add(account.address);
+      });
+    });
+    return set;
+  }, [isState2Enabled, accountGroups]);
+
+  const accountsToShow = useMemo(() => {
+    if (!isState2Enabled) {
+      return connection.addresses?.length ?? 0;
+    }
+    if (!accountAddressSet || !connection.addresses?.length) {
+      return 0;
+    }
+    let count = 0;
+    for (const address of connection.addresses) {
+      if (accountAddressSet.has(address)) {
+        count += 1;
+      }
+    }
+    return count;
+  }, [isState2Enabled, accountAddressSet, connection.addresses]);
 
   return (
     <Box
@@ -88,8 +124,12 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
-              {connectedNetworks.length} {t('networksSmallCase')}
+              {accountsToShow}{' '}
+              {accountsToShow === 1
+                ? t('accountSmallCase')
+                : t('accountsSmallCase')}
+              •&nbsp;
+              {permittedChains.length} {t('networksSmallCase')}
             </Text>
           </Box>
         )}

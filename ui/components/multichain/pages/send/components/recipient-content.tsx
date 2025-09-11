@@ -1,15 +1,11 @@
 import React, {
   useCallback,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useMemo,
-  ///: END:ONLY_INCLUDE_IF
   useRef,
   useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { TokenListMap } from '@metamask/assets-controllers';
-///: END:ONLY_INCLUDE_IF
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -17,9 +13,7 @@ import {
   Text,
 } from '../../../../component-library';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getNativeCurrency,
-  ///: END:ONLY_INCLUDE_IF
   getSendHexDataFeatureFlagState,
 } from '../../../../../ducks/metamask/metamask';
 import {
@@ -27,10 +21,8 @@ import {
   acknowledgeRecipientWarning,
   getBestQuote,
   getCurrentDraftTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsSwapAndSendDisabledForNetwork,
   getSwapsBlockedTokens,
-  ///: END:ONLY_INCLUDE_IF
   getSendAsset,
   getRecipient,
 } from '../../../../../ducks/send';
@@ -45,7 +37,6 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   getIpfsGateway,
   getIsSwapsChain,
@@ -54,7 +45,6 @@ import {
   getUseExternalServices,
 } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
-///: END:ONLY_INCLUDE_IF
 import {
   getAddressPoisoningDetectionEnabled,
   checkForAddressPoisoning,
@@ -64,7 +54,9 @@ import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { SendHexData, SendPageRow, QuoteCard } from '.';
+import { SendPageRow } from './send-page-row';
+import { QuoteCard } from './quote-card';
+import { SendHexData } from './hex';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
@@ -121,7 +113,6 @@ export const SendPageRecipientContent = ({
     internalAccounts,
   ]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSwapAndSendDisabledForNetwork = useSelector(
@@ -148,7 +139,6 @@ export const SendPageRecipientContent = ({
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
     isBasicFunctionality &&
     !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
-  ///: END:ONLY_INCLUDE_IF
 
   const bestQuote: Quote = useSelector(getBestQuote);
 
@@ -234,6 +224,8 @@ export const SendPageRecipientContent = ({
                     (nftImageURL ||
                       tokenList[sendAsset.details.address?.toLowerCase()]
                         ?.iconUrl),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,
             }
           }
@@ -245,6 +237,7 @@ export const SendPageRecipientContent = ({
           amount={amount}
           isDisabled={!isSwapAllowed}
           onClick={onClick}
+          showNetworkPicker={false}
           visibleTabs={[TabName.TOKENS]}
         />
       </SendPageRow>

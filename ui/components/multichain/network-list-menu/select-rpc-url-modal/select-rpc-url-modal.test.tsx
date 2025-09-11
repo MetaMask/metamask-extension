@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   updateNetwork,
@@ -11,7 +12,8 @@ import {
 } from '../../../../store/actions';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { stripProtocol } from '../rpc-list-item';
-import { SelectRpcUrlModal } from './select-rpc-url-modal'; // Adjust the path as needed
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import { SelectRpcUrlModal } from './select-rpc-url-modal';
 
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => ({
@@ -39,10 +41,21 @@ const networkConfiguration = {
   defaultRpcEndpointIndex: 0,
 } as unknown as NetworkConfiguration;
 
+const mockAccount = createMockInternalAccount();
+
 const store = mockStore({
   metamask: {
     networks: [networkConfiguration],
     activeNetwork: '0x1',
+    internalAccounts: {
+      accounts: {
+        [mockAccount.id]: mockAccount,
+      },
+      selectedAccount: mockAccount.id,
+    },
+    networkConfigurationsByChainId: {
+      '0x1': networkConfiguration,
+    },
   },
 });
 
@@ -116,13 +129,12 @@ describe('SelectRpcUrlModal Component', () => {
       stripProtocol(networkConfiguration.rpcEndpoints[1].url),
     );
     fireEvent.click(rpcEndpoint);
+    const network = {
+      ...networkConfiguration,
+      defaultRpcEndpointIndex: 1,
+    };
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      updateNetwork({
-        ...networkConfiguration,
-        defaultRpcEndpointIndex: 1,
-      }),
-    );
+    expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(network));
     expect(mockDispatch).toHaveBeenCalledWith(setActiveNetwork('flashbots'));
     expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
     expect(mockDispatch).toHaveBeenCalledWith(toggleNetworkMenu());
@@ -182,6 +194,9 @@ describe('SelectRpcUrlModal Component', () => {
 
     expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(updatedNetwork));
     expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
-    expect(mockOnNetworkChange).toHaveBeenCalledWith(updatedNetwork);
+    expect(mockOnNetworkChange).toHaveBeenCalledWith(
+      toEvmCaipChainId(updatedNetwork.chainId),
+      'flashbots',
+    );
   });
 });

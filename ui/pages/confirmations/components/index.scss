@@ -10,9 +10,14 @@
 @import 'confirmation-warning-modal/index';
 @import 'confirm/footer';
 @import 'confirm/header/header.scss';
+@import 'confirm/info/personal-sign/siwe-sign/index';
+@import 'confirm/info/shared/gas-fee-token-modal/index';
+@import 'confirm/info/shared/gas-fee-token-toast/index';
 @import 'confirm/scroll-to-bottom';
 @import 'confirm/nav/nav.scss';
-@import "confirm/network-change-toast/index";
+@import 'confirm/smart-account-update/smart-account-update.scss';
+@import 'confirm/smart-account-update-content/smart-account-update-content.scss';
+@import 'confirm/splash/smart-account-update-splash/smart-account-update-splash.scss';
 @import 'edit-gas-display/index';
 @import 'edit-gas-fee-button/index';
 @import 'edit-gas-fee-popover/index';
@@ -26,4 +31,9 @@
 @import 'set-approval-for-all-warning/index';
 @import 'transaction-detail/index';
 @import 'transaction-detail-item/index';
+@import 'send/index';
+@import 'send/header/header';
+@import 'send/recipient/recipient';
 @import 'simulation-details/index';
+@import 'UI/asset/index';
+@import 'UI/recipient/index';

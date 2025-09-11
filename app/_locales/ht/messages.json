@@ -169,9 +169,6 @@
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
   },
-  "gasPrice": {
-    "message": "Pri gaz (GWEI)"
-  },
   "gasUsed": {
     "message": "Gaz yo Itilize"
   },
@@ -203,9 +200,6 @@
   "import": {
     "message": "Pòte",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Pòte Kont"
   },
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
@@ -364,10 +358,10 @@
     "message": "Rejte Tout"
   },
   "rejectTxsDescription": {
-    "message": "Ou se sou rejte $ 1 yon anpil nan tranzaksyon yo."
+    "message": "Ou se sou rejte $1 yon anpil nan tranzaksyon yo."
   },
   "rejectTxsN": {
-    "message": "Rejete $ 1 tranzaksyon"
+    "message": "Rejete $1 tranzaksyon"
   },
   "rejected": {
     "message": "Rejete"
@@ -516,9 +510,6 @@
   },
   "unlock": {
     "message": "Debloke"
-  },
-  "unlockMessage": {
-    "message": "Entènèt desantralize a ap tann"
   },
   "urlErrorMsg": {
     "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."

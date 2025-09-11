@@ -61,7 +61,7 @@ export const TransactionFlowSection = () => {
         />
         {recipientAddress && (
           <ConfirmInfoAlertRow
-            alertKey={RowAlertKey.To}
+            alertKey={RowAlertKey.InteractingWith}
             label={t('to')}
             ownerId={transactionMeta.id}
             style={{

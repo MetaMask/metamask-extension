@@ -3,26 +3,91 @@ name: Create Release Pull Request
 on:
   workflow_dispatch:
     inputs:
-      base-branch:
-        description: 'The base branch, tag, or SHA for git operations and the pull request.'
-        required: true
       semver-version:
-        description: 'A semantic version. eg: x.x.x'
+        description: 'A semantic version, eg: x.x.x'
         required: true
-      previous-version-tag:
-        description: 'Previous release version tag. eg: v7.7.0'
+
+  workflow_call:
+    inputs:
+      semver-version:
         required: true
+        type: string
+    secrets:
+      github-token:
+        required: false
+      google-application-creds-base64:
+        required: false
+      PR_TOKEN:
+        required: false
+      GCP_RLS_SHEET_ACCOUNT_BASE64:
+        required: false
+
 jobs:
+  resolve-bases:
+    # Determines if the release is hotfix or not based on semver. Then sets the appropriate base branches for the checkout and release PR.
+    runs-on: ubuntu-latest
+    outputs:
+      checkout_base: ${{ steps.out.outputs.checkout_base }}
+      release_base: ${{ steps.out.outputs.release_base }}
+    steps:
+      - id: out
+        shell: bash
+        env:
+          SEMVER: ${{ inputs.semver-version }}
+        run: |
+          set -euo pipefail
+
+          echo "Provided semver input: ${SEMVER}"
+          # Validate semver
+          if ! [[ "${SEMVER:-}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: semver-version must be numeric X.Y.Z, got: ${SEMVER:-<empty>}" >&2
+            exit 1
+          fi
+
+          patch="${SEMVER##*.}"
+          if [ "$patch" -gt 0 ]; then
+            echo "Detected hotfix (patch=$patch): using stable for checkout and stable for release PR base."
+            echo "checkout_base=stable" >> "$GITHUB_OUTPUT"
+          else
+            echo "Detected non-hotfix (patch=0): using main for checkout and stable for release PR base."
+            echo "checkout_base=main" >> "$GITHUB_OUTPUT"
+          fi
+          echo "release_base=stable" >> "$GITHUB_OUTPUT"
+
+  resolve-previous-ref:
+    needs: resolve-bases
+    runs-on: ubuntu-latest
+    outputs:
+      previous_ref: ${{ steps.out.outputs.previous_ref }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - id: out
+        shell: bash
+        env:
+          SEMVER: ${{ inputs.semver-version }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          .github/scripts/resolve-previous-ref.sh
+
   create-release-pr:
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@4f594ca7d90378da66b7efce987eff379934524b
+    needs: [resolve-bases, resolve-previous-ref]
+    name: Create Release Pull Request using Github Tools
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@6090afa85c94a6b64a79e992d94b11610d02181a
     with:
       platform: extension
-      base-branch: ${{ inputs.base-branch }}
+      checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
+      release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
       semver-version: ${{ inputs.semver-version }}
-      previous-version-tag: ${{ inputs.previous-version-tag }}
+      previous-version-ref: ${{ needs.resolve-previous-ref.outputs.previous_ref }}
+      github-tools-version: 6090afa85c94a6b64a79e992d94b11610d02181a
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
-      github-token: ${{ secrets.PR_TOKEN }}
+      # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values
+      # (this is due to github limitations on fetching secrets from called workflows).
+      github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
+      google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}
     permissions:
       contents: write
       pull-requests: write

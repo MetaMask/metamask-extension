@@ -1,24 +1,46 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import RecoveryPhrase from './review-recovery-phrase';
 
-const mockHistoryPush = jest.fn();
-const mockHistoryReplace = jest.fn();
+const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    replace: mockHistoryReplace,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
-const mockStore = configureMockStore()();
+const mockStore = configureMockStore()({
+  metamask: {
+    internalAccounts: {
+      accounts: {
+        accountId: {
+          address: '0x0000000000000000000000000000000000000000',
+          metadata: {
+            keyring: 'HD Key Tree',
+          },
+        },
+      },
+      selectedAccount: 'accountId',
+    },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: ['0x0000000000000000000000000000000000000000'],
+      },
+    ],
+  },
+});
 
 describe('Review Recovery Phrase Component', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const TEST_SEED =
     'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
@@ -48,44 +70,18 @@ describe('Review Recovery Phrase Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should click copy to cliboard', () => {
-    const { queryByText, queryByTestId } = renderWithProvider(
-      <RecoveryPhrase {...props} />,
-      mockStore,
-    );
-
-    jest.spyOn(window, 'prompt').mockImplementation();
-    // eslint-disable-next-line jest/prefer-spy-on
-    document.execCommand = jest.fn();
-
-    const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
-
-    fireEvent.click(revealRecoveryPhraseButton);
-
-    const copyToClipboard = queryByText('Copy to clipboard');
-
-    fireEvent.click(copyToClipboard);
-
-    expect(document.execCommand).toHaveBeenCalledWith('copy');
-  });
-
-  it('should hide seed after revealing', () => {
+  it('should reveal seed after clicking reveal button', () => {
     const { queryByText, queryByTestId } = renderWithProvider(
       <RecoveryPhrase {...props} />,
       mockStore,
     );
 
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
+    const revealButton = queryByText('Tap to reveal');
 
     fireEvent.click(revealRecoveryPhraseButton);
 
-    const hideSeedPhrase = queryByText('Hide seed phrase');
-
-    fireEvent.click(hideSeedPhrase);
-
-    const revealSeedPhrase = queryByText('Reveal seed phrase');
-
-    expect(revealSeedPhrase).toBeInTheDocument();
+    expect(revealButton).not.toBeInTheDocument();
   });
 
   it('should click next after revealing seed phrase', () => {
@@ -98,15 +94,18 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(revealRecoveryPhraseButton);
 
-    const nextButton = queryByTestId('recovery-phrase-next');
+    const nextButton = queryByTestId('recovery-phrase-continue');
 
     fireEvent.click(nextButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: '',
+    });
   });
 
   it('should route to url with reminder parameter', () => {
-    const isReminderParam = '/?isFromReminder=true';
+    const isReminderParam = '?isFromReminder=true';
     const { queryByTestId } = renderWithProvider(
       <RecoveryPhrase {...props} />,
       mockStore,
@@ -117,12 +116,13 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(revealRecoveryPhraseButton);
 
-    const nextButton = queryByTestId('recovery-phrase-next');
+    const nextButton = queryByTestId('recovery-phrase-continue');
 
     fireEvent.click(nextButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
-      `${ONBOARDING_CONFIRM_SRP_ROUTE}${isReminderParam}`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: isReminderParam,
+    });
   });
 });

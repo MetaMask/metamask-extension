@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   DecryptMessageManager,
   DecryptMessageParams,
@@ -40,13 +41,15 @@ const createMessengerMock = () =>
     subscribe: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
-  } as unknown as jest.Mocked<DecryptMessageControllerMessenger>);
+  }) as unknown as jest.Mocked<DecryptMessageControllerMessenger>;
 
 const createManagerMessengerMock = () =>
   ({
     subscribe: jest.fn(),
-  } as unknown as jest.Mocked<DecryptMessageManagerMessenger>);
+  }) as unknown as jest.Mocked<DecryptMessageManagerMessenger>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createDecryptMessageManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),
@@ -64,9 +67,10 @@ const createDecryptMessageManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<T>);
+  }) as any as jest.Mocked<T>;
 
 describe('DecryptMessageController', () => {
   let decryptMessageController: DecryptMessageController;
@@ -84,7 +88,8 @@ describe('DecryptMessageController', () => {
 
   const mockMessengerAction = (
     action: string,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (actionName: string, ...args: any[]) => any,
   ) => {
@@ -105,16 +110,19 @@ describe('DecryptMessageController', () => {
     );
 
     decryptMessageController = new DecryptMessageController({
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       keyringController: keyringControllerMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
       managerMessenger: managerMessengerMock,
@@ -134,7 +142,8 @@ describe('DecryptMessageController', () => {
   it('should add unapproved messages', async () => {
     await decryptMessageController.newRequestDecryptMessage(
       messageMock,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       undefined as any,
     );
@@ -165,9 +174,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessage(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessage(messageToDecrypt);
 
     expect(decryptMessageManagerMock.approveMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.approveMessage).toBeCalledWith(
@@ -225,7 +233,8 @@ describe('DecryptMessageController', () => {
     const messageToDecrypt = {
       ...messageMock,
       data: messageDataMock,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
@@ -235,9 +244,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessageInline(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessageInline(messageToDecrypt);
 
     expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.setResult).toBeCalledWith(
@@ -264,9 +272,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.cancelDecryptMessage(
-      messageIdMock,
-    );
+    const result =
+      await decryptMessageController.cancelDecryptMessage(messageIdMock);
 
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(
@@ -278,7 +285,8 @@ describe('DecryptMessageController', () => {
   it('should be able to reject all unapproved messages', async () => {
     decryptMessageManagerMock.getUnapprovedMessages.mockReturnValue({
       [messageIdMock]: messageMock,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
@@ -295,6 +303,58 @@ describe('DecryptMessageController', () => {
       properties: {
         action: 'Decrypt Message Request',
       },
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedDecryptMsgCount": 0,
+          "unapprovedDecryptMsgs": {},
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      expect(
+        deriveStateFromMetadata(
+          decryptMessageController.state,
+          decryptMessageController.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "unapprovedDecryptMsgCount": 0,
+          "unapprovedDecryptMsgs": {},
+        }
+      `);
     });
   });
 });

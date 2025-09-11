@@ -22,6 +22,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
+import { isGlobalNetworkSelectorRemoved } from '../../../selectors';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
@@ -38,6 +39,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     providerConfig: PropTypes.object,
     providerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     showNetworkDropdown: PropTypes.func,
+    showNetworkManager: PropTypes.func,
     setProviderArgs: PropTypes.array,
     setActiveNetwork: PropTypes.func,
     rollbackToPreviousProvider: PropTypes.func,
@@ -87,8 +89,12 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   renderConnectionFailureNotification = (message, showTryAgain = false) => {
-    const { showNetworkDropdown, setProviderArgs, setActiveNetwork } =
-      this.props;
+    const {
+      showNetworkDropdown,
+      setProviderArgs,
+      setActiveNetwork,
+      showNetworkManager,
+    } = this.props;
 
     return (
       <Popover
@@ -104,20 +110,29 @@ export default class LoadingNetworkScreen extends PureComponent {
             color={IconColor.warningDefault}
           />
         }
+        headerProps={{
+          style: { paddingBottom: 0 },
+        }}
       >
-        <Text
-          variant={TextVariant.bodyLgMedium}
-          textAlign={TextAlign.Center}
-          margin={[0, 4, 4, 4]}
-        >
-          {message}
-        </Text>
+        <Box paddingInline={4}>
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            textAlign={TextAlign.Center}
+            className="text-balance mb-4"
+          >
+            {message}
+          </Text>
+        </Box>
         <Box display={DISPLAY.FLEX} padding={4} gap={2}>
           <ButtonSecondary
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
               this.setState({ showErrorScreen: false });
-              showNetworkDropdown();
+              if (isGlobalNetworkSelectorRemoved) {
+                showNetworkManager();
+              } else {
+                showNetworkDropdown();
+              }
             }}
             variant={TextVariant.bodySm}
             block

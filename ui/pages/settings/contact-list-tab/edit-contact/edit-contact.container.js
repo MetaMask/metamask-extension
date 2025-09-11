@@ -1,13 +1,16 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   getAddressBook,
   getAddressBookEntry,
   getInternalAccountByAddress,
   getInternalAccounts,
 } from '../../../../selectors';
-import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getProviderConfig,
+} from '../../../../../shared/modules/selectors/networks';
 import {
   CONTACT_VIEW_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -15,32 +18,35 @@ import {
 import {
   addToAddressBook,
   removeFromAddressBook,
+  toggleNetworkMenu,
 } from '../../../../store/actions';
 import EditContact from './edit-contact.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { location } = ownProps;
-  const { pathname } = location;
-  const pathNameTail = pathname.match(/[^/]+$/u)[0];
+  const { location, params } = ownProps;
+  const pathNameTail = location.pathname.match(/[^/]+$/u)[0];
   const pathNameTailIsAddress = pathNameTail.includes('0x');
   const address = pathNameTailIsAddress
     ? pathNameTail.toLowerCase()
-    : ownProps.match.params.id;
+    : params.id;
 
   const contact = getAddressBookEntry(state, address);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
   const { memo } = contact || {};
   const name =
     contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
 
   const { chainId } = getProviderConfig(state);
+  const contactChainId = contact?.chainId || chainId;
 
   return {
     address: contact ? address : null,
     addressBook: getAddressBook(state),
     internalAccounts: getInternalAccounts(state),
-    chainId,
+    contactChainId,
     name,
     memo,
+    networkConfigurations,
     viewRoute: CONTACT_VIEW_ROUTE,
     listRoute: CONTACT_LIST_ROUTE,
   };
@@ -48,14 +54,15 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToAddressBook: (recipient, nickname, memo) =>
-      dispatch(addToAddressBook(recipient, nickname, memo)),
+    addToAddressBook: (recipient, nickname, memo, customChainId) =>
+      dispatch(addToAddressBook(recipient, nickname, memo, customChainId)),
     removeFromAddressBook: (chainId, addressToRemove) =>
       dispatch(removeFromAddressBook(chainId, addressToRemove)),
+    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
   };
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(EditContact);

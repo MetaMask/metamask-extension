@@ -3,11 +3,17 @@
   border-radius: 4px;
   border-left: var(--color-warning-default) 4px solid;
   background-color: var(--color-warning-muted);
-  color: var(--color-text-default);
+  color: inherit; // Required to inherit color set from prefers-color-scheme
   display: flex;
   padding: 12px 12px 12px 8px;
   gap: 8px;
   line-height: 24px;
+
+  & h1 {
+    font-size: 20px;
+    margin: 4px 0;
+    padding: 0;
+  }
 
   &__container {
     padding: 20px;
@@ -15,7 +21,6 @@
   }
 
   &__footer {
-    display: inline-flex;
     flex-wrap: wrap;
 
     > span {
@@ -43,10 +48,16 @@
     }
   }
 
-  &__link-restart {
-    align-items: center;
-    display: flex;
-    margin: 8px 0 24px;
-    padding: 8px 0;
+  & p {
+    margin: 1em 0;
+
+    &.small {
+      font-size: 12px;
+    }
+  }
+
+  &__details {
+    max-height: 10em;
+    overflow: auto;
   }
 }

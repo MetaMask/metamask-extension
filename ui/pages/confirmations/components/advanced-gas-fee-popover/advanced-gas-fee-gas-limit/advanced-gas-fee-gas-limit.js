@@ -4,12 +4,16 @@ import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MAX_GAS_LIMIT_DEC } from '../../../send/send.constants';
-import Button from '../../../../../components/ui/button';
+import { MAX_GAS_LIMIT_DEC } from '../../../send-legacy/send.constants';
 import FormField from '../../../../../components/ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
-import { Text } from '../../../../../components/component-library';
+import {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  Text,
+} from '../../../../../components/component-library';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../constants';
 import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
 
@@ -102,7 +106,8 @@ const AdvancedGasFeeGasLimit = () => {
         data-testid="advanced-gas-fee-edit"
         className="advanced-gas-fee-gas-limit__edit-link"
         onClick={() => setEditing(true)}
-        type="link"
+        variant={ButtonVariant.Link}
+        size={ButtonSize.Inherit}
       >
         {t('edit')}
       </Button>

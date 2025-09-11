@@ -16,9 +16,17 @@ const store = mockStore({
 const mockNotification = {
   createdAt: '2023-12-11T22:27:13.020176Z',
   isRead: false,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   block_number: 18765683,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   block_timestamp: '1702330595',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   chain_id: 1,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   created_at: '2023-12-11T22:27:13.020176Z',
   data: {
     to: '0xeae7380dd4cef6fbd1144f49e4d1e6964258a4f4',
@@ -34,13 +42,23 @@ const mockNotification = {
       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
       decimals: '18',
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     network_fee: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_price: '40060432936',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       native_token_price_in_usd: '2192.74',
     },
   },
   id: '0441bf59-d211-5c55-91b5-c5d859a3d301',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   trigger_id: 'e6a9210c-f367-4c9f-8767-12a6153e5c37',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   tx_hash: '0xf8d58eb524e9ac1ba924599adef1df3b75a3dfa1de68d20918979934db4eb379',
   unread: true,
   type: 'ERC20_RECEIVED',
@@ -64,7 +82,6 @@ describe('NotificationDetailBlockExplorerButton', () => {
           notification={mockNotification as Notification}
           chainId={1}
           txHash="0xf8d58eb524e9ac1ba924599adef1df3b75a3dfa1de68d20918979934db4eb379"
-          id="button1"
         />
       </Provider>,
     );

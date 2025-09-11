@@ -8,36 +8,39 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
-  it('should batch confirmation txs for different dapps on same networks ', async function () {
+  it('should put confirmation txs for different dapps on same networks in same queue', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .build(),
         dappOptions: { numberOfDapps: 3 },
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 
@@ -131,7 +134,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 4']"),
         );
 
         // Check correct network on confirm tx.
@@ -140,18 +143,11 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
           text: 'Localhost 7777',
         });
 
-        // Reject All Transactions
-        await driver.clickElement({ text: 'Reject all', tag: 'button' });
-
-        // Wait for confirmation to close
-        await driver.waitUntilXWindowHandles(4);
-
-        // Wait for new confirmations queued from second dapp to open
-        await driver.delay(largeDelayMs);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 2']"),
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
         );
 
         // Check correct network on confirm tx.
@@ -159,6 +155,12 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
           css: 'p',
           text: 'Localhost 8546',
         });
+
+        // Reject All Transactions
+        await driver.clickElement({ text: 'Reject all', tag: 'button' });
+
+        // Wait for confirmation to close
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });

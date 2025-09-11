@@ -5,11 +5,13 @@ module.exports = {
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
-    '<rootDir>/test/helpers/foundry/**/*.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
+  // The path to the Prettier executable used to format snapshots
+  // Jest doesn't support Prettier 3 yet, so we use Prettier 2
+  prettierPath: require.resolve('prettier-2'),
   reporters: [
     'default',
     [
@@ -37,15 +39,14 @@ module.exports = {
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
-    '<rootDir>/test/helpers/foundry/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
   // head of the file. So it may be worthwhile to switch to 'node' in any
-  // background tests.
-  testEnvironment: 'jsdom',
+  // background tests. `jest-fixed-jsdom` is an improved version of jsdom.
+  testEnvironment: 'jest-fixed-jsdom',
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },

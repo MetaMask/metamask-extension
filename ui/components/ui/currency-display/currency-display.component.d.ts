@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react';
 import type { EtherDenomination } from '../../../../shared/constants/common';
 
 export type CurrencyDisplayProps = OverridingUnion<
@@ -13,16 +12,14 @@ export type CurrencyDisplayProps = OverridingUnion<
     hideTitle?: boolean;
     numberOfDecimals?: string | number;
     prefix?: string;
-    prefixComponent?: ReactElement;
     suffix?: string | boolean;
     value?: string;
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    prefixComponentWrapperProps?: Record<string, any>;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     textProps?: Record<string, any>;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     suffixProps?: Record<string, any>;
   }

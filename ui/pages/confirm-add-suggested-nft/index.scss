@@ -2,17 +2,12 @@
 
 .confirm-add-suggested-nft {
   &__card {
-    margin: 16px;
+    background-color: var(--color-background-default);
     box-shadow: var(--shadow-size-md) var(--color-shadow-default);
   }
 
   &__header {
     border-bottom: 1px solid var(--color-border-muted);
-  }
-
-  &__content {
-    overflow-y: auto;
-    flex: 1;
   }
 
   &__nft-list {
@@ -78,4 +73,32 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  &.page-container {
+    $height-screen-sm-min: 720px;
+
+    background-color: var(--color-background-alternative);
+    transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+
+    @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+
+    &.confirm-add-suggested-nft--has-app-header-multichain {
+      @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+        margin-top: 0;
+      }
+    }
+  }
+
+  .page-container {
+    &__content {
+      padding: 16px;
+    }
+  }
+}
+
+.confirm-add-suggested-nft--has-app-header-multichain {
+  border-radius: 0 0 2px 2px;
 }

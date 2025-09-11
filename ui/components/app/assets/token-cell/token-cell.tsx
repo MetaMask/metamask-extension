@@ -1,15 +1,8 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
 import {
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
-import {
-  Box,
   ButtonSecondary,
   Modal,
   ModalBody,
@@ -18,90 +11,64 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+  getSafeNativeCurrencySymbol,
+  type SafeChain,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
+import { type TokenWithFiatAmount } from '../types';
+import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
+import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import {
-  SafeChain,
-  useSafeChains,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { TokenWithFiatAmount } from '../types';
-import {
-  TokenCellBadge,
   TokenCellTitle,
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from './cells';
 
-type TokenCellProps = {
+export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
-  onClick?: (chainId: string, address: string) => void;
+  disableHover?: boolean;
+  onClick?: () => void;
+  fixCurrencyToUSD?: boolean;
+  safeChains?: SafeChain[];
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function TokenCell({
   token,
   privacyMode = false,
   onClick,
+  disableHover = false,
+  fixCurrencyToUSD = false,
+  safeChains,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
-  const isEvm = useSelector(getMultichainIsEvm);
-  const trackEvent = useContext(MetaMetricsContext);
-  const { safeChains } = useSafeChains();
+  const isEvm = isEvmChainId(token.chainId);
+  const nativeCurrencySymbol = useMemo(
+    () => getSafeNativeCurrencySymbol(safeChains, token.chainId),
+    [safeChains, token.chainId],
+  );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-
-  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
-
-  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
-    if (typeof decimalChainId === 'number') {
-      return chain.chainId === decimalChainId.toString();
-    }
-    return undefined;
-  });
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
+    fixCurrencyToUSD,
   });
 
-  const handleClick = useCallback(
-    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e?.preventDefault();
-
-      // If the scam warning modal is open, do nothing
-      if (showScamWarningModal) {
-        return;
-      }
-
-      // Ensure token has a valid chainId before proceeding
-      if (!onClick || !token.chainId) {
-        return;
-      }
-
-      // Call the onClick handler with chainId and address if needed
-      onClick(token.chainId, token.address);
-
-      // Track the event
-      trackEvent({
-        category: MetaMetricsEventCategory.Tokens,
-        event: MetaMetricsEventName.TokenDetailsOpened,
-        properties: {
-          location: 'Home',
-          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
-          token_symbol: token.symbol,
-        },
-      });
-    },
-    [onClick, token.chainId, token.address],
+  const displayToken = useMemo(
+    () => ({
+      ...token,
+      ...tokenDisplayInfo,
+    }),
+    [token, tokenDisplayInfo],
   );
 
   const handleScamWarningModal = (arg: boolean) => {
@@ -113,62 +80,28 @@ export default function TokenCell({
   }
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
-      gap={4}
-    >
-      <Box
-        as="a"
-        onClick={handleClick}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingLeft={4}
-        paddingRight={4}
-        width={BlockSize.Full}
-        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
-        data-testid="multichain-token-list-button"
-      >
-        <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-          style={{ flexGrow: 1, overflow: 'hidden' }}
-          justifyContent={JustifyContent.center}
-        >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
-            <TokenCellSecondaryDisplay
-              token={{ ...token, ...tokenDisplayInfo }}
-              handleScamWarningModal={handleScamWarningModal}
-              privacyMode={privacyMode}
-            />
-          </Box>
-
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-            <TokenCellPrimaryDisplay
-              token={{ ...token, ...tokenDisplayInfo }}
-              privacyMode={privacyMode}
-            />
-          </Box>
-        </Box>
-      </Box>
-      {/* scam warning modal, this should be higher up in the component tree */}
-      {isEvm && showScamWarningModal ? (
+    <>
+      <GenericAssetCellLayout
+        onClick={showScamWarningModal ? undefined : onClick}
+        disableHover={disableHover}
+        badge={<AssetCellBadge {...displayToken} />}
+        headerLeftDisplay={<TokenCellTitle token={displayToken} />}
+        headerRightDisplay={
+          <TokenCellSecondaryDisplay
+            token={displayToken}
+            handleScamWarningModal={handleScamWarningModal}
+            privacyMode={privacyMode}
+          />
+        }
+        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+        footerRightDisplay={
+          <TokenCellPrimaryDisplay
+            token={displayToken}
+            privacyMode={privacyMode}
+          />
+        }
+      />
+      {isEvm && showScamWarningModal && (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
@@ -178,8 +111,8 @@ export default function TokenCell({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 token.symbol,
-                safeChainDetails?.nativeCurrency?.symbol ||
-                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+                nativeCurrencySymbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
               ])}
             </ModalBody>
             <ModalFooter>
@@ -195,7 +128,7 @@ export default function TokenCell({
             </ModalFooter>
           </ModalContent>
         </Modal>
-      ) : null}
-    </Box>
+      )}
+    </>
   );
 }

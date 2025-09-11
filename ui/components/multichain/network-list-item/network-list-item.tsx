@@ -1,4 +1,10 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -30,6 +36,9 @@ import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 
+const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
+  Object.values(IconName).includes(iconSrc as IconName);
+
 // TODO: Consider increasing this. This tooltip is
 // rendering when it has enough room to see everything
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
@@ -45,16 +54,18 @@ export const NetworkListItem = ({
   onClick,
   onDeleteClick,
   onEditClick,
+  onDiscoverClick,
   onRpcEndpointClick,
   startAccessory,
   endAccessory,
   showEndAccessory = true,
   disabled = false,
   variant,
+  notSelectable = false,
 }: {
   name: string;
   iconSrc?: string;
-  iconSize?: AvatarNetworkSize;
+  iconSize?: AvatarNetworkSize | IconSize;
   rpcEndpoint?: { name?: string; url: string };
   chainId?: string;
   selected?: boolean;
@@ -62,12 +73,14 @@ export const NetworkListItem = ({
   onRpcEndpointClick?: () => void;
   onDeleteClick?: () => void;
   onEditClick?: () => void;
+  onDiscoverClick?: () => void;
   focus?: boolean;
   startAccessory?: ReactNode;
   endAccessory?: ReactNode;
   showEndAccessory?: boolean;
   disabled?: boolean;
   variant?: TextVariant;
+  notSelectable?: boolean;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -76,14 +89,18 @@ export const NetworkListItem = ({
     useState();
 
   // I can't find a type that satisfies this.
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setNetworkListItemMenuRef = (ref: any) => {
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
-  const renderButton = () => {
-    return onDeleteClick || onEditClick ? (
+  const renderButton = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
@@ -96,7 +113,15 @@ export const NetworkListItem = ({
         size={ButtonIconSize.Sm}
       />
     ) : null;
-  };
+  }, [
+    onDeleteClick,
+    onEditClick,
+    onDiscoverClick,
+    chainId,
+    t,
+    setNetworkListItemMenuRef,
+    setNetworkOptionsMenuOpen,
+  ]);
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -112,6 +137,7 @@ export const NetworkListItem = ({
 
   return (
     <Box
+      data-testid={`network-list-item-${chainId}`}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={rpcEndpoint ? 2 : 4}
@@ -122,7 +148,9 @@ export const NetworkListItem = ({
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--deselected': !selected,
         'multichain-network-list-item--disabled': disabled,
+        'multichain-network-list-item--not-selectable': notSelectable,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
@@ -138,13 +166,17 @@ export const NetworkListItem = ({
           backgroundColor={BackgroundColor.primaryDefault}
         />
       )}
-      <AvatarNetwork
-        borderColor={BorderColor.backgroundDefault}
-        backgroundColor={getAvatarNetworkColor(name)}
-        name={name}
-        src={iconSrc}
-        size={iconSize}
-      />
+      {isIconSrc(iconSrc) ? (
+        <Icon name={iconSrc} size={iconSize as IconSize} />
+      ) : (
+        <AvatarNetwork
+          borderColor={BorderColor.backgroundDefault}
+          backgroundColor={getAvatarNetworkColor(name)}
+          name={name}
+          src={iconSrc}
+          size={iconSize as AvatarNetworkSize}
+        />
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -211,15 +243,16 @@ export const NetworkListItem = ({
 
       {renderButton()}
       {showEndAccessory
-        ? endAccessory ?? (
+        ? (endAccessory ?? (
             <NetworkListItemMenu
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
               onDeleteClick={onDeleteClick}
               onEditClick={onEditClick}
+              onDiscoverClick={onDiscoverClick}
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
-          )
+          ))
         : null}
     </Box>
   );

@@ -3,7 +3,8 @@
 exports[`ReviewPermissions should render correctly 1`] = `
 <div>
   <div
-    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container main-container connections-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -48,6 +49,7 @@ exports[`ReviewPermissions should render correctly 1`] = `
       </div>
       <div
         class="mm-box multichain-page-content mm-box--padding-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        style="overflow: auto;"
       >
         <div
           class="mm-box connections-page__no-site-connected-content mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"

@@ -1,126 +1,95 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import initializedMockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import {
-  setFirstTimeFlowType,
-  setTermsOfUseLastAgreed,
-} from '../../../store/actions';
-import {
-  ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
-} from '../../../helpers/constants/routes';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import OnboardingWelcome from './welcome';
+import { waitFor, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import * as Actions from '../../../store/actions';
+import * as Environment from '../../../../shared/modules/environment';
+import Welcome from './welcome';
 
-const mockHistoryReplace = jest.fn();
-const mockHistoryPush = jest.fn();
+const mockUseNavigate = jest.fn();
 
-jest.mock('../../../store/actions.ts', () => ({
-  setFirstTimeFlowType: jest.fn().mockReturnValue(
-    jest.fn((type) => {
-      return type;
-    }),
-  ),
-  setTermsOfUseLastAgreed: jest.fn().mockReturnValue(
-    jest.fn((type) => {
-      return type;
-    }),
-  ),
-  setParticipateInMetaMetrics: jest.fn().mockReturnValue(
-    jest.fn((type) => {
-      return type;
-    }),
-  ),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
 
-describe('Onboarding Welcome Component', () => {
+describe('Welcome Page', () => {
   const mockState = {
     metamask: {
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
       },
+      metaMetricsId: '0x00000000',
     },
   };
+  const mockStore = configureMockStore([thunk])(mockState);
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('should render', () => {
+    const { getByText } = renderWithProvider(<Welcome />, mockStore);
+
+    expect(getByText(`Let's get started!`)).toBeInTheDocument();
+
+    const createButton = getByText('Create a new wallet');
+    expect(createButton).toBeInTheDocument();
+
+    const importButton = getByText('I have an existing wallet');
+    expect(importButton).toBeInTheDocument();
   });
 
-  describe('Initialized State Conditionals with keyrings and firstTimeFlowType', () => {
-    it('should route to secure your wallet when keyring is present but not imported first time flow type', () => {
-      const mockStore = configureMockStore([thunk])(initializedMockState);
+  it('should render with seedless onboarding feature disabled', () => {
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(false);
 
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
-        ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-      );
-    });
+    const { getByText } = renderWithProvider(<Welcome />, mockStore);
 
-    it('should route to completion when keyring is present and imported first time flow type', () => {
-      const importFirstTimeFlowState = {
-        ...initializedMockState,
-        metamask: {
-          ...initializedMockState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.import,
-        },
-      };
-      const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
+    expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
-      );
-    });
+    expect(Environment.getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+
+    expect(
+      getByText('Import using Secret Recovery Phrase'),
+    ).toBeInTheDocument();
+
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(true);
   });
 
-  describe('Welcome Component', () => {
-    const mockStore = configureMockStore([thunk])(mockState);
-
-    it('should render', () => {
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      const onboardingWelcome = screen.queryByTestId('onboarding-welcome');
-      expect(onboardingWelcome).toBeInTheDocument();
-    });
-
-    it('should set first time flow to create and route to metametrics', () => {
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
-      fireEvent.click(termsCheckbox);
-      const createWallet = screen.getByTestId('onboarding-create-wallet');
-      fireEvent.click(createWallet);
-
-      expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-      expect(setFirstTimeFlowType).toHaveBeenCalledWith(
-        FirstTimeFlowType.create,
-      );
-    });
-
-    it('should set first time flow to import and route to metametrics', async () => {
-      renderWithProvider(<OnboardingWelcome />, mockStore);
-      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
-      fireEvent.click(termsCheckbox);
-
-      const createWallet = screen.getByTestId('onboarding-import-wallet');
-      fireEvent.click(createWallet);
-
-      await waitFor(() => {
-        expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-        expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
-        expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+  it('should show the error modal when the error thrown in login', async () => {
+    jest
+      .spyOn(Actions, 'startOAuthLogin')
+      .mockImplementation(() => async () => {
+        throw new Error('login error');
       });
+
+    const { getByText, getByTestId } = renderWithProvider(
+      <Welcome />,
+      mockStore,
+    );
+
+    const createButton = getByText('Create a new wallet');
+    fireEvent.click(createButton);
+
+    const createWithGoogleButton = getByTestId(
+      'onboarding-create-with-google-button',
+    );
+    fireEvent.click(createWithGoogleButton);
+
+    await waitFor(() => {
+      expect(getByTestId('login-error-modal')).toBeInTheDocument();
     });
   });
 });

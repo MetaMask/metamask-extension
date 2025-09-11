@@ -31,19 +31,19 @@ jobs:
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }} # Use the repository that triggered the workflow
           ref: ${{ github.event.workflow_run.head_branch }} # Use the branch that triggered the workflow
-          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for better relevancy of analysis
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: lcov.info
           path: coverage
-          github-token: ${{ github.token }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ github.event.workflow_run.id }} # Use the workflow id that triggered the workflow
 
       - name: Download sonar-project.properties
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: MetaMask/metamask-extension
         run: |
           sonar_project_properties=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY/contents/sonar-project.properties")
@@ -71,8 +71,8 @@ jobs:
           fi
 
       - name: SonarCloud Scan
-        # This is SonarSource/sonarcloud-github-action@v2.0.0
-        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
+        # This is SonarSource/sonarqube-scan-action@v5.3.1
+        uses: SonarSource/sonarqube-scan-action@1a6d90ebcb0e6a6b1d87e37ba693fe453195ae25
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

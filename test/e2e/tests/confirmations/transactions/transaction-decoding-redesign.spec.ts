@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   createDappTransaction,
   DAPP_URL,
@@ -8,7 +9,6 @@ import {
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
-import { Ganache } from '../../../seeder/ganache';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
@@ -124,13 +124,18 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        testSpecificMock: mockInfura,
+        testSpecificMock: mockTokensAndInfura,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+      async ({ driver, localNodes }: TestSuiteArguments) => {
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -157,7 +162,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
 async function mocked4BytesResponse(mockServer: MockttpServer) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .always()
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x3b4b1381' })
     .thenCallback(() => ({
       statusCode: 200,
@@ -168,9 +174,17 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
         results: [
           {
             id: 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2021-09-14T02:07:09.805000Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature: 'mintNFTs(uint256)',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0x3b4b1381',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: ';K\u0013',
           },
         ],
@@ -178,7 +192,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     }));
 }
 
-export const SOURCIFY_RESPONSE = {
+const SOURCIFY_RESPONSE = {
   files: [
     {
       name: 'metadata.json',
@@ -191,18 +205,52 @@ export const SOURCIFY_RESPONSE = {
 
 async function mockedSourcifyResponse(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://sourcify.dev/server/files/any/1337/0x')
-    .always()
+    .forGet(
+      'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
+    )
     .thenCallback(() => ({
       statusCode: 200,
       json: SOURCIFY_RESPONSE,
     }));
 }
 
+async function mockTokensAndInfura(mockServer: MockttpServer) {
+  return [await mockInfura(mockServer), await mockWethAndUsdcToken(mockServer)];
+}
+
+async function mockWethAndUsdcToken(mockServer: MockttpServer) {
+  return await mockServer
+    .forGet('https://token.api.cx.metamask.io/tokens/1')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            symbol: 'WETH',
+            decimals: 18,
+            name: 'Wrapped Ether',
+            iconUrl: '',
+            aggregators: [],
+            occurrences: 1,
+          },
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USDC',
+            iconUrl: '',
+            aggregators: [],
+            occurrences: 1,
+          },
+        ],
+      };
+    });
+}
+
 async function mockInfura(mockServer: MockttpServer) {
   return await mockServer
     .forPost()
-    .always()
     .withJsonBodyIncluding({
       method: 'eth_getCode',
       params: ['0xef1c6e67703c7bd7107eed8303fbe6ec2554bf6b'],

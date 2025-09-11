@@ -114,6 +114,12 @@
     margin-bottom: 15px;
   }
 
+  &__href-link {
+    text-align: center;
+    color: var(--color-primary-default);
+    background: unset;
+  }
+
   &__msg {
     &-link {
       @include design-system.H6;
@@ -270,10 +276,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-  }
-
-  &__button:not(:last-child) {
-    margin-right: 16px;
+    gap: 16px;
   }
 }
 

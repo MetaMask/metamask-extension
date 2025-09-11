@@ -1,0 +1,132 @@
+name: Needs E2E
+
+on:
+  workflow_call:
+    outputs:
+      needs-e2e:
+        description: Whether E2E tests are needed
+        value: ${{ jobs.needs-e2e.outputs.needs-e2e }}
+
+jobs:
+  needs-e2e:
+    runs-on: ubuntu-latest
+    outputs:
+      needs-e2e: ${{ steps.determine.outputs.NEEDS_E2E }}
+    env:
+      # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+      # For a `push` event, the head commit hash is `github.sha`.
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Specifying `ref` ensures that the head commit is checked out directly.
+          ref: ${{ env.HEAD_COMMIT_HASH }}
+
+      - name: Check skip tag
+        id: skip-tag
+        run: |
+          echo "SKIP=false" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
+            if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
+              echo "SKIP=true" >> "$GITHUB_OUTPUT"
+              echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
+            fi
+          fi
+
+      - name: Check changed files
+        if: steps.skip-tag.outputs.SKIP != 'true' && (github.event_name == 'pull_request' || github.event_name == 'merge_group')
+        # v3.0.2
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+        id: changes
+        with:
+          filters: .github/e2e-filter-rules.yml
+          list-files: shell
+
+      - name: Determine if E2E needed
+        id: determine
+        run: |
+          # Default to running E2E tests
+          echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
+
+          # Only consider skipping for PRs and merge-queue events
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
+
+            # Skip if [skip e2e] tag found
+            if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]]; then
+              echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
+              echo "-> Skipping E2E tests due to 'skip-e2e' tag"
+
+            # Skip E2E only if ALL changed files are in non_e2e_related_files filter
+            elif [[ "${{ steps.changes.outputs.non_e2e_related_files_count }}" == "${{ steps.changes.outputs.all_changes_count }}" ]]; then
+              echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
+              echo "-> Skipping E2E tests - only non_e2e_related_files changes found"
+
+            else
+              echo "-> Running E2E tests - found changes outside non_e2e_related_files filter"
+            fi
+          fi
+
+  prep-e2e:
+    # For a `pull_request` event, the branch is `github.head_ref``.
+    # For a `push` event, the branch is `github.ref_name`.
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'stable' }}
+    needs:
+      - needs-e2e
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      WORKFLOW_ID: main.yml
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Get changed files with git diff
+        run: yarn tsx .github/scripts/git-diff-default-branch.ts
+
+      - name: Upload changed files artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      - name: Run E2E Page Object Usage Validation
+        run: yarn tsx .github/scripts/validate-e2e-page-object-usage.ts
+
+      - name: Get last completed main workflow
+        id: get-last-completed-main-workflow
+        run: |
+          last_completed_main_workflow=$(gh api "/repos/${OWNER}/${REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs?branch=${DEFAULT_BRANCH}&per_page=1&status=success" | jq -r .workflow_runs[0].id)
+          echo 'LAST_COMPLETED_MAIN_WORKFLOW='"$last_completed_main_workflow" >> "$GITHUB_OUTPUT"
+
+      - name: Download test-e2e-chrome-report
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        uses: actions/download-artifact@v4
+        with:
+          name: test-e2e-chrome-report
+          path: test/test-results/
+          github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
+
+      - name: Download test-e2e-firefox-report
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        uses: actions/download-artifact@v4
+        with:
+          name: test-e2e-firefox-report
+          path: test/test-results/
+          github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
+
+      - name: Upload test-runs-for-splitting
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-runs-for-splitting
+          path: test/test-results/test-runs-*.json

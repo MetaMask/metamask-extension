@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
+import { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Name from '../../../../components/app/name';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -18,6 +19,8 @@ jest.mock('../../../../components/component-library/avatar-network', () => ({
 }));
 
 jest.mock('../../../../components/app/name', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => null),
 }));
@@ -59,12 +62,12 @@ describe('AssetPill', () => {
       }) => {
         const store = configureStore({
           metamask: {
-            ...mockNetworkState({ chainId }),
+            ...mockNetworkState({ chainId: chainId as Hex }),
           },
         });
 
         const asset: NativeAssetIdentifier = {
-          chainId,
+          chainId: chainId as Hex,
           standard: TokenStandard.none,
         };
 

@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
@@ -24,18 +24,6 @@ import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
-
-function useModalNavigation() {
-  const history = useHistory();
-
-  const redirectToNotifications = useCallback(() => {
-    history.push(NOTIFICATIONS_ROUTE);
-  }, [history]);
-
-  return {
-    redirectToNotifications,
-  };
-}
 
 function useNotificationByPath() {
   const { pathname } = useLocation();
@@ -70,20 +58,22 @@ function useEffectOnNotificationView(notificationData?: Notification) {
   }, []);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NotificationDetails() {
-  const { redirectToNotifications } = useModalNavigation();
+  const navigate = useNavigate();
   const { notification } = useNotificationByPath();
   useEffectOnNotificationView(notification);
 
   // No Notification
   if (!notification) {
-    redirectToNotifications();
+    navigate(NOTIFICATIONS_ROUTE);
     return null;
   }
 
   // Invalid Notification
   if (!hasNotificationComponents(notification.type)) {
-    redirectToNotifications();
+    navigate(NOTIFICATIONS_ROUTE);
     return null;
   }
 
@@ -91,7 +81,9 @@ export default function NotificationDetails() {
 
   return (
     <NotificationsPage>
-      <NotificationDetailsHeader onClickBack={redirectToNotifications}>
+      <NotificationDetailsHeader
+        onClickBack={() => navigate(NOTIFICATIONS_ROUTE)}
+      >
         <ncs.details.title notification={notification} />
       </NotificationDetailsHeader>
       <Content padding={0}>

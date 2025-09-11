@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isStrictHexString } from '@metamask/utils';
 
 import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
 import { DAY } from '../../../../../shared/constants/time';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 export type SafeChain = {
   chainId: string;
@@ -23,8 +25,8 @@ export const useSafeChains = () => {
     error?: Error;
   }>({ safeChains: [] });
 
-  if (useSafeChainsListValidation) {
-    useEffect(() => {
+  useEffect(() => {
+    if (useSafeChainsListValidation) {
       fetchWithCache({
         url: CHAIN_SPEC_URL,
         functionName: 'getSafeChainsList',
@@ -37,10 +39,29 @@ export const useSafeChains = () => {
         .catch((error) => {
           setSafeChains({ error });
         });
-    }, []);
-  }
+    }
+  }, [useSafeChainsListValidation]);
 
   return safeChains;
+};
+
+export const getSafeNativeCurrencySymbol = (
+  safeChains?: SafeChain[],
+  chainId?: string,
+) => {
+  if (!safeChains || !chainId) {
+    return undefined;
+  }
+
+  const decimalChainId =
+    isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
+
+  if (typeof decimalChainId !== 'number') {
+    return undefined;
+  }
+
+  return safeChains.find((chain) => chain.chainId === decimalChainId.toString())
+    ?.nativeCurrency?.symbol;
 };
 
 export const rpcIdentifierUtility = (

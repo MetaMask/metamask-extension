@@ -2,18 +2,23 @@ import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 
 export type VersionedData = {
   meta: {
     version: number;
   };
   data: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     PreferencesController?: {
       preferences?: {
         smartTransactionsOptInStatus?: boolean | null;
         smartTransactionsMigrationApplied?: boolean;
       };
     };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     SmartTransactionsController?: {
       smartTransactionsState: {
         smartTransactions: Record<string, SmartTransaction[]>;
@@ -25,6 +30,13 @@ export type VersionedData = {
 export const version = 135;
 
 function transformState(state: VersionedData['data']) {
+  // Check if smart transactions migration should be disabled
+  const manifestFlags = getManifestFlags();
+  if (manifestFlags.testing?.disableSmartTransactionsOverride === true) {
+    // Skip the stx override if the flag is enabled
+    return state;
+  }
+
   if (
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController)

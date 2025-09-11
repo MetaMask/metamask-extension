@@ -15,15 +15,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 
 export default class InfoTab extends PureComponent {
-  static propTypes = {
-    remoteFeatureFlags: PropTypes.object.isRequired,
-  };
-
   state = {
     version: process.env.METAMASK_VERSION,
+    isVisitSupportDataConsentModalOpen: false,
   };
 
   static contextTypes = {
@@ -47,15 +44,14 @@ export default class InfoTab extends PureComponent {
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('about'), this.settingsRefs);
-    if (this.props.remoteFeatureFlags.testFlagForThreshold) {
-      // eslint-disable-next-line no-console
-      console.log(
-        `Fetch remote feature flag success, eg: testFlagForThreshold has value ${JSON.stringify(
-          this.props.remoteFeatureFlags.testFlagForThreshold,
-        )}`,
-      );
-    }
   }
+
+  toggleVisitSupportDataConsentModal = () => {
+    this.setState((prevState) => ({
+      isVisitSupportDataConsentModalOpen:
+        !prevState.isVisitSupportDataConsentModalOpen,
+    }));
+  };
 
   renderInfoLinks() {
     const { t } = this.context;
@@ -118,26 +114,10 @@ export default class InfoTab extends PureComponent {
         <div ref={this.settingsRefs[5]} className="info-tab__link-item">
           <Button
             type="link"
-            href={SUPPORT_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
-            onClick={() => {
-              this.context.trackEvent(
-                {
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.SupportLinkClicked,
-                  properties: {
-                    url: SUPPORT_LINK,
-                  },
-                },
-                {
-                  contextPropsIntoEventProperties: [
-                    MetaMetricsContextProp.PageTitle,
-                  ],
-                },
-              );
-            }}
+            onClick={this.toggleVisitSupportDataConsentModal}
           >
             {t('supportCenter')}
           </Button>
@@ -215,6 +195,12 @@ export default class InfoTab extends PureComponent {
             alt="MetaMask Logo"
           />
         </div>
+        {this.state.isVisitSupportDataConsentModalOpen && (
+          <VisitSupportDataConsentModal
+            isOpen={this.state.isVisitSupportDataConsentModalOpen}
+            onClose={this.toggleVisitSupportDataConsentModal}
+          />
+        )}
       </div>
     );
   }

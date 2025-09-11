@@ -51,13 +51,15 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
    * label is the string or ReactNode to be rendered next to the Checkbox
    */
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   label?: any;
   /*
    * Use inputProps for additional props to be spread to the checkbox input element
    */
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   inputProps?: any; // TODO: Replace with Box types when the syntax and typing is properly figured out. Needs to accept everything Box accepts
   /*
@@ -72,9 +74,13 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   iconProps?: IconProps<'span'>;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type CheckboxProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, CheckboxStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type CheckboxComponent = <C extends React.ElementType = 'div'>(
   props: CheckboxProps<C>,
 ) => React.ReactElement | null;

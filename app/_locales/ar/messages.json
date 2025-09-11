@@ -261,20 +261,8 @@
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "حد عملة جاس هو الحد الأقصى لمقدار وحدات جاس التي ترغب في إنفاقها."
-  },
   "gasLimitTooLow": {
     "message": "يجب أن يكون حد وحدات الجاس على الأقل 21000"
-  },
-  "gasPrice": {
-    "message": "سعر عملة جاس (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "سعر الجاس منخفض للغاية"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "يحدد سعر الغاز مقدار الإيثر الذي تكون على استعداد لدفعه لكل وحدة غاز."
   },
   "gasUsed": {
     "message": "وحدات جاس المستخدمة"
@@ -316,9 +304,6 @@
   "import": {
     "message": "الاستيراد",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "استيراد الحساب"
   },
   "importAccountMsg": {
     "message": "لن يتم ربط الحسابات التي تم استيرادها بعبارة أمان حساب MetaMask الذي تم إنشاؤها في الأصل. تعرف على المزيد حول الحسابات المستوردة"
@@ -648,9 +633,6 @@
   "terms": {
     "message": "شروط الاستخدام"
   },
-  "tips": {
-    "message": "المكافآت"
-  },
   "to": {
     "message": "إلى"
   },
@@ -729,9 +711,6 @@
   "unlock": {
     "message": "فتح القفل"
   },
-  "unlockMessage": {
-    "message": "شبكة الويب اللامركزية بانتظارك"
-  },
   "urlErrorMsg": {
     "message": "تتطلب الروابط بادئة HTTP/HTTPS مناسبة."
   },
@@ -755,8 +734,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "عبارة الأمان الشخصية الخاصة بك"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "سعر الغاز صفر عند التعجيل"
   }
 }

@@ -22,13 +22,23 @@ describe('smartTransactions', () => {
         CHAIN_IDS.MAINNET,
         CHAIN_IDS.SEPOLIA,
         CHAIN_IDS.BSC,
+        CHAIN_IDS.BASE,
+        CHAIN_IDS.ARBITRUM,
+        CHAIN_IDS.LINEA_MAINNET,
+        CHAIN_IDS.LINEA_SEPOLIA,
       ]);
     });
 
     it('should return the correct chain IDs for production environment', () => {
       mockIsProduction.mockReturnValue(true);
       const allowedChainIds = getAllowedSmartTransactionsChainIds();
-      expect(allowedChainIds).toStrictEqual([CHAIN_IDS.MAINNET, CHAIN_IDS.BSC]);
+      expect(allowedChainIds).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.BSC,
+        CHAIN_IDS.BASE,
+        CHAIN_IDS.ARBITRUM,
+        CHAIN_IDS.LINEA_MAINNET,
+      ]);
     });
   });
 });

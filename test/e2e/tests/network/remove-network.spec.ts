@@ -1,43 +1,15 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  CaveatConstraint,
-  PermissionConstraint,
-} from '@metamask/permission-controller';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  openDapp,
-  regularDelayMs,
-  unlockWallet,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
-
-const getPermittedChains = async (driver: Driver) => {
-  const getPermissionsRequest = JSON.stringify({
-    method: 'wallet_getPermissions',
-  });
-  const getPermissionsResult = await driver.executeScript(
-    `return window.ethereum.request(${getPermissionsRequest})`,
-  );
-
-  const permittedChains =
-    getPermissionsResult
-      ?.find(
-        (permission: PermissionConstraint) =>
-          permission.parentCapability === PermissionNames.permittedChains,
-      )
-      ?.caveats.find(
-        (caveat: CaveatConstraint) =>
-          caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value || [];
-
-  return permittedChains;
-};
+import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { getPermittedChains } from './common';
 
 describe('Remove Network:', function (this: Suite) {
   it('should remove the chainId from existing permissions when a network configuration is removed entirely', async function () {
@@ -73,45 +45,44 @@ describe('Remove Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforePermittedChains = await getPermittedChains(driver);
-
         assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const homepage = new HomePage(driver);
+        await homepage.checkPageIsLoaded();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        // Avoid a stale element error
-        await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Go to Edit Menu
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0x53a"]',
-        );
-
-        await driver.delay(regularDelayMs);
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-delete"]',
-        );
-
-        await driver.delay(regularDelayMs);
-        await driver.clickElement({ text: 'Delete', tag: 'button' });
+        const selectNetworkDialog = new SelectNetwork(driver);
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.deleteNetwork('eip155:1338');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.checkPageIsLoaded();
 
         const afterPermittedChains = await getPermittedChains(driver);
-
         assert.deepEqual(afterPermittedChains, ['0x539']);
       },
     );
@@ -158,64 +129,52 @@ describe('Remove Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         const beforePermittedChains = await getPermittedChains(driver);
-
         assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        // Avoid a stale element error
-        await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="network-display"]');
+        const selectNetworkDialog = new SelectNetwork(driver);
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.openNetworkListOptions('eip155:1338');
+        await selectNetworkDialog.openEditNetworkModal();
 
-        // Go to Edit Menu
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0x53a"]',
-        );
+        // Remove the second RPC
+        const editNetworkModal = new AddEditNetworkModal(driver);
+        await editNetworkModal.checkPageIsLoaded();
+        await editNetworkModal.removeRPCInEditNetworkModal(2);
+        await editNetworkModal.checkRpcIsDisplayed('127.0.0.1:8546', false);
 
-        await driver.delay(regularDelayMs);
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-edit"]',
-        );
-
-        await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
-        await driver.delay(regularDelayMs);
-
-        // Assert the endpoint is in the list
-        await driver.findElement({
-          text: '127.0.0.1:8546',
-          tag: 'p',
-        });
-
-        // Delete it
-        await driver.clickElement('[data-testid="delete-item-1"]');
-
-        // Verify it went away
-        await driver.assertElementNotPresent({
-          text: '127.0.0.1:8546',
-          tag: 'p',
-        });
-
-        // Save the network
-        await driver.clickElement({ text: 'Save', tag: 'button' });
+        // Save the edited network
+        await editNetworkModal.saveEditedNetwork();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.checkPageIsLoaded();
 
         const afterPermittedChains = await getPermittedChains(driver);
-
         assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
       },
     );

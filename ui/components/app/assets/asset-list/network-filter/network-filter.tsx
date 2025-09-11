@@ -8,9 +8,11 @@ import {
   getAllChainsToPoll,
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getEnabledNetworksByNamespace,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
+  getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
 } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -37,12 +39,22 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
+import { enableSingleNetwork } from '../../../../../store/controller-actions/network-order-controller';
 
 type SortControlProps = {
   handleClose: () => void;
+  handleFilterNetwork?: (chainFilters: Record<string, boolean>) => void;
+  networkFilter?: Record<string, boolean>;
+  showTokenFiatBalance?: boolean;
 };
 
-const NetworkFilter = ({ handleClose }: SortControlProps) => {
+const NetworkFilter = ({
+  handleClose,
+  handleFilterNetwork,
+  networkFilter,
+  showTokenFiatBalance = true,
+}: SortControlProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
@@ -50,6 +62,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -84,16 +97,19 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
-    dispatch(setTokenNetworkFilter(chainFilters));
+    if (handleFilterNetwork) {
+      handleFilterNetwork(chainFilters);
+    } else {
+      isGlobalNetworkSelectorRemoved
+        ? dispatch(enableSingleNetwork(chainId))
+        : dispatch(setTokenNetworkFilter(chainFilters));
+    }
 
     // TODO Add metrics
     handleClose();
   };
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chain) => {
-    allOpts[chain] = true;
-  });
+  const allOpts = useSelector(getIsAllNetworksFilterEnabled);
 
   const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
     (chain) => allOpts[chain],
@@ -101,10 +117,21 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     return allNetworks[chain].name;
   });
 
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworksByNamespace
+    : tokenNetworkFilter;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const filter = networkFilter || networks;
+
   return (
     <>
       <SelectableListItem
-        isSelected={!isTokenNetworkFilterEqualCurrentNetwork}
+        isSelected={
+          networkFilter
+            ? Object.keys(networkFilter).length > 1 && networkFilter[chainId]
+            : !isTokenNetworkFilterEqualCurrentNetwork
+        }
         onClick={() => handleFilter(allOpts)}
         testId="network-filter-all"
       >
@@ -121,20 +148,22 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             >
               {t('popularNetworks')}
             </Text>
-            <Text
-              variant={TextVariant.bodySmMedium}
-              color={TextColor.textAlternative}
-              data-testid="network-filter-all__total"
-            >
-              <UserPreferencedCurrencyDisplay
-                value={selectedAccountBalanceForAllNetworks}
-                type="PRIMARY"
-                ethNumberOfDecimals={4}
-                hideTitle
-                showFiat
-                isAggregatedFiatOverviewBalance
-              />
-            </Text>
+            {showTokenFiatBalance && (
+              <Text
+                variant={TextVariant.bodySmMedium}
+                color={TextColor.textAlternative}
+                data-testid="network-filter-all__total"
+              >
+                <UserPreferencedCurrencyDisplay
+                  value={selectedAccountBalanceForAllNetworks}
+                  type="PRIMARY"
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                  showFiat
+                  isAggregatedFiatOverviewBalance
+                />
+              </Text>
+            )}
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <InfoTooltip
@@ -166,10 +195,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         </Box>
       </SelectableListItem>
       <SelectableListItem
-        isSelected={
-          Object.keys(tokenNetworkFilter).length === 1 &&
-          tokenNetworkFilter[chainId]
-        }
+        isSelected={Object.keys(filter).length === 1 && filter[chainId]}
         onClick={() => handleFilter({ [chainId]: true })}
         testId="network-filter-current"
       >
@@ -191,18 +217,22 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodySmMedium}
               color={TextColor.textAlternative}
             >
-              <UserPreferencedCurrencyDisplay
-                value={selectedAccountBalance}
-                type="PRIMARY"
-                ethNumberOfDecimals={4}
-                hideTitle
-                showFiat
-                isAggregatedFiatOverviewBalance
-              />
+              {showTokenFiatBalance && (
+                <UserPreferencedCurrencyDisplay
+                  value={selectedAccountBalance}
+                  type="PRIMARY"
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                  showFiat
+                  isAggregatedFiatOverviewBalance
+                />
+              )}
             </Text>
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

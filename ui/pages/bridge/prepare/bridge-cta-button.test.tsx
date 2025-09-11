@@ -1,10 +1,14 @@
 import React from 'react';
+import {
+  RequestStatus,
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
-import { RequestStatus } from '../../../../shared/types/bridge';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 describe('BridgeCTAButton', () => {
@@ -48,7 +52,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: null,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
     const { getByText } = renderWithProvider(
@@ -75,9 +79,12 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
-        fromToken: 'ETH',
+        fromToken: {
+          symbol: 'ETH',
+          assetId: getNativeAssetForChainId(1).assetId,
+        },
         toToken: null,
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
     const { getByText, container } = renderWithProvider(
@@ -85,7 +92,40 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select token and amount')).toBeInTheDocument();
+    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render the component when amount, dest chain and dest token are missing (defaults set', () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          chains: {
+            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
+            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: null,
+        fromToken: {
+          symbol: 'ETH',
+          assetId: getNativeAssetForChainId(1).assetId,
+        },
+        toToken: null,
+        toChainId: null,
+      },
+    });
+    const { getByText, container } = renderWithProvider(
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
+      configureStore(mockStore),
+    );
+
+    expect(getByText('Select amount')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -107,7 +147,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,
@@ -148,7 +188,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: [],
@@ -188,7 +228,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,

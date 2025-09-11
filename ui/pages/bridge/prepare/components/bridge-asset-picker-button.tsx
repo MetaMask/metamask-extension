@@ -23,6 +23,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
+import { getNftImage } from '../../../../helpers/utils/nfts';
 
 export const BridgeAssetPickerButton = ({
   asset,
@@ -68,9 +69,9 @@ export const BridgeAssetPickerButton = ({
           <BadgeWrapper
             marginRight={2}
             badge={
-              asset && networkProps?.network?.name ? (
+              asset ? (
                 <AvatarNetwork
-                  name={networkProps.network.name}
+                  name={networkProps?.network?.name ?? ''}
                   src={networkImageSrc}
                   size={AvatarNetworkSize.Xs}
                 />
@@ -79,7 +80,9 @@ export const BridgeAssetPickerButton = ({
           >
             {asset ? (
               <AvatarToken
-                src={asset.image || undefined}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                src={getNftImage(asset.image) || undefined}
                 backgroundColor={BackgroundColor.backgroundHover}
                 name={asset.symbol}
               />

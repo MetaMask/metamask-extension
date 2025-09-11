@@ -1,19 +1,16 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
+  confirmApproveTransaction,
   mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
 
-const {
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
+const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -28,6 +25,9 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -53,7 +53,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -78,9 +77,11 @@ async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
 }
 
-export async function importTST(driver: Driver) {
+async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="import-token-button"]');
+  await driver.clickElement(
+    '[data-testid="asset-list-control-bar-action-button"]',
+  );
   await driver.clickElement('[data-testid="importTokens"]');
 
   await driver.waitForSelector({
@@ -92,14 +93,17 @@ export async function importTST(driver: Driver) {
     text: 'Custom token',
   });
 
+  await driver.clickElement(
+    '[data-testid="test-import-tokens-drop-down-custom-import"]',
+  );
+
+  await driver.clickElement('[data-testid="select-network-item-0x539"]');
+
   await driver.fill(
     '[data-testid="import-tokens-modal-custom-address"]',
     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
   );
-
-  await driver.delay(tinyDelayMs);
-
-  await driver.clickElement({
+  await driver.clickElementAndWaitToDisappear({
     css: '[data-testid="import-tokens-button-next"]',
     text: 'Next',
   });
@@ -110,14 +114,12 @@ export async function importTST(driver: Driver) {
   });
 }
 
-export async function createERC20ApproveTransaction(driver: Driver) {
+async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#approveTokens');
 }
 
 async function assertApproveDetails(driver: Driver) {
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -169,25 +171,6 @@ async function assertApproveDetails(driver: Driver) {
 
   await driver.waitForSelector({
     css: 'p',
-    text: 'Account balance',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
     text: 'Spending cap',
   });
-}
-
-export async function confirmApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-  );
 }

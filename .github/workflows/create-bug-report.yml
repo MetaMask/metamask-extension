@@ -9,27 +9,27 @@ jobs:
       - name: Extract version from branch name if release branch
         id: extract_version
         run: |
-          if [[ "$GITHUB_REF" =~ ^refs/heads/Version-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            version="${GITHUB_REF#refs/heads/Version-v}"
+          if [[ "$GITHUB_REF" =~ ^refs/heads/(Version-v|release/)[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            version=$(echo "$GITHUB_REF" | sed -E 's#^refs/heads/(Version-v|release/)##')
             echo "New release branch($version), continue next steps"
-            echo "version=$version" >> "$GITHUB_ENV"
+            echo "version=$version" >> "$GITHUB_OUTPUT"
           else
             echo "Not a release branch, skip next steps"
           fi
 
+      - name: Checkout and setup environment
+        if: steps.extract_version.outputs.version
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
       - name: Create bug report issue on planning repo
-        if: env.version
-        run: |
-          payload=$(cat <<EOF
-          {
-            "title": "v${{ env.version }} Bug Report",
-            "body": "**What is this bug report issue for?**\n\n1. This issue is used to track release dates on this [Github Project board](https://github.com/orgs/MetaMask/projects/86/views/1), which content then gets pulled into our metrics system.\n\n2. This issue is also used by our Zapier automations, to determine if automated notifications shall be sent on Slack for release \`${{ env.version }}\`. Notifications will only be sent as long as this issue is open.\n\n**Who created and/or closed this issue?**\n\n- This issue was automatically created by a GitHub action upon the creation of the release branch \`Version-v${{ env.version }}\`, indicating the release was cut.\n\n- This issue gets automatically closed by another GitHub action, once the \`Version-v${{ env.version }}\` branch merges into \`master\`, indicating the release is prepared for store submission.",
-            "labels": ["type-bug", "team-extension-platform", "regression-RC-${{ env.version }}"]
-          }
-          EOF
-          )
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.BUG_REPORT_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/MetaMask/MetaMask-planning/issues \
-            -d "$payload"
+        if: steps.extract_version.outputs.version
+        env:
+          BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
+          RELEASES_GITHUB_PROJECT_BOARD_NUMBER: ${{ vars.RELEASES_GITHUB_PROJECT_BOARD_NUMBER }}
+          RELEASES_GITHUB_PROJECT_BOARD_VIEW_NUMBER: ${{ vars.RELEASES_GITHUB_PROJECT_BOARD_VIEW_NUMBER }}
+          RELEASE_VERSION: ${{ steps.extract_version.outputs.version }}
+        run: yarn create-bug-report-issue

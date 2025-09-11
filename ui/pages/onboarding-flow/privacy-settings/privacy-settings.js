@@ -1,16 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
-
-import {
-  useEnableProfileSyncing,
-  useDisableProfileSyncing,
-} from '../../../hooks/identity/useProfileSyncing';
+import { useBackupAndSync } from '../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -21,6 +18,7 @@ import {
   PRIVACY_POLICY_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import Button from '../../../components/ui/button';
 
 import {
@@ -49,7 +47,7 @@ import {
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getPetnamesEnabled,
+  getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -60,23 +58,21 @@ import {
   setUse4ByteResolution,
   setUseTokenDetection,
   setUseAddressBarEnsResolution,
-  showModal,
   toggleNetworkMenu,
-  setIncomingTransactionsPreferences,
   setUseTransactionSimulations,
-  setPetnamesEnabled,
+  setUseExternalNameSources,
   setEditedNetwork,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
   openBasicFunctionalityModal,
 } from '../../../ducks/app/app';
-import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
@@ -84,7 +80,7 @@ const ANIMATION_TIME = 500;
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [showDetail, setShowDetail] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -92,7 +88,6 @@ export default function PrivacySettings() {
 
   const defaultState = useSelector((state) => state.metamask);
   const {
-    incomingTransactionsPreferences,
     use4ByteResolution,
     useTokenDetection,
     useCurrencyRateCheck,
@@ -101,7 +96,7 @@ export default function PrivacySettings() {
     useAddressBarEnsResolution,
     useTransactionSimulations,
   } = defaultState;
-  const petnamesEnabled = useSelector(getPetnamesEnabled);
+  const useExternalNameSources = useSelector(getUseExternalNameSources);
 
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
@@ -121,7 +116,9 @@ export default function PrivacySettings() {
   const [addressBarResolution, setAddressBarResolution] = useState(
     useAddressBarEnsResolution,
   );
-  const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
+  const [turnOnExternalNameSources, setTurnOnExternalNameSources] = useState(
+    useExternalNameSources,
+  );
 
   const trackEvent = useContext(MetaMetricsContext);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
@@ -130,24 +127,18 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const { enableProfileSyncing, error: enableProfileSyncingError } =
-    useEnableProfileSyncing();
-  const { disableProfileSyncing, error: disableProfileSyncingError } =
-    useDisableProfileSyncing();
+  const { setIsBackupAndSyncFeatureEnabled, error: backupAndSyncError } =
+    useBackupAndSync();
 
   useEffect(() => {
     if (externalServicesOnboardingToggleState) {
-      enableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     } else {
-      disableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
     }
-  }, [
-    externalServicesOnboardingToggleState,
-    enableProfileSyncing,
-    disableProfileSyncing,
-  ]);
+  }, [externalServicesOnboardingToggleState, setIsBackupAndSyncFeatureEnabled]);
 
   const handleSubmit = () => {
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
@@ -158,11 +149,11 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
-    dispatch(setPetnamesEnabled(turnOnPetnames));
+    setUseExternalNameSources(turnOnExternalNameSources);
 
-    // Profile Syncing Setup
+    // Backup and sync Setup
     if (!externalServicesOnboardingToggleState) {
-      disableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
     }
 
     if (ipfsURL && !ipfsError) {
@@ -175,29 +166,13 @@ export default function PrivacySettings() {
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
         settings_group: 'onboarding_advanced_configuration',
-        is_profile_syncing_enabled: isProfileSyncingEnabled,
+        is_profile_syncing_enabled: isBackupAndSyncEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        show_incoming_tx: incomingTransactionsPreferences,
         turnon_token_detection: turnOnTokenDetection,
       },
     });
 
-    history.push(ONBOARDING_COMPLETION_ROUTE);
-  };
-
-  const handleProfileSyncToggleSetValue = async () => {
-    if (isProfileSyncingEnabled) {
-      dispatch(
-        showModal({
-          name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
-          turnOffProfileSyncing: () => {
-            disableProfileSyncing();
-          },
-        }),
-      );
-    } else {
-      enableProfileSyncing();
-    }
+    navigate(ONBOARDING_COMPLETION_ROUTE);
   };
 
   const handleIPFSChange = (url) => {
@@ -423,26 +398,9 @@ export default function PrivacySettings() {
                     ])}
                   />
 
-                  <Setting
-                    dataTestId="profile-sync-toggle"
-                    disabled={!externalServicesOnboardingToggleState}
-                    value={isProfileSyncingEnabled}
-                    setValue={handleProfileSyncToggleSetValue}
-                    title={t('profileSync')}
-                    description={t('profileSyncDescription', [
-                      <a
-                        href="https://support.metamask.io/privacy-and-security/profile-privacy"
-                        key="link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t('profileSyncPrivacyLink')}
-                      </a>,
-                    ])}
-                  />
+                  <BackupAndSyncToggle />
 
-                  {(enableProfileSyncingError ||
-                    disableProfileSyncingError) && (
+                  {backupAndSyncError && (
                     <Box paddingBottom={4}>
                       <Text
                         as="p"
@@ -467,6 +425,16 @@ export default function PrivacySettings() {
                             rel="noopener noreferrer"
                           >
                             {t('privacyMsg')}
+                          </a>,
+                          <a
+                            href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}
+                            key="link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t(
+                              'onboardingAdvancedPrivacyNetworkDescriptionCallToAction',
+                            )}
                           </a>,
                         ])}
 
@@ -618,17 +586,6 @@ export default function PrivacySettings() {
                       </>
                     }
                   />
-                  <IncomingTransactionToggle
-                    networkConfigurations={networkConfigurations}
-                    setIncomingTransactionsPreferences={(chainId, value) =>
-                      dispatch(
-                        setIncomingTransactionsPreferences(chainId, value),
-                      )
-                    }
-                    incomingTransactionsPreferences={
-                      incomingTransactionsPreferences
-                    }
-                  />
                   <Setting
                     value={turnOnCurrencyRateCheck}
                     setValue={setTurnOnCurrencyRateCheck}
@@ -709,10 +666,10 @@ export default function PrivacySettings() {
                     description={t('toggleDecodeDescription')}
                   />
                   <Setting
-                    value={turnOnPetnames}
-                    setValue={setTurnOnPetnames}
-                    title={t('petnamesEnabledToggle')}
-                    description={t('petnamesEnabledToggleDescription')}
+                    value={turnOnExternalNameSources}
+                    setValue={setTurnOnExternalNameSources}
+                    title={t('externalNameSourcesSetting')}
+                    description={t('externalNameSourcesSettingDescription')}
                   />
                 </>
               ) : null}

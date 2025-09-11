@@ -2,8 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
   onboardingMetametricsAgree,
   noThanks,
@@ -17,16 +17,13 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
-const mockPushHistory = jest.fn();
+const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
     useLocation: jest.fn(() => ({ search: '' })),
-    useHistory: () => ({
-      push: mockPushHistory,
-    }),
   };
 });
 
@@ -46,6 +43,10 @@ describe('Onboarding Metametrics Component', () => {
     metamask: {
       firstTimeFlowType: FirstTimeFlowType.create,
       participateInMetaMetrics: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
   };
 
@@ -92,9 +93,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
-      expect(mockPushHistory).toHaveBeenCalledWith(
-        ONBOARDING_CREATE_PASSWORD_ROUTE,
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });
 
@@ -110,9 +109,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(mockPushHistory).toHaveBeenCalledWith(
-        ONBOARDING_CREATE_PASSWORD_ROUTE,
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });
 
@@ -128,9 +125,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
-      expect(mockPushHistory).toHaveBeenCalledWith(
-        ONBOARDING_CREATE_PASSWORD_ROUTE,
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });
 

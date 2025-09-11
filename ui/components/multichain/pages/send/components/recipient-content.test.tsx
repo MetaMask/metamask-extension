@@ -17,9 +17,12 @@ import { AssetType } from '../../../../../../shared/constants/transaction';
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import { SendPageRecipientContent } from './recipient-content';
 
-jest.mock('reselect', () => ({
-  createSelector: jest.fn(),
-}));
+jest.mock('reselect', () => {
+  const createSelector = Object.assign(jest.fn(), {
+    withTypes: () => jest.fn(),
+  });
+  return { createSelector };
+});
 
 jest.mock('../../../../../../shared/modules/selectors/util', () => ({
   createDeepEqualSelector: jest.fn(),
@@ -55,10 +58,16 @@ jest.mock('../../..', () => ({
   AssetPickerAmount: jest.fn(() => <div>AssetPickerAmount</div>),
 }));
 
-jest.mock('.', () => ({
+jest.mock('./hex', () => ({
   SendHexData: jest.fn(() => <div>SendHexData</div>),
-  SendPageRow: jest.fn(({ children }) => <div>{children}</div>),
+}));
+
+jest.mock('./quote-card', () => ({
   QuoteCard: jest.fn(() => <div>QuoteCard</div>),
+}));
+
+jest.mock('./send-page-row', () => ({
+  SendPageRow: jest.fn(({ children }) => <div>{children}</div>),
 }));
 
 describe('SendPageRecipientContent', () => {

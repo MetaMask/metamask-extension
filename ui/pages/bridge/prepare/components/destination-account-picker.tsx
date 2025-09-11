@@ -1,8 +1,6 @@
-import * as React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { SolAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useState } from 'react';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   TextField,
   Box,
@@ -12,10 +10,6 @@ import {
   ButtonVariant,
 } from '../../../../components/component-library';
 import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-} from '../../../../selectors';
-import {
   BlockSize,
   Display,
   FlexDirection,
@@ -24,37 +18,52 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { t } from '../../../../../shared/lib/translate';
+import { getToAccounts, getToChain } from '../../../../ducks/bridge/selectors';
+import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
+import type { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
+import { ExternalAccountListItem } from './external-account-list-item';
 
 type DestinationAccountPickerProps = {
-  onAccountSelect: (account: InternalAccount | null) => void;
-  selectedSwapToAccount: InternalAccount | null;
-  isDestinationSolana: boolean;
+  onAccountSelect: (account: DestinationAccount | null) => void;
+  selectedSwapToAccount: DestinationAccount | null;
 };
 
 export const DestinationAccountPicker = ({
   onAccountSelect,
   selectedSwapToAccount,
-  isDestinationSolana,
 }: DestinationAccountPickerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const accounts = useSelector(getInternalAccounts);
+  const accounts = useSelector(getToAccounts);
+  const toChain = useSelector(getToChain);
+  const isDestinationSolana = toChain?.chainId
+    ? isSolanaChainId(toChain.chainId)
+    : false;
 
-  const filteredAccounts = accounts.filter((account) => {
-    const matchesSearch = account.metadata.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    const matchesChain = isDestinationSolana
-      ? account.type === SolAccountType.DataAccount
-      : account.type !== SolAccountType.DataAccount;
-
-    return matchesSearch && matchesChain;
+  const externalAccount = useExternalAccountResolution({
+    searchQuery,
+    isDestinationSolana,
   });
+
+  const filteredAccounts = useMemo(
+    () =>
+      accounts.filter((account) => {
+        const matchesSearchByName = account.displayName
+          .toLowerCase()
+          .includes(searchQuery.trim().toLowerCase());
+
+        const matchesSearchByAddress = account.address
+          .toLowerCase()
+          .includes(searchQuery.trim().toLowerCase());
+
+        const matchesSearch = matchesSearchByName || matchesSearchByAddress;
+
+        return matchesSearch;
+      }),
+    [accounts, searchQuery],
+  );
 
   if (selectedSwapToAccount) {
     return (
@@ -69,22 +78,15 @@ export const DestinationAccountPicker = ({
         style={{
           height: '70px',
           borderRadius: '8px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <Box
           className="destination-account-picker__selected"
           width={BlockSize.Full}
+          style={{ flex: 1, minWidth: 0 }}
         >
-          <DestinationSelectedAccountListItem
-            account={selectedSwapToAccount}
-            // @ts-expect-error: Type mismatch between InternalAccount and expected account type - functionality works but needs type alignment
-            isSelected={selectedSwapToAccount.id === selectedAccount?.id}
-            showOptions={false}
-            disableHover
-          />
+          <DestinationSelectedAccountListItem account={selectedSwapToAccount} />
         </Box>
         <Box className="deselect-button-container" paddingRight={5}>
           <Button
@@ -116,9 +118,6 @@ export const DestinationAccountPicker = ({
       style={{
         borderRadius: '8px',
         position: 'relative',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        boxShadow: 'var(--shadow-bridge-picker)',
       }}
     >
       <Box
@@ -134,14 +133,18 @@ export const DestinationAccountPicker = ({
           borderBottomStyle: 'solid',
           borderBottomColor: '#B7BBC866',
           borderRadius: '8px 8px 0 0',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <TextField
-          // @ts-expect-error: TextField component expects different props than provided - works but needs type update
-          placeholder={t('destinationAccountPickerSearchPlaceholder')}
+          placeholder={
+            (isDestinationSolana
+              ? t('destinationAccountPickerSearchPlaceholderToSolana')
+              : t('destinationAccountPickerSearchPlaceholderToMainnet')) ??
+            undefined
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          clearButtonOnClick={() => setSearchQuery('')}
           className="text-field-search"
           style={{
             width: '98%',
@@ -151,20 +154,21 @@ export const DestinationAccountPicker = ({
           }}
         />
       </Box>
+      {/* Invisible buffer to match selected account height */}
+      <Box style={{ height: '20px' }} />
       <Box
         className="destination-account-picker__list"
         backgroundColor={BackgroundColor.backgroundDefault}
         style={{
           position: 'absolute',
-          top: '45px',
+          top: '50px',
           left: 0,
           right: 0,
-          minHeight: '79px',
           maxHeight: '240px',
           overflowY: 'auto',
           borderRadius: '0 0 8px 8px',
           zIndex: 1000,
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         {filteredAccounts.map((account) => (
@@ -172,13 +176,25 @@ export const DestinationAccountPicker = ({
             key={account.id}
             account={account}
             onClick={() => onAccountSelect(account)}
-            // @ts-expect-error: Type mismatch in isSelected prop between InternalAccount and component expectations
-            isSelected={account.id === selectedSwapToAccount?.id}
-            showOptions={false}
+            selected={
+              selectedSwapToAccount
+                ? account.address.toLowerCase() ===
+                  (
+                    selectedSwapToAccount as DestinationAccount
+                  ).address.toLowerCase()
+                : false
+            }
           />
         ))}
+        {externalAccount && (
+          <ExternalAccountListItem
+            key="external-account"
+            account={externalAccount}
+            onClick={() => onAccountSelect(externalAccount)}
+          />
+        )}
 
-        {filteredAccounts.length === 0 && (
+        {filteredAccounts.length === 0 && !externalAccount && (
           <Box
             display={Display.Flex}
             style={{

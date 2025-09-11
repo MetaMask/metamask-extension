@@ -29,8 +29,18 @@ const managerName = 'EncryptionPublicKeyManager';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
 
 const stateMetadata = {
-  unapprovedEncryptionPublicKeyMsgs: { persist: false, anonymous: false },
-  unapprovedEncryptionPublicKeyMsgCount: { persist: false, anonymous: false },
+  unapprovedEncryptionPublicKeyMsgs: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: false,
+    usedInUi: true,
+  },
+  unapprovedEncryptionPublicKeyMsgCount: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: false,
+    usedInUi: true,
+  },
 };
 
 const getDefaultState = () => ({
@@ -95,10 +105,12 @@ export type EncryptionPublicKeyControllerOptions = {
   messenger: EncryptionPublicKeyControllerMessenger;
   getEncryptionPublicKey: (address: string) => Promise<string>;
   getAccountKeyringType: (account: string) => Promise<string>;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
   managerMessenger: EncryptionPublicKeyManagerMessenger;
@@ -116,13 +128,13 @@ export default class EncryptionPublicKeyController extends BaseController<
 
   private _getAccountKeyringType: (account: string) => Promise<string>;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getState: () => any;
 
   private _encryptionPublicKeyManager: EncryptionPublicKeyManager;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _metricsEvent: (payload: any, options?: any) => void;
 
@@ -350,7 +362,7 @@ export default class EncryptionPublicKeyController extends BaseController<
       `${managerName}:stateChange`,
       (state: MessageManagerState<AbstractMessage>) => {
         const newMessages = this._migrateMessages(
-          // TODO: Replace `any` with type
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           state.unapprovedMessages as any,
         );
@@ -391,6 +403,8 @@ export default class EncryptionPublicKeyController extends BaseController<
 
   private _requestApproval(msgParams: AbstractMessageParamsMetamask) {
     const id = msgParams.metamaskId as string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = msgParams.origin || ORIGIN_METAMASK;
 
     this.messagingSystem

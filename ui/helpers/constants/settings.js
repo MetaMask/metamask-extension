@@ -1,8 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
@@ -13,6 +11,9 @@ import {
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
+  BACKUPANDSYNC_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from './routes';
 
 /**
@@ -91,7 +92,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('smartTransactions'),
-    descriptionMessage: (t) => t('stxOptInEthereumBnbDescription'),
+    descriptionMessage: (t) => t('stxOptInSupportedNetworksDescription'),
     route: `${ADVANCED_ROUTE}#smart-transactions`,
     icon: 'fas fa-upload',
   },
@@ -159,7 +160,28 @@ const SETTINGS_CONSTANTS = [
       t('overrideContentSecurityPolicyHeaderDescription'),
     route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
     icon: 'fas fa-sliders-h',
-    hidden: getPlatform() !== PLATFORM_FIREFOX,
+    hidden: getBrowserName() !== PLATFORM_FIREFOX,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncEnable'),
+    descriptionMessage: (t) => t('backupAndSyncEnable'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-toggle`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-account-syncing`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-contact-syncing`,
+    iconName: IconName.SecurityTime,
   },
   {
     tabMessage: (t) => t('contacts'),
@@ -187,9 +209,9 @@ const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[2]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('showIncomingTransactions'),
-    descriptionMessage: (t) => t('showIncomingTransactionsDescription'),
-    route: `${SECURITY_ROUTE}#incoming-transaction`,
+    sectionMessage: (t) => t('securityChangePassword'),
+    descriptionMessage: (t) => t('securityChangePassword'),
+    route: SECURITY_PASSWORD_CHANGE_ROUTE,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[3]
@@ -203,12 +225,20 @@ const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[4]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('skipDeepLinkInterstitial'),
+    descriptionMessage: (t) => t('skipDeepLinkInterstitialDescription'),
+    route: `${SECURITY_ROUTE}#skip-deep-link-interstitial`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[5]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('use4ByteResolution'),
     descriptionMessage: (t) => t('toggleDecodeDescription'),
     route: `${SECURITY_ROUTE}#decode-smart-contracts`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[5]
+  // securityAndPrivacy settingsRefs[6]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('participateInMetaMetrics'),
@@ -216,7 +246,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#metametrics`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[6]
+  // securityAndPrivacy settingsRefs[7]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('networkProvider'),
@@ -225,7 +255,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#network-provider`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[7]
+  // securityAndPrivacy settingsRefs[8]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('ipfsGateway'),
@@ -233,7 +263,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#add-custom-ipfs-gateway`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[8]
+  // securityAndPrivacy settingsRefs[9]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('autoDetectTokens'),
@@ -241,7 +271,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#auto-detect-tokens`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[9]
+  // securityAndPrivacy settingsRefs[10]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
@@ -250,7 +280,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#batch-account-balance-requests`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[10]
+  // securityAndPrivacy settingsRefs[11]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('currencyRateCheckToggle'),
@@ -258,7 +288,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#price-checker`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[11]
+  // securityAndPrivacy settingsRefs[12]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('ensDomainsSettingTitle'),
@@ -266,7 +296,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#ens-domains`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[12]
+  // securityAndPrivacy settingsRefs[13]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('displayNftMedia'),
@@ -274,7 +304,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#display-nft-media`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[13]
+  // securityAndPrivacy settingsRefs[14]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useNftDetection'),
@@ -282,7 +312,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[14]
+  // securityAndPrivacy settingsRefs[15]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useSafeChainsListValidation'),
@@ -290,7 +320,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#network-details-check`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[15]
+  // securityAndPrivacy settingsRefs[16]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('externalNameSourcesSetting'),
@@ -298,7 +328,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#proposed-nicknames`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[16]
+  // securityAndPrivacy settingsRefs[17]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('securityAlerts'),
@@ -306,7 +336,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[17]
+  // securityAndPrivacy settingsRefs[18]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('blockaid'),
@@ -314,7 +344,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[18]
+  // securityAndPrivacy settingsRefs[19]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('simulationsSettingSubHeader'),
@@ -322,7 +352,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#transaction-simulations`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[19]
+  // securityAndPrivacy settingsRefs[20]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('dataCollectionForMarketing'),
@@ -330,6 +360,7 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#dataCollectionForMarketing`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[21]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('deleteMetaMetricsData'),
@@ -453,15 +484,15 @@ const SETTINGS_CONSTANTS = [
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     iconName: IconName.Info,
   },
-  // experimental settingsRefs[0]
   {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('petnamesEnabledToggle'),
-    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
-    icon: 'fas fa-flask',
+    featureFlag: 'METAMASK_SHIELD_ENABLED',
+    tabMessage: (t) => t('shieldTx'),
+    sectionMessage: (t) => t('shieldTx'),
+    descriptionMessage: (t) => t('shieldTx'),
+    route: `${TRANSACTION_SHIELD_ROUTE}`,
+    iconName: IconName.ShieldLock,
   },
-  // experimental settingsRefs[1]
+  // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('notificationsFeatureToggle'),
@@ -484,41 +515,50 @@ const SETTINGS_CONSTANTS = [
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Reset States',
-    descriptionMessage: 'Reset States',
+    sectionMessage: () => 'Reset States',
+    descriptionMessage: () => 'Reset States',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[1]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Announcements',
-    descriptionMessage:
+    sectionMessage: () => 'Announcements',
+    descriptionMessage: () =>
       "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[2]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Service Worker Keep Alive',
-    descriptionMessage:
+    sectionMessage: () => 'Service Worker Keep Alive',
+    descriptionMessage: () =>
       'Resets various states related to onboarding and redirects to the "Secure Your Wallet" onboarding page.',
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
   // developerOptions settingsRefs[3]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
     tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Service Worker Keep Alive',
-    descriptionMessage:
+    sectionMessage: () => 'Service Worker Keep Alive',
+    descriptionMessage: () =>
       'Results in a timestamp being continuously saved to session.storage',
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
-    icon: IconName.CodeCircle,
+    iconName: IconName.CodeCircle,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('watchEthereumAccountsToggle'),
+    descriptionMessage: (t) => t('watchEthereumAccountsDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#watch-only`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 export default SETTINGS_CONSTANTS;

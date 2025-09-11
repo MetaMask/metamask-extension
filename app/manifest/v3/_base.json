@@ -24,6 +24,15 @@
         "chromeos": "Alt+Shift+M",
         "linux": "Alt+Shift+M"
       }
+    },
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+M",
+        "windows": "Alt+Shift+M",
+        "mac": "Alt+Shift+M",
+        "chromeos": "Alt+Shift+M",
+        "linux": "Alt+Shift+M"
+      }
     }
   },
   "content_scripts": [
@@ -66,6 +75,7 @@
   },
   "manifest_version": 3,
   "name": "__MSG_appName__",
+  "optional_permissions": ["clipboardRead"],
   "permissions": [
     "activeTab",
     "alarms",
@@ -75,7 +85,8 @@
     "storage",
     "unlimitedStorage",
     "webRequest",
-    "offscreen"
+    "offscreen",
+    "identity"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

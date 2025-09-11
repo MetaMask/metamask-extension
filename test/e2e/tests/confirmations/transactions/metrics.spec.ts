@@ -6,6 +6,7 @@ import {
   TransactionMetaMetricsEvent,
 } from '../../../../../shared/constants/transaction';
 import { Driver } from '../../../webdriver/driver';
+import { MOCK_META_METRICS_ID } from '../../../constants';
 import {
   confirmContractDeploymentTransaction,
   confirmDepositTransaction,
@@ -14,7 +15,6 @@ import {
 } from './shared';
 
 const {
-  defaultGanacheOptionsForType2Transactions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -31,11 +31,10 @@ describe('Metrics', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        localNodeOptions: defaultGanacheOptionsForType2Transactions,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
       },
@@ -54,7 +53,6 @@ describe('Metrics', function () {
         await confirmContractDeploymentTransaction(driver);
 
         await createDepositTransaction(driver);
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmDepositTransaction(driver);
 
