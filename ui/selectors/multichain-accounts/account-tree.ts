@@ -823,8 +823,11 @@ export const getNetworkAddressCount = createDeepEqualSelector(
 export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
   [getInternalAccountsFromGroupById],
   (accounts: InternalAccount[]): string => {
+    console.log('Accounts in group for icon seed:', accounts);
     if (!accounts || accounts.length === 0) {
-      throw new Error('No accounts found in the specified group');
+      throw new Error(
+        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+      );
     }
 
     for (const account of accounts) {
