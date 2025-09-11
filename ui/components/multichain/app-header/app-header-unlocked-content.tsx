@@ -216,7 +216,9 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <PreferredAvatar address={internalAccount.address} />
+          <div ref={tourAnchorRef}>
+            <PreferredAvatar address={internalAccount.address} />
+          </div>
         )}
 
         {internalAccount && (
