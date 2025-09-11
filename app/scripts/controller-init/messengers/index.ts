@@ -71,9 +71,33 @@ import {
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
+import {
+  getTokenListControllerInitMessenger,
+  getTokenListControllerMessenger,
+} from './token-list-controller-messenger';
+import {
+  getTokenDetectionControllerInitMessenger,
+  getTokenDetectionControllerMessenger,
+} from './token-detection-controller-messenger';
 
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type {
+  TokenDetectionControllerMessenger,
+  TokenDetectionControllerInitMessenger,
+} from './token-detection-controller-messenger';
+export {
+  getTokenDetectionControllerMessenger,
+  getTokenDetectionControllerInitMessenger,
+} from './token-detection-controller-messenger';
+export type {
+  TokenListControllerMessenger,
+  TokenListControllerInitMessenger,
+} from './token-list-controller-messenger';
+export {
+  getTokenListControllerMessenger,
+  getTokenListControllerInitMessenger,
+} from './token-list-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -171,6 +195,14 @@ export const CONTROLLER_MESSENGERS = {
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
+  },
+  TokenDetectionController: {
+    getMessenger: getTokenDetectionControllerMessenger,
+    getInitMessenger: getTokenDetectionControllerInitMessenger,
+  },
+  TokenListController: {
+    getMessenger: getTokenListControllerMessenger,
+    getInitMessenger: getTokenListControllerInitMessenger,
   },
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,

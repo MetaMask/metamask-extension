@@ -2,8 +2,6 @@ import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import {
   CurrencyRateController,
-  TokenDetectionController,
-  TokenListController,
   TokensController,
   RatesController,
   fetchMultiExchangeRate,
@@ -439,6 +437,8 @@ import { GatorPermissionsControllerInit } from './controller-init/gator-permissi
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
+import { TokenListControllerInit } from './controller-init/token-list-controller-init';
+import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -846,23 +846,6 @@ export default class MetamaskController extends EventEmitter {
         ...initState.PreferencesController,
       },
       messenger: preferencesMessenger,
-    });
-
-    const tokenListMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenListController',
-      allowedActions: ['NetworkController:getNetworkClientById'],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-
-    this.tokenListController = new TokenListController({
-      chainId: this.#getGlobalChainId({
-        metamask: this.networkController.state,
-      }),
-      preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
-        this.preferencesController.state,
-      ),
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
     });
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
@@ -1394,50 +1377,6 @@ export default class MetamaskController extends EventEmitter {
       }, this.onboardingController.state),
     );
 
-    const tokenDetectionControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'TokenDetectionController',
-        allowedActions: [
-          'AccountsController:getAccount',
-          'AccountsController:getSelectedAccount',
-          'KeyringController:getState',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getNetworkConfigurationByNetworkClientId',
-          'NetworkController:getState',
-          'PreferencesController:getState',
-          'TokenListController:getState',
-          'TokensController:getState',
-          'TokensController:addDetectedTokens',
-          'TokensController:addTokens',
-          'NetworkController:findNetworkClientIdByChainId',
-        ],
-        allowedEvents: [
-          'AccountsController:selectedEvmAccountChange',
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'NetworkController:networkDidChange',
-          'PreferencesController:stateChange',
-          'TokenListController:stateChange',
-          'TransactionController:transactionConfirmed',
-        ],
-      });
-
-    this.tokenDetectionController = new TokenDetectionController({
-      messenger: tokenDetectionControllerMessenger,
-      getBalancesInSingleCall: (...args) =>
-        this.assetsContractController.getBalancesInSingleCall(...args),
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
-      useAccountsAPI: true,
-      platform: 'extension',
-      useTokenDetection: () =>
-        this.preferencesController.state.useTokenDetection,
-      useExternalServices: () =>
-        this.preferencesController.state.useExternalServices,
-    });
-
     const addressBookControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'AddressBookController',
@@ -1932,6 +1871,8 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
+      TokenListController: TokenListControllerInit,
+      TokenDetectionController: TokenDetectionControllerInit,
       TokenRatesController: TokenRatesControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
@@ -1998,6 +1939,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainAssetsRatesController;
     this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
+    this.tokenListController = controllersByName.TokenListController;
+    this.tokenDetectionController = controllersByName.TokenDetectionController;
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
@@ -2763,11 +2706,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      previousValueComparator(async (prevState, currState) => {
+      previousValueComparator(async (_, currState) => {
         const { currentLocale } = currState;
 
         await updateCurrentLocale(currentLocale);
-        this.#checkTokenListPolling(currState, prevState);
       }, this.preferencesController.state),
     );
 
@@ -9462,26 +9404,6 @@ export default class MetamaskController extends EventEmitter {
         createIfMissing: true,
       },
     );
-  }
-
-  #checkTokenListPolling(currentState, previousState) {
-    const previousEnabled = this.#isTokenListPollingRequired(previousState);
-    const newEnabled = this.#isTokenListPollingRequired(currentState);
-
-    if (previousEnabled === newEnabled) {
-      return;
-    }
-
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
-  }
-
-  #isTokenListPollingRequired(preferencesControllerState) {
-    const { useTokenDetection, useTransactionSimulations, preferences } =
-      preferencesControllerState ?? {};
-
-    const { petnamesEnabled } = preferences ?? {};
-
-    return useTokenDetection || petnamesEnabled || useTransactionSimulations;
   }
 
   /**
