@@ -9,6 +9,8 @@ import {
 } from '@playwright/test';
 import { mean } from 'lodash';
 import { DAPP_URL } from '../../constants';
+import FixtureServer from '../../fixture-server';
+import { Anvil } from '../../seeder/anvil';
 
 declare global {
   /**
@@ -224,6 +226,11 @@ export class PageLoadBenchmark {
   /** Dapp server process running in background */
   private dappServerProcess: ChildProcess | undefined;
 
+  /** Fixture server for managing wallet state */
+  private fixtureServer: FixtureServer;
+
+  private localNode: Anvil | undefined;
+
   private readonly userDataDirectory = 'temp-benchmark-user-data';
 
   /**
@@ -233,6 +240,7 @@ export class PageLoadBenchmark {
    */
   constructor(extensionPath: string) {
     this.extensionPath = extensionPath;
+    this.fixtureServer = new FixtureServer();
   }
 
   /**
@@ -240,10 +248,12 @@ export class PageLoadBenchmark {
    * Builds the extension if needed, launches browser with optimized settings,
    * and waits for the extension to fully load.
    *
+   * @param fixtures - Wallet state.
    * @throws {Error} If browser or context initialization fails
    */
-  async setup() {
+  async setup(fixtures?: unknown) {
     await this.buildExtension();
+    await this.startFixtureServer(fixtures);
     await this.createStaticDappServer();
 
     const userDataDir = path.join(process.cwd(), this.userDataDirectory);
@@ -272,6 +282,19 @@ export class PageLoadBenchmark {
     this.browser = browser;
 
     await this.waitForExtensionLoad();
+  }
+
+  /**
+   * Starts up local blockchain node and fixture server for wallet state management.
+   *
+   * @param fixtures - Wallet state.
+   */
+  private async startFixtureServer(fixtures: unknown = {}) {
+    this.localNode = new Anvil();
+    await this.localNode.start();
+    this.fixtureServer = new FixtureServer();
+    await this.fixtureServer.start();
+    this.fixtureServer.loadJsonState(fixtures);
   }
 
   /**
@@ -916,12 +939,22 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Shuts down local node if it's running.
+   */
+  private async shutdownLocalNode() {
+    if (this.localNode) {
+      await this.localNode.quit();
+    }
+  }
+
+  /**
    * Cleans up browser resources and closes all connections.
    * Should be called after benchmark testing is complete to free up system resources.
    */
   async cleanup() {
     await this.context?.close();
     await this.browser?.close();
+    await this.shutdownLocalNode();
     this.stopDappServer();
 
     // Clean up temporary user data directory

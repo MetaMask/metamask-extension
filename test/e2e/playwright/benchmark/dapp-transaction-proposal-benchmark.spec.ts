@@ -2,7 +2,7 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { test as pwTest, expect } from '@playwright/test';
 import { PageLoadBenchmark } from '../../page-objects/benchmark/page-load-benchmark';
-import { DAPP_URL } from '../../constants';
+import FixtureBuilder from '../../fixture-builder';
 
 pwTest.describe('Wallet Pop Open Time on Dapp Transaction Proposal', () => {
   let benchmark: PageLoadBenchmark;
@@ -17,7 +17,10 @@ pwTest.describe('Wallet Pop Open Time on Dapp Transaction Proposal', () => {
     });
     const extensionPath = path.join(process.cwd(), 'dist', 'chrome');
     benchmark = new PageLoadBenchmark(extensionPath);
-    await benchmark.setup();
+    const fixtures = new FixtureBuilder()
+      .withPermissionControllerConnectedToTestDapp()
+      .build();
+    await benchmark.setup(fixtures);
   });
 
   pwTest.afterAll(async () => {
