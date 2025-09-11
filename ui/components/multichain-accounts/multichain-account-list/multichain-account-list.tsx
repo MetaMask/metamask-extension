@@ -133,10 +133,10 @@ export const MultichainAccountList = ({
       if (enabledNetworks.length === 1) {
         const chainId = enabledNetworks[0];
 
-        if (chainId === SolScope.Mainnet || chainId === BtcScope.Mainnet) {
-          if (!solAccountGroup || !btcAccountGroup) {
-            dispatch(enableAllPopularNetworks());
-          }
+        if (chainId === SolScope.Mainnet && !solAccountGroup) {
+          dispatch(enableAllPopularNetworks());
+        } else if (chainId === BtcScope.Mainnet && !btcAccountGroup) {
+          dispatch(enableAllPopularNetworks());
         }
       }
 
