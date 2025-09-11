@@ -1926,9 +1926,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Receive at"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Receiving address or ENS"
   },
