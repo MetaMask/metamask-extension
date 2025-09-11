@@ -3471,9 +3471,12 @@ export default class MetamaskController extends EventEmitter {
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
+      // @deprecated Use setAvatarType instead
       setUseBlockie: preferencesController.setUseBlockie.bind(
         preferencesController,
       ),
+      setAvatarType: (avatarType) =>
+        preferencesController.setPreference('avatarType', avatarType),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
