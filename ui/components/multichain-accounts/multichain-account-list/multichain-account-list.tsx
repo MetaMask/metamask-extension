@@ -235,6 +235,9 @@ export const MultichainAccountList = ({
     displayWalletHeader,
     selectedAccountGroupsSet,
     enabledNetworks,
+    solAccountGroup,
+    btcAccountGroup,
+    handleAccountRenameAction,
   ]);
 
   return (

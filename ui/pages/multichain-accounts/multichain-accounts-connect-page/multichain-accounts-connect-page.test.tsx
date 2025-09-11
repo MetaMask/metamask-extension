@@ -75,6 +75,14 @@ jest.mock('../../../selectors/multichain', () => ({
   }),
 }));
 
+jest.mock('../../../store/controller-actions/network-order-controller', () => ({
+  enableAllPopularNetworks: jest.fn().mockImplementation(() => {
+    return async function () {
+      await Promise.resolve();
+    };
+  }),
+}));
+
 const mockTestDappUrl = 'https://test.dapp';
 
 const mockTargetSubjectMetadata = {
@@ -89,11 +97,15 @@ const mockAccountTreeState = {
   wallets: {
     'test-wallet-1': {
       id: 'test-wallet-1',
-      name: 'Test Wallet',
-      accountGroups: {
+      metadata: {
+        name: 'Test Wallet',
+      },
+      groups: {
         'test-group-1': {
           id: 'test-group-1',
-          name: 'Test Account Group 1',
+          metadata: {
+            name: 'Test Account Group 1',
+          },
           accounts: ['test-account-1'],
         },
       },
@@ -213,6 +225,18 @@ const render = (
         chainId: 'eip155:1',
         name: 'Ethereum Mainnet',
         nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+      },
+      multichainNetworks: {
+        'eip155:1': {
+          chainId: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+        },
+      },
+      enabledNetworkMap: {
+        eip155: { '0x1': true },
+        solana: {},
+        bip122: {},
       },
     },
     activeTab: {

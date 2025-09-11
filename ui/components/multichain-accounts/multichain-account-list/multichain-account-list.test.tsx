@@ -457,4 +457,144 @@ describe('MultichainAccountList', () => {
     // Verify that enableAllPopularNetworks was NOT called
     expect(mockEnableAllPopularNetworks).not.toHaveBeenCalled();
   });
+
+  it('calls enableAllPopularNetworks when only Solana mainnet is enabled and no Solana account group exists', () => {
+    const solanaOnlyState = {
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        multichainNetworks: {
+          'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            name: 'Solana Mainnet',
+          },
+        },
+        enabledNetworkMap: {
+          eip155: {},
+          solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
+        },
+        preferences: {
+          ...mockDefaultState.metamask.preferences,
+          useMultiAccountBalanceChecker: true,
+        },
+      },
+    };
+
+    const store = configureStore(solanaOnlyState);
+    renderWithProvider(<MultichainAccountList {...defaultProps} />, store);
+
+    // Find and click the second account cell (wallet two)
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    accountCell.click();
+
+    // Verify that enableAllPopularNetworks WAS called
+    expect(mockEnableAllPopularNetworks).toHaveBeenCalled();
+  });
+
+  it('calls enableAllPopularNetworks when only Bitcoin mainnet is enabled and no Bitcoin account group exists', () => {
+    const btcOnlyState = {
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        multichainNetworks: {
+          'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
+          'bip122:000000000019d6689c085ae165831e93': {
+            chainId: 'bip122:000000000019d6689c085ae165831e93',
+            name: 'Bitcoin Mainnet',
+          },
+        },
+        enabledNetworkMap: {
+          eip155: {},
+          bip122: { 'bip122:000000000019d6689c085ae165831e93': true },
+        },
+        preferences: {
+          ...mockDefaultState.metamask.preferences,
+          useMultiAccountBalanceChecker: true,
+        },
+      },
+    };
+
+    const store = configureStore(btcOnlyState);
+    renderWithProvider(<MultichainAccountList {...defaultProps} />, store);
+
+    // Find and click the second account cell (wallet two)
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    accountCell.click();
+
+    // Verify that enableAllPopularNetworks WAS called
+    expect(mockEnableAllPopularNetworks).toHaveBeenCalled();
+  });
+
+  it('does not call enableAllPopularNetworks when only Solana mainnet is enabled but Solana account group exists', () => {
+    const solanaOnlyStateWithSolAccountGroup = {
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        multichainNetworks: {
+          'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            name: 'Solana Mainnet',
+          },
+        },
+        enabledNetworkMap: {
+          eip155: {},
+          solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
+        },
+        preferences: {
+          ...mockDefaultState.metamask.preferences,
+          useMultiAccountBalanceChecker: true,
+        },
+        // Mock having a Solana account in the selected account group
+        accountsByAccountGroupId: {
+          // @ts-expect-error - accountsByAccountGroupId is not in the type, but needed for test
+          ...mockDefaultState.metamask.accountsByAccountGroupId,
+          [walletOneGroupId]: [
+            // @ts-expect-error - accountsByAccountGroupId is not in the type, but needed for test
+            ...(mockDefaultState.metamask.accountsByAccountGroupId?.[
+              walletOneGroupId
+            ] || []),
+            'sol-account-id',
+          ],
+        },
+        internalAccounts: {
+          ...mockDefaultState.metamask.internalAccounts,
+          accounts: {
+            ...mockDefaultState.metamask.internalAccounts.accounts,
+            'sol-account-id': {
+              id: 'sol-account-id',
+              type: 'eip155:eoa',
+              options: {},
+              methods: [],
+              metadata: {
+                name: 'Solana Account',
+                keyring: { type: 'HD Key Tree' },
+                snap: undefined,
+                accountGroupId: walletOneGroupId,
+                caip: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                lastSelected: 1234567890,
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const store = configureStore(solanaOnlyStateWithSolAccountGroup);
+    renderWithProvider(<MultichainAccountList {...defaultProps} />, store);
+
+    // Find and click the second account cell (wallet two)
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    accountCell.click();
+
+    // Verify that enableAllPopularNetworks was NOT called since Solana account group exists
+    expect(mockEnableAllPopularNetworks).not.toHaveBeenCalled();
+  });
 });
