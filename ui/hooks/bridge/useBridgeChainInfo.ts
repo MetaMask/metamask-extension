@@ -3,12 +3,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { type Transaction } from '@metamask/keyring-api';
-import { type CaipChainId } from '@metamask/utils';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
   getNativeAssetForChainId,
   isSolanaChainId,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
@@ -16,18 +16,8 @@ import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import {
   SOLANA_BLOCK_EXPLORER_URL,
-  MultichainNetworks,
   BITCOIN_BLOCK_EXPLORER_URL,
 } from '../../../shared/constants/multichain/networks';
-
-// Helper function to check if a chain is Bitcoin
-const isBitcoinChainId = (chainId: string | number | CaipChainId) => {
-  return [
-    MultichainNetworks.BITCOIN,
-    MultichainNetworks.BITCOIN_TESTNET,
-    MultichainNetworks.BITCOIN_SIGNET,
-  ].includes(String(chainId) as MultichainNetworks);
-};
 
 const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
   const { srcChainId, destChainId } = quote;

@@ -4,6 +4,7 @@ import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
+  isBitcoinChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
@@ -34,20 +35,8 @@ import type {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
-import {
-  MULTICHAIN_TOKEN_IMAGE_MAP,
-  MultichainNetworks,
-} from '../../../shared/constants/multichain/networks';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
-
-// Helper function to check if a chain is Bitcoin
-const isBitcoinChainId = (chainId: ChainId | Hex | CaipChainId) => {
-  return [
-    MultichainNetworks.BITCOIN,
-    MultichainNetworks.BITCOIN_TESTNET,
-    MultichainNetworks.BITCOIN_SIGNET,
-  ].includes(chainId as MultichainNetworks);
-};
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
