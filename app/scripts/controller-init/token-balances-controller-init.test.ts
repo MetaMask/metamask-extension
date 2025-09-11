@@ -1,5 +1,6 @@
 import { Messenger, ActionConstraint } from '@metamask/base-controller';
 import { TokenBalancesController } from '@metamask/assets-controllers';
+import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -9,9 +10,6 @@ import {
   TokenBalancesControllerMessenger,
 } from './messengers';
 import { TokenBalancesControllerInit } from './token-balances-controller-init';
-import {
-  PreferencesControllerGetStateAction
-} from '../controllers/preferences-controller';
 
 jest.mock('@metamask/assets-controllers');
 
@@ -22,8 +20,7 @@ function getInitRequestMock(): jest.Mocked<
   >
 > {
   const baseMessenger = new Messenger<
-    | PreferencesControllerGetStateAction
-    | ActionConstraint,
+    PreferencesControllerGetStateAction | ActionConstraint,
     never
   >();
 
