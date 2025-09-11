@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Dampak Harga"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Dampak harga mencerminkan bagaimana order swap memengaruhi harga pasar aset. Jika Anda tidak memiliki cukup dana untuk gas, sebagian token sumber akan dialokasikan secara otomatis untuk menutupi biaya, yang akan mengurangi jumlah yang ditukar. MetaMask tidak memengaruhi atau mengontrol dampak harga."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Dampak harga mencerminkan bagaimana order swap memengaruhi harga pasar aset. Hal ini bergantung pada ukuran perdagangan dan likuiditas yang tersedia di pul. MetaMask tidak memengaruhi atau mengontrol dampak harga."
   },
@@ -2708,12 +2705,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howQuotesWork": {
-    "message": "Cara kerja kuotasi"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Kuotasi ini memiliki laba terbaik dari kuotasi yang kami cari. Ini berdasarkan pada nilai tukar, yang mencakup biaya bridge dan biaya MetaMask sebesar $1%, dikurangi biaya gas. Biaya gas bergantung pada seberapa sibuk jaringan dan seberapa rumit transaksinya."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,15 +3374,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Anda menambahkan jaringan ini ke MetaMask dan memberikan situs ini izin untuk menggunakannya."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridge"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Kuotasi"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Waktu"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 ingin menggunakan Snap $2",
@@ -7234,9 +7216,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Ini akan menyetujui $1 untuk bridge."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Anda perlu mengonfirmasikan dua transaksi pada dompet perangkat keras."
   },
   "willApproveAmountForSwapping": {
     "message": "Ini akan menyetujui $1 untuk pertukaran."
