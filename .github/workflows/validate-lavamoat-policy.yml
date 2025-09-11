@@ -77,7 +77,7 @@ jobs:
           yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Validate lavamoat webpack policy
-        run: yarn webpack --env production --generatePolicy --no-cache
+        run: yarn webpack --snow --sentry --lavamoat --no-cache --generatePolicy
         env:
           INFURA_PROD_PROJECT_ID: 00000000000
           SEGMENT_PROD_WRITE_KEY: 00000000000
