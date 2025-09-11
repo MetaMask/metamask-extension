@@ -62,7 +62,7 @@ export const Amount = () => {
       const fractionSize = getFractionLength(newValue);
       if (
         (fiatMode && fractionSize > 2) ||
-        fractionSize > (asset?.decimals ?? 0)
+        (!fiatMode && fractionSize > (asset?.decimals ?? 0))
       ) {
         return;
       }
