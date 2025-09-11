@@ -2094,7 +2094,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
-      MultichainRatesController: this.ratesController,
+      MultichainRatesController: this.multichainRatesController,
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
       // Notification Controllers
