@@ -62,8 +62,10 @@ import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import {
   getTypoDetectionEnabled,
   getDomainDropCatchingDetectionEnabled,
+  getAddressPoisoningDetectionEnabled,
   setTypoDetectionEnabled,
   setDomainDropCatchingDetectionEnabled,
+  setAddressPoisoningDetectionEnabled,
 } from '../../../ducks/domains';
 import MetametricsToggle from './metametrics-toggle';
 import ProfileSyncToggle from './profile-sync-toggle';
@@ -120,6 +122,8 @@ class SecurityTab extends PureComponent {
     setTypoDetectionEnabled: PropTypes.func.isRequired,
     domainDropCatchingDetectionEnabled: PropTypes.bool.isRequired,
     setDomainDropCatchingDetectionEnabled: PropTypes.func.isRequired,
+    addressPoisoningDetectionEnabled: PropTypes.bool.isRequired,
+    setAddressPoisoningDetectionEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -409,6 +413,51 @@ class SecurityTab extends PureComponent {
                 MetaMetricsEventName.DomainDropCatchingDetectionToggled,
                 value ? 'enabled' : 'disabled',
                 this.props.setDomainDropCatchingDetectionEnabled,
+              )
+            }
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderAddressPoisoningDetectionToggle() {
+    const { t } = this.context;
+    const { addressPoisoningDetectionEnabled } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        marginBottom={4}
+      >
+        <div className="settings-page__content-item">
+          <Text variant={TextVariant.bodyMd}>
+            {t('useAddressPoisoningDetection')}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            as="p"
+            marginTop={1}
+          >
+            {t('useAddressPoisoningDetectionDescription')}
+          </Text>
+        </div>
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={addressPoisoningDetectionEnabled}
+            onToggle={(value) =>
+              this.toggleSetting(
+                value,
+                MetaMetricsEventName.AddressPoisoningDetectionToggled,
+                value ? 'enabled' : 'disabled',
+                this.props.setAddressPoisoningDetectionEnabled,
               )
             }
             offLabel={t('off')}
@@ -1275,6 +1324,7 @@ class SecurityTab extends PureComponent {
           {this.renderPhishingDetectionToggle()}
           {this.renderTypoDetectionToggle()}
           {this.renderDomainDropCatchingDetectionToggle()}
+          {this.renderAddressPoisoningDetectionToggle()}
         </div>
 
         <div>
@@ -1348,6 +1398,7 @@ const mapStateToProps = (state) => ({
   typoDetectionEnabled: getTypoDetectionEnabled(state),
   domainDropCatchingDetectionEnabled:
     getDomainDropCatchingDetectionEnabled(state),
+  addressPoisoningDetectionEnabled: getAddressPoisoningDetectionEnabled(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1355,6 +1406,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setTypoDetectionEnabled(enabled)),
   setDomainDropCatchingDetectionEnabled: (enabled) =>
     dispatch(setDomainDropCatchingDetectionEnabled(enabled)),
+  setAddressPoisoningDetectionEnabled: (enabled) =>
+    dispatch(setAddressPoisoningDetectionEnabled(enabled)),
 });
 
 const SecurityTabComponent = compose(

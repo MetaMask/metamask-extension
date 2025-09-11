@@ -5,6 +5,7 @@ import {
   getChainIdsCaveat,
   getLookupMatchersCaveat,
 } from '@metamask/snaps-rpc-methods';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   getAddressBookEntry,
   getNameLookupSnapsIds,
@@ -29,8 +30,10 @@ const initialState = {
   domainName: null,
   typoWarning: null,
   domainDropCatchingWarning: null,
+  addressPoisoningWarning: null,
   typoDetectionEnabled: true,
   domainDropCatchingDetectionEnabled: true,
+  addressPoisoningDetectionEnabled: true,
 };
 
 export const domainInitialState = initialState;
@@ -47,6 +50,7 @@ const slice = createSlice({
       state.error = null;
       state.typoWarning = null;
       state.domainDropCatchingWarning = null;
+      state.addressPoisoningWarning = null;
       state.resolutions = null;
     },
     lookupEnd: (state, action) => {
@@ -57,6 +61,7 @@ const slice = createSlice({
       state.domainName = null;
       state.typoWarning = null;
       state.domainDropCatchingWarning = null;
+      state.addressPoisoningWarning = null;
       const { resolutions, domainName } = action.payload;
       const filteredResolutions = resolutions.filter((resolution) => {
         return (
@@ -77,6 +82,9 @@ const slice = createSlice({
         state.domainDropCatchingWarning =
           action.payload.domainDropCatchingWarning;
       }
+      if (action.payload.addressPoisoningWarning) {
+        state.addressPoisoningWarning = action.payload.addressPoisoningWarning;
+      }
     },
     enableDomainLookup: (state, action) => {
       state.stage = 'INITIALIZED';
@@ -91,12 +99,16 @@ const slice = createSlice({
       state.error = null;
       state.typoWarning = null;
       state.domainDropCatchingWarning = null;
+      state.addressPoisoningWarning = null;
     },
     setTypoDetectionEnabled: (state, action) => {
       state.typoDetectionEnabled = action.payload;
     },
     setDomainDropCatchingDetectionEnabled: (state, action) => {
       state.domainDropCatchingDetectionEnabled = action.payload;
+    },
+    setAddressPoisoningDetectionEnabled: (state, action) => {
+      state.addressPoisoningDetectionEnabled = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -118,20 +130,162 @@ const {
   resetDomainResolution,
   setTypoDetectionEnabled,
   setDomainDropCatchingDetectionEnabled,
+  setAddressPoisoningDetectionEnabled,
 } = actions;
 
 export {
   resetDomainResolution,
   setTypoDetectionEnabled,
   setDomainDropCatchingDetectionEnabled,
+  setAddressPoisoningDetectionEnabled,
 };
 
-export function initializeDomainSlice() {
-  return (dispatch, getState) => {
-    const state = getState();
-    const chainId = getCurrentChainId(state);
-    dispatch(enableDomainLookup(chainId));
-  };
+// Export our helper functions so they can be used directly in other components
+export function checkForAddressPoisoning(
+  address,
+  addressPoisoningDetectionEnabled,
+  transactions = [],
+  internalAccounts = {},
+) {
+  if (!address || !addressPoisoningDetectionEnabled) {
+    return null;
+  }
+
+  try {
+    // If the address isn't provided or there are no transactions, exit early
+    if (!address || transactions.length === 0) {
+      return null;
+    }
+
+    // Check if this is one of the user's own addresses
+    if (
+      internalAccounts &&
+      Object.values(internalAccounts).some(
+        (account) =>
+          account.address &&
+          account.address.toLowerCase() === address.toLowerCase(),
+      )
+    ) {
+      return null; // Don't show warnings for user's own addresses
+    }
+
+    // The normalized address for consistent comparison
+    const normalizedAddress = address.toLowerCase();
+
+    // Create sets of addresses the user has sent to and received from
+    const sentToAddresses = new Set(
+      transactions
+        .filter(
+          (tx) =>
+            tx.status === TransactionStatus.confirmed &&
+            tx.type !== 'incoming' && // Outgoing transactions
+            tx.txParams?.to,
+        )
+        .map((tx) => tx.txParams.to.toLowerCase()),
+    );
+
+    const receivedFromAddresses = new Set(
+      transactions
+        .filter(
+          (tx) =>
+            tx.status === TransactionStatus.confirmed &&
+            tx.type === 'incoming' && // Incoming transactions
+            tx.txParams?.from,
+        )
+        .map((tx) => tx.txParams.from.toLowerCase()),
+    );
+
+    // CONDITION 1: Check if this is an address the user has received from but never sent to
+    if (
+      receivedFromAddresses.has(normalizedAddress) &&
+      !sentToAddresses.has(normalizedAddress)
+    ) {
+      // The user has received funds from this address but never sent to it,
+      // so it's likely safe and not a poisoning attack
+      return null;
+    }
+
+    // If we've sent to this exact address before, it's safe
+    if (sentToAddresses.has(normalizedAddress)) {
+      return null;
+    }
+
+    // CONDITION 2: Check for similarity to addresses the user has sent to before
+    const ADDRESS_SIMILARITY_THRESHOLD = 5; // Levenshtein distance threshold
+
+    // Convert the set to an array for iteration
+    const sentAddressesArray = Array.from(sentToAddresses);
+
+    for (const historicAddress of sentAddressesArray) {
+      // Skip the 0x prefix for comparison
+      const addressWithout0x = normalizedAddress.slice(2);
+      const historicWithout0x = historicAddress.slice(2);
+
+      // Check similarity in prefix (first 8 characters)
+      const prefixLength = 8;
+      const addressPrefix = addressWithout0x.slice(0, prefixLength);
+      const historicPrefix = historicWithout0x.slice(0, prefixLength);
+
+      const prefixDistance = levenshteinTwoMatrixRows(
+        addressPrefix,
+        historicPrefix,
+      );
+
+      // Check similarity in suffix (last 8 characters)
+      const suffixLength = 8;
+      const addressSuffix = addressWithout0x.slice(-suffixLength);
+      const historicSuffix = historicWithout0x.slice(-suffixLength);
+
+      const suffixDistance = levenshteinTwoMatrixRows(
+        addressSuffix,
+        historicSuffix,
+      );
+
+      // If either prefix or suffix is very similar but not identical, it might be poisoning
+      if (
+        (prefixDistance > 0 &&
+          prefixDistance <= ADDRESS_SIMILARITY_THRESHOLD) ||
+        (suffixDistance > 0 && suffixDistance <= ADDRESS_SIMILARITY_THRESHOLD)
+      ) {
+        return {
+          warning: 'Address poisoning attack warning',
+          message: `This address is similar to one you've sent to before, but not identical. This could be an address poisoning attempt. Verify that you're sending to the correct address.`,
+          similarAddress: historicAddress,
+        };
+      }
+
+      // Also check for similarity in chunks as a backup detection method
+      const chunks = 8; // Number of chunks to divide the address into
+      const chunkSize = Math.floor(addressWithout0x.length / chunks);
+
+      for (let i = 0; i < chunks; i++) {
+        const startPos = i * chunkSize;
+        const addressChunk = addressWithout0x.slice(
+          startPos,
+          startPos + chunkSize,
+        );
+        const historicChunk = historicWithout0x.slice(
+          startPos,
+          startPos + chunkSize,
+        );
+
+        const distance = levenshteinTwoMatrixRows(addressChunk, historicChunk);
+
+        // If any chunk is very similar but not identical, it might be poisoning
+        if (distance > 0 && distance <= ADDRESS_SIMILARITY_THRESHOLD) {
+          return {
+            warning: 'Address poisoning attack warning',
+            message: `This address is similar to one you've sent to before, but not identical. This could be an address poisoning attempt. Verify that you're sending to the correct address.`,
+            similarAddress: historicAddress,
+          };
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Error checking for address poisoning:', e);
+  }
+
+  return null;
 }
 
 export async function fetchResolutions({ domain, chainId, state }) {
@@ -313,6 +467,7 @@ export function lookupDomainName(domainName) {
     let error;
     let typoWarning = null;
     let domainDropCatchingWarning = null;
+    const addressPoisoningWarning = null;
 
     const currentChainHex = getCurrentChainId(state);
     const chainInt = parseInt(currentChainHex, 16);
@@ -351,6 +506,7 @@ export function lookupDomainName(domainName) {
         error,
         typoWarning,
         domainDropCatchingWarning,
+        addressPoisoningWarning,
       }),
     );
   };
@@ -382,4 +538,20 @@ export function getDomainDropCatchingWarning(state) {
 
 export function getDomainDropCatchingDetectionEnabled(state) {
   return state[name].domainDropCatchingDetectionEnabled;
+}
+
+export function getAddressPoisoningWarning(state) {
+  return state[name].addressPoisoningWarning;
+}
+
+export function getAddressPoisoningDetectionEnabled(state) {
+  return state[name].addressPoisoningDetectionEnabled;
+}
+
+export function initializeDomainSlice() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const chainId = getCurrentChainId(state);
+    dispatch(enableDomainLookup(chainId));
+  };
 }

@@ -1,4 +1,8 @@
 {
+  "AddressPoisoningDetectionToggled": {
+    "message": "Address Poisoning Detection Toggled",
+    "description": "Metrics event name when address poisoning detection is toggled"
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -4262,7 +4266,7 @@
     "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
   },
   "resetWalletUsingSRP": {
-    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
+    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens that you’ve added to an account will need to be $3 as well."
   },
   "resetWalletWarning": {
     "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
@@ -6122,6 +6126,14 @@
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
+  },
+  "useAddressPoisoningDetection": {
+    "message": "Address Poisoning Detection",
+    "description": "Toggle option in the Security tab settings"
+  },
+  "useAddressPoisoningDetectionDescription": {
+    "message": "Warns you when sending to an address that looks suspiciously similar to addresses you've previously sent to.",
+    "description": "Description of the Address Poisoning Detection feature"
   },
   "useDomainDropCatchingDetection": {
     "message": "Use domain drop catching detection"

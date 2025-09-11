@@ -38,6 +38,8 @@ import {
   updateSendAmount,
   updateSendAsset,
 } from '../../../../ducks/send';
+import { getTransactions } from '../../../../selectors/transactions';
+import { getInternalAccounts } from '../../../../selectors/accounts';
 import {
   TokenStandard,
   AssetType,
@@ -61,7 +63,11 @@ import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
-import { getDomainResolutions } from '../../../../ducks/domains';
+import {
+  getDomainResolutions,
+  checkForAddressPoisoning,
+  getAddressPoisoningDetectionEnabled,
+} from '../../../../ducks/domains';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -277,6 +283,12 @@ export const SendPage = () => {
   }, [trackEvent, swapQuotesError]);
 
   const domainResolutions = useSelector(getDomainResolutions);
+  const recipient = useSelector(getRecipient);
+  const addressPoisoningDetectionEnabled = useSelector(
+    getAddressPoisoningDetectionEnabled,
+  );
+  const transactions = useSelector(getTransactions);
+  const internalAccounts = useSelector(getInternalAccounts);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -342,7 +354,39 @@ export const SendPage = () => {
         );
       });
 
+      // Check for address poisoning using transaction history from selectors
+      const recipientAddress = recipient.address;
+
+      const addressPoisoningWarning = checkForAddressPoisoning(
+        recipientAddress,
+        addressPoisoningDetectionEnabled,
+        transactions,
+        internalAccounts,
+      );
+
+      if (addressPoisoningWarning) {
+        setIsSubmitting(false);
+        return;
+      }
+
       await dispatch(signTransaction(history));
+
+      // If transaction is successful, store the recipient address in transaction history
+      try {
+        const transactionAddresses = JSON.parse(
+          window.localStorage.getItem('transactionAddresses') || '[]',
+        );
+
+        if (!transactionAddresses.includes(recipientAddress)) {
+          transactionAddresses.push(recipientAddress);
+          window.localStorage.setItem(
+            'transactionAddresses',
+            JSON.stringify(transactionAddresses),
+          );
+        }
+      } catch (e) {
+        console.error('Error updating transaction addresses:', e);
+      }
 
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
@@ -364,7 +408,7 @@ export const SendPage = () => {
   };
 
   // Submit button
-  const recipient = useSelector(getRecipient);
+  // const recipient = useSelector(getRecipient);
   const showKnownRecipientWarning =
     recipient.warning === 'knownAddressRecipient';
   const recipientWarningAcknowledged = useSelector(
