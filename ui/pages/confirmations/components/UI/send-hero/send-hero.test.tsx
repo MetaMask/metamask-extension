@@ -211,11 +211,11 @@ describe('NFTHero', () => {
     expect(avatarNetwork).toHaveAttribute('data-src', mockNFT.networkImage);
   });
 
-  it('renders asset symbol', () => {
+  it('renders asset name', () => {
     const { getByTestId } = render(<SendHero asset={mockNFT} />);
 
     const text = getByTestId('text');
-    expect(text).toHaveTextContent(mockNFT.symbol);
+    expect(text).toHaveTextContent(mockNFT.name);
   });
 
   it('handles image error by hiding image', () => {

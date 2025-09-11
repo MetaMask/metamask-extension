@@ -20,29 +20,10 @@ import {
 } from '../../../../../helpers/constants/design-system';
 
 export const SendHero = ({ asset }: { asset: Asset }) => {
-  let component = null;
   if (asset?.standard && NFT_STANDARDS.includes(asset.standard)) {
-    component = <NFTHero asset={asset} />;
-  } else {
-    component = <TokenHero asset={asset} />;
+    return <NFTHero asset={asset} />;
   }
-
-  return <Wrapper>{component}</Wrapper>;
-};
-
-const Wrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      marginTop={6}
-      marginBottom={6}
-    >
-      {children}
-    </Box>
-  );
+  return <TokenHero asset={asset} />;
 };
 
 const NFTHero = ({ asset }: { asset: Asset }) => {
@@ -50,12 +31,22 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
   const { collection, name, image } = nftData;
 
   return (
-    <>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      marginTop={6}
+      marginBottom={6}
+    >
       <BadgeWrapper
+        style={{
+          alignSelf: 'center',
+        }}
         badge={
           nftData.chainId ? (
             <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
+              size={AvatarNetworkSize.Sm}
               name={nftData.networkName ?? ''}
               src={nftData.networkImage}
             />
@@ -84,11 +75,11 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
       <Text
         variant={TextVariant.bodyLgMedium}
         color={TextColor.textDefault}
-        marginLeft={2}
+        marginTop={2}
       >
-        {asset.symbol}
+        {asset.name || asset.collection?.name}
       </Text>
-    </>
+    </Box>
   );
 };
 
@@ -97,7 +88,14 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
   const { chainId, image, symbol } = tokenData;
 
   return (
-    <>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      marginTop={6}
+      marginBottom={6}
+    >
       <BadgeWrapper
         badge={
           chainId ? (
@@ -123,6 +121,6 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
       >
         {asset.symbol}
       </Text>
-    </>
+    </Box>
   );
 };
