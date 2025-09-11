@@ -119,6 +119,7 @@ export type ControllerFlatState = AccountsController['state'] &
   GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  MetaMetricsController['state'] &
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
