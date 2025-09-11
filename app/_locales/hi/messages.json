@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "कीमत का असर"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "कीमत का असर यह दर्शाता है कि आपका स्वैप ऑर्डर एसेट के मार्केट प्राइस को कैसे प्रभावित करता है। यदि आपके पास गैस के लिए पर्याप्त फंड नहीं हैं, तो आपके सोर्स टोकन का एक हिस्सा अपने आप ही शुल्क चुकाने के लिए आवंटित कर दिया जाता है, जिससे स्वैप की गई राशि कम हो जाएगी। MetaMask कीमत के असर को न तो प्रभावित करता है और न ही नियंत्रित करता है।"
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "कीमत का असर यह दर्शाता है कि आपका स्वैप ऑर्डर एसेट के मार्केट प्राइस को कैसे प्रभावित करता है। यह ट्रेड के आकार और पूल में उपलब्ध लिक्विडिटी पर निर्भर करता है। MetaMask कीमत के असर को न तो प्रभावित करता है और न ही नियंत्रित करता है।"
   },
@@ -2708,12 +2705,6 @@
   "honeypotTitle": {
     "message": "हनी पॉट"
   },
-  "howQuotesWork": {
-    "message": "कोट्स कैसे काम करते हैं"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "इस कोट में हमारे द्वारा ढूंढे गए कोट्स की तुलना में सबसे अच्छा रिटर्न है। यह स्वैप रेट पर आधारित है, जिसमें ब्रिजिंग शुल्क और $1% MetaMask शुल्क, गैस फीस घटाकर शामिल है। गैस फीस इस बात पर निर्भर करता है कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है।"
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,15 +3374,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "आप इस नेटवर्क को MetaMask में जोड़ रहे हैं और इस साइट को इसका उपयोग करने की अनुमति दे रहे हैं।"
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "ब्रिज किया जा रहा है"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "कोटेशन"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "समय"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
@@ -7234,9 +7216,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "यह ब्रिजिंग के लिए $1 एप्रूव करेगा।"
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "आपको अपने हार्डवेयर वॉलेट पर दो ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
   "willApproveAmountForSwapping": {
     "message": "स्वैपिंग के लिए यह $1 एप्रूव करेगा।"
