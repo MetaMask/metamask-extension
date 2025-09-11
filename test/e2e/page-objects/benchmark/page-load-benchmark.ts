@@ -1,7 +1,12 @@
 import { promises as fs } from 'fs';
 import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
-import { chromium, type BrowserContext, Browser } from '@playwright/test';
+import {
+  chromium,
+  type BrowserContext,
+  Browser,
+  type Page,
+} from '@playwright/test';
 import { mean } from 'lodash';
 import { DAPP_URL } from '../../constants';
 
@@ -78,6 +83,49 @@ export type BenchmarkMetrics = {
 };
 
 /**
+ * Performance metrics collected during transaction proposal benchmarking.
+ * All time values are in milliseconds unless otherwise specified.
+ */
+export type TransactionProposalMetrics = {
+  /**
+   * Time from transaction proposal initiation to MetaMask popup being fully visible and interactive.
+   * This is the main metric we're measuring for wallet pop open time.
+   */
+  popOpenTime: number;
+  /**
+   * Time from transaction proposal initiation to MetaMask popup window appearing.
+   * Measures how quickly the popup window becomes visible.
+   */
+  popupAppearTime: number;
+  /**
+   * Time from popup appearing to being fully interactive.
+   * Measures how quickly the popup becomes ready for user interaction.
+   */
+  popupInteractiveTime: number;
+  /**
+   * Memory usage statistics (optional, only available in Chrome).
+   * All values are in bytes.
+   */
+  memoryUsage?: {
+    /**
+     * Currently used JavaScript heap size.
+     * Represents the amount of memory actively used by JavaScript objects.
+     */
+    usedJSHeapSize: number;
+    /**
+     * Total allocated JavaScript heap size.
+     * The total amount of memory allocated for the JavaScript heap.
+     */
+    totalJSHeapSize: number;
+    /**
+     * Maximum JavaScript heap size limit.
+     * The maximum amount of memory that can be allocated for the JavaScript heap.
+     */
+    jsHeapSizeLimit: number;
+  };
+};
+
+/**
  * Individual benchmark measurement result for a single page load test.
  * Contains the raw performance metrics for one specific test run.
  */
@@ -88,6 +136,21 @@ export type BenchmarkResult = {
   run: number;
   /** Performance metrics collected during this test run */
   metrics: BenchmarkMetrics;
+  /** Timestamp when this measurement was taken */
+  timestamp: number;
+};
+
+/**
+ * Individual benchmark measurement result for a single transaction proposal test.
+ * Contains the raw performance metrics for one specific test run.
+ */
+export type TransactionProposalResult = {
+  /** Type of transaction proposal that was tested */
+  proposalType: string;
+  /** Sequential run number for this test iteration */
+  run: number;
+  /** Performance metrics collected during this test run */
+  metrics: TransactionProposalMetrics;
   /** Timestamp when this measurement was taken */
   timestamp: number;
 };
@@ -116,6 +179,29 @@ export type BenchmarkSummary = {
 };
 
 /**
+ * Statistical summary of transaction proposal benchmark results for a specific proposal type.
+ * Contains aggregated statistics across multiple test runs for performance analysis.
+ */
+export type TransactionProposalSummary = {
+  /** Type of transaction proposal that was tested */
+  proposalType: string;
+  /** Number of test samples collected for this proposal type */
+  samples: number;
+  /** Mean (average) values for each performance metric */
+  mean: Partial<TransactionProposalMetrics>;
+  /** 95th percentile values for each performance metric */
+  p95: Partial<TransactionProposalMetrics>;
+  /** 99th percentile values for each performance metric */
+  p99: Partial<TransactionProposalMetrics>;
+  /** Minimum values for each performance metric */
+  min: Partial<TransactionProposalMetrics>;
+  /** Maximum values for each performance metric */
+  max: Partial<TransactionProposalMetrics>;
+  /** Standard deviation values for each performance metric */
+  standardDeviation: Partial<TransactionProposalMetrics>;
+};
+
+/**
  * Main class for conducting page load performance benchmarks using Playwright.
  * Manages browser lifecycle, extension loading, and performance measurement collection.
  */
@@ -131,6 +217,9 @@ export class PageLoadBenchmark {
 
   /** Collection of all benchmark results from test runs */
   private results: BenchmarkResult[] = [];
+
+  /** Collection of all transaction proposal benchmark results from test runs */
+  private transactionProposalResults: TransactionProposalResult[] = [];
 
   /** Dapp server process running in background */
   private dappServerProcess: ChildProcess | undefined;
@@ -350,6 +439,181 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Measures performance metrics for a single transaction proposal.
+   * Navigates to the test dapp and measures the time from proposal initiation
+   * to when the extension responds (popup appears).
+   *
+   * @param proposalType - The type of transaction proposal to test (e.g., 'signTypedDataV4')
+   * @param runNumber - Sequential number identifying this test run
+   * @returns Promise resolving to the transaction proposal benchmark result
+   * @throws {Error} If browser context is not initialized or measurement fails
+   */
+  async measureTransactionProposal(
+    proposalType: string,
+    runNumber: number,
+  ): Promise<TransactionProposalResult> {
+    const dappPage = await this.context?.newPage();
+    if (!dappPage) {
+      throw new Error('Browser Context not initialized.');
+    }
+
+    try {
+      // Navigate to test dapp
+      await dappPage.goto(DAPP_URL, { waitUntil: 'networkidle' });
+      await dappPage.waitForLoadState('domcontentloaded');
+
+      // Wait for dapp to be ready
+      await dappPage.waitForSelector('#connectButton', { timeout: 10000 });
+
+      // Record start time for proposal initiation
+      const proposalStartTime = Date.now();
+
+      // Trigger the transaction proposal based on type
+      await this.triggerTransactionProposal(dappPage, proposalType);
+
+      // Wait for MetaMask popup to appear and measure timing
+      const metrics = await this.measurePopupTiming(proposalStartTime);
+
+      const result: TransactionProposalResult = {
+        proposalType,
+        run: runNumber,
+        metrics,
+        timestamp: new Date().getTime(),
+      };
+
+      this.transactionProposalResults.push(result);
+      return result;
+    } finally {
+      await dappPage.close();
+    }
+  }
+
+  /**
+   * Triggers a specific type of transaction proposal on the test dapp.
+   * This will trigger the extension to show a popup for the transaction proposal.
+   *
+   * @param dappPage - The Playwright page object for the test dapp
+   * @param proposalType - The type of transaction proposal to trigger
+   */
+  private async triggerTransactionProposal(
+    dappPage: Page,
+    proposalType: string,
+  ) {
+    // First, try to connect to trigger the extension
+    await dappPage.click('#connectButton');
+
+    // Wait a moment for the connection request to be processed
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Now trigger the specific transaction proposal
+    switch (proposalType) {
+      case 'signTypedDataV4':
+        await dappPage.click('#signTypedDataV4');
+        break;
+      case 'signTypedDataV3':
+        await dappPage.click('#signTypedDataV3');
+        break;
+      case 'signMessage':
+        await dappPage.click('#personalSign');
+        break;
+      case 'sendTransaction':
+        await dappPage.click('#sendButton');
+        break;
+      default:
+        throw new Error(`Unsupported proposal type: ${proposalType}`);
+    }
+  }
+
+  /**
+   * Waits for MetaMask popup to appear and measures timing metrics.
+   *
+   * @param proposalStartTime - The timestamp when the proposal was initiated
+   */
+  private async measurePopupTiming(
+    proposalStartTime: number,
+  ): Promise<TransactionProposalMetrics> {
+    // Wait for popup to appear
+    const popupAppearTime = await this.waitForPopup();
+    const popupAppearDuration = popupAppearTime - proposalStartTime;
+
+    // Get the popup page
+    const popup = await this.getMetaMaskPopup();
+    if (!popup) {
+      throw new Error('MetaMask popup not found');
+    }
+
+    // Wait for popup to be fully interactive
+    const interactiveStartTime = Date.now();
+    await popup.waitForLoadState('networkidle');
+    await popup.waitForSelector('[data-testid="page-container"]', {
+      timeout: 10000,
+    });
+    const interactiveEndTime = Date.now();
+    const popupInteractiveDuration = interactiveEndTime - interactiveStartTime;
+
+    // Calculate total pop open time
+    const popOpenTime = popupAppearDuration + popupInteractiveDuration;
+
+    // Collect memory usage if available
+    const memoryUsage = await popup.evaluate(() => {
+      return performance.memory
+        ? {
+            usedJSHeapSize: performance.memory.usedJSHeapSize,
+            totalJSHeapSize: performance.memory.totalJSHeapSize,
+            jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
+          }
+        : undefined;
+    });
+
+    return {
+      popOpenTime,
+      popupAppearTime: popupAppearDuration,
+      popupInteractiveTime: popupInteractiveDuration,
+      memoryUsage,
+    };
+  }
+
+  /**
+   * Waits for MetaMask popup to appear and returns the timestamp when it appears.
+   */
+  private async waitForPopup(): Promise<number> {
+    const maxWaitTime = 10000; // 10 seconds
+    const checkInterval = 100; // 100ms
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < maxWaitTime) {
+      const pages = (await this.context?.pages()) || [];
+      const popup = pages.find(
+        (page) =>
+          page.url().includes('chrome-extension://') &&
+          (page.url().includes('popup.html') ||
+            page.url().includes('notification.html')),
+      );
+
+      if (popup) {
+        return Date.now();
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, checkInterval));
+    }
+
+    throw new Error('MetaMask popup did not appear within timeout');
+  }
+
+  /**
+   * Gets the MetaMask popup page.
+   */
+  private async getMetaMaskPopup() {
+    const pages = (await this.context?.pages()) || [];
+    return pages.find(
+      (page) =>
+        page.url().includes('chrome-extension://') &&
+        (page.url().includes('popup.html') ||
+          page.url().includes('notification.html')),
+    );
+  }
+
+  /**
    * Executes the complete benchmark test suite across multiple browser loads and page loads.
    * Uses the persistent browser context to simulate real-world conditions,
    * and measures each URL multiple times to gather statistical data.
@@ -391,6 +655,51 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Executes the complete transaction proposal benchmark test suite.
+   * Creates fresh browser contexts for each browser load to simulate real-world conditions,
+   * and measures each proposal type multiple times to gather statistical data.
+   *
+   * @param proposalTypes - Array of transaction proposal types to test
+   * @param browserLoads - Number of fresh browser contexts to create (default: 10)
+   * @param proposalLoads - Number of proposal tests per browser context (default: 10)
+   */
+  async runTransactionProposalBenchmark(
+    proposalTypes: string[],
+    browserLoads: number = 10,
+    proposalLoads: number = 10,
+  ) {
+    console.log(
+      `Starting transaction proposal benchmark: ${browserLoads} browser loads, ${proposalLoads} proposal loads per browser`,
+    );
+
+    for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
+      console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
+      await this.waitForExtensionLoad();
+
+      for (const proposalType of proposalTypes) {
+        for (
+          let proposalLoad = 0;
+          proposalLoad < proposalLoads;
+          proposalLoad++
+        ) {
+          const runNumber = browserLoad * proposalLoads + proposalLoad;
+          console.log(
+            `  Measuring ${proposalType} (run ${runNumber + 1}/${browserLoads * proposalLoads})`,
+          );
+
+          await this.measureTransactionProposal(proposalType, runNumber);
+          /**
+           * To make sure page setup & teardown doesn't have unexpected results in the next measurement,
+           * we add a small delay between measurements.
+           */
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+      }
+      await this.clearBrowserData();
+    }
+  }
+
+  /**
    * Calculates comprehensive statistical summaries for all benchmark results.
    * Groups results by page URL and computes mean, percentiles, min/max, and standard deviation
    * for each performance metric across all test runs.
@@ -420,6 +729,68 @@ export class PageLoadBenchmark {
 
       const summary: BenchmarkSummary = {
         page,
+        samples: metrics.length,
+        mean: {},
+        p95: {},
+        p99: {},
+        min: {},
+        max: {},
+        standardDeviation: {},
+      };
+
+      for (const key of metricKeys) {
+        const values = metrics
+          .map((m) => m[key])
+          .filter((v) => typeof v === 'number') as number[];
+        if (values.length > 0) {
+          summary.mean[key] = mean(values);
+          summary.p95[key] = this.calculatePercentile(values, 95);
+          summary.p99[key] = this.calculatePercentile(values, 99);
+          summary.min[key] = Math.min(...values);
+          summary.max[key] = Math.max(...values);
+          summary.standardDeviation[key] =
+            this.calculateStandardDeviation(values);
+        }
+      }
+
+      summaries.push(summary);
+    }
+
+    return summaries;
+  }
+
+  /**
+   * Calculates comprehensive statistical summaries for all transaction proposal benchmark results.
+   * Groups results by proposal type and computes mean, percentiles, min/max, and standard deviation
+   * for each performance metric across all test runs.
+   *
+   * @returns Array of statistical summaries, one for each tested proposal type
+   */
+  calculateTransactionProposalStatistics(): TransactionProposalSummary[] {
+    const summaries: TransactionProposalSummary[] = [];
+
+    const resultsByProposalType = this.transactionProposalResults.reduce(
+      (acc, result) => {
+        if (!acc[result.proposalType]) {
+          acc[result.proposalType] = [];
+        }
+        acc[result.proposalType].push(result);
+        return acc;
+      },
+      {} as Record<string, TransactionProposalResult[]>,
+    );
+
+    for (const [proposalType, proposalResults] of Object.entries(
+      resultsByProposalType,
+    )) {
+      const metrics = proposalResults.map((r) => r.metrics);
+      const metricKeys = Object.keys(metrics[0]) as (keyof Omit<
+        TransactionProposalMetrics,
+        'memoryUsage'
+      >)[];
+
+      const summary: TransactionProposalSummary = {
+        proposalType,
         samples: metrics.length,
         mean: {},
         p95: {},
@@ -499,6 +870,30 @@ export class PageLoadBenchmark {
 
     await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
     console.log(`Results saved to ${outputPath}`);
+  }
+
+  /**
+   * Saves transaction proposal benchmark results to a JSON file with comprehensive metadata.
+   * Includes timestamp, git commit SHA, and statistical summaries.
+   *
+   * @param outputPath - File path where results should be saved
+   * @throws {Error} If file writing fails or git command fails
+   */
+  async saveTransactionProposalResults(outputPath: string) {
+    const commitSha = execSync('git rev-parse --short HEAD', {
+      cwd: __dirname,
+      encoding: 'utf8',
+    }).slice(0, 7);
+
+    const output = {
+      timestamp: new Date().getTime(),
+      commit: commitSha,
+      summary: this.calculateTransactionProposalStatistics(),
+      rawResults: this.transactionProposalResults,
+    };
+
+    await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
+    console.log(`Transaction proposal results saved to ${outputPath}`);
   }
 
   /**
