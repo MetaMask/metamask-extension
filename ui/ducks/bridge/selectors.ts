@@ -5,6 +5,7 @@ import type {
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isSolanaChainId,
+  isBitcoinChainId,
   isNativeAddress,
   formatChainIdToCaip,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
@@ -128,18 +129,6 @@ const hasBitcoinAccounts = (state: BridgeAppState) => {
     const { P2wpkh } = BtcAccountType;
     return Boolean(account && account.type === P2wpkh);
   });
-};
-
-// Helper function to check if a chain is Bitcoin
-const isBitcoinChainId = (
-  chainId: string | CaipChainId | Hex | number,
-): boolean => {
-  const chainIdStr = String(chainId);
-  return [
-    MultichainNetworks.BITCOIN,
-    MultichainNetworks.BITCOIN_TESTNET,
-    MultichainNetworks.BITCOIN_SIGNET,
-  ].includes(chainIdStr as MultichainNetworks);
 };
 
 // only includes networks user has added

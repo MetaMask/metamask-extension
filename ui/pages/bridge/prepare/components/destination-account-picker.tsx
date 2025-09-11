@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isSolanaChainId } from '@metamask/bridge-controller';
-import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { isBitcoinChainId, isSolanaChainId } from '@metamask/bridge-controller';
 import {
   TextField,
   Box,
@@ -30,15 +29,6 @@ import { ExternalAccountListItem } from './external-account-list-item';
 type DestinationAccountPickerProps = {
   onAccountSelect: (account: DestinationAccount | null) => void;
   selectedSwapToAccount: DestinationAccount | null;
-};
-
-// Helper function to check if a chain is Bitcoin
-const isBitcoinChainId = (chainId: string): boolean => {
-  return [
-    MultichainNetworks.BITCOIN,
-    MultichainNetworks.BITCOIN_TESTNET,
-    MultichainNetworks.BITCOIN_SIGNET,
-  ].includes(chainId as typeof MultichainNetworks.BITCOIN);
 };
 
 export const DestinationAccountPicker = ({
