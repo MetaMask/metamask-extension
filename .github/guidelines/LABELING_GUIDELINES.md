@@ -17,7 +17,7 @@ The check can be bypassed when necessary, either by setting the changelog entry 
 
 ## Optional labels (manual addition)
 
- Any label can be manually added on demand depending on the PR's content. For instance, the label **QA passed** will indicate that a thorough manual testing has been performed and the PR is ready to be merged. In addition, following labels have some specific use cases.
+Any label can be manually added on demand depending on the PR's content. For instance, the label **QA passed** will indicate that a thorough manual testing has been performed and the PR is ready to be merged. In addition, following labels have some specific use cases.
 
 ### Bypass Quality Gates
 
