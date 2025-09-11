@@ -216,7 +216,7 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <div ref={tourAnchorRef}>
+          <div ref={tourAnchorRef} className="flex">
             <PreferredAvatar address={internalAccount.address} />
           </div>
         )}
