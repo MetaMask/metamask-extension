@@ -63,6 +63,7 @@ import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
+import { getPreferencesControllerMessenger } from './core';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -152,6 +153,10 @@ export const CONTROLLER_MESSENGERS = {
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
+  },
+  PreferencesController: {
+    getMessenger: getPreferencesControllerMessenger,
+    getInitMessenger: noop,
   },
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
