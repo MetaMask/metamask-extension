@@ -138,20 +138,24 @@ export const SendPageRecipient = () => {
         }
         onTabClick={() => null}
       >
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
-        <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
-          <SendPageYourAccounts />
-        </Tab>
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
-        <Tab
-          tabKey={CONTACTS_TAB_KEY}
-          name={t('contacts')}
-          data-testid="send-contacts-tab"
-        >
-          <SendPageAddressBook />
-        </Tab>
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
+            <SendPageYourAccounts />
+          </Tab>
+        }
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab
+            tabKey={CONTACTS_TAB_KEY}
+            name={t('contacts')}
+            data-testid="send-contacts-tab"
+          >
+            <SendPageAddressBook />
+          </Tab>
+        }
       </Tabs>
     );
   }
@@ -167,7 +171,7 @@ export const SendPageRecipient = () => {
     dispatch(resetDomainResolution());
   }, [dispatch]);
   return (
-    <Box>
+    <>
       {showErrorBanner ? (
         <SendPageRow>
           <BannerAlert
@@ -214,6 +218,6 @@ export const SendPageRecipient = () => {
         </>
       )}
       <Box className="multichain-send-page__recipient">{contents}</Box>
-    </Box>
+    </>
   );
 };

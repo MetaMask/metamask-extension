@@ -8,6 +8,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tippy';
+import { browser } from 'webextension-polyfill';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -287,13 +288,20 @@ export const SendPage = () => {
       // Store ENS domain names and their resolved addresses in local storage
       // First, get the existing items from localStorage
       let existingEntries = [];
-      try {
-        existingEntries = JSON.parse(
-          window.localStorage.getItem('ensAndResolvedAddresses') || '[]',
-        );
-      } catch (e) {
-        console.error('Error parsing localStorage entries:', e);
-      }
+      // Get existing items from extension storage
+      await new Promise((resolve) => {
+        browser.storage.local.get('ensAndResolvedAddresses', (result) => {
+          try {
+            existingEntries = JSON.parse(
+              result.ensAndResolvedAddresses || '[]',
+            );
+          } catch (e) {
+            console.error('Error parsing extension storage entries:', e);
+            existingEntries = [];
+          }
+          resolve();
+        });
+      });
 
       // Process the current domain resolutions
       const updatedEntries = [...existingEntries];
@@ -303,20 +311,19 @@ export const SendPage = () => {
         domainResolutions.forEach((resolution) => {
           const { domainName, resolvedAddress } = resolution;
 
-          // Check if this domain already exists in our stored entries
           const existingEntryIndex = updatedEntries.findIndex(
             (entry) => entry.ensName.toLowerCase() === domainName.toLowerCase(),
           );
 
           if (existingEntryIndex >= 0) {
-            // Update the existing entry
+            // Update existing entry
             updatedEntries[existingEntryIndex] = {
               ...updatedEntries[existingEntryIndex],
               resolvedAddress,
               lastUpdated: currentTimestamp,
             };
           } else {
-            // Add as a new entry
+            // Add new entry
             updatedEntries.push({
               ensName: domainName,
               resolvedAddress,
@@ -327,11 +334,13 @@ export const SendPage = () => {
         });
       }
 
-      // Save the updated entries back to localStorage
-      window.localStorage.setItem(
-        'ensAndResolvedAddresses',
-        JSON.stringify(updatedEntries),
-      );
+      // Save updated entries back to extension storage
+      await new Promise((resolve) => {
+        browser.storage.local.set(
+          { ensAndResolvedAddresses: JSON.stringify(updatedEntries) },
+          () => resolve(),
+        );
+      });
 
       await dispatch(signTransaction(history));
 
