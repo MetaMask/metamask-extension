@@ -268,3 +268,4 @@ If migrating from the old binary management system:
 ## Summary
 
 The Corepack-based yarn management system provides a clean, native approach to version management with minimal configuration and maximum reliability for CI/CD environments.
+It can also be used to bump up the Yarn version and test it locally first.
