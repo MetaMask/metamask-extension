@@ -23,8 +23,9 @@ export const SendHero = ({ asset }: { asset: Asset }) => {
   let component = null;
   if (asset?.standard && NFT_STANDARDS.includes(asset.standard)) {
     component = <NFTHero asset={asset} />;
+  } else {
+    component = <TokenHero asset={asset} />;
   }
-  component = <TokenHero asset={asset} />;
 
   return <Wrapper>{component}</Wrapper>;
 };
