@@ -967,13 +967,6 @@
         "uuid": true
       }
     },
-    "@metamask/gator-permissions-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/utils": true
-      }
-   },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -1373,6 +1366,13 @@
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
+      }
+    },
+    "@metamask/gator-permissions-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/jazzicon": {
