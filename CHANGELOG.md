@@ -44,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: properly emit transaction lifecycle events even when smart transaction toggle is on (#35196)
 - fix: fix the flickering issue with the batch transaction alert that occurs when there are no simulations but the unused approval alert is triggered (#35019)
 - fix: automatically switch the chain, even when an approval is being displayed on page, and don't cancel pending confirmations while doing so (#35107)
+- fix: fall back to selected internalAccount if selected account group has no account matching specified scope (#35630)
+- fix: fixes issue in the send flow where sender's identicon is not a circle shape (#35711)
+- fix: fixes an issue with first-time interaction alerts displaying on verified contract addresses (#35331)
 
 ## [13.2.3]
 ### Fixed
