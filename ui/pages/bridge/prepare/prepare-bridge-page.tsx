@@ -66,7 +66,6 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
@@ -85,7 +84,7 @@ import {
 } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { Column, Row } from '../layout';
+import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
   getCurrentKeyring,
@@ -116,7 +115,7 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
-import { PrepareBridgePageFooterContents } from './prepare-bridge-page-footer';
+import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 
 /**
@@ -749,48 +748,59 @@ const PrepareBridgePage = ({
             }}
           />
 
-          {isLoading && !activeQuote_ && (
-            <>
-              <Text
-                textAlign={TextAlign.Center}
-                color={TextColor.textAlternativeSoft}
-              >
-                {t('swapFetchingQuotes')}
-              </Text>
-              <MascotBackgroundAnimation height="64" width="64" />
-            </>
-          )}
-
-          {!wasTxDeclined && activeQuote && (
-            <MultichainBridgeQuoteCard
-              onOpenRecipientModal={() =>
-                setIsDestinationAccountPickerOpen(true)
-              }
-              onOpenSlippageModal={onOpenSettings}
-              selectedDestinationAccount={selectedDestinationAccount}
-            />
-          )}
-          <PrepareBridgePageFooterContents
-            onFetchNewQuotes={() => {
-              debouncedUpdateQuoteRequestInController(quoteParams, {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                stx_enabled: smartTransactionsEnabled,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                token_symbol_source: fromToken?.symbol ?? '',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                token_symbol_destination: toToken?.symbol ?? '',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                security_warnings: [], // TODO populate security warnings
-              });
-            }}
-            needsDestinationAddress={
-              isToOrFromSolana && !selectedDestinationAccount
+          <Column
+            justifyContent={
+              isLoading && !activeQuote_
+                ? JustifyContent.center
+                : JustifyContent.flexEnd
             }
-          />
+            width={BlockSize.Full}
+            height={BlockSize.Full}
+            gap={3}
+          >
+            {!wasTxDeclined && activeQuote_ && (
+              <MultichainBridgeQuoteCard
+                onOpenRecipientModal={() =>
+                  setIsDestinationAccountPickerOpen(true)
+                }
+                onOpenSlippageModal={onOpenSettings}
+                selectedDestinationAccount={selectedDestinationAccount}
+              />
+            )}
+            {isLoading && !activeQuote_ ? (
+              <>
+                <Text
+                  textAlign={TextAlign.Center}
+                  color={TextColor.textAlternativeSoft}
+                >
+                  {t('swapFetchingQuotes')}
+                </Text>
+                <MascotBackgroundAnimation height="64" width="64" />
+              </>
+            ) : (
+              <PrepareBridgePageFooter
+                onFetchNewQuotes={() => {
+                  debouncedUpdateQuoteRequestInController(quoteParams, {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    stx_enabled: smartTransactionsEnabled,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_symbol_source: fromToken?.symbol ?? '',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_symbol_destination: toToken?.symbol ?? '',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    security_warnings: [], // TODO populate security warnings
+                  });
+                }}
+                needsDestinationAddress={
+                  isToOrFromSolana && !selectedDestinationAccount
+                }
+              />
+            )}
+          </Column>
         </Column>
       </Column>
 

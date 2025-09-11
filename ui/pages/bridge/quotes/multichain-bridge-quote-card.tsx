@@ -127,7 +127,7 @@ export const MultichainBridgeQuoteCard = ({
         isOpen={showAllQuotes}
         onClose={() => setShowAllQuotes(false)}
       />
-      <Column gap={2} style={{ marginTop: 'auto' }}>
+      <Column gap={2}>
         {/* Rate and timer */}
         <Row justifyContent={JustifyContent.spaceBetween}>
           <Row gap={2}>
