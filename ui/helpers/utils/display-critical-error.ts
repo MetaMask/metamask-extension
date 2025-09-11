@@ -18,7 +18,7 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
  * @returns The corresponding envelope URL
  * @throws Error if DSN format is invalid
  */
-export function extractEnvelopeUrlFromDsn(dsn: string): string | null {
+export function extractEnvelopeUrlFromDsn(dsn: string): string {
   try {
     // Parse the DSN URL
     const url = new URL(dsn);
@@ -33,7 +33,7 @@ export function extractEnvelopeUrlFromDsn(dsn: string): string | null {
     // Construct envelope URL
     return `https://${orgId}.${ingestDomain}/api/${projectId}/envelope/`;
   } catch (error) {
-    return null;
+    throw new Error('Invalid Sentry DSN format');
   }
 }
 
@@ -75,7 +75,7 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
       timestamp,
       platform: 'javascript',
       level: 'error',
-      message: error?.message || 'MetaMask extension crush critical error',
+      message: error?.message || 'MetaMask extension crash critical error',
       release: browser.runtime.getManifest()?.version || 'unknown',
       extra: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -101,20 +101,13 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     const eventPayloadString = JSON.stringify(eventPayload);
     const itemHeader = {
       type: 'event',
-      length: eventPayloadString.length,
     };
 
     const envelope = `${JSON.stringify(envelopeHeaders)}\n${JSON.stringify(itemHeader)}\n${eventPayloadString}`;
     const sentryEnvelopeURL = extractEnvelopeUrlFromDsn(sentryDSN);
 
-    if (!sentryEnvelopeURL) {
-      throw new Error(`Invalid Sentry DSN format: ${sentryDSN}`);
-    }
-
-    const envelopeURL: string = sentryEnvelopeURL;
-
     // Send to Sentry envelope API (must match DSN region)
-    await fetch(envelopeURL, {
+    await fetch(sentryEnvelopeURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-sentry-envelope',
@@ -141,7 +134,7 @@ async function handleRestartAction(
     await sendErrorToSentry(error);
   }
   // Restart the extension
-  browser.runtime.reload();
+  // browser.runtime.reload();
 }
 
 /**
