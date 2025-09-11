@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 175;
+export const version = 176;
 
 /**
  * This migration adds `avatarType` to PreferencesController preferences
