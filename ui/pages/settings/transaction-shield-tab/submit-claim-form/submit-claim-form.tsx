@@ -13,6 +13,7 @@ import {
 } from '../../../../components/component-library';
 import {
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   TextVariant,
@@ -264,8 +265,8 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
-      <Box>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={2}>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
+        <Text variant={TextVariant.bodyMdMedium}>
           {`${t('shieldClaimDescription')}*`}
         </Text>
         <Textarea
@@ -277,16 +278,19 @@ const SubmitClaimForm = () => {
           width={BlockSize.Full}
           rows={4}
           resize={TextareaResize.Vertical}
+          borderRadius={BorderRadius.LG}
         />
       </Box>
-      <Button
-        data-testid="shield-claim-submit-button"
-        variant={ButtonVariant.Primary}
-        size={ButtonSize.Lg}
-        disabled={isInvalidData}
-      >
-        {t('shieldClaimSubmit')}
-      </Button>
+      <Box className="settings-page__content-item-col">
+        <Button
+          data-testid="shield-claim-submit-button"
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          disabled={isInvalidData}
+        >
+          {t('shieldClaimSubmit')}
+        </Button>
+      </Box>
     </Box>
   );
 };
