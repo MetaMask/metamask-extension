@@ -22,3 +22,6 @@ app/_locales/** linguist-generated
 /.yarn/plugins/** binary
 
 app/*.html linguist-language=EJS
+
+# Migrations index file is mostly append-only
+app/scripts/migrations/index.js merge=union
