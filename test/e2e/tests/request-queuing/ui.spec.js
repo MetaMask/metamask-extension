@@ -435,8 +435,16 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Open Network Manager and delete custom network
         const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.LINEA);
+
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
+
+        // Open Network Manager and delete custom network
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
 
@@ -599,10 +607,12 @@ describe('Request-queue UI changes', function () {
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
+          .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-              '0x539': true,
+              '0x2105': true,
+              '0xe708': true,
             },
           })
           .build(),
@@ -647,8 +657,7 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
-        await networkManager.closeNetworkManager();
+        await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
 
         // Kill local node servers
         await localNodes[0].quit();

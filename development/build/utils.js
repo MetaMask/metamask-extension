@@ -292,7 +292,7 @@ function getBuildName({
 function makeSelfInjecting(filePath) {
   const fileContents = readFileSync(filePath, 'utf8');
   const textContent = JSON.stringify(fileContents);
-  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};s.nonce=btoa((globalThis.browser||chrome).runtime.getURL('/'));d.documentElement.appendChild(s).remove();}`;
+  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
   writeFileSync(filePath, js, 'utf8');
 }
 

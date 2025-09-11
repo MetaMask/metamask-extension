@@ -28,12 +28,14 @@ import {
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
+  getAuthenticationControllerInitMessenger,
   getAuthenticationControllerMessenger,
   getUserStorageControllerMessenger,
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
   getNetworkOrderControllerMessenger,
+  getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerMessenger,
@@ -53,17 +55,30 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
 } from './accounts';
-import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
-import { getSmartTransactionsControllerMessenger } from './smart-transactions-controller-messenger';
+import {
+  getOAuthServiceMessenger,
+  getSeedlessOnboardingControllerMessenger,
+  getSeedlessOnboardingControllerInitMessenger,
+} from './seedless-onboarding';
+import {
+  getSmartTransactionsControllerInitMessenger,
+  getSmartTransactionsControllerMessenger,
+} from './smart-transactions-controller-messenger';
 import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
+import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
+import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
+
+export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAuthenticationControllerInitMessenger,
   },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
@@ -81,8 +96,16 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
   },
+  GatorPermissionsController: {
+    getMessenger: getGatorPermissionsControllerMessenger,
+    getInitMessenger: noop,
+  },
   InstitutionalSnapController: {
     getMessenger: getInstitutionalSnapControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MetaMetricsController: {
+    getMessenger: getMetaMetricsControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {
@@ -113,13 +136,17 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getNotificationServicesPushControllerMessenger,
     getInitMessenger: noop,
   },
+  OAuthService: {
+    getMessenger: getOAuthServiceMessenger,
+    getInitMessenger: noop,
+  },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
   },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
   },
   ShieldController: {
     getMessenger: getShieldControllerMessenger,
@@ -151,7 +178,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getUserStorageControllerInitMessenger,
   },
   TokenRatesController: {
     getMessenger: getTokenRatesControllerMessenger,
@@ -159,7 +186,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   NftController: {
     getMessenger: getNftControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getNftControllerInitMessenger,
   },
   NftDetectionController: {
     getMessenger: getNftDetectionControllerMessenger,
@@ -179,7 +206,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   SmartTransactionsController: {
     getMessenger: getSmartTransactionsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getSmartTransactionsControllerInitMessenger,
   },
   MultichainAccountService: {
     getMessenger: getMultichainAccountServiceMessenger,
