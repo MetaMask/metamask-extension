@@ -23,7 +23,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   setFirstTimeFlowType,
   startOAuthLogin,
-  setIsSocialLoginEnabled,
+  setIsSocialLoginFlowEnabledForMetrics,
 } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
@@ -333,23 +333,27 @@ export default function OnboardingWelcome() {
     async (loginType, loginOption) => {
       try {
         if (loginType === LOGIN_TYPE.SRP) {
-          await dispatch(setIsSocialLoginEnabled(false));
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
           if (loginOption === LOGIN_OPTION.NEW) {
             await onCreateClick();
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
             await onImportClick();
           }
+          // return here to prevent the social login flow from being enabled
+          return;
         }
 
-        if (isSeedlessOnboardingFeatureEnabled) {
-          if (loginOption === LOGIN_OPTION.NEW) {
-            await onSocialLoginCreateClick(loginType);
-            // if firefox, set isSocialLoginEnabled to false, otherwise set to true
-            await dispatch(setIsSocialLoginEnabled(!isFireFox));
-          } else if (loginOption === LOGIN_OPTION.EXISTING) {
-            await onSocialLoginImportClick(loginType);
-            await dispatch(setIsSocialLoginEnabled(false));
-          }
+        if (!isSeedlessOnboardingFeatureEnabled) {
+          return;
+        }
+
+        if (loginOption === LOGIN_OPTION.NEW) {
+          await onSocialLoginCreateClick(loginType);
+          // if firefox, set isSocialLoginFlowEnabledForMetrics to false, otherwise set to true
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(!isFireFox));
+        } else if (loginOption === LOGIN_OPTION.EXISTING) {
+          await onSocialLoginImportClick(loginType);
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
         }
       } catch (error) {
         handleLoginError(error);

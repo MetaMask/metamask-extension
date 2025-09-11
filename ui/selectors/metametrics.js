@@ -2,22 +2,22 @@ import { createSelector } from 'reselect';
 
 export const selectFragments = (state) => state.metamask.fragments;
 
-export const getIsSocialLoginEnabled = (state) =>
-  state.metamask.isSocialLoginEnabled;
+export const getIsSocialLoginFlowEnabledForMetrics = (state) =>
+  state.metamask.isSocialLoginFlowEnabledForMetrics;
 
 // return true if user has set their marketing consent preference or if they are a social login user
 export const getDataCollectionForMarketing = (state) =>
-  Boolean(getIsSocialLoginEnabled(state)) ||
+  Boolean(getIsSocialLoginFlowEnabledForMetrics(state)) ||
   Boolean(state.metamask.dataCollectionForMarketing);
 
 // return true if user has set their participation preference in MetaMetrics or if they are a social login user
 export const getParticipateInMetaMetrics = (state) =>
-  Boolean(getIsSocialLoginEnabled(state)) ||
+  Boolean(getIsSocialLoginFlowEnabledForMetrics(state)) ||
   Boolean(state.metamask.participateInMetaMetrics);
 
 // return true if user has set their participation preference in MetaMetrics or if they are a social login user
 export const getIsParticipateInMetaMetricsSet = (state) =>
-  Boolean(getIsSocialLoginEnabled(state)) ||
+  Boolean(getIsSocialLoginFlowEnabledForMetrics(state)) ||
   state.metamask.participateInMetaMetrics !== null;
 
 export const getLatestMetricsEventTimestamp = (state) =>

@@ -353,6 +353,10 @@ export default class OAuthService {
   async setMarketingConsent(): Promise<boolean> {
     const state = this.#messenger.call('SeedlessOnboardingController:getState');
     const { accessToken } = state;
+    if (!accessToken) {
+      throw new Error('No access token found');
+    }
+
     const requestData = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -376,36 +380,5 @@ export default class OAuthService {
     }
 
     return res.ok;
-  }
-
-  async getMarketingConsent(): Promise<boolean> {
-    const state = this.#messenger.call('SeedlessOnboardingController:getState');
-    const { accessToken } = state;
-    const res = await fetch(
-      `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    if (!res.ok) {
-      throw new Error('Failed to get marketing opt in status');
-    }
-
-    const data = await res.json();
-
-    if (typeof data === 'boolean') {
-      return data;
-    }
-
-    if (data && typeof data.opt_in_status === 'boolean') {
-      return data.opt_in_status;
-    }
-
-    throw new Error('Invalid marketing opt in status response');
   }
 }

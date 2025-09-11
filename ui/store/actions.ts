@@ -4144,13 +4144,13 @@ export function setDataCollectionForMarketing(
   };
 }
 
-export function setIsSocialLoginEnabled(
-  isSocialLoginEnabled: boolean,
+export function setIsSocialLoginFlowEnabledForMetrics(
+  isSocialLoginFlowEnabledForMetrics: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch({
-      type: actionConstants.SET_IS_SOCIAL_LOGIN_ENABLED,
-      value: isSocialLoginEnabled,
+      type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
+      value: isSocialLoginFlowEnabledForMetrics,
     });
   };
 }
