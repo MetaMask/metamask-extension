@@ -98,6 +98,11 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-build.yml
 
+  validate-lavamoat-policy-webpack:
+    needs:
+      - prep-deps
+    uses: ./.github/workflows/validate-lavamoat-policy-webpack.yml
+
   validate-lavamoat-policy-webapp:
     needs:
       - prep-deps
@@ -409,6 +414,7 @@ jobs:
       - repository-health-checks
       - test-storybook
       - validate-lavamoat-policy-build
+      - validate-lavamoat-policy-webpack
       - validate-lavamoat-policy-webapp
       - build-dist-browserify
       - build-dist-mv2-browserify
