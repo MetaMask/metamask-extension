@@ -2468,7 +2468,7 @@
     "message": "Click to upload or drag and drop"
   },
   "fileUploaderMaxFileSizeError": {
-    "message": "File size exceeds $1MB. Please upload a smaller file",
+    "message": "File size exceeds $1MB. Please upload a smaller file.",
     "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
