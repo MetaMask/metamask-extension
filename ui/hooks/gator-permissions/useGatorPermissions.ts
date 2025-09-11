@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
-import {
-  enableGatorPermissions,
-  fetchAndUpdateGatorPermissions,
-} from '../../store/controller-actions/gator-permissions-controller';
+import { fetchAndUpdateGatorPermissions } from '../../store/controller-actions/gator-permissions-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 
 export function useGatorPermissions() {
@@ -20,7 +17,6 @@ export function useGatorPermissions() {
         setError(undefined);
         setLoading(true);
 
-        await enableGatorPermissions();
         const newData = await fetchAndUpdateGatorPermissions();
         if (!cancelled) {
           setData(newData);

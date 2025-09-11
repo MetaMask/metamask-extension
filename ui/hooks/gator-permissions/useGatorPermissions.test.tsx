@@ -5,17 +5,13 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
-import {
-  enableGatorPermissions,
-  fetchAndUpdateGatorPermissions,
-} from '../../store/controller-actions/gator-permissions-controller';
+import { fetchAndUpdateGatorPermissions } from '../../store/controller-actions/gator-permissions-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { useGatorPermissions } from './useGatorPermissions';
 
 jest.mock(
   '../../store/controller-actions/gator-permissions-controller',
   () => ({
-    enableGatorPermissions: jest.fn(),
     fetchAndUpdateGatorPermissions: jest.fn(),
   }),
 );
@@ -27,9 +23,6 @@ jest.mock('../../store/actions', () => ({
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
-
-const mockEnableGatorPermissions =
-  enableGatorPermissions as jest.MockedFunction<typeof enableGatorPermissions>;
 const mockFetchAndUpdateGatorPermissions =
   fetchAndUpdateGatorPermissions as jest.MockedFunction<
     typeof fetchAndUpdateGatorPermissions
@@ -49,8 +42,8 @@ describe('useGatorPermissions', () => {
           permissionResponse: {
             chainId: '0x1',
             address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-            expiry: 1750291200,
             permission: {
+              isAdjustmentAllowed: false,
               type: 'native-token-stream',
               data: {
                 maxAmount: '0x22b1c8c1227a0000',
@@ -60,7 +53,6 @@ describe('useGatorPermissions', () => {
                 justification:
                   'This is a very important request for streaming allowance for some very important thing',
               },
-              rules: {},
             },
             context: '0x00000000',
             signerMeta: {
@@ -77,9 +69,9 @@ describe('useGatorPermissions', () => {
           permissionResponse: {
             chainId: '0x1',
             address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-            expiry: 1750291200,
             permission: {
               type: 'erc20-token-stream',
+              isAdjustmentAllowed: false,
               data: {
                 initialAmount: '0x22b1c8c1227a0000',
                 maxAmount: '0x6f05b59d3b20000',
@@ -89,7 +81,6 @@ describe('useGatorPermissions', () => {
                 justification:
                   'This is a very important request for streaming allowance for some very important thing',
               },
-              rules: {},
             },
             context: '0x00000000',
             signerMeta: {
@@ -122,7 +113,6 @@ describe('useGatorPermissions', () => {
     });
 
     jest.clearAllMocks();
-    mockEnableGatorPermissions.mockResolvedValue(undefined);
     mockFetchAndUpdateGatorPermissions.mockResolvedValue(
       mockGatorPermissionsMap,
     );
@@ -139,7 +129,7 @@ describe('useGatorPermissions', () => {
     expect(result.current.error).toBeUndefined();
   });
 
-  it('should call enableGatorPermissions and fetchAndUpdateGatorPermissions on mount', async () => {
+  it('should call fetchAndUpdateGatorPermissions on mount', async () => {
     await act(async () => {
       renderHook(() => useGatorPermissions(), {
         wrapper: ({ children }) => (
@@ -148,7 +138,6 @@ describe('useGatorPermissions', () => {
       });
     });
 
-    expect(mockEnableGatorPermissions).toHaveBeenCalledTimes(1);
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
   });
 
@@ -168,29 +157,6 @@ describe('useGatorPermissions', () => {
     expect(result.current.data).toEqual(mockGatorPermissionsMap);
     expect(result.current.error).toBeUndefined();
     expect(mockForceUpdateMetamaskState).toHaveBeenCalledWith(store.dispatch);
-  });
-
-  it('should handle error when enableGatorPermissions fails', async () => {
-    const error = new Error('Enable permissions failed');
-    mockEnableGatorPermissions.mockRejectedValue(error);
-
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
-
-    await waitForNextUpdate();
-
-    // Add a small delay to ensure error handling completes
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(result.current.loading).toBe(false);
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBe(error);
   });
 
   it('should handle error when fetchAndUpdateGatorPermissions fails', async () => {
@@ -228,64 +194,6 @@ describe('useGatorPermissions', () => {
     expect(result.current.error).toBeUndefined();
   });
 
-  it('should handle non-Error objects thrown by the async operations', async () => {
-    const nonErrorObject = { message: 'Not an Error object' };
-    mockEnableGatorPermissions.mockRejectedValue(nonErrorObject);
-
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
-
-    await waitForNextUpdate();
-
-    expect(result.current.loading).toBe(false);
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBe(nonErrorObject);
-  });
-
-  it('should handle undefined error objects', async () => {
-    mockEnableGatorPermissions.mockRejectedValue(undefined);
-
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
-
-    await waitForNextUpdate();
-
-    expect(result.current.loading).toBe(false);
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBeUndefined();
-  });
-
-  it('should handle null error objects', async () => {
-    mockEnableGatorPermissions.mockRejectedValue(null);
-
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
-
-    await waitForNextUpdate();
-
-    expect(result.current.loading).toBe(false);
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBe(null);
-  });
-
   it('should only run the effect once on mount', async () => {
     await act(async () => {
       const { rerender } = renderHook(() => useGatorPermissions(), {
@@ -299,7 +207,6 @@ describe('useGatorPermissions', () => {
       rerender();
     });
 
-    expect(mockEnableGatorPermissions).toHaveBeenCalledTimes(1);
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
   });
 
