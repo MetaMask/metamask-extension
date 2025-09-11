@@ -101,7 +101,7 @@ export const MultichainAccountDetailsPage = () => {
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: TextVariant.headingMd,
         }}
         startAccessory={
           <ButtonIcon
