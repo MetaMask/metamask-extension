@@ -19,6 +19,9 @@ import {
 } from './types';
 import { loadOAuthConfig } from './config';
 
+const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
+  '/api/v1/oauth/marketing_opt_in_status';
+
 export default class OAuthService {
   // Required for modular initialisation.
   name: ServiceName = SERVICE_NAME;
@@ -347,18 +350,31 @@ export default class OAuthService {
     return error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
   }
 
-  async setMarketingConsent(connection: AuthConnection): Promise<boolean> {
+  async setMarketingConsent(): Promise<boolean> {
     const state = this.#messenger.call('SeedlessOnboardingController:getState');
     const { accessToken } = state;
-    let res = false;
-    if (accessToken) {
-      const loginHandler = createLoginHandler(
-        connection,
-        this.#env,
-        this.#webAuthenticator,
-      );
-      res = await loginHandler.postMarketingOptInStatus(accessToken, true);
+    const requestData = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      opt_in_status: true,
+    };
+
+    const res = await fetch(
+      `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(requestData),
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error('Failed to post marketing opt in status');
     }
-    return res;
+
+    return res.ok;
   }
 }
