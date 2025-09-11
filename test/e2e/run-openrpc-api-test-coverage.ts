@@ -24,6 +24,7 @@ import transformOpenRPCDocument from './api-specs/transform';
 import { ExpectedErrorRule } from './api-specs/ExpectedErrorRule';
 import { PermittedAccountRule } from './api-specs/PermittedAccountRule';
 import { mockEip7702FeatureFlag } from './tests/confirmations/helpers';
+import { skipMethods } from './api-specs/skip-methods';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -88,6 +89,9 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           'wallet_swapAsset',
+          ...skipMethods,
+          'wallet_getCapabilities',
+          'wallet_getCallsStatus',
         ],
         rules: [
           new JsonSchemaFakerRule({

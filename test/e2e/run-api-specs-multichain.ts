@@ -32,6 +32,7 @@ import { MultichainAuthorizationConfirmationErrors } from './api-specs/Multichai
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 import { mockEip7702FeatureFlag } from './tests/confirmations/helpers';
 import { ExpectedErrorRule } from './api-specs/ExpectedErrorRule';
+import { skipMethods } from './api-specs/skip-methods';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -230,6 +231,9 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
+          ...skipMethods,
+          'wallet_getCapabilities',
+          'wallet_getCallsStatus',
         ],
         rules: [
           new JsonSchemaFakerRule({
