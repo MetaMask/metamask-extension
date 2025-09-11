@@ -827,6 +827,7 @@ describe('useDisplayName', () => {
 
   describe('Account Group Names', () => {
     it('returns account group name when multichain accounts state 2 is enabled', () => {
+      mockPetname(PETNAME_MOCK);
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
 
       (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
@@ -849,10 +850,10 @@ describe('useDisplayName', () => {
       );
       expect(result.current).toStrictEqual({
         contractDisplayName: undefined,
-        hasPetname: false,
+        hasPetname: true,
         image: undefined,
         name: GROUP_NAME_MOCK,
-        displayState: TrustSignalDisplayState.Recognized,
+        displayState: TrustSignalDisplayState.Petname,
         icon: null,
       });
     });
