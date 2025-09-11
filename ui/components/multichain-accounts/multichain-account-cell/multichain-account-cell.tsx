@@ -1,14 +1,7 @@
 import React from 'react';
 import { AccountGroupId } from '@metamask/account-api';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Icon,
-  IconName,
-  Text,
-} from '../../component-library';
+import { Box, Icon, IconName, Text } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
   AlignItems,
   BorderColor,
@@ -72,14 +65,8 @@ export const MultichainAccountCell = ({
             selected ? BorderColor.primaryDefault : BorderColor.transparent
           }
           borderRadius={BorderRadius.XL}
-          padding={1}
         >
-          {/* // TODO: Replace avatar account with one that supports multichain, when available */}
-          <AvatarAccount
-            size={AvatarAccountSize.Md}
-            address={accountId}
-            variant={AvatarAccountVariant.Jazzicon}
-          />
+          <PreferredAvatar address={accountId} />
         </Box>
         <Box>
           <Text
