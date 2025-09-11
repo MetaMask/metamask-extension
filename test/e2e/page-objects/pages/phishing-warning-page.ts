@@ -43,12 +43,6 @@ class PhishingWarningPage {
     console.log('Phishing Warning page is loaded');
   }
 
-  async checkPageIsNotLoaded(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.phishingWarningPageTitle, {
-      waitAtLeastGuard: 1000,
-    });
-  }
-
   async clickBackToSafetyButton(): Promise<void> {
     console.log('Clicking back to safety button on phishing warning page');
     await this.driver.clickElementAndWaitToDisappear(this.backToSafetyButton);

@@ -15,6 +15,7 @@ import {
 
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -183,10 +184,7 @@ describe('Phishing Detection', function (this: Suite) {
         await phishingWarningPage.clickProceedAnywayButton();
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
-        await driver.assertElementNotPresent(
-          '[data-testid="wallet-balance"]',
-          1000,
-        );
+        await new HomePage(driver).checkPageIsNotLoaded();
       },
     );
   });
