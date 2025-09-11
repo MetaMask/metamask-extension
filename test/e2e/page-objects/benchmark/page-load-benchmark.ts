@@ -135,6 +135,8 @@ export class PageLoadBenchmark {
   /** Dapp server process running in background */
   private dappServerProcess: ChildProcess | undefined;
 
+  private readonly userDataDirectory = 'temp-benchmark-user-data';
+
   /**
    * Creates a new PageLoadBenchmark instance.
    *
@@ -155,7 +157,10 @@ export class PageLoadBenchmark {
     await this.buildExtension();
     await this.createStaticDappServer();
 
-    this.browser = await chromium.launch({
+    const userDataDir = path.join(process.cwd(), this.userDataDirectory);
+    await fs.mkdir(userDataDir, { recursive: true });
+
+    this.context = await chromium.launchPersistentContext(userDataDir, {
       headless: Boolean(process.env.CI),
       args: [
         `--disable-extensions-except=${this.extensionPath}`,
@@ -166,13 +171,16 @@ export class PageLoadBenchmark {
         '--disable-features=TranslateUI',
         '--disable-ipc-flooding-protection',
       ],
-    });
-
-    this.context = await this.browser.newContext({
       viewport: { width: 1280, height: 720 },
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     });
+
+    const browser = this.context.browser();
+    if (!browser) {
+      throw new Error('Failed to get browser instance from persistent context');
+    }
+    this.browser = browser;
 
     await this.waitForExtensionLoad();
   }
@@ -343,12 +351,12 @@ export class PageLoadBenchmark {
 
   /**
    * Executes the complete benchmark test suite across multiple browser loads and page loads.
-   * Creates fresh browser contexts for each browser load to simulate real-world conditions,
+   * Uses the persistent browser context to simulate real-world conditions,
    * and measures each URL multiple times to gather statistical data.
    *
    * @param urls - Array of URLs to test
-   * @param browserLoads - Number of fresh browser contexts to create (default: 10)
-   * @param pageLoads - Number of page loads per browser context (default: 10)
+   * @param browserLoads - Number of browser load iterations (default: 10)
+   * @param pageLoads - Number of page loads per browser load (default: 10)
    */
   async runBenchmark(
     urls: string[],
@@ -361,13 +369,6 @@ export class PageLoadBenchmark {
 
     for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
       console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
-
-      /** Setup fresh browser context for each browser load */
-      this.context = await this.browser?.newContext({
-        viewport: { width: 1280, height: 720 },
-        userAgent:
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      });
       await this.waitForExtensionLoad();
 
       for (const url of urls) {
@@ -385,9 +386,7 @@ export class PageLoadBenchmark {
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
-
-      /** Teardown current browser context in preparation for next iteration */
-      await this.context?.close();
+      await this.clearBrowserData();
     }
   }
 
@@ -503,6 +502,14 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Clear browser data between browser loads to simulate fresh browser state.
+   */
+  private async clearBrowserData() {
+    await this.context?.clearCookies();
+    await this.context?.clearPermissions();
+  }
+
+  /**
    * Stops the dapp server process if it's running.
    */
   private stopDappServer() {
@@ -521,5 +528,13 @@ export class PageLoadBenchmark {
     await this.context?.close();
     await this.browser?.close();
     this.stopDappServer();
+
+    // Clean up temporary user data directory
+    const userDataDir = path.join(process.cwd(), this.userDataDirectory);
+    try {
+      await fs.rm(userDataDir, { recursive: true, force: true });
+    } catch (error) {
+      console.warn('Failed to clean up temporary user data directory:', error);
+    }
   }
 }
