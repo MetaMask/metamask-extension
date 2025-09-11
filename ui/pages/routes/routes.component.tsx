@@ -160,6 +160,7 @@ import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
+import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -228,12 +229,15 @@ const ConfirmTransaction = mmLazy(
 );
 const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() => {
-    if (process.env.SEND_REDESIGN_ENABLED) {
-      return import('../confirmations/send/index.ts');
-    }
-    return import('../../components/multichain/pages/send/index.js');
-  }) as unknown as DynamicImportType,
+  (() =>
+    import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
+);
+const LegacySendPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/send/index.js'
+    )) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
@@ -433,6 +437,7 @@ export default function Routes() {
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
@@ -564,7 +569,10 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
+          <Authenticated
+            path={`${SEND_ROUTE}/:page?`}
+            component={isSendRedesignEnabled ? SendPage : LegacySendPage}
+          />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
