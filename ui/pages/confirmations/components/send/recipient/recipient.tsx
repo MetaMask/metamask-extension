@@ -44,7 +44,12 @@ export const Recipient = () => {
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
   const { to, updateTo } = useSendContext();
   const [localValue, setLocalValue] = useState(to || '');
-  const { captureRecipientSelected } = useRecipientSelectionMetrics();
+  const {
+    captureRecipientSelected,
+    setRecipientInputMethodManual,
+    setRecipientInputMethodSelectContact,
+    setRecipientInputMethodSelectAccount,
+  } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const closeRecipientModal = useCallback(() => {
@@ -57,12 +62,15 @@ export const Recipient = () => {
   }, []);
 
   const onToChange = useCallback(
-    (address: string) => {
+    (address: string, isSelectedFromModal?: boolean) => {
       const toAddress = address;
       setLocalValue(toAddress);
       updateTo(toAddress);
+      if (!isSelectedFromModal) {
+        setRecipientInputMethodManual();
+      }
     },
-    [updateTo],
+    [updateTo, setRecipientInputMethodManual],
   );
 
   const captureMetrics = useCallback(() => {
@@ -76,6 +84,31 @@ export const Recipient = () => {
     setLocalValue('');
     updateTo('');
   }, [updateTo]);
+
+  const onRecipientSelectedFromModal = useCallback(
+    (address: string) => {
+      const isRecipientContact = recipients.some(
+        (recipient) =>
+          recipient.address.toLowerCase() === address.toLowerCase() &&
+          recipient.contactName,
+      );
+      if (isRecipientContact) {
+        setRecipientInputMethodSelectContact();
+      } else {
+        setRecipientInputMethodSelectAccount();
+      }
+
+      onToChange(address);
+      captureMetrics();
+    },
+    [
+      captureMetrics,
+      onToChange,
+      recipients,
+      setRecipientInputMethodSelectContact,
+      setRecipientInputMethodSelectAccount,
+    ],
+  );
 
   useEffect(() => {
     if (recipientResolvedLookup) {
@@ -169,7 +202,7 @@ export const Recipient = () => {
           <ModalBody>
             <RecipientList
               hideModal={closeRecipientModal}
-              onToChange={onToChange}
+              onToChange={onRecipientSelectedFromModal}
             />
           </ModalBody>
         </ModalContent>
