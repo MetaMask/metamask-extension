@@ -47,12 +47,16 @@ export default function OnboardingFlowSwitch() {
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
+  const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
   if (completedOnboarding) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
-  if (seedPhraseBackedUp !== null || (isUnlocked && isSocialLoginFlow)) {
+  if (
+    seedPhraseBackedUp !== null ||
+    (isUnlocked && isSocialLoginFlow && isFirefox)
+  ) {
     return (
       <Navigate
         to={

@@ -19,7 +19,7 @@ import {
 } from './types';
 import { loadOAuthConfig } from './config';
 
-const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
+const AUTH_SERVER_MARKETING_OPT_IN_STATUS_POST_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
 
 export default class OAuthService {
@@ -360,7 +360,7 @@ export default class OAuthService {
     };
 
     const res = await fetch(
-      `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+      `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_POST_PATH}`,
       {
         method: 'POST',
         headers: {
