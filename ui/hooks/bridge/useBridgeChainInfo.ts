@@ -145,7 +145,7 @@ export default function useBridgeChainInfo({
           nativeCurrency: destNativeAsset?.assetId,
           blockExplorerUrl: isSolanaChainId(destChainIdInCaip)
             ? SOLANA_BLOCK_EXPLORER_URL
-            : 'https://blockstream.info/', // Bitcoin block explorer
+            : BITCOIN_BLOCK_EXPLORER_URL,
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,
