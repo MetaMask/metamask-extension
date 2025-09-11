@@ -1125,6 +1125,10 @@
   "cancelled": {
     "message": "Cancelled"
   },
+  "carouselAllCaughtUp": {
+    "message": "You're all caught up",
+    "description": "Message shown in carousel when all promotional slides have been dismissed"
+  },
   "chainId": {
     "message": "Chain ID"
   },
@@ -1192,6 +1196,10 @@
   },
   "closeExtension": {
     "message": "Close extension"
+  },
+  "closeSlide": {
+    "message": "Close $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
@@ -7587,6 +7595,6 @@
     "message": "Keep your Secret Recovery Phrase safe!"
   },
   "yourWalletIsReadyRemind": {
-    "message": "We’ll remind you later"
+    "message": "We'll remind you later"
   }
 }

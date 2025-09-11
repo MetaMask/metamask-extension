@@ -2,12 +2,8 @@ import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { removeSlide, setSelectedAccount } from '../../../store/actions';
-import { Carousel } from '..';
-import {
-  getAppIsLoading,
-  getRemoteFeatureFlags,
-  hasCreatedSolanaAccount,
-} from '../../../selectors';
+import { CarouselWithEmptyState } from '..';
+import { hasCreatedSolanaAccount, getAppIsLoading } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
@@ -33,8 +29,6 @@ export const AccountOverviewLayout = ({
 }: AccountOverviewLayoutProps) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(getAppIsLoading);
-  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
-  const isCarouselEnabled = Boolean(remoteFeatureFlags?.carouselBanners);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
 
@@ -46,7 +40,9 @@ export const AccountOverviewLayout = ({
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
 
-  const { slides } = useCarouselManagement({ enabled: isCarouselEnabled });
+  const { slides } = useCarouselManagement({
+    enabled: true,
+  });
 
   const slideById = useMemo(() => {
     const m = new Map<string, CarouselSlide>();
@@ -81,14 +77,15 @@ export const AccountOverviewLayout = ({
     });
   };
 
-  const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
+  const handleRemoveSlide = (slideId: string, isLastSlide: boolean) => {
     if (isLastSlide) {
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
         category: MetaMetricsEventCategory.Banner,
       });
     }
-    dispatch(removeSlide(id));
+
+    dispatch(removeSlide(slideId));
   };
 
   const handleRenderSlides = useCallback(
@@ -115,15 +112,13 @@ export const AccountOverviewLayout = ({
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
 
-      {isCarouselEnabled && (
-        <Carousel
-          slides={slides}
-          isLoading={isLoading}
-          onClick={handleCarouselClick}
-          onClose={handleRemoveSlide}
-          onRenderSlides={handleRenderSlides}
-        />
-      )}
+      <CarouselWithEmptyState
+        slides={slides}
+        isLoading={isLoading}
+        onSlideClick={handleCarouselClick}
+        onSlideClose={handleRemoveSlide}
+        onRenderSlides={handleRenderSlides}
+      />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
       {showCreateSolanaAccountModal && (
         <CreateSolanaAccountModal
