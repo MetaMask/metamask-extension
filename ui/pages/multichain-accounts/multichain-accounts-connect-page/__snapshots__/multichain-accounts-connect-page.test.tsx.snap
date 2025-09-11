@@ -118,7 +118,7 @@ exports[`MultichainConnectPage should render correctly 1`] = `
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -361,7 +361,7 @@ exports[`MultichainConnectPage should render with existing permissions correctly
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -604,7 +604,7 @@ exports[`MultichainConnectPage should render with multichain origin request corr
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
