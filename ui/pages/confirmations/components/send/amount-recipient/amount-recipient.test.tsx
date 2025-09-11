@@ -22,6 +22,10 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
 
+jest.mock('../../UI/send-hero', () => ({
+  SendHero: () => <div data-testid="send-hero">SendHero</div>,
+}));
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 
@@ -33,6 +37,7 @@ describe('AmountRecipient', () => {
     const { getByText } = render();
 
     expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText('SendHero')).toBeInTheDocument();
     expect(getByText('Continue')).toBeInTheDocument();
   });
 
