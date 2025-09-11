@@ -70,7 +70,7 @@ describe('MultichainAccountMenu', () => {
 
     const menuItems = document.querySelectorAll(menuItemSelector);
 
-    expect(menuItems.length).toBe(5);
+    expect(menuItems.length).toBe(3);
   });
 
   it('adds the remove option to menu when isRemovable is true', async () => {
@@ -96,7 +96,7 @@ describe('MultichainAccountMenu', () => {
 
     const menuItems = document.querySelectorAll(menuItemSelector);
 
-    expect(menuItems.length).toBe(6);
+    expect(menuItems.length).toBe(4);
 
     const removeOption = document.querySelector(errorColorSelector);
 
@@ -202,7 +202,7 @@ describe('MultichainAccountMenu', () => {
 
     // Rename option should be the second menu item
     const menuItems = document.querySelectorAll(menuItemSelector);
-    expect(menuItems.length).toBe(5);
+    expect(menuItems.length).toBe(3);
 
     const renameOption = menuItems[1];
     expect(renameOption).not.toBeNull();
