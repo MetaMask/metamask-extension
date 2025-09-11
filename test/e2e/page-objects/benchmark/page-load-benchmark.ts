@@ -371,6 +371,7 @@ export class PageLoadBenchmark {
 
     for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
       console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
+      await this.waitForExtensionLoad();
 
       for (const url of urls) {
         for (let pageLoad = 0; pageLoad < pageLoads; pageLoad++) {
