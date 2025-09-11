@@ -3341,6 +3341,9 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "maskicons": {
+    "message": "Maskicons"
+  },
   "max": {
     "message": "Max"
   },
