@@ -63,6 +63,10 @@ import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
+import {
+  getSubscriptionControllerInitMessenger,
+  getSubscriptionControllerMessenger,
+} from './subscription';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -148,6 +152,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
+  },
+  SubscriptionController: {
+    getMessenger: getSubscriptionControllerMessenger,
+    getInitMessenger: getSubscriptionControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

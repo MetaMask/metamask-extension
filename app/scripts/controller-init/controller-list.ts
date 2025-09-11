@@ -47,6 +47,7 @@ import { AccountTreeController } from '@metamask/account-tree-controller';
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
 import { ShieldController } from '@metamask/shield-controller';
+import { SubscriptionController } from '@metamask/subscription-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -92,6 +93,7 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | SubscriptionController
   | TransactionController
   | InstitutionalSnapController
   | UserStorageController
@@ -136,6 +138,7 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
+  SubscriptionController['state'] &
   TransactionController['state'] &
   SwapsController['state'] &
   UserStorageController['state'] &
