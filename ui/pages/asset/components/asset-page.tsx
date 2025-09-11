@@ -497,8 +497,7 @@ const AssetPage = ({
               <UnifiedTransactionList
                 tokenAddress={address}
                 hideNetworkFilter
-                overrideFilterForCurrentChain={type === AssetType.native}
-                tokenChainId={chainId}
+                tokenChainIdOverride={chainId}
               />
             ) : (
               <TransactionList

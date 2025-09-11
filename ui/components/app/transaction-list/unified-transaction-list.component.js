@@ -13,19 +13,16 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import {
-  nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
-  nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
 } from '../../../selectors/transactions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentNetwork,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
+  getEnabledNetworks,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
@@ -124,12 +121,15 @@ const PAGE_DAYS_INCREMENT = 10;
 // either of those criteria
 const getTransactionGroupRecipientAddressFilter = (
   recipientAddress,
-  chainId,
+  chainIds,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
+      (chainIds.some(
+        (chainId) =>
+          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+      ) &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
@@ -137,18 +137,26 @@ const getTransactionGroupRecipientAddressFilter = (
 
 const getTransactionGroupRecipientAddressFilterAllChain = (
   recipientAddress,
-  chainId,
+  chainIds,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
-    const isNativeAssetActivityFilter = recipientAddress === "0x0000000000000000000000000000000000000000";
-    const isSimpleSendTx = !txParams.data || txParams?.data === "" || txParams?.data === "0x"|| txParams?.data === "0x0";
-    const isOnSameChain = txParams?.chainId === chainId;
+    const isNativeAssetActivityFilter =
+      recipientAddress === '0x0000000000000000000000000000000000000000';
+    const isSimpleSendTx =
+      !txParams.data ||
+      txParams?.data === '' ||
+      txParams?.data === '0x' ||
+      txParams?.data === '0x0';
+    const isOnSameChain = chainIds.includes(txParams?.chainId);
     if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
       return true;
     }
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP &&
+      (chainIds.some(
+        (chainId) =>
+          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+      ) &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
@@ -171,13 +179,13 @@ const getFilteredTransactionGroups = (
   transactionGroups,
   hideTokenTransactions,
   tokenAddress,
-  chainId,
+  chainIds,
 ) => {
   if (hideTokenTransactions) {
     return transactionGroups.filter(tokenTransactionFilter);
   } else if (tokenAddress) {
     return transactionGroups.filter(
-      getTransactionGroupRecipientAddressFilter(tokenAddress, chainId),
+      getTransactionGroupRecipientAddressFilter(tokenAddress, chainIds),
     );
   }
   return transactionGroups;
@@ -187,13 +195,16 @@ const getFilteredTransactionGroupsAllChains = (
   transactionGroups,
   hideTokenTransactions,
   tokenAddress,
-  tokenChainId,
+  tokenChainIds,
 ) => {
   if (hideTokenTransactions) {
     return transactionGroups.filter(tokenTransactionFilter);
   } else if (tokenAddress) {
     return transactionGroups.filter(
-      getTransactionGroupRecipientAddressFilterAllChain(tokenAddress, tokenChainId),
+      getTransactionGroupRecipientAddressFilterAllChain(
+        tokenAddress,
+        tokenChainIds,
+      ),
     );
   }
   return transactionGroups;
@@ -253,7 +264,7 @@ const groupTransactionsByDate = (
  * @returns A copy of the nonEvmTransactions object with only the transactions
  * that involve the tokenAddress.
  */
-export const filterTransactionsByToken = (
+export const filterNonEvmTxByToken = (
   nonEvmTransactions = { transactions: [] },
   tokenAddress,
 ) => {
@@ -274,33 +285,48 @@ export const filterTransactionsByToken = (
     transactions: transactionForToken,
   };
 };
+
+function filterNonEvmTxByChainIds(nonEvmTransactions, chainIds) {
+  if (!chainIds || chainIds.length === 0) {
+    return { transactions: [] };
+  }
+
+  const transactionForChainIds = (nonEvmTransactions.transactions || []).filter(
+    (transaction) => chainIds.includes(transaction.chain),
+  );
+
+  return {
+    ...nonEvmTransactions,
+    transactions: transactionForChainIds,
+  };
+}
 ///: END:ONLY_INCLUDE_IF
 
 export const buildUnifiedActivityItems = (
   unfilteredPendingTransactions = [],
   enabledNetworksFilteredCompletedTransactions = [],
   nonEvmTransactions,
-  { hideTokenTransactions, tokenAddress, chainId, enabledNetworksByNamespace },
+  { hideTokenTransactions, tokenAddress, evmChainIds, nonEvmChainIds },
 ) => {
   // Apply existing token filters to EVM groups (all chains)
   const filteredPending = getFilteredTransactionGroups(
     unfilteredPendingTransactions,
     hideTokenTransactions,
     tokenAddress,
-    chainId,
+    evmChainIds,
   );
 
   const filteredCompleted = getFilteredTransactionGroupsAllChains(
     enabledNetworksFilteredCompletedTransactions,
     hideTokenTransactions,
     tokenAddress,
-    chainId,
+    evmChainIds,
   );
 
   // Apply token filter to non‑EVM like nonEvmTransactionsForToken
-  const filteredNonEvm = filterTransactionsByToken(
-    nonEvmTransactions,
-    tokenAddress,
+  const filteredNonEvm = filterNonEvmTxByChainIds(
+    filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
+    nonEvmChainIds,
   );
 
   // Normalize to a common shape for final sorting and grouping
@@ -318,13 +344,9 @@ export const buildUnifiedActivityItems = (
     id: tx?.id,
   }));
 
-  // If the evm filter is on, we don't want to show the non-evm items
-  const evmFilterIsOff = Object.keys(enabledNetworksByNamespace).length > 1;
-
-  const sortedUnifiedItems = [
-    ...evmItems,
-    ...(evmFilterIsOff ? nonEvmItems : []),
-  ].sort((a, b) => b.timeMs - a.timeMs);
+  const sortedUnifiedItems = [...evmItems, ...nonEvmItems].sort(
+    (a, b) => b.timeMs - a.timeMs,
+  );
 
   return sortedUnifiedItems;
 };
@@ -351,23 +373,50 @@ export const groupAnyTransactionsByDate = (items) =>
     true,
   );
 
+function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
+  const filteredEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredNonEvmChainIds =
+    Object.keys(enabledNetworks)
+      .filter((namespace) => namespace !== 'eip155')
+      .reduce((acc, namespace) => {
+        const newAcc = [...acc, ...Object.keys(enabledNetworks[namespace])];
+        return newAcc;
+      }, []) ?? [];
+
+  if (tokenChainIdOverride && !tokenChainIdOverride.startsWith('solana')) {
+    return {
+      evmChainIds: [tokenChainIdOverride],
+      nonEvmChainIds: [],
+    };
+  }
+  if (tokenChainIdOverride && tokenChainIdOverride.startsWith('solana')) {
+    return {
+      evmChainIds: [],
+      nonEvmChainIds: [tokenChainIdOverride],
+    };
+  }
+  return {
+    evmChainIds: filteredEVMChainIds,
+    nonEvmChainIds: filteredNonEvmChainIds,
+  };
+}
 export default function UnifiedTransactionList({
   hideTokenTransactions,
   tokenAddress,
   boxProps,
   hideNetworkFilter,
-  overrideFilterForCurrentChain = false,
-  tokenChainId,
+  tokenChainIdOverride,
 }) {
-  console.log({ tokenAddress, hideNetworkFilter, overrideFilterForCurrentChain, tokenChainId });
-  console.log("updated");
   const [daysLimit, setDaysLimit] = useState(PAGE_DAYS_INCREMENT);
   const t = useI18nContext();
   const currentNetworkConfig = useSelector(getCurrentNetwork);
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
   const selectedAccount = useSelector(getSelectedAccount);
+  const enabledNetworks = useSelector(getEnabledNetworks);
+
+  const { evmChainIds, nonEvmChainIds } = getFilteredChainIds(
+    enabledNetworks,
+    tokenChainIdOverride,
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
@@ -377,44 +426,27 @@ export default function UnifiedTransactionList({
   );
 
   const nonEvmTransactionsForToken = useMemo(
-    () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
+    () => filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
     [nonEvmTransactions, tokenAddress],
   );
   ///: END:ONLY_INCLUDE_IF
-
-  const unfilteredPendingTransactionsCurrentChain = useSelector(
-    nonceSortedPendingTransactionsSelector,
-  );
 
   const unfilteredPendingTransactionsAllChains = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
   );
 
   const unfilteredPendingTransactions = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork ||
-      overrideFilterForCurrentChain
-      ? unfilteredPendingTransactionsCurrentChain
-      : unfilteredPendingTransactionsAllChains;
-  }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredPendingTransactionsAllChains,
-    unfilteredPendingTransactionsCurrentChain,
-    overrideFilterForCurrentChain,
-  ]);
+    return unfilteredPendingTransactionsAllChains;
+  }, [unfilteredPendingTransactionsAllChains]);
 
   const isTestNetwork = useMemo(() => {
     return TEST_CHAINS.includes(currentNetworkConfig.chainId);
   }, [currentNetworkConfig.chainId]);
 
-  const unfilteredCompletedTransactionsCurrentChain = useSelector(
-    nonceSortedCompletedTransactionsSelector,
-  );
-
   const unfilteredCompletedTransactionsAllChains = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
 
-  // const chainId = useSelector(getCurrentChainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
@@ -437,9 +469,7 @@ export default function UnifiedTransactionList({
       (enabledChainId) => enabledNetworksByNamespace[enabledChainId],
     );
 
-    const transactionsToFilter = isTokenNetworkFilterEqualCurrentNetwork
-      ? unfilteredCompletedTransactionsCurrentChain
-      : unfilteredCompletedTransactionsAllChains;
+    const transactionsToFilter = unfilteredCompletedTransactionsAllChains;
 
     // Filter transactions to only include those from enabled networks
     const filteredTransactions = transactionsToFilter.filter(
@@ -454,8 +484,6 @@ export default function UnifiedTransactionList({
   }, [
     enabledNetworksByNamespace,
     currentMultichainChainId,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredCompletedTransactionsCurrentChain,
     unfilteredCompletedTransactionsAllChains,
   ]);
 
@@ -467,8 +495,8 @@ export default function UnifiedTransactionList({
       {
         hideTokenTransactions,
         tokenAddress,
-        chainId: tokenChainId,
-        enabledNetworksByNamespace,
+        evmChainIds,
+        nonEvmChainIds,
       },
     );
   }, [
@@ -477,7 +505,7 @@ export default function UnifiedTransactionList({
     nonEvmTransactionsForToken,
     hideTokenTransactions,
     tokenAddress,
-    tokenChainId,
+    evmChainIds,
   ]);
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
@@ -544,7 +572,6 @@ export default function UnifiedTransactionList({
     isFullScreen,
     isNetworkFilterPopoverOpen,
     currentNetworkConfig,
-    isTokenNetworkFilterEqualCurrentNetwork,
     toggleNetworkFilterPopover,
     closePopover,
     isTestNetwork,
@@ -880,14 +907,13 @@ UnifiedTransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
   boxProps: PropTypes.object,
-  tokenChainId: PropTypes.string,
+  tokenChainIdOverride: PropTypes.string,
   hideNetworkFilter: PropTypes.bool,
-  overrideFilterForCurrentChain: PropTypes.bool,
 };
 
 UnifiedTransactionList.defaultProps = {
   hideTokenTransactions: false,
   tokenAddress: undefined,
   boxProps: undefined,
-  tokenChainId: null,
+  tokenChainIdOverride: null,
 };
