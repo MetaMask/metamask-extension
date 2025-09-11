@@ -93,7 +93,7 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/test-storybook.yml
 
-  validate-lavamoat-policy:
+  validate-lavamoat-policies:
     needs:
       - prep-deps
     uses: ./.github/workflows/validate-lavamoat-policies.yml
@@ -403,7 +403,7 @@ jobs:
       - test-lint
       - repository-health-checks
       - test-storybook
-      - validate-lavamoat-policy
+      - validate-lavamoat-policies
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
