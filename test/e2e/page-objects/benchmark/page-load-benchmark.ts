@@ -157,7 +157,6 @@ export class PageLoadBenchmark {
     await this.buildExtension();
     await this.createStaticDappServer();
 
-    // Create a temporary directory for user data to enable persistent (non-incognito) context
     const userDataDir = path.join(process.cwd(), this.userDataDirectory);
     await fs.mkdir(userDataDir, { recursive: true });
 
@@ -177,7 +176,6 @@ export class PageLoadBenchmark {
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     });
 
-    // Get the browser instance from the persistent context
     const browser = this.context.browser();
     if (!browser) {
       throw new Error('Failed to get browser instance from persistent context');
