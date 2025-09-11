@@ -296,6 +296,7 @@
     "@metamask/eth-trezor-keyring": "^9.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^24.0.0",
+    "@metamask/gator-permissions-controller": "^0.1.0",
     "@metamask/institutional-wallet-snap": "1.3.4",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
