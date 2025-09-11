@@ -174,13 +174,9 @@ async function main() {
       dapp: true,
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToMultichainTestDapp()
-        .withPreferencesControllerSmartAccountOptedIn()
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
-      manifestFlags: {
-        testing: { enableSmartAccountOptIn: true },
-      },
       testSpecificMock: async (server: Mockttp) => {
         // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
         await server
@@ -230,6 +226,7 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
+          'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({
