@@ -134,7 +134,7 @@ async function handleRestartAction(
     await sendErrorToSentry(error);
   }
   // Restart the extension
-  // browser.runtime.reload();
+  browser.runtime.reload();
 }
 
 /**
