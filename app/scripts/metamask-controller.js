@@ -2,12 +2,8 @@ import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import {
   CurrencyRateController,
-  TokenDetectionController,
-  TokenListController,
-  TokensController,
   RatesController,
   fetchMultiExchangeRate,
-  TokenBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -439,6 +435,10 @@ import { GatorPermissionsControllerInit } from './controller-init/gator-permissi
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
+import { TokenListControllerInit } from './controller-init/token-list-controller-init';
+import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
+import { TokensControllerInit } from './controller-init/tokens-controller-init';
+import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -848,48 +848,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: preferencesMessenger,
     });
 
-    const tokenListMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenListController',
-      allowedActions: ['NetworkController:getNetworkClientById'],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-
-    this.tokenListController = new TokenListController({
-      chainId: this.#getGlobalChainId({
-        metamask: this.networkController.state,
-      }),
-      preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
-        this.preferencesController.state,
-      ),
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
-    });
-
-    const tokensControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokensController',
-      allowedActions: [
-        'ApprovalController:addRequest',
-        'NetworkController:getNetworkClientById',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccount',
-        'AccountsController:listAccounts',
-      ],
-      allowedEvents: [
-        'NetworkController:networkDidChange',
-        'AccountsController:selectedEvmAccountChange',
-        'PreferencesController:stateChange',
-        'TokenListController:stateChange',
-        'NetworkController:stateChange',
-        'KeyringController:accountRemoved',
-      ],
-    });
-    this.tokensController = new TokensController({
-      state: initState.TokensController,
-      provider: this.provider,
-      messenger: tokensControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-    });
-
     const dataDeletionService = new DataDeletionService();
     const metaMetricsDataDeletionMessenger =
       this.controllerMessenger.getRestricted({
@@ -988,35 +946,6 @@ export default class MetamaskController extends EventEmitter {
         usdConversionRate: null,
       };
     };
-
-    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenBalancesController',
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'TokensController:getState',
-        'PreferencesController:getState',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:listAccounts',
-        'AccountTrackerController:updateNativeBalances',
-        'AccountTrackerController:updateStakedBalances',
-      ],
-      allowedEvents: [
-        'PreferencesController:stateChange',
-        'TokensController:stateChange',
-        'NetworkController:stateChange',
-        'KeyringController:accountRemoved',
-      ],
-    });
-
-    this.tokenBalancesController = new TokenBalancesController({
-      messenger: tokenBalancesMessenger,
-      state: initState.TokenBalancesController,
-      useAccountsAPI: false,
-      queryMultipleAccounts:
-        this.preferencesController.state.useMultiAccountBalanceChecker,
-      interval: 30000,
-    });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -1393,50 +1322,6 @@ export default class MetamaskController extends EventEmitter {
         }
       }, this.onboardingController.state),
     );
-
-    const tokenDetectionControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'TokenDetectionController',
-        allowedActions: [
-          'AccountsController:getAccount',
-          'AccountsController:getSelectedAccount',
-          'KeyringController:getState',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getNetworkConfigurationByNetworkClientId',
-          'NetworkController:getState',
-          'PreferencesController:getState',
-          'TokenListController:getState',
-          'TokensController:getState',
-          'TokensController:addDetectedTokens',
-          'TokensController:addTokens',
-          'NetworkController:findNetworkClientIdByChainId',
-        ],
-        allowedEvents: [
-          'AccountsController:selectedEvmAccountChange',
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'NetworkController:networkDidChange',
-          'PreferencesController:stateChange',
-          'TokenListController:stateChange',
-          'TransactionController:transactionConfirmed',
-        ],
-      });
-
-    this.tokenDetectionController = new TokenDetectionController({
-      messenger: tokenDetectionControllerMessenger,
-      getBalancesInSingleCall: (...args) =>
-        this.assetsContractController.getBalancesInSingleCall(...args),
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
-      useAccountsAPI: true,
-      platform: 'extension',
-      useTokenDetection: () =>
-        this.preferencesController.state.useTokenDetection,
-      useExternalServices: () =>
-        this.preferencesController.state.useExternalServices,
-    });
 
     const addressBookControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1932,6 +1817,10 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
+      TokenListController: TokenListControllerInit,
+      TokenDetectionController: TokenDetectionControllerInit,
+      TokensController: TokensControllerInit,
+      TokenBalancesController: TokenBalancesControllerInit,
       TokenRatesController: TokenRatesControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
@@ -1998,6 +1887,10 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainAssetsRatesController;
     this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
+    this.tokenBalancesController = controllersByName.TokenBalancesController;
+    this.tokenListController = controllersByName.TokenListController;
+    this.tokenDetectionController = controllersByName.TokenDetectionController;
+    this.tokensController = controllersByName.TokensController;
     this.tokenRatesController = controllersByName.TokenRatesController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
@@ -2763,11 +2656,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      previousValueComparator(async (prevState, currState) => {
+      previousValueComparator(async (_, currState) => {
         const { currentLocale } = currState;
 
         await updateCurrentLocale(currentLocale);
-        this.#checkTokenListPolling(currState, prevState);
       }, this.preferencesController.state),
     );
 
@@ -3471,9 +3363,12 @@ export default class MetamaskController extends EventEmitter {
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
+      // @deprecated Use setAvatarType instead
       setUseBlockie: preferencesController.setUseBlockie.bind(
         preferencesController,
       ),
+      setAvatarType: (avatarType) =>
+        preferencesController.setPreference('avatarType', avatarType),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
@@ -9465,26 +9360,6 @@ export default class MetamaskController extends EventEmitter {
         createIfMissing: true,
       },
     );
-  }
-
-  #checkTokenListPolling(currentState, previousState) {
-    const previousEnabled = this.#isTokenListPollingRequired(previousState);
-    const newEnabled = this.#isTokenListPollingRequired(currentState);
-
-    if (previousEnabled === newEnabled) {
-      return;
-    }
-
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
-  }
-
-  #isTokenListPollingRequired(preferencesControllerState) {
-    const { useTokenDetection, useTransactionSimulations, preferences } =
-      preferencesControllerState ?? {};
-
-    const { petnamesEnabled } = preferences ?? {};
-
-    return useTokenDetection || petnamesEnabled || useTransactionSimulations;
   }
 
   /**

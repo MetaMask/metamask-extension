@@ -106,7 +106,10 @@
     "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIdenticon": {
-    "message": "Account identicon"
+    "message": "Account icon"
+  },
+  "accountIdenticonDescription": {
+    "message": "Choose from three different styles of unique icons that can help you identify accounts at a glance."
   },
   "accountIsntConnectedToastText": {
     "message": "$1 isn't connected to $2"
@@ -3042,9 +3045,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
   "jazzicons": {
     "message": "Jazzicons"

@@ -12,7 +12,7 @@ exports[`AddressListItem displays duplicate contact warning icon 1`] = `
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
       >
         <div
-          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -133,7 +133,7 @@ exports[`AddressListItem renders the address and label without duplicate contact
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
       >
         <div
-          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -235,7 +235,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
       >
         <div
-          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
         >
           <div
             class="flex [&>div]:!rounded-none"
