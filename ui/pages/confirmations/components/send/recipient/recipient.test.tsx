@@ -48,6 +48,17 @@ describe('Recipient', () => {
 
   const mockStore = configureStore(mockState);
 
+  const mockRecipients = [
+    {
+      address: '0x1234567890abcdef1234567890abcdef12345678',
+      name: 'Recipient 1',
+    },
+    {
+      address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+      name: 'Recipient 2',
+    },
+  ];
+
   const renderComponent = () => {
     return renderWithProvider(<Recipient />, mockStore);
   };
@@ -86,7 +97,8 @@ describe('Recipient', () => {
     expect(getByRole('textbox')).toBeInTheDocument();
   });
 
-  it('renders recipient modal button', () => {
+  it('renders recipient modal button when recipients exist', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId } = renderComponent();
 
     expect(getByTestId('open-recipient-modal-btn')).toBeInTheDocument();
@@ -114,6 +126,7 @@ describe('Recipient', () => {
   });
 
   it('opens recipient modal when button is clicked', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, queryByText } = renderComponent();
 
     expect(queryByText('SELECTRECIPIENT')).not.toBeInTheDocument();
@@ -124,6 +137,7 @@ describe('Recipient', () => {
   });
 
   it('closes recipient modal when close button is clicked', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, queryByText } = renderComponent();
 
     fireEvent.click(getByTestId('open-recipient-modal-btn'));
@@ -134,6 +148,7 @@ describe('Recipient', () => {
   });
 
   it('renders recipient list in modal when open', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('open-recipient-modal-btn'));
@@ -142,6 +157,7 @@ describe('Recipient', () => {
   });
 
   it('closes modal when recipient list hide callback is called', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, getByText, queryByText } = renderComponent();
 
     fireEvent.click(getByTestId('open-recipient-modal-btn'));
@@ -180,6 +196,7 @@ describe('Recipient', () => {
   });
 
   it('blurs input when opening modal', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, getByRole } = renderComponent();
     const input = getByRole('textbox');
     const button = getByTestId('open-recipient-modal-btn');
@@ -190,6 +207,37 @@ describe('Recipient', () => {
     fireEvent.click(button);
 
     expect(document.activeElement).not.toBe(input);
+  });
+
+  it('renders clear button when to value exists', () => {
+    mockUseSendContext.mockReturnValue({
+      to: '0x1234567890abcdef',
+      updateTo: mockUpdateTo,
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByTestId } = renderComponent();
+
+    expect(getByTestId('clear-recipient-btn')).toBeInTheDocument();
+  });
+
+  it('clears recipient when clear button is clicked', () => {
+    mockUseSendContext.mockReturnValue({
+      to: '0x1234567890abcdef',
+      updateTo: mockUpdateTo,
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByTestId } = renderComponent();
+
+    fireEvent.click(getByTestId('clear-recipient-btn'));
+
+    expect(mockUpdateTo).toHaveBeenCalledWith('');
+  });
+
+  it('does not render modal button when no recipients exist', () => {
+    mockUseRecipients.mockReturnValue([]);
+    const { queryByTestId } = renderComponent();
+
+    expect(queryByTestId('open-recipient-modal-btn')).not.toBeInTheDocument();
   });
 
   describe('metrics', () => {

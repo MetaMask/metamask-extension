@@ -121,6 +121,34 @@ export const Recipient = () => {
     }
   }, [recipientResolvedLookup, updateTo]);
 
+  const hasRecipients = recipients.length > 0;
+
+  const renderEndAccessory = useCallback(() => {
+    if (to) {
+      return (
+        <ButtonIcon
+          ariaLabel="Clear recipient"
+          data-testid="clear-recipient-btn"
+          iconName={IconName.Close}
+          onClick={clearRecipient}
+          size={ButtonIconSize.Sm}
+        />
+      );
+    }
+    if (hasRecipients) {
+      return (
+        <ButtonIcon
+          ariaLabel="Open recipient modal"
+          data-testid="open-recipient-modal-btn"
+          iconName={IconName.Book}
+          onClick={openRecipientModal}
+          size={ButtonIconSize.Sm}
+        />
+      );
+    }
+    return null;
+  }, [to, hasRecipients, clearRecipient, openRecipientModal]);
+
   const matchingRecipient = recipients.find(
     (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
   );
@@ -151,17 +179,7 @@ export const Recipient = () => {
             </Box>
           ) : null
         }
-        endAccessory={
-          <ButtonIcon
-            ariaLabel={to ? 'Clear recipient' : 'Open recipient modal'}
-            data-testid={
-              to ? 'clear-recipient-btn' : 'open-recipient-modal-btn'
-            }
-            iconName={to ? IconName.Close : IconName.Book}
-            onClick={to ? clearRecipient : openRecipientModal}
-            size={ButtonIconSize.Sm}
-          />
-        }
+        endAccessory={renderEndAccessory()}
         onChange={(e) => onToChange(e.target.value)}
         onBlur={captureMetrics}
         ref={recipientInputRef}
