@@ -27,7 +27,7 @@ type ConversionArgs = {
 };
 
 const getFiatValueFn = ({ amount, conversionRate }: ConversionArgs) => {
-  if (!amount) {
+  if (!amount?.length) {
     return '0.00';
   }
   return convertedCurrency(amount, conversionRate, 2) ?? '0.00';
@@ -49,7 +49,7 @@ const getNativeValueFn = ({
   amount,
   conversionRate,
 }: ConversionArgs) => {
-  if (!amount) {
+  if (!amount?.length) {
     return '0';
   }
   return convertedCurrency(amount, 1 / conversionRate, asset?.decimals) ?? '0';
