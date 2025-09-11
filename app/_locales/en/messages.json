@@ -4977,6 +4977,9 @@
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
+  "recipientEditAriaLabel": {
+    "message": "Edit recipient"
+  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
