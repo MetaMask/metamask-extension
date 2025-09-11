@@ -1,10 +1,12 @@
-import { useCallback } from 'react';
+import { AddressResolution } from '@metamask/snaps-sdk';
+import { useCallback, useRef } from 'react';
 
 import { isSolanaAddress } from '../../../../../../shared/lib/multichain/accounts';
 import { isValidDomainName } from '../../../../../helpers/utils/util';
-import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
-import { validateDomainWithConfusables } from '../../../utils/sendValidations';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../../types/send';
+import { useSendContext } from '../../../context/send';
+import { validateDomainWithConfusables } from '../../../utils/sendValidations';
 
 // Common Solana burn addresses - addresses commonly used as burn destinations
 const SOLANA_BURN_ADDRESSES = [
@@ -25,49 +27,49 @@ const validateSolanaAddress = (address: string) => {
     };
   }
 
-  return {
-    error: null,
-    resolvedLookup: null,
-    warning: null,
-  };
+  return {};
 };
 
 export const useSolanaRecipientValidation = () => {
-  const { lookupDomainAddresses } = useSnapNameResolution();
+  const t = useI18nContext();
+  const { chainId, to } = useSendContext();
+  const prevResolved = useRef<string>();
 
   const validateSolanaRecipient = useCallback(
     async (
-      address: string,
-      passedChainId?: string,
+      results: AddressResolution[],
+      loading: boolean,
     ): Promise<RecipientValidationResult> => {
-      const effectiveChainId =
-        passedChainId || 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-
-      if (isSolanaAddress(address)) {
-        return validateSolanaAddress(address);
+      if (!to) {
+        return {};
       }
 
-      if (isValidDomainName(address)) {
-        try {
-          const result = await validateDomainWithConfusables(address, {
-            chainId: effectiveChainId,
-            lookupDomainAddresses,
-            errorMessages: {
-              unknownError: 'solanaUnknownError',
-              confusingDomain: 'confusingSolanaDomain',
-            },
-          });
-          return result;
-        } catch (error) {
-          return { error: 'solanaUnknownError' };
+      if (isSolanaAddress(to)) {
+        return validateSolanaAddress(to);
+      }
+
+      if (isValidDomainName(to)) {
+        const resolvedLookup = results?.[0]?.resolvedAddress;
+        if (loading && prevResolved.current !== to) {
+          return { recipientValidationLoading: true };
         }
+        if (results?.length) {
+          prevResolved.current = to;
+          return {
+            resolvedLookup,
+            ...validateDomainWithConfusables(to, t),
+          };
+        }
+        return {
+          error: t('ensUnknownError'),
+        };
       }
 
       return {
-        error: 'invalidAddress',
+        error: t('invalidAddress'),
       };
     },
-    [lookupDomainAddresses],
+    [chainId, t, to],
   );
 
   return {

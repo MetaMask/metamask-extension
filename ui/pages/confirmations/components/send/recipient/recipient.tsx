@@ -41,12 +41,13 @@ export const Recipient = () => {
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
+    toAddressValidated,
   } = useRecipientValidation();
   const hasConfusableCharacters =
     recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
-  const { to, updateTo } = useSendContext();
+  const { to, updateTo, updateToResolved } = useSendContext();
   const [localValue, setLocalValue] = useState(to || '');
   const { captureRecipientSelected } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
@@ -84,9 +85,9 @@ export const Recipient = () => {
 
   useEffect(() => {
     if (recipientResolvedLookup) {
-      updateTo(recipientResolvedLookup);
+      updateToResolved(recipientResolvedLookup);
     }
-  }, [recipientResolvedLookup, updateTo]);
+  }, [recipientResolvedLookup, updateToResolved]);
 
   const matchingRecipient = recipients.find(
     (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
@@ -150,7 +151,7 @@ export const Recipient = () => {
               .join(', ')})`}
         </HelpText>
       )}
-      {recipientResolvedLookup && (
+      {to === toAddressValidated && recipientResolvedLookup && (
         <HelpText severity={HelpTextSeverity.Info} marginTop={1}>
           {t('resolvedLookup', [recipientResolvedLookup])}
         </HelpText>

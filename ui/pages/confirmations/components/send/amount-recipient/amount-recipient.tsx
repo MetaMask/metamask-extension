@@ -22,14 +22,14 @@ import { Recipient } from '../recipient';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const { to } = useSendContext();
+  const { toResolved } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
   const { amountError } = useAmountValidation();
   const { recipientError } = useRecipientValidation();
 
   const hasError = Boolean(amountError) || Boolean(recipientError);
-  const isDisabled = hasError || !to;
+  const isDisabled = hasError || !toResolved;
 
   const onClick = useCallback(() => {
     handleSubmit();
