@@ -27,7 +27,7 @@ type ConversionArgs = {
 };
 
 const getFiatValueFn = ({ amount, conversionRate }: ConversionArgs) => {
-  if (!amount?.length) {
+  if (!amount) {
     return '0.00';
   }
   return convertedCurrency(amount, conversionRate, 2) ?? '0.00';
@@ -49,10 +49,16 @@ const getNativeValueFn = ({
   amount,
   conversionRate,
 }: ConversionArgs) => {
-  if (!amount?.length) {
+  if (!amount) {
     return '0';
   }
-  return convertedCurrency(amount, 1 / conversionRate, asset?.decimals) ?? '0';
+  return (
+    convertedCurrency(
+      amount,
+      conversionRate !== 0 ? 1 / conversionRate : 0,
+      asset?.decimals,
+    ) ?? '0'
+  );
 };
 
 const getNativeDisplayValueFn = ({
@@ -94,8 +100,10 @@ export const useCurrencyConversions = () => {
   const multichainAssetsRates = useSelector(getAssetsRates);
 
   const conversionRate = useMemo(() => {
+    const assetAddress = asset?.assetId ?? asset?.address;
     if (
-      !asset?.address ||
+      !asset ||
+      !assetAddress ||
       asset.standard === ERC1155 ||
       asset.standard === ERC721
     ) {
@@ -104,7 +112,7 @@ export const useCurrencyConversions = () => {
     if ((asset as Asset)?.fiat?.conversionRate) {
       return (asset as Asset)?.fiat?.conversionRate ?? 0;
     }
-    if (isEvmAddress(asset?.address)) {
+    if (isEvmAddress(assetAddress)) {
       if (isNativeAddress(asset?.address)) {
         return conversionRateEvm;
       }
@@ -117,7 +125,7 @@ export const useCurrencyConversions = () => {
       );
     }
     return parseFloat(
-      multichainAssetsRates[asset?.address as CaipAssetType]?.rate ?? 0,
+      multichainAssetsRates[assetAddress as CaipAssetType]?.rate ?? 0,
     );
   }, [
     asset?.address,
