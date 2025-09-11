@@ -143,12 +143,14 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param {object} withSolanaWebSocket - Solana WebSocket configuration with server flag and mocks function
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
   { chainId, ethConversionInUsd = 1700 },
+  withSolanaWebSocket,
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -535,6 +537,183 @@ async function setupMocking(
       };
     });
 
+  // Bridge API mocks - must be after AGGREGATOR_METADATA is defined
+  // Network 1 (Mainnet)
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/1/topAssets')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'ETH',
+          },
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+          },
+          {
+            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+          },
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/1/aggregatorMetadata')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(AGGREGATOR_METADATA),
+      };
+    });
+
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/1/tokens')
+    .withQuery({ includeBlockedTokens: 'true' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            chainId: 1,
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'ETH',
+            name: 'Ethereum',
+            decimals: 18,
+            icon: 'https://media.socket.tech/tokens/all/ETH',
+            logoURI: 'https://media.socket.tech/tokens/all/ETH',
+            chainAgnosticId: null,
+          },
+          {
+            chainId: 1,
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+            name: 'USD Coin',
+            decimals: 6,
+            icon: 'https://media.socket.tech/tokens/all/USDC',
+            logoURI: 'https://media.socket.tech/tokens/all/USDC',
+            chainAgnosticId: null,
+          },
+          {
+            chainId: 1,
+            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+            name: 'Tether USD',
+            decimals: 6,
+            icon: 'https://media.socket.tech/tokens/all/USDT',
+            logoURI: 'https://media.socket.tech/tokens/all/USDT',
+            chainAgnosticId: null,
+          },
+          {
+            chainId: 1,
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+            name: 'Dai Stablecoin',
+            decimals: 18,
+            icon: 'https://media.socket.tech/tokens/all/DAI',
+            logoURI: 'https://media.socket.tech/tokens/all/DAI',
+            chainAgnosticId: null,
+          },
+        ],
+      };
+    });
+
+  // Network 59144 (Linea)
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/topAssets')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'ETH',
+          },
+          {
+            address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+            symbol: 'USDC',
+          },
+          {
+            address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
+            symbol: 'USDT',
+          },
+          {
+            address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
+            symbol: 'WETH',
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet(
+      'https://bridge.api.cx.metamask.io/networks/59144/aggregatorMetadata',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(AGGREGATOR_METADATA),
+      };
+    });
+
+  await server
+    .forGet('https://bridge.api.cx.metamask.io/networks/59144/tokens')
+    .withQuery({ includeBlockedTokens: 'true' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            chainId: 59144,
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'ETH',
+            name: 'Ethereum',
+            decimals: 18,
+            icon: 'https://media.socket.tech/tokens/all/ETH',
+            logoURI: 'https://media.socket.tech/tokens/all/ETH',
+            chainAgnosticId: null,
+          },
+          {
+            chainId: 59144,
+            address: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+            symbol: 'USDC',
+            name: 'USD Coin',
+            decimals: 6,
+            icon: 'https://media.socket.tech/tokens/all/USDC',
+            logoURI: 'https://media.socket.tech/tokens/all/USDC',
+            chainAgnosticId: null,
+          },
+          {
+            chainId: 59144,
+            address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
+            symbol: 'USDT',
+            name: 'Tether USD',
+            decimals: 6,
+            icon: 'https://media.socket.tech/tokens/all/USDT',
+            logoURI: 'https://media.socket.tech/tokens/all/USDT',
+            chainAgnosticId: null,
+          },
+          {
+            chainId: 59144,
+            address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
+            symbol: 'WETH',
+            name: 'Wrapped Ether',
+            decimals: 18,
+            icon: 'https://media.socket.tech/tokens/all/WETH',
+            logoURI: 'https://media.socket.tech/tokens/all/WETH',
+            chainAgnosticId: null,
+          },
+        ],
+      };
+    });
+
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
     .thenCallback(() => {
@@ -827,6 +1006,22 @@ async function setupMocking(
       };
     });
 
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            sendRedesign: {
+              enabled: false,
+            },
+          },
+        ],
+      };
+    });
+
   // On Ramp Content
   const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
   await server
@@ -940,6 +1135,19 @@ async function setupMocking(
       };
     });
 
+  /**
+   * Solana Websocket
+   * Setup HTTP intercept for WebSocket handshake requests
+   */
+  if (withSolanaWebSocket.server) {
+    await server
+      .forAnyWebSocket()
+      .matching((req) =>
+        /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
+      )
+      .thenForwardTo('ws://localhost:8088');
+  }
+
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
   const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
@@ -1007,7 +1215,7 @@ async function setupMocking(
    * @param request
    */
   const portfolioRequestsMatcher = (request) =>
-    request.headers.referer === 'https://portfolio.metamask.io/';
+    request.headers.referer === 'https://app.metamask.io/';
 
   /**
    * Tests a request against private domains and returns a set of generic hostnames that

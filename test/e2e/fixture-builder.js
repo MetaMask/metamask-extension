@@ -33,7 +33,6 @@ function onboardingFixture() {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
-        qrHardware: {},
         recoveryPhraseReminderHasBeenShown: false,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
@@ -141,6 +140,7 @@ function onboardingFixture() {
         },
       },
       UserStorageController: {},
+      MultichainAccountService: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
@@ -329,6 +329,12 @@ class FixtureBuilder {
 
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
+  }
+
+  withNetworkControllerOnArbitrumGoerli() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'arbitrum-goerli',
+    });
   }
 
   withNetworkControllerOnLinea() {
@@ -945,8 +951,13 @@ class FixtureBuilder {
   }
 
   /**
-   * @deprecated this method should not be used, as the `smartTransactionsOptInStatus` value is overridden by the migration 135
-   * Use the `toggleStxSetting` flow to disable this setting effectively.
+   * Note: When using this method, you also need to disable the smart transactions
+   * migration in your test by adding the following manifest flag:
+   * ```
+   * manifestFlags: {
+   *   testing: { disableSmartTransactionsOverride: true },
+   * }
+   * ```
    */
   withPreferencesControllerSmartTransactionsOptedOut() {
     return this.withPreferencesController({
@@ -1115,6 +1126,169 @@ class FixtureBuilder {
 
   withSubjectMetadataController(data) {
     merge(this.fixture.data.SubjectMetadataController, data);
+    return this;
+  }
+
+  /**
+   * Configure the Account Tree Controller state.
+   * Builds a BIP-44 compliant tree by grouping HD accounts by entropy source
+   * (primary HD keyring ID) into entropy wallets, and non-HD accounts by
+   * keyring/snap into single-account groups.
+   *
+   * @param {object} [data] - Optional overrides to merge into the default state.
+   * @param {object} [data.accountTree] - Account tree structure to set.
+   * @param {object} [data.accountGroupsMetadata] - Per-group metadata map.
+   * @param {object} [data.accountWalletsMetadata] - Per-wallet metadata map.
+   * @returns {FixtureBuilder}
+   */
+  withAccountTreeController(data = {}) {
+    const buildDefaultAccountTree = () => {
+      const accountsById =
+        this.fixture?.data?.AccountsController?.internalAccounts?.accounts ||
+        {};
+      const selectedAccountId =
+        this.fixture?.data?.AccountsController?.internalAccounts
+          ?.selectedAccount || null;
+      const accountsList = Object.values(accountsById);
+
+      const wallets = {};
+
+      // 1) Entropy (HD) wallets grouped by entropySource, defaulting to BIP-44 account index 0
+      const entropyToAccountIds = {};
+      for (const account of accountsList) {
+        const keyringType = account?.metadata?.keyring?.type;
+        if (keyringType === 'HD Key Tree') {
+          const entropyId =
+            account?.options?.entropySource || 'UNKNOWN_ENTROPY_SOURCE';
+          if (!entropyToAccountIds[entropyId]) {
+            entropyToAccountIds[entropyId] = [];
+          }
+          entropyToAccountIds[entropyId].push(account.id);
+        }
+      }
+
+      Object.entries(entropyToAccountIds).forEach(
+        ([entropyId, accountIds], index) => {
+          const walletId = `entropy:${entropyId}`;
+          const groupId = `${walletId}/0`;
+          wallets[walletId] = {
+            id: walletId,
+            type: 'entropy',
+            groups: {
+              [groupId]: {
+                id: groupId,
+                type: 'multichain-account',
+                accounts: accountIds,
+                metadata: {
+                  name: 'Default',
+                  pinned: false,
+                  hidden: false,
+                  entropy: { groupIndex: 0 },
+                },
+              },
+            },
+            metadata: {
+              name: `Wallet ${index + 1}`,
+              entropy: { id: entropyId },
+            },
+          };
+        },
+      );
+
+      // 2) Keyring wallets (Ledger, Trezor, Simple Key Pair, Custody, etc.)
+      for (const account of accountsList) {
+        const keyringType = account?.metadata?.keyring?.type;
+        const isHd = keyringType === 'HD Key Tree';
+        const isSnap = Boolean(account?.metadata?.snap?.id);
+        if (!isHd && keyringType && !isSnap) {
+          const walletId = `keyring:${keyringType}`;
+          const lowerAddress = (account?.address || '').toLowerCase();
+          const groupId = `${walletId}/${lowerAddress}`;
+          wallets[walletId] ||= {
+            id: walletId,
+            type: 'keyring',
+            groups: {},
+            metadata: { name: keyringType, keyring: { type: keyringType } },
+          };
+          wallets[walletId].groups[groupId] = {
+            id: groupId,
+            type: 'single-account',
+            accounts: [account.id],
+            metadata: {
+              name: `${keyringType} Account 1`,
+              pinned: false,
+              hidden: false,
+            },
+          };
+        }
+      }
+
+      // 3) Snap wallets grouped by snap id into single-account groups
+      for (const account of accountsList) {
+        const snapId = account?.metadata?.snap?.id;
+        if (snapId) {
+          const walletId = `snap:${snapId}`;
+          const lowerAddress = (account?.address || '').toLowerCase();
+          const groupId = `${walletId}/${lowerAddress}`;
+          wallets[walletId] ||= {
+            id: walletId,
+            type: 'snap',
+            groups: {},
+            metadata: {
+              name: account?.metadata?.snap?.name || snapId,
+              snap: { id: snapId },
+            },
+          };
+          wallets[walletId].groups[groupId] = {
+            id: groupId,
+            type: 'single-account',
+            accounts: [account.id],
+            metadata: {
+              name: `${account?.metadata?.snap?.name || 'Snap Account'} 1`,
+              pinned: false,
+              hidden: false,
+            },
+          };
+        }
+      }
+
+      // Determine selectedAccountGroup: group containing selected internal account
+      let selectedAccountGroup = null;
+      if (selectedAccountId) {
+        for (const wallet of Object.values(wallets)) {
+          const match = Object.values(wallet.groups).find((group) =>
+            group.accounts.includes(selectedAccountId),
+          );
+          if (match) {
+            selectedAccountGroup = match.id;
+            break;
+          }
+        }
+      }
+
+      // Fallback: select the first available group
+      if (!selectedAccountGroup) {
+        const firstWallet = Object.values(wallets)[0];
+        const firstGroup = firstWallet
+          ? Object.values(firstWallet.groups)[0]
+          : null;
+        selectedAccountGroup = firstGroup ? firstGroup.id : null;
+      }
+
+      return { selectedAccountGroup, wallets };
+    };
+
+    this.fixture.data.AccountTreeController ??= {};
+
+    const defaultState = {
+      accountTree: buildDefaultAccountTree(),
+      accountGroupsMetadata: {},
+      accountWalletsMetadata: {},
+    };
+
+    // Allow callers to override/extend defaults.
+    merge(defaultState, data);
+    merge(this.fixture.data.AccountTreeController, defaultState);
     return this;
   }
 

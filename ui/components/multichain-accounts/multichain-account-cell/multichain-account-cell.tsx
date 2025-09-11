@@ -11,12 +11,12 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
   IconColor,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -27,6 +27,8 @@ export type MultichainAccountCellProps = {
   balance: string;
   endAccessory?: React.ReactNode;
   selected?: boolean;
+  walletName?: string;
+  disableHoverEffect?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -36,12 +38,13 @@ export const MultichainAccountCell = ({
   balance,
   endAccessory,
   selected = false,
+  walletName,
+  disableHoverEffect = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
@@ -50,7 +53,7 @@ export const MultichainAccountCell = ({
       }}
       padding={4}
       onClick={handleClick}
-      className="multichain-account-cell"
+      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
     >
@@ -78,14 +81,28 @@ export const MultichainAccountCell = ({
             variant={AvatarAccountVariant.Jazzicon}
           />
         </Box>
-        <Text
-          className="multichain-account-cell__account-name"
-          variant={TextVariant.bodyMdMedium}
-          marginLeft={3}
-          ellipsis
-        >
-          {accountName}
-        </Text>
+        <Box>
+          <Text
+            className="multichain-account-cell__account-name"
+            variant={TextVariant.bodyMdMedium}
+            marginLeft={3}
+            ellipsis
+          >
+            {accountName}
+          </Text>
+          {walletName && (
+            <Text
+              className="multichain-account-cell__account-name"
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodySmMedium}
+              marginLeft={3}
+              ellipsis
+            >
+              {walletName}
+            </Text>
+          )}
+        </Box>
+
         {selected && (
           <Icon
             name={IconName.CheckBold}

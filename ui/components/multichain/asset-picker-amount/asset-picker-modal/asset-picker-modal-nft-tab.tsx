@@ -27,7 +27,6 @@ import {
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
 import { useNfts } from '../../../../hooks/useNfts';
-import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -39,6 +38,8 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { useRedesignedSendFlow } from '../../../../pages/confirmations/hooks/useRedesignedSendFlow';
+import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
 import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -67,6 +68,7 @@ export function AssetPickerModalNftTab({
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const { currentlyOwnedNfts } = useNfts({
     overridePopularNetworkFilter: true,
@@ -128,7 +130,10 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    history.push(SEND_ROUTE);
+    navigateToSendRoute(history, isSendRedesignEnabled, {
+      address: nft.address,
+      chainId: nft.chainId,
+    });
     onClose && onClose();
   };
 

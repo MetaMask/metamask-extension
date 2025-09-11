@@ -1,5 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
@@ -196,6 +197,9 @@ export const CHAIN_IDS = {
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
   FRAX: '0xfc',
+  ACALA: '0x313',
+  ACALA_TESTNET: '0x253',
+  KARURA: '0x2ae',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -209,7 +213,6 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   CRONOS_MAINNET_BETA: '0x19',
   Q_MAINNET: '0x8a71',
   HUOBI_ECO_CHAIN_MAINNET: '0x80',
-  ACALA_NETWORK: '0x313',
   ARBITRUM_NOVA: '0xa4ba',
   ASTAR: '0x250',
   BAHAMUT_MAINNET: '0x142d',
@@ -348,8 +351,17 @@ export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const FRAX_DISPLAY_NAME = 'Fraxtal';
+export const ACALA_DISPLAY_NAME = 'Acala';
+export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
+export const KARURA_DISPLAY_NAME = 'Karura';
 
-export const infuraProjectId = process.env.INFURA_PROJECT_ID;
+// If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
+// so we need to look at process.env.INFURA_PROJECT_ID instead.
+export const infuraProjectId =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: yarn test:api-specs-multichain complains "Element implicitly has an 'any' type because type 'typeof globalThis' has no index signature"
+  globalThis.INFURA_PROJECT_ID ?? process.env.INFURA_PROJECT_ID;
+
 export const getRpcUrl = ({
   network,
   excludeProjectId = false,
@@ -418,6 +430,8 @@ export const CURRENCY_SYMBOLS = {
   OMNI: 'OMNI',
   XRPLEVM: 'XRP',
   FRAX: 'FRAX',
+  ACALA: 'ACA',
+  KARURA: 'KAR',
 } as const;
 
 // Non-EVM currency symbols
@@ -483,7 +497,6 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   DOGECHAIN_MAINNET: 'DOGE',
   OASYS_MAINNET: 'OAS',
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
-  ACALA_NETWORK: 'ACA',
   IOTEX_MAINNET: 'IOTX',
   APE: 'APE',
   GSYS: 'GSYS',
@@ -521,7 +534,6 @@ export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
 export const BASE_TOKEN_IMAGE_URL = './images/base.svg';
-export const ACALA_TOKEN_IMAGE_URL = './images/acala-network-logo.svg';
 export const ARBITRUM_NOVA_IMAGE_URL = './images/arbitrum-nova-logo.svg';
 export const ASTAR_IMAGE_URL = './images/astar-logo.svg';
 export const BAHAMUT_IMAGE_URL = './images/bahamut.png';
@@ -621,6 +633,10 @@ export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_NATIVE_TOKEN_IMAGE_URL = './images/xrplevm-native.svg';
 export const FRAX_IMAGE_URL = './images/frax.svg';
 export const FRAX_NATIVE_TOKEN_IMAGE_URL = './images/frax-native.svg';
+export const ACALA_IMAGE_URL = './images/acala.svg';
+export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
+export const KARURA_IMAGE_URL = './images/karura.svg';
+export const KARURA_TOKEN_IMAGE_URL = './images/karura-token.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -772,6 +788,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_DISPLAY_NAME,
   [CHAIN_IDS.FRAX]: FRAX_DISPLAY_NAME,
+  [CHAIN_IDS.ACALA]: ACALA_DISPLAY_NAME,
+  [CHAIN_IDS.ACALA_TESTNET]: ACALA_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.KARURA]: KARURA_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -886,8 +905,6 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.OASYS_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.HUOBI_ECO_CHAIN_MAINNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.HUOBI_ECO_CHAIN_MAINNET,
-  [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]:
-    CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.GSYS_MAINNET]: CHAINLIST_CURRENCY_SYMBOLS_MAP.GSYS,
@@ -921,6 +938,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
   [CHAIN_IDS.FRAX]: CURRENCY_SYMBOLS.FRAX,
+  [CHAIN_IDS.ACALA]: CURRENCY_SYMBOLS.ACALA,
+  [CHAIN_IDS.ACALA_TESTNET]: CURRENCY_SYMBOLS.ACALA,
+  [CHAIN_IDS.KARURA]: CURRENCY_SYMBOLS.KARURA,
 } as const;
 
 /**
@@ -985,7 +1005,6 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
-  [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]: ACALA_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ASTAR]: ASTAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.BAHAMUT_MAINNET]: BAHAMUT_IMAGE_URL,
@@ -1080,6 +1099,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
   [CHAIN_IDS.FRAX]: FRAX_IMAGE_URL,
+  [CHAIN_IDS.ACALA]: ACALA_IMAGE_URL,
+  [CHAIN_IDS.ACALA_TESTNET]: ACALA_IMAGE_URL,
+  [CHAIN_IDS.KARURA]: KARURA_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1152,6 +1174,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
     XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FRAX]: FRAX_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ACALA]: ACALA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -1161,11 +1186,10 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   Hex | `${string}:${string}`,
   string
 > = {
-  [CHAIN_IDS.LINEA_MAINNET]:
-    'https://portfolio.metamask.io/explore/networks/linea',
-  [CHAIN_IDS.SEI]: 'https://portfolio.metamask.io/explore/networks/sei',
+  [CHAIN_IDS.LINEA_MAINNET]: 'https://app.metamask.io/explore/networks/linea',
+  [CHAIN_IDS.SEI]: 'https://app.metamask.io/explore/networks/sei',
   [MultichainNetworks.SOLANA]:
-    'https://portfolio.metamask.io/explore/networks/solana',
+    'https://app.metamask.io/explore/networks/solana',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -1266,6 +1290,9 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [CHAIN_IDS.OPTIMISM]: 1,
   [CHAIN_IDS.OPTIMISM_TESTNET]: 1,
+  [CHAIN_IDS.ACALA]: 1,
+  [CHAIN_IDS.ACALA_TESTNET]: 1,
+  [CHAIN_IDS.KARURA]: 1,
 };
 
 /**
@@ -1439,6 +1466,13 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  ...FEATURED_RPCS.map((rpc) => rpc.chainId),
+];
+
+export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
       - stable
       - Version-v*
       - release/*
@@ -15,17 +14,17 @@ on:
       - reopened
       - synchronize
     branches-ignore:
-      - master
+      - stable
   merge_group:
   schedule:
-    # Run the full suite "overnight," once every half hour from 1:00am UTC until 2:59am UTC.
+    # Run the full suite "overnight," once every hour from 2:00am UTC until 5:59am UTC.
     # This helps with "Top 10 failed tests on the metamask-extension repository main branch,"
     # especially the Monday morning list, which is otherwise usually a fake empty.
-    - cron: '0,30 1-2 * * *'
+    - cron: '0 2-6 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master') || contains(github.ref, 'refs/heads/stable')) }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
   # For a `pull_request` event, the branch is `github.head_ref``.
@@ -108,14 +107,14 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
     secrets: inherit
 
   build-dist-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -140,14 +139,14 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
     secrets: inherit
 
   build-flask-mv2-browserify:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ ((github.head_ref || github.ref_name) == 'master' || (github.head_ref || github.ref_name) == 'stable') && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
       mozilla-lint: true
       enable-mv3: false
     secrets: inherit
@@ -240,6 +239,23 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome
+
+  page-load-benchmark-pr:
+    needs:
+      - build-dist-browserify
+    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
+    uses: ./.github/workflows/page-load-benchmark-pr.yml
+    with:
+      browser-loads: '10'
+      page-loads: '10'
+
+  page-load-benchmark-upload:
+    needs:
+      - page-load-benchmark-pr
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/page-load-benchmark-upload.yml
+    secrets:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
   needs-e2e:
     needs:
@@ -370,7 +386,7 @@ jobs:
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && (github.ref_name == 'master' || github.ref_name == 'stable') }}
+    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
@@ -406,9 +422,6 @@ jobs:
       - build-test-flask-mv2-browserify
       - build-test-webpack
       - run-tests
-      - needs-e2e
-      - e2e-chrome
-      - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
@@ -426,13 +439,31 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - all-jobs-completed
+      - needs-e2e
+      - e2e-chrome
+      - e2e-firefox
     steps:
       - name: Check that all jobs have passed
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
+          # Check if all non-E2E jobs passed
+          if [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" != "true" ]]; then
+            echo "Non-E2E jobs failed"
             exit 1
           fi
+
+          # Check E2E jobs only if they should have run
+          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
+            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
+              echo "E2E Chrome tests failed"
+              exit 1
+            fi
+            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
+              echo "E2E Firefox tests failed"
+              exit 1
+            fi
+          fi
+
+          echo "All required jobs passed"
 
   log-merge-group-failure:
     name: Log merge group failure

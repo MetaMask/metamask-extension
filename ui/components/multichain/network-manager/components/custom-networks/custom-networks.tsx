@@ -1,6 +1,6 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
@@ -33,20 +33,26 @@ import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getShowTestNetworks,
 } from '../../../../../selectors';
+import { hideModal } from '../../../../../store/actions';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isMultichainAccountsFeatureEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
 
@@ -72,8 +78,9 @@ export const CustomNetworks = React.memo(() => {
   const handleNetworkClick = useCallback(
     async (chainId: MultichainNetworkConfiguration['chainId']) => {
       await handleNetworkChange(chainId);
+      await dispatch(hideModal());
     },
-    [handleNetworkChange],
+    [dispatch, handleNetworkChange],
   );
 
   // Renders a network in the network list
@@ -130,32 +137,32 @@ export const CustomNetworks = React.memo(() => {
     });
 
     return filteredNetworks.length > 0 ? (
-      <>
+      <Box paddingBottom={2}>
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
         >
           {t('customNetworks')}
         </Text>
         {filteredNetworks.map((network) =>
           generateMultichainNetworkListItem(network),
         )}
-      </>
+      </Box>
     ) : null;
   }, [
     orderedNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    isMultichainAccountsFeatureEnabled,
     t,
   ]);
 
   const renderedTestNetworks = useMemo(() => {
     const filteredTestNetworks = orderedTestNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
+      if (isEvmNetworkSelected || isMultichainAccountsFeatureEnabled) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks
@@ -169,6 +176,7 @@ export const CustomNetworks = React.memo(() => {
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    isMultichainAccountsFeatureEnabled,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders
@@ -194,7 +202,6 @@ export const CustomNetworks = React.memo(() => {
                 color={TextColor.textAlternative}
                 paddingLeft={4}
                 paddingRight={4}
-                paddingTop={4}
               >
                 {t('testnets')}
               </Text>

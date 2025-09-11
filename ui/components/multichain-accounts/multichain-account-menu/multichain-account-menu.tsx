@@ -15,7 +15,10 @@ import {
   JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountMenuItems } from '../multichain-account-menu-items/multichain-account-menu-items';
 import { MenuItemConfig } from '../multichain-account-menu-items/multichain-account-menu-items.types';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
@@ -23,6 +26,8 @@ import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 export const MultichainAccountMenu = ({
   accountGroupId,
   isRemovable,
+  buttonBackgroundColor,
+  handleAccountRenameAction,
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -41,15 +46,19 @@ export const MultichainAccountMenu = ({
     };
 
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
-      // TODO: Implement account rename click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      if (handleAccountRenameAction) {
+        handleAccountRenameAction(accountGroupId);
+        setIsPopoverOpen(false);
+      }
     };
 
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
-      // TODO: Implement account addresses click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
+      history.push(multichainAccountAddressesPageRoute);
     };
 
     const handleAccountPinClick = (mouseEvent: React.MouseEvent) => {
@@ -80,13 +89,11 @@ export const MultichainAccountMenu = ({
         textKey: 'rename',
         iconName: IconName.Edit,
         onClick: handleAccountRenameClick,
-        disabled: true,
       },
       {
         textKey: 'addresses',
         iconName: IconName.QrCode,
         onClick: handleAccountAddressesClick,
-        disabled: true,
       },
       {
         textKey: 'pin',
@@ -112,7 +119,7 @@ export const MultichainAccountMenu = ({
     }
 
     return baseMenuItems;
-  }, [accountGroupId, history, isRemovable]);
+  }, [accountGroupId, handleAccountRenameAction, history, isRemovable]);
 
   return (
     <>
@@ -122,7 +129,9 @@ export const MultichainAccountMenu = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={
+          buttonBackgroundColor || BackgroundColor.backgroundMuted
+        }
         borderRadius={BorderRadius.LG}
         padding={1}
         onClick={togglePopover}

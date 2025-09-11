@@ -12,6 +12,10 @@ const render = (
   return renderWithConfirmContextProvider(<WalletInitiatedHeader />, store);
 };
 
+jest.mock('../../../hooks/useRedesignedSendFlow', () => ({
+  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+}));
+
 describe('<WalletInitiatedHeader />', () => {
   it('should match snapshot', () => {
     const { container } = render();

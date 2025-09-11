@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí mạng."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Phí gas cao và ước tính kém chính xác hơn."
-  },
   "alertMessageNoGasPrice": {
     "message": "Chúng tôi không thể tiếp tục giao dịch này cho đến khi bạn cập nhật phí thủ công."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Quyền không cần thiết"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Mạng đang bận"
   },
   "alertReasonNoGasPrice": {
     "message": "Ước tính phí không có sẵn"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Sao lưu tài khoản và đồng bộ các chế độ cài đặt của bạn."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Giới thiệu về sao lưu và đồng bộ"
-  },
   "backupApprovalInfo": {
     "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "Cơ bản"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Chức năng cơ bản đã tắt"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask cung cấp các tính năng cơ bản như chi tiết token và cài đặt gas thông qua các dịch vụ Internet. Khi bạn sử dụng các dịch vụ Internet, địa chỉ IP của bạn sẽ được chia sẻ, trong trường hợp này là với MetaMask. Điều này giống như khi bạn truy cập bất kỳ trang web nào. MetaMask sử dụng dữ liệu này tạm thời và không bao giờ bán dữ liệu của bạn. Bạn có thể sử dụng VPN hoặc tắt các dịch vụ này, nhưng nó có thể ảnh hưởng đến trải nghiệm sử dụng MetaMask của bạn. Để tìm hiểu thêm, vui lòng đọc $1.",
@@ -2180,9 +2165,6 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableIt": {
-    "message": " Bật"
-  },
   "enableSmartContractAccount": {
     "message": "Bật tài khoản hợp đồng thông minh"
   },
@@ -3568,9 +3550,6 @@
   },
   "networkIsBusy": {
     "message": "Mạng đang bận. Giá gas cao và ước tính kém chính xác hơn."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Phải bật ít nhất một mạng"
   },
   "networkMenu": {
     "message": "Trình đơn mạng"
@@ -5534,60 +5513,6 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Khi bạn bật tùy chọn này, màn hình xen giữa khi mở liên kết sâu trong MetaMask sẽ bị bỏ qua. \"Liên kết sâu\" là một liên kết như https://link.metamask.io/home sẽ khiến MetaMask mở và khởi chạy; những liên kết này có thể bị che giấu bởi những liên kết khác. Màn hình xen giữa được thiết kế để bảo vệ bạn khỏi việc vô tình mở các trang trong MetaMask có thể hiển thị tài khoản, token, lịch sử, số dư, chế độ cài đặt hoặc các thông tin nhạy cảm khác. Chế độ cài đặt này chỉ áp dụng cho các liên kết được MetaMask ký."
   },
-  "slideBridgeDescription": {
-    "message": "Di chuyển qua 9 chuỗi, tất cả trong ví của bạn"
-  },
-  "slideBridgeTitle": {
-    "message": "Sẵn sàng để thực hiện cầu nối?"
-  },
-  "slideCashOutDescription": {
-    "message": "Bán tiền mã hóa để lấy tiền mặt"
-  },
-  "slideCashOutTitle": {
-    "message": "Rút tiền với MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Có sẵn ở một số khu vực được chọn"
-  },
-  "slideDebitCardTitle": {
-    "message": "Thẻ ghi nợ MetaMask"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Mang ví của bạn đi khắp mọi nơi"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Tải ứng dụng MetaMask di động xuống"
-  },
-  "slideFundWalletDescription": {
-    "message": "Thêm hoặc chuyển token để bắt đầu"
-  },
-  "slideFundWalletTitle": {
-    "message": "Nạp tiền vào ví của bạn"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Nhập và sử dụng nhiều ví trong MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Thêm nhiều Cụm từ khôi phục bí mật"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Địa chỉ giữ nguyên, tính năng thông minh hơn"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Bắt đầu sử dụng tài khoản thông minh"
-  },
-  "slideSolanaDescription": {
-    "message": "Tạo tài khoản Solana để bắt đầu"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana hiện đã được hỗ trợ"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Đúc NFT ngay để có cơ hội trúng thưởng"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Tham gia chương trình Tặng thưởng $5000 USDC!"
-  },
   "slippage": {
     "message": "Trượt giá"
   },
@@ -7300,15 +7225,6 @@
   },
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại"
-  },
-  "welcomeDescription": {
-    "message": "Được hàng triệu người tin tưởng, MetaMask là một ví an toàn giúp mọi người tiếp cận thế giới web3."
-  },
-  "welcomeGetStarted": {
-    "message": "Bắt đầu"
-  },
-  "welcomeTitle": {
-    "message": "Chào mừng đến với MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Bắt đầu nào"

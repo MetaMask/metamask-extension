@@ -80,9 +80,21 @@ export type ManifestFlags = {
      */
     deepLinkPublicKey?: string;
     /**
+     * Whether to disable the smart transactions override (migration 135)
+     */
+    disableSmartTransactionsOverride?: boolean;
+    /**
      * Whether to disable all of the syncing features that get automatically enabled in migrations 158 and 167
      */
     disableSync?: boolean;
+    /**
+     * Whether to simulate an unresponsive background by ignoring connections from the UI
+     */
+    simulateUnresponsiveBackground?: boolean;
+    /**
+     * The Infura project ID to use for API requests, useful to inject into a test build that doesn't have one
+     */
+    infuraProjectId?: string;
   };
 };
 
