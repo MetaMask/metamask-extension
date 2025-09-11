@@ -2,10 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
-  isSolanaChainId,
   BRIDGE_MM_FEE_RATE,
-  formatChainIdToHex,
-  formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
@@ -13,64 +10,65 @@ import {
   Text,
   PopoverPosition,
   IconName,
-  ButtonLink,
   ButtonIcon,
   ButtonIconSize,
-  Icon,
-  IconSize,
-  AvatarNetwork,
-  AvatarNetworkSize,
 } from '../../../components/component-library';
 import {
   getBridgeQuotes,
   getFromChain,
-  getToChain,
-  getIsBridgeTx,
   getToToken,
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
   getPriceImpactThresholds,
   getQuoteRequest,
+  getIsToOrFromSolana,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  BackgroundColor,
-  FontStyle,
   IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import {
-  MULTICHAIN_TOKEN_IMAGE_MAP,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { formatPriceImpact } from '../utils/price-impact';
+import { type DestinationAccount } from '../prepare/types';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+
+const getTimerColor = (timeInSeconds: number) => {
+  if (timeInSeconds <= 3) {
+    return TextColor.errorDefault;
+  }
+
+  if (timeInSeconds <= 5) {
+    return TextColor.warningDefault;
+  }
+
+  return TextColor.textAlternative;
+};
 
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
+  selectedDestinationAccount,
 }: {
-  onOpenSlippageModal?: () => void;
+  onOpenSlippageModal: () => void;
+  selectedDestinationAccount: DestinationAccount | null;
+  onOpenRecipientModal?: () => void;
 }) => {
   const t = useI18nContext();
-  const { activeQuote } = useSelector(getBridgeQuotes);
+  const { activeQuote, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
 
   const { insufficientBal } = useSelector(getQuoteRequest);
   const fromChain = useSelector(getFromChain);
-  const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
-  const isBridgeTx = useSelector(getIsBridgeTx);
   const isStxEnabled = useSelector((state) =>
     getIsSmartTransaction(state as never, fromChain?.chainId),
   );
@@ -79,6 +77,8 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
+
+  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -114,27 +114,11 @@ export const MultichainBridgeQuoteCard = ({
     priceImpactThresholds,
   ]);
 
-  const getNetworkImage = (chainId: string | number) => {
-    if (isSolanaChainId(chainId)) {
-      return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
-    }
-    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      formatChainIdToHex(
-        chainId,
-      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
-  };
+  const secondsUntilNextRefresh = useCountdownTimer();
 
-  const getNetworkName = (chainId: string | number) => {
-    if (isSolanaChainId(chainId)) {
-      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.SOLANA];
-    }
-    return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-      formatChainIdToHex(
-        chainId,
-      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-    ];
-  };
+  if (!activeQuote) {
+    return null;
+  }
 
   return (
     <>
@@ -142,237 +126,275 @@ export const MultichainBridgeQuoteCard = ({
         isOpen={showAllQuotes}
         onClose={() => setShowAllQuotes(false)}
       />
-      {activeQuote ? (
-        <Column gap={3}>
-          <Column gap={2}>
-            {/* Quote */}
-            <Row justifyContent={JustifyContent.spaceBetween}>
-              <Row gap={1}>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                >
-                  {t('multichainQuoteCardQuoteLabel')}
-                </Text>
-                <Tooltip
-                  title={t('howQuotesWork')}
-                  position={PopoverPosition.TopStart}
-                  offset={[-16, 16]}
-                  iconName={IconName.Question}
-                >
-                  {t('howQuotesWorkExplanation', [BRIDGE_MM_FEE_RATE])}
-                </Tooltip>
-              </Row>
-              <Text>
-                {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
-                  locale,
-                  activeQuote.swapRate,
-                )} ${activeQuote.quote.destAsset.symbol}`}
-              </Text>
-            </Row>
-
-            {/* Bridging - Only show when it's a bridge transaction */}
-            {isBridgeTx && (
-              <Row justifyContent={JustifyContent.spaceBetween}>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                >
-                  {t('multichainQuoteCardBridgingLabel')}
-                </Text>
-                <Row gap={1}>
-                  <AvatarNetwork
-                    name={fromChain?.name ?? ''}
-                    src={getNetworkImage(activeQuote.quote.srcChainId)}
-                    size={AvatarNetworkSize.Xs}
-                    backgroundColor={BackgroundColor.transparent}
-                  />
-                  <Text>{getNetworkName(activeQuote.quote.srcChainId)}</Text>
-                  <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
-                  <AvatarNetwork
-                    name={toChain?.name ?? ''}
-                    src={getNetworkImage(activeQuote.quote.destChainId)}
-                    size={AvatarNetworkSize.Xs}
-                    backgroundColor={BackgroundColor.transparent}
-                  />
-                  <Text>{getNetworkName(activeQuote.quote.destChainId)}</Text>
-                </Row>
-              </Row>
-            )}
-
-            {/* Network Fee */}
-            <Row justifyContent={JustifyContent.spaceBetween}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                {t('networkFee')}
-              </Text>
-              {activeQuote.quote.gasIncluded && (
-                <Row gap={1} data-testid="network-fees-included">
-                  <Text style={{ textDecoration: 'line-through' }}>
-                    {activeQuote.includedTxFees?.valueInCurrency
-                      ? formatCurrencyAmount(
-                          activeQuote.includedTxFees.valueInCurrency,
-                          currency,
-                          2,
-                        )
-                      : formatCurrencyAmount(
-                          activeQuote.totalNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        )}
-                  </Text>
-                  <Text fontStyle={FontStyle.Italic}>{' Included'}</Text>
-                </Row>
-              )}
-              {!activeQuote.quote.gasIncluded && (
-                <Text data-testid="network-fees">
-                  {formatCurrencyAmount(
-                    activeQuote.totalNetworkFee?.valueInCurrency,
-                    currency,
-                    2,
-                  )}
-                </Text>
-              )}
-            </Row>
-
-            {/* Slippage */}
-            <Row justifyContent={JustifyContent.spaceBetween}>
-              <Row gap={1}>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                >
-                  {t('slippage')}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Edit}
-                  size={ButtonIconSize.Sm}
-                  color={IconColor.iconAlternative}
-                  onClick={onOpenSlippageModal}
-                  ariaLabel={t('slippageEditAriaLabel')}
-                  data-testid="slippage-edit-button"
-                />
-              </Row>
-              <Text variant={TextVariant.bodyMd}>
-                {slippage === undefined && isSolanaSwap
-                  ? t('slippageAuto')
-                  : `${slippage}%`}
-              </Text>
-            </Row>
-
-            {shouldRenderPriceImpactRow && (
-              <Row justifyContent={JustifyContent.spaceBetween}>
-                <Row gap={1}>
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    color={TextColor.textAlternative}
-                  >
-                    {t('bridgePriceImpact')}
-                  </Text>
-                  <Tooltip
-                    title={
-                      shouldShowPriceImpactWarning
-                        ? t('bridgePriceImpactWarningTitle')
-                        : t('bridgePriceImpactTooltipTitle')
-                    }
-                    position={PopoverPosition.TopStart}
-                    offset={[-16, 16]}
-                    iconName={IconName.Question}
-                  >
-                    {t(
-                      gasIncluded
-                        ? 'bridgePriceImpactGaslessWarning'
-                        : 'bridgePriceImpactNormalWarning',
-                    )}
-                  </Tooltip>
-                </Row>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={
-                    shouldShowPriceImpactWarning
-                      ? TextColor.errorDefault
-                      : TextColor.textDefault
-                  }
-                >
-                  {formatPriceImpact(priceImpact)}
-                </Text>
-              </Row>
-            )}
-
-            {/* Time */}
-            <Row justifyContent={JustifyContent.spaceBetween}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                {t('multichainQuoteCardTimeLabel')}
-              </Text>
-              <Text>
-                {t('bridgeTimingMinutes', [
-                  formatEtaInMinutes(
-                    activeQuote.estimatedProcessingTimeInSeconds,
-                  ),
-                ])}
-              </Text>
-            </Row>
-
-            {/* Footer */}
-            <Row
-              justifyContent={JustifyContent.spaceBetween}
+      <Column gap={2} style={{ marginTop: 'auto' }}>
+        {/* Rate and timer */}
+        <Row justifyContent={JustifyContent.spaceBetween}>
+          <Row gap={2}>
+            <Text
+              variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              <Text variant={TextVariant.bodyMd}>
-                {new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(
-                  0,
-                )
-                  ? t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])
-                  : ''}
-              </Text>
-              <ButtonLink
-                variant={TextVariant.bodyMd}
-                onClick={() => {
-                  fromChain?.chainId &&
-                    activeQuote &&
-                    dispatch(
-                      trackUnifiedSwapBridgeEvent(
-                        UnifiedSwapBridgeEventName.AllQuotesOpened,
-                        {
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          can_submit: !insufficientBal,
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          stx_enabled: isStxEnabled,
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          token_symbol_source:
-                            fromToken?.symbol ??
-                            getNativeAssetForChainId(fromChain.chainId).symbol,
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          token_symbol_destination: toToken?.symbol ?? null,
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          price_impact: Number(
-                            activeQuote.quote?.priceData?.priceImpact ?? '0',
-                          ),
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          gas_included: Boolean(activeQuote.quote?.gasIncluded),
-                        },
-                      ),
-                    );
-                  setShowAllQuotes(true);
-                }}
+              {t('multichainQuoteCardRateLabel')}
+            </Text>
+
+            {isQuoteGoingToRefresh && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={getTimerColor(secondsUntilNextRefresh)}
               >
-                {t('moreQuotes')}
-              </ButtonLink>
+                {`(0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh})`}
+              </Text>
+            )}
+
+            <Tooltip
+              title={t('multichainQuoteCardRateLabel')}
+              position={PopoverPosition.TopStart}
+              offset={[-16, 16]}
+            >
+              {t('multichainQuoteCardRateExplanation', [
+                new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
+                  ? BRIDGE_MM_FEE_RATE
+                  : '0',
+              ])}
+            </Tooltip>
+          </Row>
+          <Row gap={1}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
+                locale,
+                activeQuote.swapRate,
+              )} ${activeQuote.quote.destAsset.symbol}`}
+            </Text>
+            <ButtonIcon
+              iconName={IconName.ArrowRight}
+              size={ButtonIconSize.Sm}
+              color={IconColor.iconAlternative}
+              onClick={() => {
+                fromChain?.chainId &&
+                  activeQuote &&
+                  dispatch(
+                    trackUnifiedSwapBridgeEvent(
+                      UnifiedSwapBridgeEventName.AllQuotesOpened,
+                      {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        can_submit: !insufficientBal,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        stx_enabled: isStxEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_source:
+                          fromToken?.symbol ??
+                          getNativeAssetForChainId(fromChain.chainId).symbol,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        token_symbol_destination: toToken?.symbol ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        price_impact: Number(
+                          activeQuote.quote?.priceData?.priceImpact ?? '0',
+                        ),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        gas_included: Boolean(activeQuote.quote?.gasIncluded),
+                      },
+                    ),
+                  );
+                setShowAllQuotes(true);
+              }}
+              ariaLabel={t('moreQuotes')}
+            />
+          </Row>
+        </Row>
+
+        {/* Network Fee */}
+        <Row justifyContent={JustifyContent.spaceBetween}>
+          <Row gap={2}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('networkFee')}
+            </Text>
+            <Tooltip
+              title={t('networkFeeExplanationTitle')}
+              position={PopoverPosition.TopStart}
+              offset={[-16, 16]}
+            >
+              {t('networkFeeExplanation')}
+            </Tooltip>
+          </Row>
+          {activeQuote.quote.gasIncluded && (
+            <Row gap={1} data-testid="network-fees-included">
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                style={{ textDecoration: 'line-through' }}
+              >
+                {activeQuote.includedTxFees?.valueInCurrency
+                  ? formatCurrencyAmount(
+                      activeQuote.includedTxFees.valueInCurrency,
+                      currency,
+                      2,
+                    )
+                  : formatCurrencyAmount(
+                      activeQuote.totalNetworkFee?.valueInCurrency,
+                      currency,
+                      2,
+                    )}
+              </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('swapGasFeesIncluded')}
+              </Text>
             </Row>
-          </Column>
-        </Column>
-      ) : null}
+          )}
+          {!activeQuote.quote.gasIncluded && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              data-testid="network-fees"
+            >
+              {formatCurrencyAmount(
+                activeQuote.totalNetworkFee?.valueInCurrency,
+                currency,
+                2,
+              )}
+            </Text>
+          )}
+        </Row>
+
+        {/* Slippage */}
+        <Row justifyContent={JustifyContent.spaceBetween}>
+          <Row gap={2}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('slippage')}
+            </Text>
+            <Tooltip
+              title={t('slippage')}
+              position={PopoverPosition.TopStart}
+              offset={[-16, 16]}
+            >
+              {t('slippageExplanation')}
+            </Tooltip>
+          </Row>
+          <Row gap={1}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {slippage === undefined && isSolanaSwap
+                ? t('slippageAuto')
+                : `${slippage}%`}
+            </Text>
+            <ButtonIcon
+              iconName={IconName.Edit}
+              size={ButtonIconSize.Sm}
+              color={IconColor.iconAlternative}
+              onClick={onOpenSlippageModal}
+              ariaLabel={t('slippageEditAriaLabel')}
+              data-testid="slippage-edit-button"
+            />
+          </Row>
+        </Row>
+
+        {/* Minimum Received */}
+        {
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row gap={2}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('minimumReceivedLabel')}
+              </Text>
+              <Tooltip
+                style={{ width: 350 }}
+                title={t('minimumReceivedExplanationTitle')}
+                position={PopoverPosition.TopStart}
+                offset={[-48, 16]}
+              >
+                {t('minimumReceivedExplanation')}
+              </Tooltip>
+            </Row>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              data-testid="minimum-received"
+            >
+              {formatCurrencyAmount(
+                activeQuote.minToTokenAmount.valueInCurrency,
+                currency,
+                2,
+              )}
+            </Text>
+          </Row>
+        }
+
+        {/* Price Impact */}
+        {shouldRenderPriceImpactRow && shouldShowPriceImpactWarning && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row gap={2}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('bridgePriceImpact')}
+              </Text>
+              <Tooltip
+                title={
+                  shouldShowPriceImpactWarning
+                    ? t('bridgePriceImpactWarningTitle')
+                    : t('bridgePriceImpactTooltipTitle')
+                }
+                position={PopoverPosition.TopStart}
+                offset={[-16, 16]}
+              >
+                {t('bridgePriceImpactNormalWarning')}
+              </Tooltip>
+            </Row>
+            <Text
+              variant={TextVariant.bodySm}
+              color={
+                shouldShowPriceImpactWarning
+                  ? TextColor.errorDefault
+                  : TextColor.textAlternative
+              }
+            >
+              {formatPriceImpact(priceImpact)}
+            </Text>
+          </Row>
+        )}
+
+        {/* Recipient */}
+        {isToOrFromSolana && selectedDestinationAccount && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('recipient')}
+            </Text>
+            <Row gap={1}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {selectedDestinationAccount.displayName}
+              </Text>
+            </Row>
+          </Row>
+        )}
+      </Column>
     </>
   );
 };

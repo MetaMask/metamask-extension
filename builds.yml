@@ -108,9 +108,6 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
 
-      # EIP-7715 Readable Permissions
-      - PERMISSIONS_KERNEL_SNAP_ID: ''
-      - GATOR_PERMISSIONS_ENABLED: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -330,8 +327,9 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - PERMISSIONS_KERNEL_SNAP_ID: ''
   - GATOR_PERMISSIONS_ENABLED: false
+  - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
+  - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
 
   ###
   # Meta variables

@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "가격 영향"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "가격 영향은 스왑 주문이 자산의 시장 가격에 미치는 영향을 보여줍니다. 가스비를 충당할 자금이 부족하면 보내는 토큰의 일부가 자동으로 수수료로 사용되어 스왑되는 수량이 줄어듭니다. MetaMask는 가격 영향에 개입하거나 이를 통제하지 않습니다."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "가격 영향은 스왑 주문이 자산의 시장 가격에 미치는 영향을 보여줍니다. 이는 거래 규모와 풀의 가용 유동성에 따라 달라집니다. MetaMask는 가격 영향에 개입하거나 이를 통제하지 않습니다."
   },
@@ -2708,12 +2705,6 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
-  "howQuotesWork": {
-    "message": "견적 방식"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "이 견적은 검색한 견적 중 최고의 수익률을 제공합니다. 이는 브릿지 수수료와 $1% MetaMask 수수료를 포함한 스왑 비율에서 가스비를 뺀 것을 기준으로 합니다. 가스비는 네트워크 혼잡도와 트랜잭션의 복잡성에 따라 달라집니다."
-  },
   "id": {
     "message": "ID"
   },
@@ -3383,15 +3374,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "MetaMask에 이 네트워크를 추가하고 이 사이트에 사용 권한을 허용합니다."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "브릿징"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "견적"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "시간"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1에서 $2 Snap 사용을 원합니다.",
@@ -7234,9 +7216,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "브릿지를 위해 $1을(를) 승인합니다."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "하드웨어 지갑에서 두 개의 트랜잭션을 확인해야 합니다."
   },
   "willApproveAmountForSwapping": {
     "message": "스왑을 위해 $1을(를) 승인합니다."
