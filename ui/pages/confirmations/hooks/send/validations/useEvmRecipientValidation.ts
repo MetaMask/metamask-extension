@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import { AddressResolution } from '@metamask/snaps-sdk';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { isValidDomainName } from '../../../../../helpers/utils/util';
@@ -6,9 +7,10 @@ import {
   findNetworkClientIdByChainId,
   getERC721AssetSymbol,
 } from '../../../../../store/actions';
-import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
-import { validateDomainWithConfusables } from '../../../utils/sendValidations';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../../types/send';
+import { useSendContext } from '../../../context/send';
+import { validateDomainWithConfusables } from '../../../utils/sendValidations';
 
 const LOWER_CASED_BURN_ADDRESSES = [
   '0x0000000000000000000000000000000000000000',
@@ -35,52 +37,48 @@ const validateHexAddress = async (address: string, chainId?: string) => {
     }
   }
 
-  return {
-    error: null,
-    resolvedLookup: null,
-    warning: null,
-  };
+  return {};
 };
 
 export const useEvmRecipientValidation = () => {
-  const { lookupDomainAddresses } = useSnapNameResolution();
+  const t = useI18nContext();
+  const { chainId, to } = useSendContext();
+  const prevResolved = useRef<string>();
 
   const validateEvmRecipient = useCallback(
     async (
-      address: string,
-      passedChainId?: string,
+      results: AddressResolution[],
+      loading: boolean,
     ): Promise<RecipientValidationResult> => {
-      const effectiveChainId = passedChainId || '0x1';
-
-      if (isValidHexAddress(address)) {
-        return await validateHexAddress(address, effectiveChainId);
+      if (!to) {
+        return {};
+      }
+      if (isValidHexAddress(to)) {
+        return await validateHexAddress(to, chainId);
       }
 
-      if (isValidDomainName(address)) {
-        try {
-          const result = await validateDomainWithConfusables(address, {
-            chainId: effectiveChainId,
-            lookupDomainAddresses,
-            formatChainId: (chainId: string) => {
-              const chainIdInt = chainId ? parseInt(chainId, 16) : 1;
-              return `eip155:${chainIdInt}`;
-            },
-            errorMessages: {
-              unknownError: 'ensUnknownError',
-              confusingDomain: 'confusingEnsDomain',
-            },
-          });
-          return result;
-        } catch (error) {
-          return { error: 'ensUnknownError' };
+      if (isValidDomainName(to)) {
+        const resolvedLookup = results?.[0]?.resolvedAddress;
+        if (loading && prevResolved.current !== to) {
+          return { recipientValidationLoading: true };
         }
+        if (results?.length) {
+          prevResolved.current = to;
+          return {
+            resolvedLookup,
+            ...validateDomainWithConfusables(to, t),
+          };
+        }
+        return {
+          error: t('ensUnknownError'),
+        };
       }
 
       return {
-        error: 'invalidAddress',
+        error: t('invalidAddress'),
       };
     },
-    [lookupDomainAddresses],
+    [chainId, t, to],
   );
 
   return {

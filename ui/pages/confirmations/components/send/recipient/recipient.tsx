@@ -37,12 +37,13 @@ export const Recipient = () => {
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
+    toAddressValidated,
   } = useRecipientValidation();
   const hasConfusableCharacters =
     recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
-  const { to, updateTo } = useSendContext();
+  const { to, updateTo, updateToResolved } = useSendContext();
   const [localValue, setLocalValue] = useState(to || '');
   const {
     captureRecipientSelected,
@@ -112,9 +113,9 @@ export const Recipient = () => {
 
   useEffect(() => {
     if (recipientResolvedLookup) {
-      updateTo(recipientResolvedLookup);
+      updateToResolved(recipientResolvedLookup);
     }
-  }, [recipientResolvedLookup, updateTo]);
+  }, [recipientResolvedLookup, updateToResolved]);
 
   const hasRecipients = recipients.length > 0;
 
@@ -191,7 +192,7 @@ export const Recipient = () => {
               .join(', ')})`}
         </HelpText>
       )}
-      {recipientResolvedLookup && (
+      {to === toAddressValidated && recipientResolvedLookup && (
         <HelpText severity={HelpTextSeverity.Info} marginTop={1}>
           {t('resolvedLookup', [recipientResolvedLookup])}
         </HelpText>
