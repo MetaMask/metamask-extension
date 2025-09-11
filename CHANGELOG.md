@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: improve dapp connection UX when the wallet is locked (#35122)
 - feat: introduce address scanning for simple send transactions (#34978)
 - feat: add new multichain account popup menu (#35064)
+- feat: add checkbox for emitting error report to Sentry when restarting MetaMask from error page (#35619)
 
 ### Changed
 - update: display the number of account group instead of addresses for a connected dapp (#35427)
