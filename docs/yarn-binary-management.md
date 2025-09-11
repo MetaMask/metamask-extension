@@ -100,11 +100,13 @@ Our scripts wrap these native Corepack commands:
 ### Download Process (`yarn-binary:download`)
 
 1. **`corepack prepare yarn@4.9.4 -o`**
+
    - Downloads yarn version 4.9.4
    - Creates `corepack.tgz` in current directory
    - Contains the complete yarn package manager
 
 2. **File organization** (script handles this)
+
    - Moves `corepack.tgz` → `.yarn/yarn-4.9.4-corepack.tgz`
    - Provides organized storage for version control
 
@@ -116,10 +118,12 @@ Our scripts wrap these native Corepack commands:
 ### Hydrate Process (`yarn-binary:hydrate`)
 
 1. **Tarball detection** (script handles this)
+
    - Reads version from `package.json`
    - Locates `.yarn/yarn-[version]-corepack.tgz`
 
 2. **`corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate`**
+
    - Activates the existing tarball
    - No download needed - uses committed file
 
@@ -195,14 +199,14 @@ package.json                    # Contains packageManager version
 
 ## Advantages
 
-| Aspect | Corepack Approach | Traditional Approach |
-|--------|------------------|---------------------|
-| **Configuration** | ❌ No yarnPath needed | ✅ Requires yarnPath in .yarnrc.yml |
-| **Version Source** | ✅ Single source (package.json) | ⚠️ Multiple places to update |
-| **CI/CD Setup** | ✅ Just hydrate tarball | ⚠️ Complex binary management |
-| **Network Dependency** | ❌ None (committed tarballs) | ⚠️ Downloads in CI |
-| **Native Tooling** | ✅ Uses Node.js corepack | ⚠️ Custom scripts |
-| **Activation** | ✅ Automatic via corepack | ⚠️ Manual configuration |
+| Aspect                 | Corepack Approach               | Traditional Approach                |
+| ---------------------- | ------------------------------- | ----------------------------------- |
+| **Configuration**      | ❌ No yarnPath needed           | ✅ Requires yarnPath in .yarnrc.yml |
+| **Version Source**     | ✅ Single source (package.json) | ⚠️ Multiple places to update        |
+| **CI/CD Setup**        | ✅ Just hydrate tarball         | ⚠️ Complex binary management        |
+| **Network Dependency** | ❌ None (committed tarballs)    | ⚠️ Downloads in CI                  |
+| **Native Tooling**     | ✅ Uses Node.js corepack        | ⚠️ Custom scripts                   |
+| **Activation**         | ✅ Automatic via corepack       | ⚠️ Manual configuration             |
 
 ## Troubleshooting
 
@@ -240,17 +244,20 @@ yarn yarn-binary:download
 If migrating from the old binary management system:
 
 1. **Remove old files**:
+
    ```bash
    rm -rf .yarn/releases/
    rm .yarn/yarn-config.json
    ```
 
 2. **Download new format**:
+
    ```bash
    yarn yarn-binary:download
    ```
 
 3. **Commit new tarballs**:
+
    ```bash
    git add .yarn/*-corepack.tgz
    git commit -m "Migrate to corepack-based yarn management"
