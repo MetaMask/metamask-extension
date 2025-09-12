@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MultichainConnectPage should render correctly 1`] = `
+exports[`MultichainConnectPage renders correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -124,7 +124,7 @@ exports[`MultichainConnectPage should render correctly 1`] = `
                           class="flex [&>div]:!rounded-none"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 121, 1);"
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
                           >
                             <svg
                               height="32"
@@ -133,25 +133,25 @@ exports[`MultichainConnectPage should render correctly 1`] = `
                               y="0"
                             >
                               <rect
-                                fill="#FB182B"
+                                fill="#FB188D"
                                 height="32"
-                                transform="translate(-3.8375659682281573 -7.729920834190221) rotate(314.3 16 16)"
+                                transform="translate(-1.104254133951512 -2.2862708533878) rotate(359.4 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#2339E1"
+                                fill="#018E77"
                                 height="32"
-                                transform="translate(-19.46949588758067 5.5952401536807) rotate(224.1 16 16)"
+                                transform="translate(-14.912843860816645 10.855110856776372) rotate(246.0 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#F2D602"
+                                fill="#C81471"
                                 height="32"
-                                transform="translate(11.272402434216547 -28.26152662443702) rotate(303.2 16 16)"
+                                transform="translate(-30.373404418783903 -6.946818612317597) rotate(324.3 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -238,7 +238,7 @@ exports[`MultichainConnectPage should render correctly 1`] = `
 </div>
 `;
 
-exports[`MultichainConnectPage should render with existing permissions correctly 1`] = `
+exports[`MultichainConnectPage renders with existing permissions correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -362,7 +362,7 @@ exports[`MultichainConnectPage should render with existing permissions correctly
                           class="flex [&>div]:!rounded-none"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 121, 1);"
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
                           >
                             <svg
                               height="32"
@@ -371,25 +371,25 @@ exports[`MultichainConnectPage should render with existing permissions correctly
                               y="0"
                             >
                               <rect
-                                fill="#FB182B"
+                                fill="#FB188D"
                                 height="32"
-                                transform="translate(-3.8375659682281573 -7.729920834190221) rotate(314.3 16 16)"
+                                transform="translate(-1.104254133951512 -2.2862708533878) rotate(359.4 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#2339E1"
+                                fill="#018E77"
                                 height="32"
-                                transform="translate(-19.46949588758067 5.5952401536807) rotate(224.1 16 16)"
+                                transform="translate(-14.912843860816645 10.855110856776372) rotate(246.0 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#F2D602"
+                                fill="#C81471"
                                 height="32"
-                                transform="translate(11.272402434216547 -28.26152662443702) rotate(303.2 16 16)"
+                                transform="translate(-30.373404418783903 -6.946818612317597) rotate(324.3 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -476,7 +476,7 @@ exports[`MultichainConnectPage should render with existing permissions correctly
 </div>
 `;
 
-exports[`MultichainConnectPage should render with multichain origin request correctly 1`] = `
+exports[`MultichainConnectPage renders with multichain origin request correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -600,7 +600,7 @@ exports[`MultichainConnectPage should render with multichain origin request corr
                           class="flex [&>div]:!rounded-none"
                         >
                           <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 121, 1);"
+                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
                           >
                             <svg
                               height="32"
@@ -609,25 +609,25 @@ exports[`MultichainConnectPage should render with multichain origin request corr
                               y="0"
                             >
                               <rect
-                                fill="#FB182B"
+                                fill="#FB188D"
                                 height="32"
-                                transform="translate(-3.8375659682281573 -7.729920834190221) rotate(314.3 16 16)"
+                                transform="translate(-1.104254133951512 -2.2862708533878) rotate(359.4 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#2339E1"
+                                fill="#018E77"
                                 height="32"
-                                transform="translate(-19.46949588758067 5.5952401536807) rotate(224.1 16 16)"
+                                transform="translate(-14.912843860816645 10.855110856776372) rotate(246.0 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
                               />
                               <rect
-                                fill="#F2D602"
+                                fill="#C81471"
                                 height="32"
-                                transform="translate(11.272402434216547 -28.26152662443702) rotate(303.2 16 16)"
+                                transform="translate(-30.373404418783903 -6.946818612317597) rotate(324.3 16 16)"
                                 width="32"
                                 x="0"
                                 y="0"
