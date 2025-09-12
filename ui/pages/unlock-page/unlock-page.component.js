@@ -121,6 +121,18 @@ class UnlockPage extends Component {
 
   passwordLoginAttemptTraceCtx = null;
 
+  /**
+   * Determines if the current user is in the social import rehydration phase
+   *
+   * @returns {boolean} True if user is importing social wallet during onboarding
+   */
+  isSocialImportRehydration() {
+    return (
+      this.props.firstTimeFlowType === FirstTimeFlowType.socialImport &&
+      !this.props.isOnboardingCompleted
+    );
+  }
+
   UNSAFE_componentWillMount() {
     const { isUnlocked, history, location } = this.props;
 
@@ -162,11 +174,11 @@ class UnlockPage extends Component {
 
     this.setState({ error: null, isSubmitting: true });
 
+    // Capture the rehydration state before async operations that might change it
+    const isRehydrationFlow = this.isSocialImportRehydration();
+
     // Track wallet rehydration attempted for social import users (only during rehydration)
-    if (
-      this.props.firstTimeFlowType === FirstTimeFlowType.socialImport &&
-      !this.props.isOnboardingCompleted
-    ) {
+    if (isRehydrationFlow) {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordAttempted,
@@ -181,10 +193,7 @@ class UnlockPage extends Component {
       await onSubmit(password);
 
       // Track wallet rehydration completed for social import users (only during rehydration)
-      if (
-        this.props.firstTimeFlowType === FirstTimeFlowType.socialImport &&
-        !this.props.isOnboardingCompleted
-      ) {
+      if (isRehydrationFlow) {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationCompleted,
@@ -221,13 +230,13 @@ class UnlockPage extends Component {
         name: TraceName.OnboardingJourneyOverall,
       });
     } catch (error) {
-      await this.handleLoginError(error);
+      await this.handleLoginError(error, isRehydrationFlow);
     } finally {
       this.setState({ isSubmitting: false });
     }
   };
 
-  handleLoginError = async (error) => {
+  handleLoginError = async (error, isRehydrationFlow = false) => {
     const { t } = this.context;
     const { message, data } = error;
 
@@ -241,10 +250,7 @@ class UnlockPage extends Component {
     let errorReason;
 
     // Track wallet rehydration failed for social import users (only during rehydration)
-    if (
-      this.props.firstTimeFlowType === FirstTimeFlowType.socialImport &&
-      !this.props.isOnboardingCompleted
-    ) {
+    if (isRehydrationFlow) {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordFailed,
