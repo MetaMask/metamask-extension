@@ -681,9 +681,22 @@ describe('AppStateController', () => {
   describe('metadata', () => {
     it('includes expected state in debug snapshots', () => {
       withController(
-        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
-        // between test runs
-        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        {
+          state: {
+            // Set optional values with no defaults so they show up in snapshot
+            currentPopupId: 0,
+            lastInteractedConfirmationInfo: {
+              id: '123',
+              chainId: '0x1',
+              timestamp: 1_000,
+              origin: 'https://example.com',
+            },
+            snapsInstallPrivacyWarningShown: false,
+            termsOfUseLastAgreed: 1_000,
+            // Set to an arbitrary number for consistency between test runs
+            recoveryPhraseReminderLastShown: 1_000,
+          },
+        },
         ({ controller }) => {
           expect(
             deriveStateFromMetadata(
@@ -698,6 +711,7 @@ describe('AppStateController', () => {
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
+              "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
@@ -707,6 +721,12 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "lastInteractedConfirmationInfo": {
+                "chainId": "0x1",
+                "id": "123",
+                "origin": "https://example.com",
+                "timestamp": 1000,
+              },
               "lastUpdatedAt": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -728,7 +748,9 @@ describe('AppStateController', () => {
               "showTestnetMessageInDropdown": true,
               "signatureSecurityAlertResponses": {},
               "slides": [],
+              "snapsInstallPrivacyWarningShown": false,
               "surveyLinkLastClickedOrClosed": null,
+              "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
               "trezorModel": null,
@@ -741,9 +763,22 @@ describe('AppStateController', () => {
 
     it('includes expected state in state logs', () => {
       withController(
-        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
-        // between test runs
-        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        {
+          state: {
+            // Set optional values with no defaults so they show up in snapshot
+            currentPopupId: 0,
+            lastInteractedConfirmationInfo: {
+              id: '123',
+              chainId: '0x1',
+              timestamp: 1_000,
+              origin: 'https://example.com',
+            },
+            snapsInstallPrivacyWarningShown: false,
+            termsOfUseLastAgreed: 1_000,
+            // Set to an arbitrary number for consistency between test runs
+            recoveryPhraseReminderLastShown: 1_000,
+          },
+        },
         ({ controller }) => {
           expect(
             deriveStateFromMetadata(
@@ -757,6 +792,7 @@ describe('AppStateController', () => {
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
+              "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
@@ -766,6 +802,12 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "lastInteractedConfirmationInfo": {
+                "chainId": "0x1",
+                "id": "123",
+                "origin": "https://example.com",
+                "timestamp": 1000,
+              },
               "lastUpdatedAt": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -787,7 +829,9 @@ describe('AppStateController', () => {
               "showTestnetMessageInDropdown": true,
               "signatureSecurityAlertResponses": {},
               "slides": [],
+              "snapsInstallPrivacyWarningShown": false,
               "surveyLinkLastClickedOrClosed": null,
+              "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
               "trezorModel": null,
@@ -800,9 +844,22 @@ describe('AppStateController', () => {
 
     it('persists expected state', () => {
       withController(
-        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
-        // between test runs
-        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        {
+          state: {
+            // Set optional values with no defaults so they show up in snapshot
+            currentPopupId: 0,
+            lastInteractedConfirmationInfo: {
+              id: '123',
+              chainId: '0x1',
+              timestamp: 1_000,
+              origin: 'https://example.com',
+            },
+            snapsInstallPrivacyWarningShown: false,
+            termsOfUseLastAgreed: 1_000,
+            // Set to an arbitrary number for consistency between test runs
+            recoveryPhraseReminderLastShown: 1_000,
+          },
+        },
         ({ controller }) => {
           expect(
             deriveStateFromMetadata(
@@ -819,6 +876,12 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "isRampCardClosed": false,
+              "lastInteractedConfirmationInfo": {
+                "chainId": "0x1",
+                "id": "123",
+                "origin": "https://example.com",
+                "timestamp": 1000,
+              },
               "lastUpdatedAt": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -836,7 +899,9 @@ describe('AppStateController', () => {
               "showPermissionsTour": true,
               "showTestnetMessageInDropdown": true,
               "slides": [],
+              "snapsInstallPrivacyWarningShown": false,
               "surveyLinkLastClickedOrClosed": null,
+              "termsOfUseLastAgreed": 1000,
               "timeoutMinutes": 0,
               "trezorModel": null,
               "updateModalLastDismissedAt": null,
@@ -848,9 +913,22 @@ describe('AppStateController', () => {
 
     it('exposes expected state to UI', () => {
       withController(
-        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
-        // between test runs
-        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        {
+          state: {
+            // Set optional values with no defaults so they show up in snapshot
+            currentPopupId: 0,
+            lastInteractedConfirmationInfo: {
+              id: '123',
+              chainId: '0x1',
+              timestamp: 1_000,
+              origin: 'https://example.com',
+            },
+            snapsInstallPrivacyWarningShown: false,
+            termsOfUseLastAgreed: 1_000,
+            // Set to an arbitrary number for consistency between test runs
+            recoveryPhraseReminderLastShown: 1_000,
+          },
+        },
         ({ controller }) => {
           expect(
             deriveStateFromMetadata(
@@ -865,6 +943,7 @@ describe('AppStateController', () => {
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
+              "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
@@ -873,6 +952,12 @@ describe('AppStateController', () => {
               "fullScreenGasPollTokens": [],
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "lastInteractedConfirmationInfo": {
+                "chainId": "0x1",
+                "id": "123",
+                "origin": "https://example.com",
+                "timestamp": 1000,
+              },
               "lastUpdatedAt": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -892,7 +977,9 @@ describe('AppStateController', () => {
               "showPermissionsTour": true,
               "signatureSecurityAlertResponses": {},
               "slides": [],
+              "snapsInstallPrivacyWarningShown": false,
               "surveyLinkLastClickedOrClosed": null,
+              "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "updateModalLastDismissedAt": null,
             }
