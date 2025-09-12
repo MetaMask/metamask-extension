@@ -1,4 +1,4 @@
-import { NameType } from '@metamask/name-controller';
+import { NameOrigin, NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
@@ -69,13 +69,13 @@ describe('useDisplayName', () => {
     );
   }
 
-  function mockPetname(name: string) {
+  function mockPetname(name: string, origin?: NameOrigin) {
     useNamesMock.mockReturnValue([
       {
         name,
         sourceId: null,
         proposedNames: {},
-        origin: null,
+        origin: origin ?? null,
       },
     ]);
   }
@@ -858,6 +858,37 @@ describe('useDisplayName', () => {
       });
     });
 
+    it(`does not use group name when overridden by user's custom name`, () => {
+      mockPetname(PETNAME_MOCK, NameOrigin.API);
+      mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
+      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
+        multichainAccountsState2: true,
+      });
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(selectAccountGroupNameByInternalAccountMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        VALUE_MOCK,
+      );
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: true,
+        image: undefined,
+        name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Petname,
+        icon: null,
+      });
+    });
+
     it('does not use account group name when multichain accounts state 2 is disabled', () => {
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
       mockERC20Token(
@@ -950,7 +981,7 @@ describe('useDisplayName', () => {
       });
     });
 
-    it('handles empty group name gracefully', () => {
+    it('handles empty group name', () => {
       mockAccountGroupName(VALUE_MOCK, '');
 
       (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);

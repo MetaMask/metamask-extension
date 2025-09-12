@@ -321,7 +321,7 @@ function useAccountGroupNames(
       if (
         type !== NameType.ETHEREUM_ADDRESS ||
         !isMultichainAccountsState2Enabled ||
-        nameEntry?.origin === NameOrigin.UI
+        nameEntry?.origin === NameOrigin.API
       ) {
         return null;
       }
