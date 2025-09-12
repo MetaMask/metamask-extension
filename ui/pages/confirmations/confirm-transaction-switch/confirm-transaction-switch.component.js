@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom-v5-compat';
 import Loading from '../../../components/ui/loading-screen';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -21,7 +21,7 @@ export default class ConfirmTransactionSwitch extends Component {
       if (txData.type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`;
       }
-      return <Redirect to={{ pathname }} />;
+      return <Navigate to={{ pathname }} replace />;
     }
 
     return <Loading />;

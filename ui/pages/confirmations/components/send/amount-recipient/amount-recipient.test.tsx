@@ -13,18 +13,11 @@ import { AmountRecipient } from './amount-recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));

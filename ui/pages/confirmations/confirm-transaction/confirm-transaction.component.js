@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory, useParams } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useNavigate,
+  useParams,
+} from 'react-router-dom-v5-compat';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -49,7 +54,7 @@ import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id: paramsTransactionId } = useParams();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -156,7 +161,7 @@ const ConfirmTransaction = () => {
       }
     } else if (prevTransactionId && !transactionId && !totalUnapproved) {
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
-        history.replace(DEFAULT_ROUTE);
+        navigate(DEFAULT_ROUTE, { replace: true });
       });
     } else if (
       prevTransactionId &&
@@ -164,11 +169,11 @@ const ConfirmTransaction = () => {
       prevTransactionId !== transactionId &&
       paramsTransactionId !== transactionId
     ) {
-      history.replace(mostRecentOverviewPage);
+      navigate(mostRecentOverviewPage, { replace: true });
     }
   }, [
     dispatch,
-    history,
+    navigate,
     mostRecentOverviewPage,
     paramsTransactionId,
     prevParamsTransactionId,
@@ -194,19 +199,17 @@ const ConfirmTransaction = () => {
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
   return isValidTransactionId ? (
-    <Switch>
+    <Routes>
       <Route
-        exact
         path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
-        component={ConfirmDecryptMessage}
+        element={<ConfirmDecryptMessage />}
       />
       <Route
-        exact
         path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
-        component={ConfirmEncryptionPublicKey}
+        element={<ConfirmEncryptionPublicKey />}
       />
-      <Route path="*" component={ConfirmTransactionSwitch} />
-    </Switch>
+      <Route path="*" element={<ConfirmTransactionSwitch />} />
+    </Routes>
   ) : (
     <Loading />
   );

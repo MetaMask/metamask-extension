@@ -21,11 +21,11 @@ import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: jest.fn(),
-  }),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => jest.fn(),
+  useParams: () => ({}),
+  useLocation: () => ({ pathname: '/confirmation' }),
 }));
 
 jest.mock('../hooks/useAssetDetails', () => ({

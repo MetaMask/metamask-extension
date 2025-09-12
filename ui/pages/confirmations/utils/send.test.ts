@@ -5,6 +5,7 @@ import {
   findNetworkClientIdByChainId,
   getLayer1GasFeeValue,
 } from '../../../store/actions';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
@@ -27,6 +28,15 @@ jest.mock('../../../store/actions', () => {
     ...jest.requireActual('../../../store/actions'),
     findNetworkClientIdByChainId: jest.fn().mockResolvedValue('mainnet'),
     getLayer1GasFeeValue: jest.fn(),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -161,15 +171,10 @@ describe('Send - utils', () => {
   });
 
   describe('navigateToSendRoute', () => {
-    it('call history.push with send route', () => {
-      const mockHistoryPush = jest.fn();
-      navigateToSendRoute(
-        {
-          push: mockHistoryPush,
-        },
-        false,
-      );
-      expect(mockHistoryPush).toHaveBeenCalled();
+    it('call useNavigate with send route', () => {
+      navigateToSendRoute(mockUseNavigate, false);
+      expect(mockUseNavigate).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(SEND_ROUTE);
     });
   });
 

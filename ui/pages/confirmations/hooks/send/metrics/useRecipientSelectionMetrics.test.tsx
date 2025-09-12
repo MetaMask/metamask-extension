@@ -1,6 +1,6 @@
 import React, { ReactChildren } from 'react';
 import mockTestState from '../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { RecipientInputMethod } from '../../../context/send-metrics';
 
