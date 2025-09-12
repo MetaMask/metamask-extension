@@ -94,6 +94,7 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts/feature-flags';
 import {
   hideImportNftsModal,
   hideIpfsModal,
@@ -104,6 +105,7 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
+  showModal,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -447,7 +449,20 @@ export default function Routes() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const prevPropsRef = useRef({ isUnlocked, totalUnapprovedConfirmationCount });
+  const isMultichainAccountsState2Enabled = useAppSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  // Track whether we've shown the multichain intro modal
+  const hasShownMultichainIntroModal = useAppSelector(
+    (state) => state.metamask.hasShownMultichainIntroModal,
+  );
+
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+    isMultichainAccountsState2Enabled,
+  });
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -465,11 +480,55 @@ export default function Routes() {
       dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
     }
 
-    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
+    prevPropsRef.current = {
+      isUnlocked,
+      totalUnapprovedConfirmationCount,
+      isMultichainAccountsState2Enabled,
+    };
   }, [
     networkToAutomaticallySwitchTo,
     isUnlocked,
     totalUnapprovedConfirmationCount,
+    isMultichainAccountsState2Enabled,
+    dispatch,
+  ]);
+
+  // Show multichain intro modal when state 2 is enabled
+  useEffect(() => {
+    const prevProps = prevPropsRef.current;
+
+    const isOnboardingRoute =
+      location.pathname.includes('/onboarding') ||
+      location.pathname.includes('/initialize');
+    const isMainWalletArea =
+      location.pathname === DEFAULT_ROUTE ||
+      (getEnvironmentType() === 'popup' && !isOnboardingRoute);
+
+    // Show modal when:
+    // 1. Feature flag transitions from disabled to enabled (upgrade case)
+    // 2. Feature flag is enabled and user sees main wallet area for first time (fresh install case)
+    const flagJustEnabled =
+      isMultichainAccountsState2Enabled &&
+      !prevProps.isMultichainAccountsState2Enabled;
+    const flagEnabledFirstTime =
+      isMultichainAccountsState2Enabled &&
+      isMainWalletArea &&
+      !hasShownMultichainIntroModal;
+
+    const shouldShowModal =
+      isUnlocked &&
+      !hasShownMultichainIntroModal &&
+      isMainWalletArea &&
+      (flagJustEnabled || flagEnabledFirstTime);
+
+    if (shouldShowModal) {
+      dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
+    }
+  }, [
+    isUnlocked,
+    isMultichainAccountsState2Enabled,
+    hasShownMultichainIntroModal,
+    location.pathname,
     dispatch,
   ]);
 

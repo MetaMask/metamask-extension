@@ -18,6 +18,7 @@ import {
 } from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
+import MultichainAccountIntroModal from './multichain-account-intro-modal';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
@@ -289,6 +290,23 @@ const MODALS = {
     },
     laptopModalStyle: {
       ...modalContainerLaptopStyle,
+    },
+  },
+
+  MULTICHAIN_ACCOUNT_INTRO: {
+    contents: <MultichainAccountIntroModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+      width: '95%',
+      top: '10%',
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+      width: '440px',
+      top: '10%',
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
