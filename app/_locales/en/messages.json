@@ -6419,9 +6419,6 @@
   "stillGettingMessage": {
     "message": "Still getting this message?"
   },
-  "streams": {
-    "message": "streams"
-  },
   "strong": {
     "message": "Strong"
   },
@@ -6481,9 +6478,6 @@
   },
   "submitted": {
     "message": "Submitted"
-  },
-  "subscriptions": {
-    "message": "subscriptions"
   },
   "suggestedBySnap": {
     "message": "Suggested by $1",
@@ -7042,12 +7036,6 @@
   },
   "tokenStandard": {
     "message": "Token standard"
-  },
-  "tokenStreams": {
-    "message": "Token Streams"
-  },
-  "tokenSubscriptions": {
-    "message": "Token Subscriptions"
   },
   "tokenSymbol": {
     "message": "Token symbol"

@@ -73,7 +73,7 @@ import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
-  SITES,
+  GATOR_PERMISSIONS,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -294,13 +294,6 @@ const GatorPermissionsPage = mmLazy(
   (() =>
     import(
       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-    )) as unknown as DynamicImportType,
-);
-const SitesPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/sites-page/sites-page.js'
     )) as unknown as DynamicImportType,
 );
 const Connections = mmLazy(
@@ -634,8 +627,9 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
-            path={PERMISSIONS}
+            path={GATOR_PERMISSIONS}
             component={
               isGatorPermissionsFeatureEnabled()
                 ? GatorPermissionsPage
@@ -643,7 +637,6 @@ export default function Routes() {
             }
             exact
           />
-          <Authenticated path={SITES} component={SitesPage} exact />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={MemoizedReviewPermissionsWrapper}

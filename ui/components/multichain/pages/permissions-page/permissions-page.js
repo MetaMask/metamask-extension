@@ -27,6 +27,7 @@ import {
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
+import { isGatorPermissionsFeatureEnabled } from '../../../../../shared/modules/environment';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
@@ -81,8 +82,9 @@ export const PermissionsPage = () => {
           as="span"
           variant={TextVariant.headingMd}
           textAlign={TextAlign.Center}
+          data-testid="permissions-page-title"
         >
-          {t('permissions')}
+          {isGatorPermissionsFeatureEnabled() ? t('sites') : t('permissions')}
         </Text>
       </Header>
       <Content padding={0}>

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   AlignItems,
   BackgroundColor,
@@ -20,7 +19,28 @@ import {
   Text,
 } from '../../../../component-library';
 
-export const PermissionListItem = ({ total, name, onClick }) => {
+interface PermissionListItemProps {
+  /**
+   * The permission data to display
+   */
+  total: number;
+
+  /**
+   * The name of the asset
+   */
+  name: string;
+
+  /**
+   * The function to call when the asset is clicked
+   */
+  onClick: () => void;
+}
+
+export const PermissionListItem = ({
+  total,
+  name,
+  onClick,
+}: PermissionListItemProps) => {
   return (
     <Box
       data-testid="permission-list-item"
@@ -73,19 +93,4 @@ export const PermissionListItem = ({ total, name, onClick }) => {
       </Box>
     </Box>
   );
-};
-
-PermissionListItem.propTypes = {
-  /**
-   * The permission data to display
-   */
-  total: PropTypes.number.isRequired,
-  /**
-   * The name of the asset
-   */
-  name: PropTypes.string.isRequired,
-  /**
-   * The function to call when the asset is clicked
-   */
-  onClick: PropTypes.func.isRequired,
 };

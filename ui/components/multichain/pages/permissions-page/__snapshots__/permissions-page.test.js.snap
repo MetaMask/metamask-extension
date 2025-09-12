@@ -35,6 +35,7 @@ exports[`All Connections render renders correctly 1`] = `
           >
             <span
               class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
+              data-testid="permissions-page-title"
             >
               Permissions
             </span>
