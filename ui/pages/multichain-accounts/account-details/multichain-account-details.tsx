@@ -9,6 +9,7 @@ import { HardwareAccountDetails } from './hardware-account-details';
 import { PrivateKeyAccountDetails } from './private-key-account-details';
 import { InstitutionalEVMAccountDetails } from './institutional-evm-account-details';
 import { BitcoinAccountDetails } from './btc-account-details';
+import { TronAccountDetails } from './tron-account-details';
 
 export const MultichainAccountDetails = () => {
   const { address } = useParams();
@@ -60,6 +61,11 @@ export const MultichainAccountDetails = () => {
             address={address as string}
             account={account}
           />
+        );
+
+      case 'tron':
+        return (
+          <TronAccountDetails address={address as string} account={account} />
         );
 
       default:

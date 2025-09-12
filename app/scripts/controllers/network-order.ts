@@ -1,19 +1,19 @@
-import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import {
+  NetworkControllerGetStateAction,
+  NetworkControllerNetworkRemovedEvent,
+  NetworkControllerSetActiveNetworkAction,
+  NetworkControllerStateChangeEvent,
+  NetworkState,
+} from '@metamask/network-controller';
+import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import {
   isCaipChainId,
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
-import {
-  NetworkControllerSetActiveNetworkAction,
-  NetworkControllerStateChangeEvent,
-  NetworkState,
-  NetworkControllerNetworkRemovedEvent,
-  NetworkControllerGetStateAction,
-} from '@metamask/network-controller';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
@@ -86,6 +86,9 @@ const defaultState: NetworkOrderControllerState = {
       [SolScope.Mainnet]: true,
     },
     [KnownCaipNamespace.Bip122]: {},
+    'tron': {
+      [TrxScope.Mainnet]: true,
+    },
   },
 };
 
@@ -168,6 +171,7 @@ export class NetworkOrderController extends BaseController<
       const nonEvmChainIds: CaipChainId[] = [
         BtcScope.Mainnet,
         SolScope.Mainnet,
+        TrxScope.Mainnet,
       ];
 
       const newNetworks = chainIds

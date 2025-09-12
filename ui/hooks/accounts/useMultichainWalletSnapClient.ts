@@ -7,10 +7,12 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { Json, JsonRpcRequest } from '@metamask/utils';
 import { useMemo } from 'react';
 import {
+  CreateAccountSnapOptions,
   getNextAvailableSnapAccountName,
   SnapAccountNameOptions,
+  TRON_WALLET_NAME,
+  TRON_WALLET_SNAP_ID,
   WalletSnapClient,
-  CreateAccountSnapOptions,
 } from '../../../shared/lib/accounts';
 import {
   BITCOIN_WALLET_NAME,
@@ -29,6 +31,7 @@ import {
 export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',
   Solana = 'solana-wallet-snap',
+  Tron = 'tron-wallet-snap',
 }
 
 export const EVM_WALLET_TYPE = 'evm' as const;
@@ -42,6 +45,10 @@ const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
     [WalletClientType.Solana]: {
       id: SOLANA_WALLET_SNAP_ID,
       name: SOLANA_WALLET_NAME,
+    },
+    [WalletClientType.Tron]: {
+      id: TRON_WALLET_SNAP_ID,
+      name: TRON_WALLET_NAME,
     },
   };
 
