@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import type { Mockttp } from 'mockttp';
-import { withFixtures } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -411,6 +411,53 @@ describe('Deep Link', function () {
         // make sure the home page has loaded!
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+      },
+    );
+  });
+
+  it('handles dapps that open MM via window.open', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        // use our dummy page to drive the new window
+        await driver.openNewURL(TEST_PAGE);
+
+        const dappWindowHandle = await this.driver.getWindowHandle();
+        // simulate a dapp calling `window.open('https://link.metamask.io/home')`
+        await driver.executeScript(
+          `globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');`,
+        );
+
+        await this.driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const metamaskWindowHandle = await this.driver.getWindowHandle();
+
+        // wait for the homepage to load in this new window
+        await homePage.checkPageIsLoaded();
+        const initialUrl = await driver.getCurrentUrl();
+        assert.equal(initialUrl, `${BaseUrl.MetaMask}/home.html#`);
+
+        await driver.switchToWindow(dappWindowHandle);
+
+        await driver.executeScript(
+          `globalThis.testWindow.location.href = ${JSON.stringify(`${initialUrl}notifications`)};`,
+        );
+
+        // go back to the Metamask window.
+        await driver.switchToWindow(metamaskWindowHandle);
+
+        const finalUrl = await driver.getCurrentUrl();
+        assert.equal(finalUrl, initialUrl);
       },
     );
   });
