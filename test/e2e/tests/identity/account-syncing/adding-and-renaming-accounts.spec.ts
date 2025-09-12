@@ -32,6 +32,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
    * Phase 2: Login to a fresh app instance, verify the previously added account persists, rename the second account, and add a third account to test multi-operation syncing.
    * Phase 3: Complete onboarding flow from scratch to verify all account changes (additions and renames) are properly synced and persisted across app reinstallation.
    */
+  // TODO: Re-write this test when multichain account syncing has been merged
   it.skip('should add a new account and sync it across multiple phases', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 

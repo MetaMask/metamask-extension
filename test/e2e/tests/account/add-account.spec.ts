@@ -36,6 +36,7 @@ describe('Add account', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -78,6 +79,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
@@ -105,6 +107,7 @@ describe('Add account', function () {
         await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await headerNavbar.openAccountMenu();
 
         // Create new account with default name Account 2

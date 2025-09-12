@@ -28,6 +28,7 @@ describe('Account syncing - Accounts with Balances', function () {
    * Phase 1: Add accounts that sync to user storage (2 accounts)
    * Phase 2: Complete onboarding flow with balance mocking - should discover additional accounts with balances (3 total: 2 synced + 1 discovered)
    */
+  // TODO: Re-write this test when multichain account syncing has been merged
   it.skip('should gracefully handle adding accounts with balances and synced accounts', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
