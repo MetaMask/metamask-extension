@@ -4528,6 +4528,12 @@ describe('MetaMaskController', () => {
           createMockCronjobControllerStorageManager(),
       });
 
+      // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({});
+      jest
+        .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
+        .mockReturnValue();
+
       jest
         .spyOn(
           metamaskController.userStorageController,
@@ -4554,9 +4560,9 @@ describe('MetaMaskController', () => {
           .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
       };
 
-      metamaskController.messenger = {
-        call: jest.fn().mockReturnValue(wallet),
-      };
+      jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockReturnValue(wallet);
 
       const spyHasSynced = jest
         .spyOn(
@@ -4574,9 +4580,9 @@ describe('MetaMaskController', () => {
 
       const result = await metamaskController.discoverAndCreateAccounts();
 
-      expect(metamaskController.messenger.call).toHaveBeenCalledWith(
+      expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
         'MultichainAccountService:getMultichainAccountWallet',
-        primaryId,
+        { entropySource: primaryId },
       );
 
       expect(wallet.discoverAndCreateAccounts).toHaveBeenCalledTimes(1);
@@ -4595,9 +4601,9 @@ describe('MetaMaskController', () => {
           .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
       };
 
-      metamaskController.messenger = {
-        call: jest.fn().mockReturnValue(wallet),
-      };
+      jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockReturnValue(wallet);
 
       const spyHasSynced = jest
         .spyOn(
@@ -4616,9 +4622,9 @@ describe('MetaMaskController', () => {
       const result =
         await metamaskController.discoverAndCreateAccounts(providedId);
 
-      expect(metamaskController.messenger.call).toHaveBeenCalledWith(
+      expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
         'MultichainAccountService:getMultichainAccountWallet',
-        providedId,
+        { entropySource: providedId },
       );
 
       expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
@@ -4782,6 +4788,12 @@ describe('MetaMaskController', () => {
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
       });
+
+      // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({});
+      jest
+        .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
+        .mockReturnValue();
 
       await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
     });
