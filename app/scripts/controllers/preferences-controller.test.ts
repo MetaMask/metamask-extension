@@ -821,7 +821,10 @@ describe('preferences controller', () => {
 
   describe('metadata', () => {
     it('includes expected state in debug snapshots', () => {
-      const { controller } = setupController();
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
 
       expect(
         deriveStateFromMetadata(
@@ -904,7 +907,10 @@ describe('preferences controller', () => {
     });
 
     it('includes expected state in state logs', () => {
-      const { controller } = setupController();
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
 
       expect(
         deriveStateFromMetadata(
@@ -983,6 +989,7 @@ describe('preferences controller', () => {
           },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
@@ -1002,7 +1009,10 @@ describe('preferences controller', () => {
     });
 
     it('persists expected state', () => {
-      const { controller } = setupController();
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
 
       expect(
         deriveStateFromMetadata(
@@ -1081,6 +1091,7 @@ describe('preferences controller', () => {
           },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
@@ -1100,7 +1111,10 @@ describe('preferences controller', () => {
     });
 
     it('exposes expected state to UI', () => {
-      const { controller } = setupController();
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
 
       expect(
         deriveStateFromMetadata(
@@ -1179,6 +1193,7 @@ describe('preferences controller', () => {
           },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
