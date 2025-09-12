@@ -205,9 +205,8 @@ const PrepareBridgePage = ({
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    activeQuote: activeQuote_,
+    // This quote may be older than the refresh rate, but we keep it for display purposes
+    activeQuote: unvalidatedQuote,
     quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
 
@@ -220,7 +219,7 @@ const PrepareBridgePage = ({
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-    activeQuote: activeQuote_,
+    activeQuote: unvalidatedQuote,
     toToken,
     toChain,
     fromChain,
@@ -228,7 +227,7 @@ const PrepareBridgePage = ({
     insufficientBal: quoteRequest.insufficientBal,
   });
 
-  const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
+  const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
   const selectedAccount = useSelector(getFromAccount);
 
@@ -750,7 +749,7 @@ const PrepareBridgePage = ({
 
           <Column
             justifyContent={
-              isLoading && !activeQuote_
+              isLoading && !unvalidatedQuote
                 ? JustifyContent.center
                 : JustifyContent.flexEnd
             }
@@ -758,7 +757,7 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             gap={3}
           >
-            {!wasTxDeclined && activeQuote_ && (
+            {!wasTxDeclined && unvalidatedQuote && (
               <MultichainBridgeQuoteCard
                 onOpenRecipientModal={() =>
                   setIsDestinationAccountPickerOpen(true)
@@ -767,7 +766,14 @@ const PrepareBridgePage = ({
                 selectedDestinationAccount={selectedDestinationAccount}
               />
             )}
-            {isLoading && !activeQuote_ ? (
+            {isNoQuotesAvailable && !isQuoteExpired && (
+              <BannerAlert
+                severity={BannerAlertSeverity.Danger}
+                description={t('noOptionsAvailableMessage')}
+                textAlign={TextAlign.Left}
+              />
+            )}
+            {isLoading && !unvalidatedQuote ? (
               <>
                 <Text
                   textAlign={TextAlign.Center}
@@ -841,13 +847,6 @@ const PrepareBridgePage = ({
             severity={BannerAlertSeverity.Danger}
             title={t(txAlert.titleId)}
             description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
-            textAlign={TextAlign.Left}
-          />
-        )}
-        {isNoQuotesAvailable && !isQuoteExpired && (
-          <BannerAlert
-            severity={BannerAlertSeverity.Danger}
-            description={t('noOptionsAvailableMessage')}
             textAlign={TextAlign.Left}
           />
         )}
