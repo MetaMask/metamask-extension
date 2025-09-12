@@ -4,7 +4,7 @@ import {
   getGlobalProperties,
   testIntrinsic,
 } from '../../../helpers/protect-intrinsics-helpers';
-import { isWebpack, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
@@ -52,6 +52,8 @@ try {
 }
 `;
 
+const getBundlerScript = 'return globalThis.bundler;';
+
 // TODO: https://github.com/MetaMask/metamask-extension/issues/35218
 // These tests are skipped for webpack builds, as lockdown-more doesn't work under webpack
 // The security team is working on adding an improved version of lockdown-more to the lavamoat webpack plugin.
@@ -64,10 +66,11 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        if (isWebpack()) {
+        await driver.navigate(PAGES.HOME);
+        const bundler = await driver.executeScript(getBundlerScript);
+        if (bundler === 'webpack') {
           this.skip();
         }
-        await driver.navigate(PAGES.HOME);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,
@@ -85,9 +88,6 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        if (isWebpack()) {
-          this.skip();
-        }
         if (isManifestV3) {
           // TODO: add logic for testing the Service-Worker on MV3
           await driver.navigate(PAGES.OFFSCREEN);
@@ -95,6 +95,10 @@ describe('lockdown', function (this: Mocha.Suite) {
           await driver.navigate(PAGES.BACKGROUND);
         }
         await driver.delay(1000);
+        const bundler = await driver.executeScript(getBundlerScript);
+        if (bundler === 'webpack') {
+          this.skip();
+        }
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,

@@ -126,6 +126,7 @@ export const lavamoatPlugin = (args: Args) =>
         'browser',
         'chrome',
         'indexedDB',
+        'bundler',
       ],
     },
   });

@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
+  DefinePlugin,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -172,6 +173,8 @@ const plugins: WebpackPluginInstance[] = [
       { from: join(context, 'images'), to: 'images' },
     ],
   }),
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  new DefinePlugin({ __BUNDLER__: JSON.stringify('webpack') }),
 ];
 // MV2 requires self-injection
 if (MANIFEST_VERSION === 2) {
