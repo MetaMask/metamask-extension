@@ -102,7 +102,7 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const numberOfAccountsInGroup = useSelector((state) =>
-    getNetworkAddressCount(state, selectedMultichainAccount.id),
+    getNetworkAddressCount(state, selectedMultichainAccountId),
   );
 
   // Used for account picker
@@ -227,6 +227,7 @@ export const AppHeaderUnlockedContent = ({
         variant={TextVariant.bodyXs}
         onClick={handleNetworksClick}
         data-testid="networks-subtitle-test-id"
+        className="networks-subtitle"
       >
         {`${numberOfAccountsInGroup} ${label.toLowerCase()}`}
       </Text>
