@@ -92,6 +92,10 @@ import {
   getCurrencyRateControllerInitMessenger,
   getCurrencyRateControllerMessenger,
 } from './currency-rate-controller-messenger';
+import {
+  getGasFeeControllerInitMessenger,
+  getGasFeeControllerMessenger,
+} from './gas-fee-controller-messenger';
 
 export type {
   CurrencyRateControllerMessenger,
@@ -101,6 +105,14 @@ export {
   getCurrencyRateControllerMessenger,
   getCurrencyRateControllerInitMessenger,
 } from './currency-rate-controller-messenger';
+export type {
+  GasFeeControllerMessenger,
+  GasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
+export {
+  getGasFeeControllerMessenger,
+  getGasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
@@ -162,6 +174,10 @@ export const CONTROLLER_MESSENGERS = {
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
+  },
+  GasFeeController: {
+    getMessenger: getGasFeeControllerMessenger,
+    getInitMessenger: getGasFeeControllerInitMessenger,
   },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
