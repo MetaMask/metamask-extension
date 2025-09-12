@@ -11,7 +11,10 @@ import {
 import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 import { MultichainAccountServiceWalletStatusChangeEvent } from '@metamask/multichain-account-service';
-import { UserStorageControllerGetStateAction, UserStorageControllerStateChangeEvent } from '@metamask/profile-sync-controller/user-storage';
+import {
+  UserStorageControllerGetStateAction,
+  UserStorageControllerStateChangeEvent,
+} from '@metamask/profile-sync-controller/user-storage';
 
 type Actions =
   | AccountsControllerGetAccountAction
