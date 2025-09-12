@@ -17,7 +17,7 @@ export interface EnhancedCarouselSlide extends CarouselSlide {
 }
 
 // Main carousel props
-export interface CarouselProps {
+export type CarouselProps = {
   slides: CarouselSlide[];
   className?: string;
   isLoading?: boolean;
@@ -25,19 +25,19 @@ export interface CarouselProps {
   onEmptyState?: () => void;
   onSlideClose?: (slideId: string, isLastSlide: boolean) => void;
   onRenderSlides?: (slides: CarouselSlide[]) => void;
-}
+};
 
 // Carousel state management
-export interface CarouselState {
+export type CarouselState = {
   activeSlideIndex: number;
   isTransitioning: boolean;
   hasTriggeredEmptyState: boolean;
-}
+};
 
 // Transition states for animations
 export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
 
 // Props for the carousel wrapper
-export interface CarouselWithEmptyStateProps extends CarouselProps {
+export type CarouselWithEmptyStateProps = CarouselProps & {
   onComplete?: () => void;
-}
+};

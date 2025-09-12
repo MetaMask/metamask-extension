@@ -1,12 +1,9 @@
-export interface StackCardEmptyProps {
-  isVisible?: boolean;
+export type StackCardEmptyProps = {
   isBackground?: boolean;
-  onTransitionToEmpty?: () => void;
-  onExited?: () => void;
   className?: string;
-}
+};
 
-export interface EmptyStateComponentProps {
+export type EmptyStateComponentProps = {
   onComplete: () => void;
   isBackground?: boolean;
-}
+};

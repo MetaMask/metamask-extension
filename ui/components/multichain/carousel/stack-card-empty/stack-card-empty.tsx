@@ -4,7 +4,6 @@ import { Text } from '../../../component-library';
 import {
   TextVariant,
   TextColor,
-  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import type {
   StackCardEmptyProps,
@@ -14,9 +13,7 @@ import { useTransitionToEmpty } from '../animations/useTransitionToEmpty';
 
 // Background empty card for stacking behind last card
 export const StackCardEmpty: React.FC<StackCardEmptyProps> = ({
-  isVisible = true,
   isBackground = true,
-  onTransitionToEmpty,
   className = '',
 }) => {
   const t = useI18nContext();
@@ -48,8 +45,9 @@ export const EmptyStateComponent: React.FC<EmptyStateComponentProps> = ({
   isBackground = false,
 }) => {
   const t = useI18nContext();
-  const { emptyStatePhase, startEmptyStateSequence, isEmptyStateFolding } =
-    useTransitionToEmpty({ onEmptyStateComplete: onComplete });
+  const { startEmptyStateSequence, isEmptyStateFolding } = useTransitionToEmpty(
+    { onEmptyStateComplete: onComplete },
+  );
 
   useEffect(() => {
     if (!isBackground) {

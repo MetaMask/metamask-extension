@@ -10,7 +10,6 @@ import {
   IconColor,
   TextVariant,
   TextColor,
-  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import type { StackCardProps } from './stack-card.types';
 
@@ -35,7 +34,9 @@ export const StackCard: React.FC<StackCardProps> = ({
   };
 
   const handleCardClick = () => {
-    if (!isCurrentCard) return;
+    if (!isCurrentCard) {
+      return;
+    }
 
     const navigation = {
       type: slide.href ? ('external' as const) : ('internal' as const),

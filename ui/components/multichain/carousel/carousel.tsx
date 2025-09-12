@@ -173,7 +173,7 @@ export const Carousel = React.forwardRef(
                   }, 1000); // Exactly 1 second after empty state card is fully visible
                 }}
               >
-                <StackCardEmpty isVisible={true} isBackground={false} />
+                <StackCardEmpty isBackground={false} />
               </CSSTransitionComponent>
             </TransitionGroup>
           </div>
@@ -213,7 +213,7 @@ export const Carousel = React.forwardRef(
                 timeout={250}
                 classNames="next-card"
               >
-                <StackCardEmpty isVisible={true} isBackground={true} />
+                <StackCardEmpty isBackground={true} />
               </CSSTransitionComponent>
             )}
 

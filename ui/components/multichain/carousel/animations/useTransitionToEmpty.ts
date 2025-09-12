@@ -1,13 +1,16 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { ANIMATION_TIMINGS } from './animationTimings';
 
-interface UseTransitionToEmptyProps {
+type UseTransitionToEmptyProps = {
   onEmptyStateComplete: () => void;
-}
+};
 
 /**
  * Hook for managing transition to empty state and fold-up animation
  * Encapsulates the timing sequence: appear → pause → fold → complete
+ * @param props - Configuration object for the empty state transition
+ * @param props.onEmptyStateComplete - Callback when empty state animation completes
+ * @returns Object with state and control functions for empty state animation
  */
 export const useTransitionToEmpty = ({
   onEmptyStateComplete,
@@ -16,11 +19,13 @@ export const useTransitionToEmpty = ({
     'hidden' | 'showing' | 'folding' | 'complete'
   >('hidden');
 
+  const foldTimeoutRef = useRef<NodeJS.Timeout>();
+
   const triggerFoldAnimation = useCallback(() => {
     setEmptyStatePhase('folding');
 
     // Complete after fold animation
-    setTimeout(() => {
+    foldTimeoutRef.current = setTimeout(() => {
       setEmptyStatePhase('complete');
       onEmptyStateComplete();
     }, ANIMATION_TIMINGS.EMPTY_STATE_DURATION);
@@ -28,6 +33,15 @@ export const useTransitionToEmpty = ({
 
   const startEmptyStateSequence = useCallback(() => {
     setEmptyStatePhase('showing');
+  }, []);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (foldTimeoutRef.current) {
+        clearTimeout(foldTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Auto-trigger fold after a brief delay to allow component to stabilize
@@ -39,6 +53,7 @@ export const useTransitionToEmpty = ({
 
       return () => clearTimeout(stabilizationTimer);
     }
+    return undefined;
   }, [emptyStatePhase, triggerFoldAnimation]);
 
   const resetEmptyState = useCallback(() => {
