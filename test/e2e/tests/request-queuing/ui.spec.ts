@@ -1,4 +1,3 @@
-// import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import {
   CaveatConstraint,
@@ -242,7 +241,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Done
   it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -386,7 +384,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Done
   it('should gracefully handle deleted network', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -461,7 +458,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Done
   it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
@@ -496,7 +492,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Done
   it('should gracefully handle network connectivity failure for signatures', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -576,7 +571,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Done
   it('should gracefully handle network connectivity failure for confirmations', async function () {
     const port = 8546;
     const chainId = 1338;
