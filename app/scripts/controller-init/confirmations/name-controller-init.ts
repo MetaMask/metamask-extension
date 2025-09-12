@@ -9,7 +9,7 @@ import {
   NameControllerInitMessenger,
   NameControllerMessenger,
 } from '../messengers';
-import { ControllerInitFunction } from '../types.ts';
+import { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the name controller.

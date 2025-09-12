@@ -1,14 +1,14 @@
 import { Messenger } from '@metamask/base-controller';
 import { NameController } from '@metamask/name-controller';
-import { ControllerInitRequest } from '../types.ts';
-import { buildControllerInitRequestMock } from '../test/utils.ts';
+import { ControllerInitRequest } from '../types';
+import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getNameControllerMessenger,
   NameControllerMessenger,
   getNameControllerInitMessenger,
   NameControllerInitMessenger,
 } from '../messengers';
-import { NameControllerInit } from './name-controller-init.ts';
+import { NameControllerInit } from './name-controller-init';
 
 jest.mock('@metamask/name-controller');
 

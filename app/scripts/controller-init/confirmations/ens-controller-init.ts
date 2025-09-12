@@ -3,7 +3,7 @@ import {
   EnsControllerInitMessenger,
   EnsControllerMessenger,
 } from '../messengers';
-import { ControllerInitFunction } from '../types.ts';
+import { ControllerInitFunction } from '../types';
 
 /**
  * Initialize the ENS controller.
