@@ -590,11 +590,26 @@ const selectAccountTreeStateForBalances = createSelector(
 
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountWalletsMetadata,
+
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).isAccountTreeSyncingInProgress,
+
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).hasAccountTreeSyncingSyncedAtLeastOnce,
   ],
-  (accountTree, accountGroupsMetadata, accountWalletsMetadata) => ({
+  (
+    accountTree,
+    accountGroupsMetadata,
+    accountWalletsMetadata,
+    isAccountTreeSyncingInProgress,
+    hasAccountTreeSyncingSyncedAtLeastOnce,
+  ) => ({
     accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
     accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJ,
     accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJ,
+    isAccountTreeSyncingInProgress: isAccountTreeSyncingInProgress ?? false,
+    hasAccountTreeSyncingSyncedAtLeastOnce:
+      hasAccountTreeSyncingSyncedAtLeastOnce ?? false,
   }),
 );
 

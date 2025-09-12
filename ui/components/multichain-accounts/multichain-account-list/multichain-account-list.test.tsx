@@ -71,6 +71,7 @@ const mockWallets = {
   [walletOneId]: {
     id: walletOneId,
     type: AccountWalletType.Entropy,
+    status: 'ready',
     metadata: {
       name: 'Wallet 1',
       entropy: {
@@ -96,6 +97,7 @@ const mockWallets = {
   [walletTwoId]: {
     id: walletTwoId,
     type: AccountWalletType.Entropy,
+    status: 'ready',
     metadata: {
       name: 'Wallet 2',
       entropy: {
