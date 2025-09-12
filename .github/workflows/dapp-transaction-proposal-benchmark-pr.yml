@@ -20,6 +20,10 @@ jobs:
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
 
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
+        run: yarn mm-foundryup
+
       - name: Download artifact 'build-test-browserify'
         uses: actions/download-artifact@v4
         with:
