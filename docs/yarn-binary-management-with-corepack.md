@@ -98,6 +98,7 @@ yarn --version  # Should return 4.9.4
 Our scripts wrap these native Corepack commands:
 
 ### Download Process (`yarn-binary:download`)
+
 1. **`corepack prepare yarn@4.9.4 -o`**
    - Downloads yarn version 4.9.4
    - Creates `corepack.tgz` in current directory
