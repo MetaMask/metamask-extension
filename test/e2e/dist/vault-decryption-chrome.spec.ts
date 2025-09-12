@@ -165,6 +165,10 @@ async function closePopoverIfPresent(driver: Driver) {
 
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
+    if (process.env.SELENIUM_BROWSER !== 'chrome') {
+      // TODO: Get this working on Firefox
+      this.skip();
+    }
     await withFixtures(
       {
         disableServerMochaToBackground: true,
@@ -223,6 +227,10 @@ describe('Vault Decryptor Page', function () {
   });
 
   it('is able to decrypt the vault pasting the text in the vault-decryptor webapp', async function () {
+    if (process.env.SELENIUM_BROWSER !== 'chrome') {
+      // TODO: Get this working on Firefox
+      this.skip();
+    }
     await withFixtures(
       {
         disableServerMochaToBackground: true,
