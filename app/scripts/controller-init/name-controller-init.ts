@@ -5,7 +5,6 @@ import {
   NameController,
   TokenNameProvider,
 } from '@metamask/name-controller';
-import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import {
   NameControllerInitMessenger,
   NameControllerMessenger,

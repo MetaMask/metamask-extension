@@ -16,7 +16,8 @@ describe('getNameControllerMessenger', () => {
 describe('getNameControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const nameControllerInitMessenger = getNameControllerInitMessenger(messenger);
+    const nameControllerInitMessenger =
+      getNameControllerInitMessenger(messenger);
 
     expect(nameControllerInitMessenger).toBeInstanceOf(RestrictedMessenger);
   });
