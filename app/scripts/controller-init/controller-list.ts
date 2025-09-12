@@ -13,12 +13,14 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AssetsContractController,
+  CurrencyRateController,
   DeFiPositionsController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
   NftController,
   NftDetectionController,
+  RatesController,
   TokenBalancesController,
   TokenDetectionController,
   TokenListController,
@@ -66,6 +68,7 @@ import MetaMetricsController from '../controllers/metametrics-controller';
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | CurrencyRateController
   | DelegationController
   | DeFiPositionsController
   | ExecutionService
@@ -92,6 +95,7 @@ export type Controller =
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
+  | RatesController
   | SeedlessOnboardingController<EncryptionKey>
   | ShieldController
   | SmartTransactionsController
@@ -121,6 +125,7 @@ export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
+  CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
   DelegationController['state'] &
   GasFeeController['state'] &
@@ -142,6 +147,7 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  RatesController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   ShieldController['state'] &
   SmartTransactionsController['state'] &
