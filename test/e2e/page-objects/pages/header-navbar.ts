@@ -108,6 +108,11 @@ class HeaderNavbar {
     }
   }
 
+  async mouseClickOnThreeDotMenu(): Promise<void> {
+    console.log('Clicking three dot menu using mouse move');
+    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+  }
+
   async openPermissionsPage(): Promise<void> {
     console.log('Open permissions page in header navbar');
     await this.openThreeDotMenu();
@@ -140,12 +145,12 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.notificationsButton);
   }
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),

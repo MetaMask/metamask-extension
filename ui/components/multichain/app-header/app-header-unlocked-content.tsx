@@ -3,6 +3,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import browser from 'webextension-polyfill';
@@ -69,6 +70,7 @@ import {
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
 import { PreferredAvatar } from '../../app/preferred-avatar';
+import { AccountIconTour } from '../../app/account-icon-tour/account-icon-tour';
 import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
@@ -89,6 +91,7 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
@@ -139,15 +142,21 @@ export const AppHeaderUnlockedContent = ({
     origin &&
     origin !== browser.runtime.id;
 
-  const handleMainMenuOpened = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NavMainMenuOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Home',
-      },
+  const handleMainMenuToggle = () => {
+    setAccountOptionsMenuOpen((previous) => {
+      const isMenuOpen = !previous;
+      if (isMenuOpen) {
+        trackEvent({
+          event: MetaMetricsEventName.NavMainMenuOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            location: 'Home',
+          },
+        });
+      }
+
+      return isMenuOpen;
     });
-    setAccountOptionsMenuOpen(true);
   };
 
   const handleConnectionsRoute = () => {
@@ -207,8 +216,11 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         {!isMultichainAccountsState2Enabled && (
-          <PreferredAvatar address={internalAccount.address} />
+          <div ref={tourAnchorRef} className="flex">
+            <PreferredAvatar address={internalAccount.address} />
+          </div>
         )}
+
         {internalAccount && (
           <Text
             as="div"
@@ -242,6 +254,7 @@ export const AppHeaderUnlockedContent = ({
       </>
     );
   }, [
+    accountName,
     disableAccountPicker,
     dispatch,
     internalAccount,
@@ -284,7 +297,7 @@ export const AppHeaderUnlockedContent = ({
             style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box onClick={() => handleMainMenuOpened()}>
+              <Box onClick={handleMainMenuToggle}>
                 <NotificationsTagCounter noLabel />
               </Box>
             )}
@@ -292,9 +305,7 @@ export const AppHeaderUnlockedContent = ({
               iconName={IconName.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
-              onClick={() => {
-                handleMainMenuOpened();
-              }}
+              onClick={handleMainMenuToggle}
               size={ButtonIconSize.Lg}
             />
           </Box>
@@ -302,13 +313,19 @@ export const AppHeaderUnlockedContent = ({
         <GlobalMenu
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={() => {
+            setAccountOptionsMenuOpen(false);
+          }}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
       </Box>
+
+      {!isMultichainAccountsState2Enabled && (
+        <AccountIconTour anchorElement={tourAnchorRef.current} />
+      )}
     </>
   );
 };
