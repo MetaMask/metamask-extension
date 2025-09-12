@@ -28,6 +28,7 @@ describe('Account syncing - Multiple SRPs', function () {
    * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
    */
   // TODO: Re-write this test when multichain account syncing has been merged
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should add accounts across multiple SRPs and sync them', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 

@@ -29,6 +29,7 @@ describe('Account syncing - Accounts with Balances', function () {
    * Phase 2: Complete onboarding flow with balance mocking - should discover additional accounts with balances (3 total: 2 synced + 1 discovered)
    */
   // TODO: Re-write this test when multichain account syncing has been merged
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should gracefully handle adding accounts with balances and synced accounts', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
