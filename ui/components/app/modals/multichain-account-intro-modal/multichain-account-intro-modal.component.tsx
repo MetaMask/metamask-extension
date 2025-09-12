@@ -75,14 +75,14 @@ export const MultichainAccountIntroModal: React.FC<
       padding={4}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.Center}
+      alignItems={AlignItems.center}
       style={{ maxWidth: '400px', minHeight: '500px' }}
     >
       {/* Close button */}
       <Box
         display={Display.Flex}
         width={BlockSize.Full}
-        justifyContent={JustifyContent.FlexEnd}
+        justifyContent={JustifyContent.flexEnd}
         marginBottom={3}
       >
         <Button
@@ -99,8 +99,8 @@ export const MultichainAccountIntroModal: React.FC<
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.Center}
-        justifyContent={JustifyContent.Center}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
         marginBottom={4}
         gap={2}
         style={{ minHeight: '120px' }}
@@ -180,16 +180,10 @@ export const MultichainAccountIntroModal: React.FC<
           size={ButtonSize.Lg}
           width={BlockSize.Full}
           onClick={handleViewAccounts}
+          loading={isLoading}
           disabled={isLoading}
         >
-          {isLoading ? (
-            <Box display={Display.Flex} alignItems={AlignItems.Center} gap={2}>
-              <Icon name={IconName.Loading} size={IconSize.Sm} />
-              <Text>{t('multichainAccountIntroSettingUp')}</Text>
-            </Box>
-          ) : (
-            t('multichainAccountIntroViewAccounts')
-          )}
+          {t('multichainAccountIntroViewAccounts')}
         </Button>
 
         <Button
