@@ -1,27 +1,38 @@
 import { useSelector } from 'react-redux';
-import { getAccountByAddress } from '../../../helpers/utils/util';
-import { accountsWithSendEtherInfoSelector } from '../../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';
 import { useConfirmContext } from '../context/confirm';
+import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
+import {
+  selectAccountGroupNameByInternalAccount,
+  selectInternalAccountNameByAddress,
+} from '../selectors/accounts';
+import { RootState } from '../selectors/preferences';
 
 function useConfirmationRecipientInfo() {
   const { currentConfirmation } = useConfirmContext();
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
-  let senderAddress, senderName;
-  if (currentConfirmation) {
-    const { from } = getConfirmationSender(currentConfirmation);
-    const fromAccount = getAccountByAddress(allAccounts, from);
+  const { from } = getConfirmationSender(currentConfirmation);
+  const senderAddress = from ?? '';
 
-    senderAddress = from;
-    senderName = fromAccount?.metadata?.name;
-  }
+  const accountGroupName = useSelector((state: MultichainAccountsState) =>
+    selectAccountGroupNameByInternalAccount(state, senderAddress),
+  );
+
+  const internalAccountName = useSelector((state: RootState) =>
+    selectInternalAccountNameByAddress(state, senderAddress),
+  );
+
+  const senderName = isMultichainAccountsState2Enabled
+    ? accountGroupName
+    : internalAccountName;
 
   return {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    senderAddress: senderAddress || '',
-    senderName: senderName || '',
+    senderAddress,
+    senderName: senderName ?? '',
   };
 }
 

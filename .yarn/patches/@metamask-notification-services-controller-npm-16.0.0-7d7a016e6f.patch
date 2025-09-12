@@ -1,0 +1,39 @@
+diff --git a/dist/NotificationServicesController/services/feature-announcements.cjs b/dist/NotificationServicesController/services/feature-announcements.cjs
+index 4056b90cb6360e198ddd0c4b91e79e315fde076a..2f740dea382014ee31ca8be7dec84b8b41d49d13 100644
+--- a/dist/NotificationServicesController/services/feature-announcements.cjs
++++ b/dist/NotificationServicesController/services/feature-announcements.cjs
+@@ -82,6 +82,8 @@ const fetchFeatureAnnouncementNotifications = async (env, previewToken) => {
+                     mobileLinkText: mobileLinkFields?.mobileLinkText,
+                     mobileLinkUrl: mobileLinkFields?.mobileLinkUrl,
+                 },
++                extensionMinimumVersionNumber: fields.extensionMinimumVersionNumber,
++                mobileMinimumVersionNumber: fields.mobileMinimumVersionNumber,
+             },
+         };
+         return notification;
+diff --git a/dist/NotificationServicesController/services/feature-announcements.mjs b/dist/NotificationServicesController/services/feature-announcements.mjs
+index 0e6a52ef3214480c942004ebe9f6d51ab8884c5b..94084def5c078f12b4a9e3a06c8d2c5bb4008351 100644
+--- a/dist/NotificationServicesController/services/feature-announcements.mjs
++++ b/dist/NotificationServicesController/services/feature-announcements.mjs
+@@ -78,6 +78,8 @@ const fetchFeatureAnnouncementNotifications = async (env, previewToken) => {
+                     mobileLinkText: mobileLinkFields?.mobileLinkText,
+                     mobileLinkUrl: mobileLinkFields?.mobileLinkUrl,
+                 },
++                extensionMinimumVersionNumber: fields.extensionMinimumVersionNumber,
++                mobileMinimumVersionNumber: fields.mobileMinimumVersionNumber,
+             },
+         };
+         return notification;
+diff --git a/dist/NotificationServicesController/types/feature-announcement/type-feature-announcement.d.cts b/dist/NotificationServicesController/types/feature-announcement/type-feature-announcement.d.cts
+index 41b8e1cb59b1a6e063bbbe9d8dc654d0689e61b3..43524ca93fb604f66aa9d582128e2daf4ec29c43 100644
+--- a/dist/NotificationServicesController/types/feature-announcement/type-feature-announcement.d.cts
++++ b/dist/NotificationServicesController/types/feature-announcement/type-feature-announcement.d.cts
+@@ -32,6 +32,8 @@ export type TypeFeatureAnnouncementFields = {
+         extensionLink?: EntryFieldTypes.EntryLink<TypeExtensionLinkFields>;
+         mobileLink?: EntryFieldTypes.EntryLink<TypeMobileLinkFields>;
+         clients?: EntryFieldTypes.Text<'extension' | 'mobile' | 'portfolio'>;
++        extensionMinimumVersionNumber?: EntryFieldTypes.Text;
++        mobileMinimumVersionNumber?: EntryFieldTypes.Text;
+     };
+     contentTypeId: 'productAnnouncement';
+ };
