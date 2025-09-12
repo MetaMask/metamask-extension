@@ -97,7 +97,10 @@ import {
   getEnsControllerInitMessenger,
   getEnsControllerMessenger,
 } from './ens-controller-messenger';
-import { getNameControllerMessenger } from './name-controller-messenger';
+import {
+  getNameControllerInitMessenger,
+  getNameControllerMessenger,
+} from './name-controller-messenger';
 
 export type {
   CurrencyRateControllerMessenger,
@@ -223,7 +226,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   NameController: {
     getMessenger: getNameControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getNameControllerInitMessenger,
   },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
