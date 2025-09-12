@@ -39,6 +39,7 @@ import {
   MultichainAccountGroupScopeToCaipAccountId,
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
+  AccountGroupObjectWithWalletNameAndId,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
@@ -304,6 +305,7 @@ export const getAllAccountGroups = createDeepEqualSelector(
       return Object.values(wallet.groups).map((group) => ({
         ...group,
         walletName: wallet.metadata.name,
+        walletId: wallet.id,
       }));
     });
   },
@@ -350,7 +352,7 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
   getAllAccountGroups,
   getInternalAccounts,
   (
-    accountGroups: (AccountGroupObject & { walletName: string })[],
+    accountGroups: AccountGroupObjectWithWalletNameAndId[],
     internalAccounts: InternalAccount[],
   ): AccountGroupWithInternalAccounts[] => {
     return accountGroups.map((accountGroup) => {
