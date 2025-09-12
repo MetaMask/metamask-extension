@@ -1,11 +1,6 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import {
-  CurrencyRateController,
-  RatesController,
-  fetchMultiExchangeRate,
-} from '@metamask/assets-controllers';
-import {
   createAsyncMiddleware,
   createScaffoldMiddleware,
   JsonRpcEngine,
@@ -446,6 +441,8 @@ import { TokenListControllerInit } from './controller-init/token-list-controller
 import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
 import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
+import { RatesControllerInit } from './controller-init/rates-controller-init';
+import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -929,31 +926,6 @@ export default class MetamaskController extends EventEmitter {
       extension: this.extension,
     });
 
-    const currencyRateMessenger = this.controllerMessenger.getRestricted({
-      name: 'CurrencyRateController',
-      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
-    });
-    this.currencyRateController = new CurrencyRateController({
-      includeUsdRate: true,
-      messenger: currencyRateMessenger,
-      state: initState.CurrencyController,
-      useExternalServices: () =>
-        this.preferencesController.state.useExternalServices,
-    });
-    const initialFetchMultiExchangeRate =
-      this.currencyRateController.fetchMultiExchangeRate.bind(
-        this.currencyRateController,
-      );
-    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
-      if (this.preferencesController.state.useCurrencyRateCheck) {
-        return initialFetchMultiExchangeRate(...args);
-      }
-      return {
-        conversionRate: null,
-        usdConversionRate: null,
-      };
-    };
-
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
     });
@@ -981,17 +953,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
-    });
-
-    const multichainRatesControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'RatesController',
-      });
-    this.multichainRatesController = new RatesController({
-      state: initState.MultichainRatesController,
-      messenger: multichainRatesControllerMessenger,
-      includeUsdRate: true,
-      fetchMultiExchangeRate,
     });
 
     this.controllerMessenger.subscribe(
@@ -1824,6 +1785,8 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
+      CurrencyRateController: CurrencyRateControllerInit,
+      RatesController: RatesControllerInit,
       TokenListController: TokenListControllerInit,
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
@@ -1899,8 +1862,10 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController = controllersByName.TokenDetectionController;
     this.tokensController = controllersByName.TokensController;
     this.tokenRatesController = controllersByName.TokenRatesController;
+    this.currencyRateController = controllersByName.CurrencyRateController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
+    this.multichainRatesController = controllersByName.RatesController;
     this.authenticationController = controllersByName.AuthenticationController;
     this.userStorageController = controllersByName.UserStorageController;
     this.delegationController = controllersByName.DelegationController;
