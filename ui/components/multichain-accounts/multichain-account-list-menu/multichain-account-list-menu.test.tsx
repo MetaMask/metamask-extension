@@ -226,6 +226,7 @@ describe('MultichainAccountListMenu', () => {
             [mockWalletId1]: {
               id: mockWalletId1,
               type: AccountWalletType.Entropy,
+              status: 'ready',
               groups: {
                 [mockGroupId1]: {
                   id: mockGroupId1,

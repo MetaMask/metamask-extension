@@ -150,6 +150,7 @@ export const createBridgeMockStore = ({
           'entropy:01K2FF18CTTXJYD34R78X4N1N1': {
             type: 'entropy',
             id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1',
+            status: 'ready',
             metadata: {
               name: 'Wallet 1',
               entropy: {

@@ -1175,6 +1175,7 @@ class FixtureBuilder {
           wallets[walletId] = {
             id: walletId,
             type: 'entropy',
+            status: 'ready',
             groups: {
               [groupId]: {
                 id: groupId,
@@ -1208,6 +1209,7 @@ class FixtureBuilder {
           wallets[walletId] ||= {
             id: walletId,
             type: 'keyring',
+            status: 'ready',
             groups: {},
             metadata: { name: keyringType, keyring: { type: keyringType } },
           };
@@ -1234,6 +1236,7 @@ class FixtureBuilder {
           wallets[walletId] ||= {
             id: walletId,
             type: 'snap',
+            status: 'ready',
             groups: {},
             metadata: {
               name: account?.metadata?.snap?.name || snapId,
