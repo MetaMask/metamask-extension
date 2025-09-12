@@ -260,6 +260,15 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || (github.event_name == 'merge_group' && github.ref_name == 'main') }}
     uses: ./.github/workflows/dapp-transaction-proposal-benchmark-pr.yml
 
+  dapp-transaction-proposal-upload:
+    needs:
+      - dapp-transaction-proposal-benchmark-pr
+    # if: github.ref == 'refs/heads/main'
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/dapp-transaction-proposal-upload.yml
+    secrets:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+
   needs-e2e:
     needs:
       - prep-deps

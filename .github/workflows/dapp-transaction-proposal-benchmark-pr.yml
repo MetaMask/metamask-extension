@@ -34,5 +34,5 @@ jobs:
       - name: Upload benchmark results (github artifacts)
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-results
+          name: wallet-pop-open-time-benchmark-results
           path: test-artifacts/benchmarks/wallet-pop-open-time-benchmark-results.json
