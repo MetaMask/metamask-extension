@@ -72,7 +72,6 @@ function formatCurrency(
     ...options,
   });
 
-  // @ts-expect-error Remove this comment once TypeScript is updated to 5.5+
   return numberFormat.format(value);
 }
 
@@ -108,6 +107,26 @@ function formatCurrencyWithMinThreshold(
   return formatCurrency(config, number, currency);
 }
 
+function formatToken(
+  config: { locale: string },
+  value: number | bigint | `${number}`,
+  symbol: string,
+  options: Intl.NumberFormatOptions = {},
+) {
+  if (!Number.isFinite(Number(value))) {
+    return '';
+  }
+
+  const numberFormat = getCachedNumberFormat(config.locale, {
+    style: 'decimal',
+    ...options,
+  });
+
+  const formattedNumber = numberFormat.format(value);
+
+  return `${formattedNumber} ${symbol}`;
+}
+
 function formatCurrencyTokenPrice(
   config: { locale: string },
   value: number | bigint | `${number}`,
@@ -137,6 +156,37 @@ function formatCurrencyTokenPrice(
   }
 
   return formatCurrencyCompact(config, number, currency);
+}
+
+function formatTokenQuantity(
+  config: { locale: string },
+  value: number | bigint | `${number}`,
+  symbol: string,
+) {
+  const minThreshold = 0.00001;
+  const number = Number(value);
+
+  if (!Number.isFinite(number)) {
+    return '';
+  }
+
+  if (number === 0) {
+    return formatToken(config, 0, symbol);
+  }
+
+  if (number < minThreshold) {
+    return `<${formatToken(config, minThreshold, symbol, oneSignificantDigit)}`;
+  }
+
+  if (number < 1) {
+    return formatToken(config, number, symbol, threeSignificantDigits);
+  }
+
+  if (number < 1_000_000) {
+    return formatToken(config, number, symbol);
+  }
+
+  return formatToken(config, number, symbol, compactTwoDecimals);
 }
 
 export function createFormatters({ locale = FALLBACK_LOCALE }) {
@@ -172,6 +222,21 @@ export function createFormatters({ locale = FALLBACK_LOCALE }) {
      * @param currency - ISO 4217 currency code.
      */
     formatCurrencyTokenPrice: formatCurrencyTokenPrice.bind(null, { locale }),
+    /**
+     * Format a value as a token string with symbol.
+     *
+     * @param value - Numeric value to format.
+     * @param symbol - Token symbol (e.g. 'ETH', 'SepoliaETH').
+     * @param options - Optional Intl.NumberFormat overrides.
+     */
+    formatToken: formatToken.bind(null, { locale }),
+    /**
+     * Format token quantity with varying precision based on value.
+     *
+     * @param value - Numeric value to format.
+     * @param symbol - Token symbol (e.g. 'ETH', 'SepoliaETH').
+     */
+    formatTokenQuantity: formatTokenQuantity.bind(null, { locale }),
   };
 }
 

@@ -69,6 +69,7 @@ export default function CurrencyDisplay({
         {parts.prefix}
         {parts.value}
       </SensitiveText>
+
       {parts.suffix ? (
         <SensitiveText
           as="span"

@@ -41,6 +41,7 @@ function formatEthCurrencyDisplay({
   numberOfDecimals,
 }) {
   if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
+    // console.log('>>> WAT 2', { inputValue, denomination, numberOfDecimals, DEFAULT_PRECISION, MIN_AMOUNT_DISPLAY })
     const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
       .toDenomination(denomination || EtherDenomination.ETH)
       .round(numberOfDecimals || DEFAULT_PRECISION)
@@ -227,6 +228,7 @@ export function useCurrencyDisplay(
   if (!opts.hideLabel && !isFiatCurrency) {
     // if the currency we are displaying is the native currency of one of our preloaded test-nets (goerli, sepolia etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
+    // console.log('>>> WAT', TEST_NETWORK_TICKER_MAP, MULTICHAIN_NETWORK_TICKER, currency, opts.suffix)
     const currencyTickerSymbol = [
       ...Object.values(TEST_NETWORK_TICKER_MAP),
       ...Object.values(MULTICHAIN_NETWORK_TICKER),

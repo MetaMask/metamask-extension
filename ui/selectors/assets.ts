@@ -177,6 +177,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
         tokenList.forEach((token: Token) => {
           const { isNative, address, decimals } = token;
 
+console.log('>>> assets.ts', { token, nativeBalances, selectedAccountTokenBalancesAcrossChains })
+
           const balance =
             calculateTokenBalance({
               isNative,
@@ -231,6 +233,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               primary: '',
               secondary: 0,
               title,
+              balanceRaw: isNative? nativeBalances?.[chainId] : selectedAccountTokenBalancesAcrossChains?.[chainId]?.[token.address as Hex]
             });
           }
         });

@@ -73,15 +73,19 @@ export const useTokenDisplayInfo = ({
         )
       : undefined;
 
-  const formattedPrimary = formatWithThreshold(
-    Number((isEvm ? token.string : token.primary) || token.balance),
-    0.00001,
-    locale,
-    {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
-    },
-  );
+  console.log('>>> useTokenDisplayInfo', { isEvm, token });
+
+  const formattedPrimary = 'YO FORMATTED PRIMARY';
+  // const formattedPrimary = formatWithThreshold(
+  //   Number((isEvm ? token.string : token.primary) || token.balance),
+  //   0.00001,
+
+  //   locale,
+  //   {
+  //     minimumFractionDigits: 0,
+  //     maximumFractionDigits: 5,
+  //   },
+  // );
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;

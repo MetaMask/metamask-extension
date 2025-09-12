@@ -340,7 +340,7 @@ export const TokenListItemComponent = ({
                 textAlign={TextAlign.End}
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
-              >
+              >PRIMARY
                 {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
               </SensitiveText>
             ) : (
@@ -351,7 +351,7 @@ export const TokenListItemComponent = ({
                 textAlign={TextAlign.End}
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
-              >
+              >PRIMARY
                 {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
               </SensitiveText>
             )}
