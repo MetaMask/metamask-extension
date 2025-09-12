@@ -663,11 +663,11 @@ export class PageLoadBenchmark {
       `Starting transaction proposal benchmark: ${browserLoads} browser loads, ${proposalLoads} proposal loads per browser`,
     );
 
+    await this.waitForExtensionLoad();
     await this.unlockWallet();
 
     for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
       console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
-      await this.waitForExtensionLoad();
 
       for (let proposalLoad = 0; proposalLoad < proposalLoads; proposalLoad++) {
         const runNumber = browserLoad * proposalLoads + proposalLoad;
