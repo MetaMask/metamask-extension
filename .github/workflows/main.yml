@@ -245,9 +245,6 @@ jobs:
       - build-test-browserify
     if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
     uses: ./.github/workflows/page-load-benchmark-pr.yml
-    with:
-      browser-loads: '10'
-      page-loads: '10'
 
   page-load-benchmark-upload:
     needs:
@@ -256,6 +253,12 @@ jobs:
     uses: ./.github/workflows/page-load-benchmark-upload.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+
+  dapp-transaction-proposal-benchmark-pr:
+    needs:
+      - build-test-browserify
+    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'merge_group' && github.ref_name == 'main') }}
+    uses: ./.github/workflows/dapp-transaction-proposal-benchmark-pr.yml
 
   needs-e2e:
     needs:

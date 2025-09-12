@@ -1,11 +1,11 @@
-name: Page load benchmark
+name: Dapp transaction proposal benchmark
 
 on:
   workflow_call:
 
 jobs:
-  page-load-benchmark-pr:
-    name: Run Page Load Benchmarks
+  dapp-transaction-proposal-benchmark-pr:
+    name: Run Dapp Transaction Proposal Wallet Pop Up Time Benchmark
     runs-on: ubuntu-latest
     env:
       OWNER: ${{ github.repository_owner }}
@@ -28,11 +28,11 @@ jobs:
       - name: Install Playwright browsers
         run: yarn playwright install chromium
 
-      - name: Run page load benchmarks
-        run: yarn test:e2e:benchmark:page-load
+      - name: Run dapp transaction proposal benchmark
+        run: yarn test:e2e:benchmark:dapp-transaction-proposal
 
       - name: Upload benchmark results (github artifacts)
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
-          path: test-artifacts/benchmarks/benchmark-results.json
+          path: test-artifacts/benchmarks/wallet-pop-open-time-benchmark-results.json

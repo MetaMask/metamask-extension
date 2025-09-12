@@ -366,7 +366,6 @@ export class PageLoadBenchmark {
    * This should be called after the extension loads to ensure the wallet is ready for use.
    */
   private async unlockWallet() {
-    // TODO: [ffmcgee]: see full interaction on spec run, this may be running without need in further runs.
     const walletPage = await this.context?.newPage();
     walletPage?.goto(
       'chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/home.html',
@@ -552,7 +551,6 @@ export class PageLoadBenchmark {
     const interactiveEndTime = Date.now();
     const popupInteractiveDuration = interactiveEndTime - interactiveStartTime;
 
-    // TODO: [ffmcgee] clean these selectors into helper constants
     await popup.click('[data-testid="confirm-footer-cancel-button"]');
 
     // Calculate total pop open time
@@ -664,10 +662,11 @@ export class PageLoadBenchmark {
       `Starting transaction proposal benchmark: ${browserLoads} browser loads, ${proposalLoads} proposal loads per browser`,
     );
 
+    await this.unlockWallet();
+
     for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
       console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
       await this.waitForExtensionLoad();
-      await this.unlockWallet();
 
       for (let proposalLoad = 0; proposalLoad < proposalLoads; proposalLoad++) {
         const runNumber = browserLoad * proposalLoads + proposalLoad;
@@ -843,6 +842,7 @@ export class PageLoadBenchmark {
    * @throws {Error} If file writing fails or git command fails
    */
   async saveResults(outputPath: string) {
+    // TODO: [ffmcgee] DRY with saveTransactionProposalResults
     const commitSha = execSync('git rev-parse --short HEAD', {
       cwd: __dirname,
       encoding: 'utf8',
@@ -875,7 +875,6 @@ export class PageLoadBenchmark {
       timestamp: new Date().getTime(),
       commit: commitSha,
       summary: this.calculateTransactionProposalStatistics(),
-      rawResults: this.transactionProposalResults,
     };
 
     await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
