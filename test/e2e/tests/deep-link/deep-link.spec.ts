@@ -446,7 +446,7 @@ describe('Deep Link', function () {
         await deepLink.checkPageIsLoaded();
         const initialUrlStr = await driver.getCurrentUrl();
         const initialUrl = new URL(initialUrlStr);
-        assert.equal(initialUrl.pathname, `"/home.html`);
+        assert.equal(initialUrl.pathname, `/home.html`);
         assert.equal(initialUrl.hash, '#link?u=%2Fhome');
         assert.equal(initialUrl.search, '');
 
