@@ -6,6 +6,141 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.4.0]
+
+### Uncategorized
+
+- chore: Bump ENS Snap (#35736)
+- chore: bump bridge controllers (#35596)
+- chore: migrate swap to bridge api toptokens (#35378)
+- Fixed a bug causing ENS lookups to fail (#35430)
+- chore: remove solana code fences (#35566)
+- chore: Update Ocap kernel packages and patch @endo/env-options (#35526)
+
+### Added
+
+- feat: add verified trust signal to dapp connection (#35760)
+- `feat: hide bridge recipient picker until there is an active bridge quote` (#35821)
+- `feat: implement bridge destination account picker modal` (#35819)
+- feat: Unified activity list for BIP-44 (#35740)
+- Renders a new account icon feature tour (#35670)
+- Add mask icons option (#35502)
+- Feat: add Contentful version segmentation (#35820)
+- Optimize image used for metamask shield settings (#35829)
+- `feat: redesign Unified Swaps quote card` (#35778)
+- Added rename feature for multichain accounts. (#35741)
+- Add view to reveal account group private keys (#35719)
+- feat: bip-44 network selector (#35579)
+- feat: Implement recipient validation and resolutions for Solana and EVM (#35744)
+- As this is behind a local feature gate, there are no public facing changes. (#35193)
+- Enables account groups in dapp connection flow. (#35513)
+- feat: Removed Getting Started Page, TOU and Added footer for tou in login (#35555)
+- Added initial smart account page routing for multichain accounts (#35665)
+- feat: show connected network icon (#35657)
+- Added support to Solana tokens with multiplier ([#509](https://github.com/MetaMask/snap-solana-wallet/pull/509))
+  CHANGELOG entry: Fix a bug that was causing to show spam Solana
+  transactions in the activity list
+  ([#515](https://github.com/MetaMask/snap-solana-wallet/pull/515))
+  CHANGELOG entry: Fixed an issue that was causing to show an empty symbol
+  instead of `UNKNOWN` in activity list for Solana tokens with no metadata
+  ([#517](https://github.com/MetaMask/snap-solana-wallet/pull/517)) (#35695)
+- Added search functionality to the Multichain Account List (#35616)
+- Added QR code modal for sharing account addresses (#35454)
+- feat: Add Acala/Karura logo, update bufferMultiplier (#33547)
+- feat: improvements in how balance is fetched for various tokens in new send flow (#35640)
+- feat: add tooltip for url trust signal badges (#35459)
+- Add perp push notification translations (#35621)
+- feat: trigger alignWallets when basicFunctionality ON (#35190)
+- feat: Remove network is busy alert (#34827)
+- Added Add Wallet button to account list page that opens modal with import options (#35536)
+- Added Settings > Transaction Shield UI (#35352)
+- Added SRP backup process to Multichain Account Details (#35518)
+- Added dedicated add wallet page for private key import with proper routing (#35543)
+- Added metamask shield entry point modal (#35347)
+- feat: Adding designs for amount input (#35510)
+- feat: bump solana snap (#35511)
+- feat: adding utility method for routing to send page (#35505)
+- feat: capture amount metrics events (#35503)
+- feat: Add max button to amount page (#35474)
+- feat: Implementing send metrics context and hooks (#35461)
+
+### Fixed
+
+- Show checkbox in edit account page. (#35868)
+- Added UI adjustments for multichain accounts features (#35839)
+- Fixed a bug with opening multiple block explorer URLs from multichain QR code modal (#35822)
+- Adds token detail name to destination account picker (#35810)
+- Update the native currency for FRAX network to FRAX (#35784)
+- fix: error in solana assets when toggling fiat mode (#35827)
+- fix: fixes in amount input about min decimals supported by the asset (#35808)
+- Fix multichain account menu by hiding pin and hide features that are not implemented (#35812)
+- Added minor UI and functionality adjustments to the multichain account details (#35818)
+- fix: dapp connect title overflow (#35715)
+- fix: only show connected and active badge (#35803)
+- Fixed account picker alignment under multichain accounts feature flag (#35807)
+- fix: display custom networks (#35798)
+- Fixed multichain accounts UI for search bar, account details page and wallet details page (#35793)
+- Prevent lengthy spinner on load when selected network is slow to respond (#35516)
+- fix: simplify transaction value calculation in useInsufficientBalanceAlerts hook (#35754)
+- Notify client when native SOL balance reaches zero ([#519](https://github.com/MetaMask/snap-solana-wallet/pull/519)) (#35739)
+- fix: fiat mode toggling on amount page (#35725)
+- Clear edit status after close edit network dialog (#35519)
+- fix: Fix sending NFT tokens in new send implementation (#35702)
+- fix: txHistory migration script should update txMetaId (#35668)
+- fix: origin truncation issue by displaying hostname (#35443)
+- fix: using new asset selectors for re-designed send flow (#35694)
+- fix: new send implementation for native SOL token (#35644)
+- Fix: display Solana Bridge transactions with correct label and details (#35539)
+- fix: support fallback to sequential batch (#34019)
+- fix: max mode implementation on extension new send flow (#35611)
+- Fixed minor bugs related to address list (#35592)
+- Fixed a bug that was causing the current network for dapps without permitted accounts to change unnecessarily (#35559)
+- Fixed source for multichain account names in account picker (#35478)
+- fix: plan 966 enhance ledger not supported error (#35291)
+
+## [13.3.0]
+### Added
+- feat: improve new send flow, by merging amount and recipient pages, and by adding the possibility to navigate back to the page when needed (#35416)
+- feat: improve new send flow, by adding Solana compatibility (#35361)
+- feat: improve new send flow, by adding amount fiat conversion and validation functions (#35346)
+- feat: improve new send flow, by adding header component on send page (#35326)
+- feat: improve new send flow, by displaying balance on amount page (#35246)
+- feat: improve new send flow, by making it possible to submit a transaction (#35188)
+- feat: improve new send flow, by making it possible to pass asset over to send page in url parameters (#35115)
+- feat: improve new send flow, by creating basic pages and navigation (#35106)
+- feat: improve new send flow, by setting up name resolution, including on non-evm networks (#35113)
+- feat: initialize the new send flow behind a feature flag (#35104)
+- feat: add a new page to display multichain account details (#35298)
+- feat: improve dapp connection UX when the wallet is locked (#35122)
+- feat: introduce address scanning for simple send transactions (#34978)
+- feat: add new multichain account popup menu (#35064)
+- feat: add checkbox for emitting error report to Sentry when restarting MetaMask from error page (#35619)
+
+### Changed
+- update: display the number of account group instead of addresses for a connected dapp (#35427)
+- update: improve multichain address list by filtering out test networks and refining layout (#35380)
+- update: batch RPC requests for native and ERC20 tokens into a single request to reduce the total number of RPC calls and improve performance (#35283)
+- update: replace portfolio.metamask.io links with app.metamask.io (#35221)
+- update: upgraded @metamask/design-system-react to v0.3.1 for improved security and React 17 compatibility (#35271)
+- update: deprecate carousel slides (#35109)
+
+### Fixed
+- fix: solve some security vulnerabilities caused by out of date dependencies (#34364)
+- fix: resolve visual bug when very long URLs get displayed on the MetaMask warning page (#35179)
+- fix: avoid race condition where the password is being changed while the wallet is locked (#35022)
+- fix: resolve issue where error is shown in the console although user successfully authenticated with Apple login (#35414)
+- fix: fix long account name rendering (#35343)
+- fix: properly clear all text boxes when user presses `clear` on the `import SRP` page (#33364)
+- fix: handle situation where transactions on some networks don't show up when more than one network is selected within the activity tab (#35231)
+- fix: fix issue when `too many metrics requests` error is shown in the console when a permit request is submitted (#35203)
+- fix: handle cases where incorrect nonce value is displayed in the transaction details from last confirmation page when a tx comes from a dapp and have a miss-matched network context (#35204)
+- fix: properly emit transaction lifecycle events even when smart transaction toggle is on (#35196)
+- fix: fix the flickering issue with the batch transaction alert that occurs when there are no simulations but the unused approval alert is triggered (#35019)
+- fix: automatically switch the chain, even when an approval is being displayed on page, and don't cancel pending confirmations while doing so (#35107)
+- fix: fall back to selected internalAccount if selected account group has no account matching specified scope (#35630)
+- fix: fixes issue in the send flow where sender's identicon is not a circle shape (#35711)
+- fix: fixes an issue with first-time interaction alerts displaying on verified contract addresses (#35331)
+
 ## [13.2.3]
 ### Fixed
 - fix: fixes bridging on https://portfolio.metamask.io (#35755)
@@ -33,6 +168,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add support for non-evm deep links (#35228)
 - feat: automatically switch to the last used solana account when opening swap/buy deep link with SOL token set as query parameter (#35390)
 - feat: update network selector to manage selecting a single network or all popular networks (#35264)
+- feat: unblock gas station for Base network and more accurate `alternateGasFee` capability (#34733)
 
 ### Changed
 - update: remove the Solana modal from the initial flow (#34988)
@@ -496,7 +632,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.4.0...HEAD
+[13.4.0]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...v13.4.0
+[13.3.0]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...v13.3.0
 [13.2.3]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...v13.2.3
 [13.2.2]: https://github.com/MetaMask/metamask-extension/compare/v13.2.1...v13.2.2
 [13.2.1]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...v13.2.1
