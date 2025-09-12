@@ -13,13 +13,19 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AssetsContractController,
+  CurrencyRateController,
   DeFiPositionsController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
   NftController,
   NftDetectionController,
+  RatesController,
+  TokenBalancesController,
+  TokenDetectionController,
+  TokenListController,
   TokenRatesController,
+  TokensController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
@@ -46,6 +52,7 @@ import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-contr
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
+import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { ShieldController } from '@metamask/shield-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -61,10 +68,12 @@ import MetaMetricsController from '../controllers/metametrics-controller';
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | CurrencyRateController
   | DelegationController
   | DeFiPositionsController
   | ExecutionService
   | GasFeeController
+  | GatorPermissionsController
   | JsonSnapsRegistry
   | KeyringController
   | MetaMetricsController
@@ -86,12 +95,17 @@ export type Controller =
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
+  | RatesController
   | SeedlessOnboardingController<EncryptionKey>
   | ShieldController
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | TokenBalancesController
+  | TokenDetectionController
+  | TokenListController
+  | TokensController
   | TransactionController
   | InstitutionalSnapController
   | UserStorageController
@@ -111,11 +125,14 @@ export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
+  CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
   DelegationController['state'] &
   GasFeeController['state'] &
+  GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  MetaMetricsController['state'] &
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
@@ -130,12 +147,17 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  RatesController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   ShieldController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
+  TokenBalancesController['state'] &
+  TokenDetectionController['state'] &
+  TokenListController['state'] &
+  TokensController['state'] &
   TransactionController['state'] &
   SwapsController['state'] &
   UserStorageController['state'] &

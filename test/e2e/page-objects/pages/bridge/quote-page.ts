@@ -32,7 +32,7 @@ class BridgeQuotePage {
 
   public tokenButton = '[data-testid="multichain-token-list-button"]';
 
-  private submitButton = { text: 'Submit', tag: 'button' };
+  private submitButton = { text: 'Bridge', tag: 'button' };
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
