@@ -20,6 +20,7 @@ export type MultichainAccountCellProps = {
   accountName: string;
   onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
+  startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
   walletName?: string;
@@ -31,6 +32,7 @@ export const MultichainAccountCell = ({
   accountName,
   onClick,
   balance,
+  startAccessory,
   endAccessory,
   selected = false,
   walletName,
@@ -55,6 +57,7 @@ export const MultichainAccountCell = ({
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
     >
+      {startAccessory}
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}
@@ -95,7 +98,7 @@ export const MultichainAccountCell = ({
           )}
         </Box>
 
-        {selected && (
+        {!startAccessory && selected && (
           <Icon
             name={IconName.CheckBold}
             color={IconColor.primaryDefault}

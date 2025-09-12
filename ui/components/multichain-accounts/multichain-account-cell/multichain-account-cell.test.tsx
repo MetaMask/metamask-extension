@@ -137,4 +137,44 @@ describe('MultichainAccountCell', () => {
     fireEvent.click(cellElement);
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
+
+  it('renders startAccessory when provided', () => {
+    const startAccessoryElement = (
+      <span data-testid="start-accessory">Start</span>
+    );
+
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        startAccessory={startAccessoryElement}
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
+    expect(screen.getByText('Start')).toBeInTheDocument();
+  });
+
+  it('hides selected icon when startAccessory is present', () => {
+    // Arrange
+    const startAccessoryElement = (
+      <span data-testid="start-accessory">Start</span>
+    );
+
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        startAccessory={startAccessoryElement}
+        selected={true}
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(
+        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+      ),
+    ).not.toBeInTheDocument();
+  });
 });
