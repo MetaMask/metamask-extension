@@ -180,7 +180,7 @@ const createMockFactory = () => {
         metadata: createGroupMetadata('Test Group'),
         accounts: [accounts.multipleScopes],
         walletName: 'Test Wallet 3',
-        walletId: 'test-wallet-multiple-scopes-id',
+        walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
       },
     ];
 
