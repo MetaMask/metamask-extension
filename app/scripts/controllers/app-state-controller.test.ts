@@ -679,8 +679,8 @@ describe('AppStateController', () => {
   });
 
   describe('metadata', () => {
-    it('includes expected state in debug snapshots', () => {
-      withController(
+    it('includes expected state in debug snapshots', async () => {
+      await withController(
         {
           state: {
             // Set optional values with no defaults so they show up in snapshot
@@ -761,8 +761,8 @@ describe('AppStateController', () => {
       );
     });
 
-    it('includes expected state in state logs', () => {
-      withController(
+    it('includes expected state in state logs', async () => {
+      await withController(
         {
           state: {
             // Set optional values with no defaults so they show up in snapshot
@@ -842,8 +842,8 @@ describe('AppStateController', () => {
       );
     });
 
-    it('persists expected state', () => {
-      withController(
+    it('persists expected state', async () => {
+      await withController(
         {
           state: {
             // Set optional values with no defaults so they show up in snapshot
@@ -911,8 +911,8 @@ describe('AppStateController', () => {
       );
     });
 
-    it('exposes expected state to UI', () => {
-      withController(
+    it('exposes expected state to UI', async () => {
+      await withController(
         {
           state: {
             // Set optional values with no defaults so they show up in snapshot
