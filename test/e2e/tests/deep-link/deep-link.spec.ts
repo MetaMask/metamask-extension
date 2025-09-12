@@ -435,7 +435,6 @@ describe('Deep Link', function () {
           `globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');`,
         );
 
-        await driver.delay(1000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -443,14 +442,18 @@ describe('Deep Link', function () {
         const metamaskWindowHandle = await driver.driver.getWindowHandle();
 
         // wait for the homepage to load in this new window
-        await homePage.checkPageIsLoaded();
+        const deepLink = new DeepLink(driver);
+        await deepLink.checkPageIsLoaded();
         const initialUrl = await driver.getCurrentUrl();
-        assert.equal(initialUrl, `${BaseUrl.MetaMask}/home.html#`);
+        assert.equal(
+          initialUrl,
+          `chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/home.html#link?u=%2Fhome`,
+        );
 
         await driver.switchToWindow(dappWindowHandle);
 
         await driver.executeScript(
-          `globalThis.testWindow.location.href = ${JSON.stringify(`${initialUrl}notifications`)};`,
+          `globalThis.testWindow.location.href = ${JSON.stringify(initialUrl.replace('#link?u=%2Fhome', '#notifications'))};`,
         );
 
         // go back to the Metamask window.
