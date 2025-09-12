@@ -229,6 +229,9 @@ describe('Request-queue UI changes', function () {
         });
         await rejectTransactionRedesign(driver);
 
+        // Wait for dialog to close and window state to stabilize
+        await driver.delay(2000);
+
         // Go to the second dapp, ensure it uses Ethereum Mainnet
         await selectDappClickSend(driver, DAPP_ONE_URL);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
