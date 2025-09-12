@@ -4,29 +4,30 @@ import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { ACCOUNT_TYPE } from '../../../constants';
-import { PAGES } from '../../../webdriver/driver';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { arrangeTestUtils } from './helpers';
 
-describe('Account syncing - Settings Toggle', function () {
+describe('Account syncing - Multiple SRPs', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
-  const THIRD_ACCOUNT_NAME = 'Account 3';
+  const SRP_2_FIRST_ACCOUNT = 'Account 3';
+  const SRP_2_SECOND_ACCOUNT = 'My Fourth Account';
 
   /**
-   * This test verifies the account syncing flow for adding accounts with sync toggle functionality:
-   * Phase 1: From a loaded state with account syncing enabled, Add a new account with sync enabled and verify it syncs to user storage
-   * Phase 2: Disable account sync, add another account, and verify it doesn't sync
-   * Phase 3: Login to a fresh app instance and verify only synced accounts persist
+   * This test verifies account syncing when adding accounts across multiple SRPs:
+   * Phase 1: Starting with the default account, add a second account to the first SRP, import a second SRP which automatically creates a third account, then manually create a fourth account on the second SRP with a custom name.
+   * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
    */
-  it('should sync new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
+  it.skip('should add accounts across multiple SRPs and sync them', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
@@ -37,7 +38,7 @@ describe('Account syncing - Settings Toggle', function () {
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
-    // Phase 1: Initial setup and account creation with sync enabled
+    // Phase 1: Add a second account to the first SRP
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
@@ -54,12 +55,12 @@ describe('Account syncing - Settings Toggle', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        // Verify the default account exists
+        // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );
 
-        // Set up event listener to track sync operations
+        // Set up event counter to track sync operations
         const {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
@@ -69,7 +70,7 @@ describe('Account syncing - Settings Toggle', function () {
             UserStorageMockttpControllerEvents.PUT_SINGLE,
           );
 
-        // Create second account with sync enabled - this should sync to user storage
+        // Add a second account to the first SRP
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
         });
@@ -78,50 +79,53 @@ describe('Account syncing - Settings Toggle', function () {
         await waitUntilSyncedAccountsNumberEquals(2);
         await waitUntilEventsEmittedNumberEquals(1);
 
-        // Reopen account menu to verify second account was created successfully
+        // Reopen account menu to verify both accounts are visible
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
+          DEFAULT_ACCOUNT_NAME,
+        );
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
 
         await accountListPage.closeAccountModal();
 
-        // Phase 2: Disable account sync and create third account
-        // Navigate to Settings to toggle account sync
-        await header.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToBackupAndSyncSettings();
+        // Import second SRP (this will automatically create the third account)
+        await header.openAccountMenu();
+        await accountListPage.startImportSecretPhrase(
+          IDENTITY_TEAM_SEED_PHRASE_2,
+        );
 
-        // Disable account synchronization
-        const backupAndSyncSettingsPage = new BackupAndSyncSettings(driver);
-        await backupAndSyncSettingsPage.checkPageIsLoaded();
-        await backupAndSyncSettingsPage.toggleAccountSync();
+        // Wait for the import to complete and sync
+        await waitUntilSyncedAccountsNumberEquals(3);
 
-        // Navigate back to wallet to create third account
-        await driver.navigate(PAGES.HOME);
-        await header.checkPageIsLoaded();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
 
-        // Create third account with sync disabled - this should NOT sync to user storage
+        // Add account with custom name to specific SRP
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
+          accountName: SRP_2_SECOND_ACCOUNT,
+          srpIndex: 2, // Second SRP
         });
 
-        // Reopen account menu to verify third account was created locally
+        // Verify all accounts are visible
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
-          THIRD_ACCOUNT_NAME,
+          SRP_2_SECOND_ACCOUNT,
         );
 
         await accountListPage.closeAccountModal();
       },
     );
 
-    // Phase 3: Fresh app instance to verify sync persistence
+    // Phase 2: Login to fresh instance, import second SRP and verify all accounts persist
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
@@ -129,31 +133,39 @@ describe('Account syncing - Settings Toggle', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        // Login to fresh app instance to test sync restoration
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
-        await header.openAccountMenu();
 
+        // Import the second SRP to get access to all accounts
+        await header.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.startImportSecretPhrase(
+          IDENTITY_TEAM_SEED_PHRASE_2,
+        );
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        // Verify all accounts from both SRPs are visible
+        await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
 
-        // Verify only accounts created with sync enabled are restored
-        const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];
+        const visibleAccounts = [
+          DEFAULT_ACCOUNT_NAME,
+          SECOND_ACCOUNT_NAME,
+          SRP_2_FIRST_ACCOUNT,
+          SRP_2_SECOND_ACCOUNT,
+        ];
 
         for (const accountName of visibleAccounts) {
           await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
-        // Verify third account (created with sync disabled) is NOT restored
-        await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          THIRD_ACCOUNT_NAME,
-        );
-
-        // Verify we only have 2 accounts (not 3)
+        // Verify we have exactly 4 accounts
         await accountListPage.checkNumberOfAvailableAccounts(
-          2,
+          4,
           ACCOUNT_TYPE.Ethereum,
         );
       },

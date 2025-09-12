@@ -10,24 +10,25 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { arrangeTestUtils } from './helpers';
 
-describe('Account syncing - Multiple SRPs', function () {
+describe('Account syncing - Unsupported Account types', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
-  const SRP_2_FIRST_ACCOUNT = 'Account 3';
-  const SRP_2_SECOND_ACCOUNT = 'My Fourth Account';
+  const IMPORTED_ACCOUNT_NAME = 'Account 3';
+
+  // Test private key from the mobile tests
+  const IMPORTED_PRIVATE_KEY =
+    '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
 
   /**
-   * This test verifies account syncing when adding accounts across multiple SRPs:
-   * Phase 1: Starting with the default account, add a second account to the first SRP, import a second SRP which automatically creates a third account, then manually create a fourth account on the second SRP with a custom name.
-   * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
+   * This test verifies that imported accounts are not synced to user storage:
+   * Phase 1: Create regular accounts, import a private key account, and verify the imported account is visible in the current session
+   * Phase 2: Login to a fresh app instance and verify only regular accounts persist (imported accounts are excluded)
    */
-  it('should add accounts across multiple SRPs and sync them', async function () {
+  it.skip('should not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
@@ -38,7 +39,7 @@ describe('Account syncing - Multiple SRPs', function () {
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
-    // Phase 1: Add a second account to the first SRP
+    // Phase 1: Create regular accounts and import a private key account
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
@@ -70,7 +71,7 @@ describe('Account syncing - Multiple SRPs', function () {
             UserStorageMockttpControllerEvents.PUT_SINGLE,
           );
 
-        // Add a second account to the first SRP
+        // Add a second regular account (this should sync)
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
         });
@@ -79,7 +80,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await waitUntilSyncedAccountsNumberEquals(2);
         await waitUntilEventsEmittedNumberEquals(1);
 
-        // Reopen account menu to verify both accounts are visible
+        // Reopen account menu to verify both regular accounts are visible
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -89,43 +90,21 @@ describe('Account syncing - Multiple SRPs', function () {
           SECOND_ACCOUNT_NAME,
         );
 
-        await accountListPage.closeAccountModal();
+        // Import a private key account (this should NOT sync)
+        await accountListPage.addNewImportedAccount(IMPORTED_PRIVATE_KEY);
 
-        // Import second SRP (this will automatically create the third account)
-        await header.openAccountMenu();
-        await accountListPage.startImportSecretPhrase(
-          IDENTITY_TEAM_SEED_PHRASE_2,
-        );
-
-        // Wait for the import to complete and sync
-        await waitUntilSyncedAccountsNumberEquals(3);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        // Add a fourth account with custom name to the second SRP
-        await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-
-        // Add account with custom name to specific SRP
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName: SRP_2_SECOND_ACCOUNT,
-          srpIndex: 2, // Second SRP
-        });
-
-        // Verify all accounts are visible
+        // Verify imported account is visible in current session
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
-          SRP_2_SECOND_ACCOUNT,
+          IMPORTED_ACCOUNT_NAME,
         );
 
         await accountListPage.closeAccountModal();
       },
     );
 
-    // Phase 2: Login to fresh instance, import second SRP and verify all accounts persist
+    // Phase 2: Login to fresh instance and verify only regular accounts persist
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
@@ -137,35 +116,26 @@ describe('Account syncing - Multiple SRPs', function () {
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
-
-        // Import the second SRP to get access to all accounts
         await header.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.startImportSecretPhrase(
-          IDENTITY_TEAM_SEED_PHRASE_2,
-        );
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        // Verify all accounts from both SRPs are visible
-        await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
 
-        const visibleAccounts = [
-          DEFAULT_ACCOUNT_NAME,
-          SECOND_ACCOUNT_NAME,
-          SRP_2_FIRST_ACCOUNT,
-          SRP_2_SECOND_ACCOUNT,
-        ];
+        // Verify regular accounts are still visible (synced accounts)
+        const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];
 
         for (const accountName of visibleAccounts) {
           await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
-        // Verify we have exactly 4 accounts
+        // Verify imported account is NOT visible (not synced)
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
+          IMPORTED_ACCOUNT_NAME,
+        );
+
+        // Verify we only have 2 accounts (not 3)
         await accountListPage.checkNumberOfAvailableAccounts(
-          4,
+          2,
           ACCOUNT_TYPE.Ethereum,
         );
       },

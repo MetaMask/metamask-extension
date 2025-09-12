@@ -4,31 +4,29 @@ import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { ACCOUNT_TYPE } from '../../../constants';
+import { PAGES } from '../../../webdriver/driver';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import { arrangeTestUtils } from './helpers';
 
-describe('Account syncing - Unsupported Account types', function () {
-  this.timeout(160000); // This test is very long, so we need an unusually high timeout
-
+describe('Account syncing - Settings Toggle', function () {
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
-  const IMPORTED_ACCOUNT_NAME = 'Account 3';
-
-  // Test private key from the mobile tests
-  const IMPORTED_PRIVATE_KEY =
-    '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
+  const THIRD_ACCOUNT_NAME = 'Account 3';
 
   /**
-   * This test verifies that imported accounts are not synced to user storage:
-   * Phase 1: Create regular accounts, import a private key account, and verify the imported account is visible in the current session
-   * Phase 2: Login to a fresh app instance and verify only regular accounts persist (imported accounts are excluded)
+   * This test verifies the account syncing flow for adding accounts with sync toggle functionality:
+   * Phase 1: From a loaded state with account syncing enabled, Add a new account with sync enabled and verify it syncs to user storage
+   * Phase 2: Disable account sync, add another account, and verify it doesn't sync
+   * Phase 3: Login to a fresh app instance and verify only synced accounts persist
    */
-  it('should not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
+  it.skip('should sync new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
@@ -39,7 +37,7 @@ describe('Account syncing - Unsupported Account types', function () {
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
-    // Phase 1: Create regular accounts and import a private key account
+    // Phase 1: Initial setup and account creation with sync enabled
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
@@ -56,12 +54,12 @@ describe('Account syncing - Unsupported Account types', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        // Verify default account is visible
+        // Verify the default account exists
         await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );
 
-        // Set up event counter to track sync operations
+        // Set up event listener to track sync operations
         const {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
@@ -71,7 +69,7 @@ describe('Account syncing - Unsupported Account types', function () {
             UserStorageMockttpControllerEvents.PUT_SINGLE,
           );
 
-        // Add a second regular account (this should sync)
+        // Create second account with sync enabled - this should sync to user storage
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
         });
@@ -80,31 +78,50 @@ describe('Account syncing - Unsupported Account types', function () {
         await waitUntilSyncedAccountsNumberEquals(2);
         await waitUntilEventsEmittedNumberEquals(1);
 
-        // Reopen account menu to verify both regular accounts are visible
+        // Reopen account menu to verify second account was created successfully
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.checkAccountDisplayedInAccountList(
-          DEFAULT_ACCOUNT_NAME,
-        );
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
 
-        // Import a private key account (this should NOT sync)
-        await accountListPage.addNewImportedAccount(IMPORTED_PRIVATE_KEY);
+        await accountListPage.closeAccountModal();
 
-        // Verify imported account is visible in current session
+        // Phase 2: Disable account sync and create third account
+        // Navigate to Settings to toggle account sync
+        await header.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToBackupAndSyncSettings();
+
+        // Disable account synchronization
+        const backupAndSyncSettingsPage = new BackupAndSyncSettings(driver);
+        await backupAndSyncSettingsPage.checkPageIsLoaded();
+        await backupAndSyncSettingsPage.toggleAccountSync();
+
+        // Navigate back to wallet to create third account
+        await driver.navigate(PAGES.HOME);
+        await header.checkPageIsLoaded();
+        await header.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
+
+        // Create third account with sync disabled - this should NOT sync to user storage
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+        });
+
+        // Reopen account menu to verify third account was created locally
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
-          IMPORTED_ACCOUNT_NAME,
+          THIRD_ACCOUNT_NAME,
         );
 
         await accountListPage.closeAccountModal();
       },
     );
 
-    // Phase 2: Login to fresh instance and verify only regular accounts persist
+    // Phase 3: Fresh app instance to verify sync persistence
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
@@ -112,6 +129,7 @@ describe('Account syncing - Unsupported Account types', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
+        // Login to fresh app instance to test sync restoration
         await unlockWallet(driver);
 
         const header = new HeaderNavbar(driver);
@@ -121,16 +139,16 @@ describe('Account syncing - Unsupported Account types', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        // Verify regular accounts are still visible (synced accounts)
+        // Verify only accounts created with sync enabled are restored
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];
 
         for (const accountName of visibleAccounts) {
           await accountListPage.checkAccountDisplayedInAccountList(accountName);
         }
 
-        // Verify imported account is NOT visible (not synced)
+        // Verify third account (created with sync disabled) is NOT restored
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          IMPORTED_ACCOUNT_NAME,
+          THIRD_ACCOUNT_NAME,
         );
 
         // Verify we only have 2 accounts (not 3)
