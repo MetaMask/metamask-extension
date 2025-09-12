@@ -10,7 +10,7 @@ import {
 // Quality Gate Retries
 const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
 
-function readTestResults(TEST_RESULTS_PATH: string): TestRun | undefined {
+function readTestResults(TEST_RESULTS_PATH: string): TestRun {
   const testSuiteName =
     process.env.TEST_SUITE_NAME || 'test-e2e-chrome-browserify';
 
@@ -19,9 +19,12 @@ function readTestResults(TEST_RESULTS_PATH: string): TestRun | undefined {
       readFileSync(TEST_RESULTS_PATH, 'utf8'),
     );
 
-    const testRun: TestRun | undefined = testRuns.find(
+    const testRun: TestRun = testRuns.find(
       (run) => run.name === testSuiteName,
-    );
+    ) || { // If the file doesn't exist, return a dummy object to do the naïve split
+      name: testSuiteName,
+      testFiles: [],
+    };
 
     return testRun;
   } catch (error) {
@@ -82,31 +85,22 @@ export function splitTestsByTimings(
     TEST_RESULTS_FILE = `test/test-results/test-runs-${process.env.SELENIUM_BROWSER}.json`,
   } = process.env;
 
-  try {
-    const testRunLastTime = readTestResults(TEST_RESULTS_FILE);
+  const testRunLastTime = readTestResults(TEST_RESULTS_FILE);
+  let testRunNew: TestRun = { name: testRunLastTime.name, testFiles: [] };
 
-    if (testRunLastTime) {
-      let testRunNew: TestRun = { name: testRunLastTime.name, testFiles: [] };
+  testList.forEach((path) => {
+    const testFileLastTime = testRunLastTime.testFiles.find(
+      (file) => file.path === path,
+    );
 
-      testList.forEach((path) => {
-        const testFileLastTime = testRunLastTime.testFiles.find(
-          (file) => file.path === path,
-        );
-
-        if (testFileLastTime) {
-          testRunNew.testFiles.push(testFileLastTime);
-        } else {
-          testRunNew.testFiles.push(getNewBlankTestFile(path));
-        }
-      });
-
-      return splitTests(testRunNew, changedOrNewTests, totalChunks);
+    if (testFileLastTime) {
+      testRunNew.testFiles.push(testFileLastTime);
+    } else {
+      testRunNew.testFiles.push(getNewBlankTestFile(path));
     }
-  } catch (error) {
-    console.trace(error);
-  }
+  });
 
-  return [];
+  return splitTests(testRunNew, changedOrNewTests, totalChunks);
 }
 
 /**
