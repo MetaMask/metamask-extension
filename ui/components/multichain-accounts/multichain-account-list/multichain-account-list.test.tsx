@@ -46,14 +46,6 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('../../../store/controller-actions/network-order-controller', () => ({
-  enableAllPopularNetworks: jest.fn().mockImplementation(() => {
-    return async function () {
-      await Promise.resolve();
-    };
-  }),
-}));
-
 const mockSetAccountGroupName = jest.requireMock(
   '../../../store/actions',
 ).setAccountGroupName;
@@ -61,10 +53,6 @@ const mockSetAccountGroupName = jest.requireMock(
 const mockSetSelectedMultichainAccount = jest.requireMock(
   '../../../store/actions',
 ).setSelectedMultichainAccount;
-
-const mockEnableAllPopularNetworks = jest.requireMock(
-  '../../../store/controller-actions/network-order-controller',
-).enableAllPopularNetworks;
 const mockWalletOneEntropySource = '01JKAF3DSGM3AB87EM9N0K41AJ';
 const mockWalletTwoEntropySource = '01JKAF3PJ247KAM6C03G5Q0NP8';
 
@@ -139,31 +127,7 @@ describe('MultichainAccountList', () => {
   };
 
   const renderComponent = (props = {}) => {
-    // Create a custom state that includes the necessary multichain network data
-    const customState = {
-      ...mockDefaultState,
-      metamask: {
-        ...mockDefaultState.metamask,
-        multichainNetworks: {
-          'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          'eip155:137': { chainId: '0x89', name: 'Polygon' },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-            name: 'Solana Mainnet',
-          },
-        },
-        enabledNetworkMap: {
-          eip155: { '0x1': true, '0x89': true },
-          solana: {},
-        },
-        preferences: {
-          ...mockDefaultState.metamask.preferences,
-          useMultiAccountBalanceChecker: true,
-        },
-      },
-    };
-
-    const store = configureStore(customState);
+    const store = configureStore(mockDefaultState);
 
     return renderWithProvider(
       <MultichainAccountList {...defaultProps} {...props} />,
@@ -442,91 +406,5 @@ describe('MultichainAccountList', () => {
     // Verify the modal is closed and action was not called
     expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
     expect(mockSetAccountGroupName).not.toHaveBeenCalled();
-  });
-
-  it('does not call enableAllPopularNetworks when multiple networks are enabled', () => {
-    // Use the default state which has multiple networks enabled
-    renderComponent();
-
-    // Find and click the second account cell (wallet two)
-    const accountCell = screen.getByTestId(
-      `multichain-account-cell-${walletTwoGroupId}`,
-    );
-    accountCell.click();
-
-    // Verify that enableAllPopularNetworks was NOT called
-    expect(mockEnableAllPopularNetworks).not.toHaveBeenCalled();
-  });
-
-  it('calls enableAllPopularNetworks when only Solana mainnet is enabled and no Solana account group exists', () => {
-    const solanaOnlyState = {
-      ...mockDefaultState,
-      metamask: {
-        ...mockDefaultState.metamask,
-        multichainNetworks: {
-          'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-            name: 'Solana Mainnet',
-          },
-        },
-        enabledNetworkMap: {
-          eip155: {},
-          solana: { 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true },
-        },
-        preferences: {
-          ...mockDefaultState.metamask.preferences,
-          useMultiAccountBalanceChecker: true,
-        },
-      },
-    };
-
-    const store = configureStore(solanaOnlyState);
-    renderWithProvider(<MultichainAccountList {...defaultProps} />, store);
-
-    // Find and click the second account cell (wallet two)
-    const accountCell = screen.getByTestId(
-      `multichain-account-cell-${walletTwoGroupId}`,
-    );
-    accountCell.click();
-
-    // Verify that enableAllPopularNetworks WAS called
-    expect(mockEnableAllPopularNetworks).toHaveBeenCalled();
-  });
-
-  it('calls enableAllPopularNetworks when only Bitcoin mainnet is enabled and no Bitcoin account group exists', () => {
-    const btcOnlyState = {
-      ...mockDefaultState,
-      metamask: {
-        ...mockDefaultState.metamask,
-        multichainNetworks: {
-          'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          'bip122:000000000019d6689c085ae165831e93': {
-            chainId: 'bip122:000000000019d6689c085ae165831e93',
-            name: 'Bitcoin Mainnet',
-          },
-        },
-        enabledNetworkMap: {
-          eip155: {},
-          bip122: { 'bip122:000000000019d6689c085ae165831e93': true },
-        },
-        preferences: {
-          ...mockDefaultState.metamask.preferences,
-          useMultiAccountBalanceChecker: true,
-        },
-      },
-    };
-
-    const store = configureStore(btcOnlyState);
-    renderWithProvider(<MultichainAccountList {...defaultProps} />, store);
-
-    // Find and click the second account cell (wallet two)
-    const accountCell = screen.getByTestId(
-      `multichain-account-cell-${walletTwoGroupId}`,
-    );
-    accountCell.click();
-
-    // Verify that enableAllPopularNetworks WAS called
-    expect(mockEnableAllPopularNetworks).toHaveBeenCalled();
   });
 });

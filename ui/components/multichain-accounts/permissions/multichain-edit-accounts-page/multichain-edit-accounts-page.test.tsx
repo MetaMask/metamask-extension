@@ -17,17 +17,6 @@ import {
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
 import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 
-jest.mock(
-  '../../../../store/controller-actions/network-order-controller',
-  () => ({
-    enableAllPopularNetworks: jest.fn().mockImplementation(() => {
-      return async function () {
-        await Promise.resolve();
-      };
-    }),
-  }),
-);
-
 const MOCK_WALLET_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 const MOCK_GROUP_ID_1 =
   'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
@@ -256,19 +245,6 @@ const createMockState = (overrides = {}) => {
       ...mockMultichainState.metamask,
       keyrings: [],
       defaultHomeActiveTabName: 'activity',
-      multichainNetworks: {
-        'eip155:1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-        'eip155:137': { chainId: '0x89', name: 'Polygon' },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          name: 'Solana Mainnet',
-        },
-      },
-      enabledNetworkMap: {
-        eip155: { '0x1': true, '0x89': true },
-        solana: {},
-        bip122: {},
-      },
       ...overrides,
     },
   };
