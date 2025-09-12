@@ -429,7 +429,7 @@ describe('Deep Link', function () {
         // use our dummy page to drive the new window
         await driver.openNewURL(TEST_PAGE);
 
-        const dappWindowHandle = await this.driver.getWindowHandle();
+        const dappWindowHandle = await driver.driver.getWindowHandle();
         // simulate a dapp calling `window.open('https://link.metamask.io/home')`
         await driver.executeScript(
           `globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');`,
@@ -440,7 +440,7 @@ describe('Deep Link', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const metamaskWindowHandle = await this.driver.getWindowHandle();
+        const metamaskWindowHandle = await driver.driver.getWindowHandle();
 
         // wait for the homepage to load in this new window
         await homePage.checkPageIsLoaded();
