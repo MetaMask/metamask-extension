@@ -149,7 +149,7 @@ export const MultichainSiteCellTooltip =
       return (
         accountGroups?.map((accountGroup) => {
           return {
-            avatarValue: accountGroup.accounts[0].address,
+            avatarValue: accountGroup.id,
           };
         }) ?? []
       );

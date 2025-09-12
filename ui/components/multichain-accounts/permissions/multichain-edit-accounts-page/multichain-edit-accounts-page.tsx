@@ -162,6 +162,7 @@ export const MultichainEditAccountsPage: React.FC<
             formattedAccountGroupBalancesByWallet={
               formattedAccountGroupBalancesByWallet
             }
+            showAccountCheckbox={true}
           />
         </Box>
       </Content>
