@@ -14,7 +14,10 @@ import {
 } from '@metamask/profile-sync-controller';
 import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
-import { MultichainAccountServiceCreateMultichainAccountGroupAction } from '@metamask/multichain-account-service';
+import {
+  MultichainAccountServiceCreateMultichainAccountGroupAction,
+  MultichainAccountServiceWalletStatusChangeEvent,
+} from '@metamask/multichain-account-service';
 
 type Actions =
   | AccountsControllerGetAccountAction
@@ -35,7 +38,8 @@ type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerSelectedAccountChangeEvent
-  | UserStorageController.UserStorageControllerStateChangeEvent;
+  | UserStorageController.UserStorageControllerStateChangeEvent
+  | MultichainAccountServiceWalletStatusChangeEvent;
 
 export type AccountTreeControllerMessenger = ReturnType<
   typeof getAccountTreeControllerMessenger
@@ -58,6 +62,7 @@ export function getAccountTreeControllerMessenger(
       'AccountsController:accountRemoved',
       'AccountsController:selectedAccountChange',
       'UserStorageController:stateChange',
+      'MultichainAccountService:walletStatusChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
