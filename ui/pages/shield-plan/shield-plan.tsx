@@ -51,6 +51,7 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import LoadingScreen from '../../components/ui/loading-screen';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import {
   PAYMENT_METHODS,
@@ -64,6 +65,7 @@ import {
 const ShieldPlan = () => {
   const history = useHistory();
   const t = useI18nContext();
+  const [isLoading] = useState(false);
 
   // Get multichain balances to filter tokens with balance
   const { assetsWithBalance: multichainTokensWithBalance } =
@@ -302,6 +304,8 @@ const ShieldPlan = () => {
           {t('shieldPlanAutoRenew', [SHIELD_PLAN_PRICES.MONTHLY])}
         </Text>
       </Footer>
+
+      {isLoading && <LoadingScreen />}
     </Page>
   );
 };
