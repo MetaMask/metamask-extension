@@ -92,7 +92,7 @@ export const WalletDetailsPage = () => {
     <Page className="multichain-wallet-details-page">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: TextVariant.headingMd,
         }}
         startAccessory={
           <ButtonIcon
@@ -104,7 +104,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {t('walletDetails')}
+        {wallet?.metadata.name}
       </Header>
       <Content>
         <Box

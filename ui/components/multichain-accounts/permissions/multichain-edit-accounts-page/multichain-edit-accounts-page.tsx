@@ -157,6 +157,7 @@ export const MultichainEditAccountsPage: React.FC<
             wallets={walletsWithSupportedAccountGroups}
             selectedAccountGroups={selectedAccountGroups}
             handleAccountClick={handleAccountClick}
+            showAccountCheckbox={true}
           />
         </Box>
       </Content>
