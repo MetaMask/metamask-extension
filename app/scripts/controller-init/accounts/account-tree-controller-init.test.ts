@@ -46,8 +46,8 @@ describe('AccountTreeControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.AccountTreeController,
       config: {
+        trace: expect.any(Function),
         backupAndSync: {
-          enableDebugLogging: true,
           onBackupAndSyncEvent: expect.any(Function),
         },
       },
