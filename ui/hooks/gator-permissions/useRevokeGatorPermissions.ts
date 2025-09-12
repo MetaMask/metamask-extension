@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionMeta,
@@ -51,9 +51,9 @@ export function useRevokeGatorPermissions({
     selectDefaultRpcEndpointByChainId(state, chainId),
   );
 
-  const isRedirectPending = useMemo(() => {
-    return confirmations.some((conf) => conf.id === transactionId);
-  }, [confirmations, transactionId]);
+  const isRedirectPending = confirmations.some(
+    (conf) => conf.id === transactionId,
+  );
 
   /**
    * Extracts the delegation from the gator permission encoded context.
@@ -95,11 +95,13 @@ export function useRevokeGatorPermissions({
 
   /**
    * Asserts that the gator permission(s) is not empty.
+   * When an single permission is provided, empty means undefined.
+   * When an array of permissions is provided, empty means an empty array.
    *
    * @param dataToAssert - The gator permission(s) to assert.
    * @throws An error if the gator permission(s) is empty.
    */
-  const assertEmptyGatorPermission = useCallback(
+  const assertNotEmptyGatorPermission = useCallback(
     (
       dataToAssert:
         | StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>
@@ -122,7 +124,7 @@ export function useRevokeGatorPermissions({
    * @param gatorPermission - The gator permission to assert.
    * @throws An error if the chain ID does not match.
    */
-  const assertChainId = useCallback(
+  const assertCorrectChainId = useCallback(
     (
       gatorPermission: StoredGatorPermissionSanitized<
         Signer,
@@ -142,7 +144,7 @@ export function useRevokeGatorPermissions({
    * @param delegator - The address of the delegator to find.
    * @returns The internal account if found, otherwise undefined.
    */
-  const findDelegatorFromInternalAccounts = useCallback(
+  const findInternalAccountByAddress = useCallback(
     (delegator: Hex) => {
       return internalAccounts.find((account) =>
         isEqualCaseInsensitive(account.address, delegator),
@@ -165,8 +167,8 @@ export function useRevokeGatorPermissions({
       >,
     ): RevokeGatorPermissionArgs => {
       const { permissionResponse } = gatorPermission;
-      const internalAccount = findDelegatorFromInternalAccounts(
-        permissionResponse.address as `0x${string}`,
+      const internalAccount = findInternalAccountByAddress(
+        permissionResponse.address as Hex,
       );
       if (!internalAccount) {
         throw new Error(
@@ -177,10 +179,10 @@ export function useRevokeGatorPermissions({
         permissionContext: permissionResponse.context,
         delegationManagerAddress:
           permissionResponse.signerMeta.delegationManager,
-        accountAddress: internalAccount.address as `0x${string}`,
+        accountAddress: internalAccount.address as Hex,
       };
     },
-    [findDelegatorFromInternalAccounts],
+    [findInternalAccountByAddress],
   );
 
   /**
@@ -243,8 +245,8 @@ export function useRevokeGatorPermissions({
         PermissionTypesWithCustom
       >,
     ): Promise<TransactionMeta> => {
-      assertEmptyGatorPermission(gatorPermission);
-      assertChainId(gatorPermission);
+      assertNotEmptyGatorPermission(gatorPermission);
+      assertCorrectChainId(gatorPermission);
       const transactionMeta =
         await addRevokeGatorPermissionTransaction(gatorPermission);
 
@@ -254,8 +256,8 @@ export function useRevokeGatorPermissions({
     },
     [
       addRevokeGatorPermissionTransaction,
-      assertChainId,
-      assertEmptyGatorPermission,
+      assertCorrectChainId,
+      assertNotEmptyGatorPermission,
     ],
   );
 
@@ -275,11 +277,11 @@ export function useRevokeGatorPermissions({
         PermissionTypesWithCustom
       >[],
     ): Promise<TransactionMeta[]> => {
-      assertEmptyGatorPermission(gatorPermissions);
+      assertNotEmptyGatorPermission(gatorPermissions);
 
       // Make sure all gator permissions are on the same chain before revoking
       for (const gatorPermission of gatorPermissions) {
-        assertChainId(gatorPermission);
+        assertCorrectChainId(gatorPermission);
       }
 
       // TODO: This is a temporary solution to revoke gator permissions sequentially
@@ -298,8 +300,8 @@ export function useRevokeGatorPermissions({
     },
     [
       addRevokeGatorPermissionTransaction,
-      assertChainId,
-      assertEmptyGatorPermission,
+      assertCorrectChainId,
+      assertNotEmptyGatorPermission,
     ],
   );
 
@@ -313,6 +315,6 @@ export function useRevokeGatorPermissions({
   return {
     revokeGatorPermission,
     revokeGatorPermissionBatch,
-    findDelegatorFromInternalAccounts,
+    findInternalAccountByAddress,
   };
 }

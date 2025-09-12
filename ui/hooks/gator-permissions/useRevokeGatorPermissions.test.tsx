@@ -606,7 +606,7 @@ describe('useRevokeGatorPermissions', () => {
         },
       );
 
-      const foundAccount = result.current.findDelegatorFromInternalAccounts(
+      const foundAccount = result.current.findInternalAccountByAddress(
         mockSelectedAccountAddress as Hex,
       );
 
@@ -628,7 +628,7 @@ describe('useRevokeGatorPermissions', () => {
         },
       );
 
-      const foundAccount = result.current.findDelegatorFromInternalAccounts(
+      const foundAccount = result.current.findInternalAccountByAddress(
         '0x1234567890123456789012345678901234567890' as Hex,
       );
 
