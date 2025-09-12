@@ -181,8 +181,8 @@ describe('AlertController', () => {
   });
 
   describe('metadata', () => {
-    it('includes expected state in debug snapshots', () => {
-      withController(({ controller }) => {
+    it('includes expected state in debug snapshots', async () => {
+      await withController(({ controller }) => {
         expect(
           deriveStateFromMetadata(
             controller.state,
@@ -201,8 +201,8 @@ describe('AlertController', () => {
       });
     });
 
-    it('includes expected state in state logs', () => {
-      withController(({ controller }) => {
+    it('includes expected state in state logs', async () => {
+      await withController(({ controller }) => {
         expect(
           deriveStateFromMetadata(
             controller.state,
@@ -223,8 +223,8 @@ describe('AlertController', () => {
       });
     });
 
-    it('persists expected state', () => {
-      withController(({ controller }) => {
+    it('persists expected state', async () => {
+      await withController(({ controller }) => {
         expect(
           deriveStateFromMetadata(
             controller.state,
@@ -245,8 +245,8 @@ describe('AlertController', () => {
       });
     });
 
-    it('exposes expected state to UI', () => {
-      withController(({ controller }) => {
+    it('exposes expected state to UI', async () => {
+      await withController(({ controller }) => {
         expect(
           deriveStateFromMetadata(
             controller.state,

@@ -2055,8 +2055,8 @@ describe('MetaMetricsController', function () {
   });
 
   describe('metadata', () => {
-    it('includes expected state in debug snapshots', () => {
-      withController(
+    it('includes expected state in debug snapshots', async () => {
+      await withController(
         // Set `fragments` to an empty object to override complex default `fragments` mock state
         // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
         { options: { state: { fragments: {} } } },
@@ -2079,8 +2079,8 @@ describe('MetaMetricsController', function () {
       );
     });
 
-    it('includes expected state in state logs', () => {
-      withController(
+    it('includes expected state in state logs', async () => {
+      await withController(
         // Set `fragments` to an empty object to override complex default `fragments` mock state
         // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
         { options: { state: { fragments: {} } } },
@@ -2109,8 +2109,8 @@ describe('MetaMetricsController', function () {
       );
     });
 
-    it('persists expected state', () => {
-      withController(
+    it('persists expected state', async () => {
+      await withController(
         // Set `fragments` to an empty object to override complex default `fragments` mock state
         // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
         { options: { state: { fragments: {} } } },
@@ -2139,8 +2139,8 @@ describe('MetaMetricsController', function () {
       );
     });
 
-    it('exposes expected state to UI', () => {
-      withController(
+    it('exposes expected state to UI', async () => {
+      await withController(
         // Set `fragments` to an empty object to override complex default `fragments` mock state
         // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
         { options: { state: { fragments: {} } } },
