@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import { IconName, Icon, IconSize } from '../icon';
@@ -35,6 +35,10 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
   ) => {
     const t = useI18nContext();
     const [imageLoadError, setImageLoadError] = useState(false);
+
+    useEffect(() => {
+      setImageLoadError(false);
+    }, [src]);
 
     const handleImageError = () => {
       setImageLoadError(true);
