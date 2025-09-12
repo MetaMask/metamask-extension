@@ -9,6 +9,11 @@ on:
       - main
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
 jobs:
   get-next-version:
     name: Get next version vX.Y.Z
