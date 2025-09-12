@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { removeSlide, setSelectedAccount } from '../../../store/actions';
 import { CarouselWithEmptyState } from '..';
-import { hasCreatedSolanaAccount, getAppIsLoading } from '../../../selectors';
+import {
+  getAppIsLoading,
+  getRemoteFeatureFlags,
+  hasCreatedSolanaAccount,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
@@ -29,6 +33,8 @@ export const AccountOverviewLayout = ({
 }: AccountOverviewLayoutProps) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(getAppIsLoading);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+  const isCarouselEnabled = Boolean(remoteFeatureFlags?.carouselBanners);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
 
@@ -41,7 +47,7 @@ export const AccountOverviewLayout = ({
     useState(false);
 
   const { slides } = useCarouselManagement({
-    enabled: true,
+    enabled: isCarouselEnabled,
   });
 
   const slideById = useMemo(() => {
@@ -111,14 +117,15 @@ export const AccountOverviewLayout = ({
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
-
-      <CarouselWithEmptyState
-        slides={slides}
-        isLoading={isLoading}
-        onSlideClick={handleCarouselClick}
-        onSlideClose={handleRemoveSlide}
-        onRenderSlides={handleRenderSlides}
-      />
+      {isCarouselEnabled && (
+        <CarouselWithEmptyState
+          slides={slides}
+          isLoading={isLoading}
+          onSlideClick={handleCarouselClick}
+          onSlideClose={handleRemoveSlide}
+          onRenderSlides={handleRenderSlides}
+        />
+      )}
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
       {showCreateSolanaAccountModal && (
         <CreateSolanaAccountModal
