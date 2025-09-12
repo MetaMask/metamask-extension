@@ -211,9 +211,9 @@ export const AppHeaderUnlockedContent = ({
 
   const handleNetworksClick = useCallback(() => {
     history.push(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccount.id)}`,
+      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`,
     );
-  }, [history, selectedMultichainAccount.id]);
+  }, [history, selectedMultichainAccountId]);
 
   const networksSubtitle = useMemo(() => {
     if (!isMultichainAccountsState2Enabled) {
