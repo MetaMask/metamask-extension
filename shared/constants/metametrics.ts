@@ -933,6 +933,10 @@ export enum MetaMetricsEventName {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   sendTokenModalOpened = 'Send Token Modal Opened',
+  // Redesigned Send
+  SendAmountSelected = 'Send Amount Selected',
+  SendAssetSelected = 'Send Asset Selected',
+  SendRecipientSelected = 'Send Recipient Selected',
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',

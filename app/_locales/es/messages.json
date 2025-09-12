@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "No tienes suficiente $1 en tu cuenta para pagar las tarifas de red."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Los precios del gas son altos y las estimaciones son menos precisas."
-  },
   "alertMessageNoGasPrice": {
     "message": "No podemos seguir adelante con esta transacción hasta que actualice manualmente la tarifa."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Permiso innecesario"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "La red está ocupada"
   },
   "alertReasonNoGasPrice": {
     "message": "Estimación de tarifa no disponible"
@@ -908,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Impacto en el precio"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Si no dispones de fondos suficientes para el gas, una parte de tu token de origen se asigna automáticamente para cubrir las comisiones, lo que reducirá la cantidad canjeada. MetaMask no influye ni controla el impacto en el precio."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Depende del tamaño de la operación y de la liquidez disponible en el fondo. MetaMask no influye ni controla el impacto en el precio."
   },
@@ -1059,7 +1050,7 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "Comprar / vender"
   },
   "buyMoreAsset": {
@@ -1868,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "No se encontraron cuentas coincidentes"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Recibir en"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Dirección receptora o ENS"
@@ -2714,12 +2702,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Cómo funcionan las cotizaciones"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Esta cotización tiene la mejor rentabilidad de las cotizaciones que buscamos. Se basa en la tarifa de intercambio, que incluye las tarifas de puente y una tarifa de MetaMask del $1 %, menos las tarifas de gas. Las tarifas de gas dependen de lo ocupada que esté la red y de lo compleja que sea la transacción."
-  },
   "id": {
     "message": "ID"
   },
@@ -2979,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Aún se está firmando o enviando una transacción anterior"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons y Blockies son dos estilos distintos de íconos únicos que pueden ayudarlo a identificar rápidamente una cuenta."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3389,15 +3368,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Está agregando esta red a MetaMask y otorgando permiso a este sitio para usarla."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Puenteo"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Cotización"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Hora"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 quiere conectarse a $2",
@@ -7232,15 +7202,6 @@
   "welcomeBack": {
     "message": "Bienvenido de nuevo"
   },
-  "welcomeDescription": {
-    "message": "Con la confianza de millones de usuarios, MetaMask es una billetera segura que permite que todos puedan acceder al mundo de la web3."
-  },
-  "welcomeGetStarted": {
-    "message": "Comenzar"
-  },
-  "welcomeTitle": {
-    "message": "Bienvenido a MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Comencemos"
   },
@@ -7249,9 +7210,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Esto aprobará $1 para puentear."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Deberá confirmar dos transacciones en su monedero físico."
   },
   "willApproveAmountForSwapping": {
     "message": "Esto aprobará $1 para canjear."

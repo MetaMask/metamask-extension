@@ -16,9 +16,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { getSelectedAccount } from '../../../selectors';
-///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
@@ -44,9 +42,7 @@ export const Carousel = React.forwardRef(
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
 
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     const selectedAccount = useSelector(getSelectedAccount);
-    ///: END:ONLY_INCLUDE_IF
 
     const visibleSlides = slides
       .filter((slide) => {

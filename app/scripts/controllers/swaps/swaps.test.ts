@@ -1063,7 +1063,7 @@ describe('SwapsController', function () {
         });
 
         expect(fetchWithCacheSpy).toHaveBeenCalledWith({
-          url: 'https://swap.api.cx.metamask.io/networks/100',
+          url: 'https://bridge.api.cx.metamask.io/networks/100',
           fetchOptions: {
             method: 'GET',
           },

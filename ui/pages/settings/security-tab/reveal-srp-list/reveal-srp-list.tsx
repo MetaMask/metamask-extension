@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { capitalize } from 'lodash';
@@ -36,7 +36,7 @@ import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const [selectedKeyringId, setSelectedKeyringId] = useState('');
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
@@ -49,7 +49,7 @@ export const RevealSrpList = () => {
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {
       const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true&isFromSettingsSecurity=true`;
-      history.push(backUpSRPRoute);
+      navigate(backUpSRPRoute);
     } else {
       setSelectedKeyringId(keyringId);
       setSrpQuizModalVisible(true);

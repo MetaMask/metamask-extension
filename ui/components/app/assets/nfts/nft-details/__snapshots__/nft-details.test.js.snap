@@ -11,6 +11,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     >
       <div
         class="mm-box multichain-page-content nft-details__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        style="overflow: auto;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--justify-content-space-between"

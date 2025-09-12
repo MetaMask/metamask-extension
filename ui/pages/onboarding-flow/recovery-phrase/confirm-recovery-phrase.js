@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -72,13 +72,15 @@ const generateQuizWords = (secretRecoveryPhrase) => {
 };
 
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
-  const history = useHistory();
-  const t = useI18nContext();
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedEndTrace } = trackEvent;
-  const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
@@ -105,13 +107,14 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.replace(
-        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
+      navigate(
+        `${ONBOARDING_REVEAL_SRP_ROUTE}${
           nextRouteQueryString ? `?${nextRouteQueryString}` : ''
         }`,
+        { replace: true },
       );
     }
-  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
+  }, [navigate, secretRecoveryPhrase, nextRouteQueryString]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
@@ -157,13 +160,14 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
-    history.replace(
+    navigate(
       `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
+      { replace: true },
     );
   }, [
     dispatch,
     hdEntropyIndex,
-    history,
+    navigate,
     trackEvent,
     isFromReminder,
     nextRouteQueryString,
@@ -201,7 +205,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="confirm-recovery-phrase-back-button"
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             ariaLabel={t('back')}
           />
         </Box>

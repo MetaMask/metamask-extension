@@ -1,5 +1,4 @@
 import React, { ComponentType } from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -43,11 +42,9 @@ const mockTrackEvent: UITrackEventMethod = (event, properties) => {
 
 const Wrapper = ({ children }) => (
   <Provider store={mockStore}>
-    <MemoryRouter>
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        {children}
-      </MetaMetricsContext.Provider>
-    </MemoryRouter>
+    <MetaMetricsContext.Provider value={mockTrackEvent}>
+      {children}
+    </MetaMetricsContext.Provider>
   </Provider>
 );
 
