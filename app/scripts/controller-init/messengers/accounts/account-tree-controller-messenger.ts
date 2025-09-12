@@ -10,11 +10,14 @@ import {
 } from '@metamask/accounts-controller';
 import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
-import { MultichainAccountServiceWalletStatusChangeEvent } from '@metamask/multichain-account-service';
 import {
-  UserStorageControllerGetStateAction,
-  UserStorageControllerStateChangeEvent,
-} from '@metamask/profile-sync-controller/user-storage';
+  MultichainAccountServiceCreateMultichainAccountGroupAction,
+  MultichainAccountServiceWalletStatusChangeEvent,
+} from '@metamask/multichain-account-service';
+import {
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
 
 type Actions =
   | AccountsControllerGetAccountAction
@@ -23,13 +26,19 @@ type Actions =
   | AccountsControllerListMultichainAccountsAction
   | SnapControllerGet
   | KeyringControllerGetStateAction
-  | UserStorageControllerGetStateAction;
+  | UserStorageController.UserStorageControllerGetStateAction
+  | UserStorageController.UserStorageControllerPerformGetStorage
+  | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntries
+  | UserStorageController.UserStorageControllerPerformSetStorage
+  | UserStorageController.UserStorageControllerPerformBatchSetStorage
+  | AuthenticationController.AuthenticationControllerGetSessionProfile
+  | MultichainAccountServiceCreateMultichainAccountGroupAction;
 
 type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerSelectedAccountChangeEvent
-  | UserStorageControllerStateChangeEvent
+  | UserStorageController.UserStorageControllerStateChangeEvent
   | MultichainAccountServiceWalletStatusChangeEvent;
 
 export type AccountTreeControllerMessenger = ReturnType<
