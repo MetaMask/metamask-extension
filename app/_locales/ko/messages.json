@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "바쁨"
   },
-  "buyAndSell": {
-    "message": "매수/매도"
+  "buy": {
+    "message": "매수"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "일치하는 계정을 찾을 수 없습니다"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "수신 위치"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "수신 주소 또는 ENS"
@@ -2964,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "이전 트랜잭션이 아직 서명 또는 제출 중입니다."
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons와 Blockies는 계정을 한눈에 식별할 수 있게 도와주는 두 가지 고유한 아이콘 스타일입니다."
   },
   "jazzicons": {
     "message": "Jazzicons"

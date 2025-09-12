@@ -47,12 +47,16 @@ exports[`ConnectPage should render correctly 1`] = `
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
-              style="word-break: break-word; white-space: normal;"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
@@ -125,7 +129,7 @@ exports[`ConnectPage should render correctly 1`] = `
                           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
                             <div
                               class="flex [&>div]:!rounded-none"
@@ -177,7 +181,7 @@ exports[`ConnectPage should render correctly 1`] = `
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -462,12 +466,16 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
-              style="word-break: break-word; white-space: normal;"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
@@ -540,7 +548,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
                             <div
                               class="flex [&>div]:!rounded-none"
@@ -592,7 +600,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"

@@ -1050,7 +1050,7 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "Comprar / vender"
   },
   "buyMoreAsset": {
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "No se encontraron cuentas coincidentes"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Recibir en"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Dirección receptora o ENS"
@@ -2964,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Aún se está firmando o enviando una transacción anterior"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons y Blockies son dos estilos distintos de íconos únicos que pueden ayudarlo a identificar rápidamente una cuenta."
   },
   "jazzicons": {
     "message": "Jazzicons"

@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Busy"
   },
-  "buyAndSell": {
-    "message": "Bumili/Magbenta"
+  "buy": {
+    "message": "Bumili"
   },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
@@ -1835,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Walang nahanap na katugmang account"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Tanggapin sa"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Tatanggap na address o ENS"
@@ -2934,9 +2931,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Isang nakaraang transaksyon ay pinipirmahan o ipinapasa"
-  },
-  "jazzAndBlockies": {
-    "message": "Ang mga Jazzicon at Blockies ay dalawang magkaibang istilo ng mga natatanging icon na makakatulong sa iyong makilala ang isang account sa isang sulyap."
   },
   "jazzicons": {
     "message": "Mga Jazzicon"

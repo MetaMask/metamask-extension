@@ -1050,7 +1050,7 @@
   "busy": {
     "message": "忙碌中"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "出入金"
   },
   "buyMoreAsset": {
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "未找到匹配的账户"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "接收至"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "接收地址或 ENS（Ethereum 域名服务）"
@@ -2964,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "先前的交易仍在签署或提交中"
-  },
-  "jazzAndBlockies": {
-    "message": "哈希头像是帮助您一眼识别账户的独特图标，有 Jazzicons 和 Blockies 两种不同风格。"
   },
   "jazzicons": {
     "message": "Jazzicons"

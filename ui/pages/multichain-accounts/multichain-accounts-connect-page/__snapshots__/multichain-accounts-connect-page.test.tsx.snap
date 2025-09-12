@@ -115,10 +115,10 @@ exports[`MultichainConnectPage should render correctly 1`] = `
                     style="min-width: 0; flex: 1; overflow: hidden;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -170,11 +170,6 @@ exports[`MultichainConnectPage should render correctly 1`] = `
                         Test Account Group 1
                       </p>
                     </div>
-                    <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
-                      data-testid="multichain-account-cell-test-group-1-selected-icon"
-                      style="mask-image: url('./images/icons/check-bold.svg'); flex-shrink: 0;"
-                    />
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
@@ -358,10 +353,10 @@ exports[`MultichainConnectPage should render with existing permissions correctly
                     style="min-width: 0; flex: 1; overflow: hidden;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -413,11 +408,6 @@ exports[`MultichainConnectPage should render with existing permissions correctly
                         Test Account Group 1
                       </p>
                     </div>
-                    <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
-                      data-testid="multichain-account-cell-test-group-1-selected-icon"
-                      style="mask-image: url('./images/icons/check-bold.svg'); flex-shrink: 0;"
-                    />
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
@@ -601,10 +591,10 @@ exports[`MultichainConnectPage should render with multichain origin request corr
                     style="min-width: 0; flex: 1; overflow: hidden;"
                   >
                     <div
-                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+                      class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -656,11 +646,6 @@ exports[`MultichainConnectPage should render with multichain origin request corr
                         Test Account Group 1
                       </p>
                     </div>
-                    <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
-                      data-testid="multichain-account-cell-test-group-1-selected-icon"
-                      style="mask-image: url('./images/icons/check-bold.svg'); flex-shrink: 0;"
-                    />
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
