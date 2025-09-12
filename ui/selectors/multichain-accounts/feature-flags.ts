@@ -6,12 +6,15 @@ import {
   string,
   assert,
 } from '@metamask/superstruct';
-import semver from 'semver';
-import packageJson from '../../../package.json';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from '../remote-feature-flags';
+import {
+  FEATURE_VERSION_1,
+  FEATURE_VERSION_2,
+  isMultichainAccountsFeatureEnabled,
+} from '../../../shared/lib/multichain-accounts/remote-feature-flag';
 
 /**
  * Feature flag structure for multichain accounts features
@@ -28,36 +31,6 @@ const MultichainAccountsFeatureFlag = object({
 export type MultichainAccountsFeatureFlag = Infer<
   typeof MultichainAccountsFeatureFlag
 >;
-
-const APP_VERSION = packageJson.version;
-const FEATURE_VERSION_1 = '1';
-const FEATURE_VERSION_2 = '2';
-
-/**
- * Checks if the multichain accounts feature is enabled for a given state and feature version.
- *
- * @param enableMultichainAccounts - The MetaMask state object
- * @param featureVersion - The specific feature version to check
- * @returns boolean - True if the feature is enabled for the given state and version, false otherwise.
- */
-export const isMultichainAccountsFeatureEnabled = (
-  enableMultichainAccounts: MultichainAccountsFeatureFlag,
-  featureVersion: string,
-) => {
-  const {
-    enabled,
-    featureVersion: currentFeatureVersion,
-    minimumVersion,
-  } = enableMultichainAccounts;
-
-  return (
-    enabled &&
-    currentFeatureVersion &&
-    minimumVersion &&
-    currentFeatureVersion === featureVersion &&
-    semver.gte(APP_VERSION, minimumVersion)
-  );
-};
 
 /**
  * Selector to get the multichain accounts remote feature flags.
