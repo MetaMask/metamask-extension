@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import { IconName, Icon, IconSize } from '../icon';
@@ -10,6 +10,7 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
 import { PolymorphicRef } from '../box';
 import {
   AvatarFaviconComponent,
@@ -33,6 +34,14 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
     ref?: PolymorphicRef<C>,
   ) => {
     const t = useI18nContext();
+    const [imageLoadError, setImageLoadError] = useState(false);
+
+    const handleImageError = () => {
+      setImageLoadError(true);
+    };
+
+    const fallbackLetter = getAvatarFallbackLetter(name);
+
     return (
       <AvatarBase
         ref={ref}
@@ -43,13 +52,18 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
         className={classnames('mm-avatar-favicon', className)}
         {...{ borderColor, ...(props as AvatarBaseProps<C>) }}
       >
-        {src ? (
+        {src && !imageLoadError && (
           <img
             className="mm-avatar-favicon__image"
             src={src}
             alt={t('logo', [name])}
+            onError={handleImageError}
           />
-        ) : (
+        )}
+
+        {src && imageLoadError && fallbackLetter}
+
+        {!src && (
           <Icon
             name={IconName.Global}
             color={IconColor.iconDefault}
