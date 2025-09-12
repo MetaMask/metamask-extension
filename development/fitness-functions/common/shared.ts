@@ -1,9 +1,7 @@
-import { ConsoleLogEntry } from "selenium-webdriver/bidi/logEntries";
-
 function splitDiffIntoBlocks(diff: string): string[] {
   // Behaves like split('diff --git '), but anchored to line starts.
   // Each block starts right after the token and includes the rest of the header line.
-  return diff.split(/^diff --git /gm).slice(1);
+  return diff.split(/^diff --git /gmu).slice(1);
 }
 
 function filterDiffByFilePath(diff: string, regex: RegExp): string {
@@ -112,7 +110,6 @@ function filterDiffFileCreations(diff: string): string {
           .substring(0, 13) === 'new file mode';
 
       return isFileCreationLine;
-
     })
     // prepend `git --diff` to each block
     .map((block) => `diff --git ${block}`)

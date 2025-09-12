@@ -15,10 +15,12 @@ const path = require('path');
 function getYarnVersionFromPackageJson() {
   const packageJsonPath = path.join(__dirname, '..', 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-  const packageManager = packageJson.packageManager;
+  const { packageManager } = packageJson;
 
   if (!packageManager || !packageManager.startsWith('yarn@')) {
-    throw new Error('No yarn version found in package.json packageManager field');
+    throw new Error(
+      'No yarn version found in package.json packageManager field',
+    );
   }
 
   return packageManager.split('@')[1];
@@ -43,21 +45,28 @@ function main() {
 
     // Check if tarball already exists
     if (fs.existsSync(tarballPath)) {
-      console.log(`✓ Tarball already exists: ${path.relative(process.cwd(), tarballPath)}`);
+      console.log(
+        `✓ Tarball already exists: ${path.relative(
+          process.cwd(),
+          tarballPath,
+        )}`,
+      );
       console.log('🔄 Hydrating existing tarball...');
     } else {
       // Step 1: Create tarball using corepack prepare -o
       console.log('🔽 Creating tarball with corepack prepare -o...');
       execSync(`corepack prepare yarn@${version} -o`, {
         cwd: path.join(__dirname, '..'),
-        stdio: 'inherit'
+        stdio: 'inherit',
       });
 
       // Step 2: Move tarball to .yarn directory
       const defaultTarball = path.join(__dirname, '..', 'corepack.tgz');
       if (fs.existsSync(defaultTarball)) {
         fs.renameSync(defaultTarball, tarballPath);
-        console.log(`✓ Moved tarball to ${path.relative(process.cwd(), tarballPath)}`);
+        console.log(
+          `✓ Moved tarball to ${path.relative(process.cwd(), tarballPath)}`,
+        );
       } else {
         throw new Error('corepack.tgz was not created');
       }
@@ -67,26 +76,33 @@ function main() {
     console.log('🚀 Activating yarn version with corepack hydrate...');
     execSync(`corepack hydrate ${tarballPath} --activate`, {
       cwd: path.join(__dirname, '..'),
-      stdio: 'inherit'
+      stdio: 'inherit',
     });
 
     console.log(`🎉 Successfully activated yarn ${version} using corepack!`);
-    console.log(`📌 To commit: git add ${path.relative(process.cwd(), tarballPath)}`);
-    console.log(`💡 Note: No yarnPath needed - corepack manages activation automatically`);
+    console.log(
+      `📌 To commit: git add ${path.relative(process.cwd(), tarballPath)}`,
+    );
+    console.log(
+      `💡 Note: No yarnPath needed - corepack manages activation automatically`,
+    );
 
     // Step 4: Verify installation
     console.log('🔍 Verifying activation...');
     const testResult = execSync('yarn --version', {
       cwd: path.join(__dirname, '..'),
-      encoding: 'utf8'
+      encoding: 'utf8',
     }).trim();
 
     if (testResult === version) {
-      console.log(`✅ Verification successful - yarn --version returns ${testResult}`);
+      console.log(
+        `✅ Verification successful - yarn --version returns ${testResult}`,
+      );
     } else {
-      console.warn(`⚠️  Version mismatch - expected ${version}, got ${testResult}`);
+      console.warn(
+        `⚠️  Version mismatch - expected ${version}, got ${testResult}`,
+      );
     }
-
   } catch (error) {
     console.error(`❌ Error: ${error.message}`);
     process.exit(1);
@@ -99,4 +115,3 @@ if (require.main === module) {
 }
 
 module.exports = { getYarnVersionFromPackageJson };
-
