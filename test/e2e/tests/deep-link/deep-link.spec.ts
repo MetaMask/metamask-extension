@@ -435,7 +435,7 @@ describe('Deep Link', function () {
           `globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');`,
         );
 
-        await this.driver.waitUntilXWindowHandles(3);
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
