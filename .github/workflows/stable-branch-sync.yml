@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - stable
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
 
 jobs:
   get-next-version:
@@ -32,11 +36,13 @@ jobs:
   run-stable-sync:
     name: Run Stable branch sync
     needs: get-next-version
-    uses: metamask/github-tools/.github/workflows/stable-sync.yml@486f5d113c5524eaab9a058abe76097f83a4c33e
+    # uses: metamask/github-tools/.github/workflows/stable-sync.yml@486f5d113c5524eaab9a058abe76097f83a4c33e
+    uses: metamask/github-tools/.github/workflows/stable-sync.yml@ale/fix-forbidden-error-stable-sync
     secrets:
       github-token: ${{ secrets.STABLE_SYNC_TOKEN }}
     with:
       semver-version: ${{ needs.get-next-version.outputs.next-version }}
       repo-type: 'extension' # Accepts 'mobile' or 'extension'
-      github-tools-version: '486f5d113c5524eaab9a058abe76097f83a4c33e'
+      github-tools-version: ale/fix-forbidden-error-stable-sync
+      # github-tools-version: '486f5d113c5524eaab9a058abe76097f83a4c33e'
       stable-branch-name: 'stable' # Defaults to `stable`
