@@ -2056,193 +2056,112 @@ describe('MetaMetricsController', function () {
 
   describe('metadata', () => {
     it('includes expected state in debug snapshots', () => {
-      withController(({ controller }) => {
-        expect(
-          deriveStateFromMetadata(
-            controller.state,
-            controller.metadata,
-            'anonymous',
-          ),
-        ).toMatchInlineSnapshot(`
-          {
-            "latestNonAnonymousEventTimestamp": 1757680672941,
-            "marketingCampaignCookieId": null,
-            "metaMetricsId": "0xabc",
-            "participateInMetaMetrics": true,
-          }
-        `);
-      });
+      withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'anonymous',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "latestNonAnonymousEventTimestamp": 0,
+              "marketingCampaignCookieId": null,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+            }
+          `);
+        },
+      );
     });
 
     it('includes expected state in state logs', () => {
-      withController(({ controller }) => {
-        expect(
-          deriveStateFromMetadata(
-            controller.state,
-            controller.metadata,
-            'includeInStateLogs',
-          ),
-        ).toMatchInlineSnapshot(`
-          {
-            "dataCollectionForMarketing": null,
-            "eventsBeforeMetricsOptIn": [],
-            "fragments": {
-              "testid": {
-                "category": "Unit Test",
-                "failureEvent": "sample persisted event failure",
-                "id": "testid",
-                "persist": true,
-                "properties": {
-                  "test": true,
-                },
-                "successEvent": "sample persisted event success",
-              },
-            },
-            "latestNonAnonymousEventTimestamp": 1757680672943,
-            "marketingCampaignCookieId": null,
-            "metaMetricsId": "0xabc",
-            "participateInMetaMetrics": true,
-            "segmentApiCalls": {
-              "sample-non-persisted-event-failure": {
-                "eventType": "track",
-                "payload": {
-                  "context": {
-                    "app": {
-                      "name": "MetaMask Extension",
-                      "version": "0.0.1-test",
-                    },
-                    "marketingCampaignCookieId": null,
-                    "page": {
-                      "path": "/background-process",
-                      "title": "Background Process",
-                      "url": "/background-process",
-                    },
-                    "referrer": undefined,
-                    "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/20.0.3",
-                  },
-                  "event": "sample non-persisted event failure",
-                  "messageId": "sample-non-persisted-event-failure",
-                  "properties": {
-                    "category": "Unit Test",
-                    "chain_id": "0x1338",
-                    "currency": undefined,
-                    "environment_type": "background",
-                    "locale": "en-US",
-                    "revenue": undefined,
-                    "test": true,
-                    "value": undefined,
-                  },
-                  "timestamp": "Fri Sep 12 2025 10:07:52 GMT-0230 (Newfoundland Daylight Time)",
-                  "userId": "0xabc",
-                },
-              },
-            },
-            "tracesBeforeMetricsOptIn": [],
-            "traits": {},
-          }
-        `);
-      });
+      withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'includeInStateLogs',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "dataCollectionForMarketing": null,
+              "eventsBeforeMetricsOptIn": [],
+              "fragments": {},
+              "latestNonAnonymousEventTimestamp": 0,
+              "marketingCampaignCookieId": null,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+              "segmentApiCalls": {},
+              "tracesBeforeMetricsOptIn": [],
+              "traits": {},
+            }
+          `);
+        },
+      );
     });
 
     it('persists expected state', () => {
-      withController(({ controller }) => {
-        expect(
-          deriveStateFromMetadata(
-            controller.state,
-            controller.metadata,
-            'persist',
-          ),
-        ).toMatchInlineSnapshot(`
-          {
-            "dataCollectionForMarketing": null,
-            "eventsBeforeMetricsOptIn": [],
-            "fragments": {
-              "testid": {
-                "category": "Unit Test",
-                "failureEvent": "sample persisted event failure",
-                "id": "testid",
-                "persist": true,
-                "properties": {
-                  "test": true,
-                },
-                "successEvent": "sample persisted event success",
-              },
-            },
-            "latestNonAnonymousEventTimestamp": 1757680672945,
-            "marketingCampaignCookieId": null,
-            "metaMetricsId": "0xabc",
-            "participateInMetaMetrics": true,
-            "segmentApiCalls": {
-              "sample-non-persisted-event-failure": {
-                "eventType": "track",
-                "payload": {
-                  "context": {
-                    "app": {
-                      "name": "MetaMask Extension",
-                      "version": "0.0.1-test",
-                    },
-                    "marketingCampaignCookieId": null,
-                    "page": {
-                      "path": "/background-process",
-                      "title": "Background Process",
-                      "url": "/background-process",
-                    },
-                    "referrer": undefined,
-                    "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/20.0.3",
-                  },
-                  "event": "sample non-persisted event failure",
-                  "messageId": "sample-non-persisted-event-failure",
-                  "properties": {
-                    "category": "Unit Test",
-                    "chain_id": "0x1338",
-                    "currency": undefined,
-                    "environment_type": "background",
-                    "locale": "en-US",
-                    "revenue": undefined,
-                    "test": true,
-                    "value": undefined,
-                  },
-                  "timestamp": "Fri Sep 12 2025 10:07:52 GMT-0230 (Newfoundland Daylight Time)",
-                  "userId": "0xabc",
-                },
-              },
-            },
-            "tracesBeforeMetricsOptIn": [],
-            "traits": {},
-          }
-        `);
-      });
+      withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'persist',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "dataCollectionForMarketing": null,
+              "eventsBeforeMetricsOptIn": [],
+              "fragments": {},
+              "latestNonAnonymousEventTimestamp": 0,
+              "marketingCampaignCookieId": null,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+              "segmentApiCalls": {},
+              "tracesBeforeMetricsOptIn": [],
+              "traits": {},
+            }
+          `);
+        },
+      );
     });
 
     it('exposes expected state to UI', () => {
-      withController(({ controller }) => {
-        expect(
-          deriveStateFromMetadata(
-            controller.state,
-            controller.metadata,
-            'usedInUi',
-          ),
-        ).toMatchInlineSnapshot(`
-          {
-            "dataCollectionForMarketing": null,
-            "fragments": {
-              "testid": {
-                "category": "Unit Test",
-                "failureEvent": "sample persisted event failure",
-                "id": "testid",
-                "persist": true,
-                "properties": {
-                  "test": true,
-                },
-                "successEvent": "sample persisted event success",
-              },
-            },
-            "latestNonAnonymousEventTimestamp": 1757680672945,
-            "metaMetricsId": "0xabc",
-            "participateInMetaMetrics": true,
-          }
-        `);
-      });
+      withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'usedInUi',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "dataCollectionForMarketing": null,
+              "fragments": {},
+              "latestNonAnonymousEventTimestamp": 0,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+            }
+          `);
+        },
+      );
     });
   });
 });
