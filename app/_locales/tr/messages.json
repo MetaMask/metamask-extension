@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Eşleşen hesap bulunamadı"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Alım adresi:"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alıcı adres veya ENS"
   },

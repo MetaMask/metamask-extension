@@ -2569,6 +2569,10 @@ export function setShowSupportDataConsentModal(show: boolean) {
     payload: show,
   };
 }
+
+export function clearProductTour() {
+  return submitRequestToBackground('setProductTour', ['']);
+}
 export function addToken(
   {
     address,
