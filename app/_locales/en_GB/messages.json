@@ -6880,6 +6880,9 @@
   "swapUnknown": {
     "message": "Unknown"
   },
+  "swapValidationInsufficientGasMessage": {
+    "message": "You don't have enough $1 to pay the gas fee for this swap. Enter a smaller amount or buy more $1."
+  },
   "swapZeroSlippage": {
     "message": "0% Slippage"
   },

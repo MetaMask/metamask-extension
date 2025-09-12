@@ -888,9 +888,12 @@ const PrepareBridgePage = ({
             <BannerAlert
               title={t('bridgeValidationInsufficientGasTitle', [ticker])}
               severity={BannerAlertSeverity.Danger}
-              description={t('bridgeValidationInsufficientGasMessage', [
-                ticker,
-              ])}
+              description={t(
+                isSwap
+                  ? 'swapValidationInsufficientGasMessage'
+                  : 'bridgeValidationInsufficientGasMessage',
+                [ticker],
+              )}
               textAlign={TextAlign.Left}
               actionButtonLabel={t('buyMoreAsset', [ticker])}
               actionButtonOnClick={() => openBuyCryptoInPdapp()}
