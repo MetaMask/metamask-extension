@@ -3,7 +3,7 @@ import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
 import { mean } from 'lodash';
-import { DAPP_URL } from '../../constants';
+import { DAPP_URL, WALLET_PASSWORD } from '../../constants';
 import FixtureServer from '../../fixture-server';
 import { Anvil } from '../../seeder/anvil';
 
@@ -207,9 +207,6 @@ export class PageLoadBenchmark {
 
   private readonly userDataDirectory = 'temp-benchmark-user-data';
 
-  // TODO: [ffmcgee]: perhaps get this from WALLET_PASSWORD const, in test/e2e/constants.ts;
-  private readonly walletPassword = 'correct horse battery staple';
-
   /**
    * Creates a new PageLoadBenchmark instance.
    *
@@ -386,7 +383,7 @@ export class PageLoadBenchmark {
       // Fill in the password
       await walletPage?.fill(
         '[data-testid="unlock-password"]',
-        this.walletPassword,
+        WALLET_PASSWORD,
       );
 
       // Click the unlock button

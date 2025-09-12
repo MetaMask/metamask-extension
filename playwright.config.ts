@@ -66,9 +66,18 @@ const config: PlaywrightTestConfig = {
       },
     },
     {
-      // TODO: [ffmcgee] update this to only run page load benchmark instead of both specs
-      name: 'benchmark',
-      testMatch: '/benchmark/**/*.spec.ts',
+      name: 'benchmark-page-load',
+      testMatch: '/benchmark/page-load/**/*.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: Boolean(process.env.CI),
+      },
+      fullyParallel: false,
+      timeout: 600 * 1000, // 10 minutes
+    },
+    {
+      name: 'benchmark-dapp-transaction-proposal',
+      testMatch: '/benchmark/dapp-transaction-proposal/**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         headless: Boolean(process.env.CI),

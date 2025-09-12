@@ -1,8 +1,8 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 import { test as pwTest, expect } from '@playwright/test';
-import { PageLoadBenchmark } from '../../page-objects/benchmark/page-load-benchmark';
-import FixtureBuilder from '../../fixture-builder';
+import { PageLoadBenchmark } from '../../../page-objects/benchmark/page-load-benchmark';
+import FixtureBuilder from '../../../fixture-builder';
 
 pwTest.describe('Wallet Pop Open Time on Dapp Transaction Proposal', () => {
   let benchmark: PageLoadBenchmark;

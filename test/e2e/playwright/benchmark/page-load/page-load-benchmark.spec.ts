@@ -1,8 +1,8 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 import { test as pwTest, expect } from '@playwright/test';
-import { PageLoadBenchmark } from '../../page-objects/benchmark/page-load-benchmark';
-import { DAPP_URL } from '../../constants';
+import { PageLoadBenchmark } from '../../../page-objects/benchmark/page-load-benchmark';
+import { DAPP_URL } from '../../../constants';
 
 pwTest.describe('Page Load Benchmark', () => {
   let benchmark: PageLoadBenchmark;
