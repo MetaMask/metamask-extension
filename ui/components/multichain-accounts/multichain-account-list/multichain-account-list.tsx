@@ -49,6 +49,7 @@ export type MultichainAccountListProps = {
   }>;
   isInSearchMode?: boolean;
   displayWalletHeader?: boolean;
+  showAccountCheckbox?: boolean;
 };
 
 export const MultichainAccountList = ({
@@ -58,6 +59,7 @@ export const MultichainAccountList = ({
   formattedAccountGroupBalancesByWallet,
   isInSearchMode = false,
   displayWalletHeader = true,
+  showAccountCheckbox = false,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -66,10 +68,6 @@ export const MultichainAccountList = ({
     getDefaultHomeActiveTabName,
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const showAccountCheckbox = useMemo(
-    () => selectedAccountGroups.length > 0,
-    [selectedAccountGroups],
-  );
 
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
@@ -226,6 +224,7 @@ export const MultichainAccountList = ({
     displayWalletHeader,
     formattedAccountGroupBalancesByWallet,
     selectedAccountGroupsSet,
+    showAccountCheckbox,
     handleAccountRenameAction,
   ]);
 
