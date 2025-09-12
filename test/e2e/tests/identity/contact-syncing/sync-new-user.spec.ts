@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures, unlockWallet, getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
@@ -54,6 +54,14 @@ describe('Contact syncing - New User', function () {
       async ({ driver }) => {
         // Unlock wallet with backup and sync already enabled
         await unlockWallet(driver);
+
+        // Wait for the UI to be ready before opening settings
+        await driver.wait(async () => {
+          const uiState = await getCleanAppState(driver);
+          return (
+            uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
+          );
+        }, 30000);
 
         // Set up test utilities
         const { waitUntilSyncedContactsNumberEquals } =

@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 
-import { withFixtures } from '../../../helpers';
+import { getCleanAppState, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
@@ -163,6 +163,14 @@ describe('Contact Syncing - Existing User', function () {
           // Set up UI navigation
           const header = new HeaderNavbar(driver);
           await header.checkPageIsLoaded();
+
+          // Wait for the UI to be ready before opening settings
+          await driver.wait(async () => {
+            const uiState = await getCleanAppState(driver);
+            return (
+              uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
+            );
+          }, 30000);
 
           const settingsPage = new SettingsPage(driver);
           const contactsSettings = new ContactsSettings(driver);
