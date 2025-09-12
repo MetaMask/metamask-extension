@@ -1,6 +1,10 @@
 import React from 'react';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
+  Caip25EndowmentPermissionName,
+  Caip25CaveatType,
+} from '@metamask/chain-agnostic-permission';
+import {
   AccountGroupType,
   AccountWalletType,
   AccountGroupId,
@@ -14,19 +18,16 @@ import {
   InternalAccountsState,
 } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
-import { MultichainEditAccountsPageWrapper } from './multichain-edit-account-wrapper';
 import { PermissionsRequest } from '../../../../pages/permissions-connect/connect-page/utils';
-import {
-  Caip25EndowmentPermissionName,
-  Caip25CaveatType,
-} from '@metamask/chain-agnostic-permission';
+import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
+import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
+import { MultichainEditAccountsPageWrapper } from './multichain-edit-account-wrapper';
 
 jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
   useAccountGroupsForPermissions: jest.fn(),
 }));
 
 // Mock the MultichainEditAccountsPage component because we only need to test if the wrapper is passing the correct props to the component
-
 jest.mock('./multichain-edit-accounts-page', () => ({
   MultichainEditAccountsPage: jest.fn(() => (
     <div data-testid="multichain-edit-accounts-page">Mocked Component</div>
@@ -230,29 +231,31 @@ const renderComponent = (
   );
 };
 
+const mockUseAccountGroupsForPermissions =
+  useAccountGroupsForPermissions as jest.MockedFunction<
+    typeof useAccountGroupsForPermissions
+  >;
+const mockMultichainEditAccountsPage =
+  MultichainEditAccountsPage as jest.MockedFunction<
+    typeof MultichainEditAccountsPage
+  >;
+
 describe('MultichainEditAccountsPageWrapper', () => {
-  const mockUseAccountGroupsForPermissions =
-    require('../../../../hooks/useAccountGroupsForPermissions').useAccountGroupsForPermissions;
-
-  // Get the mocked component from the jest.mock
-  const MockedMultichainEditAccountsPage =
-    require('./multichain-edit-accounts-page').MultichainEditAccountsPage;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    MockedMultichainEditAccountsPage.mockClear();
+    mockMultichainEditAccountsPage.mockClear();
 
-    // Default mock implementation
     mockUseAccountGroupsForPermissions.mockReturnValue({
       connectedAccountGroups: [createMockAccountGroups()[0]], // 1 connected account group
       supportedAccountGroups: createMockAccountGroups(), // 2 supported account groups
+      existingConnectedCaipAccountIds: [],
     });
   });
 
   it('passes correct props to MultichainEditAccountsPage with default values', () => {
     renderComponent();
 
-    expect(MockedMultichainEditAccountsPage).toHaveBeenCalledWith(
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
         defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
@@ -293,7 +296,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
       onClose: mockOnClose,
     });
 
-    expect(MockedMultichainEditAccountsPage).toHaveBeenCalledWith(
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: mockTitle,
         defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
@@ -309,11 +312,12 @@ describe('MultichainEditAccountsPageWrapper', () => {
     mockUseAccountGroupsForPermissions.mockReturnValue({
       connectedAccountGroups: [],
       supportedAccountGroups: createMockAccountGroups(),
+      existingConnectedCaipAccountIds: [],
     });
 
     renderComponent();
 
-    expect(MockedMultichainEditAccountsPage).toHaveBeenCalledWith(
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
         defaultSelectedAccountGroups: [],
@@ -329,11 +333,12 @@ describe('MultichainEditAccountsPageWrapper', () => {
     mockUseAccountGroupsForPermissions.mockReturnValue({
       connectedAccountGroups: [createMockAccountGroups()[0]],
       supportedAccountGroups: [],
+      existingConnectedCaipAccountIds: [],
     });
 
     renderComponent();
 
-    expect(MockedMultichainEditAccountsPage).toHaveBeenCalledWith(
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
         defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
@@ -348,7 +353,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
   it('passes correct props when permissions is undefined', () => {
     renderComponent({ permissions: undefined });
 
-    expect(MockedMultichainEditAccountsPage).toHaveBeenCalledWith(
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
         defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
@@ -363,7 +368,7 @@ describe('MultichainEditAccountsPageWrapper', () => {
   it('passes correct props when permissions is empty object', () => {
     renderComponent({ permissions: {} });
 
-    expect(MockedMultichainEditAccountsPage).toHaveBeenCalledWith(
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
         defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
@@ -379,11 +384,12 @@ describe('MultichainEditAccountsPageWrapper', () => {
     mockUseAccountGroupsForPermissions.mockReturnValue({
       connectedAccountGroups: createMockAccountGroups(), // Both groups connected
       supportedAccountGroups: createMockAccountGroups(),
+      existingConnectedCaipAccountIds: [],
     });
 
     renderComponent();
 
-    expect(MockedMultichainEditAccountsPage).toHaveBeenCalledWith(
+    expect(mockMultichainEditAccountsPage).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Edit Accounts',
         defaultSelectedAccountGroups: [MOCK_GROUP_ID_1, MOCK_GROUP_ID_2],

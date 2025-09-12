@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react';
-import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 import { AccountGroupId } from '@metamask/account-api';
-import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import {
   getCaip25CaveatValueFromPermissions,
   PermissionsRequest,
 } from '../../../../pages/permissions-connect/connect-page/utils';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 
 type MultichainEditAccountsPageWrapperProps = {
   title: string;
