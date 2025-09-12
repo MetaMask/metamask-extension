@@ -175,6 +175,10 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  FEATURE_VERSION_2,
+  isMultichainAccountsFeatureEnabled,
+} from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -1254,6 +1258,8 @@ export default class MetamaskController extends EventEmitter {
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
+          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.discoverAndCreateAccounts();
           } else {
             await this._addAccountsWithBalance();
           }
@@ -2242,6 +2248,13 @@ export default class MetamaskController extends EventEmitter {
     if (pollInterval > 0) {
       this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
     }
+  }
+
+  isMultichainAccountsFeatureState2Enabled() {
+    const featureFlag =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.enableMultichainAccounts;
+    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
   postOnboardingInitialization() {
@@ -5116,6 +5129,52 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Discovers and creates accounts for the given keyring id.
+   *
+   * @param {string} id - The keyring id to discover and create accounts for.
+   * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
+   */
+  async discoverAndCreateAccounts(id) {
+    try {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        false,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        false,
+      );
+
+      // If no keyring id is provided, we assume one keyring was added to the vault
+      const keyringIdToDiscover =
+        id || this.keyringController.state.keyrings[0].metadata.id;
+
+      // Ensure the snap keyring is initialized
+      await this.getSnapKeyring();
+
+      const wallet = this.controllerMessenger.call(
+        'MultichainAccountService:getMultichainAccountWallet',
+        { entropySource: keyringIdToDiscover },
+      );
+
+      const result = await wallet.discoverAndCreateAccounts();
+
+      return { Bitcoin: 0, ...result };
+    } catch (error) {
+      log.warn(`Failed to add accounts with balance. Error: ${error}`);
+      return {
+        Bitcoin: 0,
+        Solana: 0,
+      };
+    } finally {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        true,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        true,
+      );
+    }
+  }
+
+  /**
    * Imports a new mnemonic to the vault.
    *
    * @param {string} mnemonic - The mnemonic to import.
@@ -5193,10 +5252,21 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      const discoveredAccounts = await this._addAccountsWithBalance(
-        id,
-        shouldImportSolanaAccount,
-      );
+      let discoveredAccounts;
+
+      if (
+        this.isMultichainAccountsFeatureState2Enabled() &&
+        shouldImportSolanaAccount
+      ) {
+        // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
+        // We just create the accounts at the end of the onboarding flow (including EVM).
+        discoveredAccounts = await this.discoverAndCreateAccounts(id);
+      } else {
+        discoveredAccounts = await this._addAccountsWithBalance(
+          id,
+          shouldImportSolanaAccount,
+        );
+      }
 
       return {
         newAccountAddress,
@@ -5410,7 +5480,11 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.init();
 
       if (completedOnboarding) {
-        await this._addAccountsWithBalance();
+        if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.discoverAndCreateAccounts();
+        } else {
+          await this._addAccountsWithBalance();
+        }
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5516,8 +5590,8 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const discoveredAccounts = {
-        bitcoin: 0,
-        solana: 0,
+        Bitcoin: 0,
+        Solana: 0,
       };
 
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -5530,7 +5604,7 @@ export default class MetamaskController extends EventEmitter {
         btcScope,
       );
 
-      discoveredAccounts.bitcoin = btcAccounts.length;
+      discoveredAccounts.Bitcoin = btcAccounts.length;
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
@@ -5551,7 +5625,7 @@ export default class MetamaskController extends EventEmitter {
           solScope,
         );
 
-        discoveredAccounts.solana = solanaAccounts.length;
+        discoveredAccounts.Solana = solanaAccounts.length;
 
         // If none accounts got discovered, we still create the first (default) one.
         if (solanaAccounts.length === 0) {
@@ -5565,8 +5639,8 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
       return {
-        bitcoin: 0,
-        solana: 0,
+        Bitcoin: 0,
+        Solana: 0,
       };
     } finally {
       await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
@@ -5595,10 +5669,14 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        await this._addAccountsWithBalance(
-          metadata.id,
-          shouldImportSolanaAccount,
-        );
+        if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.discoverAndCreateAccounts(metadata.id);
+        } else {
+          await this._addAccountsWithBalance(
+            metadata.id,
+            shouldImportSolanaAccount,
+          );
+        }
       }
     }
   }
