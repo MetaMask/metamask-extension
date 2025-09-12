@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - stable
-  pull_request:
-    branches:
-      - main
-    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
