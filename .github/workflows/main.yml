@@ -266,7 +266,7 @@ jobs:
       - dapp-transaction-proposal-benchmark-pr
     # if: github.ref == 'refs/heads/main' TODO: [ffmcgee] uncomment after testing
     if: ${{ github.event_name == 'pull_request' }}
-    uses: ./.github/workflows/dapp-transaction-proposal-upload.yml
+    uses: ./.github/workflows/dapp-transaction-proposal-benchmark-upload.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
