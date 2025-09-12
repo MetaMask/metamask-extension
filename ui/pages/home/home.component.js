@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom-v5-compat';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -65,7 +65,7 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
+import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
@@ -833,7 +833,7 @@ export default class Home extends PureComponent {
     } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
+      return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
@@ -918,7 +918,7 @@ export default class Home extends PureComponent {
               defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
+            />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
               <div className="home__support">
