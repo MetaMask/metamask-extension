@@ -145,6 +145,7 @@ export type ControllerFlatState = AccountsController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
+  NameController['state'] &
   NetworkController['state'] &
   NetworkOrderController['state'] &
   OnboardingController['state'] &
