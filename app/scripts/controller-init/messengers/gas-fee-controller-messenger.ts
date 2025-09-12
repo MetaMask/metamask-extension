@@ -7,7 +7,6 @@ import {
   NetworkControllerNetworkDidChangeEvent,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 type AllowedActions =
   | NetworkControllerGetStateAction
