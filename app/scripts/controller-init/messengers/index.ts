@@ -87,9 +87,24 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
+import { getRatesControllerMessenger } from './rates-controller-messenger';
+import {
+  getCurrencyRateControllerInitMessenger,
+  getCurrencyRateControllerMessenger,
+} from './currency-rate-controller-messenger';
 
+export type {
+  CurrencyRateControllerMessenger,
+  CurrencyRateControllerInitMessenger,
+} from './currency-rate-controller-messenger';
+export {
+  getCurrencyRateControllerMessenger,
+  getCurrencyRateControllerInitMessenger,
+} from './currency-rate-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type { RatesControllerMessenger } from './rates-controller-messenger';
+export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -131,6 +146,10 @@ export const CONTROLLER_MESSENGERS = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
+  },
+  CurrencyRateController: {
+    getMessenger: getCurrencyRateControllerMessenger,
+    getInitMessenger: getCurrencyRateControllerInitMessenger,
   },
   DeFiPositionsController: {
     getMessenger: getDeFiPositionsControllerMessenger,
@@ -191,6 +210,10 @@ export const CONTROLLER_MESSENGERS = {
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
+  },
+  RatesController: {
+    getMessenger: getRatesControllerMessenger,
+    getInitMessenger: noop,
   },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
