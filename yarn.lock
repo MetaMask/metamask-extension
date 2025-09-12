@@ -5293,9 +5293,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@0.14.0-preview-0684712d":
-  version: 0.14.0-preview-0684712d
-  resolution: "@metamask-previews/account-tree-controller@npm:0.14.0-preview-0684712d"
+"@metamask/account-tree-controller@npm:^0.15.1":
+  version: 0.15.1
+  resolution: "@metamask/account-tree-controller@npm:0.15.1"
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
@@ -5308,12 +5308,12 @@ __metadata:
     "@metamask/account-api": ^0.12.0
     "@metamask/accounts-controller": ^33.0.0
     "@metamask/keyring-controller": ^23.0.0
-    "@metamask/multichain-account-service": ^0.7.0
+    "@metamask/multichain-account-service": ^0.8.0
     "@metamask/profile-sync-controller": ^25.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/1252e8ca4deec0559860bfef46a4a2b69403fd348f6173a23d40b5907975dae21f7793cf7a3aca85673c2a748dfb40feaa88ce1c766f3ca47233c50a415cdd57
+  checksum: 10/63aca82367c282787fa576cc77cc9ba9c82adfc75348346632a6cd49ae97a6e4b9ba4973370f8ee80c832c220ec4507bd98445d824f4fc9c40a351e5b2bf7fa6
   languageName: node
   linkType: hard
 
@@ -6651,9 +6651,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@0.8.0-preview-0684712d":
-  version: 0.8.0-preview-0684712d
-  resolution: "@metamask-previews/multichain-account-service@npm:0.8.0-preview-0684712d"
+"@metamask/multichain-account-service@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@metamask/multichain-account-service@npm:0.8.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/eth-snap-keyring": "npm:^17.0.0"
@@ -6673,7 +6673,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/9ce8fa109d0dadac56d79adc673b11936151cb7a60bf5d49850a90feda3c96239bebeb75bf6123afc3937e9ea187c29ea07344f6d4d9806a673f3aa9d88cd1a7
+  checksum: 10/19156677b854233997c7aa03080ef5052efc982c7d055930daee9306dd416f994f50fdba41f9201295148b5d6ce3fc5cafbf4ca77714ff5dc9ffaa46e89f89aa
   languageName: node
   linkType: hard
 
@@ -31782,7 +31782,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.9.0"
-    "@metamask/account-tree-controller": "npm:^0.13.1"
+    "@metamask/account-tree-controller": "npm:^0.15.1"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^33.1.0"
     "@metamask/address-book-controller": "npm:^6.1.0"
@@ -31848,7 +31848,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^0.6.0"
+    "@metamask/multichain-account-service": "npm:^0.8.0"
     "@metamask/multichain-api-client": "npm:^0.6.5"
     "@metamask/multichain-api-middleware": "npm:1.0.0"
     "@metamask/multichain-network-controller": "npm:^0.11.1"
