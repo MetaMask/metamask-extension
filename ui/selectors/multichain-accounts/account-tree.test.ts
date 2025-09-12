@@ -69,6 +69,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -109,6 +110,7 @@ describe('Multichain Accounts Selectors', () => {
           'keyring:Test': {
             id: 'keyring:Test' as const,
             type: AccountWalletType.Keyring as const,
+            status: 'ready',
             groups: {
               'keyring:Test/address': {
                 id: 'keyring:Test/address' as const,
@@ -150,6 +152,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -202,6 +205,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -736,6 +740,7 @@ describe('Multichain Accounts Selectors', () => {
             'keyring:Test': {
               id: 'keyring:Test' as const,
               type: AccountWalletType.Keyring as const,
+              status: 'ready',
               groups: {
                 'keyring:Test/address': {
                   id: 'keyring:Test/address' as const,
@@ -797,6 +802,7 @@ describe('Multichain Accounts Selectors', () => {
             'keyring:Test': {
               id: 'keyring:Test' as const,
               type: AccountWalletType.Keyring,
+              status: 'ready',
               groups: {
                 'keyring:Test/address': {
                   id: 'keyring:Test/address' as const,
@@ -1137,6 +1143,7 @@ describe('Multichain Accounts Selectors', () => {
             'entropy:ordered': {
               id: 'entropy:ordered',
               type: AccountWalletType.Entropy,
+              status: 'ready',
               groups: {
                 'entropy:ordered/0': {
                   id: 'entropy:ordered/0',
