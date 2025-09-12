@@ -39,7 +39,6 @@ import {
   ApprovalRequestNotFoundError,
 } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
-import { EnsController } from '@metamask/ens-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import {
@@ -92,14 +91,6 @@ import {
 
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
-import {
-  NameController,
-  ENSNameProvider,
-  EtherscanNameProvider,
-  TokenNameProvider,
-  LensNameProvider,
-} from '@metamask/name-controller';
 
 import { UserOperationController } from '@metamask/user-operation-controller';
 import {
@@ -278,7 +269,6 @@ import { createTransactionEventFragmentWithTxId } from './lib/transaction/metric
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -404,6 +394,7 @@ import {
   SnapControllerInit,
   SnapInsightsControllerInit,
   SnapInterfaceControllerInit,
+  SnapsNameProviderInit,
   SnapsRegistryInit,
   WebSocketServiceInit,
 } from './controller-init/snaps';
@@ -443,6 +434,8 @@ import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
 import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
+import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
+import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -967,21 +960,6 @@ export default class MetamaskController extends EventEmitter {
         }
       }, this.preferencesController.state),
     );
-
-    this.ensController = new EnsController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'EnsController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getState',
-        ],
-        allowedEvents: [],
-      }),
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
-    });
 
     const onboardingControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1576,59 +1554,6 @@ export default class MetamaskController extends EventEmitter {
       traceFn: (...args) => trace(...args),
     });
 
-    const isExternalNameSourcesEnabled = () =>
-      this.preferencesController.state.useExternalNameSources;
-
-    this.nameController = new NameController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'NameController',
-        allowedActions: [],
-      }),
-      providers: [
-        new ENSNameProvider({
-          reverseLookup: this.ensController.reverseResolveAddress.bind(
-            this.ensController,
-          ),
-        }),
-        new EtherscanNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new TokenNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new LensNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new SnapsNameProvider({
-          messenger: this.controllerMessenger.getRestricted({
-            name: 'SnapsNameProvider',
-            allowedActions: [
-              'SnapController:getAll',
-              'SnapController:get',
-              'SnapController:handleRequest',
-              'PermissionController:getState',
-            ],
-          }),
-        }),
-      ],
-      state: initState.NameController,
-    });
-
-    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
-      name: 'PetnamesBridge',
-      allowedEvents: [
-        'NameController:stateChange',
-        'AccountsController:stateChange',
-        'AddressBookController:stateChange',
-      ],
-      allowedActions: ['AccountsController:listAccounts'],
-    });
-
-    new AddressBookPetnamesBridge({
-      addressBookController: this.addressBookController,
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
-    new AccountIdentitiesPetnamesBridge({
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
@@ -1813,6 +1738,9 @@ export default class MetamaskController extends EventEmitter {
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
+      SnapsNameProvider: SnapsNameProviderInit,
+      EnsController: EnsControllerInit,
+      NameController: NameControllerInit,
     };
 
     const {
@@ -1882,10 +1810,33 @@ export default class MetamaskController extends EventEmitter {
     this.shieldController = controllersByName.ShieldController;
     this.gatorPermissionsController =
       controllersByName.GatorPermissionsController;
+    this.ensController = controllersByName.EnsController;
+    this.nameController = controllersByName.NameController;
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
+
+    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
+      name: 'PetnamesBridge',
+      allowedEvents: [
+        'NameController:stateChange',
+        'AccountsController:stateChange',
+        'AddressBookController:stateChange',
+      ],
+      allowedActions: ['AccountsController:listAccounts'],
+    });
+
+    new AddressBookPetnamesBridge({
+      addressBookController: this.addressBookController,
+      nameController: this.nameController,
+      messenger: petnamesBridgeMessenger,
+    }).init();
+
+    new AccountIdentitiesPetnamesBridge({
+      nameController: this.nameController,
+      messenger: petnamesBridgeMessenger,
+    }).init();
 
     this.getSecurityAlertsConfig = () => {
       return async (url) => {
