@@ -240,19 +240,20 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome
 
-  page-load-benchmark-pr:
-    needs:
-      - build-test-browserify
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
-    uses: ./.github/workflows/page-load-benchmark-pr.yml
+  # TODO: [ffmcgee] uncomment these, https://github.com/MetaMask/metamask-extension/actions/runs/17671830535, too many workflows are referenced, total: 21, limit: 20
+  # page-load-benchmark-pr:
+  #   needs:
+  #     - build-test-browserify
+  #   if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
+  #   uses: ./.github/workflows/page-load-benchmark-pr.yml
 
-  page-load-benchmark-upload:
-    needs:
-      - page-load-benchmark-pr
-    if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/page-load-benchmark-upload.yml
-    secrets:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+  # page-load-benchmark-upload:
+  #   needs:
+  #     - page-load-benchmark-pr
+  #   if: github.ref == 'refs/heads/main'
+  #   uses: ./.github/workflows/page-load-benchmark-upload.yml
+  #   secrets:
+  #     EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
   dapp-transaction-proposal-benchmark-pr:
     needs:

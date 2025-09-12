@@ -116,6 +116,7 @@ export type BenchmarkResult = {
   timestamp: number;
 };
 
+// TODO: [ffmcgee] DRY these types
 /**
  * Individual benchmark measurement result for a single transaction proposal test.
  * Contains the raw performance metrics for one specific test run.
