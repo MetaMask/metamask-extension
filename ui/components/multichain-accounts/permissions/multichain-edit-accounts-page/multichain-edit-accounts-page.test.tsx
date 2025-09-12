@@ -116,7 +116,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
-    walletName: 'Test Wallet 1',
+    walletName: 'Test Wallet',
     walletId: MOCK_WALLET_ID,
   },
   {
@@ -140,7 +140,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
-    walletName: 'Test Wallet 2',
+    walletName: 'Test Wallet',
     walletId: MOCK_WALLET_ID,
   },
   {
@@ -164,7 +164,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
-    walletName: 'Test Wallet 3',
+    walletName: 'Test Wallet',
     walletId: MOCK_WALLET_ID,
   },
 ];
@@ -177,7 +177,7 @@ const createMockState = (overrides = {}) => {
         id: MOCK_WALLET_ID,
         type: AccountWalletType.Entropy,
         metadata: {
-          name: 'Test Wallet 1',
+          name: 'Test Wallet',
           entropy: {
             id: '01JKAF3DSGM3AB87EM9N0K41AJ',
           },
