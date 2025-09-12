@@ -1404,6 +1404,14 @@
         "bitcoin-address-validation": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1468,6 +1476,14 @@
         "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client>@metamask/keyring-snap-client>uuid": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/keyring-snap-client": {
+      "packages": {
+        "@metamask/multichain-account-service>@metamask/keyring-api": true,
+        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/multichain-account-service>@metamask/eth-snap-keyring>uuid": true
+      }
+    },
     "@metamask/account-api>@metamask/keyring-utils": {
       "globals": {
         "URL": true
@@ -1510,12 +1526,17 @@
     },
     "@metamask/multichain-account-service": {
       "globals": {
+        "console.error": true,
         "console.warn": true
       },
       "packages": {
         "@metamask/account-api": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true
+        "@metamask/multichain-account-service>@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/multichain-account-service>@metamask/keyring-snap-client": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true,
+        "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/multichain-api-middleware": {
@@ -5268,6 +5289,11 @@
       }
     },
     "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/multichain-account-service>@metamask/eth-snap-keyring>uuid": {
       "globals": {
         "crypto": true
       }
