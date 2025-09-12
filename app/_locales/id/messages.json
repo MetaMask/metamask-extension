@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Tidak ditemukan akun yang cocok"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Terima di"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alamat penerima atau ENS"
   },

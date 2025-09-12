@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Không tìm thấy tài khoản trùng khớp"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Nhận tại"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Địa chỉ nhận hoặc ENS"
   },

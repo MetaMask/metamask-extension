@@ -1836,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Nenhuma conta correspondentes encontrada"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Receber em"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Endereço de recebimento ou ENS"
   },
