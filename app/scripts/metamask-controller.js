@@ -1255,6 +1255,10 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
+          if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+          }
+
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
@@ -5129,13 +5133,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async discoverAndCreateAccounts(id) {
     try {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        false,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        false,
-      );
-
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
         id || this.keyringController.state.keyrings[0].metadata.id;
@@ -5157,13 +5154,6 @@ export default class MetamaskController extends EventEmitter {
         Bitcoin: 0,
         Solana: 0,
       };
-    } finally {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        true,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
     }
   }
 
@@ -5245,6 +5235,10 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
+      if (this.isMultichainAccountsFeatureState2Enabled()) {
+        await this.accountTreeController.syncWithUserStorage();
+      }
+
       let discoveredAccounts;
 
       if (
@@ -5260,8 +5254,6 @@ export default class MetamaskController extends EventEmitter {
           shouldImportSolanaAccount,
         );
       }
-
-      await this.accountTreeController.syncWithUserStorage();
 
       return {
         newAccountAddress,
@@ -5477,6 +5469,7 @@ export default class MetamaskController extends EventEmitter {
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts();
         } else {
           await this._addAccountsWithBalance();
@@ -5653,6 +5646,7 @@ export default class MetamaskController extends EventEmitter {
       );
       if (isHdKeyring) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts(metadata.id);
         } else {
           await this._addAccountsWithBalance(
