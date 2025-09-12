@@ -444,23 +444,25 @@ describe('Deep Link', function () {
         // wait for the homepage to load in this new window
         const deepLink = new DeepLink(driver);
         await deepLink.checkPageIsLoaded();
-        const initialUrl = await driver.getCurrentUrl();
-        assert.equal(
-          initialUrl,
-          `chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/home.html#link?u=%2Fhome`,
-        );
+        const initialUrlStr = await driver.getCurrentUrl();
+        const initialUrl = new URL(initialUrlStr);
+        assert.equal(initialUrl.pathname, `"/home.html`);
+        assert.equal(initialUrl.hash, '#link?u=%2Fhome');
+        assert.equal(initialUrl.search, '');
 
         await driver.switchToWindow(dappWindowHandle);
 
+        const hackUrl = new URL(initialUrl);
+        hackUrl.hash = '#notifications';
         await driver.executeScript(
-          `globalThis.testWindow.location.href = ${JSON.stringify(initialUrl.replace('#link?u=%2Fhome', '#notifications'))};`,
+          `globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)};`,
         );
 
         // go back to the Metamask window.
         await driver.switchToWindow(metamaskWindowHandle);
 
-        const finalUrl = await driver.getCurrentUrl();
-        assert.equal(finalUrl, initialUrl);
+        const finalUrlStr = await driver.getCurrentUrl();
+        assert.equal(finalUrlStr, initialUrlStr);
       },
     );
   });
