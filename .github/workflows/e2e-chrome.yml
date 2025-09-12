@@ -77,14 +77,14 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
-  test-e2e-chrome-vault-decryption:
+  test-e2e-chrome-dist:
     # This if statement is equivalent to IS_FORK
     if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-e2e.yml
     with:
-      test-suite-name: test-e2e-chrome-vault-decryption
+      test-suite-name: test-e2e-chrome-dist
       build-artifact: build-dist-browserify
-      test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
+      test-command: yarn test:e2e:chrome:dist
 
   test-e2e-chrome-api-specs:
     uses: ./.github/workflows/run-e2e.yml
@@ -175,7 +175,7 @@ jobs:
       - test-e2e-chrome-multiple-providers
       - test-e2e-chrome-rpc
       - test-e2e-chrome-flask
-      - test-e2e-chrome-vault-decryption
+      - test-e2e-chrome-dist
       - test-e2e-chrome-api-specs
       - test-e2e-chrome-api-specs-multichain
     runs-on: ubuntu-latest
