@@ -239,7 +239,7 @@ describe('MultichainAccountList', () => {
     ).toBeInTheDocument();
   });
 
-  it.only('handles multiple account groups within a single wallet', () => {
+  it('handles multiple account groups within a single wallet', () => {
     const secondGroupId = `${walletOneId}/1`;
     const multiGroupWallets = {
       [walletOneId]: {
