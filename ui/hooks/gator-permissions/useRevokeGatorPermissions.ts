@@ -65,11 +65,14 @@ export function useRevokeGatorPermissions({
   const extractDelegationFromGatorPermissionContext = useCallback(
     (permissionContext: Hex): Delegation => {
       // Gator 7715 permissions only have a single signed delegation:
-      // https://github.com/MetaMask/snap-7715-permissions/blob/main/packages/gator-permissions-snap/src/core/permissionRequestLifecycleOrchestrator.ts#L259
       const delegations = decodeDelegations(permissionContext);
       const firstDelegation = delegations[0];
       if (!firstDelegation) {
         throw new Error('No delegation found');
+      }
+
+      if (delegations.length !== 1) {
+        throw new Error('Multiple delegations found');
       }
 
       return {
@@ -110,6 +113,11 @@ export function useRevokeGatorPermissions({
       if (Array.isArray(dataToAssert)) {
         if (dataToAssert.length === 0) {
           throw new Error('No gator permissions provided');
+        }
+
+        // Make sure all gator permissions are not empty
+        for (const gatorPermission of dataToAssert) {
+          assertNotEmptyGatorPermission(gatorPermission);
         }
       } else if (!dataToAssert) {
         throw new Error('No gator permission provided');
@@ -221,6 +229,15 @@ export function useRevokeGatorPermissions({
           type: TransactionType.contractInteraction,
         },
       );
+
+      if (!transactionMeta) {
+        throw new Error('No transaction meta found');
+      }
+
+      if (!transactionMeta.id) {
+        throw new Error('No transaction id found');
+      }
+
       return transactionMeta;
     },
     [

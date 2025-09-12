@@ -500,7 +500,63 @@ describe('useRevokeGatorPermissions', () => {
       expect(mockAddTransaction).not.toHaveBeenCalled();
     });
 
-    it('should handle transaction meta without id', async () => {
+    it('should throw error when multiple delegations are found in permission context', async () => {
+      const mockMultipleDelegations = [
+        mockDelegation,
+        { ...mockDelegation, salt: 54321n },
+      ];
+      mockDecodeDelegations.mockReturnValue(mockMultipleDelegations);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermission(mockGatorPermission),
+        ).rejects.toThrow('Multiple delegations found');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should throw error when transaction meta is null', async () => {
+      mockAddTransaction.mockResolvedValue(null as never);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermission(mockGatorPermission),
+        ).rejects.toThrow('No transaction meta found');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+    });
+
+    it('should throw error when transaction meta has no id', async () => {
       const mockTransactionMetaWithoutId = {
         ...mockTransactionMeta,
         id: undefined,
@@ -523,10 +579,9 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       await act(async () => {
-        const transactionMeta =
-          await result.current.revokeGatorPermission(mockGatorPermission);
-
-        expect(transactionMeta).toBe(mockTransactionMetaWithoutId);
+        await expect(
+          result.current.revokeGatorPermission(mockGatorPermission),
+        ).rejects.toThrow('No transaction id found');
       });
 
       expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
@@ -633,6 +688,29 @@ describe('useRevokeGatorPermissions', () => {
       );
 
       expect(foundAccount).toBeUndefined();
+    });
+
+    it('should find account with case insensitive address matching', () => {
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      // Test with uppercase address
+      const foundAccount = result.current.findInternalAccountByAddress(
+        mockSelectedAccountAddress.toUpperCase() as Hex,
+      );
+
+      expect(foundAccount).toBeDefined();
+      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
+      expect(foundAccount?.id).toBe('mock-account-id');
     });
   });
 
@@ -791,6 +869,63 @@ describe('useRevokeGatorPermissions', () => {
       expect(mockAddTransaction).not.toHaveBeenCalled();
     });
 
+    it('should throw error when multiple delegations are found in permission context in batch', async () => {
+      const mockMultipleDelegations = [
+        mockDelegation,
+        { ...mockDelegation, salt: 54321n },
+      ];
+      mockDecodeDelegations.mockReturnValue(mockMultipleDelegations);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([mockGatorPermissions[0]]),
+        ).rejects.toThrow('Multiple delegations found');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
+    it('should throw error when batch contains empty permissions', async () => {
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([
+            mockGatorPermissions[0],
+            undefined as never,
+          ]),
+        ).rejects.toThrow('No gator permission provided');
+      });
+
+      expect(mockDecodeDelegations).not.toHaveBeenCalled();
+      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+
     it('should handle navigation when first transaction is pending', async () => {
       mockConfirmations.push({
         id: 'test-transaction-id',
@@ -907,6 +1042,65 @@ describe('useRevokeGatorPermissions', () => {
       });
 
       expect(mockAddTransaction).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle transaction meta being null in batch', async () => {
+      mockAddTransaction.mockResolvedValue(null as never);
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([mockGatorPermissions[0]]),
+        ).rejects.toThrow('No transaction meta found');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+    });
+
+    it('should handle transaction meta without id in batch', async () => {
+      const mockTransactionMetaWithoutId = {
+        ...mockTransactionMeta,
+        id: undefined,
+      };
+
+      mockAddTransaction.mockResolvedValue(
+        mockTransactionMetaWithoutId as never,
+      );
+
+      const { result } = renderHook(
+        () =>
+          useRevokeGatorPermissions({
+            chainId: mockChainId,
+          }),
+        {
+          wrapper: ({ children }) => (
+            <Provider store={store}>{children}</Provider>
+          ),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.revokeGatorPermissionBatch([mockGatorPermissions[0]]),
+        ).rejects.toThrow('No transaction id found');
+      });
+
+      expect(mockDecodeDelegations).toHaveBeenCalledWith(mockPermissionContext);
+      expect(mockEncodeDisableDelegation).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
     });
   });
 });
