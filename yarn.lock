@@ -5324,9 +5324,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@33.0.0-preview-1f2cfed":
-  version: 33.0.0-preview-1f2cfed
-  resolution: "@metamask-previews/accounts-controller@npm:33.0.0-preview-1f2cfed"
+"@metamask/accounts-controller@npm:^33.1.0":
+  version: 33.1.0
+  resolution: "@metamask/accounts-controller@npm:33.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
@@ -5349,7 +5349,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/2c561d4f5b1f4774d2ddd95cb2fcb5fe6ddbc8e87738859b1f1cc38a9c9ec2ffa72487354aa35b9c6261f6e5eca858b271f1e16325638089dfeac26e30ecc79f
+  checksum: 10/653538961fcc1ec1fb12a118236319ee20c4e7c2d9fda063fe102cfc75011ab6001c48440247e31828c698b54b2a157dd7a5bbc446af2a573f9fe1d8701fbe9e
   languageName: node
   linkType: hard
 
@@ -31775,7 +31775,7 @@ __metadata:
     "@metamask/account-api": "npm:^0.9.0"
     "@metamask/account-tree-controller": "npm:^0.14.0"
     "@metamask/account-watcher": "npm:^4.1.3"
-    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@33.0.0-preview-1f2cfed"
+    "@metamask/accounts-controller": "npm:^33.1.0"
     "@metamask/address-book-controller": "npm:^6.1.0"
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"

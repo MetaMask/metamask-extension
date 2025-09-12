@@ -5355,6 +5355,8 @@ export default class MetamaskController extends EventEmitter {
         shouldImportSolanaAccount,
       );
 
+      await this.accountTreeController.syncWithUserStorage();
+
       return {
         newAccountAddress,
         discoveredAccounts,
@@ -5522,6 +5524,7 @@ export default class MetamaskController extends EventEmitter {
 
       // Clear snap state
       await this.snapController.clearState();
+      this.accountTreeController.clearState();
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
@@ -5564,7 +5567,6 @@ export default class MetamaskController extends EventEmitter {
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
-      this.accountTreeController.clearPersistedMetadataAndSyncingState();
       this.accountTreeController.init();
 
       if (completedOnboarding) {
