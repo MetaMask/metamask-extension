@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
 import type {
   AcceptRequest,
   AddApprovalRequest,
@@ -675,6 +675,230 @@ describe('AppStateController', () => {
           [TRANSACTION_ID_MOCK]: 25,
         });
       });
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      withController(
+        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
+        // between test runs
+        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'anonymous',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "activeQrCodeScanRequest": null,
+              "addressSecurityAlertResponses": {},
+              "browserEnvironment": {},
+              "connectedStatusPopoverHasBeenShown": true,
+              "currentExtensionPopupId": 0,
+              "defaultHomeActiveTabName": null,
+              "enableEnforcedSimulations": true,
+              "enableEnforcedSimulationsForTransactions": {},
+              "enforcedSimulationsSlippage": 10,
+              "enforcedSimulationsSlippageForTransactions": {},
+              "fullScreenGasPollTokens": [],
+              "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "isRampCardClosed": false,
+              "isUpdateAvailable": false,
+              "lastUpdatedAt": null,
+              "lastViewedUserSurvey": null,
+              "newPrivacyPolicyToastClickedOrClosed": null,
+              "newPrivacyPolicyToastShownDate": null,
+              "nftsDetectionNoticeDismissed": false,
+              "nftsDropdownState": {},
+              "notificationGasPollTokens": [],
+              "onboardingDate": null,
+              "outdatedBrowserWarningLastShown": null,
+              "popupGasPollTokens": [],
+              "productTour": "accountIcon",
+              "recoveryPhraseReminderHasBeenShown": false,
+              "recoveryPhraseReminderLastShown": 1000,
+              "showAccountBanner": true,
+              "showBetaHeader": false,
+              "showDownloadMobileAppSlide": true,
+              "showNetworkBanner": true,
+              "showPermissionsTour": true,
+              "showTestnetMessageInDropdown": true,
+              "signatureSecurityAlertResponses": {},
+              "slides": [],
+              "surveyLinkLastClickedOrClosed": null,
+              "throttledOrigins": {},
+              "timeoutMinutes": 0,
+              "trezorModel": null,
+              "updateModalLastDismissedAt": null,
+            }
+          `);
+        },
+      );
+    });
+
+    it('includes expected state in state logs', () => {
+      withController(
+        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
+        // between test runs
+        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'includeInStateLogs',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "addressSecurityAlertResponses": {},
+              "browserEnvironment": {},
+              "connectedStatusPopoverHasBeenShown": true,
+              "currentExtensionPopupId": 0,
+              "defaultHomeActiveTabName": null,
+              "enableEnforcedSimulations": true,
+              "enableEnforcedSimulationsForTransactions": {},
+              "enforcedSimulationsSlippage": 10,
+              "enforcedSimulationsSlippageForTransactions": {},
+              "fullScreenGasPollTokens": [],
+              "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "isRampCardClosed": false,
+              "isUpdateAvailable": false,
+              "lastUpdatedAt": null,
+              "lastViewedUserSurvey": null,
+              "newPrivacyPolicyToastClickedOrClosed": null,
+              "newPrivacyPolicyToastShownDate": null,
+              "nftsDetectionNoticeDismissed": false,
+              "nftsDropdownState": {},
+              "notificationGasPollTokens": [],
+              "onboardingDate": null,
+              "outdatedBrowserWarningLastShown": null,
+              "popupGasPollTokens": [],
+              "productTour": "accountIcon",
+              "recoveryPhraseReminderHasBeenShown": false,
+              "recoveryPhraseReminderLastShown": 1000,
+              "showAccountBanner": true,
+              "showBetaHeader": false,
+              "showDownloadMobileAppSlide": true,
+              "showNetworkBanner": true,
+              "showPermissionsTour": true,
+              "showTestnetMessageInDropdown": true,
+              "signatureSecurityAlertResponses": {},
+              "slides": [],
+              "surveyLinkLastClickedOrClosed": null,
+              "throttledOrigins": {},
+              "timeoutMinutes": 0,
+              "trezorModel": null,
+              "updateModalLastDismissedAt": null,
+            }
+          `);
+        },
+      );
+    });
+
+    it('persists expected state', () => {
+      withController(
+        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
+        // between test runs
+        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'persist',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "browserEnvironment": {},
+              "connectedStatusPopoverHasBeenShown": true,
+              "defaultHomeActiveTabName": null,
+              "enableEnforcedSimulations": true,
+              "enforcedSimulationsSlippage": 10,
+              "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "isRampCardClosed": false,
+              "lastUpdatedAt": null,
+              "lastViewedUserSurvey": null,
+              "newPrivacyPolicyToastClickedOrClosed": null,
+              "newPrivacyPolicyToastShownDate": null,
+              "nftsDetectionNoticeDismissed": false,
+              "onboardingDate": null,
+              "outdatedBrowserWarningLastShown": null,
+              "productTour": "accountIcon",
+              "recoveryPhraseReminderHasBeenShown": false,
+              "recoveryPhraseReminderLastShown": 1000,
+              "showAccountBanner": true,
+              "showBetaHeader": false,
+              "showDownloadMobileAppSlide": true,
+              "showNetworkBanner": true,
+              "showPermissionsTour": true,
+              "showTestnetMessageInDropdown": true,
+              "slides": [],
+              "surveyLinkLastClickedOrClosed": null,
+              "timeoutMinutes": 0,
+              "trezorModel": null,
+              "updateModalLastDismissedAt": null,
+            }
+          `);
+        },
+      );
+    });
+
+    it('exposes expected state to UI', () => {
+      withController(
+        // Set `recoveryPhraseReminderLastShown` to an arbitrary number so that it stays consistent
+        // between test runs
+        { state: { recoveryPhraseReminderLastShown: 1_000 } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'usedInUi',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "activeQrCodeScanRequest": null,
+              "addressSecurityAlertResponses": {},
+              "browserEnvironment": {},
+              "connectedStatusPopoverHasBeenShown": true,
+              "currentExtensionPopupId": 0,
+              "defaultHomeActiveTabName": null,
+              "enableEnforcedSimulations": true,
+              "enableEnforcedSimulationsForTransactions": {},
+              "enforcedSimulationsSlippage": 10,
+              "enforcedSimulationsSlippageForTransactions": {},
+              "fullScreenGasPollTokens": [],
+              "isRampCardClosed": false,
+              "isUpdateAvailable": false,
+              "lastUpdatedAt": null,
+              "lastViewedUserSurvey": null,
+              "newPrivacyPolicyToastClickedOrClosed": null,
+              "newPrivacyPolicyToastShownDate": null,
+              "nftsDropdownState": {},
+              "notificationGasPollTokens": [],
+              "onboardingDate": null,
+              "outdatedBrowserWarningLastShown": null,
+              "popupGasPollTokens": [],
+              "productTour": "accountIcon",
+              "recoveryPhraseReminderHasBeenShown": false,
+              "recoveryPhraseReminderLastShown": 1000,
+              "showAccountBanner": true,
+              "showBetaHeader": false,
+              "showDownloadMobileAppSlide": true,
+              "showNetworkBanner": true,
+              "showPermissionsTour": true,
+              "signatureSecurityAlertResponses": {},
+              "slides": [],
+              "surveyLinkLastClickedOrClosed": null,
+              "throttledOrigins": {},
+              "updateModalLastDismissedAt": null,
+            }
+          `);
+        },
+      );
     });
   });
 });
