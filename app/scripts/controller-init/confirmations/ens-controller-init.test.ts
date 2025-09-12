@@ -1,14 +1,14 @@
 import { Messenger } from '@metamask/base-controller';
 import { EnsController } from '@metamask/ens-controller';
-import { ControllerInitRequest } from './types';
-import { buildControllerInitRequestMock } from './test/utils';
+import { ControllerInitRequest } from '../types.ts';
+import { buildControllerInitRequestMock } from '../test/utils.ts';
 import {
   getEnsControllerMessenger,
   EnsControllerMessenger,
   getEnsControllerInitMessenger,
   EnsControllerInitMessenger,
-} from './messengers';
-import { EnsControllerInit } from './ens-controller-init';
+} from '../messengers';
+import { EnsControllerInit } from './ens-controller-init.ts';
 
 jest.mock('@metamask/ens-controller');
 

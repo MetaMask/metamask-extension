@@ -8,8 +8,8 @@ import {
 import {
   NameControllerInitMessenger,
   NameControllerMessenger,
-} from './messengers';
-import { ControllerInitFunction } from './types';
+} from '../messengers';
+import { ControllerInitFunction } from '../types.ts';
 
 /**
  * Initialize the name controller.
@@ -29,7 +29,7 @@ export const NameControllerInit: ControllerInitFunction<
   const ensController = getController('EnsController');
   const snapsNameProvider = getController('SnapsNameProvider');
 
-  const isEnabled = () =>
+  const isExternalNameSourcesEnabled = () =>
     initMessenger.call('PreferencesController:getState').useExternalNameSources;
 
   const controller = new NameController({
@@ -44,9 +44,9 @@ export const NameControllerInit: ControllerInitFunction<
         // `Promise<string>`.
         reverseLookup: ensController.reverseResolveAddress.bind(ensController),
       }),
-      new EtherscanNameProvider({ isEnabled }),
-      new TokenNameProvider({ isEnabled }),
-      new LensNameProvider({ isEnabled }),
+      new EtherscanNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
+      new TokenNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
+      new LensNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
       snapsNameProvider,
     ],
   });

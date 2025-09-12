@@ -434,8 +434,8 @@ import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
 import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
-import { EnsControllerInit } from './controller-init/ens-controller-init';
-import { NameControllerInit } from './controller-init/name-controller-init';
+import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
+import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

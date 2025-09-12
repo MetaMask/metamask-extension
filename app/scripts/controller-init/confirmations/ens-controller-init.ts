@@ -2,8 +2,8 @@ import { EnsController } from '@metamask/ens-controller';
 import {
   EnsControllerInitMessenger,
   EnsControllerMessenger,
-} from './messengers';
-import { ControllerInitFunction } from './types';
+} from '../messengers';
+import { ControllerInitFunction } from '../types.ts';
 
 /**
  * Initialize the ENS controller.
