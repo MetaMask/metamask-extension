@@ -76,6 +76,7 @@ const createMockState = (overrides = {}) => ({
         [MOCK_WALLET_ID]: {
           id: MOCK_WALLET_ID,
           type: AccountWalletType.Entropy,
+          status: 'ready',
           metadata: {
             name: 'Test Wallet 1',
             entropy: {

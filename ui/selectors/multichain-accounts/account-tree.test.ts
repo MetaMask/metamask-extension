@@ -69,6 +69,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -109,6 +110,7 @@ describe('Multichain Accounts Selectors', () => {
           'keyring:Test': {
             id: 'keyring:Test' as const,
             type: AccountWalletType.Keyring as const,
+            status: 'ready',
             groups: {
               'keyring:Test/address': {
                 id: 'keyring:Test/address' as const,
@@ -150,6 +152,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -202,6 +205,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -254,6 +258,7 @@ describe('Multichain Accounts Selectors', () => {
         'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
           id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
           type: 'entropy',
+          status: 'ready',
           groups: {
             'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
               id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
@@ -334,6 +339,7 @@ describe('Multichain Accounts Selectors', () => {
         'entropy:01JKAF3PJ247KAM6C03G5Q0NP8': {
           id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8',
           type: 'entropy',
+          status: 'ready',
           groups: {
             'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0': {
               id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0',
@@ -387,6 +393,7 @@ describe('Multichain Accounts Selectors', () => {
         'snap:local:custody:test': {
           id: 'snap:local:custody:test',
           type: 'snap',
+          status: 'ready',
           groups: {
             'snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281':
               {
@@ -436,6 +443,7 @@ describe('Multichain Accounts Selectors', () => {
         'keyring:Ledger Hardware': {
           id: 'keyring:Ledger Hardware',
           type: 'keyring',
+          status: 'ready',
           groups: {
             'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813':
               {
@@ -485,6 +493,7 @@ describe('Multichain Accounts Selectors', () => {
         'snap:local:snap-id': {
           id: 'snap:local:snap-id',
           type: 'snap',
+          status: 'ready',
           groups: {
             'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d': {
               id: 'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d',
@@ -736,6 +745,7 @@ describe('Multichain Accounts Selectors', () => {
             'keyring:Test': {
               id: 'keyring:Test' as const,
               type: AccountWalletType.Keyring as const,
+              status: 'ready',
               groups: {
                 'keyring:Test/address': {
                   id: 'keyring:Test/address' as const,
@@ -797,6 +807,7 @@ describe('Multichain Accounts Selectors', () => {
             'keyring:Test': {
               id: 'keyring:Test' as const,
               type: AccountWalletType.Keyring,
+              status: 'ready',
               groups: {
                 'keyring:Test/address': {
                   id: 'keyring:Test/address' as const,
@@ -1137,6 +1148,7 @@ describe('Multichain Accounts Selectors', () => {
             'entropy:ordered': {
               id: 'entropy:ordered',
               type: AccountWalletType.Entropy,
+              status: 'ready',
               groups: {
                 'entropy:ordered/0': {
                   id: 'entropy:ordered/0',

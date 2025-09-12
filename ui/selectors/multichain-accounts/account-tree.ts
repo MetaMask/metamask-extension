@@ -106,6 +106,7 @@ const createConsolidatedWallets = (
       consolidatedWallets[walletId as AccountWalletId] = {
         id: walletId as AccountWalletId,
         type: wallet.type,
+        status: wallet.status,
         metadata: wallet.metadata,
         groups: {},
       };
