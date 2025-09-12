@@ -1860,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Keine übereinstimmenden Konten gefunden"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Empfangen am"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Empfangsadresse oder ENS"
   },
