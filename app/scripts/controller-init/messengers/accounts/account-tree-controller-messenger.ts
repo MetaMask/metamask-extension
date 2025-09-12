@@ -72,6 +72,13 @@ export function getAccountTreeControllerMessenger(
       'SnapController:get',
       'UserStorageController:getState',
       'KeyringController:getState',
+      'UserStorageController:getState',
+      'UserStorageController:performGetStorage',
+      'UserStorageController:performGetStorageAllFeatureEntries',
+      'UserStorageController:performSetStorage',
+      'UserStorageController:performBatchSetStorage',
+      'AuthenticationController:getSessionProfile',
+      'MultichainAccountService:createMultichainAccountGroup',
     ],
   });
 }
