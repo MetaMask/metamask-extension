@@ -7,7 +7,7 @@ import {
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Text } from '../../component-library';
+import { Box, Checkbox, Text } from '../../component-library';
 
 import {
   AlignItems,
@@ -66,6 +66,10 @@ export const MultichainAccountList = ({
     getDefaultHomeActiveTabName,
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const showAccountCheckbox = useMemo(
+    () => selectedAccountGroups.length > 0,
+    [selectedAccountGroups],
+  );
 
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
@@ -167,6 +171,20 @@ export const MultichainAccountList = ({
                   groupId as AccountGroupId,
                 )}
                 onClick={handleAccountClickToUse}
+                startAccessory={
+                  showAccountCheckbox ? (
+                    <Box marginRight={4}>
+                      <Checkbox
+                        isChecked={selectedAccountGroupsSet.has(
+                          groupId as AccountGroupId,
+                        )}
+                        onChange={() => {
+                          handleAccountClickToUse(groupId as AccountGroupId);
+                        }}
+                      />
+                    </Box>
+                  ) : undefined
+                }
                 endAccessory={
                   <MultichainAccountMenu
                     accountGroupId={groupId as AccountGroupId}
