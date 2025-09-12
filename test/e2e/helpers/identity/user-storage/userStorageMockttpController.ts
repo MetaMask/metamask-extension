@@ -19,6 +19,14 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.addressBook}`,
     'u',
   ),
+  [USER_STORAGE_FEATURE_NAMES.addressBook]: new RegExp(
+    `${baseUrl}/multichain_accounts_wallets`,
+    'u',
+  ),
+  [USER_STORAGE_FEATURE_NAMES.addressBook]: new RegExp(
+    `${baseUrl}/multichain_accounts_groups`,
+    'u',
+  ),
 };
 
 export type UserStorageResponseData = {
