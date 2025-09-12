@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import Box from '../../../../components/ui/box/box';
 import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Identicon from '../../../../components/ui/identicon';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import {
   Text,
   ButtonIcon,
@@ -38,7 +39,7 @@ export default function ContractTokenValues({
       justifyContent={JustifyContent.center}
       gap={2}
     >
-      <Identicon address={address} diameter={24} />
+      <PreferredAvatar address={address} size={AvatarAccountSize.Sm} />
       <Text
         variant={TextVariant.headingLg}
         fontWeight={FontWeight.Bold}

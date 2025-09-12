@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -39,7 +40,7 @@ import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipien
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
-import Identicon from '../../../../../components/ui/identicon';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
@@ -144,7 +145,10 @@ const HeaderInfo = () => {
                 flexDirection={FlexDirection.Column}
                 alignItems={AlignItems.center}
               >
-                <Identicon address={fromAddress} diameter={40} />
+                <PreferredAvatar
+                  address={fromAddress}
+                  size={AvatarAccountSize.Lg}
+                />
                 <Text
                   fontWeight={FontWeight.Bold}
                   variant={TextVariant.bodyMd}
