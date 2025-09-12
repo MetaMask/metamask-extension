@@ -15,20 +15,24 @@ const APP_VERSION = packageJson.version;
 /**
  * Shared helper to check whether a multichain accounts feature version is enabled
  * for a given application version. This keeps background and UI gating logic in sync.
+ *
+ * @param enableMultichainAccounts - The multichain accounts feature flag.
+ * @param featureVersion - The feature version to check.
+ * @returns boolean - True if the feature is enabled, false otherwise.
  */
 export const isMultichainAccountsFeatureEnabled = (
-  enableMultichainAccounts:
-    | MultichainAccountsFeatureFlag
-    | undefined
-    | null,
+  enableMultichainAccounts: MultichainAccountsFeatureFlag | undefined | null,
   featureVersion: string,
 ) => {
   if (!enableMultichainAccounts) {
     return false;
   }
 
-  const { enabled, featureVersion: currentFeatureVersion, minimumVersion } =
-    enableMultichainAccounts;
+  const {
+    enabled,
+    featureVersion: currentFeatureVersion,
+    minimumVersion,
+  } = enableMultichainAccounts;
 
   if (!enabled || !currentFeatureVersion || !minimumVersion) {
     return false;

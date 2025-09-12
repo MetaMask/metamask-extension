@@ -1,4 +1,7 @@
-import { isMultichainAccountsFeatureEnabled, MultichainAccountsFeatureFlag } from "./remote-feature-flag";
+import {
+  isMultichainAccountsFeatureEnabled,
+  MultichainAccountsFeatureFlag,
+} from './remote-feature-flag';
 
 describe('remoteFeatureFlag', () => {
   it('should return true when the feature flag is enabled', () => {
@@ -46,7 +49,12 @@ describe('remoteFeatureFlag', () => {
   it('should return false when the feature flag is empty', () => {
     const featureFlag = {};
 
-    expect(isMultichainAccountsFeatureEnabled(featureFlag as MultichainAccountsFeatureFlag, '2')).toBe(false);
+    expect(
+      isMultichainAccountsFeatureEnabled(
+        featureFlag as MultichainAccountsFeatureFlag,
+        '2',
+      ),
+    ).toBe(false);
   });
 
   it('should return false when the feature flag is missing the minimum version', () => {
