@@ -99,6 +99,7 @@ export type AppStateControllerState = {
   enableEnforcedSimulationsForTransactions: Record<string, boolean>;
   enforcedSimulationsSlippage: number;
   enforcedSimulationsSlippageForTransactions: Record<string, number>;
+  hasShownMultichainIntroModal: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -227,6 +228,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   enforcedSimulationsSlippage: 10,
   enforcedSimulationsSlippageForTransactions: {},
   activeQrCodeScanRequest: null,
+  hasShownMultichainIntroModal: false,
   ...getInitialStateOverrides(),
 });
 
@@ -416,6 +418,10 @@ const controllerMetadata = {
   },
   enforcedSimulationsSlippageForTransactions: {
     persist: false,
+    anonymous: true,
+  },
+  hasShownMultichainIntroModal: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -937,6 +943,17 @@ export class AppStateController extends BaseController<
     });
   }
 
+  /**
+   * Sets whether the multichain intro modal has been shown to the user
+   *
+   * @param hasShown - Whether the modal has been shown
+   */
+  setHasShownMultichainIntroModal(hasShown: boolean): void {
+    this.update((state) => {
+      state.hasShownMultichainIntroModal = hasShown;
+    });
+  }
+      
   /**
    * Sets the product tour to be shown to the user
    *

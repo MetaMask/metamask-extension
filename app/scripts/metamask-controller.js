@@ -3624,6 +3624,19 @@ export default class MetamaskController extends EventEmitter {
         });
       },
 
+      alignMultichainWallets: async () => {
+        if (this.multichainAccountService) {
+          await this.multichainAccountService.alignWallets();
+        }
+      },
+
+      getMultichainAlignmentStatus: () => {
+        if (this.multichainAccountService) {
+          return this.multichainAccountService.getIsAlignmentInProgress();
+        }
+        return false;
+      },
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
@@ -3761,6 +3774,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setEnforcedSimulationsSlippageForTransaction:
         appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
+          appStateController,
+        ),
+      setHasShownMultichainIntroModal:
+        appStateController.setHasShownMultichainIntroModal.bind(
           appStateController,
         ),
 
