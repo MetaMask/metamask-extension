@@ -7,8 +7,7 @@ import {
 describe('getGasFeeControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const gasFeeControllerMessenger =
-      getGasFeeControllerMessenger(messenger);
+    const gasFeeControllerMessenger = getGasFeeControllerMessenger(messenger);
 
     expect(gasFeeControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
@@ -20,8 +19,6 @@ describe('getGasFeeControllerInitMessenger', () => {
     const gasFeeControllerInitMessenger =
       getGasFeeControllerInitMessenger(messenger);
 
-    expect(gasFeeControllerInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(gasFeeControllerInitMessenger).toBeInstanceOf(RestrictedMessenger);
   });
 });
