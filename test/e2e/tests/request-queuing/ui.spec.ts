@@ -1,29 +1,30 @@
-const { strict: assert } = require('assert');
-const { Browser, By } = require('selenium-webdriver');
-const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
-const {
-  default: NetworkManager,
+// import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
+import {
+  CaveatConstraint,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
+import NetworkManager, {
   NetworkId,
-} = require('../../page-objects/pages/network-manager');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const FixtureBuilder = require('../../fixture-builder');
-const {
+} from '../../page-objects/pages/network-manager';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilder from '../../fixture-builder';
+import {
   withFixtures,
-  openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
   veryLargeDelayMs,
   DAPP_TWO_URL,
-} = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
-const {
-  PermissionNames,
-} = require('../../../../app/scripts/controllers/permissions');
-const { CaveatTypes } = require('../../../../shared/constants/permissions');
+} from '../../helpers';
+import { Driver, PAGES } from '../../webdriver/driver';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import { CaveatTypes } from '../../../../shared/constants/permissions';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { Anvil } from '../../seeder/anvil';
+import HomePage from '../../page-objects/pages/home/homepage';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -32,19 +33,27 @@ const { CaveatTypes } = require('../../../../shared/constants/permissions');
 // validate two dapps instead of 3
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
-async function openDappAndSwitchChain(driver, dappUrl, chainId) {
+type ExpectedDetails = {
+  chainId: string;
+  networkText: string;
+  originText: string;
+};
+
+async function openDappAndSwitchChain(
+  driver: Driver,
+  dappUrl: string,
+  chainId?: string,
+): Promise<void> {
   // Open the dapp
-  await openDapp(driver, undefined, dappUrl);
+  const testDapp = new TestDapp(driver);
+  await testDapp.openTestDappPage({ url: dappUrl });
 
   // Connect to the dapp
-  await driver.clickElement({ text: 'Connect', tag: 'button' });
+  await testDapp.clickConnectAccountButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.clickElementAndWaitForWindowToClose({
-    text: 'Connect',
-    tag: 'button',
-  });
+  await testDapp.clickConnectAccountButtonAndWaitForWindowToClose();
 
   // Switch back to the dapp
   await driver.switchToWindowWithUrl(dappUrl);
@@ -62,11 +71,12 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
     const permittedChains =
       getPermissionsResult
         ?.find(
-          (permission) =>
+          (permission: PermissionConstraint) =>
             permission.parentCapability === PermissionNames.permittedChains,
         )
         ?.caveats.find(
-          (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+          (caveat: CaveatConstraint) =>
+            caveat.type === CaveatTypes.restrictNetworkSwitching,
         )?.value || [];
 
     const isAlreadyPermitted = permittedChains.includes(chainId);
@@ -84,12 +94,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
       await driver.delay(veryLargeDelayMs);
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-      await driver.findClickableElement(
-        '[data-testid="page-container-footer-next"]',
-      );
-      await driver.clickElementAndWaitForWindowToClose(
-        '[data-testid="page-container-footer-next"]',
-      );
+      await testDapp.clickFooterNextButton();
 
       // Switch back to the dapp
       await driver.switchToWindowWithUrl(dappUrl);
@@ -97,77 +102,74 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   }
 }
 
-async function selectDappClickSend(driver, dappUrl) {
+async function selectDappClickSend(
+  driver: Driver,
+  dappUrl: string,
+): Promise<void> {
+  const testDapp = new TestDapp(driver);
+
   await driver.switchToWindowWithUrl(dappUrl);
-  await driver.clickElement('#sendButton');
+  await testDapp.clickSimpleSendButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.waitForSelector({
-    tag: 'h3',
-    text: 'Transfer request',
-  });
+
+  await testDapp.checkTransferRequest();
 }
 
-async function selectDappClickPersonalSign(driver, dappUrl) {
+async function selectDappClickPersonalSign(
+  driver: Driver,
+  dappUrl: string,
+): Promise<void> {
   await driver.switchToWindowWithUrl(dappUrl);
-  await driver.clickElement('#personalSign');
+
+  const testDapp = new TestDapp(driver);
+  await testDapp.clickPersonalSign();
 }
 
 async function switchToDialogPopoverValidateDetailsRedesign(
-  driver,
-  expectedDetails,
-) {
+  driver: Driver,
+  expectedDetails: ExpectedDetails,
+): Promise<void> {
   // Switches to the MetaMask Dialog window for confirmation
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.findElement({
-    css: 'p',
-    text: expectedDetails.networkText,
-  });
+  const testDapp = new TestDapp(driver);
+  await testDapp.checkNetwork(expectedDetails.networkText);
 }
 
-async function rejectTransactionRedesign(driver) {
-  await driver.clickElementAndWaitForWindowToClose({
-    tag: 'button',
-    text: 'Cancel',
-  });
+async function rejectTransactionRedesign(driver: Driver): Promise<void> {
+  const testDapp = new TestDapp(driver);
+  await testDapp.clickCancelButton();
 }
 
-async function confirmTransaction(driver) {
-  await driver.clickElement({ tag: 'button', text: 'Confirm' });
+async function confirmTransaction(driver: Driver): Promise<void> {
+  const testDapp = new TestDapp(driver);
+  await testDapp.clickConfirmButton();
 }
 
-async function openPopupWithActiveTabOrigin(driver, origin) {
+async function openPopupWithActiveTabOrigin(
+  driver: Driver,
+  origin: string,
+): Promise<void> {
   await driver.openNewPage(
     `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
   );
 }
 
 async function validateBalanceAndActivity(
-  driver,
-  expectedBalance,
-  expectedActivityEntries = 1,
-) {
+  driver: Driver,
+  expectedBalance: string,
+  expectedActivityEntries: number = 1,
+): Promise<void> {
   // Ensure the balance changed if the the transaction was confirmed
-  await driver.waitForSelector({
-    css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
-    text: expectedBalance,
-  });
+  const homePage = new HomePage(driver);
+  await homePage.checkExpectedBalanceIsDisplayed(expectedBalance);
 
   // Ensure there's an activity entry of "Sent" and "Confirmed"
   if (expectedActivityEntries) {
-    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
-    assert.equal(
-      (
-        await driver.findElements({
-          css: '[data-testid="activity-list-item-action"]',
-          text: 'Sent',
-        })
-      ).length,
-      expectedActivityEntries,
-    );
-    assert.equal(
-      (await driver.findElements('.transaction-status-label--confirmed'))
-        .length,
+    const activityList = new ActivityListPage(driver);
+    await activityList.openActivityTab();
+    await activityList.checkTxAction({ action: 'Sent' });
+    await activityList.checkConfirmedTxNumberDisplayedInActivity(
       expectedActivityEntries,
     );
   }
@@ -175,6 +177,8 @@ async function validateBalanceAndActivity(
 
 describe('Request-queue UI changes', function () {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
+
+  // Done
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -197,9 +201,9 @@ describe('Request-queue UI changes', function () {
           },
         ],
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         // Open the first dapp
@@ -215,9 +219,7 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="Localhost 8546"]',
-        );
+        await networkManager.selectNetworkByName('Localhost 8546');
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -240,6 +242,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
+  // Done
   it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -278,9 +281,9 @@ describe('Request-queue UI changes', function () {
         ],
 
         dappOptions: { numberOfDapps: 3 },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         // Open the first dapp
@@ -301,17 +304,15 @@ describe('Request-queue UI changes', function () {
         await selectDappClickSend(driver, DAPP_ONE_URL);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 2']"),
-        );
+        const testDapp = new TestDapp(driver);
+        await testDapp.checkNumberOfDappsConnected('1 of 2');
 
         if (!IS_FIREFOX) {
           // Trigger a send confirmation on the third dapp, do not confirm or reject
           await selectDappClickSend(driver, DAPP_TWO_URL);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.waitForSelector(
-            By.xpath("//p[normalize-space(.)='1 of 3']"),
-          );
+
+          await testDapp.checkNumberOfDappsConnected('1 of 3');
         }
 
         // Switch to the Notification window, ensure first transaction still showing
@@ -333,10 +334,7 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Cancel',
-        });
+        await testDapp.clickCancelButton();
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
@@ -366,33 +364,29 @@ describe('Request-queue UI changes', function () {
           // Start on the last joined network, whose send transaction was just confirmed
           await networkManager.openNetworkManager();
           await networkManager.selectTab('Custom');
-          await driver.clickElementAndWaitToDisappear(
-            '[data-testid="Localhost 7777"]',
-          );
+
+          await networkManager.selectNetworkByName('Localhost 7777');
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
         // Validate second network, where transaction was rejected
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="Localhost 8546"]',
-        );
+        await networkManager.selectNetworkByName('Localhost 8546');
 
         await validateBalanceAndActivity(driver, '25', 0);
 
         // Validate first network, where transaction was confirmed
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="Localhost 8545"]',
-        );
+        await networkManager.selectNetworkByName('Localhost 8545');
 
         await validateBalanceAndActivity(driver, '24.9998');
       },
     );
   });
 
+  // Done
   it('should gracefully handle deleted network', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -419,7 +413,7 @@ describe('Request-queue UI changes', function () {
           },
         ],
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -449,24 +443,10 @@ describe('Request-queue UI changes', function () {
         await networkManager.selectTab('Custom');
 
         // Delete network
-        const networkRow = await driver.findElement({
-          css: '.multichain-network-list-item',
-          text: 'Localhost 8545',
-        });
-
-        const networkMenu = await driver.findNestedElement(
-          networkRow,
-          `[data-testid="network-list-item-options-button-${toEvmCaipChainId(
-            CHAIN_IDS.LOCALHOST,
-          )}"]`,
+        await networkManager.deleteNetworkByName(
+          'Localhost 8545',
+          CHAIN_IDS.LOCALHOST,
         );
-
-        await networkMenu.click();
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-delete"]',
-        );
-
-        await driver.clickElement({ tag: 'button', text: 'Delete' });
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum Mainnet, should be used
@@ -481,15 +461,16 @@ describe('Request-queue UI changes', function () {
     );
   });
 
+  // Done
   it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         // Navigate to extension home screen
         await loginWithBalanceValidation(driver);
 
@@ -497,33 +478,25 @@ describe('Request-queue UI changes', function () {
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
         // Ensure the dapp starts on the correct network
-        await driver.waitForSelector({
-          css: '[id="chainId"]',
-          text: '0x539',
-        });
+        const testDapp = new TestDapp(driver);
+        await testDapp.checkNetworkIsConnected('0x539');
 
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
         // Switch to mainnet using per-dapp connected network flow
-        await driver.clickElement('[data-testid="connection-menu"]');
-        await driver.clickElement(
-          '[data-testid="connected-site-popover-network-button"]',
-        );
-        await driver.clickElement('[data-testid="Ethereum Mainnet"]');
+        await testDapp.switchToEthereumMainnet();
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
 
         // Check to make sure the dapp network changed
-        await driver.waitForSelector({
-          css: '[id="chainId"]',
-          text: '0x1',
-        });
+        await testDapp.checkNetworkIsConnected('0x1');
       },
     );
   });
 
+  // Done
   it('should gracefully handle network connectivity failure for signatures', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -554,9 +527,15 @@ describe('Request-queue UI changes', function () {
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }) => {
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
         await loginWithBalanceValidation(driver);
 
         // Open the first dapp
@@ -597,6 +576,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
+  // Done
   it('should gracefully handle network connectivity failure for confirmations', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -632,7 +612,7 @@ describe('Request-queue UI changes', function () {
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(

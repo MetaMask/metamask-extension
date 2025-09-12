@@ -1,3 +1,4 @@
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { Driver } from '../../webdriver/driver';
 
 export enum NetworkId {
@@ -33,6 +34,24 @@ class NetworkManager {
 
   private readonly tabList = '.tabs__list.network-manager__tab-list';
 
+  private readonly networkListItemByName = (networkName: string) =>
+    `[data-testid="${networkName}"]`;
+
+  private readonly multichainNetworkListItemByName = (networkName: string) => ({
+    css: '.multichain-network-list-item',
+    text: networkName,
+  });
+
+  private readonly networkItemMenuButtonByChainId = (chainId: string) =>
+    `[data-testid="network-list-item-options-button-${chainId}"]`;
+
+  private readonly networkItemDeleteOption = `[data-testid="network-list-item-options-delete"]`;
+
+  private readonly networkPopupDeleteButton = {
+    text: 'Delete',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -56,6 +75,36 @@ class NetworkManager {
     await this.driver.clickElement({
       text: tabName,
     });
+  }
+
+  async selectNetworkByName(networkName: string): Promise<void> {
+    console.log(`Selecting network by name: ${networkName}`);
+    await this.driver.clickElement(this.networkListItemByName(networkName));
+  }
+
+  async deleteNetworkByName(
+    networkName: string,
+    chainId: `0x${string}`,
+  ): Promise<void> {
+    console.log(`Deleting network: ${networkName} (${chainId})`);
+
+    const networkRow = await this.driver.findElement(
+      this.multichainNetworkListItemByName(networkName),
+    );
+
+    // Convert chain ID to CAIP format for the data-testid
+    const caipChainId = toEvmCaipChainId(chainId);
+
+    const networkMenu = await this.driver.findNestedElement(
+      networkRow,
+      this.networkItemMenuButtonByChainId(caipChainId),
+    );
+
+    await networkMenu.click();
+    await this.driver.clickElement(this.networkItemDeleteOption);
+    await this.driver.clickElement(this.networkPopupDeleteButton);
+
+    console.log(`Successfully deleted network: ${networkName}`);
   }
 
   async selectAllNetworks(): Promise<void> {
