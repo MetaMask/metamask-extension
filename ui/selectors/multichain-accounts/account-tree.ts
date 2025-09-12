@@ -50,10 +50,9 @@ import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
  * @param state.metamask.accountTree - Account tree state object.
  * @returns Account tree state.
  */
-export const getAccountTree = createDeepEqualSelector(
-  (state: MultichainAccountsState) => state.metamask.accountTree,
-  (accountTree: AccountTreeState): AccountTreeState => accountTree,
-);
+export const getAccountTree = (
+  state: MultichainAccountsState,
+): AccountTreeState => state.metamask.accountTree;
 
 /**
  * Common function to create consolidated wallets with accounts.
