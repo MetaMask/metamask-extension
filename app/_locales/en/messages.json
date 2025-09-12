@@ -1099,8 +1099,8 @@
   "busy": {
     "message": "Busy"
   },
-  "buyAndSell": {
-    "message": "Buy/Sell"
+  "buy": {
+    "message": "Buy"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -1835,6 +1835,9 @@
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
+  "deepLink_thePerpsPage": {
+    "message": "the perps page"
+  },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
@@ -1925,9 +1928,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Receive at"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Receiving address or ENS"
@@ -2328,6 +2328,18 @@
   },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
+  },
+  "errorLegalTextFirstInfo": {
+    "message": "Technical diagnostic information."
+  },
+  "errorLegalTextNoPersonalInfo": {
+    "message": "No personal information or other device information will be collected."
+  },
+  "errorLegalTextSecondInfo": {
+    "message": "Your browser, operating system, and MetaMask versions."
+  },
+  "errorLegalTextSummary": {
+    "message": "We will receive a single error report, containing:"
   },
   "errorMessage": {
     "message": "Message: $1",
@@ -3341,6 +3353,9 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "maskicons": {
+    "message": "Maskicons"
+  },
   "max": {
     "message": "Max"
   },
@@ -3748,6 +3763,13 @@
   },
   "newAccount": {
     "message": "New account"
+  },
+  "newAccountIconMessage": {
+    "message": "Weʼve refreshed account icons to help you tell your accounts apart more easily. You can change the style in $1 > $2 > $3.",
+    "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
+  },
+  "newAccountIconTitle": {
+    "message": "New account icon"
   },
   "newAccountNumberName": {
     "message": "Account $1",
@@ -4955,6 +4977,9 @@
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
+  "recipientEditAriaLabel": {
+    "message": "Edit recipient"
+  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
@@ -5054,6 +5079,9 @@
   },
   "reportIssue": {
     "message": "Report an issue"
+  },
+  "reportThisError": {
+    "message": "Report this error"
   },
   "requestFrom": {
     "message": "Request from"

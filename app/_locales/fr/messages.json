@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Occupé"
   },
-  "buyAndSell": {
-    "message": "Acheter/vendre"
+  "buy": {
+    "message": "Acheter"
   },
   "buyMoreAsset": {
     "message": "Acheter plus de $1",
@@ -1835,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Aucun compte correspondant n’a été trouvé"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Recevoir sur"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Adresse de réception ou ENS"

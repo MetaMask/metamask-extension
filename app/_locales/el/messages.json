@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "Απασχολημένο"
   },
-  "buyAndSell": {
-    "message": "Αγορά & Πώληση"
+  "buy": {
+    "message": "Αγορά"
   },
   "buyMoreAsset": {
     "message": "Αγοράστε περισσότερα $1",
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Δεν βρέθηκαν λογαριασμοί που να ταιριάζουν"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Λήψη σε"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Διεύθυνση λήψης ή ENS"

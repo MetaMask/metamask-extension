@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "बिज़ी"
   },
-  "buyAndSell": {
-    "message": "खरीदें/बेचें"
+  "buy": {
+    "message": "खरीदें"
   },
   "buyMoreAsset": {
     "message": "ज्यादा $1 खरीदें",
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "कोई मैचिंग अकाउंट नहीं मिला"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "पर प्राप्त करें"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "प्राप्ति एड्रेस या ENS"
