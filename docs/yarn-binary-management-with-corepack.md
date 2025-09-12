@@ -98,15 +98,12 @@ yarn --version  # Should return 4.9.4
 Our scripts wrap these native Corepack commands:
 
 ### Download Process (`yarn-binary:download`)
-
 1. **`corepack prepare yarn@4.9.4 -o`**
-
    - Downloads yarn version 4.9.4
    - Creates `corepack.tgz` in current directory
    - Contains the complete yarn package manager
 
 2. **File organization** (script handles this)
-
    - Moves `corepack.tgz` → `.yarn/yarn-4.9.4-corepack.tgz`
    - Provides organized storage for version control
 
@@ -118,12 +115,10 @@ Our scripts wrap these native Corepack commands:
 ### Hydrate Process (`yarn-binary:hydrate`)
 
 1. **Tarball detection** (script handles this)
-
    - Reads version from `package.json`
    - Locates `.yarn/yarn-[version]-corepack.tgz`
 
 2. **`corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate`**
-
    - Activates the existing tarball
    - No download needed - uses committed file
 
