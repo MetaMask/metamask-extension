@@ -2254,6 +2254,34 @@ export function createNextMultichainAccountGroup(
 }
 
 /**
+ * Set a new account group name (rename a multichain account).
+ *
+ * @param accountGroupId - ID of a multichain account group.
+ * @param newAccountName - New name for a multichain account.
+ */
+export function setAccountGroupName(
+  accountGroupId: AccountGroupId,
+  newAccountName: string,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupName`);
+    try {
+      await submitRequestToBackground('setAccountGroupName', [
+        accountGroupId,
+        newAccountName,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+      return true;
+    } catch (error) {
+      logErrorWithMessage(error);
+      return false;
+    }
+  };
+}
+
+/**
  * Sets the selected internal account.
  *
  * @param accountId - The ID of the account to set as selected.
@@ -2540,6 +2568,10 @@ export function setShowSupportDataConsentModal(show: boolean) {
     type: actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL,
     payload: show,
   };
+}
+
+export function clearProductTour() {
+  return submitRequestToBackground('setProductTour', ['']);
 }
 export function addToken(
   {
@@ -4116,6 +4148,10 @@ export function setDataCollectionForMarketing(
   };
 }
 
+/**
+ * @deprecated Use setAvatarType instead
+ * @param val - Boolean value for blockie preference
+ */
 export function setUseBlockie(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4129,6 +4165,10 @@ export function setUseBlockie(
       }
     });
   };
+}
+
+export function setAvatarType(value: string) {
+  return setPreference('avatarType', value);
 }
 
 export function setUsePhishDetect(

@@ -58,6 +58,7 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getNativeTokenName } from '../../../../ducks/bridge/utils';
 import {
   getMultichainConversionRate,
   getMultichainCurrencyImage,
@@ -199,8 +200,6 @@ export function AssetPickerModal({
     network ??
     (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
-  // This indicates whether tokens in the wallet's active network are displayed
-  const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   useEffect(() => {
@@ -332,6 +331,8 @@ export function AssetPickerModal({
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ],
                 type: AssetType.native,
+                // Add human-readable name for native tokens (e.g., Ether, Binance Coin)
+                name: getNativeTokenName(token.chainId),
               }
             : {
                 ...token,
@@ -353,6 +354,8 @@ export function AssetPickerModal({
         string: undefined,
         chainId: selectedNetwork.chainId,
         type: AssetType.native,
+        // Add human-readable name for native token
+        name: getNativeTokenName(selectedNetwork.chainId),
       };
 
       if (
@@ -694,12 +697,8 @@ export function AssetPickerModal({
                   isTokenDisabled={getIsDisabled}
                   isTokenListLoading={isTokenListLoading}
                   assetItemProps={{
-                    isTitleNetworkName:
-                      // For src cross-chain swaps assets
-                      isMultiselectEnabled,
-                    isTitleHidden:
-                      // For dest cross-chain swaps assets
-                      !isSelectedNetworkActive,
+                    isTitleNetworkName: false,
+                    isTitleHidden: false,
                   }}
                 />
               </React.Fragment>

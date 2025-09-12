@@ -65,6 +65,7 @@ export type AppStateControllerState = {
   showPermissionsTour: boolean;
   showNetworkBanner: boolean;
   showAccountBanner: boolean;
+  productTour?: string;
   showDownloadMobileAppSlide: boolean;
   trezorModel: string | null;
   currentPopupId?: number;
@@ -205,6 +206,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showPermissionsTour: true,
   showNetworkBanner: true,
   showAccountBanner: true,
+  productTour: 'accountIcon',
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
@@ -301,6 +303,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   showAccountBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  productTour: {
     persist: true,
     anonymous: true,
   },
@@ -945,6 +951,17 @@ export class AppStateController extends BaseController<
   setHasShownMultichainIntroModal(hasShown: boolean): void {
     this.update((state) => {
       state.hasShownMultichainIntroModal = hasShown;
+    });
+  }
+      
+  /**
+   * Sets the product tour to be shown to the user
+   *
+   * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
+   */
+  setProductTour(productTour: string): void {
+    this.update((state) => {
+      state.productTour = productTour;
     });
   }
 

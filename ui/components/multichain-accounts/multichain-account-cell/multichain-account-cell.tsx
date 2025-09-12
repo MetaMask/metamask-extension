@@ -1,14 +1,7 @@
 import React from 'react';
 import { AccountGroupId } from '@metamask/account-api';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Icon,
-  IconName,
-  Text,
-} from '../../component-library';
+import { Box, Icon, IconName, Text } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
   AlignItems,
   BorderColor,
@@ -25,6 +18,7 @@ export type MultichainAccountCellProps = {
   accountName: string;
   onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
+  startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
   walletName?: string;
@@ -36,6 +30,7 @@ export const MultichainAccountCell = ({
   accountName,
   onClick,
   balance,
+  startAccessory,
   endAccessory,
   selected = false,
   walletName,
@@ -57,6 +52,7 @@ export const MultichainAccountCell = ({
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
     >
+      {startAccessory}
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}
@@ -72,14 +68,8 @@ export const MultichainAccountCell = ({
             selected ? BorderColor.primaryDefault : BorderColor.transparent
           }
           borderRadius={BorderRadius.XL}
-          padding={1}
         >
-          {/* // TODO: Replace avatar account with one that supports multichain, when available */}
-          <AvatarAccount
-            size={AvatarAccountSize.Md}
-            address={accountId}
-            variant={AvatarAccountVariant.Jazzicon}
-          />
+          <PreferredAvatar address={accountId} />
         </Box>
         <Box>
           <Text
@@ -103,7 +93,7 @@ export const MultichainAccountCell = ({
           )}
         </Box>
 
-        {selected && (
+        {!startAccessory && selected && (
           <Icon
             name={IconName.CheckBold}
             color={IconColor.primaryDefault}
