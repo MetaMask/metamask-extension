@@ -91,7 +91,7 @@ export default class PermissionConnect extends Component {
     accountGroups: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string.isRequired,
-        accounts: PropTypes.arrayOf(PropTypes.string.isRequired),
+        accounts: PropTypes.arrayOf(PropTypes.object.isRequired),
       }),
     ).isRequired,
     currentAddress: PropTypes.string.isRequired,
