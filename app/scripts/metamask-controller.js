@@ -177,7 +177,10 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import semver from 'semver';
+import {
+  FEATURE_VERSION_2,
+  isMultichainAccountsFeatureEnabled,
+} from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -1266,11 +1269,16 @@ export default class MetamaskController extends EventEmitter {
         } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
+          const featureFlag =
+            this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+              ?.enableMultichainAccounts;
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
-          } else if (this.isMultichainAccountsState2Enabled()) {
+          } else if (
+            isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2)
+          ) {
             await this.discoverAndCreateAccounts();
           } else {
             await this._addAccountsWithBalance();
@@ -2268,24 +2276,6 @@ export default class MetamaskController extends EventEmitter {
     if (pollInterval > 0) {
       this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
     }
-  }
-
-  /**
-   * Checks if the multichain accounts feature is enabled for state 2.
-   *
-   * @returns boolean - True if the feature is enabled for state 2, false otherwise.
-   */
-  isMultichainAccountsState2Enabled() {
-    const remoteFlag =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.enableMultichainAccounts;
-
-    if (!remoteFlag?.enabled || remoteFlag.featureVersion !== '2') {
-      return false;
-    }
-    const min = remoteFlag.minimumVersion;
-    const current = process.env.METAMASK_VERSION;
-    return !min || semver.gte(current, min);
   }
 
   postOnboardingInitialization() {
@@ -5284,9 +5274,12 @@ export default class MetamaskController extends EventEmitter {
       }
 
       let discoveredAccounts;
+      const featureFlag =
+        this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+          ?.enableMultichainAccounts;
 
       if (
-        this.isMultichainAccountsState2Enabled() &&
+        isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2) &&
         shouldImportSolanaAccount
       ) {
         // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
@@ -5511,7 +5504,12 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.init();
 
       if (completedOnboarding) {
-        if (this.isMultichainAccountsState2Enabled()) {
+        const featureFlag =
+          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+            ?.enableMultichainAccounts;
+        if (
+          isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2)
+        ) {
           await this.discoverAndCreateAccounts();
         } else {
           await this._addAccountsWithBalance();
@@ -5700,7 +5698,12 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        if (this.isMultichainAccountsState2Enabled()) {
+        const featureFlag =
+          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+            ?.enableMultichainAccounts;
+        if (
+          isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2)
+        ) {
           await this.discoverAndCreateAccounts(metadata.id);
         } else {
           await this._addAccountsWithBalance(
