@@ -2315,11 +2315,6 @@ export default class MetamaskController extends EventEmitter {
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.enableMultichainAccounts;
 
-    // adding a background override to enable state2 for local dev/testing
-    if (process.env.MM_ACCOUNTS_STATE2_OVERRIDE) {
-      return true;
-    }
-
     if (!remoteFlag?.enabled || remoteFlag.featureVersion !== '2') {
       return false;
     }
