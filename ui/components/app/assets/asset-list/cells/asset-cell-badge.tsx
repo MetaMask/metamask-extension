@@ -9,11 +9,9 @@ import {
   BadgeWrapper,
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
-import {
-  getImageForChainId,
-  getMultichainIsEvm,
-} from '../../../../../selectors/multichain';
+import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
@@ -24,7 +22,7 @@ type AssetCellBadgeProps = {
 
 export const AssetCellBadge = React.memo(
   ({ chainId, isNative, tokenImage, symbol }: AssetCellBadgeProps) => {
-    const isEvm = useSelector(getMultichainIsEvm);
+    const isEvm = isEvmChainId(chainId);
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
     const avatarTokenSrc =

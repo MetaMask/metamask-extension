@@ -283,12 +283,18 @@ export const getAccountGroupNameByInternalAccount = createSelector(
 );
 
 export const getFromAccount = createSelector(
-  [(state) => getFromChain(state)?.chainId, (state) => state],
-  (fromChainId, state) => {
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) => state,
+    getSelectedInternalAccount,
+  ],
+  (fromChainId, state, selectedInternalAccount) => {
     if (fromChainId) {
-      return getInternalAccountBySelectedAccountGroupAndCaip(
-        state,
-        formatChainIdToCaip(fromChainId),
+      return (
+        getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          formatChainIdToCaip(fromChainId),
+        ) ?? selectedInternalAccount
       );
     }
     return null;
@@ -311,7 +317,8 @@ export const getToAccounts = createSelector(
       isExternal: false,
       displayName:
         getAccountGroupNameByInternalAccount(state, account) ??
-        account.metadata.name,
+        account.metadata.name ??
+        account.address,
     }));
   },
 );

@@ -19,7 +19,11 @@ import {
   MultichainBalancesController,
   NftController,
   NftDetectionController,
+  TokenBalancesController,
+  TokenDetectionController,
+  TokenListController,
   TokenRatesController,
+  TokensController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
@@ -46,12 +50,15 @@ import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-contr
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
+import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { ShieldController } from '@metamask/shield-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
+import OAuthService from '../services/oauth/oauth-service';
+import MetaMetricsController from '../controllers/metametrics-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -63,8 +70,10 @@ export type Controller =
   | DeFiPositionsController
   | ExecutionService
   | GasFeeController
+  | GatorPermissionsController
   | JsonSnapsRegistry
   | KeyringController
+  | MetaMetricsController
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController
@@ -74,6 +83,7 @@ export type Controller =
   | NetworkOrderController
   | NotificationServicesController
   | NotificationServicesPushController
+  | OAuthService
   | OnboardingController
   | PermissionController<
       PermissionSpecificationConstraint,
@@ -88,6 +98,10 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | TokenBalancesController
+  | TokenDetectionController
+  | TokenListController
+  | TokensController
   | TransactionController
   | InstitutionalSnapController
   | UserStorageController
@@ -110,8 +124,10 @@ export type ControllerFlatState = AccountsController['state'] &
   DeFiPositionsController['state'] &
   DelegationController['state'] &
   GasFeeController['state'] &
+  GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  MetaMetricsController['state'] &
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
@@ -132,6 +148,10 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
+  TokenBalancesController['state'] &
+  TokenDetectionController['state'] &
+  TokenListController['state'] &
+  TokensController['state'] &
   TransactionController['state'] &
   SwapsController['state'] &
   UserStorageController['state'] &
