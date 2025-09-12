@@ -1269,16 +1269,11 @@ export default class MetamaskController extends EventEmitter {
         } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
-          const featureFlag =
-            this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-              ?.enableMultichainAccounts;
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
-          } else if (
-            isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2)
-          ) {
+          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
             await this.discoverAndCreateAccounts();
           } else {
             await this._addAccountsWithBalance();
@@ -2276,6 +2271,13 @@ export default class MetamaskController extends EventEmitter {
     if (pollInterval > 0) {
       this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
     }
+  }
+
+  isMultichainAccountsFeatureState2Enabled() {
+    const featureFlag =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.enableMultichainAccounts;
+    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
   postOnboardingInitialization() {
@@ -5274,12 +5276,9 @@ export default class MetamaskController extends EventEmitter {
       }
 
       let discoveredAccounts;
-      const featureFlag =
-        this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-          ?.enableMultichainAccounts;
 
       if (
-        isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2) &&
+        this.isMultichainAccountsFeatureState2Enabled() &&
         shouldImportSolanaAccount
       ) {
         // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
@@ -5504,12 +5503,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.init();
 
       if (completedOnboarding) {
-        const featureFlag =
-          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-            ?.enableMultichainAccounts;
-        if (
-          isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2)
-        ) {
+        if (this.isMultichainAccountsFeatureState2Enabled()) {
           await this.discoverAndCreateAccounts();
         } else {
           await this._addAccountsWithBalance();
@@ -5698,12 +5692,7 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        const featureFlag =
-          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-            ?.enableMultichainAccounts;
-        if (
-          isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2)
-        ) {
+        if (this.isMultichainAccountsFeatureState2Enabled()) {
           await this.discoverAndCreateAccounts(metadata.id);
         } else {
           await this._addAccountsWithBalance(
