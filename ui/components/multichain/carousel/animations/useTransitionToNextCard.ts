@@ -10,6 +10,7 @@ type UseTransitionToNextCardProps = {
 /**
  * Hook for managing transition from current card to next card
  * Encapsulates the animation timing and state management
+ *
  * @param props - Configuration object for the transition hook
  * @param props.onSlideRemove - Callback to remove a slide
  * @param props.isTransitioning - Current transition state

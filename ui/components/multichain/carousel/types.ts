@@ -9,12 +9,12 @@ export type NavigationAction = {
 };
 
 // Enhanced carousel slide with navigation
-export interface EnhancedCarouselSlide extends CarouselSlide {
+export type EnhancedCarouselSlide = CarouselSlide & {
   navigation?: NavigationAction;
   testID?: string;
   testIDTitle?: string;
   testIDCloseButton?: string;
-}
+};
 
 // Main carousel props
 export type CarouselProps = {

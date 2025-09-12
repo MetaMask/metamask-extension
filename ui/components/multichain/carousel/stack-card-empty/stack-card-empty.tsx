@@ -5,11 +5,11 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { useTransitionToEmpty } from '../animations/useTransitionToEmpty';
 import type {
   StackCardEmptyProps,
   EmptyStateComponentProps,
 } from './stack-card-empty.types';
-import { useTransitionToEmpty } from '../animations/useTransitionToEmpty';
 
 // Background empty card for stacking behind last card
 export const StackCardEmpty: React.FC<StackCardEmptyProps> = ({

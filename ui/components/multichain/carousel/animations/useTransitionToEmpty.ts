@@ -8,6 +8,7 @@ type UseTransitionToEmptyProps = {
 /**
  * Hook for managing transition to empty state and fold-up animation
  * Encapsulates the timing sequence: appear → pause → fold → complete
+ *
  * @param props - Configuration object for the empty state transition
  * @param props.onEmptyStateComplete - Callback when empty state animation completes
  * @returns Object with state and control functions for empty state animation
