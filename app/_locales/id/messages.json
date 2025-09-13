@@ -101,8 +101,9 @@
   "accountDetails": {
     "message": "Detail akun"
   },
-  "accountIdenticon": {
-    "message": "Identikon akun"
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Cadangkan",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIsntConnectedToastText": {
     "message": "$1 tidak terhubung ke $2"
@@ -137,6 +138,9 @@
   "accountSelectionRequired": {
     "message": "Anda harus memilih satu akun!"
   },
+  "accountSmallCase": {
+    "message": "akun"
+  },
   "accountTypeNotSupported": {
     "message": "Jenis akun tidak didukung"
   },
@@ -166,6 +170,9 @@
   },
   "addACustomNetwork": {
     "message": "Tambahkan jaringan khusus"
+  },
+  "addAHardwareWallet": {
+    "message": "Tambahkan dompet perangkat keras"
   },
   "addANetwork": {
     "message": "Tambahkan jaringan"
@@ -305,6 +312,9 @@
   "addUrl": {
     "message": "Tambahkan URL"
   },
+  "addWallet": {
+    "message": "Tambahkan dompet"
+  },
   "addingAccount": {
     "message": "Menambahkan akun"
   },
@@ -320,6 +330,10 @@
   "addressCopied": {
     "message": "Alamat disalin"
   },
+  "addressLabel": {
+    "message": "alamat",
+    "description": "Label for address count (single address). Used on multichain account details page."
+  },
   "addressMismatch": {
     "message": "Ketidakcocokan alamat situs"
   },
@@ -334,6 +348,10 @@
   "addresses": {
     "message": "Alamat",
     "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "alamat",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "Lanjutan"
@@ -504,6 +522,9 @@
   "allPermissions": {
     "message": "Semua izin"
   },
+  "allPopularNetworks": {
+    "message": "Semua jaringan populer"
+  },
   "allTimeHigh": {
     "message": "Tertinggi sepanjang waktu"
   },
@@ -629,6 +650,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "Atur waktu siaga dalam menit sebelum MetaMask terkunci."
+  },
+  "available": {
+    "message": "tersedia"
   },
   "average": {
     "message": "Rata-rata"
@@ -846,12 +870,6 @@
     "message": "Setujui bridge $1",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Anda mengizinkan akses ke jumlah yang ditentukan, $1 $2. Kontrak tidak akan mengakses dana tambahan."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Anda perlu mengizinkan akses ke $1 $2 untuk bridge, lalu menyetujui bridge ke $2. Ini akan membutuhkan dua konfirmasi terpisah."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Tautan block explorer disalin!"
   },
@@ -898,12 +916,6 @@
   },
   "bridgeNetCost": {
     "message": "Biaya bersih"
-  },
-  "bridgePriceImpact": {
-    "message": "Dampak Harga"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Dampak harga mencerminkan bagaimana order swap memengaruhi harga pasar aset. Hal ini bergantung pada ukuran perdagangan dan likuiditas yang tersedia di pul. MetaMask tidak memengaruhi atau mengontrol dampak harga."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Dampak Harga"
@@ -1134,6 +1146,9 @@
   },
   "clearActivityDescription": {
     "message": "Tindakan ini mereset nonce akun dan menghapus data dari tab aktivitas di dompet Anda. Hanya akun dan jaringan saat ini yang akan terpengaruh. Saldo dan transaksi masuk Anda tidak akan berubah."
+  },
+  "clearFilters": {
+    "message": "Hapus filter"
   },
   "click": {
     "message": "Klik"
@@ -1529,6 +1544,14 @@
   "create": {
     "message": "Buat"
   },
+  "createMultichainAccountButton": {
+    "message": "Buat akun",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Membuat akun...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Buat akun baru"
   },
@@ -1540,9 +1563,6 @@
   },
   "createPasswordDetails": {
     "message": "Membuka MetaMask hanya pada perangkat ini."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Gunakan ini untuk pemulihan dompet di semua perangkat."
   },
   "createSnapAccountDescription": {
     "message": "$1 ingin menambahkan akun baru ke MetaMask."
@@ -2749,6 +2769,9 @@
     "message": "$1 seputar cara kerja kunci yang diimpor",
     "description": "$1 is a link to learn more about imported keys"
   },
+  "importAnAccount": {
+    "message": "Impor akun"
+  },
   "importNFT": {
     "message": "Impor NFT"
   },
@@ -2866,6 +2889,9 @@
   "insufficientFundsForGas": {
     "message": "Dana untuk gas tidak cukup"
   },
+  "insufficientFundsSend": {
+    "message": "Dana tidak cukup"
+  },
   "insufficientLockedLiquidityDescription": {
     "message": "Kurangnya likuiditas yang dikunci atau dibakar secara memadai membuat token rentan terhadap penarikan likuiditas secara tiba-tiba, yang berpotensi menyebabkan ketidakstabilan pasar."
   },
@@ -2942,6 +2968,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "Frasa Pemulihan Rahasia tidak ditemukan."
+  },
+  "invalidValue": {
+    "message": "Nilai tidak valid"
   },
   "ipfsGateway": {
     "message": "Gateway IPFS"
@@ -3366,6 +3395,14 @@
   "moreQuotes": {
     "message": "Kuotasi lainnya"
   },
+  "multichainAccountAddressCopied": {
+    "message": "Alamat disalin",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Kunci pribadi disalin",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Anda menambahkan jaringan ini ke MetaMask dan memberikan situs ini izin untuk menggunakannya."
   },
@@ -3604,6 +3641,12 @@
   "networkSwitchConnectionError": {
     "message": "Kami tidak dapat terhubung ke $1",
     "description": "$1 represents the network name"
+  },
+  "networkTabCustom": {
+    "message": "Kustom"
+  },
+  "networkTabPopular": {
+    "message": "Populer"
   },
   "networkURL": {
     "message": "URL Jaringan"
@@ -4054,6 +4097,9 @@
   "onboardingImportWallet": {
     "message": "Saya sudah memiliki dompet"
   },
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "Ketentuan Penggunaan"
+  },
   "onboardingMetametricsAgree": {
     "message": "Saya setuju"
   },
@@ -4220,9 +4266,6 @@
   },
   "passwordChangedRecentlyDescription": {
     "message": "Masukkan kata sandi baru untuk tetap masuk ke MetaMask."
-  },
-  "passwordNotLongEnough": {
-    "message": "Kata sandi harus memiliki minimal 8 karakter"
   },
   "passwordTermsWarning": {
     "message": "Jika saya lupa kata sandi ini, MetaMask tidak dapat meresetnya untuk saya."
@@ -4630,6 +4673,10 @@
   "privateKeyWarning": {
     "message": "Peringatan: Jangan ungkapkan kunci ini. Siapa pun yang memiliki kunci pribadi Anda dapat mencuri aset yang disimpan di akun Anda."
   },
+  "privateKeys": {
+    "message": "Kunci pribadi",
+    "description": "Private keys row label on multichain account details page."
+  },
   "privateNetwork": {
     "message": "Jaringan pribadi"
   },
@@ -4650,6 +4697,18 @@
   },
   "publicAddress": {
     "message": "Alamat publik"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "Order limit terpenuhi"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "Posisi dilikuidasi"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "Stop loss terpicu"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "Take profit terpicu"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "Anda menerima $1 $2"
@@ -4738,9 +4797,6 @@
   "rank": {
     "message": "Peringkat"
   },
-  "rateIncludesMMFee": {
-    "message": "Tarif sudah termasuk biaya sebesar $1%"
-  },
   "reAddAccounts": {
     "message": "tambahkan kembali akun lain"
   },
@@ -4758,6 +4814,10 @@
   },
   "received": {
     "message": "Diterima"
+  },
+  "receivingAddress": {
+    "message": "Alamat penerima",
+    "description": "Page title when viewing addresses for receiving funds"
   },
   "recipientAddressPlaceholderNew": {
     "message": "Masukkan alamat publik (0x) atau nama domain"
@@ -4948,6 +5008,10 @@
   "reusedTokenNameWarning": {
     "message": "Token di sini menggunakan kembali simbol dari token lain yang Anda lihat, ini bisa jadi membingungkan atau menipu."
   },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "Kunci ini memberikan kontrol penuh atas akun Anda untuk chain yang terkait.",
+    "description": "Description for the banner warning users not to share their private key"
+  },
   "revealSecretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
   },
@@ -5054,6 +5118,10 @@
   },
   "searchTokensByNameOrAddress": {
     "message": "Cari token berdasarkan nama atau alamat"
+  },
+  "searchYourAccounts": {
+    "message": "Cari akun Anda",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
@@ -5283,6 +5351,10 @@
     "message": "Setujui $1 tanpa batas penggunaan",
     "description": "The token symbol that is being approved"
   },
+  "setUp": {
+    "message": "Atur",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
   "settingAddSnapAccount": {
     "message": "Tambahkan akun Snap"
   },
@@ -5294,6 +5366,12 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Permintaan tanda tangan dan transaksi"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Mulai"
+  },
+  "shieldEntryModalSkip": {
+    "message": "Lewati"
   },
   "show": {
     "message": "Tampil"
@@ -5490,6 +5568,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Edit selip"
+  },
+  "smartAccount": {
+    "message": "Akun cerdas"
   },
   "smartAccountAccept": {
     "message": "Gunakan akun cerdas"
@@ -6932,6 +7013,10 @@
   "unlockPageTooManyFailedAttempts": {
     "message": "Terlalu banyak percobaan. Coba lagi dalam "
   },
+  "unlockToReveal": {
+    "message": "Buka untuk menampilkan",
+    "description": "Label used for Private Keys row on multichain account details page."
+  },
   "unpin": {
     "message": "Batal semat"
   },
@@ -7198,17 +7283,15 @@
   "whatsThis": {
     "message": "Apa ini?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Ini akan menyetujui $1 untuk bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Ini akan menyetujui $1 untuk pertukaran."
-  },
   "withdrawing": {
     "message": "Penarikan"
   },
   "wrongNetworkName": {
     "message": "Menurut catatan kami, nama jaringan mungkin tidak cocok dengan ID chain ini."
+  },
+  "wrongPassword": {
+    "message": "Kata sandi salah",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Ya"
