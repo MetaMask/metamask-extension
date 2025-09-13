@@ -178,9 +178,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     <p
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    >
-                      $1337.00
-                    </p>
+                    />
                     <div
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
                     />
@@ -416,9 +414,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     <p
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    >
-                      $1337.00
-                    </p>
+                    />
                     <div
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
                     />
@@ -654,9 +650,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     <p
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    >
-                      $1337.00
-                    </p>
+                    />
                     <div
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
                     />
