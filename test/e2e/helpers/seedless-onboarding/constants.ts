@@ -6,7 +6,9 @@ export const AuthServer = {
     'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/token',
   // Revoke current JWT Token from Auth Server
   RevokeToken:
-    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/revoke',
+    'https://auth-service.dev-api.cx.metamask.io/api/v2/oauth/revoke',
+  RenewRefreshToken:
+    'https://auth-service.dev-api.cx.metamask.io/api/v2/oauth/renew_refresh_token',
 };
 
 export const SSSBaseUrlRgx =
