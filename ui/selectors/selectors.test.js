@@ -17,8 +17,8 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-
 import {
+  INSTITUTIONAL_WALLET_SNAP_ID,
   SOLANA_WALLET_NAME,
   SOLANA_WALLET_SNAP_ID,
 } from '../../shared/lib/accounts';
@@ -918,6 +918,53 @@ describe('Selectors', () => {
 
     it('returns true if the account type is not "snap"', () => {
       expect(selectors.accountSupportsSmartTx(mockState)).toBe(true);
+    });
+  });
+
+  describe('#accountSupportsCancelSpeedup', () => {
+    it('returns true if the account type is not "snap"', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: 'mock-id-1',
+            accounts: {
+              'mock-id-1': {
+                metadata: {
+                  name: 'Account 1',
+                  keyring: {
+                    type: KeyringType.imported,
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+      expect(selectors.accountSupportsCancelSpeedup(state)).toBe(true);
+    });
+
+    it('returns false if the account type is "snap" and the snap id is the institutional wallet snap id', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: 'mock-id-1',
+            accounts: {
+              'mock-id-1': {
+                metadata: {
+                  name: 'Account 1',
+                  keyring: {
+                    type: KeyringType.snap,
+                  },
+                  snap: {
+                    id: INSTITUTIONAL_WALLET_SNAP_ID,
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+      expect(selectors.accountSupportsCancelSpeedup(state)).toBe(false);
     });
   });
 
