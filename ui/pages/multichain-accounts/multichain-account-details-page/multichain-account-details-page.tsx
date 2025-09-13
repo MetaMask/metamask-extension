@@ -130,7 +130,7 @@ export const MultichainAccountDetailsPage = () => {
         <Box className="multichain-account-details-page__section">
           <AccountDetailsRow
             label={t('accountName')}
-            value={multichainAccount.metadata.name}
+            value={multichainAccount.metadata?.name || ''}
             onClick={handleAccountNameAction}
             endAccessory={
               <ButtonIcon
@@ -192,7 +192,7 @@ export const MultichainAccountDetailsPage = () => {
         <Box className="multichain-account-details-page__section">
           <AccountDetailsRow
             label={t('wallet')}
-            value={wallet.metadata.name}
+            value={wallet.metadata?.name || ''}
             onClick={handleWalletAction}
             endAccessory={
               <ButtonIcon

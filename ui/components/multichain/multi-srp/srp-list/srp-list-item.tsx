@@ -61,7 +61,7 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
           ellipsis
           paddingInlineStart={3}
         >
-          {account.metadata.name}
+          {account.metadata?.name || ''}
         </Text>
         <Text
           variant={TextVariant.bodySm}

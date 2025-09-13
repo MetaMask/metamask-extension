@@ -230,7 +230,7 @@ export const Connections = () => {
         >
           {connectedSubjectsMetadata?.iconUrl ? (
             <AvatarFavicon
-              name={connectedSubjectsMetadata.name}
+              name={connectedSubjectsMetadata?.name || ''}
               size={AvatarFaviconSize.Sm}
               src={connectedSubjectsMetadata.iconUrl}
             />
@@ -318,7 +318,7 @@ export const Connections = () => {
                 onClose={() => setShowConnectedAccountsUpdatedToast(false)}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata?.name}
+                    name={connectedSubjectsMetadata?.name || ''}
                     size={AvatarFaviconSize.Sm}
                     src={connectedSubjectsMetadata?.iconUrl}
                   />

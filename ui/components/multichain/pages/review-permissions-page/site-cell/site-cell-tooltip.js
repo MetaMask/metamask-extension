@@ -79,7 +79,7 @@ export const SiteCellTooltip = ({ accounts, networks }) => {
                     data-testid="accounts-list-item-connected-account-name"
                     ellipsis
                   >
-                    {acc.metadata.name || acc.label}
+                    {acc.metadata?.name || acc.label}
                   </Text>
                 </Box>
               );

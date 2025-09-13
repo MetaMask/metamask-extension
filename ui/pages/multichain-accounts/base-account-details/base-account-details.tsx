@@ -253,7 +253,7 @@ export const BaseAccountDetails = ({
             isOpen={showAccountRemoveModal}
             onClose={() => setShowAccountRemoveModal(false)}
             onSubmit={handleAccountRemoveAction}
-            accountName={account.metadata.name}
+            accountName={account.metadata?.name || ''}
             accountAddress={account.address}
           />
         )}

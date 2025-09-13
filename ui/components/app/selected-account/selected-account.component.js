@@ -83,7 +83,7 @@ class SelectedAccount extends Component {
               textAlign={TextAlign.Center}
               marginBottom={1}
             >
-              {selectedAccount.metadata.name}
+              {selectedAccount.metadata?.name || ''}
             </Text>
             <Text
               data-testid="selected-account-address"

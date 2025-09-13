@@ -222,7 +222,7 @@ export const NetworksForm = ({
       if (matchingNetwork) {
         error = [
           'existingChainId',
-          t('chainIdExistsErrorMsg', [matchingNetwork.name]),
+          t('chainIdExistsErrorMsg', [matchingNetwork?.name || '']),
         ];
       }
     }

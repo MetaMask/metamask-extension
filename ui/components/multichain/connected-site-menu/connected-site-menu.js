@@ -53,35 +53,35 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
     return undefined;
   };
 
-  const iconElement = currentTabHasNoAccounts ? (
-    <Icon
-      name={IconName.Global}
-      size={IconSize.Lg}
-      color={IconColor.iconDefault}
+const iconElement = currentTabHasNoAccounts ? (
+  <Icon
+    name={IconName.Global}
+    size={IconSize.Lg}
+    color={IconColor.iconDefault}
+  />
+) : (
+  <BadgeWrapper
+    badge={
+      dappActiveNetwork && (
+        <AvatarNetwork
+          size={AvatarNetworkSize.Xs}
+          name={dappActiveNetwork.name || dappActiveNetwork.nickname}
+          src={getNetworkImageSrc()}
+          backgroundColor={BackgroundColor.backgroundSection}
+          borderWidth={2}
+          borderColor={BorderColor.backgroundDefault}
+        />
+      )
+    }
+  >
+    <AvatarFavicon
+      name={connectedSubjectsMetadata?.name}
+      size={Size.SM}
+      src={connectedSubjectsMetadata?.iconUrl}
     />
-  ) : (
-    <BadgeWrapper
-      badge={
-        dappActiveNetwork && (
-          <AvatarNetwork
-            size={AvatarNetworkSize.Xs}
-            name={dappActiveNetwork.name || dappActiveNetwork.nickname}
-            src={getNetworkImageSrc()}
-            backgroundColor={BackgroundColor.backgroundSection}
-            borderWidth={2}
-            borderColor={BorderColor.backgroundDefault}
-          />
-        )
-      }
-    >
-      <AvatarFavicon
-        name={connectedSubjectsMetadata?.name}
-        size={Size.SM}
-        src={connectedSubjectsMetadata?.iconUrl}
-      />
-    </BadgeWrapper>
-  );
-  return (
+  </BadgeWrapper>
+);
+return (
     <>
       <Box
         className={classNames(

@@ -53,7 +53,7 @@ export default function ListWithSearch({
       const token = await fetchToken(contractAddress, chainId);
       if (token) {
         token.primaryLabel = token.symbol;
-        token.secondaryLabel = token.name;
+        token.secondaryLabel = token.name || '';
         token.notImported = true;
         setItems([token]);
         return;

@@ -165,7 +165,7 @@ export default function NotificationsSettings() {
                   <NotificationsSettingsPerAccount
                     key={account.id}
                     address={account.address}
-                    name={account.metadata.name}
+                    name={account.metadata?.name || ''}
                     disabledSwitch={
                       accountSettingsProps.initialLoading || updatingAccounts
                     }

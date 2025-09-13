@@ -83,7 +83,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
                 data-testid="accounts-list-item-connected-account-name"
                 ellipsis
               >
-                {acc.metadata.name}
+                {acc.metadata?.name || ''}
               </Text>
             </Box>
           ))}

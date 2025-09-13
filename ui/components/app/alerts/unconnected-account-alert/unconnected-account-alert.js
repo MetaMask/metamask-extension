@@ -47,7 +47,7 @@ const UnconnectedAccountAlert = () => {
 
   const connectedAccountsWithName = connectedAccounts.map((account) => ({
     ...account,
-    name: internalAccountsMap.get(account.address)?.metadata.name,
+    name: internalAccountsMap.get(account.address)?.metadata?.name || '',
   }));
 
   const origin = useSelector(getOriginOfCurrentTab);
