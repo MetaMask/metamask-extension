@@ -23,6 +23,10 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  Link: ({ children, ...props }) => <a {...props}>{children}</a>,
+}));
+
 const render = ({
   stateChanges = {},
   location = {},
