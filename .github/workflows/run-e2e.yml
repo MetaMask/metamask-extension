@@ -47,6 +47,7 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+      options: --user root
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
@@ -70,6 +71,76 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+
+      - name: Setup Git configuration
+        run: |
+          echo "=== Setting up Git configuration ==="
+          git config --global --add safe.directory /__w/metamask-extension/metamask-extension
+          echo "=== Git configuration completed ==="
+
+      - name: Install Vulkan drivers (Chrome only)
+        if: ${{ !contains(env.TEST_SUITE_NAME, 'firefox') }}
+        run: |
+          echo "=== Starting Vulkan installation ==="
+          echo "Current user: $(whoami)"
+          echo "Current directory: $(pwd)"
+          echo "Available space: $(df -h /)"
+
+          echo "=== Updating package lists ==="
+          apt-get update -y
+
+          echo "=== Installing Vulkan packages ==="
+          apt-get install -y \
+            mesa-vulkan-drivers \
+            vulkan-tools \
+            vulkan-validationlayers \
+            libvulkan1 \
+            mesa-utils \
+            vulkan-validationlayers-dev
+
+          echo "=== Verifying package installation ==="
+          dpkg -l | grep -i vulkan || echo "No Vulkan packages found in dpkg"
+
+          echo "=== Checking installed files ==="
+          find /usr/lib/x86_64-linux-gnu/ -name "*vulkan*" -ls 2>/dev/null || echo "No vulkan libs in /usr/lib/x86_64-linux-gnu/"
+          ls -la /usr/share/vulkan/ || echo "No /usr/share/vulkan/ directory"
+          ls -la /usr/share/vulkan/icd.d/ || echo "No /usr/share/vulkan/icd.d/ directory"
+          echo "=== Checking for LLVMpipe ICD ==="
+          find /usr/share/vulkan/icd.d/ -name "*lvp*" -ls 2>/dev/null || echo "No LLVMpipe ICD found"
+          cat /usr/share/vulkan/icd.d/lvp_icd.x86_64.json 2>/dev/null || echo "Cannot read LLVMpipe ICD file"
+
+          echo "=== Setting Vulkan environment variables ==="
+          {
+            echo "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
+            echo "DISPLAY=:99"
+            echo "VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d"
+            echo "LIBGL_ALWAYS_SOFTWARE=1"
+            echo "MESA_VK_DEVICE_SELECT=llvmpipe"
+            echo "VK_LOADER_DEBUG=error"
+          } >> "$GITHUB_ENV"
+
+          echo "=== Testing Vulkan functionality ==="
+          which vulkaninfo || echo "vulkaninfo not found in PATH"
+          echo "=== Running vulkaninfo with current environment ==="
+          export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
+          export MESA_VK_DEVICE_SELECT="llvmpipe"
+          export VK_LOADER_DEBUG="error"
+          export LIBGL_ALWAYS_SOFTWARE="1"
+          vulkaninfo --summary || echo "vulkaninfo failed - this may be expected in CI"
+          echo "=== Checking environment variables are set ==="
+          echo "VK_ICD_FILENAMES: $VK_ICD_FILENAMES"
+          echo "MESA_VK_DEVICE_SELECT: $MESA_VK_DEVICE_SELECT"
+          echo "LIBGL_ALWAYS_SOFTWARE: $LIBGL_ALWAYS_SOFTWARE"
+
+          echo "=== Final verification ==="
+          echo "VK_ICD_FILENAMES will be set to: /usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
+          echo "DISPLAY will be set to: :99"
+          echo "VK_LAYER_PATH will be set to: /usr/share/vulkan/explicit_layer.d"
+          echo "LIBGL_ALWAYS_SOFTWARE will be set to: 1"
+          echo "MESA_VK_DEVICE_SELECT will be set to: llvmpipe"
+          echo "VK_LOADER_DEBUG will be set to: error"
+
+          echo "=== Vulkan installation and setup completed ==="
 
       - name: Restore .metamask folder
         id: restore-metamask
@@ -95,8 +166,17 @@ jobs:
       - run: ${{ inputs.build-command }}
         if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
 
-      - name: Configure Xvfb
-        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+      - name: Configure Xvfb and log graphics environment
+        run: |
+          echo "=== Starting Xvfb ==="
+          Xvfb -ac :99 -screen 0 1280x1024x16 &
+          sleep 2
+          echo "=== Graphics environment check ==="
+          echo "DISPLAY: $DISPLAY"
+          echo "VK_ICD_FILENAMES: $VK_ICD_FILENAMES"
+          echo "MESA_VK_DEVICE_SELECT: $MESA_VK_DEVICE_SELECT"
+          echo "LIBGL_ALWAYS_SOFTWARE: $LIBGL_ALWAYS_SOFTWARE"
+          pgrep -f "Xvfb.*:99" || echo "Xvfb not running"
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
