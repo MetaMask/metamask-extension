@@ -21,6 +21,9 @@ import {
   ACCOUNT_1,
 } from './helpers';
 import transformOpenRPCDocument from './api-specs/transform';
+import { ExpectedErrorRule } from './api-specs/ExpectedErrorRule';
+import { PermittedAccountRule } from './api-specs/PermittedAccountRule';
+import { mockEip7702FeatureFlag } from './tests/confirmations/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -34,6 +37,7 @@ async function main() {
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: 'none',
       title: 'api-specs coverage',
+      testSpecificMock: mockEip7702FeatureFlag,
     },
     async ({ driver }: { driver: Driver }) => {
       const transport = createDriverTransport(driver);
@@ -43,6 +47,7 @@ async function main() {
           chainId,
           ACCOUNT_1,
         );
+
       const parsedDoc = await parseOpenRPCDocument(doc);
 
       const server = mockServer(port, parsedDoc);
@@ -55,6 +60,14 @@ async function main() {
 
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
+
+      /* On EVM, we need to request permissions for `wallet_getCapabilities` method
+      because we don't start with a session, so we use a different rule for it.
+      */
+      const filteredMethodsForEVM = [
+        ...filteredMethods,
+        'wallet_getCapabilities',
+      ];
 
       const testCoverageResults = await testCoverage({
         openrpcDocument: parsedDoc,
@@ -70,16 +83,17 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           'wallet_swapAsset',
+          'wallet_sendCalls',
         ],
         rules: [
           new JsonSchemaFakerRule({
             only: [],
-            skip: filteredMethods,
+            skip: filteredMethodsForEVM,
             numCalls: 2,
           }),
           new ExamplesRule({
             only: [],
-            skip: filteredMethods,
+            skip: filteredMethodsForEVM,
           }),
           new ConfirmationsRejectRule({
             driver,
@@ -88,7 +102,15 @@ async function main() {
               'personal_sign',
               'eth_signTypedData_v4',
               'eth_getEncryptionPublicKey',
+              'wallet_sendCalls',
             ],
+          }),
+          new PermittedAccountRule({
+            driver,
+            only: ['wallet_getCapabilities'],
+          }),
+          new ExpectedErrorRule({
+            only: ['wallet_getCallsStatus'],
           }),
         ],
       });
