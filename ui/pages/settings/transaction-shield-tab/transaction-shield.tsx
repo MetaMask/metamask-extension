@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxProps,
   Button,
+  ButtonLink,
   ButtonSize,
   Icon,
   IconName,
@@ -28,12 +31,25 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CancelMembershipModal from './cancel-membership-modal';
 
+const MEMBERSHIP_ERROR_STATES = {
+  INSUFFICIENT_TOKEN_BALANCE: 'insufficient_token_balance',
+  DECLINED_CARD_PAYMENT: 'declined_card_payment',
+  INSUFFICIENT_FUNDS: 'insufficient_funds',
+  MEMBERSHIP_ENDING: 'membership_ending',
+} as const;
+
+type MembershipErrorState =
+  (typeof MEMBERSHIP_ERROR_STATES)[keyof typeof MEMBERSHIP_ERROR_STATES];
+
 const TransactionShield = () => {
   const t = useI18nContext();
   const [isLoading] = useState(false);
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
   const [isActiveMembership, setIsActiveMembership] = useState(true);
+  const [membershipErrorState] = useState<MembershipErrorState | null>(
+    MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING,
+  );
 
   const shieldDetails = [
     {
@@ -52,6 +68,69 @@ const TransactionShield = () => {
     display: Display.Flex,
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
+  };
+
+  const membershipErrorDetails: Record<
+    MembershipErrorState,
+    {
+      description: string;
+      severity: BannerAlertSeverity;
+    }
+  > = {
+    [MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE]: {
+      description: t('shieldTxMembershipErrorInsufficientTokenBalance', [
+        <ButtonLink
+          key="update-payment"
+          onClick={() => {
+            console.log('update payment');
+          }}
+        >
+          {t('shieldTxMembershipErrorUpdatePayment')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Danger,
+    },
+    [MEMBERSHIP_ERROR_STATES.DECLINED_CARD_PAYMENT]: {
+      description: t('shieldTxMembershipErrorDeclinedCard', [
+        <ButtonLink
+          key="update-payment"
+          onClick={() => {
+            console.log('update payment');
+          }}
+        >
+          {t('shieldTxMembershipErrorUpdatePayment')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Danger,
+    },
+    [MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS]: {
+      description: t('shieldTxMembershipErrorInsufficientFunds', [
+        'April 18',
+        <ButtonLink
+          key="update-payment"
+          onClick={() => {
+            console.log('update payment');
+          }}
+        >
+          {t('shieldTxMembershipErrorUpdatePayment')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Warning,
+    },
+    [MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING]: {
+      description: t('shieldTxMembershipErrorMembershipEnding', [
+        'April 18',
+        <ButtonLink
+          key="renew-now"
+          onClick={() => {
+            console.log('renew now');
+          }}
+        >
+          {t('shieldTxMembershipErrorRenewNow')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Warning,
+    },
   };
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
@@ -84,7 +163,7 @@ const TransactionShield = () => {
     );
   };
 
-  const billingDetails = (key: string, value: string) => {
+  const billingDetails = (key: string, value: string | React.ReactNode) => {
     return (
       <Box
         display={Display.Flex}
@@ -106,6 +185,73 @@ const TransactionShield = () => {
     );
   };
 
+  const paymentMethod = useMemo(() => {
+    if (
+      membershipErrorState ===
+      MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE
+    ) {
+      return (
+        <ButtonLink
+          startIconName={IconName.Danger}
+          danger
+          onClick={() => {
+            console.log('Insufficient USDT');
+          }}
+        >
+          {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+        </ButtonLink>
+      );
+    }
+    if (
+      membershipErrorState === MEMBERSHIP_ERROR_STATES.DECLINED_CARD_PAYMENT
+    ) {
+      return (
+        <ButtonLink
+          startIconName={IconName.Danger}
+          danger
+          onClick={() => {
+            console.log('Update card details');
+          }}
+        >
+          {t('shieldTxMembershipErrorUpdateCardDetails')}
+        </ButtonLink>
+      );
+    }
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS) {
+      return (
+        <ButtonLink
+          startIconName={IconName.Danger}
+          startIconProps={{
+            color: IconColor.warningDefault,
+          }}
+          color={TextColor.warningDefault}
+          onClick={() => {
+            console.log('Insufficient funds');
+          }}
+        >
+          USDT
+        </ButtonLink>
+      );
+    }
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING) {
+      return (
+        <ButtonLink
+          startIconName={IconName.Danger}
+          startIconProps={{
+            color: IconColor.warningDefault,
+          }}
+          color={TextColor.warningDefault}
+          onClick={() => {
+            console.log('Membership ending');
+          }}
+        >
+          {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+        </ButtonLink>
+      );
+    }
+    return 'USDT';
+  }, [membershipErrorState, t]);
+
   return (
     <Box
       className="transaction-shield-page"
@@ -114,6 +260,18 @@ const TransactionShield = () => {
       flexDirection={FlexDirection.Column}
       padding={4}
     >
+      {membershipErrorState !== null && (
+        <BannerAlert
+          severity={membershipErrorDetails[membershipErrorState].severity}
+          marginBottom={4}
+          descriptionProps={{
+            variant: TextVariant.bodySm,
+          }}
+        >
+          {membershipErrorDetails[membershipErrorState].description}
+        </BannerAlert>
+      )}
+
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
           className={classnames(
@@ -288,7 +446,7 @@ const TransactionShield = () => {
           )}
           {billingDetails(
             t('shieldTxMembershipBillingDetailsPaymentMethod'),
-            'USDT',
+            paymentMethod,
           )}
         </Box>
         {buttonRow(
