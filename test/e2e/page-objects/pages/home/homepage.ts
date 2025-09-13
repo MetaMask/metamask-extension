@@ -105,6 +105,16 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
+  async checkPageIsNotLoaded(): Promise<void> {
+    console.log('Check home page is not loaded');
+    await this.driver.assertElementNotPresent(this.activityTab, {
+      waitAtLeastGuard: 500,
+    });
+    await this.driver.assertElementNotPresent(this.tokensTab, {
+      waitAtLeastGuard: 500,
+    });
+  }
+
   async closeSurveyToast(surveyName: string): Promise<void> {
     console.log(`Close survey toast for ${surveyName}`);
     await this.driver.waitForSelector({
