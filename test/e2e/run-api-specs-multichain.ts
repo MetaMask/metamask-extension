@@ -30,6 +30,9 @@ import {
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
+import { mockEip7702FeatureFlag } from './tests/confirmations/helpers';
+import { ExpectedErrorRule } from './api-specs/ExpectedErrorRule';
+import { skipMethods } from './api-specs/skip-methods';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -66,6 +69,7 @@ async function main() {
       chainId,
       ACCOUNT_1,
     );
+
   const ethereumMethods = transformedDoc.methods
     .map((m) => (m as MethodObject).name)
     .filter((m) => {
@@ -171,9 +175,13 @@ async function main() {
       dapp: true,
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToMultichainTestDapp()
+        .withPreferencesControllerSmartAccountOptedIn()
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
+      manifestFlags: {
+        testing: { enableSmartAccountOptIn: true },
+      },
       testSpecificMock: async (server: Mockttp) => {
         // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
         await server
@@ -184,6 +192,8 @@ async function main() {
               body: '',
             };
           });
+
+        mockEip7702FeatureFlag(server);
       },
     },
     async ({
@@ -221,6 +231,9 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
+          ...skipMethods,
+          'wallet_getCapabilities',
+          'wallet_getCallsStatus',
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -236,6 +249,9 @@ async function main() {
             driver,
             only: confirmationMethods,
             requiresEthAccountsPermission: [],
+          }),
+          new ExpectedErrorRule({
+            only: ['wallet_getCallsStatus'],
           }),
         ],
       });
