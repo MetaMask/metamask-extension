@@ -16,14 +16,18 @@ export const getDappActiveNetwork = createDeepEqualSelector(
       return null;
     }
 
-    const networkConfiguration = Object.values(
-      networkConfigurationsByChainId,
-    ).find((network) => {
-      return network.rpcEndpoints.some(
-        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
-      );
-    });
+    for (const chainId in networkConfigurationsByChainId) {
+      if (Object.prototype.hasOwnProperty.call(networkConfigurationsByChainId, chainId)) {
+        const network = networkConfigurationsByChainId[chainId as keyof typeof networkConfigurationsByChainId];
+        const hasMatchingEndpoint = network.rpcEndpoints.some(
+          (rpcEndpoint: any) => rpcEndpoint.networkClientId === networkClientId,
+        );
+        if (hasMatchingEndpoint) {
+          return network;
+        }
+      }
+    }
 
-    return networkConfiguration || null;
+    return null;
   },
 );
