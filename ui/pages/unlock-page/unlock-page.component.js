@@ -40,6 +40,7 @@ import {
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
@@ -99,6 +100,10 @@ class UnlockPage extends Component {
      * Reset Onboarding and OAuth login state
      */
     loginWithDifferentMethod: PropTypes.func,
+    /**
+     * Indicates the type of first time flow
+     */
+    firstTimeFlowType: PropTypes.string,
   };
 
   state = {
@@ -115,6 +120,18 @@ class UnlockPage extends Component {
   animationEventEmitter = new EventEmitter();
 
   passwordLoginAttemptTraceCtx = null;
+
+  /**
+   * Determines if the current user is in the social import rehydration phase
+   *
+   * @returns {boolean} True if user is importing social wallet during onboarding
+   */
+  isSocialImportRehydration() {
+    return (
+      this.props.firstTimeFlowType === FirstTimeFlowType.socialImport &&
+      !this.props.isOnboardingCompleted
+    );
+  }
 
   UNSAFE_componentWillMount() {
     const { isUnlocked, history, location } = this.props;
@@ -157,8 +174,11 @@ class UnlockPage extends Component {
 
     this.setState({ error: null, isSubmitting: true });
 
-    // Track wallet rehydration attempted for social login users
-    if (this.props.isSocialLoginFlow) {
+    // Capture the rehydration state before async operations that might change it
+    const isRehydrationFlow = this.isSocialImportRehydration();
+
+    // Track wallet rehydration attempted for social import users (only during rehydration)
+    if (isRehydrationFlow) {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordAttempted,
@@ -172,8 +192,8 @@ class UnlockPage extends Component {
     try {
       await onSubmit(password);
 
-      // Track wallet rehydration completed for social login users
-      if (this.props.isSocialLoginFlow) {
+      // Track wallet rehydration completed for social import users (only during rehydration)
+      if (isRehydrationFlow) {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationCompleted,
@@ -210,13 +230,13 @@ class UnlockPage extends Component {
         name: TraceName.OnboardingJourneyOverall,
       });
     } catch (error) {
-      await this.handleLoginError(error);
+      await this.handleLoginError(error, isRehydrationFlow);
     } finally {
       this.setState({ isSubmitting: false });
     }
   };
 
-  handleLoginError = async (error) => {
+  handleLoginError = async (error, isRehydrationFlow = false) => {
     const { t } = this.context;
     const { message, data } = error;
 
@@ -229,8 +249,8 @@ class UnlockPage extends Component {
     let finalUnlockDelayPeriod = 0;
     let errorReason;
 
-    // Track wallet rehydration failed for social login users
-    if (this.props.isSocialLoginFlow) {
+    // Track wallet rehydration failed for social import users (only during rehydration)
+    if (isRehydrationFlow) {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordFailed,
