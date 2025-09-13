@@ -67,6 +67,7 @@ export const ConfirmInfoAlertRow = ({
     style: { background: 'transparent', ...rowProperties.style },
     color: getAlertTextColors(variant ?? selectedAlertSeverity),
     variant,
+    onClick: hasFieldAlert ? handleInlineAlertClick : undefined,
   };
 
   if (isShownWithAlertsOnly && !hasFieldAlert) {
@@ -75,10 +76,7 @@ export const ConfirmInfoAlertRow = ({
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
-      <InlineAlert
-        onClick={handleInlineAlertClick}
-        severity={selectedAlertSeverity}
-      />
+      <InlineAlert severity={selectedAlertSeverity} />
     </Box>
   ) : null;
 
