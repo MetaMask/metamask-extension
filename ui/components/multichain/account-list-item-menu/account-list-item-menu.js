@@ -218,6 +218,7 @@ export const AccountListItemMenu = ({
               ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"
               onClick={() => {
+                handleUnhidding(account.address);
                 dispatch(
                   showModal({
                     name: 'CONFIRM_REMOVE_ACCOUNT',
