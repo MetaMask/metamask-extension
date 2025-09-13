@@ -49,6 +49,7 @@ jobs:
       # For a `pull_request` event, the branch is `github.head_ref`.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
+      COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
       TEST_RUNS_PATH: test/test-results/test-runs-firefox.json
     steps:
       - name: Checkout and setup environment

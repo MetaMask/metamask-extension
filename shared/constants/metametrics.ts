@@ -941,6 +941,8 @@ export enum MetaMetricsEventName {
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
   ExtensionPinned = 'Extension Pinned',
+  // Extension Port Stream
+  PortStreamChunked = 'Port Stream Chunked',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1004,6 +1006,7 @@ export enum MetaMetricsEventCategory {
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
+  PortStream = 'Port Stream',
 }
 
 export enum MetaMetricsEventLinkType {
