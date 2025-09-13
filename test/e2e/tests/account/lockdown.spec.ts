@@ -52,6 +52,12 @@ try {
 }
 `;
 
+const getBundlerScript = 'return globalThis.bundler;';
+
+// TODO: https://github.com/MetaMask/metamask-extension/issues/35218
+// These tests are skipped for webpack builds, as lockdown-more doesn't work under webpack
+// The security team is working on adding an improved version of lockdown-more to the lavamoat webpack plugin.
+// update and enable this test when the improved version is available.
 describe('lockdown', function (this: Mocha.Suite) {
   it('the UI environment is locked down', async function () {
     await withFixtures(
@@ -61,6 +67,10 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
+        const bundler = await driver.executeScript(getBundlerScript);
+        if (bundler === 'webpack') {
+          this.skip();
+        }
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,
@@ -85,6 +95,10 @@ describe('lockdown', function (this: Mocha.Suite) {
           await driver.navigate(PAGES.BACKGROUND);
         }
         await driver.delay(1000);
+        const bundler = await driver.executeScript(getBundlerScript);
+        if (bundler === 'webpack') {
+          this.skip();
+        }
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,
