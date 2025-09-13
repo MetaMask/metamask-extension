@@ -12,7 +12,7 @@ import {
 
 import { type PolymorphicRef, Box } from '../box';
 import { Text, type TextProps } from '../text';
-import { Icon, IconName } from '../icon';
+import { Icon, IconSize, IconName } from '../icon';
 import type { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
 export const Checkbox: CheckboxComponent = React.forwardRef(
@@ -57,7 +57,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
         })}
         as="label"
         display={Display.InlineFlex}
-        alignItems={AlignItems.center}
+        alignItems={AlignItems.flexStart}
         ref={ref}
         htmlFor={id}
         {...(props as TextProps<C>)}
@@ -119,6 +119,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             <Icon
               color={IconColor.primaryInverse}
               name={isChecked ? IconName.CheckBold : IconName.MinusBold}
+              size={IconSize.Sm}
               className={classnames(
                 'mm-checkbox__icon',
                 iconProps?.className ?? '',
