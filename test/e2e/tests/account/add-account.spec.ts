@@ -12,12 +12,33 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
-import { mockNftApiCall } from '../identity/mocks';
+import { mockIdentityServices, mockNftApiCall } from '../identity/mocks';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 describe('Add account', function () {
   const localNodeOptions = {
     accounts: 1,
   };
+
+  const setupCleanUserStorage = async (server: Mockttp) => {
+    const userStorageMockttpController = new UserStorageMockttpController();
+    userStorageMockttpController.setupPath(
+      'multichain_accounts_groups',
+      server,
+      {
+        getResponse: [],
+      },
+    );
+    userStorageMockttpController.setupPath(
+      'multichain_accounts_wallets',
+      server,
+      {
+        getResponse: [],
+      },
+    );
+    await mockIdentityServices(server, userStorageMockttpController);
+  };
+
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
@@ -29,6 +50,7 @@ describe('Add account', function () {
             server,
             '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           );
+          await setupCleanUserStorage(server);
         },
       },
       async ({ driver, localNodes }) => {
@@ -104,6 +126,9 @@ describe('Add account', function () {
         fixtures: new FixtureBuilder().build(),
         localNodeOptions,
         title: this.test?.fullTitle(),
+        testSpecificMock: async (server: Mockttp) => {
+          await setupCleanUserStorage(server);
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
