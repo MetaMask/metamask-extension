@@ -1,7 +1,7 @@
 const util = require('util');
 const { writeFileSync } = require('fs');
 
-const exec = util.promisify(require('node:child_process').exec);
+const execFile = util.promisify(require('node:child_process').execFile);
 
 const PPOM_VERSION_URL =
   'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json';
@@ -122,11 +122,9 @@ async function updateMockCdnFiles() {
   );
 
   // exporting the brotli data to files
-  exec(`curl ${PPOM_CONFIG_URL}${mainnetConfigVersion} -o ${CDN_CONFIG_PATH}`);
-  exec(`curl ${PPOM_STALE_URL}${mainnetStaleVersion} -o ${CDN_STALE_PATH}`);
-  exec(
-    `curl ${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion} -o ${CDN_STALE_DIFF_PATH}`,
-  );
+  await execFile('curl', [ `${PPOM_CONFIG_URL}${mainnetConfigVersion}`, '-o', CDN_CONFIG_PATH ]);
+  await execFile('curl', [ `${PPOM_STALE_URL}${mainnetStaleVersion}`, '-o', CDN_STALE_PATH ]);
+  await execFile('curl', [ `${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion}`, '-o', CDN_STALE_DIFF_PATH ]);
 }
 
 updateMockCdnFiles();
