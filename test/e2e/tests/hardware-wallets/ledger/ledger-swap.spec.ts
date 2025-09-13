@@ -17,7 +17,7 @@ const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Ledger Swap', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('swaps ETH to DAI', async function () {
+  it('swaps ETH to DAI', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withLedgerAccount().build(),
@@ -79,7 +79,6 @@ describe('Ledger Swap', function () {
 
         await swapPage.checkSwapButtonIsEnabled();
         await swapPage.submitSwap();
-
         await swapPage.waitForTransactionToComplete();
 
         await driver.switchToWindowWithTitle(
