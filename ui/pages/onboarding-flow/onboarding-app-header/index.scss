@@ -11,7 +11,7 @@
   }
 
   @include design-system.screen-sm-max {
-    z-index: design-system.$mobile-header-z-index;
+    z-index: design-system.$header-z-index;
   }
 
   @include design-system.screen-sm-min {
