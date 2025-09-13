@@ -229,11 +229,11 @@ export const Connections = () => {
           className="connections-header__title"
         >
           {connectedSubjectsMetadata?.iconUrl ? (
-                          <AvatarFavicon
-                name={connectedSubjectsMetadata?.name || ''}
-                size={AvatarFaviconSize.Sm}
-                src={connectedSubjectsMetadata.iconUrl}
-              />
+            <AvatarFavicon
+              name={connectedSubjectsMetadata?.name || ''}
+              size={AvatarFaviconSize.Sm}
+              src={connectedSubjectsMetadata.iconUrl}
+            />
           ) : (
             <Icon
               name={IconName.Global}
