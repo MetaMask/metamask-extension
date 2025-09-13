@@ -1642,6 +1642,7 @@
       "globals": {
         "Intl.NumberFormat": true,
         "addEventListener": true,
+        "console.error": true,
         "fetch": true,
         "registration": true,
         "removeEventListener": true
