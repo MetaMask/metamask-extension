@@ -92,6 +92,7 @@ function onboardingFixture() {
           },
           tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
+          avatarType: 'maskicon',
         },
         useExternalServices: true,
         theme: 'light',
@@ -329,6 +330,12 @@ class FixtureBuilder {
 
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
+  }
+
+  withNetworkControllerOnArbitrumGoerli() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'arbitrum-goerli',
+    });
   }
 
   withNetworkControllerOnLinea() {

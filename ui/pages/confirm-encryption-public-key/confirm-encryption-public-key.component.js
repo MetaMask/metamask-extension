@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
-
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import AccountListItem from '../../components/app/account-list-item';
-import Identicon from '../../components/ui/identicon';
+import { PreferredAvatar } from '../../components/app/preferred-avatar';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
@@ -107,7 +107,10 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
     return (
       <div className="request-encryption-public-key__request-icon">
-        <Identicon diameter={40} address={requesterAddress} />
+        <PreferredAvatar
+          size={AvatarAccountSize.Lg}
+          address={requesterAddress}
+        />
       </div>
     );
   };

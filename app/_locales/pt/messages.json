@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buyAndSell": {
-    "message": "Comprar/vender"
+  "buy": {
+    "message": "Comprar"
   },
   "buyMoreAsset": {
     "message": "Comprar mais $1",
@@ -1835,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Nenhuma conta correspondentes encontrada"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Receber em"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Endereço de recebimento ou ENS"
@@ -2675,12 +2672,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Como as cotações funcionam"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Das cotações que pesquisamos, essa é a que apresenta o melhor retorno. Isso é baseado na taxa de swap, que inclui taxas de ponte e uma taxa da MetaMask de $1%, menos taxas de gás. As taxas de gás dependem da carga da rede e da complexidade da transação."
-  },
   "id": {
     "message": "ID"
   },
@@ -2940,9 +2931,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Uma transação anterior ainda está sendo assinada ou enviada"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons e Blockies são dois estilos diferentes de ícones únicos que ajudam você a identificar uma conta num relance."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3350,15 +3338,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Você está adicionando esta rede à MetaMask e dando a este site permissão para usá-la."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Fazer ponte"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Cotação"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Hora"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 quer usar Snaps de $2",
@@ -4214,13 +4193,6 @@
   },
   "passwordNotLongEnough": {
     "message": "A senha deve ter pelo menos 8 caracteres"
-  },
-  "passwordStrength": {
-    "message": "Segurança da senha: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Uma senha forte pode aumentar a segurança da sua carteira caso seu dispositivo seja roubado ou comprometido."
   },
   "passwordTermsWarning": {
     "message": "Se eu esquecer essa senha, a MetaMask não conseguirá redefini-la para mim."
@@ -7155,9 +7127,6 @@
     "message": "Tome cuidado com $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Fraca"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7176,15 +7145,6 @@
   "welcomeBack": {
     "message": "Boas-vindas de volta"
   },
-  "welcomeDescription": {
-    "message": "Aprovada por milhões de pessoas, a MetaMask é uma carteira segura que torna o mundo da web3 acessível a todos."
-  },
-  "welcomeGetStarted": {
-    "message": "Começar"
-  },
-  "welcomeTitle": {
-    "message": "Boas-vindas à MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Vamos começar"
   },
@@ -7193,9 +7153,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Isso aprovará $1 para realização de ponte."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Será necessário confirmar duas transações na sua carteira de hardware."
   },
   "willApproveAmountForSwapping": {
     "message": "Isso aprovará $1 para fazer a troca."

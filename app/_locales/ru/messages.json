@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Влияние на цену"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Если у вас недостаточно средств для оплаты газа, часть вашего исходного токена автоматически выделяется на покрытие комиссий, что уменьшает сумму обмена. MetaMask не влияет на цену и не контролирует влияние на нее."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Оно зависит от объёма сделки и доступной ликвидности в пуле. MetaMask не влияет на цену и не контролирует влияние на нее."
   },
@@ -1053,8 +1050,8 @@
   "busy": {
     "message": "Занят"
   },
-  "buyAndSell": {
-    "message": "Купить/продать"
+  "buy": {
+    "message": "Купить"
   },
   "buyMoreAsset": {
     "message": "Купить еще $1",
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Подходящие счета не найдены"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Получить в"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Адрес получения или ENS"
@@ -2708,12 +2702,6 @@
   "honeypotTitle": {
     "message": "Ловушка"
   },
-  "howQuotesWork": {
-    "message": "Как работают котировки"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Эта котировка имеет лучшую доходность из всех котировок, которые мы искали. Она основана на курсе свопа, который включает комиссию за промежуточное соединение и комиссию MetaMask в размере $1% за вычетом платы за газ. Плата за газ зависит от загруженности сети и сложности транзакции."
-  },
   "id": {
     "message": "ID"
   },
@@ -2973,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Предыдущая транзакция все еще подписывается или отправляется"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons и Blockies — это два разных стиля уникальных значков, которые помогут вам с первого взгляда идентифицировать свой счет."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3383,15 +3368,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Вы добавляете эту сеть в MetaMask и разрешаете этому сайту использовать ее."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Создание моста"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Котировка"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Время"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 хочет использовать $2 Snaps",
@@ -4247,13 +4223,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Пароль должен содержать не менее 8 символов"
-  },
-  "passwordStrength": {
-    "message": "Надежность пароля: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
   },
   "passwordTermsWarning": {
     "message": "Если я забуду этот пароль, MetaMask не сможет восстановить его для меня."
@@ -7205,9 +7174,6 @@
     "message": "Остерегайтесь $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Слабый"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7226,15 +7192,6 @@
   "welcomeBack": {
     "message": "С возвращением!"
   },
-  "welcomeDescription": {
-    "message": "MetaMask, которому доверяют миллионы, — это безопасный кошелек, предоставляющим всем доступ к миру web3."
-  },
-  "welcomeGetStarted": {
-    "message": "С чего начать"
-  },
-  "welcomeTitle": {
-    "message": "Добро пожаловать в MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Давайте приступим к делу"
   },
@@ -7243,9 +7200,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Это позволит утвердить $1 для создания моста."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Вам нужно будет подтвердить две транзакции в своем аппаратном кошельке."
   },
   "willApproveAmountForSwapping": {
     "message": "Это позволит утвердить $1 для свопа."
