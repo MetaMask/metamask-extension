@@ -96,17 +96,29 @@ const MenuItem = React.forwardRef<
       </>
     );
 
-    return to ? (
-      <Link
-        to={to}
-        className={classnames('menu-item', className)}
-        data-testid={dataTestId}
-        ref={ref as React.Ref<HTMLAnchorElement>}
-        onClick={onClick}
-      >
-        {content}
-      </Link>
-    ) : (
+    if (to) {
+      return disabled ? (
+        <span
+          className={classnames('menu-item', className)}
+          data-testid={dataTestId}
+          ref={ref as React.Ref<HTMLSpanElement>}
+        >
+          {content}
+        </span>
+      ) : (
+        <Link
+          to={to}
+          className={classnames('menu-item', className)}
+          data-testid={dataTestId}
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          onClick={onClick}
+        >
+          {content}
+        </Link>
+      );
+    }
+
+    return (
       <button
         className={classnames('menu-item', className)}
         data-testid={dataTestId}
