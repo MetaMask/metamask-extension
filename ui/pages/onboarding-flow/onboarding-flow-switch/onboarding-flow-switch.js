@@ -21,10 +21,8 @@ import {
   getIsUnlocked,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-///: END:ONLY_INCLUDE_IF
 import {
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
@@ -47,6 +45,7 @@ export default function OnboardingFlowSwitch() {
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
+  const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
   if (completedOnboarding) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -56,7 +55,7 @@ export default function OnboardingFlowSwitch() {
     return (
       <Navigate
         to={
-          isParticipateInMetaMetricsSet
+          isParticipateInMetaMetricsSet || !isFirefox
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS
         }
