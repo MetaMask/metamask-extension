@@ -4,6 +4,7 @@ import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
+  isBitcoinChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
@@ -51,9 +52,10 @@ const buildTokenData = (
   // Only tokens on the active chain are processed here here
   const sharedFields = {
     ...token,
-    chainId: isSolanaChainId(chainId)
-      ? formatChainIdToCaip(chainId)
-      : formatChainIdToHex(chainId),
+    chainId:
+      isSolanaChainId(chainId) || isBitcoinChainId(chainId)
+        ? formatChainIdToCaip(chainId)
+        : formatChainIdToHex(chainId),
     assetId:
       'assetId' in token
         ? token.assetId
@@ -61,21 +63,29 @@ const buildTokenData = (
   };
 
   if (isNativeAddress(token.address)) {
+    // Use MULTICHAIN_TOKEN_IMAGE_MAP for non-EVM chains
+    const isNonEvm = isSolanaChainId(chainId) || isBitcoinChainId(chainId);
+    const image = isNonEvm
+      ? MULTICHAIN_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
+        ]
+      : CHAIN_ID_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+        ];
+
     return {
       ...sharedFields,
       type: AssetType.native,
       address: '', // Return empty string to match useMultichainBalances output
       image:
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] ??
+        image ??
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
       // Only unimported native assets are processed here so hardcode balance to 0
       balance: '0',
       string: '0',
-    };
+    } as AssetWithDisplayData<NativeAsset>;
   }
 
   return {
@@ -129,7 +139,7 @@ export const useTokensWithFiltering = (
     if (!chainId) {
       return undefined;
     }
-    if (isSolanaChainId(chainId)) {
+    if (isSolanaChainId(chainId) || isBitcoinChainId(chainId)) {
       return undefined;
     }
     const hexChainId = formatChainIdToHex(chainId);

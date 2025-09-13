@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import {
   TextField,
@@ -20,7 +20,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../shared/lib/translate';
 import {
-  getIsToOrFromSolana,
+  getIsToOrFromNonEvm,
   getToAccounts,
   getToChain,
 } from '../../../../ducks/bridge/selectors';
@@ -45,10 +45,14 @@ export const DestinationAccountPickerModal = ({
   const isDestinationSolana = toChain?.chainId
     ? isSolanaChainId(toChain.chainId)
     : false;
+  const isDestinationBitcoin = toChain?.chainId
+    ? isBitcoinChainId(toChain.chainId)
+    : false;
 
   const externalAccount = useExternalAccountResolution({
     searchQuery,
     isDestinationSolana,
+    isDestinationBitcoin,
   });
 
   const filteredAccounts = useMemo(
@@ -69,11 +73,11 @@ export const DestinationAccountPickerModal = ({
     [accounts, searchQuery],
   );
 
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
   return (
     <Modal
-      isOpen={isOpen || (isToOrFromSolana && !selectedAccount)}
+      isOpen={isOpen || (isToOrFromNonEvm && !selectedAccount)}
       onClose={() => {
         setSearchQuery('');
         onClose();

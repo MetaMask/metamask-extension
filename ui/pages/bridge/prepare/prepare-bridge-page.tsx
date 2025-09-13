@@ -46,7 +46,7 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  getIsToOrFromSolana,
+  getIsToOrFromNonEvm,
   getHardwareWalletName,
   getIsQuoteExpired,
   getIsUnifiedUIEnabled,
@@ -342,7 +342,7 @@ const PrepareBridgePage = ({
     isUsingHardwareWallet,
   ]);
 
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
@@ -802,7 +802,7 @@ const PrepareBridgePage = ({
                   });
                 }}
                 needsDestinationAddress={
-                  isToOrFromSolana && !selectedDestinationAccount
+                  isToOrFromNonEvm && !selectedDestinationAccount
                 }
               />
             )}
