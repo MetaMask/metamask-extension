@@ -282,12 +282,14 @@ export const MultichainAccountsConnectPage: React.FC<
 
       handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
+      setPageMode(MultichainAccountsConnectPageMode.Summary);
     },
     [
       selectedChainIds,
       handleChainIdsSelected,
       setUserHasModifiedSelection,
       setSelectedAccountGroupIds,
+      setPageMode,
     ],
   );
 
