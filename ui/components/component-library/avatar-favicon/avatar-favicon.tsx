@@ -18,6 +18,40 @@ import {
   AvatarFaviconSize,
 } from './avatar-favicon.types';
 
+const Favicon = (props: { src?: string; name: string }) => {
+  const { src, name, ...rest } = props;
+  const t = useI18nContext();
+  const [imageLoadError, setImageLoadError] = useState(false);
+
+  useEffect(() => {
+    setImageLoadError(false);
+  }, [src]);
+
+  const handleImageError = () => {
+    setImageLoadError(true);
+  };
+
+  if (imageLoadError) {
+    return <>{getAvatarFallbackLetter(name)}</>;
+  }
+
+  return src ? (
+    <img
+      className="mm-avatar-favicon__image"
+      src={src}
+      alt={t('logo', [name])}
+      onError={handleImageError}
+    />
+  ) : (
+    <Icon
+      name={IconName.Global}
+      color={IconColor.iconDefault}
+      size={IconSize.Md}
+      {...rest}
+    />
+  );
+};
+
 export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -33,19 +67,6 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
     }: AvatarFaviconProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const t = useI18nContext();
-    const [imageLoadError, setImageLoadError] = useState(false);
-
-    useEffect(() => {
-      setImageLoadError(false);
-    }, [src]);
-
-    const handleImageError = () => {
-      setImageLoadError(true);
-    };
-
-    const fallbackLetter = getAvatarFallbackLetter(name);
-
     return (
       <AvatarBase
         ref={ref}
@@ -56,25 +77,7 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
         className={classnames('mm-avatar-favicon', className)}
         {...{ borderColor, ...(props as AvatarBaseProps<C>) }}
       >
-        {src && !imageLoadError && (
-          <img
-            className="mm-avatar-favicon__image"
-            src={src}
-            alt={t('logo', [name])}
-            onError={handleImageError}
-          />
-        )}
-
-        {src && imageLoadError && fallbackLetter}
-
-        {!src && (
-          <Icon
-            name={IconName.Global}
-            color={IconColor.iconDefault}
-            size={IconSize.Md}
-            {...fallbackIconProps}
-          />
-        )}
+        <Favicon src={src} name={name} {...fallbackIconProps} />
       </AvatarBase>
     );
   },
