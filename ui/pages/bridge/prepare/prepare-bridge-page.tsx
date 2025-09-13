@@ -54,6 +54,8 @@ import {
   BridgeAppState,
   getTxAlerts,
   getFromAccount,
+  getIsGasIncluded,
+  getShouldShowMaxButton,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -174,6 +176,8 @@ const PrepareBridgePage = ({
 
   // Use the appropriate value based on unified UI setting
   const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
+  const isGasIncludedSwap = useSelector(getIsGasIncluded);
+  const shouldShowMaxButton = useSelector(getShouldShowMaxButton);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -370,7 +374,7 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: smartTransactionsEnabled && isSwap,
+      gasIncluded: isGasIncludedSwap,
     }),
     [
       fromToken?.address,
@@ -383,8 +387,7 @@ const PrepareBridgePage = ({
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
-      smartTransactionsEnabled,
-      isSwap,
+      isGasIncludedSwap,
     ],
   );
 
@@ -546,11 +549,11 @@ const PrepareBridgePage = ({
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            isNativeAddress(fromToken?.address ?? '')
-              ? undefined
-              : (value: string) => {
+            shouldShowMaxButton
+              ? (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
+              : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
