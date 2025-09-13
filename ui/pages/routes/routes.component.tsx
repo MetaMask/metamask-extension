@@ -73,6 +73,7 @@ import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  GATOR_PERMISSIONS,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -626,8 +627,9 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
-            path={PERMISSIONS}
+            path={GATOR_PERMISSIONS}
             component={
               isGatorPermissionsFeatureEnabled()
                 ? GatorPermissionsPage

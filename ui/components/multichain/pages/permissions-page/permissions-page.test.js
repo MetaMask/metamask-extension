@@ -4,7 +4,10 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { isGatorPermissionsFeatureEnabled } from '../../../../../shared/modules/environment';
 import { PermissionsPage } from './permissions-page';
+
+jest.mock('../../../../../shared/modules/environment');
 
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {
@@ -107,6 +110,11 @@ let store = configureStore({
 });
 
 describe('All Connections', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+  });
+
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = renderWithProvider(
@@ -125,6 +133,18 @@ describe('All Connections', () => {
       store = configureStore(mockState);
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('no-connections')).toBeInTheDocument();
+    });
+
+    it('renders permissions title when Gator Permissions feature is disabled', () => {
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
+      expect(getByTestId('permissions-page-title')).toHaveTextContent(
+        'Permissions',
+      );
+    });
+    it('renders sites title when Gator Permissions feature is enabled', () => {
+      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValueOnce(true);
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
+      expect(getByTestId('permissions-page-title')).toHaveTextContent('Sites');
     });
   });
 });

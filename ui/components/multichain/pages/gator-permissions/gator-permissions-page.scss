@@ -1,0 +1,9 @@
+.gator-permissions-page {
+  &__tabs {
+    padding: 0 16px;
+
+    .tab {
+      flex-grow: 1;
+    }
+  }
+}

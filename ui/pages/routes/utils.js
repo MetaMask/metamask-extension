@@ -28,6 +28,7 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  GATOR_PERMISSIONS,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -283,6 +284,17 @@ export function hideAppHeader(props) {
       exact: false,
     }),
   );
+
+  const isGatorPermissionsPage = Boolean(
+    matchPath(location.pathname, {
+      path: GATOR_PERMISSIONS,
+      exact: false,
+    }),
+  );
+
+  if (isGatorPermissionsPage) {
+    return true;
+  }
 
   return (
     isHandlingPermissionsRequest ||

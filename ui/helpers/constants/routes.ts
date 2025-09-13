@@ -65,6 +65,7 @@ export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
   '/remote/setup-daily-allowance';
 export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
+export const GATOR_PERMISSIONS = '/gator-permissions';
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
