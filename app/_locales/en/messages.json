@@ -1133,7 +1133,7 @@
     "message": "Cancelled"
   },
   "carouselAllCaughtUp": {
-    "message": "You're all caught up",
+    "message": "You're all caught up!",
     "description": "Message shown in carousel when all promotional slides have been dismissed"
   },
   "chainId": {
@@ -7630,6 +7630,6 @@
     "message": "Keep your Secret Recovery Phrase safe!"
   },
   "yourWalletIsReadyRemind": {
-    "message": "We'll remind you later"
+    "message": "We’ll remind you later"
   }
 }
