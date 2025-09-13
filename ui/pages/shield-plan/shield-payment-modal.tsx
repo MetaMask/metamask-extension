@@ -32,50 +32,51 @@ import { AssetPickerModal } from '../../components/multichain/asset-picker-amoun
 import { TabName } from '../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { useMultichainBalances } from '../../hooks/useMultichainBalances';
-import { AssetType } from '../../../shared/constants/transaction';
-import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
-import {
-  PAYMENT_METHODS,
-  PaymentMethod,
-  SUPPORTED_STABLE_TOKENS,
-} from './types';
+import { TokenWithApprovalAmount } from '../../hooks/subscription/useSubscriptionPricing';
+import { PAYMENT_TYPES, PaymentType } from '@metamask/subscription-controller';
+import { AssetWithDisplayData, ERC20Asset, NativeAsset } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 
 export const ShieldPaymentModal = ({
   isOpen,
   onClose,
   selectedPaymentMethod,
   setSelectedPaymentMethod,
+  availableTokenBalances,
   selectedToken,
   onAssetChange,
   hasStableTokenWithBalance,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  selectedPaymentMethod: PaymentMethod;
-  setSelectedPaymentMethod: (method: PaymentMethod) => void;
+  selectedPaymentMethod: PaymentType;
+  setSelectedPaymentMethod: (method: PaymentType) => void;
+  availableTokenBalances: TokenWithApprovalAmount[];
   selectedToken?:
-    | AssetWithDisplayData<ERC20Asset>
-    | AssetWithDisplayData<NativeAsset>;
+    TokenWithApprovalAmount;
   onAssetChange: (
-    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+    asset: TokenWithApprovalAmount,
   ) => void;
   hasStableTokenWithBalance: boolean;
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  // Get multichain balances to filter tokens with balance
-  const { assetsWithBalance: multichainTokensWithBalance } =
-    useMultichainBalances();
+  const selectPaymentMethod = useCallback(
+    (selectedMethod: PaymentType) => {
+      setSelectedPaymentMethod(selectedMethod);
+
+      if (selectedMethod === PAYMENT_TYPES.byCrypto) {
+        setShowAssetPickerModal(true);
+      } else {
+        onClose();
+      }
+    },
+    [setSelectedPaymentMethod, onClose],
+  );
 
   // Create custom token list generator that filters for USDT/USDC with balance
   const customTokenListGenerator = useMemo(() => {
@@ -86,48 +87,18 @@ export const ShieldPaymentModal = ({
         chainId?: string,
       ) => boolean,
     ): Generator<
-      AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
+      AssetWithDisplayData<ERC20Asset | NativeAsset>
     > {
       // Filter for USDT and USDC tokens that have balance
-      for (const token of multichainTokensWithBalance) {
-        const isUSDTorUSDC = SUPPORTED_STABLE_TOKENS.includes(token.symbol);
-        const hasBalance = token.balance && parseFloat(token.balance) > 0;
-        const isMainnet = token.chainId === '0x1';
-
+      for (const token of availableTokenBalances) {
         if (
-          isUSDTorUSDC &&
-          hasBalance &&
-          isMainnet &&
           filterPredicate(token.symbol, token.address, token.chainId)
         ) {
-          if (token.isNative) {
-            yield {
-              ...token,
-              type: AssetType.native,
-            } as AssetWithDisplayData<NativeAsset>;
-          } else {
-            yield {
-              ...token,
-              type: AssetType.token,
-            } as AssetWithDisplayData<ERC20Asset>;
-          }
+          yield(token);
         }
       }
     };
-  }, [multichainTokensWithBalance]);
-
-  const selectPaymentMethod = useCallback(
-    (selectedMethod: PaymentMethod) => {
-      setSelectedPaymentMethod(selectedMethod);
-
-      if (selectedMethod === PAYMENT_METHODS.TOKEN) {
-        setShowAssetPickerModal(true);
-      } else {
-        onClose();
-      }
-    },
-    [setSelectedPaymentMethod, onClose],
-  );
+  }, [availableTokenBalances]);
 
   return (
     <Modal
@@ -151,12 +122,12 @@ export const ShieldPaymentModal = ({
             as="button"
             className={classnames('payment-method-item', {
               'payment-method-item--selected':
-                selectedPaymentMethod === PAYMENT_METHODS.TOKEN,
+                selectedPaymentMethod === PAYMENT_TYPES.byCrypto,
             })}
             padding={4}
             gap={4}
             backgroundColor={
-              selectedPaymentMethod === PAYMENT_METHODS.TOKEN
+              selectedPaymentMethod === PAYMENT_TYPES.byCrypto
                 ? BackgroundColor.primaryMuted
                 : BackgroundColor.transparent
             }
@@ -165,11 +136,11 @@ export const ShieldPaymentModal = ({
             justifyContent={JustifyContent.spaceBetween}
             width={BlockSize.Full}
             onClick={() => {
-              selectPaymentMethod(PAYMENT_METHODS.TOKEN);
+              selectPaymentMethod(PAYMENT_TYPES.byCrypto);
             }}
             disabled={!hasStableTokenWithBalance}
           >
-            {selectedPaymentMethod === PAYMENT_METHODS.TOKEN && (
+            {selectedPaymentMethod === PAYMENT_TYPES.byCrypto && (
               <Box
                 className="payment-method-item__selected-indicator"
                 borderRadius={BorderRadius.pill}
@@ -239,12 +210,12 @@ export const ShieldPaymentModal = ({
             as="button"
             className={classnames('payment-method-item', {
               'payment-method-item--selected':
-                selectedPaymentMethod === PAYMENT_METHODS.CARD,
+                selectedPaymentMethod === PAYMENT_TYPES.byCard,
             })}
             padding={4}
             gap={4}
             backgroundColor={
-              selectedPaymentMethod === PAYMENT_METHODS.CARD
+              selectedPaymentMethod === PAYMENT_TYPES.byCard
                 ? BackgroundColor.primaryMuted
                 : BackgroundColor.transparent
             }
@@ -252,9 +223,9 @@ export const ShieldPaymentModal = ({
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
             width={BlockSize.Full}
-            onClick={() => selectPaymentMethod(PAYMENT_METHODS.CARD)}
+            onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
           >
-            {selectedPaymentMethod === PAYMENT_METHODS.CARD && (
+            {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
               <Box
                 className="payment-method-item__selected-indicator"
                 borderRadius={BorderRadius.pill}
@@ -298,7 +269,7 @@ export const ShieldPaymentModal = ({
           }}
           asset={selectedToken}
           onAssetChange={(asset) => {
-            onAssetChange(asset);
+            onAssetChange(asset as TokenWithApprovalAmount);
             setShowAssetPickerModal(false);
             onClose();
           }}

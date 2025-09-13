@@ -3600,6 +3600,10 @@ export default class MetamaskController extends EventEmitter {
       getSubscriptionPricing: this.subscriptionController.getPricing.bind(
         this.subscriptionController,
       ),
+      getSubscriptionCryptoApprovalAmount:
+        this.subscriptionController.getCryptoApproveTransactionParams.bind(
+          this.subscriptionController,
+        ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
