@@ -64,7 +64,9 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
             onError={handleImageError}
           />
         )}
+
         {src && imageLoadError && fallbackLetter}
+
         {!src && (
           <Icon
             name={IconName.Global}
