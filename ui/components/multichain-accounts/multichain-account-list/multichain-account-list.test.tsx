@@ -77,6 +77,7 @@ const mockWallets = {
         id: mockWalletOneEntropySource,
       },
     },
+    status: 'ready',
     groups: {
       [walletOneGroupId]: {
         id: walletOneGroupId,

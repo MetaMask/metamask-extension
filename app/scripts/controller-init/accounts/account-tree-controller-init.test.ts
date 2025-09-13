@@ -45,6 +45,12 @@ describe('AccountTreeControllerInit', () => {
     expect(accountTreeControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.AccountTreeController,
+      config: {
+        trace: expect.any(Function),
+        backupAndSync: {
+          onBackupAndSyncEvent: expect.any(Function),
+        },
+      },
     });
   });
 });

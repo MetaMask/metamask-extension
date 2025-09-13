@@ -4,7 +4,6 @@ import {
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
 import { ControllerInitFunction } from '../types';
-import { isProduction } from '../../../../shared/modules/environment';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -33,53 +32,6 @@ export const UserStorageControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     config: {
-      accountSyncing: {
-        maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
-        onAccountAdded: (profileId) => {
-          initMessenger.call('MetaMetricsController:trackEvent', {
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.AccountsSyncAdded,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-            },
-          });
-        },
-        onAccountNameUpdated: (profileId) => {
-          initMessenger.call('MetaMetricsController:trackEvent', {
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.AccountsSyncNameUpdated,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-            },
-          });
-        },
-        onAccountSyncErroneousSituation: (
-          profileId,
-          situationMessage,
-          sentryContext,
-        ) => {
-          captureException(
-            new Error(`Account sync - ${situationMessage}`),
-            sentryContext,
-          );
-          initMessenger.call('MetaMetricsController:trackEvent', {
-            category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.AccountsSyncErroneousSituation,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              profile_id: profileId,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              situation_message: situationMessage,
-            },
-          });
-        },
-      },
       contactSyncing: {
         onContactUpdated: (profileId) => {
           initMessenger.call('MetaMetricsController:trackEvent', {

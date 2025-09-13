@@ -1,6 +1,7 @@
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { ControllerInitFunction } from '../types';
 import { AccountTreeControllerMessenger } from '../messengers/accounts';
+import { trace } from '../../../../shared/lib/trace';
 
 /**
  * Initialize the account wallet controller.
@@ -17,6 +18,16 @@ export const AccountTreeControllerInit: ControllerInitFunction<
   const controller = new AccountTreeController({
     messenger: controllerMessenger,
     state: persistedState.AccountTreeController,
+    config: {
+      // @ts-expect-error Controller uses string for names rather than enum
+      trace,
+      backupAndSync: {
+        onBackupAndSyncEvent: (event) => {
+          // Handle backup and sync events here, e.g., logging or tracking.
+          console.log('Backup and Sync Event:', event);
+        },
+      },
+    },
   });
 
   // Re-build initial account wallet tree.

@@ -26,7 +26,9 @@ describe('Account syncing - Settings Toggle', function () {
    * Phase 2: Disable account sync, add another account, and verify it doesn't sync
    * Phase 3: Login to a fresh app instance and verify only synced accounts persist
    */
-  it('should sync new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
+  // TODO: Re-write this test when multichain account syncing has been merged
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should sync new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
