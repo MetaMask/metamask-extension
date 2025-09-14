@@ -441,7 +441,9 @@ describe('Deep Link', function () {
           return globalThis.testWindow != null;
           `,
         );
-        assert(windowOpened, 'window.open failed');
+        assert.strictEqual(windowOpened, true, 'window.open failed');
+
+        driver.delay(1000); // give the window a second to open
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
