@@ -1,4 +1,5 @@
 import { noop } from 'lodash';
+import { SelectedNetworkControllerInit } from '../selected-network-controller-init.ts';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -105,6 +106,7 @@ import {
   getGasFeeControllerInitMessenger,
   getGasFeeControllerMessenger,
 } from './gas-fee-controller-messenger';
+import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 
 export type {
   CurrencyRateControllerMessenger,
@@ -142,6 +144,8 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
+export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -267,6 +271,10 @@ export const CONTROLLER_MESSENGERS = {
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
+  },
+  SelectedNetworkController: {
+    getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
   },
   ShieldController: {
     getMessenger: getShieldControllerMessenger,
