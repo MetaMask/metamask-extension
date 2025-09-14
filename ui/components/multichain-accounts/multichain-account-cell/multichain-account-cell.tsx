@@ -1,5 +1,7 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { Box, Icon, IconName, Text } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
@@ -37,6 +39,9 @@ export const MultichainAccountCell = ({
   disableHoverEffect = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
+  const seedAddressIcon = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(state, accountId),
+  );
 
   return (
     <Box
@@ -69,7 +74,7 @@ export const MultichainAccountCell = ({
           }
           borderRadius={BorderRadius.XL}
         >
-          <PreferredAvatar address={accountId} />
+          <PreferredAvatar address={seedAddressIcon} />
         </Box>
         <Box>
           <Text
