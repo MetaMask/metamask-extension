@@ -17,6 +17,10 @@ import {
   signDeepLink,
   generateECDSAKeyPair,
 } from './helpers';
+import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
+import { Browser } from 'selenium-webdriver';
+
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 type LocalNode = Ganache | Anvil;
 
@@ -112,7 +116,7 @@ describe('Deep Link', function () {
 
           // navigate to https://link.metamask.io/home and make sure it
           // redirects to the deep link interstitial page
-          const rawUrl = `https://link.metamask.io${route}`;
+          const rawUrl = `https://${DEEP_LINK_HOST}${route}`;
           // note: we sign the "/INVALID" link as well, as signed links that no
           // longer exist/match should be treated handled the same way as
           // unsigned links. We test for this below.
@@ -188,7 +192,7 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://link.metamask.io/buy`;
+        const rawUrl = `https://${DEEP_LINK_HOST}/buy`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
 
         // test signed flow
@@ -223,7 +227,7 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://link.metamask.io/perps`;
+        const rawUrl = `https://${DEEP_LINK_HOST}/perps`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
 
         // test signed flow
@@ -283,7 +287,7 @@ describe('Deep Link', function () {
           value: '0x38d7ea4c68000',
         };
         const params = new URLSearchParams({ ...extraParams, ...swapsParams });
-        const rawUrl = `https://link.metamask.io/swap?${params.toString()}`;
+        const rawUrl = `https://${DEEP_LINK_HOST}/swap?${params.toString()}`;
 
         // test signed flow
         await driver.openNewURL(rawUrl);
@@ -326,7 +330,7 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://link.metamask.io/home`;
+        const rawUrl = `https://${DEEP_LINK_HOST}/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
         await driver.openNewURL(signedUrl);
         const internalDeepLinkUrl = await driver.getCurrentUrl();
@@ -394,7 +398,7 @@ describe('Deep Link', function () {
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 
-        const rawUrl = `https://link.metamask.io/home`;
+        const rawUrl = `https://${DEEP_LINK_HOST}/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
 
         // test signed flow
@@ -433,7 +437,7 @@ describe('Deep Link', function () {
         // simulate a dapp calling `window.open('https://link.metamask.io/home')`
         const windowOpened = await driver.executeScript(
           `
-          globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');
+          globalThis.testWindow = window.open('https://${DEEP_LINK_HOST}/home', '_blank');
           return globalThis.testWindow != null;
           `,
         );
@@ -458,10 +462,19 @@ describe('Deep Link', function () {
 
         const hackUrl = new URL(initialUrl);
         hackUrl.hash = '#notifications';
-        await driver.executeScript(
+        // if we are testing Firefox, make sure `testWindow` is unset, FF
+        // doesn't allow cross-origin access to the extension's window by
+        // default
+        if (isFirefox) {
           // globalThis.testWindow is unset in Firefox. Neat!
-          `globalThis.testWindow && (globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)});`,
-        );
+          await driver.executeScript(`return globalThis.testWindow == null;`);
+        } else {
+          // on chrome, the location change is ignored due to the
+          // `cross_origin_opener_policy` set in the manifest.json
+          await driver.executeScript(
+            `globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)};`,
+          );
+        }
 
         // go back to the Metamask window.
         await driver.switchToWindow(metamaskWindowHandle);
