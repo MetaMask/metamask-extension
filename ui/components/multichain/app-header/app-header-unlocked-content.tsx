@@ -110,9 +110,6 @@ export const AppHeaderUnlockedContent = ({
   const shortenedAddress =
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
-  const accountName = isMultichainAccountsState2Enabled
-    ? selectedMultichainAccount.metadata.name
-    : internalAccount.metadata.name;
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -215,30 +212,63 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [history, selectedMultichainAccountId]);
 
-  const networksSubtitle = useMemo(() => {
-    if (!isMultichainAccountsState2Enabled) {
-      return null;
-    }
+  const multichainAccountAppContent = useMemo(() => {
+    const networksLabel =
+      numberOfAccountsInGroup === 1 ? t('network') : t('networks');
 
-    const label = numberOfAccountsInGroup === 1 ? t('network') : t('networks');
     return (
-      <Text
-        color={TextColor.primaryDefault}
-        variant={TextVariant.bodyXs}
-        onClick={handleNetworksClick}
-        data-testid="networks-subtitle-test-id"
-        className="networks-subtitle"
-      >
-        {`${numberOfAccountsInGroup} ${label.toLowerCase()}`}
-      </Text>
+      <Box>
+        <Text
+          as="div"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexStart}
+          ellipsis
+        >
+          <AccountPicker
+            address={''} // No address shown in multichain mode
+            name={selectedMultichainAccount.metadata.name}
+            showAvatarAccount={false}
+            onClick={() => {
+              history.push(ACCOUNT_LIST_PAGE_ROUTE);
+              trackEvent({
+                event: MetaMetricsEventName.NavAccountMenuOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: 'Home',
+                },
+              });
+            }}
+            disabled={disableAccountPicker}
+            paddingLeft={0}
+            paddingRight={0}
+          />
+          <>{!isMultichainAccountsState2Enabled && CopyButton}</>
+        </Text>
+        <Text
+          color={TextColor.primaryDefault}
+          variant={TextVariant.bodyXs}
+          onClick={handleNetworksClick}
+          data-testid="networks-subtitle-test-id"
+          className="networks-subtitle"
+        >
+          {`${numberOfAccountsInGroup} ${networksLabel.toLowerCase()}`}
+        </Text>
+      </Box>
     );
   }, [
+    CopyButton,
+    disableAccountPicker,
     handleNetworksClick,
+    history,
     isMultichainAccountsState2Enabled,
     numberOfAccountsInGroup,
+    selectedMultichainAccount.metadata.name,
     t,
+    trackEvent,
   ]);
 
+  // TODO: [BIP-44] Delete this method once multichain accounts is released
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
@@ -249,16 +279,10 @@ export const AppHeaderUnlockedContent = ({
     };
 
     return (
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        marginTop={2}
-      >
-        {!isMultichainAccountsState2Enabled && (
-          <div ref={tourAnchorRef} className="flex">
-            <PreferredAvatar address={internalAccount.address} />
-          </div>
-        )}
+      <>
+        <div ref={tourAnchorRef} className="flex">
+          <PreferredAvatar address={internalAccount.address} />
+        </div>
 
         {internalAccount && (
           <Text
@@ -270,7 +294,7 @@ export const AppHeaderUnlockedContent = ({
           >
             <AccountPicker
               address={internalAccount.address}
-              name={accountName}
+              name={internalAccount.metadata.name}
               showAvatarAccount={false}
               onClick={() => {
                 handleAccountMenuClick();
@@ -284,22 +308,19 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
               disabled={disableAccountPicker}
-              paddingLeft={isMultichainAccountsState2Enabled ? 0 : 2}
-              paddingRight={isMultichainAccountsState2Enabled ? 0 : 2}
+              paddingLeft={2}
+              paddingRight={2}
             />
-            <>{!isMultichainAccountsState2Enabled && CopyButton}</>
+            <>{CopyButton}</>
           </Text>
         )}
-        {networksSubtitle}
-      </Box>
+      </>
     );
   }, [
     isMultichainAccountsState2Enabled,
     internalAccount,
-    accountName,
     disableAccountPicker,
     CopyButton,
-    networksSubtitle,
     history,
     dispatch,
     trackEvent,
@@ -314,7 +335,9 @@ export const AppHeaderUnlockedContent = ({
         gap={2}
         className="min-w-0"
       >
-        {AppContent}
+        {isMultichainAccountsState2Enabled
+          ? multichainAccountAppContent
+          : AppContent}
       </Box>
       <Box
         display={Display.Flex}
