@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import { WALLET_PASSWORD, withFixtures } from '../../helpers';
+import { unlockWallet, WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
@@ -20,29 +20,10 @@ describe('Add account', function () {
     accounts: 1,
   };
 
-  const setupCleanUserStorage = async (server: Mockttp) => {
-    const userStorageMockttpController = new UserStorageMockttpController();
-    userStorageMockttpController.setupPath(
-      'multichain_accounts_groups',
-      server,
-      {
-        getResponse: [],
-      },
-    );
-    userStorageMockttpController.setupPath(
-      'multichain_accounts_wallets',
-      server,
-      {
-        getResponse: [],
-      },
-    );
-    await mockIdentityServices(server, userStorageMockttpController);
-  };
-
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder().build(),
         localNodeOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
@@ -50,16 +31,14 @@ describe('Add account', function () {
             server,
             '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           );
-          await setupCleanUserStorage(server);
         },
       },
       async ({ driver, localNodes }) => {
-        await completeImportSRPOnboardingFlow({ driver });
+        await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // TODO: Re-enable when state 2 FF is enabled in dev
-        // await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -102,8 +81,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();
-        // TODO: Re-enable when state 2 FF is enabled in dev
-        // await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
@@ -126,16 +104,12 @@ describe('Add account', function () {
         fixtures: new FixtureBuilder().build(),
         localNodeOptions,
         title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
-          await setupCleanUserStorage(server);
-        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const homePage = new HomePage(driver);
-        // TODO: Re-enable when state 2 FF is enabled in dev
-        // await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await headerNavbar.openAccountMenu();
 
         // Create new account with default name Account 2
