@@ -4,7 +4,6 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { unlockWallet, WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -12,8 +11,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
-import { mockIdentityServices, mockNftApiCall } from '../identity/mocks';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { mockNftApiCall } from '../identity/mocks';
 
 describe('Add account', function () {
   const localNodeOptions = {
