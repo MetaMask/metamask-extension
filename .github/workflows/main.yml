@@ -24,7 +24,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
+  cancel-in-progress: ${{ github.event_name != 'schedule' }}
 
 env:
   # For a `pull_request` event, the branch is `github.head_ref``.
