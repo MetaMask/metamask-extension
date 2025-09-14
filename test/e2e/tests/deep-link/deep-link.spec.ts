@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import type { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
@@ -17,8 +18,6 @@ import {
   signDeepLink,
   generateECDSAKeyPair,
 } from './helpers';
-import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
-import { Browser } from 'selenium-webdriver';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -116,7 +115,7 @@ describe('Deep Link', function () {
 
           // navigate to https://link.metamask.io/home and make sure it
           // redirects to the deep link interstitial page
-          const rawUrl = `https://${DEEP_LINK_HOST}${route}`;
+          const rawUrl = `https://link.metamask.io${route}`;
           // note: we sign the "/INVALID" link as well, as signed links that no
           // longer exist/match should be treated handled the same way as
           // unsigned links. We test for this below.
@@ -192,7 +191,7 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://${DEEP_LINK_HOST}/buy`;
+        const rawUrl = `https://link.metamask.io/buy`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
 
         // test signed flow
@@ -227,7 +226,7 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://${DEEP_LINK_HOST}/perps`;
+        const rawUrl = `https://link.metamask.io/perps`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
 
         // test signed flow
@@ -287,7 +286,7 @@ describe('Deep Link', function () {
           value: '0x38d7ea4c68000',
         };
         const params = new URLSearchParams({ ...extraParams, ...swapsParams });
-        const rawUrl = `https://${DEEP_LINK_HOST}/swap?${params.toString()}`;
+        const rawUrl = `https://link.metamask.io/swap?${params.toString()}`;
 
         // test signed flow
         await driver.openNewURL(rawUrl);
@@ -330,7 +329,7 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://${DEEP_LINK_HOST}/home`;
+        const rawUrl = `https://link.metamask.io/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
         await driver.openNewURL(signedUrl);
         const internalDeepLinkUrl = await driver.getCurrentUrl();
@@ -398,7 +397,7 @@ describe('Deep Link', function () {
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 
-        const rawUrl = `https://${DEEP_LINK_HOST}/home`;
+        const rawUrl = `https://link.metamask.io/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
 
         // test signed flow
@@ -435,13 +434,9 @@ describe('Deep Link', function () {
 
         const dappWindowHandle = await driver.driver.getWindowHandle();
         // simulate a dapp calling `window.open('https://link.metamask.io/home')`
-        console.log(
-          'Opening new window via window.open. DEEP_LINK_HOST:',
-          DEEP_LINK_HOST,
-        );
         const windowOpened = await driver.executeScript(
           `
-          globalThis.testWindow = window.open('https://${DEEP_LINK_HOST}/home', '_blank');
+          globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');
           return globalThis.testWindow != null;
           `,
         );
