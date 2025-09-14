@@ -1921,9 +1921,15 @@ export default class MetamaskController extends EventEmitter {
         if (Object.keys(allEnabledNetworks).length === 1) {
           const chainId = Object.keys(allEnabledNetworks)[0];
 
-          const shouldEnableMainetNetworks =
-            (chainId === SolScope.Mainnet && solAccounts.length === 0) ||
-            (chainId === BtcScope.Mainnet && btcAccounts.length === 0);
+          let shouldEnableMainetNetworks = false;
+          if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+          if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: END:ONLY_INCLUDE_IF(bitcoin)
 
           if (shouldEnableMainetNetworks) {
             this.networkOrderController.setEnabledNetworksMultichain(
