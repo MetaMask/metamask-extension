@@ -1118,10 +1118,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "carouselAllCaughtUp": {
-    "message": "You're all caught up!",
-    "description": "Message shown in carousel when all promotional slides have been dismissed"
-  },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
@@ -1135,6 +1131,10 @@
   },
   "cancelled": {
     "message": "Cancelled"
+  },
+  "carouselAllCaughtUp": {
+    "message": "You're all caught up!",
+    "description": "Message shown in carousel when all promotional slides have been dismissed"
   },
   "chainId": {
     "message": "Chain ID"
@@ -1201,12 +1201,12 @@
   "close": {
     "message": "Close"
   },
+  "closeExtension": {
+    "message": "Close extension"
+  },
   "closeSlide": {
     "message": "Close $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
-  },
-  "closeExtension": {
-    "message": "Close extension"
   },
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
