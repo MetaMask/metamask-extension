@@ -460,7 +460,7 @@ describe('Deep Link', function () {
         hackUrl.hash = '#notifications';
         await driver.executeScript(
           // globalThis.testWindow is unset in Firefox. Neat!
-          `globalThis.testWindow?.location.href = ${JSON.stringify(hackUrl)};`,
+          `globalThis.testWindow && (globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)});`,
         );
 
         // go back to the Metamask window.
