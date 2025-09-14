@@ -450,7 +450,6 @@ export const MultichainAccountsConnectPage: React.FC<
                       }
                       balance={'$1337.00'}
                       key={accountGroupId}
-                      selected
                       walletName={accountGroup?.walletName}
                     />
                   );
