@@ -1,9 +1,7 @@
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
-import {
-  SelectedNetworkControllerMessenger,
-} from './messengers';
-import { ControllerInitFunction } from './types';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
+import { SelectedNetworkControllerMessenger } from './messengers';
+import { ControllerInitFunction } from './types';
 
 /**
  * Initialize the selected network controller.

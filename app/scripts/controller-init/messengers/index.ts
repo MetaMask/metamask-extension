@@ -1,5 +1,4 @@
 import { noop } from 'lodash';
-import { SelectedNetworkControllerInit } from '../selected-network-controller-init.ts';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
