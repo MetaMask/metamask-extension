@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "您的账户中没有足够的 $1 来支付网络费用。"
   },
-  "alertMessageNetworkBusy": {
-    "message": "燃料价格很高，估算不太准确。"
-  },
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "非必要权限"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "网络繁忙"
   },
   "alertReasonNoGasPrice": {
     "message": "无法使用费用估算"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "了解我们如何保护您的隐私"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "备份您的账户并同步设置。"
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "备份与同步简介"
-  },
   "backupApprovalInfo": {
     "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "基本"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "基本功能已关闭"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 MetaMask 共享。这就像您访问任何网站一样。MetaMask 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 体验。要了解详情，请参阅我们的 $1。",
@@ -917,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "价格影响"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "价格影响反映了您的兑换订单如何影响资产的市场价格。如果您未持有足够的资金支付燃料费，系统将自动分配部分源代币来抵扣费用，这将导致实际兑换数量减少。MetaMask 不会干预或控制价格影响。"
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "价格影响反映您的兑换订单对资产市场价格的影响程度。它取决于交易规模及资金池中的可用流动性。MetaMask 不会干预或控制价格影响。"
   },
@@ -1068,7 +1050,7 @@
   "busy": {
     "message": "忙碌中"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "出入金"
   },
   "buyMoreAsset": {
@@ -1878,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "未找到匹配的账户"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "接收至"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "接收地址或 ENS（Ethereum 域名服务）"
   },
@@ -2179,9 +2158,6 @@
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
-  },
-  "enableIt": {
-    "message": " 启用它"
   },
   "enableSmartContractAccount": {
     "message": "启用智能合约账户"
@@ -2726,12 +2702,6 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "howQuotesWork": {
-    "message": "报价如何运作"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 MetaMask 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
-  },
   "id": {
     "message": "ID"
   },
@@ -2991,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "先前的交易仍在签署或提交中"
-  },
-  "jazzAndBlockies": {
-    "message": "哈希头像是帮助您一眼识别账户的独特图标，有 Jazzicons 和 Blockies 两种不同风格。"
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3401,15 +3368,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "桥接"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "报价"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "时间"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 想连接 $2 个 snap。",
@@ -4265,13 +4223,6 @@
   },
   "passwordNotLongEnough": {
     "message": "密码必须至少包含 8 个字符"
-  },
-  "passwordStrength": {
-    "message": "密码强度：$1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "强密码可以提高钱包的安全性，以防设备被盗或被入侵。"
   },
   "passwordTermsWarning": {
     "message": "如果我忘记该密码，MetaMask 将无法为我重设。"
@@ -5530,60 +5481,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "启用此选项将跳过在 MetaMask 中打开深度链接时显示的插页式屏幕。“深度链接”（如 https://link.metamask.io/home）会直接唤起 MetaMask 启动；此类链接可能被他人伪装处理。插页式屏幕旨在防止您误开 MetaMask 内可能显示账户、代币、交易记录、余额、设置及其他敏感信息的页面。此设置仅适用于由 MetaMask 签名的链接。"
-  },
-  "slideBridgeDescription": {
-    "message": "横跨 9 条链，一切尽在您的钱包"
-  },
-  "slideBridgeTitle": {
-    "message": "准备好桥接了吗？"
-  },
-  "slideCashOutDescription": {
-    "message": "卖出加密货币，获取现金"
-  },
-  "slideCashOutTitle": {
-    "message": "通过 MetaMask 兑现"
-  },
-  "slideDebitCardDescription": {
-    "message": "特定地区可用"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask 借记卡"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "钱包随身，随行随付"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "下载 MetaMask 移动版"
-  },
-  "slideFundWalletDescription": {
-    "message": "添加或转入代币即可开始使用"
-  },
-  "slideFundWalletTitle": {
-    "message": "为您的钱包存入资金"
-  },
-  "slideMultiSrpDescription": {
-    "message": "在 MetaMask 中导入并使用多个钱包"
-  },
-  "slideMultiSrpTitle": {
-    "message": "添加多个助记词"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "地址相同，功能更加智能化"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "开始使用智能账户"
-  },
-  "slideSolanaDescription": {
-    "message": "创建 Solana 账户即可开始使用"
-  },
-  "slideSolanaTitle": {
-    "message": "现已支持 Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "立即铸造 NFT，赢取惊喜奖励"
-  },
-  "slideSweepStakeTitle": {
-    "message": "参与 $5000 USDC 赢奖活动！"
   },
   "slippage": {
     "message": "滑移"
@@ -7277,9 +7174,6 @@
     "message": "小心 $1。",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "弱"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7298,15 +7192,6 @@
   "welcomeBack": {
     "message": "欢迎回来"
   },
-  "welcomeDescription": {
-    "message": "广受数百万人信赖的 MetaMask 是一款安全钱包，让每个人都能轻松进入 Web3 的世界。"
-  },
-  "welcomeGetStarted": {
-    "message": "开始使用"
-  },
-  "welcomeTitle": {
-    "message": "欢迎使用 MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"
   },
@@ -7315,9 +7200,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "这将会批准 $1 用于桥接。"
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "您将需要在您的硬件钱包上确认两笔交易。"
   },
   "willApproveAmountForSwapping": {
     "message": "这将会批准 $1 用于兑换。"

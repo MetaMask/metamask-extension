@@ -20,6 +20,7 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -1385,6 +1386,81 @@ describe('Actions', () => {
         ),
       );
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#createNextMultichainAccountGroup', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createNextMultichainAccountGroup in background', () => {
+      const store = mockStore();
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const walletIdWithoutPrefix = stripWalletTypePrefixFromWalletId(walletId);
+      const createNextMultichainAccountGroup = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        createNextMultichainAccountGroup,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      store.dispatch(actions.createNextMultichainAccountGroup(walletId));
+
+      expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
+      expect(
+        createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#setAccountGroupName', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setAccountGroupName in background with correct parameters', async () => {
+      const store = mockStore();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+      const newAccountName = 'New Account Name';
+      const setAccountGroupName = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        setAccountGroupName,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.setAccountGroupName(accountGroupId, newAccountName),
+      );
+
+      expect(setAccountGroupName.callCount).toStrictEqual(1);
+      expect(
+        setAccountGroupName.calledWith(accountGroupId, newAccountName),
+      ).toStrictEqual(true);
+    });
+
+    it('returns false when the background call fails', async () => {
+      const store = mockStore();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+      const newAccountName = 'New Account Name';
+      const setAccountGroupName = sinon
+        .stub()
+        .rejects(new Error('Failed to set account name'));
+
+      background.getApi = sinon.stub().returns({
+        setAccountGroupName,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const result = await store.dispatch(
+        actions.setAccountGroupName(accountGroupId, newAccountName),
+      );
+
+      expect(result).toStrictEqual(false);
     });
   });
 

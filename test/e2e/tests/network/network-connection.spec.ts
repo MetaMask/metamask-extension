@@ -104,7 +104,7 @@ networkConfigs.forEach((config) => {
 
           await performDappActionAndVerify(
             driver,
-            () => testDapp.findAndClickCreateToken(),
+            () => testDapp.clickCreateToken(),
             config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

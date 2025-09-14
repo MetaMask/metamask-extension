@@ -649,10 +649,13 @@ describe('PPOM Utils', () => {
         txParams: TRANSACTION_PARAMS_MOCK_1,
       });
 
+      const getSecurityAlertsConfigMock = jest.fn();
+
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
+        getSecurityAlertsConfig: getSecurityAlertsConfigMock,
       });
 
       expect(ppomController.usePPOM).not.toHaveBeenCalled();
@@ -662,6 +665,7 @@ describe('PPOM Utils', () => {
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
         CHAIN_ID_MOCK,
         request,
+        getSecurityAlertsConfigMock,
       );
     });
 
@@ -676,10 +680,13 @@ describe('PPOM Utils', () => {
         .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
         .mockRejectedValue(new Error('Test Error'));
 
+      const getSecurityAlertsConfigMock = jest.fn();
+
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
+        getSecurityAlertsConfig: getSecurityAlertsConfigMock,
       });
 
       expect(ppomController.usePPOM).toHaveBeenCalledTimes(1);
@@ -688,6 +695,7 @@ describe('PPOM Utils', () => {
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledWith(
         CHAIN_ID_MOCK,
         request,
+        getSecurityAlertsConfigMock,
       );
     });
   });

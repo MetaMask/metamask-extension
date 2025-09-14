@@ -16,6 +16,16 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => mockHistory,
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useLocation: () => ({ pathname: '/send/asset' }),
+  useSearchParams: jest
+    .fn()
+    .mockReturnValue([
+      { get: () => null, toString: () => 'searchParams=dummy' },
+    ]),
+}));
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 
