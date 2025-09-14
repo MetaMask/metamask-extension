@@ -431,9 +431,13 @@ describe('Deep Link', function () {
 
         const dappWindowHandle = await driver.driver.getWindowHandle();
         // simulate a dapp calling `window.open('https://link.metamask.io/home')`
-        await driver.executeScript(
-          `globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');`,
+        const windowOpened = await driver.executeScript(
+          `
+          globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');
+          return globalThis.testWindow != null;
+          `,
         );
+        assert(windowOpened, 'window.open failed');
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -455,7 +459,8 @@ describe('Deep Link', function () {
         const hackUrl = new URL(initialUrl);
         hackUrl.hash = '#notifications';
         await driver.executeScript(
-          `globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)};`,
+          // globalThis.testWindow is unset in Firefox. Neat!
+          `globalThis.testWindow?.location.href = ${JSON.stringify(hackUrl)};`,
         );
 
         // go back to the Metamask window.
