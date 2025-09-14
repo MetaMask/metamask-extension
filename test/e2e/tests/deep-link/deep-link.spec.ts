@@ -435,6 +435,10 @@ describe('Deep Link', function () {
 
         const dappWindowHandle = await driver.driver.getWindowHandle();
         // simulate a dapp calling `window.open('https://link.metamask.io/home')`
+        console.log(
+          'Opening new window via window.open. DEEP_LINK_HOST:',
+          DEEP_LINK_HOST,
+        );
         const windowOpened = await driver.executeScript(
           `
           globalThis.testWindow = window.open('https://${DEEP_LINK_HOST}/home', '_blank');
