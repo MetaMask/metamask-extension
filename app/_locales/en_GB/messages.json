@@ -1118,6 +1118,10 @@
   "cancel": {
     "message": "Cancel"
   },
+  "carouselAllCaughtUp": {
+    "message": "You're all caught up!",
+    "description": "Message shown in carousel when all promotional slides have been dismissed"
+  },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
@@ -1196,6 +1200,10 @@
   },
   "close": {
     "message": "Close"
+  },
+  "closeSlide": {
+    "message": "Close $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "closeExtension": {
     "message": "Close extension"
