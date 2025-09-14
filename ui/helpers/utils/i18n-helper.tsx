@@ -20,7 +20,7 @@ export const getMessage = (
   localeCode: string,
   localeMessages: I18NMessageDict,
   key: string,
-  substitutions?: string[],
+  substitutions?: I18NSubstitution[],
 ): JSX.Element | string | null => {
   const hasReactSubstitutions = substitutions?.some(
     (element) =>

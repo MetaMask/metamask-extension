@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "कीमत का असर"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "कीमत का असर यह दर्शाता है कि आपका स्वैप ऑर्डर एसेट के मार्केट प्राइस को कैसे प्रभावित करता है। यदि आपके पास गैस के लिए पर्याप्त फंड नहीं हैं, तो आपके सोर्स टोकन का एक हिस्सा अपने आप ही शुल्क चुकाने के लिए आवंटित कर दिया जाता है, जिससे स्वैप की गई राशि कम हो जाएगी। MetaMask कीमत के असर को न तो प्रभावित करता है और न ही नियंत्रित करता है।"
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "कीमत का असर यह दर्शाता है कि आपका स्वैप ऑर्डर एसेट के मार्केट प्राइस को कैसे प्रभावित करता है। यह ट्रेड के आकार और पूल में उपलब्ध लिक्विडिटी पर निर्भर करता है। MetaMask कीमत के असर को न तो प्रभावित करता है और न ही नियंत्रित करता है।"
   },
@@ -1053,8 +1050,8 @@
   "busy": {
     "message": "बिज़ी"
   },
-  "buyAndSell": {
-    "message": "खरीदें/बेचें"
+  "buy": {
+    "message": "खरीदें"
   },
   "buyMoreAsset": {
     "message": "ज्यादा $1 खरीदें",
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "कोई मैचिंग अकाउंट नहीं मिला"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "पर प्राप्त करें"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "प्राप्ति एड्रेस या ENS"
@@ -2708,12 +2702,6 @@
   "honeypotTitle": {
     "message": "हनी पॉट"
   },
-  "howQuotesWork": {
-    "message": "कोट्स कैसे काम करते हैं"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "इस कोट में हमारे द्वारा ढूंढे गए कोट्स की तुलना में सबसे अच्छा रिटर्न है। यह स्वैप रेट पर आधारित है, जिसमें ब्रिजिंग शुल्क और $1% MetaMask शुल्क, गैस फीस घटाकर शामिल है। गैस फीस इस बात पर निर्भर करता है कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है।"
-  },
   "id": {
     "message": "ID"
   },
@@ -2973,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "पिछला ट्रांसेक्शन अभी भी साइन या सबमिट किया जा रहा है"
-  },
-  "jazzAndBlockies": {
-    "message": "जैज़आइकन्स और ब्लॉकीज़ यूनीक आइकनों की दो अलग-अलग शैलियां हैं जो आपको एक नज़र में किसी अकाउंट की पहचान करने में मदद करती हैं।"
   },
   "jazzicons": {
     "message": "जैज़आइकन्स"
@@ -3383,15 +3368,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "आप इस नेटवर्क को MetaMask में जोड़ रहे हैं और इस साइट को इसका उपयोग करने की अनुमति दे रहे हैं।"
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "ब्रिज किया जा रहा है"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "कोटेशन"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "समय"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
@@ -4247,13 +4223,6 @@
   },
   "passwordNotLongEnough": {
     "message": "पासवर्ड में कम से कम 8 कैरेक्टर्स होने चाहिए"
-  },
-  "passwordStrength": {
-    "message": "पासवर्ड की मजबूती: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "अगर आपका डिवाइस चोरी हो गया हो या उसके साथ छेड़छाड़ की गई है, तब एक मजबूत पासवर्ड आपके वॉलेट की सुरक्षा को बेहतर बना सकता है।"
   },
   "passwordTermsWarning": {
     "message": "अगर मैं यह पासवर्ड भूल गया, तो MetaMask इसे मेरे लिए रीसेट नहीं कर सकता।"
@@ -7205,9 +7174,6 @@
     "message": "$1 से सावधान रहें।",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "कमज़ोर"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7226,15 +7192,6 @@
   "welcomeBack": {
     "message": "वापसी पर स्वागत है"
   },
-  "welcomeDescription": {
-    "message": "लाखों लोगों का भरोसेमंद, MetaMask एक सुरक्षित वॉलेट है जो Web3 की दुनिया को सबके लिए सुलभ बनाता है।"
-  },
-  "welcomeGetStarted": {
-    "message": "शुरू करें"
-  },
-  "welcomeTitle": {
-    "message": "MetaMask में आपका स्वागत है"
-  },
   "welcomeToMetaMask": {
     "message": "चलिए शुरु करते हैं"
   },
@@ -7243,9 +7200,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "यह ब्रिजिंग के लिए $1 एप्रूव करेगा।"
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "आपको अपने हार्डवेयर वॉलेट पर दो ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
   "willApproveAmountForSwapping": {
     "message": "स्वैपिंग के लिए यह $1 एप्रूव करेगा।"

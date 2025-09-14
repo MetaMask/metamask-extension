@@ -1715,6 +1715,42 @@ describe('Bridge selectors', () => {
         }),
       );
     });
+
+    it('should return the selected internal account if accountGroup does not have account for scope', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          accountTree: {
+            // This account group only has 1 Solana account
+            selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
+          },
+        },
+      });
+
+      expect(getFromChain(state as never)).toStrictEqual(
+        expect.objectContaining({
+          chainId: '0x1',
+        }),
+      );
+      const result = getFromAccount(state as never);
+      expect(result).toMatchObject({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        type: 'eip155:eoa',
+      });
+    });
   });
 
   describe('getIsSwap', () => {

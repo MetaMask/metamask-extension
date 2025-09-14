@@ -1,13 +1,16 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../store/store';
 import WelcomeLogin from './welcome-login';
 
 describe('Welcome login', () => {
   it('should render', () => {
     const mockOnLogin = jest.fn();
+    const store = configureStore({});
     const { getByTestId, getByText } = renderWithProvider(
       <WelcomeLogin onLogin={mockOnLogin} />,
+      store,
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 
@@ -21,8 +24,10 @@ describe('Welcome login', () => {
   it('should display Login Options modal when seedless onboarding feature is enabled', () => {
     const mockOnLogin = jest.fn();
 
+    const store = configureStore({});
     const { getByTestId, getByText } = renderWithProvider(
       <WelcomeLogin onLogin={mockOnLogin} />,
+      store,
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 

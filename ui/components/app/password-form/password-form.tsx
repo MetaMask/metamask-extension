@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import zxcvbn from 'zxcvbn';
 import {
   Box,
   ButtonIcon,
@@ -7,14 +6,10 @@ import {
   FormTextFieldSize,
   IconName,
   InputType,
-  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
@@ -38,83 +33,18 @@ export default function PasswordForm({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  const getPasswordStrengthLabel = useCallback(
-    (isTooShort: boolean, score: number) => {
-      if (isTooShort) {
-        return {
-          className: 'create-password__weak',
-          dataTestId: 'short-password-error',
-          text: t('passwordNotLongEnough'),
-          description: '',
-        };
-      }
-      if (score >= 4) {
-        return {
-          className: 'create-password__strong',
-          dataTestId: 'strong-password',
-          text: t('strong'),
-          description: '',
-        };
-      }
-      if (score === 3) {
-        return {
-          className: 'create-password__average',
-          dataTestId: 'average-password',
-          text: t('average'),
-          description: t('passwordStrengthDescription'),
-        };
-      }
-      return {
-        className: 'create-password__weak',
-        dataTestId: 'weak-password',
-        text: t('weak'),
-        description: t('passwordStrengthDescription'),
-      };
-    },
-    [t],
-  );
-
-  const [passwordStrengthElement, setPasswordStrengthElement] = useState(null);
-
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
-      const isTooShort = passwordInput.length < PASSWORD_MIN_LENGTH;
-      const { score } = zxcvbn(passwordInput);
-      const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
-      const passwordStrengthComponent = isTooShort ? (
-        <Text
-          variant={TextVariant.inherit}
-          as="span"
-          key={score}
-          data-testid={passwordStrengthLabel.dataTestId}
-          color={TextColor.textAlternative}
-        >
-          {passwordStrengthLabel.text}
-        </Text>
-      ) : (
-        t('passwordStrength', [
-          <Text
-            variant={TextVariant.inherit}
-            as="span"
-            key={score}
-            data-testid={passwordStrengthLabel.dataTestId}
-            className={passwordStrengthLabel.className}
-          >
-            {passwordStrengthLabel.text}
-          </Text>,
-        ])
-      );
-
       const confirmError =
         !confirmPassword || passwordInput === confirmPassword
           ? ''
           : t('passwordsDontMatch');
 
       setPassword(passwordInput);
-      setPasswordStrengthElement(passwordStrengthComponent);
+
       setConfirmPasswordError(confirmError);
     },
-    [confirmPassword, t, getPasswordStrengthLabel],
+    [confirmPassword, t],
   );
 
   const handleConfirmPasswordChange = useCallback(
@@ -160,8 +90,9 @@ export default function PasswordForm({
         }}
         helpTextProps={{
           color: TextColor.textAlternative,
+          'data-testid': 'short-password-error',
         }}
-        helpText={passwordStrengthElement && passwordStrengthElement}
+        helpText={t('passwordNotLongEnough')}
         endAccessory={
           <ButtonIcon
             iconName={showPassword ? IconName.EyeSlash : IconName.Eye}

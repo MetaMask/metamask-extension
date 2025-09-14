@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 class AddTokensModal {
@@ -29,17 +28,18 @@ class AddTokensModal {
   }
 
   /**
-   * Checks the count of suggested tokens.
+   * Waits for the specified number of suggested tokens to appear.
    *
-   * @param expectedTokenCount - The expected count of suggested tokens.
+   * @param expectedTokenCount - The expected count of suggested tokens to wait for.
    */
-  async checkSuggestedTokensCount(expectedTokenCount: number) {
-    const multipleSuggestedTokens = await this.driver.findElements(
-      this.tokenListItem,
+  async waitUntilXTokens(expectedTokenCount: number): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const tokens = await this.driver.findElements(this.tokenListItem);
+        return tokens.length === expectedTokenCount;
+      },
+      { timeout: 10000, interval: 100 },
     );
-
-    // Confirm the expected number of tokens are present as suggested token list
-    assert.equal(multipleSuggestedTokens.length, expectedTokenCount);
   }
 
   async confirmAddTokens() {

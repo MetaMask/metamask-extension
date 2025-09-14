@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
@@ -21,7 +20,11 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  startOAuthLogin,
+  setIsSocialLoginFlowEnabledForMetrics,
+} from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
@@ -34,19 +37,10 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import WelcomeLogin from './welcome-login';
-import WelcomeBanner from './welcome-banner';
-import {
-  LOGIN_ERROR,
-  LOGIN_OPTION,
-  LOGIN_TYPE,
-  WelcomePageState,
-} from './types';
+import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
 
-export default function OnboardingWelcome({
-  pageState = WelcomePageState.Banner,
-  setPageState,
-}) {
+export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -64,6 +58,8 @@ export default function OnboardingWelcome({
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
+
+  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
@@ -80,7 +76,7 @@ export default function OnboardingWelcome({
           { replace: true },
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (getBrowserName() === PLATFORM_FIREFOX) {
+        if (isFireFox) {
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -102,6 +98,7 @@ export default function OnboardingWelcome({
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
     isUserAuthenticatedWithSocialLogin,
+    isFireFox,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -182,6 +179,12 @@ export default function OnboardingWelcome({
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
+      // Map raw OAuth error messages to UI modal-friendly constants
+      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+        setLoginError(null);
+        return;
+      }
+
       bufferedTrace?.({
         name: TraceName.OnboardingSocialLoginError,
         op: TraceOperation.OnboardingError,
@@ -193,6 +196,21 @@ export default function OnboardingWelcome({
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
       });
+
+      if (errorMessage === OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR) {
+        setLoginError(LOGIN_ERROR.SESSION_EXPIRED);
+        return;
+      }
+
+      if (
+        errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR ||
+        errorMessage === OAuthErrorMessages.NO_AUTH_CODE_FOUND_ERROR
+      ) {
+        setLoginError(LOGIN_ERROR.UNABLE_TO_CONNECT);
+        return;
+      }
+
+      setLoginError(LOGIN_ERROR.GENERIC);
     },
     [onboardingParentContext, bufferedTrace, bufferedEndTrace],
   );
@@ -314,43 +332,51 @@ export default function OnboardingWelcome({
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
-        if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
-          await onCreateClick();
-        } else if (
-          loginOption === LOGIN_OPTION.EXISTING &&
-          loginType === LOGIN_TYPE.SRP
-        ) {
-          await onImportClick();
-        } else if (isSeedlessOnboardingFeatureEnabled) {
+        if (loginType === LOGIN_TYPE.SRP) {
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
           if (loginOption === LOGIN_OPTION.NEW) {
-            await onSocialLoginCreateClick(loginType);
+            await onCreateClick();
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
-            await onSocialLoginImportClick(loginType);
+            await onImportClick();
           }
+          // return here to prevent the social login flow from being enabled
+          return;
+        }
+
+        if (!isSeedlessOnboardingFeatureEnabled) {
+          return;
+        }
+
+        if (loginOption === LOGIN_OPTION.NEW) {
+          await onSocialLoginCreateClick(loginType);
+          // if firefox, set isSocialLoginFlowEnabledForMetrics to false, otherwise set to true
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(!isFireFox));
+        } else if (loginOption === LOGIN_OPTION.EXISTING) {
+          await onSocialLoginImportClick(loginType);
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
         }
       } catch (error) {
         handleLoginError(error);
       }
     },
     [
+      isSeedlessOnboardingFeatureEnabled,
+      dispatch,
       onCreateClick,
       onImportClick,
       onSocialLoginCreateClick,
+      isFireFox,
       onSocialLoginImportClick,
-      isSeedlessOnboardingFeatureEnabled,
       handleLoginError,
     ],
   );
 
   return (
     <>
-      {pageState === WelcomePageState.Banner && (
-        <WelcomeBanner onAccept={() => setPageState(WelcomePageState.Login)} />
-      )}
-      {pageState === WelcomePageState.Login && (
-        <WelcomeLogin onLogin={handleLogin} />
-      )}
+      <WelcomeLogin onLogin={handleLogin} />
+
       {isLoggingIn && <LoadingScreen />}
+
       {loginError !== null && (
         <LoginErrorModal
           onClose={() => setLoginError(null)}
@@ -360,8 +386,3 @@ export default function OnboardingWelcome({
     </>
   );
 }
-
-OnboardingWelcome.propTypes = {
-  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
-  setPageState: PropTypes.func.isRequired,
-};
