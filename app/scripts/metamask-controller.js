@@ -1898,7 +1898,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       'AccountTreeController:selectedAccountGroupChange',
-      async () => {
+      () => {
         const solAccounts =
           this.accountTreeController.getAccountsFromSelectedAccountGroup({
             scopes: [SolScope.Mainnet],
@@ -1919,38 +1919,25 @@ export default class MetamaskController extends EventEmitter {
           return { ...acc, ...curr };
         }, {});
 
-        const enabledNetworkChainIds = Object.keys(allEnabledNetworks);
+        if (Object.keys(allEnabledNetworks).length === 1) {
+          const chainId = Object.keys(allEnabledNetworks)[0];
 
-        // Check if any non-EVM networks are enabled but don't have available accounts
-        let shouldEnableMainnetNetworks = false;
+          let shouldEnableMainetNetworks = false;
+          if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+          if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: END:ONLY_INCLUDE_IF(bitcoin)
 
-        // Check if Solana mainnet is enabled but has no accounts
-        if (
-          enabledNetworkChainIds.includes(SolScope.Mainnet) &&
-          solAccounts.length === 0
-        ) {
-          shouldEnableMainnetNetworks = true;
-        }
-
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-        // Check if Bitcoin mainnet is enabled but has no accounts
-        if (
-          enabledNetworkChainIds.includes(BtcScope.Mainnet) &&
-          btcAccounts.length === 0
-        ) {
-          shouldEnableMainnetNetworks = true;
-        }
-        ///: END:ONLY_INCLUDE_IF(bitcoin)
-
-        // If non-EVM networks are enabled but unusable, ensure Ethereum mainnet is available as fallback
-        if (
-          shouldEnableMainnetNetworks &&
-          !enabledNetworkChainIds.includes('0x1')
-        ) {
-          await this.networkOrderController.setEnabledNetworksMultichain(
-            [...enabledNetworkChainIds, '0x1'],
-            KnownCaipNamespace.Eip155,
-          );
+          if (shouldEnableMainetNetworks) {
+            this.networkOrderController.setEnabledNetworksMultichain(
+              ['0x1'],
+              KnownCaipNamespace.Eip155,
+            );
+          }
         }
       },
     );
