@@ -23,7 +23,7 @@ import {
   NetworkControllerMessenger,
 } from './messengers';
 
-const ADDITIONAL_DEFAULT_NETWORKS = [
+export const ADDITIONAL_DEFAULT_NETWORKS = [
   ChainId['megaeth-testnet'],
   ChainId['monad-testnet'],
 ];
