@@ -183,10 +183,9 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getMultichainProviderConfig,
-  getFromChains,
-  (providerConfig, fromChains) => {
-    return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
+  [(state) => getMultichainProviderConfig(state).chainId, getFromChains],
+  (providerChainId, fromChains) => {
+    return fromChains.find(({ chainId }) => chainId === providerChainId);
   },
 );
 
