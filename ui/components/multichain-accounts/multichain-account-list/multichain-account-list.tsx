@@ -7,7 +7,7 @@ import {
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Text } from '../../component-library';
+import { Box, Checkbox, Text } from '../../component-library';
 
 import {
   AlignItems,
@@ -49,6 +49,7 @@ export type MultichainAccountListProps = {
   }>;
   isInSearchMode?: boolean;
   displayWalletHeader?: boolean;
+  showAccountCheckbox?: boolean;
 };
 
 export const MultichainAccountList = ({
@@ -58,6 +59,7 @@ export const MultichainAccountList = ({
   formattedAccountGroupBalancesByWallet,
   isInSearchMode = false,
   displayWalletHeader = true,
+  showAccountCheckbox = false,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -167,6 +169,20 @@ export const MultichainAccountList = ({
                   groupId as AccountGroupId,
                 )}
                 onClick={handleAccountClickToUse}
+                startAccessory={
+                  showAccountCheckbox ? (
+                    <Box marginRight={4}>
+                      <Checkbox
+                        isChecked={selectedAccountGroupsSet.has(
+                          groupId as AccountGroupId,
+                        )}
+                        onChange={() => {
+                          handleAccountClickToUse(groupId as AccountGroupId);
+                        }}
+                      />
+                    </Box>
+                  ) : undefined
+                }
                 endAccessory={
                   <MultichainAccountMenu
                     accountGroupId={groupId as AccountGroupId}
@@ -208,6 +224,7 @@ export const MultichainAccountList = ({
     displayWalletHeader,
     formattedAccountGroupBalancesByWallet,
     selectedAccountGroupsSet,
+    showAccountCheckbox,
     handleAccountRenameAction,
   ]);
 

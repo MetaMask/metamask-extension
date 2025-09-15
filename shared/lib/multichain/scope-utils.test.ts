@@ -50,6 +50,7 @@ const createMockFactory = () => {
     type: AccountGroupType.MultichainAccount,
     metadata: createGroupMetadata('Mock Group'),
     walletName: 'Mock Wallet',
+    walletId: 'mock-wallet-id',
     accounts: [createMockAccount()],
     ...overrides,
   });

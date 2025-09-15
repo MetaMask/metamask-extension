@@ -80,6 +80,7 @@ import {
 import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { getCaip25AccountFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
+import { useAllWalletAccountsBalances } from '../../../hooks/multichain-accounts/useAccountBalance';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -124,6 +125,7 @@ export const MultichainAccountsConnectPage: React.FC<
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
+  const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),
@@ -350,6 +352,32 @@ export const MultichainAccountsConnectPage: React.FC<
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
 
+  const renderAccountCell = useCallback(
+    (accountGroupId: AccountGroupObject['id']) => {
+      const accountGroup = supportedAccountGroups.find(
+        (group) => group.id === accountGroupId,
+      );
+
+      const balanceText =
+        formattedAccountGroupBalancesByWallet && accountGroup
+          ? (formattedAccountGroupBalancesByWallet?.[accountGroup.walletId]?.[
+              accountGroupId
+            ] ?? undefined)
+          : '';
+
+      return (
+        <MultichainAccountCell
+          accountId={accountGroupId}
+          accountName={accountGroup?.metadata.name || 'Unknown Account'}
+          balance={balanceText ?? ''}
+          key={accountGroupId}
+          walletName={accountGroup?.walletName}
+        />
+      );
+    },
+    [supportedAccountGroups, formattedAccountGroupBalancesByWallet],
+  );
+
   return pageMode === MultichainAccountsConnectPageMode.Summary ? (
     <Page
       data-testid="connect-page"
@@ -440,23 +468,7 @@ export const MultichainAccountsConnectPage: React.FC<
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.XL}
               >
-                {selectedAccountGroupIds.map((accountGroupId) => {
-                  const accountGroup = supportedAccountGroups.find(
-                    (group) => group.id === accountGroupId,
-                  );
-                  return (
-                    <MultichainAccountCell
-                      accountId={accountGroupId}
-                      accountName={
-                        accountGroup?.metadata.name || 'Unknown Account'
-                      }
-                      balance={'$1337.00'}
-                      key={accountGroupId}
-                      selected
-                      walletName={accountGroup?.walletName}
-                    />
-                  );
-                })}
+                {selectedAccountGroupIds.map(renderAccountCell)}
               </Box>
               {selectedAccountGroupIds.length === 0 && (
                 <Box
