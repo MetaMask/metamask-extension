@@ -4621,19 +4621,6 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
         .mockReturnValue();
 
-      jest
-        .spyOn(
-          metamaskController.userStorageController,
-          'setHasAccountSyncingSyncedAtLeastOnce',
-        )
-        .mockResolvedValue(undefined);
-      jest
-        .spyOn(
-          metamaskController.userStorageController,
-          'setIsAccountSyncingReadyToBeDispatched',
-        )
-        .mockResolvedValue(undefined);
-
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
     });
 
@@ -4651,20 +4638,6 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue(wallet);
 
-      const spyHasSynced = jest
-        .spyOn(
-          metamaskController.userStorageController,
-          'setHasAccountSyncingSyncedAtLeastOnce',
-        )
-        .mockResolvedValue(undefined);
-
-      const spyReady = jest
-        .spyOn(
-          metamaskController.userStorageController,
-          'setIsAccountSyncingReadyToBeDispatched',
-        )
-        .mockResolvedValue(undefined);
-
       const result = await metamaskController.discoverAndCreateAccounts();
 
       expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
@@ -4674,9 +4647,6 @@ describe('MetaMaskController', () => {
 
       expect(wallet.discoverAndCreateAccounts).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
-
-      expect(spyHasSynced.mock.calls).toStrictEqual([[false], [true]]);
-      expect(spyReady.mock.calls).toStrictEqual([[false], [true]]);
     });
 
     it('passes provided keyring id to wallet getter', async () => {
@@ -4692,20 +4662,6 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue(wallet);
 
-      const spyHasSynced = jest
-        .spyOn(
-          metamaskController.userStorageController,
-          'setHasAccountSyncingSyncedAtLeastOnce',
-        )
-        .mockResolvedValue(undefined);
-
-      const spyReady = jest
-        .spyOn(
-          metamaskController.userStorageController,
-          'setIsAccountSyncingReadyToBeDispatched',
-        )
-        .mockResolvedValue(undefined);
-
       const result =
         await metamaskController.discoverAndCreateAccounts(providedId);
 
@@ -4715,9 +4671,6 @@ describe('MetaMaskController', () => {
       );
 
       expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
-
-      expect(spyHasSynced.mock.calls).toStrictEqual([[false], [true]]);
-      expect(spyReady.mock.calls).toStrictEqual([[false], [true]]);
     });
 
     it('returns zero counts on error', async () => {
