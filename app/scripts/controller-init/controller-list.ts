@@ -56,6 +56,7 @@ import { GatorPermissionsController } from '@metamask/gator-permissions-controll
 import { ShieldController } from '@metamask/shield-controller';
 import { EnsController } from '@metamask/ens-controller';
 import { NameController } from '@metamask/name-controller';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -102,6 +103,7 @@ export type Controller =
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | SeedlessOnboardingController<EncryptionKey>
+  | SelectedNetworkController
   | ShieldController
   | SmartTransactionsController
   | SnapController
@@ -157,6 +159,7 @@ export type ControllerFlatState = AccountsController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
+  SelectedNetworkController['state'] &
   ShieldController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
