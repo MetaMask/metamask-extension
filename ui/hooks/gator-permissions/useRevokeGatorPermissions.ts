@@ -84,12 +84,12 @@ export function useRevokeGatorPermissions({
   );
 
   /**
-   * Asserts that a default RPC endpoint is available.
+   * Returns the default RPC endpoint.
    *
    * @returns The default RPC endpoint.
    * @throws An error if no default RPC endpoint is found.
    */
-  const assertDefaultRpcEndpoint = useCallback(() => {
+  const getDefaultRpcEndpoint = useCallback(() => {
     if (!defaultRpcEndpoint) {
       throw new Error('No default RPC endpoint found');
     }
@@ -206,7 +206,7 @@ export function useRevokeGatorPermissions({
         PermissionTypesWithCustom
       >,
     ) => {
-      const { networkClientId } = assertDefaultRpcEndpoint();
+      const { networkClientId } = getDefaultRpcEndpoint();
       const { permissionContext, delegationManagerAddress, accountAddress } =
         buildRevokeGatorPermissionArgs(gatorPermission);
 
@@ -241,7 +241,7 @@ export function useRevokeGatorPermissions({
       return transactionMeta;
     },
     [
-      assertDefaultRpcEndpoint,
+      getDefaultRpcEndpoint,
       buildRevokeGatorPermissionArgs,
       extractDelegationFromGatorPermissionContext,
     ],
