@@ -621,7 +621,7 @@ describe('NetworkListMenu', () => {
 
       const searchBox = getByPlaceholderText('Search');
       fireEvent.focus(searchBox);
-      fireEvent.change(searchBox, { target: { value: 'Main' } });
+      fireEvent.change(searchBox, { target: { value: 'Ethereum' } });
 
       // Search should still work
       expect(queryByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
