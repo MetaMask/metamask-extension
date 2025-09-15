@@ -76,12 +76,13 @@ export const getIsMultichainAccountsState1Enabled = (
 /**
  * Selector to check if the multichain accounts feature is enabled for state 2.
  *
- * @param state - The MetaMask state object
+ * @param _state - The MetaMask state object
  * @returns boolean - True if the feature is enabled for state 2, false otherwise.
  */
 export const getIsMultichainAccountsState2Enabled = (
-  state: RemoteFeatureFlagsState,
+  _state: RemoteFeatureFlagsState,
 ) => {
-  const flags = getMultichainAccountsRemoteFeatureFlags(state);
-  return isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2);
+  return true;
+  // const flags = getMultichainAccountsRemoteFeatureFlags(state);
+  // return isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2);
 };
