@@ -12,7 +12,7 @@ export type OAuthServiceMessenger = ReturnType<typeof getOAuthServiceMessenger>;
 export function getOAuthServiceMessenger(messenger: Messenger<never, never>) {
   return messenger.getRestricted({
     name: 'OAuthService',
-    allowedActions: [],
+    allowedActions: ['SeedlessOnboardingController:getState' as never],
     allowedEvents: [],
   });
 }

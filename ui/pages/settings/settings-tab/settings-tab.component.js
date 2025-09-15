@@ -262,8 +262,7 @@ export default class SettingsTab extends PureComponent {
                 variant={TextVariant.bodySm}
                 as="h6"
               >
-                {/* {t('maskicons')} */}
-                Mask icons
+                {t('maskicons')}
               </Text>
             </button>
             <button
