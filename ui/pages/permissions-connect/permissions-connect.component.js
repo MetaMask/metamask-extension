@@ -341,7 +341,9 @@ export default class PermissionConnect extends Component {
     );
 
     if (requestedCaipChainIds.length > 0) {
-      caipChainIdsToUse.concat(requestedCaipChainIds);
+      requestedCaipChainIds.forEach((chainId) => {
+        caipChainIdsToUse.push(chainId);
+      });
     }
 
     if (requestedNamespaces.includes(KnownCaipNamespace.Eip155)) {
