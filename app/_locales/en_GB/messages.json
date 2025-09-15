@@ -556,6 +556,10 @@
   "allTimeLow": {
     "message": "All time low"
   },
+  "allowMetaMaskToAddAReferralCode": {
+    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
+    "description": "The text for the checkbox label in the Hyperliquid referral consent dialog"
+  },
   "allowNotifications": {
     "message": "Allow notifications"
   },
@@ -3399,6 +3403,10 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metaMaskXHyperliquid": {
+    "message": "MetaMask x Hyperliquid",
+    "description": "The title of the Hyperliquid referral consent dialog"
+  },
   "metaMetricsIdNotAvailableError": {
     "message": "Since you've never opted into MetaMetrics, there's no data to delete here."
   },
@@ -5258,6 +5266,10 @@
   },
   "save": {
     "message": "Save"
+  },
+  "saveOnTradesWithAMetaMaskReferralCode": {
+    "message": "Save up to 4% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the Hyperliquid referral consent dialog"
   },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
@@ -7619,17 +7631,5 @@
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
-  },
-  "metaMaskXHyperliquid": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral consent dialog"
-  },
-  "saveOnTradesWithAMetaMaskReferralCode": {
-    "message": "Save up to 4% on trades with a MetaMask referral code.",
-    "description": "The subtitle of the Hyperliquid referral consent dialog"
-  },
-  "allowMetaMaskToAddAReferralCode": {
-    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
-    "description": "The text for the checkbox label in the Hyperliquid referral consent dialog"
   }
 }
