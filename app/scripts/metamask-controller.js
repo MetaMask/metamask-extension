@@ -1,6 +1,10 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  createAsyncMiddleware,
+  createScaffoldMiddleware,
+  JsonRpcEngine,
+} from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -35,7 +39,6 @@ import {
   ApprovalRequestNotFoundError,
 } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
-import { EnsController } from '@metamask/ens-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import {
@@ -88,14 +91,6 @@ import {
 
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
-import {
-  NameController,
-  ENSNameProvider,
-  EtherscanNameProvider,
-  TokenNameProvider,
-  LensNameProvider,
-} from '@metamask/name-controller';
 
 import { UserOperationController } from '@metamask/user-operation-controller';
 import {
@@ -150,6 +145,9 @@ import {
   getCallsStatus,
   getCapabilities,
   processSendCalls,
+  walletGetCallsStatus,
+  walletGetCapabilities,
+  walletSendCalls,
 } from '@metamask/eip-5792-middleware';
 
 import {
@@ -177,6 +175,10 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  FEATURE_VERSION_2,
+  isMultichainAccountsFeatureEnabled,
+} from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -271,7 +273,6 @@ import { createTransactionEventFragmentWithTxId } from './lib/transaction/metric
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -397,6 +398,7 @@ import {
   SnapControllerInit,
   SnapInsightsControllerInit,
   SnapInterfaceControllerInit,
+  SnapsNameProviderInit,
   SnapsRegistryInit,
   WebSocketServiceInit,
 } from './controller-init/snaps';
@@ -436,6 +438,8 @@ import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
 import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
+import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
+import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -961,21 +965,6 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    this.ensController = new EnsController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'EnsController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getState',
-        ],
-        allowedEvents: [],
-      }),
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
-    });
-
     const onboardingControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'OnboardingController',
@@ -1269,6 +1258,8 @@ export default class MetamaskController extends EventEmitter {
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
+          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.discoverAndCreateAccounts();
           } else {
             await this._addAccountsWithBalance();
           }
@@ -1569,59 +1560,6 @@ export default class MetamaskController extends EventEmitter {
       traceFn: (...args) => trace(...args),
     });
 
-    const isExternalNameSourcesEnabled = () =>
-      this.preferencesController.state.useExternalNameSources;
-
-    this.nameController = new NameController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'NameController',
-        allowedActions: [],
-      }),
-      providers: [
-        new ENSNameProvider({
-          reverseLookup: this.ensController.reverseResolveAddress.bind(
-            this.ensController,
-          ),
-        }),
-        new EtherscanNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new TokenNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new LensNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new SnapsNameProvider({
-          messenger: this.controllerMessenger.getRestricted({
-            name: 'SnapsNameProvider',
-            allowedActions: [
-              'SnapController:getAll',
-              'SnapController:get',
-              'SnapController:handleRequest',
-              'PermissionController:getState',
-            ],
-          }),
-        }),
-      ],
-      state: initState.NameController,
-    });
-
-    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
-      name: 'PetnamesBridge',
-      allowedEvents: [
-        'NameController:stateChange',
-        'AccountsController:stateChange',
-        'AddressBookController:stateChange',
-      ],
-      allowedActions: ['AccountsController:listAccounts'],
-    });
-
-    new AddressBookPetnamesBridge({
-      addressBookController: this.addressBookController,
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
-    new AccountIdentitiesPetnamesBridge({
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
@@ -1806,6 +1744,9 @@ export default class MetamaskController extends EventEmitter {
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
+      SnapsNameProvider: SnapsNameProviderInit,
+      EnsController: EnsControllerInit,
+      NameController: NameControllerInit,
     };
 
     const {
@@ -1875,10 +1816,33 @@ export default class MetamaskController extends EventEmitter {
     this.shieldController = controllersByName.ShieldController;
     this.gatorPermissionsController =
       controllersByName.GatorPermissionsController;
+    this.ensController = controllersByName.EnsController;
+    this.nameController = controllersByName.NameController;
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
+
+    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
+      name: 'PetnamesBridge',
+      allowedEvents: [
+        'NameController:stateChange',
+        'AccountsController:stateChange',
+        'AddressBookController:stateChange',
+      ],
+      allowedActions: ['AccountsController:listAccounts'],
+    });
+
+    new AddressBookPetnamesBridge({
+      addressBookController: this.addressBookController,
+      nameController: this.nameController,
+      messenger: petnamesBridgeMessenger,
+    }).init();
+
+    new AccountIdentitiesPetnamesBridge({
+      nameController: this.nameController,
+      messenger: petnamesBridgeMessenger,
+    }).init();
 
     this.getSecurityAlertsConfig = () => {
       return async (url) => {
@@ -1931,6 +1895,78 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    const getAccounts = ({ origin: innerOrigin }) => {
+      if (innerOrigin === ORIGIN_METAMASK) {
+        const selectedAddress =
+          this.accountsController.getSelectedAccount().address;
+        return selectedAddress ? [selectedAddress] : [];
+      }
+      return this.getPermittedAccounts(innerOrigin);
+    };
+
+    this.eip5792Middleware = createScaffoldMiddleware({
+      wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
+        walletGetCapabilities(req, res, {
+          getAccounts,
+          getCapabilities: getCapabilities.bind(
+            null,
+            {
+              getDismissSmartAccountSuggestionEnabled: () =>
+                this.preferencesController.state.preferences
+                  .dismissSmartAccountSuggestionEnabled,
+              getIsSmartTransaction: (chainId) =>
+                getIsSmartTransaction(this._getMetaMaskState(), chainId),
+              isAtomicBatchSupported:
+                this.txController.isAtomicBatchSupported.bind(
+                  this.txController,
+                ),
+              isRelaySupported,
+              getSendBundleSupportedChains,
+            },
+            this.controllerMessenger,
+          ),
+        }),
+      ),
+      wallet_sendCalls: createAsyncMiddleware(async (req, res) =>
+        walletSendCalls(req, res, {
+          getAccounts,
+          processSendCalls: processSendCalls.bind(
+            null,
+            {
+              addTransaction: this.txController.addTransaction.bind(
+                this.txController,
+              ),
+              addTransactionBatch: this.txController.addTransactionBatch.bind(
+                this.txController,
+              ),
+              getDismissSmartAccountSuggestionEnabled: () =>
+                this.preferencesController.state.preferences
+                  .dismissSmartAccountSuggestionEnabled,
+              isAtomicBatchSupported:
+                this.txController.isAtomicBatchSupported.bind(
+                  this.txController,
+                ),
+              validateSecurity: (securityAlertId, request, chainId) =>
+                validateRequestWithPPOM({
+                  chainId,
+                  ppomController: this.ppomController,
+                  request,
+                  securityAlertId,
+                  updateSecurityAlertResponse:
+                    this.updateSecurityAlertResponse.bind(this),
+                }),
+            },
+            this.controllerMessenger,
+          ),
+        }),
+      ),
+      wallet_getCallsStatus: createAsyncMiddleware(async (req, res) =>
+        walletGetCallsStatus(req, res, {
+          getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
+        }),
+      ),
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -1938,14 +1974,7 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: ({ origin: innerOrigin }) => {
-        if (innerOrigin === ORIGIN_METAMASK) {
-          const selectedAddress =
-            this.accountsController.getSelectedAccount().address;
-          return selectedAddress ? [selectedAddress] : [];
-        }
-        return this.getPermittedAccounts(innerOrigin);
-      },
+      getAccounts,
       // tx signing
       processTransaction: (transactionParams, dappRequest) =>
         addDappTransaction(
@@ -1989,52 +2018,6 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
-
-      // EIP-5792
-      processSendCalls: processSendCalls.bind(
-        null,
-        {
-          addTransaction: this.txController.addTransaction.bind(
-            this.txController,
-          ),
-          addTransactionBatch: this.txController.addTransactionBatch.bind(
-            this.txController,
-          ),
-          getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
-              .dismissSmartAccountSuggestionEnabled,
-          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-            this.txController,
-          ),
-          validateSecurity: (securityAlertId, request, chainId) =>
-            validateRequestWithPPOM({
-              chainId,
-              ppomController: this.ppomController,
-              request,
-              securityAlertId,
-              updateSecurityAlertResponse:
-                this.updateSecurityAlertResponse.bind(this),
-            }),
-        },
-        this.controllerMessenger,
-      ),
-      getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-      getCapabilities: getCapabilities.bind(
-        null,
-        {
-          getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
-              .dismissSmartAccountSuggestionEnabled,
-          getIsSmartTransaction: (chainId) =>
-            getIsSmartTransaction(this._getMetaMaskState(), chainId),
-          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-            this.txController,
-          ),
-          isRelaySupported,
-          getSendBundleSupportedChains,
-        },
-        this.controllerMessenger,
-      ),
       processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
         ? forwardRequestToSnap.bind(null, {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
@@ -2265,6 +2248,13 @@ export default class MetamaskController extends EventEmitter {
     if (pollInterval > 0) {
       this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
     }
+  }
+
+  isMultichainAccountsFeatureState2Enabled() {
+    const featureFlag =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.enableMultichainAccounts;
+    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
   postOnboardingInitialization() {
@@ -3746,6 +3736,9 @@ export default class MetamaskController extends EventEmitter {
       startOAuthLogin: this.oauthService.startOAuthLogin.bind(
         this.oauthService,
       ),
+      setMarketingConsent: this.oauthService.setMarketingConsent.bind(
+        this.oauthService,
+      ),
 
       // SeedlessOnboardingController
       authenticate: this.seedlessOnboardingController.authenticate.bind(
@@ -5139,6 +5132,52 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Discovers and creates accounts for the given keyring id.
+   *
+   * @param {string} id - The keyring id to discover and create accounts for.
+   * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
+   */
+  async discoverAndCreateAccounts(id) {
+    try {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        false,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        false,
+      );
+
+      // If no keyring id is provided, we assume one keyring was added to the vault
+      const keyringIdToDiscover =
+        id || this.keyringController.state.keyrings[0].metadata.id;
+
+      // Ensure the snap keyring is initialized
+      await this.getSnapKeyring();
+
+      const wallet = this.controllerMessenger.call(
+        'MultichainAccountService:getMultichainAccountWallet',
+        { entropySource: keyringIdToDiscover },
+      );
+
+      const result = await wallet.discoverAndCreateAccounts();
+
+      return { Bitcoin: 0, ...result };
+    } catch (error) {
+      log.warn(`Failed to add accounts with balance. Error: ${error}`);
+      return {
+        Bitcoin: 0,
+        Solana: 0,
+      };
+    } finally {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        true,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        true,
+      );
+    }
+  }
+
+  /**
    * Imports a new mnemonic to the vault.
    *
    * @param {string} mnemonic - The mnemonic to import.
@@ -5216,10 +5255,21 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      const discoveredAccounts = await this._addAccountsWithBalance(
-        id,
-        shouldImportSolanaAccount,
-      );
+      let discoveredAccounts;
+
+      if (
+        this.isMultichainAccountsFeatureState2Enabled() &&
+        shouldImportSolanaAccount
+      ) {
+        // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
+        // We just create the accounts at the end of the onboarding flow (including EVM).
+        discoveredAccounts = await this.discoverAndCreateAccounts(id);
+      } else {
+        discoveredAccounts = await this._addAccountsWithBalance(
+          id,
+          shouldImportSolanaAccount,
+        );
+      }
 
       return {
         newAccountAddress,
@@ -5433,7 +5483,11 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.init();
 
       if (completedOnboarding) {
-        await this._addAccountsWithBalance();
+        if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.discoverAndCreateAccounts();
+        } else {
+          await this._addAccountsWithBalance();
+        }
       }
 
       if (getIsSeedlessOnboardingFeatureEnabled()) {
@@ -5539,8 +5593,8 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const discoveredAccounts = {
-        bitcoin: 0,
-        solana: 0,
+        Bitcoin: 0,
+        Solana: 0,
       };
 
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -5553,7 +5607,7 @@ export default class MetamaskController extends EventEmitter {
         btcScope,
       );
 
-      discoveredAccounts.bitcoin = btcAccounts.length;
+      discoveredAccounts.Bitcoin = btcAccounts.length;
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
@@ -5574,7 +5628,7 @@ export default class MetamaskController extends EventEmitter {
           solScope,
         );
 
-        discoveredAccounts.solana = solanaAccounts.length;
+        discoveredAccounts.Solana = solanaAccounts.length;
 
         // If none accounts got discovered, we still create the first (default) one.
         if (solanaAccounts.length === 0) {
@@ -5588,8 +5642,8 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
       return {
-        bitcoin: 0,
-        solana: 0,
+        Bitcoin: 0,
+        Solana: 0,
       };
     } finally {
       await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
@@ -5618,10 +5672,14 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        await this._addAccountsWithBalance(
-          metadata.id,
-          shouldImportSolanaAccount,
-        );
+        if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.discoverAndCreateAccounts(metadata.id);
+        } else {
+          await this._addAccountsWithBalance(
+            metadata.id,
+            shouldImportSolanaAccount,
+          );
+        }
       }
     }
   }
@@ -7813,6 +7871,8 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
+    engine.push(this.eip5792Middleware);
+
     engine.push(providerAsMiddleware(proxyClient.provider));
 
     return engine;
@@ -7961,6 +8021,8 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
     engine.push(this.metamaskMiddleware);
+
+    engine.push(this.eip5792Middleware);
 
     try {
       const caip25Caveat = this.permissionController.getCaveat(
