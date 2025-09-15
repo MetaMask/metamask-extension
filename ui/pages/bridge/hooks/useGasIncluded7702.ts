@@ -18,6 +18,7 @@ type Account = {
  * @param isSwap - Whether this is a swap transaction
  * @param selectedAccount - The selected account
  * @param fromChain - The source chain
+ * @param isSendBundleSupportedForChain - Whether send bundle is supported for the chain
  * @returns Whether gasless 7702 is supported
  */
 export function useGasIncluded7702(
@@ -25,6 +26,7 @@ export function useGasIncluded7702(
   isSwap: boolean,
   selectedAccount: Account | null | undefined,
   fromChain: Chain | null | undefined,
+  isSendBundleSupportedForChain: boolean,
 ): boolean {
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
@@ -34,6 +36,7 @@ export function useGasIncluded7702(
 
     const checkGasIncluded7702Support = async () => {
       if (
+        isSendBundleSupportedForChain ||
         !smartAccountOptIn ||
         !isSwap ||
         !selectedAccount?.address ||
@@ -88,7 +91,13 @@ export function useGasIncluded7702(
     return () => {
       isCancelled = true;
     };
-  }, [smartAccountOptIn, isSwap, selectedAccount?.address, fromChain?.chainId]);
+  }, [
+    smartAccountOptIn,
+    isSwap,
+    selectedAccount?.address,
+    fromChain?.chainId,
+    isSendBundleSupportedForChain,
+  ]);
 
   return isGasIncluded7702Supported;
 }
