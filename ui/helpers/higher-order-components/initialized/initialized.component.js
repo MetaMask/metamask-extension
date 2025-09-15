@@ -1,21 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom-v5-compat';
 import { ONBOARDING_ROUTE } from '../../constants/routes';
 
-const onboardingRoute = { pathname: ONBOARDING_ROUTE };
-
 export default function Initialized(props) {
-  return props.completedOnboarding ? (
-    <Route {...props} />
+  const { completedOnboarding, children } = props;
+  return completedOnboarding ? (
+    children
   ) : (
-    <Redirect to={onboardingRoute} />
+    <Navigate to={ONBOARDING_ROUTE} replace />
   );
 }
 
 Initialized.propTypes = {
   completedOnboarding: PropTypes.bool,
-  path: PropTypes.string,
-  component: PropTypes.object,
-  exact: PropTypes.bool,
+  children: PropTypes.node.isRequired,
 };

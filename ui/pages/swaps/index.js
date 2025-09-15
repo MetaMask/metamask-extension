@@ -7,12 +7,12 @@ import React, {
 } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
-  Switch,
+  Routes,
   Route,
   useLocation,
-  useHistory,
-  Redirect,
-} from 'react-router-dom';
+  useNavigate,
+  Navigate,
+} from 'react-router-dom-v5-compat';
 import { shuffle, isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
@@ -24,7 +24,8 @@ import {
   getHardwareWalletType,
   getTokenList,
   getHDEntropyIndex,
-} from '../../selectors/selectors';
+  getCurrentNetworkTransactions,
+} from '../../selectors';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
@@ -48,7 +49,6 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -105,7 +105,7 @@ import NotificationPage from './notification-page/notification-page';
 
 export default function Swap() {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -157,13 +157,13 @@ export default function Swap() {
       await dispatch(prepareToLeaveSwaps());
       // We need to wait until "prepareToLeaveSwaps" is done, because otherwise
       // a user would be redirected from DEFAULT_ROUTE back to Swaps.
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     };
 
     if (!isSwapsChain) {
       leaveSwaps();
     }
-  }, [isSwapsChain, dispatch, history]);
+  }, [isSwapsChain, dispatch, navigate]);
 
   // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
@@ -274,9 +274,9 @@ export default function Swap() {
     // If there is a swapsErrorKey and reviewSwapClicked is false, there was an error in silent quotes prefetching
     // and we don't want to show the error page in that case, because another API call for quotes can be successful.
     if (swapsErrorKey && !isSwapsErrorRoute && reviewSwapClicked) {
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_ERROR_ROUTE);
     }
-  }, [history, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
+  }, [navigate, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
 
   const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
@@ -414,7 +414,7 @@ export default function Swap() {
           </Box>
         </div>
         <div className="swaps__content">
-          <Switch>
+          <Routes>
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}
               flag={swapsEnabled}
@@ -443,7 +443,7 @@ export default function Swap() {
                     />
                   );
                 }
-                return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
+                return <Navigate to={{ pathname: PREPARE_SWAP_ROUTE }} />;
               }}
             />
             <Route
@@ -451,7 +451,7 @@ export default function Swap() {
               exact
               render={() => {
                 if (!swapsErrorKey) {
-                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
+                  return <Navigate to={{ pathname: PREPARE_SWAP_ROUTE }} />;
                 }
                 return <NotificationPage notificationKey={swapsErrorKey} />;
               }}
@@ -474,15 +474,15 @@ export default function Swap() {
                         swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
                       ) {
                         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
-                        history.push(SWAPS_ERROR_ROUTE);
+                        navigate(SWAPS_ERROR_ROUTE);
                       } else {
-                        history.push(PREPARE_SWAP_ROUTE);
+                        navigate(PREPARE_SWAP_ROUTE);
                       }
                     }}
                     aggregatorMetadata={aggregatorMetadata}
                   />
                 ) : (
-                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
+                  <Navigate to={{ pathname: PREPARE_SWAP_ROUTE }} />
                 );
               }}
             />
@@ -493,7 +493,7 @@ export default function Swap() {
                 return swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
-                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
+                  <Navigate to={{ pathname: PREPARE_SWAP_ROUTE }} />
                 );
               }}
             />
@@ -526,11 +526,11 @@ export default function Swap() {
                     }
                   />
                 ) : (
-                  <Redirect to={{ pathname: DEFAULT_ROUTE }} />
+                  <Navigate to={{ pathname: DEFAULT_ROUTE }} />
                 );
               }}
             />
-          </Switch>
+          </Routes>
         </div>
       </div>
     </div>

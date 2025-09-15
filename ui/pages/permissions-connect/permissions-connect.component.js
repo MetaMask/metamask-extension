@@ -88,7 +88,9 @@ export default class PermissionConnect extends Component {
     addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    params: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
     requestType: PropTypes.string.isRequired,
@@ -135,6 +137,12 @@ export default class PermissionConnect extends Component {
     snapsInstallPrivacyWarningShown: this.props.snapsInstallPrivacyWarningShown,
   };
 
+  // Navigate using the v6 navigate hook
+  navigateTo = (path, options = {}) => {
+    const { navigate } = this.props;
+    navigate(path, options);
+  };
+
   componentDidMount() {
     const {
       connectPath,
@@ -146,31 +154,31 @@ export default class PermissionConnect extends Component {
       requestType,
       getRequestAccountTabIds,
       permissionsRequest,
-      history,
+      location,
       isRequestingAccounts,
     } = this.props;
     getRequestAccountTabIds();
 
     if (!permissionsRequest) {
-      history.replace(DEFAULT_ROUTE);
+      this.navigateTo(DEFAULT_ROUTE, { replace: true });
       return;
     }
-    if (history.location.pathname === connectPath && !isRequestingAccounts) {
+    if (location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
-          history.replace(snapInstallPath);
+          this.navigateTo(snapInstallPath, { replace: true });
           break;
         case 'wallet_updateSnap':
-          history.replace(snapUpdatePath);
+          this.navigateTo(snapUpdatePath, { replace: true });
           break;
         case 'wallet_installSnapResult':
-          history.replace(snapResultPath);
+          this.navigateTo(snapResultPath, { replace: true });
           break;
         case 'wallet_connectSnaps':
-          history.replace(snapsConnectPath);
+          this.navigateTo(snapsConnectPath, { replace: true });
           break;
         default:
-          history.replace(confirmPermissionPath);
+          this.navigateTo(confirmPermissionPath, { replace: true });
       }
     }
   }
@@ -216,26 +224,26 @@ export default class PermissionConnect extends Component {
       () => {
         switch (requestType) {
           case 'wallet_installSnap':
-            this.props.history.push(snapInstallPath);
+            this.navigateTo(snapInstallPath);
             break;
           case 'wallet_updateSnap':
-            this.props.history.push(snapUpdatePath);
+            this.navigateTo(snapUpdatePath);
             break;
           case 'wallet_installSnapResult':
-            this.props.history.push(snapResultPath);
+            this.navigateTo(snapResultPath);
             break;
           case 'wallet_connectSnaps':
-            this.props.history.replace(snapsConnectPath);
+            this.navigateTo(snapsConnectPath, { replace: true });
             break;
           default:
-            this.props.history.push(confirmPermissionPath);
+            this.navigateTo(confirmPermissionPath);
         }
       },
     );
   };
 
   redirect(approved) {
-    const { history, permissionsRequest } = this.props;
+    const { permissionsRequest } = this.props;
 
     let shouldRedirect = true;
 
@@ -251,10 +259,10 @@ export default class PermissionConnect extends Component {
     });
 
     if (shouldRedirect && approved) {
-      setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
+      setTimeout(() => this.navigateTo(DEFAULT_ROUTE), APPROVE_TIMEOUT);
       return;
     }
-    history.push(DEFAULT_ROUTE);
+    this.navigateTo(DEFAULT_ROUTE);
   }
 
   cancelPermissionsRequest = async (requestId) => {
@@ -267,8 +275,8 @@ export default class PermissionConnect extends Component {
   };
 
   goBack() {
-    const { history, connectPath } = this.props;
-    history.push(connectPath);
+    const { connectPath } = this.props;
+    this.navigateTo(connectPath);
   }
 
   renderSnapChooseAccountState1 = () => {
@@ -397,7 +405,7 @@ export default class PermissionConnect extends Component {
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
-      history,
+      navigate,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -455,7 +463,7 @@ export default class PermissionConnect extends Component {
                     permissionsRequest?.permissions,
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
-                  history={history}
+                  navigate={navigate}
                   connectPath={connectPath}
                   snapsInstallPrivacyWarningShown={
                     snapsInstallPrivacyWarningShown
