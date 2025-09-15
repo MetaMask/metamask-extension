@@ -63,6 +63,7 @@ import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
+  BillingPortalResponse,
   PricingResponse,
   ProductPrice,
   ProductType,
@@ -163,7 +164,7 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import { webAuthenticatorFactory } from '../../app/scripts/services/oauth/web-authenticator-factory';
+import { getIdentityAPI } from '../../shared/lib/oauth';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -396,7 +397,7 @@ export function startSubscriptionWithCard(params: {
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const webAuthenticator = webAuthenticatorFactory();
+    const identytyAPI = getIdentityAPI();
     const { checkoutSessionUrl } =
       await submitRequestToBackground<StartSubscriptionResponse>(
         'startSubscriptionWithCard',
@@ -405,7 +406,7 @@ export function startSubscriptionWithCard(params: {
     // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
     // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
     await new Promise<string>((resolve, reject) => {
-      webAuthenticator.launchWebAuthFlow(
+      identytyAPI.launchWebAuthFlow(
         {
           url: checkoutSessionUrl,
           interactive: true,
@@ -424,6 +425,37 @@ export function startSubscriptionWithCard(params: {
     const subscriptions = await dispatch(getSubscriptions());
 
     return subscriptions;
+  };
+}
+
+export function cancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('cancelSubscription', [params]);
+  };
+}
+
+export function unCancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('unCancelSubscription', [params]);
+  };
+}
+
+export function getSubscriptionBillingPortalUrl(): ThunkAction<
+  BillingPortalResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const res = await submitRequestToBackground<BillingPortalResponse>(
+      'getSubscriptionBillingPortalUrl',
+      [],
+    );
+    return res;
   };
 }
 

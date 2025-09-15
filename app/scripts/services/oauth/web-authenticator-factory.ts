@@ -1,4 +1,4 @@
-import browser from 'webextension-polyfill';
+import { getIdentityAPI } from '../../../../shared/lib/oauth';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
 
@@ -25,23 +25,6 @@ async function generateCodeVerifierAndChallenge(): Promise<{
 
 function generateNonce(): string {
   return crypto.randomUUID();
-}
-
-function getIdentityAPI(): typeof chrome.identity | typeof browser.identity {
-  // if chrome.identity API is available, we will use it
-  // note that, in firefox, chrome.identity is available
-  // but only some of the methods are supported
-  // learn more here {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/identity#browser_compatibility}
-  if (
-    chrome?.identity &&
-    'getRedirectURL' in chrome.identity &&
-    'launchWebAuthFlow' in chrome.identity
-  ) {
-    return chrome.identity;
-  }
-
-  // otherwise use browser.identity API
-  return browser.identity;
 }
 
 async function launchWebAuthFlow(
