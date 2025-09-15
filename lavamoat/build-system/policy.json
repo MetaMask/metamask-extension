@@ -1914,6 +1914,7 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
+        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -2610,7 +2611,7 @@
         "string.prototype.matchall>call-bind>es-define-property": true,
         "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "eslint-plugin-react>object.values>es-object-atoms": true,
-        "eslint-plugin-react>es-iterator-helpers>es-set-tostringtag": true,
+        "axios>form-data>es-set-tostringtag": true,
         "eslint-plugin-react>array-includes>es-abstract>es-to-primitive": true,
         "string.prototype.matchall>es-abstract>function.prototype.name": true,
         "string.prototype.matchall>get-intrinsic": true,
@@ -2658,7 +2659,7 @@
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>array-includes>es-abstract": true,
         "eslint-plugin-react>es-iterator-helpers>es-errors": true,
-        "eslint-plugin-react>es-iterator-helpers>es-set-tostringtag": true,
+        "axios>form-data>es-set-tostringtag": true,
         "string.prototype.matchall>get-intrinsic": true,
         "eslint-plugin-react>es-iterator-helpers>globalthis": true,
         "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
@@ -2673,7 +2674,7 @@
         "eslint-plugin-react>es-iterator-helpers>es-errors": true
       }
     },
-    "eslint-plugin-react>es-iterator-helpers>es-set-tostringtag": {
+    "axios>form-data>es-set-tostringtag": {
       "packages": {
         "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
@@ -3545,6 +3546,13 @@
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
     },
     "string.prototype.matchall>es-abstract>function.prototype.name": {
       "globals": {
