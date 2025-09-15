@@ -1904,6 +1904,7 @@ export default class MetamaskController extends EventEmitter {
             scopes: [SolScope.Mainnet],
           });
 
+        // eslint-disable-next-line no-unused-vars
         let btcAccounts = [];
         ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
         btcAccounts =
