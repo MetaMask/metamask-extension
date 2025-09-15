@@ -1,10 +1,10 @@
 import React from 'react';
 import { screen, fireEvent, act, within } from '@testing-library/react';
 import {
+  AccountGroupId,
   AccountGroupType,
   AccountWalletType,
   toAccountWalletId,
-  toDefaultAccountGroupId,
 } from '@metamask/account-api';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -60,12 +60,12 @@ const walletOneId = toAccountWalletId(
   AccountWalletType.Entropy,
   mockWalletOneEntropySource,
 );
-const walletOneGroupId = toDefaultAccountGroupId(walletOneId);
+const walletOneGroupId = `${walletOneId}/0` as AccountGroupId;
 const walletTwoId = toAccountWalletId(
   AccountWalletType.Entropy,
   mockWalletTwoEntropySource,
 );
-const walletTwoGroupId = toDefaultAccountGroupId(walletTwoId);
+const walletTwoGroupId = `${walletTwoId}/0` as AccountGroupId;
 
 const mockWallets = {
   [walletOneId]: {
@@ -126,8 +126,8 @@ describe('MultichainAccountList', () => {
     selectedAccountGroups: [walletOneGroupId],
   };
 
-  const renderComponent = (props = {}) => {
-    const store = configureStore(mockDefaultState);
+  const renderComponent = (props = {}, state = mockDefaultState) => {
+    const store = configureStore(state);
 
     return renderWithProvider(
       <MultichainAccountList {...defaultProps} {...props} />,
@@ -274,7 +274,7 @@ describe('MultichainAccountList', () => {
   });
 
   it('handles multiple account groups within a single wallet', () => {
-    const secondGroupId = `${walletOneId}/group2`;
+    const secondGroupId = `${walletOneId}/1`;
     const multiGroupWallets = {
       [walletOneId]: {
         ...mockWallets[walletOneId],
@@ -287,12 +287,26 @@ describe('MultichainAccountList', () => {
             metadata: {
               name: 'Account 2 from wallet 1',
             },
+            accounts: ['784225f4-d30b-4e77-a900-c8bbce735b88'],
           },
         },
       },
     };
 
-    renderComponent({ wallets: multiGroupWallets });
+    renderComponent(
+      { wallets: multiGroupWallets },
+      {
+        ...mockDefaultState,
+        metamask: {
+          ...mockDefaultState.metamask,
+          accountTree: {
+            ...mockDefaultState.metamask.accountTree,
+            // @ts-expect-error - multiGroupWallets does not follow the exact structure due to test simplification
+            wallets: multiGroupWallets,
+          },
+        },
+      },
+    );
 
     expect(
       screen.queryAllByTestId('multichain-account-tree-wallet-header'),
