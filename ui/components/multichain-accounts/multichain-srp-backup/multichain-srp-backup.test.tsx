@@ -36,7 +36,7 @@ describe('MultichainSrpBackup', () => {
     renderComponent();
 
     expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
-    expect(screen.getByText('Back up')).toBeInTheDocument();
+    expect(screen.getByText('Reveal')).toBeInTheDocument();
 
     const buttonElement = screen.getByTestId(srpBackupRowTestId);
     expect(buttonElement).toHaveClass('multichain-srp-backup');
@@ -50,11 +50,11 @@ describe('MultichainSrpBackup', () => {
     expect(buttonElement).toHaveClass('custom-class');
   });
 
-  it('displays "Back up" text when shouldShowBackupReminder is false', () => {
+  it('displays "Reveal" text when shouldShowBackupReminder is false', () => {
     renderComponent({ shouldShowBackupReminder: false });
 
-    expect(screen.getByText('Back up')).toBeInTheDocument();
-    expect(screen.queryByText('Backup')).not.toBeInTheDocument();
+    expect(screen.getByText('Reveal')).toBeInTheDocument();
+    expect(screen.queryByText('Back up')).not.toBeInTheDocument();
   });
 
   it('navigates to SRP review route when shouldShowBackupReminder is true', () => {

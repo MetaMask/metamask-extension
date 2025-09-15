@@ -261,8 +261,27 @@ describe('useTrustSignals', () => {
     });
 
     describe('No security alert response', () => {
-      it('returns unknown state when no security alert response exists', () => {
-        getAddressSecurityAlertResponseMock.mockReturnValue(null);
+      it('returns unknown state when no address is provided', () => {
+        getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
+
+        const requests: UseTrustSignalRequest[] = [
+          {
+            value: '',
+            type: NameType.ETHEREUM_ADDRESS,
+          },
+        ];
+
+        const results = useTrustSignals(requests);
+
+        expect(results).toHaveLength(1);
+        expect(results[0]).toStrictEqual({
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        });
+      });
+
+      it('returns unknown state when security alert response is undefined (no check initiated)', () => {
+        getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
 
         const requests: UseTrustSignalRequest[] = [
           {
@@ -284,8 +303,13 @@ describe('useTrustSignals', () => {
         });
       });
 
-      it('returns unknown state when security alert response is undefined', () => {
-        getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
+      it('returns loading state when security alert response has Loading result type', () => {
+        getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Loading,
+          label: '',
+        });
 
         const requests: UseTrustSignalRequest[] = [
           {
@@ -302,7 +326,7 @@ describe('useTrustSignals', () => {
 
         expect(results).toHaveLength(1);
         expect((results as TrustSignalResult[])[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
+          state: TrustSignalDisplayState.Loading,
           label: null,
         });
       });

@@ -1027,11 +1027,7 @@ class TestDapp {
   /**
    * Scrolls to the create token button and clicks it.
    */
-  async findAndClickCreateToken() {
-    const createTokenElement = await this.driver.findElement(
-      this.createTokenButton,
-    );
-    await this.driver.scrollToElement(createTokenElement);
+  async clickCreateToken() {
     await this.driver.clickElement(this.createTokenButton);
   }
 

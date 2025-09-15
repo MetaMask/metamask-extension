@@ -1,5 +1,5 @@
 import { waitFor } from '@testing-library/react';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
 import * as SelectorsModule from '../selectors/selectors';
 import * as MultichainSelectorsModule from '../selectors/multichain';
@@ -8,11 +8,7 @@ import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol
 
 const arrangeMocks = () => {
   // Mock Selectors
-  const mockGetMultichainIsEVM = jest
-    .spyOn(MultichainSelectorsModule, 'getMultichainIsEvm')
-    .mockReturnValue(true);
-
-  const mockgetUseSafeChainsListValidation = jest
+  const mockGetUseSafeChainsListValidation = jest
     .spyOn(SelectorsModule, 'getUseSafeChainsListValidation')
     .mockReturnValue(true);
 
@@ -30,8 +26,7 @@ const arrangeMocks = () => {
     .mockResolvedValue(true);
 
   return {
-    mockGetMultichainIsEVM,
-    mockgetUseSafeChainsListValidation,
+    mockGetUseSafeChainsListValidation,
     createMockProviderConfig,
     mockGetMultichainCurrentNetwork,
     mockIsOriginalNativeTokenSymbol,
@@ -39,7 +34,7 @@ const arrangeMocks = () => {
 };
 
 const arrangeParams = () => ({
-  chainId: '0x1' as Hex,
+  chainId: '0x1' as Hex | CaipChainId,
   ticker: 'ETH',
   type: 'mainnet',
   rpcUrl: '',
@@ -107,12 +102,12 @@ describe('useIsOriginalNativeTokenSymbol', () => {
 
   it('should return true if non-evm symbol matches', async () => {
     const { hook, mocks } = arrangeActHook((m, params) => {
-      m.mockGetMultichainIsEVM.mockReturnValue(false);
       m.mockGetMultichainCurrentNetwork.mockReturnValue({
         ...m.createMockProviderConfig(),
         ticker: 'SOL',
       });
       params.ticker = 'SOL';
+      params.chainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
     });
 
     await waitFor(() => {

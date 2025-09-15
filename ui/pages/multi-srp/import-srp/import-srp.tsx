@@ -110,7 +110,8 @@ export const ImportSrp = () => {
         importMnemonicToVault(joinedSrp),
       )) as unknown as {
         newAccountAddress: string;
-        discoveredAccounts: { bitcoin: number; solana: number };
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        discoveredAccounts: { Bitcoin: number; Solana: number };
       };
 
       const { discoveredAccounts } = result;
@@ -126,9 +127,9 @@ export const ImportSrp = () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: newHdEntropyIndex,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_solana_accounts_discovered: discoveredAccounts?.solana,
+          number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_bitcoin_accounts_discovered: discoveredAccounts?.bitcoin,
+          number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
         },
       });
     }

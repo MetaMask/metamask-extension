@@ -19,7 +19,7 @@ export type Asset = (
   /** The number of decimal places to move left when displaying balances */
   decimals: number;
   /** The hexadecimal chain id */
-  chainId: Hex;
+  chainId: Hex; // TODO BIP44: Can also be a CaipChainId
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */

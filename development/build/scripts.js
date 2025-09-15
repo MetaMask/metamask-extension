@@ -94,6 +94,8 @@ const scuttlingConfigBase = {
     history: '',
     isNaN: '',
     parseInt: '',
+    // Lodash
+    RegExp: '',
   },
 };
 

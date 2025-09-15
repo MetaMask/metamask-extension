@@ -20,7 +20,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainConversionRate,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { getAssetsRates } from '../../../selectors/assets';
@@ -29,6 +28,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 export const AssetMarketDetails = ({
   asset,
@@ -44,7 +44,7 @@ export const AssetMarketDetails = ({
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
 
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
 
   const { type, symbol, chainId } = asset;
