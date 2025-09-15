@@ -13,6 +13,22 @@ jest.mock('react-router-dom-v5-compat', () => ({
   useSearchParams: () => [{ get: () => null }],
 }));
 
+jest.mock('../hooks/send/useSendAssets', () => {
+  return {
+    useSendAssets: jest.fn().mockReturnValue({ tokens: [], nfts: [] }),
+  };
+});
+
+jest.mock('../components/send/asset', () => ({
+  Asset: () => <div data-testid="asset-page">Asset page</div>,
+}));
+
+jest.mock('../components/send/amount-recipient', () => ({
+  AmountRecipient: () => (
+    <div data-testid="amount-recipient-page">Amount recipient page</div>
+  ),
+}));
+
 const mockStore = configureMockStore([])(mockState);
 
 const render = () => {
@@ -26,8 +42,9 @@ describe('SendInner', () => {
       updateCurrentPage: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
-    const { getByText } = render();
-    expect(getByText('asset')).toBeInTheDocument();
+    const { getByTestId, queryByTestId } = render();
+    expect(getByTestId('asset-page')).toBeInTheDocument();
+    expect(queryByTestId('amount-recipient-page')).not.toBeInTheDocument();
   });
 
   it('render AmountRecipient page when current page in path is amount-recipient', () => {
@@ -36,7 +53,8 @@ describe('SendInner', () => {
       updateCurrentPage: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
-    const { getByText } = render();
-    expect(getByText('Amount')).toBeInTheDocument();
+    const { getByText, queryByTestId } = render();
+    expect(getByText('Amount recipient page')).toBeInTheDocument();
+    expect(queryByTestId('asset-page')).not.toBeInTheDocument();
   });
 });

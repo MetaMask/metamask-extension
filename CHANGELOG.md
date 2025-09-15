@@ -6,6 +6,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.3.0]
+### Added
+- feat: improve new send flow, by merging amount and recipient pages, and by adding the possibility to navigate back to the page when needed (#35416)
+- feat: improve new send flow, by adding Solana compatibility (#35361)
+- feat: improve new send flow, by adding amount fiat conversion and validation functions (#35346)
+- feat: improve new send flow, by adding header component on send page (#35326)
+- feat: improve new send flow, by displaying balance on amount page (#35246)
+- feat: improve new send flow, by making it possible to submit a transaction (#35188)
+- feat: improve new send flow, by making it possible to pass asset over to send page in url parameters (#35115)
+- feat: improve new send flow, by creating basic pages and navigation (#35106)
+- feat: improve new send flow, by setting up name resolution, including on non-evm networks (#35113)
+- feat: initialize the new send flow behind a feature flag (#35104)
+- feat: add a new page to display multichain account details (#35298)
+- feat: improve dapp connection UX when the wallet is locked (#35122)
+- feat: introduce address scanning for simple send transactions (#34978)
+- feat: add new multichain account popup menu (#35064)
+- feat: add checkbox for emitting error report to Sentry when restarting MetaMask from error page (#35619)
+
+### Changed
+- update: display the number of account group instead of addresses for a connected dapp (#35427)
+- update: improve multichain address list by filtering out test networks and refining layout (#35380)
+- update: batch RPC requests for native and ERC20 tokens into a single request to reduce the total number of RPC calls and improve performance (#35283)
+- update: replace portfolio.metamask.io links with app.metamask.io (#35221)
+- update: upgraded @metamask/design-system-react to v0.3.1 for improved security and React 17 compatibility (#35271)
+- update: deprecate carousel slides (#35109)
+
+### Fixed
+- fix: solve some security vulnerabilities caused by out of date dependencies (#34364)
+- fix: resolve visual bug when very long URLs get displayed on the MetaMask warning page (#35179)
+- fix: avoid race condition where the password is being changed while the wallet is locked (#35022)
+- fix: resolve issue where error is shown in the console although user successfully authenticated with Apple login (#35414)
+- fix: fix long account name rendering (#35343)
+- fix: properly clear all text boxes when user presses `clear` on the `import SRP` page (#33364)
+- fix: handle situation where transactions on some networks don't show up when more than one network is selected within the activity tab (#35231)
+- fix: fix issue when `too many metrics requests` error is shown in the console when a permit request is submitted (#35203)
+- fix: handle cases where incorrect nonce value is displayed in the transaction details from last confirmation page when a tx comes from a dapp and have a miss-matched network context (#35204)
+- fix: properly emit transaction lifecycle events even when smart transaction toggle is on (#35196)
+- fix: fix the flickering issue with the batch transaction alert that occurs when there are no simulations but the unused approval alert is triggered (#35019)
+- fix: automatically switch the chain, even when an approval is being displayed on page, and don't cancel pending confirmations while doing so (#35107)
+- fix: fall back to selected internalAccount if selected account group has no account matching specified scope (#35630)
+- fix: fixes issue in the send flow where sender's identicon is not a circle shape (#35711)
+- fix: fixes an issue with first-time interaction alerts displaying on verified contract addresses (#35331)
+
+## [13.2.3]
+### Fixed
+- fix: fixes bridging on https://portfolio.metamask.io (#35755)
+
+## [13.2.2]
+### Fixed
+- fix: fixes issue related to `Routes` component that was leading the app to occasionally crash and force reinstall for some users (#35587)
+
+## [13.2.1]
+### Fixed
+- fix: update the Solana snap to latest version (#35642)
+
 ## [13.2.0]
 ### Added
 - feat: enable Linea for Smart Transactions (#35117)
@@ -21,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add support for non-evm deep links (#35228)
 - feat: automatically switch to the last used solana account when opening swap/buy deep link with SOL token set as query parameter (#35390)
 - feat: update network selector to manage selecting a single network or all popular networks (#35264)
+- feat: unblock gas station for Base network and more accurate `alternateGasFee` capability (#34733)
 
 ### Changed
 - update: remove the Solana modal from the initial flow (#34988)
@@ -484,7 +540,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...HEAD
+[13.3.0]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...v13.3.0
+[13.2.3]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...v13.2.3
+[13.2.2]: https://github.com/MetaMask/metamask-extension/compare/v13.2.1...v13.2.2
+[13.2.1]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...v13.2.1
 [13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.2...v13.2.0
 [13.1.2]: https://github.com/MetaMask/metamask-extension/compare/v13.1.1...v13.1.2
 [13.1.1]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.1.1

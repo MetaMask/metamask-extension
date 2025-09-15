@@ -41,6 +41,8 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       }),
     ],
+    walletName: 'Test Wallet 1',
+    walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
   },
   {
     id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/1' as AccountGroupId,
@@ -53,6 +55,8 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
         groupIndex: 1,
       },
     },
+    walletName: 'Test Wallet 1',
+    walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
     accounts: [
       createMockInternalAccount({
         id: 'account-2',

@@ -55,7 +55,7 @@ describe('SelfInjectPlugin', () => {
           // reference the `sourceMappingURL`
           assert.strictEqual(
             newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;s.nonce=btoa((globalThis.browser||chrome).runtime.getURL("/"));d.documentElement.appendChild(s).remove()}`,
+            `{let d=document,s=d.createElement('script');s.textContent="${source}\\n//# sourceMappingURL=${filename}.map"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove()}`,
           );
         } else {
           // the new source should NOT reference the new sourcemap, since it's
@@ -66,7 +66,7 @@ describe('SelfInjectPlugin', () => {
           // console.
           assert.strictEqual(
             newSource,
-            `{let d=document,s=d.createElement('script');s.textContent="console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;s.nonce=btoa((globalThis.browser||chrome).runtime.getURL("/"));d.documentElement.appendChild(s).remove()}`,
+            `{let d=document,s=d.createElement('script');s.textContent="console.log(3);"+\`\\n//# sourceURL=\${(globalThis.browser||chrome).runtime.getURL("${filename}")};\`;d.documentElement.appendChild(s).remove()}`,
           );
         }
 
