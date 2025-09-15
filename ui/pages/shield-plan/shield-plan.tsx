@@ -70,6 +70,7 @@ import {
 import { TRANSACTION_SHIELD_ROUTE } from '../../helpers/constants/routes';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
+import { getProductPrice } from './utils';
 
 const ShieldPlan = () => {
   const navigate = useNavigate();
@@ -140,8 +141,7 @@ const ShieldPlan = () => {
         ?.map((plan) => {
           const translationLabel =
             plan.interval === RECURRING_INTERVALS.year ? 'Annual' : 'Monthly';
-          // Note: no need to use BigInt here since decimals is low (2)
-          const price = plan.unitAmount / 10 ** plan.unitDecimals;
+          const price = getProductPrice(plan);
           return {
             id: plan.interval,
             label: t(`shieldPlan${translationLabel}`),

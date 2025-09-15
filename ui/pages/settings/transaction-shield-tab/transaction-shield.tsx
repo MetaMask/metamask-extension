@@ -1,5 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
+import {
+  PAYMENT_TYPES,
+  Product,
+  PRODUCT_TYPES,
+  ProductType,
+  SUBSCRIPTION_STATUSES,
+} from '@metamask/subscription-controller';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxProps,
@@ -26,14 +34,83 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  useCancelSubscription,
+  useGetSubscriptionBillingPortalUrl,
+  useUnCancelSubscription,
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+} from '../../../hooks/subscription/useSubscription';
+import { getShortDateFormatterV2 } from '../../asset/util';
+import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import { getProductPrice } from '../../shield-plan/utils';
+import { getTabsAPI } from '../../../../shared/lib/oauth';
 import CancelMembershipModal from './cancel-membership-modal';
 
 const TransactionShield = () => {
   const t = useI18nContext();
-  const [isLoading] = useState(false);
+  const navigate = useNavigate();
+  const { subscriptions, loading: subscriptionsLoading } =
+    useUserSubscriptions();
+  const shieldSubscription = useUserSubscriptionByProduct(
+    'shield' as ProductType,
+    subscriptions,
+  );
+  const isCancelled =
+    shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
+  const productInfo = useMemo(
+    () =>
+      shieldSubscription?.products.find((p) => p.name === PRODUCT_TYPES.SHIELD),
+    [shieldSubscription],
+  );
+  const isCryptoPayment =
+    shieldSubscription?.paymentMethod.type === PAYMENT_TYPES.byCrypto;
+
+  const [executeCancelSubscription, cancelSubscriptionResult] =
+    useCancelSubscription({
+      subscriptionId: shieldSubscription?.id,
+    });
+
+  const [executeUnCancelSubscription, unCancelSubscriptionResult] =
+    useUnCancelSubscription({
+      subscriptionId: shieldSubscription?.id,
+    });
+
+  const [
+    executeGetSubscriptionBillingPortalUrl,
+    getSubscriptionBillingPortalUrlResult,
+  ] = useGetSubscriptionBillingPortalUrl();
+
+  useEffect(() => {
+    if (
+      !getSubscriptionBillingPortalUrlResult.pending &&
+      getSubscriptionBillingPortalUrlResult.value
+    ) {
+      // handle open new billing portal tab after result is ready
+      const { url } = getSubscriptionBillingPortalUrlResult.value;
+      const tabsAPI = getTabsAPI();
+      tabsAPI.create({ url });
+    }
+  }, [
+    getSubscriptionBillingPortalUrlResult.pending,
+    getSubscriptionBillingPortalUrlResult.value,
+  ]);
+
+  const loading =
+    subscriptionsLoading ||
+    cancelSubscriptionResult.pending ||
+    unCancelSubscriptionResult.pending ||
+    getSubscriptionBillingPortalUrlResult.pending;
+
+  useEffect(() => {
+    if (!loading && !shieldSubscription) {
+      // redirect to shield plan page if user doesn't have a subscription
+      navigate(SHIELD_PLAN_ROUTE);
+    }
+  }, [navigate, loading, shieldSubscription]);
+
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
-  const [isActiveMembership, setIsActiveMembership] = useState(true);
 
   const shieldDetails = [
     {
@@ -66,12 +143,12 @@ const TransactionShield = () => {
         width={BlockSize.Full}
         onClick={onClick}
       >
-        {isLoading ? (
+        {loading ? (
           <Skeleton width="50%" height={20} />
         ) : (
           <Text variant={TextVariant.bodyMdMedium}>{label}</Text>
         )}
-        {isLoading ? (
+        {loading ? (
           <Skeleton width={24} height={24} borderRadius={BorderRadius.full} />
         ) : (
           <Icon
@@ -92,12 +169,12 @@ const TransactionShield = () => {
         gap={2}
         justifyContent={JustifyContent.spaceBetween}
       >
-        {isLoading ? (
+        {loading ? (
           <Skeleton width="40%" height={24} />
         ) : (
           <Text variant={TextVariant.bodyMdMedium}>{key}</Text>
         )}
-        {isLoading ? (
+        {loading ? (
           <Skeleton width="30%" height={24} />
         ) : (
           <Text variant={TextVariant.bodyMdMedium}>{value}</Text>
@@ -119,11 +196,11 @@ const TransactionShield = () => {
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
-              'transaction-shield-page__membership--loading': isLoading,
+              'transaction-shield-page__membership--loading': loading,
               'transaction-shield-page__membership--inactive':
-                !isActiveMembership && !isLoading,
+                isCancelled && !loading,
               'transaction-shield-page__membership--active':
-                isActiveMembership && !isLoading,
+                !isCancelled && !loading,
             },
           )}
           {...rowsStyleProps}
@@ -132,11 +209,11 @@ const TransactionShield = () => {
         >
           <Box
             width={BlockSize.Full}
-            gap={isLoading ? 2 : 0}
+            gap={loading ? 2 : 0}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
           >
-            {isLoading ? (
+            {loading ? (
               <Skeleton width="60%" height={20} />
             ) : (
               <Box
@@ -148,11 +225,12 @@ const TransactionShield = () => {
                   variant={TextVariant.bodyMdBold}
                   className="transaction-shield-page__membership-text"
                 >
-                  {isActiveMembership
-                    ? t('shieldTxMembershipActive')
-                    : t('shieldTxMembershipInactive')}
+                  {isCancelled
+                    ? t('shieldTxMembershipInactive')
+                    : t('shieldTxMembershipActive')}
                 </Text>
-                {isActiveMembership && (
+                {shieldSubscription?.status ===
+                  SUBSCRIPTION_STATUSES.trialing && (
                   <Tag
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
@@ -166,30 +244,31 @@ const TransactionShield = () => {
                 )}
               </Box>
             )}
-            {isLoading ? (
+            {loading ? (
               <Skeleton width="60%" height={16} />
             ) : (
               <Text
                 variant={TextVariant.bodyXs}
                 className="transaction-shield-page__membership-text"
               >
-                {t('shieldTxMembershipId')}: 9s6XKzkNRiz8i3
+                {t('shieldTxMembershipId')}: {shieldSubscription?.id}
               </Text>
             )}
           </Box>
-          {!isActiveMembership && (
-            <Box>
-              <Button
-                data-testid="shield-tx-membership-resubscribe-button"
-                size={ButtonSize.Sm}
-                onClick={() => {
-                  setIsActiveMembership(true);
-                }}
-              >
-                {t('shieldTxMembershipResubscribe')}
-              </Button>
-            </Box>
-          )}
+          {isCancelled ||
+            (shieldSubscription?.cancelAtPeriodEnd && (
+              <Box>
+                <Button
+                  data-testid="shield-tx-membership-resubscribe-button"
+                  size={ButtonSize.Sm}
+                  onClick={() => {
+                    executeUnCancelSubscription();
+                  }}
+                >
+                  {t('shieldTxMembershipResubscribe')}
+                </Button>
+              </Box>
+            ))}
         </Box>
 
         <Box
@@ -208,7 +287,7 @@ const TransactionShield = () => {
               paddingTop={2}
               paddingBottom={2}
             >
-              {isLoading ? (
+              {loading ? (
                 <Skeleton
                   width={32}
                   height={32}
@@ -222,14 +301,14 @@ const TransactionShield = () => {
                 width={BlockSize.Full}
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
-                gap={isLoading ? 2 : 0}
+                gap={loading ? 2 : 0}
               >
-                {isLoading ? (
+                {loading ? (
                   <Skeleton width="100%" height={18} />
                 ) : (
                   <Text variant={TextVariant.bodySmBold}>{detail.title}</Text>
                 )}
-                {isLoading ? (
+                {loading ? (
                   <Skeleton width="100%" height={18} />
                 ) : (
                   <Text
@@ -246,11 +325,11 @@ const TransactionShield = () => {
         {buttonRow(t('shieldTxMembershipViewFullBenefits'), () => {
           // todo: link to benefits page
         })}
-        {isActiveMembership &&
+        {!isCancelled &&
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
             // todo: link to submit claim page
           })}
-        {isActiveMembership &&
+        {!isCancelled &&
           buttonRow(
             t('shieldTxMembershipCancel'),
             () => {
@@ -267,42 +346,55 @@ const TransactionShield = () => {
           flexDirection={FlexDirection.Column}
           gap={2}
         >
-          {isLoading ? (
+          {loading ? (
             <Skeleton width="60%" height={24} />
           ) : (
             <Text variant={TextVariant.headingSm}>
               {t('shieldTxMembershipBillingDetails')}
             </Text>
           )}
-          {billingDetails(
-            t('shieldTxMembershipBillingDetailsNextBilling'),
-            'Apr 18, 2024',
-          )}
-          {billingDetails(
-            t('shieldTxMembershipBillingDetailsCharges'),
-            '8 USDT/month (Monthly)',
-          )}
-          {billingDetails(
-            t('shieldTxMembershipBillingDetailsBillingAccount'),
-            '0x187...190',
-          )}
-          {billingDetails(
-            t('shieldTxMembershipBillingDetailsPaymentMethod'),
-            'USDT',
+          {shieldSubscription ? (
+            <>
+              {billingDetails(
+                t('shieldTxMembershipBillingDetailsNextBilling'),
+                shieldSubscription?.cancelAtPeriodEnd
+                  ? '-'
+                  : getShortDateFormatterV2().format(
+                      new Date(shieldSubscription.currentPeriodEnd),
+                    ),
+              )}
+              {billingDetails(
+                t('shieldTxMembershipBillingDetailsCharges'),
+                `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()}/${shieldSubscription.interval}`,
+              )}
+              {isCryptoPayment &&
+                billingDetails(
+                  t('shieldTxMembershipBillingDetailsBillingAccount'),
+                  shieldSubscription.paymentMethod.crypto?.payerAddress || '',
+                )}
+              {billingDetails(
+                t('shieldTxMembershipBillingDetailsPaymentMethod'),
+                isCryptoPayment
+                  ? shieldSubscription.paymentMethod.crypto?.tokenSymbol || ''
+                  : productInfo?.currency.toUpperCase() || '',
+              )}
+            </>
+          ) : (
+            <Skeleton width="60%" height={24} />
           )}
         </Box>
         {buttonRow(
           t('shieldTxMembershipBillingDetailsViewBillingHistory'),
-          () => {
-            // todo: link to billing history page
+          async () => {
+            await executeGetSubscriptionBillingPortalUrl();
           },
         )}
       </Box>
       {isCancelMembershipModalOpen && (
         <CancelMembershipModal
           onClose={() => setIsCancelMembershipModalOpen(false)}
-          onConfirm={() => {
-            setIsActiveMembership(false);
+          onConfirm={async () => {
+            await executeCancelSubscription();
             setIsCancelMembershipModalOpen(false);
           }}
         />
