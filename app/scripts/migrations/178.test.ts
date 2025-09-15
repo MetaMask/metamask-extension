@@ -2,38 +2,17 @@ import { migrate, version, CHAINS_TO_RENAME } from './178';
 
 const oldVersion = 177;
 
-// Base network configuration template
-const createNetworkConfig = (overrides: Record<string, any> = {}) => ({
-  blockExplorerUrls: ['https://etherscan.io'],
-  chainId: '0x1',
-  defaultRpcEndpointIndex: 0,
-  name: 'Ethereum Mainnet',
-  nativeCurrency: 'ETH',
-  rpcEndpoints: [
-    {
-      failoverUrls: [],
-      networkClientId: 'test',
-      type: 'test',
-      url: 'test',
-    },
-  ],
-  defaultBlockExplorerUrlIndex: 0,
-  ...overrides,
-});
-
+type NetworkConfig = Record<string, { chainId: string; name: string }>;
 // Create network configurations based on CHAINS_TO_RENAME data
 const createNetworkConfigs = () => {
-  const configs: Record<string, any> = {
-    // Ethereum mainnet (not renamed)
-    '0x1': createNetworkConfig(),
-  };
+  const configs: NetworkConfig = {};
 
   // Add configurations for chains that will be renamed
   CHAINS_TO_RENAME.forEach((chain) => {
-    configs[chain.id] = createNetworkConfig({
+    configs[chain.id] = {
       chainId: chain.id,
       name: chain.fromName,
-    });
+    };
   });
 
   return configs;
@@ -42,9 +21,7 @@ const createNetworkConfigs = () => {
 const networkConfigs = createNetworkConfigs();
 
 // Helper to create test state
-const createTestState = (
-  networkConfigurationsByChainId: Record<string, any>,
-) => ({
+const createTestState = (networkConfigurationsByChainId: NetworkConfig) => ({
   meta: { version: oldVersion },
   data: {
     NetworkController: {
