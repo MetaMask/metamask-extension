@@ -32,6 +32,7 @@ import {
   getWallet,
   getAccountGroupsByAddress,
   getInternalAccountListSpreadByScopesByGroupId,
+  getIconSeedAddressByAccountGroupId,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -1271,6 +1272,37 @@ describe('Multichain Accounts Selectors', () => {
       );
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('getIconSeedAddressByAccountGroupId', () => {
+    it('returns EVM address when group has any EVM account', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        ENTROPY_GROUP_1_ID,
+      );
+
+      expect(result).toBe(ACCOUNT_1_ADDRESS);
+    });
+
+    it('returns only address when group has one internal account', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        ENTROPY_GROUP_2_ID,
+      );
+
+      expect(result).toBe(ACCOUNT_3_ADDRESS);
+    });
+
+    it('throws error when no group ID is found', () => {
+      expect(() =>
+        getIconSeedAddressByAccountGroupId(
+          typedMockState,
+          'nonExistentGroupId' as AccountGroupId,
+        ),
+      ).toThrow(
+        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+      );
     });
   });
 });

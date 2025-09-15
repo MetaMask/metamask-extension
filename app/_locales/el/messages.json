@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "Απασχολημένο"
   },
-  "buyAndSell": {
-    "message": "Αγορά & Πώληση"
+  "buy": {
+    "message": "Αγορά"
   },
   "buyMoreAsset": {
     "message": "Αγοράστε περισσότερα $1",
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Δεν βρέθηκαν λογαριασμοί που να ταιριάζουν"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Λήψη σε"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Διεύθυνση λήψης ή ENS"
@@ -2964,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Μια προηγούμενη συναλλαγή εξακολουθεί να είναι σε διαδικασία υπογραφής ή υποβολής"
-  },
-  "jazzAndBlockies": {
-    "message": "Τα Jazzicons και τα Blockies είναι δύο διαφορετικά στυλ μοναδικών εικονιδίων που σας βοηθούν να αναγνωρίζετε έναν λογαριασμό με μια ματιά."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -4229,13 +4223,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 8 χαρακτήρες"
-  },
-  "passwordStrength": {
-    "message": "Ισχύς κωδικού πρόσβασης: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Ένας ισχυρός κωδικός πρόσβασης μπορεί να βελτιώσει την ασφάλεια του πορτοφολιού σας εάν η συσκευή σας κλαπεί ή παραβιαστεί."
   },
   "passwordTermsWarning": {
     "message": "Αν ξεχάσω τον κωδικό πρόσβασης, το MetaMask δεν μπορεί να τον επαναφέρει για μένα."
@@ -7186,9 +7173,6 @@
   "watchOutMessage": {
     "message": "Προσοχή στο $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Αδύναμο"
   },
   "web3": {
     "message": "Web3"

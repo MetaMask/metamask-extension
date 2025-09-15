@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   Modal,
   ModalOverlay,
@@ -16,9 +15,6 @@ import {
   TextFieldSize,
   HelpText,
   HelpTextSeverity,
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
 } from '../../../../../components/component-library';
 import {
@@ -32,7 +28,7 @@ import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRec
 import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
-import { getUseBlockie } from '../../../../../selectors';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { RecipientList } from '../recipient-list';
 
 export const Recipient = () => {
@@ -55,7 +51,6 @@ export const Recipient = () => {
     setRecipientInputMethodSelectAccount,
   } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
-  const useBlockie = useSelector(getUseBlockie);
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);
@@ -167,14 +162,9 @@ export const Recipient = () => {
               display={Display.Flex}
               paddingLeft={2}
             >
-              <AvatarAccount
+              <PreferredAvatar
                 address={matchingRecipient.address}
                 size={AvatarAccountSize.Sm}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
               />
             </Box>
           ) : null

@@ -369,7 +369,6 @@ export const MultichainAccountsConnectPage: React.FC<
           accountName={accountGroup?.metadata.name || 'Unknown Account'}
           balance={balanceText ?? ''}
           key={accountGroupId}
-          selected
           walletName={accountGroup?.walletName}
         />
       );

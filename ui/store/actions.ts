@@ -2569,6 +2569,10 @@ export function setShowSupportDataConsentModal(show: boolean) {
     payload: show,
   };
 }
+
+export function clearProductTour() {
+  return submitRequestToBackground('setProductTour', ['']);
+}
 export function addToken(
   {
     address,
@@ -4144,6 +4148,41 @@ export function setDataCollectionForMarketing(
   };
 }
 
+export function setIsSocialLoginFlowEnabledForMetrics(
+  isSocialLoginFlowEnabledForMetrics: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch({
+      type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
+      value: isSocialLoginFlowEnabledForMetrics,
+    });
+  };
+}
+
+/**
+ * Sets marketing consent with OAuth service for social login users.
+ */
+export function setMarketingConsent(): ThunkAction<
+  Promise<boolean>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const res = await submitRequestToBackground('setMarketingConsent');
+      return Boolean(res);
+    } catch (error) {
+      logErrorWithMessage(getErrorMessage(error));
+      return false;
+    }
+  };
+}
+
+/**
+ * @deprecated Use setAvatarType instead
+ * @param val - Boolean value for blockie preference
+ */
 export function setUseBlockie(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4157,6 +4196,10 @@ export function setUseBlockie(
       }
     });
   };
+}
+
+export function setAvatarType(value: string) {
+  return setPreference('avatarType', value);
 }
 
 export function setUsePhishDetect(

@@ -8,7 +8,6 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
 <div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
-    style="margin-top: auto;"
   >
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -191,7 +190,6 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
 <div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
-    style="margin-top: auto;"
   >
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -374,7 +372,6 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
 <div>
   <div
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
-    style="margin-top: auto;"
   >
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
