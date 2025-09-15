@@ -1380,7 +1380,7 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-              We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
+              We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features).
             </span>
           </div>
         </div>

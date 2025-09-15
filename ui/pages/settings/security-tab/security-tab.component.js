@@ -114,6 +114,8 @@ export default class SecurityTab extends PureComponent {
     isSeedPhraseBackedUp: PropTypes.bool,
     socialLoginEnabled: PropTypes.bool,
     socialLoginType: PropTypes.string,
+    getMarketingConsent: PropTypes.func,
+    setMarketingConsent: PropTypes.func,
   };
 
   state = {
@@ -122,6 +124,7 @@ export default class SecurityTab extends PureComponent {
     srpQuizModalVisible: false,
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
+    hasEmailMarketingConsent: false,
   };
 
   settingsRefCounter = 0;
@@ -155,6 +158,11 @@ export default class SecurityTab extends PureComponent {
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
     if (this.props.metaMetricsDataDeletionId) {
       await updateDataDeletionTaskStatus();
+    }
+
+    if (this.props.socialLoginEnabled) {
+      const res = await this.props.getMarketingConsent();
+      this.setState({ hasEmailMarketingConsent: res });
     }
   }
 
@@ -437,12 +445,14 @@ export default class SecurityTab extends PureComponent {
 
   renderDataCollectionForMarketing() {
     const { t } = this.context;
+
     const {
       dataCollectionForMarketing,
       participateInMetaMetrics,
       setDataCollectionForMarketing,
       setParticipateInMetaMetrics,
       useExternalServices,
+      socialLoginEnabled,
     } = this.props;
 
     return (
@@ -457,7 +467,11 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('dataCollectionForMarketing')}</span>
           <div className="settings-page__content-description">
-            <span>{t('dataCollectionForMarketingDescription')}</span>
+            <span>
+              {socialLoginEnabled
+                ? t('dataCollectionForMarketingDescriptionSocialLogin')
+                : t('dataCollectionForMarketingDescription')}
+            </span>
           </div>
         </div>
 
@@ -466,9 +480,19 @@ export default class SecurityTab extends PureComponent {
           data-testid="data-collection-for-marketing-toggle"
         >
           <ToggleButton
-            value={dataCollectionForMarketing}
+            value={
+              socialLoginEnabled
+                ? this.state.hasEmailMarketingConsent
+                : dataCollectionForMarketing
+            }
             disabled={!useExternalServices}
-            onToggle={(value) => {
+            onToggle={async (value) => {
+              if (socialLoginEnabled) {
+                this.setState({ hasEmailMarketingConsent: !value });
+                await this.props.setMarketingConsent(!value);
+                return;
+              }
+
               const newMarketingConsent = Boolean(!value);
               setDataCollectionForMarketing(newMarketingConsent);
               if (participateInMetaMetrics) {

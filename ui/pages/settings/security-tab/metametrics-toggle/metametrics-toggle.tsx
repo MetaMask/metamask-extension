@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -23,6 +23,7 @@ import {
 import {
   getParticipateInMetaMetrics,
   getUseExternalServices,
+  getIsSocialLoginFlowEnabledForMetrics,
 } from '../../../../selectors';
 
 const MetametricsToggle = ({
@@ -46,6 +47,17 @@ const MetametricsToggle = ({
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const useExternalServices = useSelector(getUseExternalServices);
+
+  const isSocialLoginFlowEnabledForMetrics = useSelector(
+    getIsSocialLoginFlowEnabledForMetrics,
+  );
+
+  useEffect(() => {
+    console.log(
+      'check: participateInMetaMetrics',
+      isSocialLoginFlowEnabledForMetrics,
+    );
+  }, [participateInMetaMetrics, isSocialLoginFlowEnabledForMetrics]);
 
   const handleUseParticipateInMetaMetrics = async () => {
     if (participateInMetaMetrics) {

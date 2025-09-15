@@ -246,6 +246,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  isSocialLoginFlowEnabledForMetrics: {
+    persist: true,
+    anonymous: false,
+  },
 };
 
 /**
@@ -280,6 +284,7 @@ export type MetaMetricsControllerState = {
       payload: SegmentEventPayload;
     }
   >;
+  isSocialLoginFlowEnabledForMetrics: boolean;
 };
 
 /**
@@ -401,6 +406,7 @@ export const getDefaultMetaMetricsControllerState =
     traits: {},
     fragments: {},
     segmentApiCalls: {},
+    isSocialLoginFlowEnabledForMetrics: false,
   });
 
 export default class MetaMetricsController extends BaseController<
@@ -603,6 +609,15 @@ export default class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
+  }
+
+  setIsSocialLoginFlowEnabledForMetrics(
+    isSocialLoginFlowEnabledForMetrics: boolean,
+  ): void {
+    this.update((state) => {
+      state.isSocialLoginFlowEnabledForMetrics =
+        isSocialLoginFlowEnabledForMetrics;
+    });
   }
 
   finalizeAbandonedFragments(): void {
