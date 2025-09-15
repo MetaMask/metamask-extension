@@ -13,6 +13,8 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
+const HYPERLIQUID_REFERRAL_LEARN_MORE_URL = "https://hyperliquid.gitbook.io/hyperliquid-docs/referrals"
+
 function getValues(
   pendingApproval: ApprovalRequest<Record<string, any>>,
   t: (key: string) => string,
@@ -60,7 +62,7 @@ function getValues(
                 element: 'a',
                 key: 'hyperliquid-referral-learn-more-link',
                 props: {
-                  href: '',
+                  href: HYPERLIQUID_REFERRAL_LEARN_MORE_URL,
                   target: '_blank',
                   rel: 'noopener noreferrer',
                   style: {
