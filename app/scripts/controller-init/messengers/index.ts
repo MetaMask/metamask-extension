@@ -110,6 +110,7 @@ import {
   getAccountTrackerControllerInitMessenger,
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
+import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -155,6 +156,8 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
+export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
+export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
@@ -273,6 +276,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   OAuthService: {
     getMessenger: getOAuthServiceMessenger,
+    getInitMessenger: noop,
+  },
+  OnboardingController: {
+    getMessenger: getOnboardingControllerMessenger,
     getInitMessenger: noop,
   },
   RateLimitController: {

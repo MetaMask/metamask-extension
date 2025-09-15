@@ -129,7 +129,9 @@ export default class OnboardingController extends BaseController<
     state,
   }: {
     messenger: OnboardingControllerMessenger;
-    state: Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>;
+    state:
+      | Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>
+      | undefined;
   }) {
     super({
       messenger,
