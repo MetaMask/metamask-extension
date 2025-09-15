@@ -69,11 +69,12 @@ export const MultichainAccountIntroModal: React.FC<
   return (
     <Box
       className="multichain-account-intro-modal"
-      padding={4}
+      padding={6}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      style={{ maxWidth: '400px', minHeight: '500px' }}
+      width={BlockSize.Full}
+      style={{ minHeight: '500px' }}
     >
       {/* Close button */}
       <Box
@@ -95,15 +96,15 @@ export const MultichainAccountIntroModal: React.FC<
       {/* Hero graphics - placeholder for now until marketing provides animation */}
       <Box
         display={Display.Flex}
-        flexDirection={FlexDirection.Row}
+        flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         marginBottom={4}
-        gap={2}
+        gap={3}
         style={{ minHeight: '120px' }}
       >
         {/* Top row of circles */}
-        <Box display={Display.Flex} gap={2}>
+        <Box display={Display.Flex} gap={3}>
           <Box
             style={{ width: '60px', height: '60px' }}
             backgroundColor={BackgroundColor.errorMuted}
@@ -117,7 +118,7 @@ export const MultichainAccountIntroModal: React.FC<
         </Box>
 
         {/* Bottom row of circles */}
-        <Box display={Display.Flex} gap={2} marginTop={2}>
+        <Box display={Display.Flex} gap={3}>
           <Box
             style={{ width: '60px', height: '60px' }}
             backgroundColor={BackgroundColor.successMuted}
