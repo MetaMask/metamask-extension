@@ -19,6 +19,16 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.addressBook}`,
     'u',
   ),
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  multichain_accounts_wallets: new RegExp(
+    `${baseUrl}/multichain_accounts_wallets`,
+    'u',
+  ),
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  multichain_accounts_groups: new RegExp(
+    `${baseUrl}/multichain_accounts_groups`,
+    'u',
+  ),
 };
 
 export type UserStorageResponseData = {
