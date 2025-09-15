@@ -874,16 +874,15 @@ const getIsGasIncludedSwapSupported = createSelector(
   },
 );
 
+export const getIsStxEnabled = createSelector(
+  [(state) => getFromChain(state)?.chainId, (state) => state],
+  (fromChainId, state) => getIsSmartTransaction(state, fromChainId),
+);
+
 export const getIsGasIncluded = createSelector(
-  [
-    (state) => getFromChain(state)?.chainId,
-    (state) => state,
-    getIsGasIncludedSwapSupported,
-  ],
-  (fromChainId, state, isGasIncludedSwapSupported) => {
-    return (
-      getIsSmartTransaction(state, fromChainId) && isGasIncludedSwapSupported
-    );
+  [getIsStxEnabled, getIsGasIncludedSwapSupported],
+  (isStxEnabled, isGasIncludedSwapSupported) => {
+    return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
 
