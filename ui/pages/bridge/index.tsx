@@ -74,9 +74,7 @@ const CrossChainSwap = () => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-
   // Only fetch gas estimates if the source chain is EVM (not Solana)
-  // Gas fees are needed for the source chain where the transaction originates
   const shouldFetchGasEstimates =
     // TODO: update this with all non-EVM chains when bitcoin added.
     fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
