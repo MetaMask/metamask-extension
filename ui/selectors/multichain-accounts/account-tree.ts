@@ -33,7 +33,6 @@ import {
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
 import { isTestNetwork } from '../../helpers/utils/network-helper';
 import {
-  AccountGroupObjectWithWalletNameAndId,
   AccountGroupWithInternalAccounts,
   AccountTreeState,
   ConsolidatedWallets,
