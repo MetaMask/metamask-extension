@@ -32,7 +32,11 @@ const Favicon = (props: { src?: string; name: string }) => {
   };
 
   if (imageLoadError) {
-    return <>{getAvatarFallbackLetter(name)}</>;
+    return (
+      <div className="h-full w-full content-center bg-background-muted">
+        {getAvatarFallbackLetter(name)}
+      </div>
+    );
   }
 
   return src ? (
