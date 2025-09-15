@@ -20,7 +20,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Build ts migration dashboard
         run: yarn ts-migration:dashboard:build

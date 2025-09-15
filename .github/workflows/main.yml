@@ -49,7 +49,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
@@ -78,7 +78,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -218,7 +218,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -306,7 +306,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -344,7 +344,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
