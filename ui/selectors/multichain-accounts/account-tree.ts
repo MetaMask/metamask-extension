@@ -33,6 +33,7 @@ import {
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
 import { isTestNetwork } from '../../helpers/utils/network-helper';
 import {
+  AccountGroupObjectWithWalletNameAndId,
   AccountGroupWithInternalAccounts,
   AccountTreeState,
   ConsolidatedWallets,
@@ -350,7 +351,7 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
   getAllAccountGroups,
   getInternalAccounts,
   (
-    accountGroups: (AccountGroupObject & { walletName: string })[],
+    accountGroups: AccountGroupObjectWithWalletNameAndId[],
     internalAccounts: InternalAccount[],
   ): AccountGroupWithInternalAccounts[] => {
     return accountGroups.map((accountGroup) => {

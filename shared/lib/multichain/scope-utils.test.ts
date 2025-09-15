@@ -134,6 +134,7 @@ const createMockFactory = () => {
         accounts.solana,
       ],
       walletName: 'Test Wallet 1',
+      walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
     },
     {
       id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1',
@@ -141,6 +142,7 @@ const createMockFactory = () => {
       metadata: createGroupMetadata('Test Group 2', 1),
       accounts: [accounts.multiScope],
       walletName: 'Test Wallet 2',
+      walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
     },
   ];
 
@@ -153,6 +155,7 @@ const createMockFactory = () => {
         metadata: createGroupMetadata('Test Group'),
         accounts: [accounts.emptyScopes],
         walletName: 'Test Wallet 2',
+        walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
       },
     ];
 
@@ -164,6 +167,7 @@ const createMockFactory = () => {
         metadata: createGroupMetadata('Test Group'),
         accounts: [accounts.undefinedScopes],
         walletName: 'Test Wallet 2',
+        walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
       },
     ];
 
@@ -175,6 +179,7 @@ const createMockFactory = () => {
         metadata: createGroupMetadata('Test Group'),
         accounts: [accounts.multipleScopes],
         walletName: 'Test Wallet 3',
+        walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
       },
     ];
 
@@ -562,6 +567,7 @@ describe('scope-utils', () => {
               }),
             ],
             walletName: 'Test Wallet 3',
+            walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
           },
         ];
 

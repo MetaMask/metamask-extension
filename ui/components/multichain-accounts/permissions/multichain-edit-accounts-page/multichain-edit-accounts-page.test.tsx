@@ -97,6 +97,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       },
     ],
     walletName: 'Test Wallet 1',
+    walletId: MOCK_WALLET_ID,
   },
   {
     id: MOCK_GROUP_ID_2,
@@ -120,6 +121,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       },
     ],
     walletName: 'Test Wallet 2',
+    walletId: MOCK_WALLET_ID,
   },
   {
     id: MOCK_GROUP_ID_3,
@@ -143,6 +145,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       },
     ],
     walletName: 'Test Wallet 3',
+    walletId: MOCK_WALLET_ID,
   },
 ];
 
