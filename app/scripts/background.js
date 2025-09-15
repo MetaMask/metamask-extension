@@ -8,6 +8,9 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
+// Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
+import '../../shared/constants/infura-project-id';
+
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -1034,7 +1037,7 @@ export function setupController(
   // MetaMask Controller
   //
   controller = new MetamaskController({
-    infuraProjectId: process.env.INFURA_PROJECT_ID,
+    infuraProjectId: globalThis.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
     // initial state

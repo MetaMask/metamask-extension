@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
 import {
@@ -11,7 +11,6 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getSafeNativeCurrencySymbol,
@@ -22,6 +21,7 @@ import { setEditedNetwork } from '../../../../store/actions';
 import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -51,7 +51,7 @@ export default function TokenCell({
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(token.chainId);
   const nativeCurrencySymbol = useMemo(
     () => getSafeNativeCurrencySymbol(safeChains, token.chainId),
     [safeChains, token.chainId],
