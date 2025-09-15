@@ -672,6 +672,7 @@ class Driver {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
         const element = await this.findClickableElement(rawLocator);
+        await this.scrollToElement(element);
         await element.click();
         return;
       } catch (error) {
@@ -868,7 +869,7 @@ class Driver {
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
-      'arguments[0].scrollIntoView(true)',
+      'arguments[0].scrollIntoView({block: "center", inline: "center", behavior: "instant"});',
       element,
     );
   }
@@ -1240,8 +1241,8 @@ class Driver {
    */
   async switchToWindowWithTitle(title) {
     if (this.windowHandles) {
-      await this.windowHandles.switchToWindowWithProperty('title', title);
-      return;
+        await this.windowHandles.switchToWindowWithProperty('title', title);
+        return;
     }
 
     let windowHandles = await this.driver.getAllWindowHandles();
@@ -1270,10 +1271,10 @@ class Driver {
       timeElapsed += delayTime;
       // refresh the window handles
       windowHandles = await this.driver.getAllWindowHandles();
-    }
+          }
 
     throw new Error(`No window with title: ${title}`);
-  }
+    }
 
   /**
    * Waits for the specified number of window handles to be present and then switches to the window
