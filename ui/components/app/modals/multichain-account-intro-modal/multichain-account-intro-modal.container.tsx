@@ -48,7 +48,7 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
     }
 
     // Mark modal as shown so it doesn't show again
-    await setMultichainIntroModalShown(true);
+    dispatch(setMultichainIntroModalShown(true));
     dispatch(hideModal());
 
     // Navigate to account list
@@ -73,14 +73,9 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
     );
   }, [trackEvent]);
 
-  const handleClose = useCallback(async () => {
-    try {
-      // Mark modal as shown so it doesn't show again
-      await setMultichainIntroModalShown(true);
-    } catch (error) {
-      console.error('Failed to set modal as shown:', error);
-    }
-
+  const handleClose = useCallback(() => {
+    // Mark modal as shown so it doesn't show again
+    dispatch(setMultichainIntroModalShown(true));
     dispatch(hideModal());
   }, [dispatch]);
 
