@@ -466,6 +466,10 @@ export default function Routes() {
   const prevPropsRef = useRef({
     isUnlocked,
     totalUnapprovedConfirmationCount,
+  });
+
+  // Separate ref for multichain intro modal logic
+  const prevMultichainRef = useRef({
     isMultichainAccountsState2Enabled,
   });
 
@@ -488,19 +492,17 @@ export default function Routes() {
     prevPropsRef.current = {
       isUnlocked,
       totalUnapprovedConfirmationCount,
-      isMultichainAccountsState2Enabled,
     };
   }, [
     networkToAutomaticallySwitchTo,
     isUnlocked,
     totalUnapprovedConfirmationCount,
-    isMultichainAccountsState2Enabled,
     dispatch,
   ]);
 
   // Show multichain intro modal when state 2 is enabled
   useEffect(() => {
-    const prevProps = prevPropsRef.current;
+    const prevMultichainProps = prevMultichainRef.current;
 
     const isOnboardingRoute =
       location.pathname.includes('/onboarding') ||
@@ -514,7 +516,7 @@ export default function Routes() {
     // 2. Feature flag is enabled and user sees main wallet area for first time (fresh install case)
     const flagJustEnabled =
       isMultichainAccountsState2Enabled &&
-      !prevProps.isMultichainAccountsState2Enabled;
+      !prevMultichainProps.isMultichainAccountsState2Enabled;
     const flagEnabledFirstTime =
       isMultichainAccountsState2Enabled &&
       isMainWalletArea &&
@@ -529,6 +531,11 @@ export default function Routes() {
     if (shouldShowModal) {
       dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
     }
+
+    // Update prevMultichainProps after the effect logic
+    prevMultichainRef.current = {
+      isMultichainAccountsState2Enabled,
+    };
   }, [
     isUnlocked,
     isMultichainAccountsState2Enabled,

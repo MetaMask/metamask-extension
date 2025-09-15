@@ -7039,7 +7039,10 @@ export async function alignMultichainWallets(): Promise<void> {
 }
 
 export async function getMultichainAlignmentStatus(): Promise<boolean> {
-  return await submitRequestToBackground<boolean>('getMultichainAlignmentStatus', []);
+  return await submitRequestToBackground<boolean>(
+    'getMultichainAlignmentStatus',
+    [],
+  );
 }
 ///: END:ONLY_INCLUDE_IF
 

@@ -1,11 +1,8 @@
 import React, { useCallback, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import {
-  MultichainAccountIntroModal,
-  MultichainAccountIntroModalProps,
-} from './multichain-account-intro-modal.component';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
   hideModal,
   setMultichainIntroModalShown,
@@ -13,7 +10,10 @@ import {
 } from '../../../../store/actions';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  MultichainAccountIntroModal,
+  MultichainAccountIntroModalProps,
+} from './multichain-account-intro-modal.component';
 
 export const MultichainAccountIntroModalContainer: React.FC = () => {
   const dispatch = useDispatch();

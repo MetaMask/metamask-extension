@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useRef } from 'react';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -22,19 +21,19 @@ import {
   Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { hideModal } from '../../../../store/actions';
 
-export interface MultichainAccountIntroModalProps {
+export type MultichainAccountIntroModalProps = {
   onViewAccounts: () => void;
   onLearnMore: () => void;
   onClose: () => void;
-}
+};
 
 export const MultichainAccountIntroModal: React.FC<
   MultichainAccountIntroModalProps
 > = ({ onViewAccounts, onLearnMore, onClose }) => {
   const t = useI18nContext();
   const [isLoading, setIsLoading] = useState(false);
+  const isMountedRef = useRef(true);
 
   const handleClose = () => {
     onClose();
@@ -43,23 +42,13 @@ export const MultichainAccountIntroModal: React.FC<
   const handleViewAccounts = async () => {
     setIsLoading(true);
 
-    // Minimum 2-second loading state as per requirements
-    const minLoadingTime = 2000;
-    const startTime = Date.now();
-
     try {
       await onViewAccounts();
     } catch (error) {
       console.error('Failed to process view accounts:', error);
     } finally {
-      const elapsedTime = Date.now() - startTime;
-      const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
-
-      if (remainingTime > 0) {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, remainingTime);
-      } else {
+      // Only update state if component is still mounted
+      if (isMountedRef.current) {
         setIsLoading(false);
       }
     }
@@ -68,6 +57,14 @@ export const MultichainAccountIntroModal: React.FC<
   const handleLearnMore = () => {
     onLearnMore();
   };
+
+  // Cleanup on unmount
+  React.useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   return (
     <Box
@@ -89,7 +86,7 @@ export const MultichainAccountIntroModal: React.FC<
           variant={ButtonVariant.Link}
           size={ButtonSize.Sm}
           onClick={handleClose}
-          ariaLabel={t('close')}
+          aria-label={t('close')}
         >
           <Icon name={IconName.Close} size={IconSize.Sm} />
         </Button>
@@ -108,32 +105,28 @@ export const MultichainAccountIntroModal: React.FC<
         {/* Top row of circles */}
         <Box display={Display.Flex} gap={2}>
           <Box
-            width="60px"
-            height="60px"
-            backgroundColor="#E91E63" // Pink
-            borderRadius={BorderRadius.Full}
+            style={{ width: '60px', height: '60px' }}
+            backgroundColor={BackgroundColor.errorMuted}
+            borderRadius={BorderRadius.full}
           />
           <Box
-            width="60px"
-            height="60px"
-            backgroundColor="#FFC107" // Yellow
-            borderRadius={BorderRadius.Full}
+            style={{ width: '60px', height: '60px' }}
+            backgroundColor={BackgroundColor.warningMuted}
+            borderRadius={BorderRadius.full}
           />
         </Box>
 
         {/* Bottom row of circles */}
         <Box display={Display.Flex} gap={2} marginTop={2}>
           <Box
-            width="60px"
-            height="60px"
-            backgroundColor="#00695C" // Teal
-            borderRadius={BorderRadius.Full}
+            style={{ width: '60px', height: '60px' }}
+            backgroundColor={BackgroundColor.successMuted}
+            borderRadius={BorderRadius.full}
           />
           <Box
-            width="60px"
-            height="60px"
-            backgroundColor="#FF5722" // Orange
-            borderRadius={BorderRadius.Full}
+            style={{ width: '60px', height: '60px' }}
+            backgroundColor={BackgroundColor.infoMuted}
+            borderRadius={BorderRadius.full}
           />
         </Box>
       </Box>
