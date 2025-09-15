@@ -41,6 +41,7 @@ import {
   getNftDetectionControllerMessenger,
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
+  getAssetsContractControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -511,7 +512,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAssetsContractControllerInitMessenger,
   },
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,

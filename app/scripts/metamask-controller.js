@@ -759,7 +759,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:signPersonalMessage',
           'KeyringController:signTypedMessage',
           `${this.loggingController.name}:add`,
-          `${this.networkController.name}:getNetworkClientById`,
+          `NetworkController:getNetworkClientById`,
         ],
       }),
       trace,
@@ -8550,8 +8550,6 @@ export default class MetamaskController extends EventEmitter {
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
-      getGlobalChainId: this.#getGlobalChainId.bind(this),
-      getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
