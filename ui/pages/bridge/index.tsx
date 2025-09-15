@@ -43,7 +43,6 @@ import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import {
   getIsUnifiedUIEnabled,
   getFromChain,
-  getToChain,
 } from '../../ducks/bridge/selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
@@ -75,15 +74,12 @@ const CrossChainSwap = () => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-  const toChain = useSelector(getToChain);
 
-  // Only fetch gas estimates if it's an EVM chain.
-  // TODO: update this with all non-EVM chains when bitcoin added.
+  // Only fetch gas estimates if the source chain is EVM (not Solana)
+  // Gas fees are needed for the source chain where the transaction originates
   const shouldFetchGasEstimates =
-    fromChain?.chainId &&
-    toChain?.chainId &&
-    !isSolanaChainId(fromChain.chainId) &&
-    !isSolanaChainId(toChain.chainId);
+    // TODO: update this with all non-EVM chains when bitcoin added.
+    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(
