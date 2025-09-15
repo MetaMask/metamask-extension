@@ -19,7 +19,7 @@ import {
 } from './avatar-favicon.types';
 
 const Favicon = (props: { src?: string; name: string }) => {
-  const { src, name, ...rest } = props;
+  const { src, name } = props;
   const t = useI18nContext();
   const [imageLoadError, setImageLoadError] = useState(false);
 
@@ -31,27 +31,16 @@ const Favicon = (props: { src?: string; name: string }) => {
     setImageLoadError(true);
   };
 
-  if (imageLoadError) {
-    return (
-      <div className="h-full w-full content-center bg-background-muted">
-        {getAvatarFallbackLetter(name)}
-      </div>
-    );
-  }
-
-  return src ? (
+  return imageLoadError ? (
+    <div className="h-full w-full content-center bg-background-muted">
+      {getAvatarFallbackLetter(name)}
+    </div>
+  ) : (
     <img
       className="mm-avatar-favicon__image"
       src={src}
       alt={t('logo', [name])}
       onError={handleImageError}
-    />
-  ) : (
-    <Icon
-      name={IconName.Global}
-      color={IconColor.iconDefault}
-      size={IconSize.Md}
-      {...rest}
     />
   );
 };
@@ -81,7 +70,16 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
         className={classnames('mm-avatar-favicon', className)}
         {...{ borderColor, ...(props as AvatarBaseProps<C>) }}
       >
-        <Favicon src={src} name={name} {...fallbackIconProps} />
+        {src ? (
+          <Favicon src={src} name={name} />
+        ) : (
+          <Icon
+            name={IconName.Global}
+            color={IconColor.iconDefault}
+            size={IconSize.Md}
+            {...fallbackIconProps}
+          />
+        )}
       </AvatarBase>
     );
   },
