@@ -50,6 +50,26 @@ export async function mockIdentityServices(
       server,
     );
   }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      'multichain_accounts_wallets',
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      'multichain_accounts_wallets',
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      'multichain_accounts_groups',
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      'multichain_accounts_groups',
+      server,
+    );
+  }
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';

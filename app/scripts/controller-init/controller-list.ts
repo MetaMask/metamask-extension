@@ -13,12 +13,14 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AssetsContractController,
+  CurrencyRateController,
   DeFiPositionsController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
   NftController,
   NftDetectionController,
+  RatesController,
   TokenBalancesController,
   TokenDetectionController,
   TokenListController,
@@ -52,6 +54,9 @@ import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-cont
 import { EncryptionKey } from '@metamask/browser-passworder';
 import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { ShieldController } from '@metamask/shield-controller';
+import { EnsController } from '@metamask/ens-controller';
+import { NameController } from '@metamask/name-controller';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -59,6 +64,7 @@ import { InstitutionalSnapController } from '../controllers/institutional-snap/I
 import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
+import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -66,8 +72,10 @@ import MetaMetricsController from '../controllers/metametrics-controller';
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | CurrencyRateController
   | DelegationController
   | DeFiPositionsController
+  | EnsController
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
@@ -79,6 +87,7 @@ export type Controller =
   | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
+  | NameController
   | NetworkController
   | NetworkOrderController
   | NotificationServicesController
@@ -92,12 +101,15 @@ export type Controller =
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
+  | RatesController
   | SeedlessOnboardingController<EncryptionKey>
+  | SelectedNetworkController
   | ShieldController
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | SnapsNameProvider
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -121,8 +133,10 @@ export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
+  CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
   DelegationController['state'] &
+  EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
@@ -133,6 +147,7 @@ export type ControllerFlatState = AccountsController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
+  NameController['state'] &
   NetworkController['state'] &
   NetworkOrderController['state'] &
   OnboardingController['state'] &
@@ -142,7 +157,9 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  RatesController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
+  SelectedNetworkController['state'] &
   ShieldController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &

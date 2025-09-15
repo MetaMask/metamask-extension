@@ -1132,6 +1132,10 @@
   "cancelled": {
     "message": "Cancelled"
   },
+  "carouselAllCaughtUp": {
+    "message": "You're all caught up!",
+    "description": "Message shown in carousel when all promotional slides have been dismissed"
+  },
   "chainId": {
     "message": "Chain ID"
   },
@@ -1199,6 +1203,10 @@
   },
   "closeExtension": {
     "message": "Close extension"
+  },
+  "closeSlide": {
+    "message": "Close $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
@@ -1605,7 +1613,13 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Use this for wallet recovery on all devices."
+    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
+  },
+  "createPasswordDetailsSocialReset": {
+    "message": "MetaMask can't reset it."
+  },
+  "createPasswordMarketing": {
+    "message": "Get product updates, tips, and news including by email. We may use your interactions to improve what we share."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -1834,6 +1848,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
+  },
+  "deepLink_thePerpsPage": {
+    "message": "the perps page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
@@ -2325,6 +2342,18 @@
   },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
+  },
+  "errorLegalTextFirstInfo": {
+    "message": "Technical diagnostic information."
+  },
+  "errorLegalTextNoPersonalInfo": {
+    "message": "No personal information or other device information will be collected."
+  },
+  "errorLegalTextSecondInfo": {
+    "message": "Your browser, operating system, and MetaMask versions."
+  },
+  "errorLegalTextSummary": {
+    "message": "We will receive a single error report, containing:"
   },
   "errorMessage": {
     "message": "Message: $1",
@@ -3339,7 +3368,7 @@
     "message": "Market details"
   },
   "maskicons": {
-    "message": "Maskicons"
+    "message": "Polycons"
   },
   "max": {
     "message": "Max"
@@ -4360,14 +4389,7 @@
     "message": "Enter your new password to stay logged into MetaMask."
   },
   "passwordNotLongEnough": {
-    "message": "Password must have at least 8 characters"
-  },
-  "passwordStrength": {
-    "message": "Password strength: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
+    "message": "Must be at least 8 characters"
   },
   "passwordTermsWarning": {
     "message": "If I forget this password, MetaMask can’t reset it for me."
@@ -4962,6 +4984,9 @@
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
   },
+  "recipientEditAriaLabel": {
+    "message": "Edit recipient"
+  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
@@ -5061,6 +5086,9 @@
   },
   "reportIssue": {
     "message": "Report an issue"
+  },
+  "reportThisError": {
+    "message": "Report this error"
   },
   "requestFrom": {
     "message": "Request from"
@@ -7506,9 +7534,6 @@
   "watchOutMessage": {
     "message": "Beware of $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Weak"
   },
   "web3": {
     "message": "Web3"
