@@ -434,7 +434,7 @@ import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
 import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
 import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
-import { GasFeeControllerInit } from './controller-init/gas-fee-controller-init';
+import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

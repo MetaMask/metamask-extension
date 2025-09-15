@@ -3,13 +3,13 @@ import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
-} from '../../../shared/constants/swaps';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+} from '../../../../shared/constants/swaps';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   GasFeeControllerInitMessenger,
   GasFeeControllerMessenger,
-} from './messengers';
-import { ControllerInitFunction } from './types';
+} from '../messengers';
+import { ControllerInitFunction } from '../types';
 
 const GAS_API_URL = process.env.SWAPS_USE_DEV_APIS
   ? GAS_DEV_API_BASE_URL
