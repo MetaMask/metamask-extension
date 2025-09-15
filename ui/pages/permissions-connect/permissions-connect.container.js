@@ -1,9 +1,9 @@
 import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { compose } from 'redux';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -35,15 +35,14 @@ import {
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const {
-    match: {
-      params: { id: permissionsRequestId },
-    },
-    location: { pathname },
-  } = ownProps;
+  const { params, location } = ownProps; // Direct withRouterHooks props
+  const permissionsRequestId = params?.id;
+  const pathname = location?.pathname;
+
   let permissionsRequests = getPermissionsRequests(state);
   permissionsRequests = [
     ...permissionsRequests,
@@ -153,6 +152,7 @@ const mapStateToProps = (state, ownProps) => {
     lastConnectedInfo,
     connectPath,
     confirmPermissionPath,
+    pathname,
     totalPages,
     page,
     targetSubjectMetadata,
@@ -185,18 +185,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const PermissionApprovalContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps, mapDispatchToProps),
 )(PermissionApproval);
-
-PermissionApprovalContainer.propTypes = {
-  history: PropTypes.object.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string,
-    }).isRequired,
-  }).isRequired,
-};
-
-export default PermissionApprovalContainer;

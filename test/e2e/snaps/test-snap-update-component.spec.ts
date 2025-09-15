@@ -48,6 +48,7 @@ describe('Test Snap update via snaps component', function () {
         await headerNavbar.openSnapListPage();
         await snapListPage.clickWebpackPluginSnap();
         await snapListPage.clickUpdateSnapButton();
+        await snapInstall.checkPageIsLoaded();
         await snapInstall.clickFooterConfirmButton();
         await snapInstall.clickOkButtonAndContinueOnDialog();
         await headerNavbar.openSnapListPage();

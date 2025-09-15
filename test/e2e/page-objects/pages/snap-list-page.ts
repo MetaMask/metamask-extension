@@ -118,6 +118,7 @@ class SnapListPage {
   async clickWebpackPluginSnap(): Promise<void> {
     console.log('Clicking webpack plugin snap');
     await this.driver.clickElement(this.webpackPluginSnap);
+    await this.driver.waitForSelector(this.descriptionWebpack);
   }
 
   async clickUpdateSnapButton(): Promise<void> {
