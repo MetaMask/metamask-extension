@@ -21,7 +21,7 @@ function readTestResults(TEST_RESULTS_PATH: string): TestRun {
 
     const testRun: TestRun = testRuns.find(
       (run) => run.name === testSuiteName,
-    ) || { // If the file doesn't exist, return a dummy object to do the naïve split
+    ) || { // If the TestRun is not found, return a dummy object to do the naïve split
       name: testSuiteName,
       testFiles: [],
     };
