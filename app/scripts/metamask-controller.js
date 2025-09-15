@@ -1181,6 +1181,10 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
+          if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+          }
+
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
@@ -4202,18 +4206,6 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.setIsBackupAndSyncFeatureEnabled.bind(
           userStorageController,
         ),
-      syncInternalAccountsWithUserStorage:
-        userStorageController.syncInternalAccountsWithUserStorage.bind(
-          userStorageController,
-        ),
-      setHasAccountSyncingSyncedAtLeastOnce:
-        userStorageController.setHasAccountSyncingSyncedAtLeastOnce.bind(
-          userStorageController,
-        ),
-      setIsAccountSyncingReadyToBeDispatched:
-        userStorageController.setIsAccountSyncingReadyToBeDispatched.bind(
-          userStorageController,
-        ),
       deleteAccountSyncingDataFromUserStorage:
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
@@ -4221,6 +4213,11 @@ export default class MetamaskController extends EventEmitter {
       syncContactsWithUserStorage:
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
+        ),
+      // AccountTreeController backup and sync
+      syncAccountTreeWithUserStorage:
+        this.accountTreeController.syncWithUserStorage.bind(
+          this.accountTreeController,
         ),
 
       // NotificationServicesController
@@ -5147,13 +5144,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async discoverAndCreateAccounts(id) {
     try {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        false,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        false,
-      );
-
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
         id || this.keyringController.state.keyrings[0].metadata.id;
@@ -5175,13 +5165,6 @@ export default class MetamaskController extends EventEmitter {
         Bitcoin: 0,
         Solana: 0,
       };
-    } finally {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        true,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
     }
   }
 
@@ -5261,6 +5244,12 @@ export default class MetamaskController extends EventEmitter {
         const account =
           this.accountsController.getAccountByAddress(newAccountAddress);
         this.accountsController.setSelectedAccount(account.id);
+      }
+
+      if (this.isMultichainAccountsFeatureState2Enabled()) {
+        // We want to trigger a full sync of the account tree after importing a new SRP
+        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
+        await this.accountTreeController.syncWithUserStorage();
       }
 
       let discoveredAccounts;
@@ -5447,6 +5436,9 @@ export default class MetamaskController extends EventEmitter {
       // Clear snap state
       await this.snapController.clearState();
 
+      // Clear account tree state
+      this.accountTreeController.clearState();
+
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
       // of accounts, we should add a new flag to the account struct
@@ -5492,6 +5484,7 @@ export default class MetamaskController extends EventEmitter {
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts();
         } else {
           await this._addAccountsWithBalance();
@@ -5537,12 +5530,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
     try {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        false,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        false,
-      );
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
@@ -5653,13 +5640,6 @@ export default class MetamaskController extends EventEmitter {
         Bitcoin: 0,
         Solana: 0,
       };
-    } finally {
-      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
-        true,
-      );
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
     }
   }
 
@@ -5681,6 +5661,7 @@ export default class MetamaskController extends EventEmitter {
       );
       if (isHdKeyring) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts(metadata.id);
         } else {
           await this._addAccountsWithBalance(
