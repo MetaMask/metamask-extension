@@ -55,7 +55,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
   });
 
   return {
-    persistedStateKey: null,
     controller,
   };
 };
