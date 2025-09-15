@@ -3,8 +3,12 @@ import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
+  AVALANCHE_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
   CHAIN_IDS,
   LINEA_MAINNET_DISPLAY_NAME,
+  LOCALHOST_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
 } from '../shared/constants/network';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
@@ -1357,7 +1361,7 @@ const state = {
         chainId: '0x539',
         name: 'test network',
         ticker: 'ETH',
-        nickname: 'Localhost 8545',
+        nickname: LOCALHOST_DISPLAY_NAME,
       },
     ),
     ...mockMultichainNetworkState(),
@@ -1972,7 +1976,7 @@ export const networkList = [
     chainId: '0x539',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: true,
-    label: 'Localhost 8545',
+    label: LOCALHOST_DISPLAY_NAME,
     providerType: 'rpc',
     rpcUrl: 'http://localhost:8545',
     ticker: 'ETH',
@@ -1982,7 +1986,7 @@ export const networkList = [
     chainId: '0x38',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: false,
-    label: 'BNB Chain',
+    label: BNB_DISPLAY_NAME,
     providerType: 'rpc',
     rpcUrl: 'https://bsc-dataseed.binance.org/',
     ticker: 'BNB',
@@ -1992,7 +1996,7 @@ export const networkList = [
     chainId: '0xa86a',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: false,
-    label: 'Avalanche',
+    label: AVALANCHE_DISPLAY_NAME,
     providerType: 'rpc',
     rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
     ticker: 'AVAX',
@@ -2002,7 +2006,7 @@ export const networkList = [
     chainId: '0x89',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: false,
-    label: 'Polygon',
+    label: POLYGON_DISPLAY_NAME,
     providerType: 'rpc',
     rpcUrl: 'https://polygon-rpc.com',
     ticker: 'MATIC',

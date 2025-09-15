@@ -8,6 +8,14 @@ import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { CaipChainId, Hex } from '@metamask/utils';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
+import {
+  ARBITRUM_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
+  MAINNET_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 
 // Helper function to create mock network configurations
 const createMockNetwork = (
@@ -68,42 +76,42 @@ const createMockAccountGroup = (
 // Network configurations for many networks stories
 const MAINNET_NETWORKS = [
   {
-    name: 'Ethereum',
+    name: MAINNET_DISPLAY_NAME,
     chainId: '0x1' as Hex,
     caipChainId: 'eip155:1',
     currency: 'ETH',
     clientId: 'mainnet',
   },
   {
-    name: 'Polygon',
+    name: POLYGON_DISPLAY_NAME,
     chainId: '0x89' as Hex,
     caipChainId: 'eip155:137',
     currency: 'MATIC',
     clientId: 'polygon',
   },
   {
-    name: 'BNB Chain',
+    name: BNB_DISPLAY_NAME,
     chainId: '0x38' as Hex,
     caipChainId: 'eip155:56',
     currency: 'BNB',
     clientId: 'bsc',
   },
   {
-    name: 'Avalanche',
+    name: AVALANCHE_DISPLAY_NAME,
     chainId: '0xa86a' as Hex,
     caipChainId: 'eip155:43114',
     currency: 'AVAX',
     clientId: 'avalanche',
   },
   {
-    name: 'Arbitrum',
+    name: ARBITRUM_DISPLAY_NAME,
     chainId: '0xa4b1' as Hex,
     caipChainId: 'eip155:42161',
     currency: 'ETH',
     clientId: 'arbitrum',
   },
   {
-    name: 'Optimism',
+    name: OPTIMISM_DISPLAY_NAME,
     chainId: '0xa' as Hex,
     caipChainId: 'eip155:10',
     currency: 'ETH',
@@ -255,14 +263,14 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
 const mockNonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] =
   [
     createMockNetwork(
-      'Ethereum',
+      MAINNET_DISPLAY_NAME,
       '0x1' as Hex,
       'eip155:1' as CaipChainId,
       'ETH',
       'mainnet',
     ),
     createMockNetwork(
-      'Polygon',
+      POLYGON_DISPLAY_NAME,
       '0x89' as Hex,
       'eip155:137' as CaipChainId,
       'MATIC',
