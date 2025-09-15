@@ -644,6 +644,12 @@ export default class MetamaskController extends EventEmitter {
       networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('base-mainnet');
 
+      // The core API returns popular networks with outdated names (e.g., "Linea Mainnet" instead of "Linea").
+      // Migration 178 handles renaming networks for existing users, while this ensures new users
+      // receive the correct, simplified "Popular" network names from the start.
+      networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
+      networks[CHAIN_IDS.BASE].name = 'Base';
+
       let network;
       if (process.env.IN_TEST) {
         network = {
