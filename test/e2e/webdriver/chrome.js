@@ -76,8 +76,6 @@ class ChromeDriver {
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
-
-    // Temporarily lock to version 126
     options.setBrowserVersion('140');
 
     // Allow disabling DoT local testing
@@ -88,9 +86,18 @@ class ChromeDriver {
       });
     }
 
+    // To to make Chrome extension target pages available, that would otherwise be hidden by default from Chrome 136 onward
+    const chromeOptionsCaps = {
+      args,
+      enableExtensionTargets: true,
+    };
+
     const builder = new Builder()
       .forBrowser('chrome')
-      .setChromeOptions(options);
+      .setChromeOptions(options)
+      .withCapabilities({
+        'goog:chromeOptions': chromeOptionsCaps,
+      });
     const service = new chrome.ServiceBuilder();
 
     // Enables Chrome logging. Default: enabled
