@@ -1,4 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
+import { NetworkController } from '@metamask/network-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -11,11 +12,10 @@ import {
   ADDITIONAL_DEFAULT_NETWORKS,
   NetworkControllerInit,
 } from './network-controller-init';
-import { NetworkController } from '@metamask/network-controller';
 
 jest.mock('@metamask/network-controller', () => {
   const originalModule = jest.requireActual('@metamask/network-controller');
-  const NetworkController = jest.fn().mockImplementation(() => {
+  const NetworkControllerMock = jest.fn().mockImplementation(() => {
     return {
       initializeProvider: jest.fn(),
     };
@@ -23,7 +23,7 @@ jest.mock('@metamask/network-controller', () => {
 
   return {
     ...originalModule,
-    NetworkController,
+    NetworkController: NetworkControllerMock,
   };
 });
 
