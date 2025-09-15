@@ -3,8 +3,12 @@ import {
   TransactionControllerMessenger,
   TransactionControllerOptions,
 } from '@metamask/transaction-controller';
-import { Messenger } from '@metamask/base-controller';
-import { NetworkController } from '@metamask/network-controller';
+import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  NetworkController,
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import {
   getTransactionControllerInitMessenger,
@@ -43,7 +47,35 @@ function buildInitRequestMock(): jest.Mocked<
     TransactionControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = new Messenger<
+    | NetworkControllerGetNetworkClientByIdAction
+    | NetworkControllerGetStateAction
+    | ActionConstraint,
+    never
+  >();
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getNetworkClientById',
+    // @ts-expect-error: Partial mock.
+    (id: string) => {
+      if (id === 'mainnet') {
+        return {
+          configuration: { chainId: CHAIN_ID_MOCK },
+        };
+      }
+
+      throw new Error('Unknown network client ID');
+    },
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getState',
+    () => ({
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {},
+      networksMetadata: {},
+    }),
+  );
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
