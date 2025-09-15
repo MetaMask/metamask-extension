@@ -109,7 +109,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://mainnet.era.zksync.io',
       chainId: '0x144',
       ticker: 'ETH',
-      nickname: 'zkSync Era Mainnet',
+      nickname: 'zkSync Era',
       rpcPrefs: {
         blockExplorerUrl: 'https://explorer.zksync.io/',
         imageUrl: './images/zk-sync.svg',

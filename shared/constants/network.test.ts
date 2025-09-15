@@ -31,7 +31,7 @@ describe('NetworkConstants', () => {
         'BNB Chain': CHAIN_IDS.BSC,
         OP: CHAIN_IDS.OPTIMISM,
         Polygon: CHAIN_IDS.POLYGON,
-        'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
+        'zkSync Era': CHAIN_IDS.ZKSYNC_ERA,
         Base: CHAIN_IDS.BASE,
         Linea: CHAIN_IDS.LINEA_MAINNET,
         Sei: CHAIN_IDS.SEI,

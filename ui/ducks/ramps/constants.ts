@@ -53,7 +53,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 324,
-    chainName: 'zkSync Era Mainnet',
+    chainName: 'zkSync Era',
     shortName: 'zkSync Era',
     nativeTokenSupported: true,
   },
