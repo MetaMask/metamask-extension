@@ -28,20 +28,29 @@ describe('Sort By Networks Icon', function (this: Suite) {
         console.log(`Network label: ${networkLabel}`);
 
         // For single network, it should show the network name (e.g., "Ethereum Mainnet")
-        const expectedNetworkNames = ['Ethereum Mainnet', 'Mainnet', 'Ethereum'];
-        const isCorrectNetworkName = expectedNetworkNames.some(name =>
-          networkLabel.includes(name)
+        const expectedNetworkNames = [
+          'Ethereum Mainnet',
+          'Mainnet',
+          'Ethereum',
+        ];
+        const isCorrectNetworkName = expectedNetworkNames.some((name) =>
+          networkLabel.includes(name),
         );
 
         if (!isCorrectNetworkName) {
-          throw new Error(`Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`);
+          throw new Error(
+            `Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`,
+          );
         }
 
         // Check that the network icon is displayed and has the correct source
         const expectedIconIndicators = [
-          'ethereum', 'eth', 'ETH',
+          'ethereum',
+          'eth',
+          'ETH',
           // Could also be a data URL or contain the token image URL path
-          'images/icons', '/images/'
+          'images/icons',
+          '/images/',
         ];
 
         await assetListPage.checkNetworkIconContains(expectedIconIndicators);
@@ -71,19 +80,24 @@ describe('Sort By Networks Icon', function (this: Suite) {
 
         // For Linea, it should show "Linea Mainnet" or similar
         const expectedNetworkNames = ['Linea Mainnet', 'Linea'];
-        const isCorrectNetworkName = expectedNetworkNames.some(name =>
-          networkLabel.includes(name)
+        const isCorrectNetworkName = expectedNetworkNames.some((name) =>
+          networkLabel.includes(name),
         );
 
         if (!isCorrectNetworkName) {
-          throw new Error(`Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`);
+          throw new Error(
+            `Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`,
+          );
         }
 
         // Check that the network icon is displayed and has the correct source
         const expectedIconIndicators = [
-          'linea', 'LINEA', 'Linea',
+          'linea',
+          'LINEA',
+          'Linea',
           // Could also be a data URL or contain the token image URL path
-          'images/icons', '/images/'
+          'images/icons',
+          '/images/',
         ];
 
         await assetListPage.checkNetworkIconContains(expectedIconIndicators);
@@ -113,24 +127,32 @@ describe('Sort By Networks Icon', function (this: Suite) {
 
         // For Polygon, it should show "Polygon Mainnet" or similar
         const expectedNetworkNames = ['Polygon', 'POL'];
-        const isCorrectNetworkName = expectedNetworkNames.some(name =>
-          networkLabel.includes(name)
+        const isCorrectNetworkName = expectedNetworkNames.some((name) =>
+          networkLabel.includes(name),
         );
 
         if (!isCorrectNetworkName) {
-          throw new Error(`Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`);
+          throw new Error(
+            `Expected network name to include one of ${expectedNetworkNames.join(', ')}, but got: ${networkLabel}`,
+          );
         }
 
         // Check that the network icon is displayed and has the correct source
         const expectedIconIndicators = [
-          'polygon', 'POLYGON', 'Polygon', 'pol', 'POL', 'matic', 'MATIC',
+          'polygon',
+          'POLYGON',
+          'Polygon',
+          'pol',
+          'POL',
+          'matic',
+          'MATIC',
           // Could also be a data URL or contain the token image URL path
-          'images/icons', '/images/'
+          'images/icons',
+          '/images/',
         ];
 
         await assetListPage.checkNetworkIconContains(expectedIconIndicators);
       },
     );
   });
-
 });
