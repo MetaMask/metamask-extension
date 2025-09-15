@@ -65,6 +65,9 @@ import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   PricingResponse,
   ProductPrice,
+  ProductType,
+  RecurringInterval,
+  StartSubscriptionResponse,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
@@ -160,6 +163,7 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import { webAuthenticatorFactory } from '../../app/scripts/services/oauth/web-authenticator-factory';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -326,7 +330,7 @@ export function createNewVaultAndSyncWithSocial(
  * @returns The subscriptions.
  */
 export function getSubscriptions(): ThunkAction<
-  void,
+  Subscription[],
   MetaMaskReduxState,
   unknown,
   AnyAction
@@ -370,6 +374,57 @@ export async function getSubscriptionCryptoApprovalAmount(params: {
     'getSubscriptionCryptoApprovalAmount',
     [params],
   );
+}
+
+/**
+ * Starts a subscription with a card.
+ *
+ * @param params - The parameters.
+ * @param params.products - The list of products.
+ * @param params.isTrialRequested - Is trial requested.
+ * @param params.recurringInterval - The recurring interval.
+ * @returns The subscription response.
+ */
+export function startSubscriptionWithCard(params: {
+  products: ProductType[];
+  isTrialRequested: boolean;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<
+  StartSubscriptionResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const webAuthenticator = webAuthenticatorFactory();
+    const { checkoutSessionUrl } =
+      await submitRequestToBackground<StartSubscriptionResponse>(
+        'startSubscriptionWithCard',
+        [params],
+      );
+    // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
+    // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
+    await new Promise<string>((resolve, reject) => {
+      webAuthenticator.launchWebAuthFlow(
+        {
+          url: checkoutSessionUrl,
+          interactive: true,
+        },
+        (responseUrl) => {
+          try {
+            resolve(responseUrl);
+          } catch (error: unknown) {
+            reject(error);
+          }
+        },
+      );
+    });
+
+    // fetch latest user subscriptions after checkout
+    const subscriptions = await dispatch(getSubscriptions());
+
+    return subscriptions;
+  };
 }
 
 /**
