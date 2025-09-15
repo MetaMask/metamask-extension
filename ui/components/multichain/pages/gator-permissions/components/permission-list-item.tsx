@@ -19,7 +19,7 @@ import {
   Text,
 } from '../../../../component-library';
 
-interface PermissionListItemProps {
+type PermissionListItemProps = {
   /**
    * The permission data to display
    */
@@ -34,7 +34,7 @@ interface PermissionListItemProps {
    * The function to call when the asset is clicked
    */
   onClick: () => void;
-}
+};
 
 export const PermissionListItem = ({
   total,

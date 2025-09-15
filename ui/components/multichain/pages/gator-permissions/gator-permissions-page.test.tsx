@@ -1,16 +1,18 @@
 import React from 'react';
+import { Hex } from '@metamask/utils';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { Hex } from '@metamask/utils';
 import { GatorPermissionsPage } from './gator-permissions-page';
+
+const MOCK_CHAIN_ID = '0x1' as Hex;
 
 mockState.metamask.gatorPermissionsMapSerialized = JSON.stringify({
   'native-token-periodic': {
-    ['0x1']: [
+    [MOCK_CHAIN_ID]: [
       {
         permissionResponse: {
-          chainId: '0x1' as Hex,
+          chainId: MOCK_CHAIN_ID,
           address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
           permission: {
             type: 'native-token-periodic',
@@ -41,7 +43,7 @@ mockState.metamask.isGatorPermissionsEnabled = true;
 mockState.metamask.isFetchingGatorPermissions = false;
 mockState.metamask.isUpdatingGatorPermissions = false;
 
-let store = configureStore({
+const store = configureStore({
   ...mockState,
   metamask: {
     ...mockState.metamask,
