@@ -159,7 +159,6 @@ const migrations = [
   require('./133.2'),
   require('./134'),
   require('./134.1'),
-  require('./134.2'),
   require('./135'),
   require('./136'),
   require('./137'),
