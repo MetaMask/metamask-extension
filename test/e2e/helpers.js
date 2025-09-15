@@ -732,7 +732,7 @@ async function unlockWallet(
 
   await driver.waitForSelector('#password', { state: 'enabled' });
   await driver.fill('#password', password);
-  await driver.press('#password', driver.Key.ENTER);
+  await driver.clickElement('[data-testid="unlock-submit"]');
   if (waitLoginSuccess) {
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
