@@ -2,7 +2,12 @@ import {
   PPOMController,
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
-import { Messenger } from '@metamask/base-controller';
+import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
@@ -41,7 +46,44 @@ function buildControllerMock(
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<PPOMControllerMessenger, PPOMControllerInitMessenger>
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = new Messenger<
+    | NetworkControllerGetNetworkClientByIdAction
+    | NetworkControllerGetSelectedNetworkClientAction
+    | NetworkControllerGetStateAction
+    | ActionConstraint,
+    never
+  >();
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getNetworkClientById',
+    // @ts-expect-error: Partial mock.
+    (id: string) => {
+      if (id === 'mainnet') {
+        return {
+          configuration: { chainId: CHAIN_ID_MOCK },
+        };
+      }
+
+      throw new Error('Unknown network client ID');
+    },
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getSelectedNetworkClient',
+    () => ({
+      // @ts-expect-error: Partial mock.
+      provider: {},
+    }),
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getState',
+    () => ({
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {},
+      networksMetadata: {},
+    }),
+  );
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
