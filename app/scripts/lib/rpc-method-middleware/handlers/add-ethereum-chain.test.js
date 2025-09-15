@@ -1,5 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+} from '../../../../../shared/constants/network';
 import addEthereumChain from './add-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';
 
@@ -13,7 +16,7 @@ const NON_INFURA_CHAIN_ID = '0x123456789';
 
 const createMockMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.MAINNET,
-  name: 'Ethereum',
+  name: MAINNET_DISPLAY_NAME,
   defaultRpcEndpointIndex: 0,
   rpcEndpoints: [
     {
@@ -214,7 +217,7 @@ describe('addEthereumChainHandler', () => {
           params: [
             {
               chainId: CHAIN_IDS.MAINNET,
-              chainName: 'Ethereum',
+              chainName: MAINNET_DISPLAY_NAME,
               rpcUrls: ['https://eth.llamarpc.com'],
               nativeCurrency: {
                 symbol: 'ETH',
@@ -232,7 +235,7 @@ describe('addEthereumChainHandler', () => {
             chainId: '0x1',
             defaultBlockExplorerUrlIndex: 0,
             defaultRpcEndpointIndex: 1,
-            name: 'Ethereum',
+            name: MAINNET_DISPLAY_NAME,
             nativeCurrency: 'ETH',
             rpcEndpoints: [
               {
@@ -241,7 +244,7 @@ describe('addEthereumChainHandler', () => {
                 url: 'https://mainnet.infura.io/v3/',
               },
               {
-                name: 'Ethereum',
+                name: MAINNET_DISPLAY_NAME,
                 type: 'custom',
                 url: 'https://eth.llamarpc.com',
               },
@@ -332,7 +335,7 @@ describe('addEthereumChainHandler', () => {
       params: [
         {
           chainId: CHAIN_IDS.MAINNET,
-          chainName: 'Ethereum',
+          chainName: MAINNET_DISPLAY_NAME,
           rpcUrls: ['https://mainnet.infura.io/v3/'],
           nativeCurrency: {
             symbol: 'WRONG',
