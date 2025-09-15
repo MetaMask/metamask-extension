@@ -125,6 +125,7 @@ import {
   add0x,
   hexToBytes,
   bytesToHex,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -1892,6 +1893,52 @@ export default class MetamaskController extends EventEmitter {
             chain_id: notification?.chain_id,
           },
         });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'AccountTreeController:selectedAccountGroupChange',
+      () => {
+        const solAccounts =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [SolScope.Mainnet],
+          });
+
+        // eslint-disable-next-line no-unused-vars
+        let btcAccounts = [];
+        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+        btcAccounts =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [BtcScope.Mainnet],
+          });
+        ///: END:ONLY_INCLUDE_IF(bitcoin)
+
+        const allEnabledNetworks = Object.values(
+          this.networkOrderController.state.enabledNetworkMap,
+        ).reduce((acc, curr) => {
+          return { ...acc, ...curr };
+        }, {});
+
+        if (Object.keys(allEnabledNetworks).length === 1) {
+          const chainId = Object.keys(allEnabledNetworks)[0];
+
+          let shouldEnableMainetNetworks = false;
+          if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+          if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: END:ONLY_INCLUDE_IF(bitcoin)
+
+          if (shouldEnableMainetNetworks) {
+            this.networkOrderController.setEnabledNetworksMultichain(
+              ['0x1'],
+              KnownCaipNamespace.Eip155,
+            );
+          }
+        }
       },
     );
 
