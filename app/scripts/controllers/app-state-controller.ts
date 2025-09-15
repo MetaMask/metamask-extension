@@ -229,6 +229,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainIntroModal: false,
+
   ...getInitialStateOverrides(),
 });
 
@@ -960,7 +961,7 @@ export class AppStateController extends BaseController<
       state.hasShownMultichainIntroModal = hasShown;
     });
   }
-      
+
   /**
    * Sets the product tour to be shown to the user
    *
