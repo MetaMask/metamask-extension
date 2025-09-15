@@ -1,6 +1,6 @@
-import { migrate, version } from './175';
+import { migrate, version } from './178';
 
-const oldVersion = 174;
+const oldVersion = 177;
 
 describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
