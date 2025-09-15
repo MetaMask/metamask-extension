@@ -10,6 +10,14 @@ import {
 } from '@metamask/accounts-controller';
 import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import {
+  MultichainAccountServiceCreateMultichainAccountGroupAction,
+  MultichainAccountServiceWalletStatusChangeEvent,
+} from '@metamask/multichain-account-service';
+import {
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
 
 type Actions =
   | AccountsControllerGetAccountAction
@@ -17,12 +25,21 @@ type Actions =
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerListMultichainAccountsAction
   | SnapControllerGet
-  | KeyringControllerGetStateAction;
+  | KeyringControllerGetStateAction
+  | UserStorageController.UserStorageControllerGetStateAction
+  | UserStorageController.UserStorageControllerPerformGetStorage
+  | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntries
+  | UserStorageController.UserStorageControllerPerformSetStorage
+  | UserStorageController.UserStorageControllerPerformBatchSetStorage
+  | AuthenticationController.AuthenticationControllerGetSessionProfile
+  | MultichainAccountServiceCreateMultichainAccountGroupAction;
 
 type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
-  | AccountsControllerSelectedAccountChangeEvent;
+  | AccountsControllerSelectedAccountChangeEvent
+  | UserStorageController.UserStorageControllerStateChangeEvent
+  | MultichainAccountServiceWalletStatusChangeEvent;
 
 export type AccountTreeControllerMessenger = ReturnType<
   typeof getAccountTreeControllerMessenger
@@ -44,6 +61,8 @@ export function getAccountTreeControllerMessenger(
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:selectedAccountChange',
+      'UserStorageController:stateChange',
+      'MultichainAccountService:walletStatusChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
@@ -51,7 +70,15 @@ export function getAccountTreeControllerMessenger(
       'AccountsController:getSelectedAccount',
       'AccountsController:setSelectedAccount',
       'SnapController:get',
+      'UserStorageController:getState',
       'KeyringController:getState',
+      'UserStorageController:getState',
+      'UserStorageController:performGetStorage',
+      'UserStorageController:performGetStorageAllFeatureEntries',
+      'UserStorageController:performSetStorage',
+      'UserStorageController:performBatchSetStorage',
+      'AuthenticationController:getSessionProfile',
+      'MultichainAccountService:createMultichainAccountGroup',
     ],
   });
 }

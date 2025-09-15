@@ -44,6 +44,7 @@ export type ConsolidatedAccountGroup = {
 export type ConsolidatedAccountWallet = {
   id: AccountWalletObject['id'];
   type: AccountWalletObject['type'];
+  status: AccountWalletObject['status'];
   metadata: AccountWalletObject['metadata'];
   groups: {
     [groupId: AccountGroupId]: ConsolidatedAccountGroup;

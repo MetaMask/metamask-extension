@@ -339,6 +339,7 @@ const state = {
         'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
           id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
           type: 'entropy',
+          status: 'ready',
           groups: {
             'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
               id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
