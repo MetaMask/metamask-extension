@@ -82,9 +82,9 @@ export default function OnboardingMetametrics() {
 
   const onConfirm = async (e) => {
     e.preventDefault();
-    if (dataCollectionForMarketing === null) {
-      await dispatch(setDataCollectionForMarketing(false));
-    }
+    await dispatch(
+      setDataCollectionForMarketing(Boolean(dataCollectionForMarketing)),
+    );
     await dispatch(setParticipateInMetaMetrics(true));
     try {
       await trackEvent({

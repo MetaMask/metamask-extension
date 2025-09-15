@@ -1,18 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupId } from '@metamask/account-api';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  Box,
-  IconName,
-} from '../../component-library';
+import { Box, IconName } from '../../component-library';
 import { EditNetworksModal } from '../../multichain/edit-networks-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -108,14 +105,13 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           paddingTopValue={0}
           content={
             selectedAccountGroupIds.length === 1 ? (
-              <AvatarAccount
+              <PreferredAvatar
                 address={
                   supportedAccountGroups.find(
                     (account) => account.id === selectedAccountGroupIds[0],
                   )?.accounts[0].address || ''
                 }
                 size={AvatarAccountSize.Xs}
-                borderColor={BorderColor.transparent}
               />
             ) : (
               <MultichainSiteCellTooltip
