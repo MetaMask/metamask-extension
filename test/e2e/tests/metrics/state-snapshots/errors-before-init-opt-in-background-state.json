@@ -76,8 +76,7 @@
       "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "participateInMetaMetrics": true,
       "dataCollectionForMarketing": "boolean",
-      "traits": "object",
-      "isSocialLoginFlowEnabledForMetrics": "boolean"
+      "traits": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
