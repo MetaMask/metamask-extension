@@ -43,7 +43,7 @@ const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {

@@ -16,7 +16,7 @@ const initialState = {
         blockExplorerUrls: [],
         chainId: '0x1',
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -107,7 +107,7 @@ describe('MultiRpcEditModal', () => {
     });
 
     expect(screen.getByTestId('multi-rpc-edit-modal')).toBeInTheDocument();
-    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(screen.getByText('Ethereum')).toBeInTheDocument();
     expect(screen.getByText('supportMultiRpcInformation')).toBeInTheDocument();
   });
 });

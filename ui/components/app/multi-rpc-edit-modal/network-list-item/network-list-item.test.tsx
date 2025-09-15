@@ -25,7 +25,7 @@ describe('NetworkListItem', () => {
     const { container } = setup({
       networkConfiguration: {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [
           {
@@ -41,7 +41,7 @@ describe('NetworkListItem', () => {
     setup({
       networkConfiguration: {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [
           {
@@ -52,7 +52,7 @@ describe('NetworkListItem', () => {
       },
     });
 
-    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(screen.getByText('Ethereum')).toBeInTheDocument();
     expect(screen.getByText('Infura Mainnet')).toBeInTheDocument();
   });
 
@@ -60,7 +60,7 @@ describe('NetworkListItem', () => {
     setup({
       networkConfiguration: {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [
           {

@@ -49,7 +49,7 @@ const createMockState = () => ({
     networkConfigurationsByChainId: {
       '0x1': {
         ...mockState.metamask.networkConfigurationsByChainId['0x1'],
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
       },
       '0x89': {
         chainId: '0x89',

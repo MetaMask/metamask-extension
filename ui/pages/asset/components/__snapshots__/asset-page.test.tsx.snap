@@ -316,7 +316,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-                 
+
                 TEST
               </p>
             </div>
@@ -365,7 +365,7 @@ exports[`AssetPage should render a native asset 1`] = `
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum Mainnet
+                  Ethereum
                 </p>
               </p>
             </div>
@@ -731,7 +731,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-                 
+
                 TEST
               </p>
             </div>
@@ -780,7 +780,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum Mainnet
+                  Ethereum
                 </p>
               </p>
             </div>
@@ -1211,7 +1211,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-                 
+
                 TEST
               </p>
             </div>
@@ -1260,7 +1260,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                       src="./images/eth_logo.svg"
                     />
                   </div>
-                  Ethereum Mainnet
+                  Ethereum
                 </p>
               </p>
             </div>

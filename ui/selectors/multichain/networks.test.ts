@@ -83,7 +83,7 @@ const mockEvmNetworksWithNewConfig: Record<
 > = {
   'eip155:1': {
     chainId: 'eip155:1',
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     nativeCurrency: 'ETH',
     blockExplorerUrls: ['https://etherscan.io'],
     defaultBlockExplorerUrlIndex: 0,
@@ -102,7 +102,7 @@ const mockEvmNetworksWithNewConfig: Record<
 const mockEvmNetworksWithOldConfig: Record<Hex, NetworkConfiguration> = {
   '0x1': {
     chainId: '0x1',
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {

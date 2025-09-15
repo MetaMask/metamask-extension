@@ -324,7 +324,7 @@ describe('NetworkListMenu', () => {
     );
     expect(selectedNodes).toHaveLength(1);
 
-    expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(queryByText('Ethereum')).toBeInTheDocument();
   });
 
   it('narrows down search results', () => {

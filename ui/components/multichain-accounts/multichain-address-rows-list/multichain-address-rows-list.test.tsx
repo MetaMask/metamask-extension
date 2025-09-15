@@ -74,7 +74,7 @@ const createMockState = () => ({
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -142,7 +142,7 @@ const createMockState = () => ({
     providerConfig: {
       chainId: '0x1',
       type: 'mainnet',
-      nickname: 'Ethereum Mainnet',
+      nickname: 'Ethereum',
     },
     // Multichain controller state
     isEvmSelected: true,
@@ -278,7 +278,7 @@ describe('MultichainAddressRowsList', () => {
     expect(mockOnQrClick).toHaveBeenCalledTimes(1);
     expect(mockOnQrClick).toHaveBeenCalledWith(
       '0x1234567890abcdef1234567890abcdef12345678',
-      'Ethereum Mainnet',
+      'Ethereum',
       './images/eth_logo.svg',
     );
   });

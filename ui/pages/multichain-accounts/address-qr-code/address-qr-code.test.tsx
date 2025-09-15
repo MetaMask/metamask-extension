@@ -84,7 +84,7 @@ const mockAccount = {
 
 const mockMultichainNetwork = {
   chainId: 'eip155:1',
-  name: 'Ethereum Mainnet',
+  name: 'Ethereum',
   nativeCurrency: {
     symbol: 'ETH',
     name: 'Ethereum',

@@ -53,7 +53,7 @@ const mockIsUpgraded = jest.fn();
 const mockNetworkConfig: EIP7702NetworkConfiguration = {
   chainId: 'eip155:1' as const,
   chainIdHex: '0x1' as Hex,
-  name: 'Ethereum Mainnet',
+  name: 'Ethereum',
   isSupported: true,
   upgradeContractAddress: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as Hex,
   nativeCurrency: 'ETH',
@@ -122,7 +122,7 @@ describe('SmartContractAccountToggle', () => {
     it('displays network name and toggle button', () => {
       render();
 
-      expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+      expect(screen.getByText('Ethereum')).toBeInTheDocument();
       expect(screen.getByRole('checkbox')).toBeInTheDocument();
     });
 

@@ -346,7 +346,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Ethereum Mainnet', 'Linea', 'Base', 'Solana'],
+          ['Ethereum', 'Linea', 'Base', 'Solana'],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },
@@ -410,7 +410,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Ethereum Mainnet', 'Linea', 'Base', 'Solana'],
+          ['Ethereum', 'Linea', 'Base', 'Solana'],
           [EVM_ACCOUNT_LABEL_TWO, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },
@@ -464,7 +464,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Ethereum Mainnet', 'Solana'],
+          ['Ethereum', 'Solana'],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },

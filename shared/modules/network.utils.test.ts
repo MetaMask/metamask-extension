@@ -176,7 +176,7 @@ describe('network utils', () => {
       },
       [EthScope.Mainnet]: {
         chainId: EthScope.Mainnet,
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         blockExplorerUrls: ['https://etherscan.io'],
         defaultBlockExplorerUrlIndex: 0,
@@ -221,7 +221,7 @@ describe('network utils', () => {
         },
         {
           chainId: EthScope.Mainnet,
-          name: 'Ethereum Mainnet',
+          name: 'Ethereum',
           nativeCurrency: 'ETH',
           blockExplorerUrls: ['https://etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
@@ -247,7 +247,7 @@ describe('network utils', () => {
       ).toStrictEqual([
         {
           chainId: EthScope.Mainnet,
-          name: 'Ethereum Mainnet',
+          name: 'Ethereum',
           nativeCurrency: 'ETH',
           blockExplorerUrls: ['https://etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
@@ -281,7 +281,7 @@ describe('network utils', () => {
     const evmNetworks: Record<string, NetworkConfiguration> = {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
