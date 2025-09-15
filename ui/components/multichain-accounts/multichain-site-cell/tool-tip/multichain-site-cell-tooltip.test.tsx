@@ -81,7 +81,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: 'zkSync Era Mainnet',
+      name: 'zkSync Era',
       chainId: '0x144',
       caipChainId: 'eip155:324' as CaipChainId,
       blockExplorerUrls: ['mock-zksync-url'],

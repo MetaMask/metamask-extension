@@ -163,7 +163,7 @@
     {
       "active": true,
       "chainId": "324",
-      "chainName": "zkSync Era Mainnet",
+      "chainName": "zkSync Era",
       "shortName": "zkSync Era",
       "isEvm": true,
       "nativeTokenSupported": true
