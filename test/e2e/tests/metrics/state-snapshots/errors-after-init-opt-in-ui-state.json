@@ -112,6 +112,7 @@
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
+    "isSocialLoginFlowEnabledForMetrics": "boolean",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
@@ -169,6 +170,7 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
+    "productTour": "accountIcon",
     "currentMigrationVersion": "number",
     "accountsAssets": "object",
     "assetsMetadata": "object",
@@ -382,7 +384,11 @@
     "accountTree": "object",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "isGatorPermissionsEnabled": "boolean",
+    "gatorPermissionsMapSerialized": "string",
+    "gatorPermissionsProviderSnapId": "string",
+    "isFetchingGatorPermissions": "boolean"
   },
   "ramps": "object",
   "send": "object",

@@ -11,7 +11,12 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import { RequestStatus } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  RequestStatus,
+} from '@metamask/bridge-controller';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { KeyringTypes } from '@metamask/keyring-controller';
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',
@@ -19,7 +24,7 @@ const storybook = {
 };
 
 const Wrapper = ({ children }) => (
-  <div style={{ height: '600px' }}>
+  <div style={{ width: '400px', height: '600px' }}>
     <MemoryRouter
       initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
     >
@@ -32,11 +37,28 @@ const mockFeatureFlags = {
   extensionSupport: true,
   extensionConfig: {
     refreshRate: 30000,
+    priceImpactThreshold: {
+      normal: 1,
+      gasless: 2,
+    },
     maxRefreshCount: 5,
     support: true,
     chains: {
-      '0x1': { isActiveSrc: true, isActiveDest: true },
-      '0xa': { isActiveSrc: true, isActiveDest: true },
+      '0x1': {
+        isActiveSrc: true,
+        isActiveDest: true,
+        isSingleSwapBridgeButtonEnabled: true,
+      },
+      '0xa': {
+        isActiveSrc: true,
+        isActiveDest: true,
+        isSingleSwapBridgeButtonEnabled: true,
+      },
+      '0x89': {
+        isActiveSrc: true,
+        isActiveDest: true,
+        isSingleSwapBridgeButtonEnabled: true,
+      },
     },
   },
 };
@@ -160,19 +182,23 @@ NoQuotesStory.decorators = [
             featureFlagOverrides: mockFeatureFlags,
             bridgeSliceOverrides: mockBridgeSlice,
             bridgeStateOverrides: {
+              quoteRequest: {
+                srcChainId: CHAIN_IDS.MAINNET,
+                destChainId: CHAIN_IDS.LINEA_MAINNET,
+                srcToken: {
+                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                },
+                srcTokenAmount: '1',
+                destTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                destWalletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                slippage: '1',
+                walletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                gasIncluded: true,
+                insufficientBal: false,
+              },
               quotes: [],
               quotesLastFetched: 134,
               quotesLoadingStatus: RequestStatus.FETCHED,
-              destTokens: {
-                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
-              },
-              srcTokens: {
-                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-                  symbol: 'USDC',
-                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                  decimals: 6,
-                },
-              },
             },
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -226,6 +252,81 @@ QuotesFetchedStory.decorators = [
               },
             },
             metamaskStateOverrides: {
+              useExternalServices: true,
+              currencyRates: {
+                ETH: { conversionRate: 2514.5 },
+              },
+              marketData: {
+                '0x1': {
+                  ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
+                    price: 0.00039762010419237126,
+                    contractPercentChange1d: 0.004,
+                    priceChange1d: 0.00004,
+                  },
+                },
+              },
+            },
+          }),
+        )}
+      >
+        <Story />
+      </Provider>
+    </Wrapper>
+  ),
+];
+
+const mockHardwareAccount = createMockInternalAccount({
+  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+  keyringType: KeyringTypes.ledger,
+});
+export const AlertsPresentStory = () => {
+  return <CrossChainSwap />;
+};
+AlertsPresentStory.storyName = 'Alerts present';
+AlertsPresentStory.decorators = [
+  (Story) => (
+    <Wrapper>
+      <Provider
+        store={configureStore(
+          createBridgeMockStore({
+            featureFlagOverrides: mockFeatureFlags,
+            bridgeSliceOverrides: {
+              ...mockBridgeSlice,
+              txAlert: {
+                titleId: 'txAlertTitle',
+                description: 'The transaction is going to fail',
+                descriptionId: 'bridgeSelectDifferentQuote',
+              },
+              toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+              toToken: {
+                address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+                occurrences: 1,
+              },
+            },
+            bridgeStateOverrides: {
+              quotes: mockBridgeQuotesErc20Erc20,
+              quotesLastFetched: Date.now(),
+              quotesLoadingStatus: RequestStatus.FETCHED,
+              quoteRequest: {
+                srcChainId: CHAIN_IDS.OPTIMISM,
+                destChainId: CHAIN_IDS.POLYGON,
+                srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+                srcTokenAmount: '1',
+                destWalletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                slippage: '1',
+                walletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                gasIncluded: true,
+                insufficientBal: false,
+              },
+            },
+            metamaskStateOverrides: {
+              internalAccounts: {
+                accounts: {
+                  [mockHardwareAccount.id]: mockHardwareAccount,
+                },
+                selectedAccount: mockHardwareAccount.id,
+              },
               useExternalServices: true,
               currencyRates: {
                 ETH: { conversionRate: 2514.5 },
