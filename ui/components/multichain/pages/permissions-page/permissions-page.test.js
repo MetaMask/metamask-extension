@@ -1,13 +1,16 @@
 import React from 'react';
+import { fireEvent, waitFor } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { isGatorPermissionsFeatureEnabled } from '../../../../../shared/modules/environment';
+import {
+  DEFAULT_ROUTE,
+  GATOR_PERMISSIONS,
+} from '../../../../helpers/constants/routes';
 import { PermissionsPage } from './permissions-page';
-
-jest.mock('../../../../../shared/modules/environment');
 
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {
@@ -109,6 +112,16 @@ let store = configureStore({
   },
 });
 
+const mockHistoryPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockHistoryPush,
+  }),
+}));
+
+jest.mock('../../../../../shared/modules/environment');
+
 describe('All Connections', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -141,10 +154,39 @@ describe('All Connections', () => {
         'Permissions',
       );
     });
+
     it('renders sites title when Gator Permissions feature is enabled', () => {
-      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValueOnce(true);
+      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('permissions-page-title')).toHaveTextContent('Sites');
+    });
+
+    it('back button navigates to /gator-permissions route when Gator Permissions feature is enabled', async () => {
+      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+      renderWithProvider(<PermissionsPage />, store);
+
+      fireEvent.click(
+        document.querySelector('[data-testid="permissions-page-back"]'),
+      );
+
+      await waitFor(() => {
+        expect(mockHistoryPush).toHaveBeenCalled();
+        expect(mockHistoryPush).toHaveBeenCalledWith(GATOR_PERMISSIONS);
+      });
+    });
+
+    it('back button navigates to / route when Gator Permissions feature is disabled', async () => {
+      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+      renderWithProvider(<PermissionsPage />, store);
+
+      fireEvent.click(
+        document.querySelector('[data-testid="permissions-page-back"]'),
+      );
+
+      await waitFor(() => {
+        expect(mockHistoryPush).toHaveBeenCalled();
+        expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
     });
   });
 });

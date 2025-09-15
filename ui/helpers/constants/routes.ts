@@ -644,6 +644,11 @@ export const ROUTES = [
     label: 'Onboarding Experimental Area',
     trackInAnalytics: false,
   },
+  {
+    path: GATOR_PERMISSIONS,
+    label: 'Gator Permissions',
+    trackInAnalytics: false,
+  },
   ///: END:ONLY_INCLUDE_IF
 ] as const satisfies AppRoute[];
 

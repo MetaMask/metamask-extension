@@ -160,7 +160,6 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
@@ -630,11 +629,7 @@ export default function Routes() {
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
             path={GATOR_PERMISSIONS}
-            component={
-              isGatorPermissionsFeatureEnabled()
-                ? GatorPermissionsPage
-                : PermissionsPage
-            }
+            component={GatorPermissionsPage}
             exact
           />
           <Authenticated

@@ -25,6 +25,7 @@ import {
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
+  GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { isGatorPermissionsFeatureEnabled } from '../../../../../shared/modules/environment';
@@ -73,8 +74,15 @@ export const PermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() =>
+              history.push(
+                isGatorPermissionsFeatureEnabled()
+                  ? GATOR_PERMISSIONS
+                  : DEFAULT_ROUTE,
+              )
+            }
             size={ButtonIconSize.Sm}
+            data-testid="permissions-page-back"
           />
         }
       >
