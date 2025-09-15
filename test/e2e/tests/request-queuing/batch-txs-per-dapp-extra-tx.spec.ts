@@ -106,6 +106,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await secondTestDapp.clickSimpleSendButton();
         await secondTestDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkPageNumbers(1, 4);
 
         // Dapp 1 send 1 tx
@@ -113,7 +114,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await firstTestDapp.checkNetworkIsConnected('0x539');
         await firstTestDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
 
         // Verify we're on the first confirmation of 5
         await transactionConfirmation.checkPageNumbers(1, 5);
