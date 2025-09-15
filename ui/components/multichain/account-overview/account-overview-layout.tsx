@@ -2,7 +2,7 @@ import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { removeSlide, setSelectedAccount } from '../../../store/actions';
-import { Carousel } from '..';
+import { CarouselWithEmptyState } from '..';
 import {
   getAppIsLoading,
   getRemoteFeatureFlags,
@@ -46,7 +46,9 @@ export const AccountOverviewLayout = ({
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
 
-  const { slides } = useCarouselManagement({ enabled: isCarouselEnabled });
+  const { slides } = useCarouselManagement({
+    enabled: isCarouselEnabled,
+  });
 
   const slideById = useMemo(() => {
     const m = new Map<string, CarouselSlide>();
@@ -81,14 +83,15 @@ export const AccountOverviewLayout = ({
     });
   };
 
-  const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
+  const handleRemoveSlide = (slideId: string, isLastSlide: boolean) => {
     if (isLastSlide) {
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
         category: MetaMetricsEventCategory.Banner,
       });
     }
-    dispatch(removeSlide(id));
+
+    dispatch(removeSlide(slideId));
   };
 
   const handleRenderSlides = useCallback(
@@ -114,13 +117,12 @@ export const AccountOverviewLayout = ({
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
-
       {isCarouselEnabled && (
-        <Carousel
+        <CarouselWithEmptyState
           slides={slides}
           isLoading={isLoading}
-          onClick={handleCarouselClick}
-          onClose={handleRemoveSlide}
+          onSlideClick={handleCarouselClick}
+          onSlideClose={handleRemoveSlide}
           onRenderSlides={handleRenderSlides}
         />
       )}

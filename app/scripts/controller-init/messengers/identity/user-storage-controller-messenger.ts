@@ -4,7 +4,6 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
-  KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
@@ -13,13 +12,6 @@ import {
   AuthenticationControllerIsSignedIn,
   AuthenticationControllerPerformSignIn,
 } from '@metamask/profile-sync-controller/auth';
-import {
-  AccountsControllerAccountAddedEvent,
-  AccountsControllerAccountRenamedEvent,
-  AccountsControllerListAccountsAction,
-  AccountsControllerUpdateAccountMetadataAction,
-  AccountsControllerUpdateAccountsAction,
-} from '@metamask/accounts-controller';
 import {
   AddressBookControllerContactUpdatedEvent,
   AddressBookControllerContactDeletedEvent,
@@ -46,11 +38,6 @@ type MessengerActions =
   | AuthenticationControllerGetSessionProfile
   | AuthenticationControllerPerformSignIn
   | AuthenticationControllerIsSignedIn
-  // Account Syncing
-  | AccountsControllerListAccountsAction
-  | AccountsControllerUpdateAccountMetadataAction
-  | AccountsControllerUpdateAccountsAction
-  | KeyringControllerWithKeyringAction
   // Network Syncing
   | NetworkControllerGetStateAction
   | NetworkControllerAddNetworkAction
@@ -65,9 +52,6 @@ type MessengerEvents =
   | UserStorageControllerStateChangeEvent
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
-  // Account Syncing Events
-  | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRenamedEvent
   // Contact Syncing Events
   | AddressBookControllerContactUpdatedEvent
   | AddressBookControllerContactDeletedEvent
@@ -93,7 +77,6 @@ export function getUserStorageControllerMessenger(
     allowedActions: [
       // Keyring Controller Requests
       'KeyringController:getState',
-      'KeyringController:withKeyring',
       // Snap Controller Requests
       'SnapController:handleRequest',
       // Auth Controller Requests
@@ -101,10 +84,6 @@ export function getUserStorageControllerMessenger(
       'AuthenticationController:getSessionProfile',
       'AuthenticationController:isSignedIn',
       'AuthenticationController:performSignIn',
-      // Accounts Controller Requests
-      'AccountsController:listAccounts',
-      'AccountsController:updateAccountMetadata',
-      'AccountsController:updateAccounts',
       // Address Book Controller Requests
       'AddressBookController:list',
       'AddressBookController:set',
@@ -114,9 +93,6 @@ export function getUserStorageControllerMessenger(
       // Keyring Controller Events
       'KeyringController:lock',
       'KeyringController:unlock',
-      // Accounts Controller Events
-      'AccountsController:accountAdded',
-      'AccountsController:accountRenamed',
       // Address Book Controller Events
       'AddressBookController:contactUpdated',
       'AddressBookController:contactDeleted',
