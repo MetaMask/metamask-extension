@@ -52,6 +52,16 @@ const store = configureStore({
 
 describe('Gator Permissions Page', () => {
   describe('render', () => {
+    it('renders correctly', () => {
+      const { container, getByTestId } = renderWithProvider(
+        <GatorPermissionsPage />,
+        store,
+      );
+      expect(container).toMatchSnapshot();
+
+      expect(getByTestId('gator-permissions-page')).toBeInTheDocument();
+    });
+
     it('renders Gator Permissions page title', () => {
       const { getByTestId } = renderWithProvider(
         <GatorPermissionsPage />,
