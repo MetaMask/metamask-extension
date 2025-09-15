@@ -6,7 +6,6 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import {
   getCaip25CaveatValueFromPermissions,
   PermissionsRequest,
@@ -16,8 +15,6 @@ import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 
 type MultichainEditAccountsPageWrapperProps = {
   title: string;
-  defaultSelectedAccountGroups: AccountGroupId[];
-  supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
   onClose: () => void;
   permissions: PermissionsRequest;
