@@ -41,7 +41,7 @@ export type BridgeState = {
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
-  slippage?: number;
+  slippage?: number | null;
   txAlert: TxAlert | null;
 };
 
