@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
@@ -22,7 +23,6 @@ import {
 } from './swaps.types';
 import { getMedianEthValueQuote } from './swaps.utils';
 import SwapsController from '.';
-import { deriveStateFromMetadata } from '@metamask/base-controller';
 
 const MOCK_FETCH_PARAMS: FetchTradesInfoParams = {
   slippage: 3,
