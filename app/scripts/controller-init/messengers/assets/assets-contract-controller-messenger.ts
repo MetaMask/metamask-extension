@@ -46,3 +46,31 @@ export function getAssetsContractControllerMessenger(
     ],
   });
 }
+
+type AllowedInitializationActions =
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction;
+
+export type AssetsContractControllerInitMessenger = ReturnType<
+  typeof getAssetsContractControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for initializing the AssetsContractController.
+ * This is scoped to the actions and events that are needed during initialization.
+ *
+ * @param messenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger for initialization.
+ */
+export function getAssetsContractControllerInitMessenger(
+  messenger: Messenger<AllowedInitializationActions, never>,
+) {
+  return messenger.getRestricted({
+    name: 'AssetsContractControllerInit',
+    allowedActions: [
+      'NetworkController:getNetworkClientById',
+      'NetworkController:getState',
+    ],
+    allowedEvents: [],
+  });
+}

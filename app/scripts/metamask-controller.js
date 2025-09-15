@@ -857,10 +857,10 @@ export default class MetamaskController extends EventEmitter {
         listAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
+        findNetworkClientIdByChainId: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'NetworkController:findNetworkClientIdByChainId',
+        ),
         isNonEvmScopeSupported: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'MultichainRouter:isSupportedScope',
@@ -1044,7 +1044,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.keyringController.name}:signPersonalMessage`,
           `${this.keyringController.name}:signTypedMessage`,
           `${this.loggingController.name}:add`,
-          `${this.networkController.name}:getNetworkClientById`,
+          `NetworkController:getNetworkClientById`,
         ],
       }),
       trace,
@@ -1351,8 +1351,8 @@ export default class MetamaskController extends EventEmitter {
 
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
-      MetaMetricsController: MetaMetricsControllerInit,
       NetworkController: NetworkControllerInit,
+      MetaMetricsController: MetaMetricsControllerInit,
       GasFeeController: GasFeeControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
@@ -1422,8 +1422,8 @@ export default class MetamaskController extends EventEmitter {
     this.controllersByName = controllersByName;
 
     // Backwards compatibility for existing references
-    this.metaMetricsController = controllersByName.MetaMetricsController;
     this.networkController = controllersByName.NetworkController;
+    this.metaMetricsController = controllersByName.MetaMetricsController;
     this.gasFeeController = controllersByName.GasFeeController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
@@ -9152,8 +9152,6 @@ export default class MetamaskController extends EventEmitter {
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
-      getGlobalChainId: this.#getGlobalChainId.bind(this),
-      getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
