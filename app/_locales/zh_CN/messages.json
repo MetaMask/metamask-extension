@@ -1050,7 +1050,7 @@
   "busy": {
     "message": "忙碌中"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "出入金"
   },
   "buyMoreAsset": {
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "未找到匹配的账户"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "接收至"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "接收地址或 ENS（Ethereum 域名服务）"
@@ -4226,13 +4223,6 @@
   },
   "passwordNotLongEnough": {
     "message": "密码必须至少包含 8 个字符"
-  },
-  "passwordStrength": {
-    "message": "密码强度：$1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "强密码可以提高钱包的安全性，以防设备被盗或被入侵。"
   },
   "passwordTermsWarning": {
     "message": "如果我忘记该密码，MetaMask 将无法为我重设。"
@@ -7183,9 +7173,6 @@
   "watchOutMessage": {
     "message": "小心 $1。",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "弱"
   },
   "web3": {
     "message": "Web3"

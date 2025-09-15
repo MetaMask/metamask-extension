@@ -2569,6 +2569,10 @@ export function setShowSupportDataConsentModal(show: boolean) {
     payload: show,
   };
 }
+
+export function clearProductTour() {
+  return submitRequestToBackground('setProductTour', ['']);
+}
 export function addToken(
   {
     address,
@@ -4141,6 +4145,37 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+  };
+}
+
+export function setIsSocialLoginFlowEnabledForMetrics(
+  isSocialLoginFlowEnabledForMetrics: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch({
+      type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
+      value: isSocialLoginFlowEnabledForMetrics,
+    });
+  };
+}
+
+/**
+ * Sets marketing consent with OAuth service for social login users.
+ */
+export function setMarketingConsent(): ThunkAction<
+  Promise<boolean>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const res = await submitRequestToBackground('setMarketingConsent');
+      return Boolean(res);
+    } catch (error) {
+      logErrorWithMessage(getErrorMessage(error));
+      return false;
+    }
   };
 }
 
