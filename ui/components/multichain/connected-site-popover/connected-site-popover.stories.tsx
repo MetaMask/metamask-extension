@@ -1,10 +1,4 @@
-import React, { useState, useRef } from 'react';
 import { ConnectedSitePopover } from './connected-site-popover';
-import { AvatarFavicon, Box, PopoverPosition } from '../../component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
 
 export default {
   title: 'Components/Multichain/ConnectedSitePopover',

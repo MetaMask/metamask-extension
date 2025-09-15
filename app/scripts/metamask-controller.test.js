@@ -3895,6 +3895,33 @@ describe('MetaMaskController', () => {
           ).toHaveLength(0);
         });
       });
+
+      it('ensures network names are updated for new users', () => {
+        const initState = cloneDeep(firstTimeState);
+        delete initState.NetworkController;
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+        });
+
+        const networkState = metamaskController.networkController.state;
+        const networks = networkState.networkConfigurationsByChainId;
+
+        // Verify that network names have been updated for new users
+        expect(networks[CHAIN_IDS.MAINNET].name).toBe('Ethereum');
+        expect(networks[CHAIN_IDS.BASE].name).toBe('Base');
+      });
     });
 
     describe('#syncSeedPhrases', () => {

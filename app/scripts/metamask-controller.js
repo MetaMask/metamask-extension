@@ -644,6 +644,28 @@ export default class MetamaskController extends EventEmitter {
       networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('base-mainnet');
 
+      // Update network names to match migration 178 for new users
+      const chainsToRename = [
+        {
+          id: CHAIN_IDS.MAINNET,
+          name: 'Ethereum',
+        },
+        {
+          id: CHAIN_IDS.BASE,
+          name: 'Base',
+        },
+        {
+          id: CHAIN_IDS.LINEA_MAINNET,
+          name: 'Linea',
+        },
+      ];
+
+      chainsToRename.forEach((chain) => {
+        if (networks[chain.id]) {
+          networks[chain.id].name = chain.name;
+        }
+      });
+
       let network;
       if (process.env.IN_TEST) {
         network = {

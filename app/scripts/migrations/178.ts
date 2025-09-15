@@ -15,6 +15,11 @@ const CHAINS_TO_RENAME: {
   readonly toName: string;
 }[] = [
   {
+    id: CHAIN_IDS.MAINNET,
+    fromName: 'Ethereum Mainnet',
+    toName: 'Ethereum',
+  },
+  {
     id: CHAIN_IDS.LINEA_MAINNET,
     fromName: 'Linea Mainnet',
     toName: 'Linea',
@@ -53,6 +58,11 @@ const CHAINS_TO_RENAME: {
     id: CHAIN_IDS.SEI,
     fromName: 'Sei Mainnet',
     toName: 'Sei',
+  },
+  {
+    id: CHAIN_IDS.ZKSYNC_ERA,
+    fromName: 'zkSync Era Mainnet',
+    toName: 'zkSync Era',
   },
 ];
 
