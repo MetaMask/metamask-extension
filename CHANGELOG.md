@@ -8,8 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.4.0]
 
-### Uncategorized
-
 ### Added
 
 - feat: adds verified trust signal to dapp connection page (#35760)
@@ -616,7 +614,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.4.0...HEAD
 [13.4.0]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...v13.4.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...HEAD
 [13.3.0]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...v13.3.0
 [13.2.3]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...v13.2.3
 [13.2.2]: https://github.com/MetaMask/metamask-extension/compare/v13.2.1...v13.2.2
