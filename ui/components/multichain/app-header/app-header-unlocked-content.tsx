@@ -268,7 +268,7 @@ export const AppHeaderUnlockedContent = ({
     trackEvent,
   ]);
 
-  // TODO: [BIP-44] Delete this method once multichain accounts is released
+  // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
