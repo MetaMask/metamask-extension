@@ -1,4 +1,5 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
+import { Json } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -14,17 +15,20 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
-  "https://hyperliquid.gitbook.io/hyperliquid-docs/referrals"
+  'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals';
 
 function getValues(
-  pendingApproval: ApprovalRequest<Record<string, any>>,
+  pendingApproval: ApprovalRequest<Record<string, Json>>,
   t: (key: string) => string,
   actions: {
-    resolvePendingApproval: (id: string, value: {
-      approved: boolean;
-      allAccounts: boolean;
-      selectedAddress: string;
-    }) => void;
+    resolvePendingApproval: (
+      id: string,
+      value: {
+        approved: boolean;
+        allAccounts: boolean;
+        selectedAddress: string;
+      },
+    ) => void;
   },
 ) {
   return {
@@ -159,13 +163,13 @@ function getValues(
     onSubmit: () => {
       const checkbox = document.getElementById('hyperliquid-referral-consent');
       const isChecked = checkbox
-        ? (checkbox as HTMLInputElement).checked
-        || (checkbox as HTMLInputElement).ariaChecked === 'true'
+        ? (checkbox as HTMLInputElement).checked ||
+            (checkbox as HTMLInputElement).ariaChecked === 'true'
         : true;
       actions.resolvePendingApproval(pendingApproval.id, {
         approved: isChecked,
         allAccounts: isChecked,
-        selectedAddress: pendingApproval.requestData?.selectedAddress,
+        selectedAddress: pendingApproval.requestData?.selectedAddress as string,
       });
     },
   };
