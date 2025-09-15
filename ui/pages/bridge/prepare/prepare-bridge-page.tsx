@@ -56,6 +56,7 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getShouldShowMaxButton,
+  getIsGasIncluded,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
