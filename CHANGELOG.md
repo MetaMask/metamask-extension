@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- update: simplified network names for better readability - "Linea Mainnet" to "Linea", "Base Mainnet" to "Base", "Arbitrum One" to "Arbitrum", "Avalanche Network C-Chain" to "Avalanche", "Binance Smart Chain" to "BNB Chain", "OP Mainnet" to "OP", "Polygon Mainnet" to "Polygon", "Sei Mainnet" to "Sei", and "zkSync Era Mainnet" to "zkSync Era" (#35734)
+
 ## [13.3.0]
 ### Added
 - feat: improve new send flow, by merging amount and recipient pages, and by adding the possibility to navigate back to the page when needed (#35416)
