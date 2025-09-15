@@ -65,11 +65,13 @@ import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
+import AccountTrackerController from '../controllers/account-tracker-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
+  | AccountTrackerController
   | AuthenticationController
   | CronjobController
   | CurrencyRateController

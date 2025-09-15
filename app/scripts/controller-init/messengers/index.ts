@@ -106,7 +106,19 @@ import {
   getGasFeeControllerMessenger,
 } from './gas-fee-controller-messenger';
 import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+import {
+  getAccountTrackerControllerInitMessenger,
+  getAccountTrackerControllerMessenger,
+} from './account-tracker-controller-messenger';
 
+export type {
+  AccountTrackerControllerMessenger,
+  AccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
+export {
+  getAccountTrackerControllerMessenger,
+  getAccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,
@@ -179,6 +191,10 @@ export {
 } from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AccountTrackerController: {
+    getMessenger: getAccountTrackerControllerMessenger,
+    getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
