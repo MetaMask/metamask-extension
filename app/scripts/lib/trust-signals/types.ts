@@ -57,6 +57,11 @@ export type ScanAddressResponse = {
   label: string;
 };
 
+export type CachedScanAddressResponse = {
+  timestamp: number;
+  response: ScanAddressResponse;
+};
+
 export type GetAddressSecurityAlertResponse = (
   address: string,
 ) => ScanAddressResponse | undefined;

@@ -39,6 +39,7 @@ import type {
 } from '../../../shared/types/origin-throttling';
 import {
   ScanAddressResponse,
+  CachedScanAddressResponse,
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../lib/trust-signals/types';
@@ -50,7 +51,7 @@ import type {
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
-  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
+  addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   browserEnvironment: Record<string, string>;
   connectedStatusPopoverHasBeenShown: boolean;
   // States used for displaying the changed network toast
@@ -1033,7 +1034,22 @@ export class AppStateController extends BaseController<
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
     address: string,
   ): ScanAddressResponse | undefined => {
-    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+    const cached =
+      this.state.addressSecurityAlertResponses[address.toLowerCase()];
+    if (!cached) {
+      return undefined;
+    }
+
+    const TTL = 15 * MINUTE;
+    const currentTime = Date.now();
+    if (currentTime - cached.timestamp > TTL) {
+      this.update((state) => {
+        delete state.addressSecurityAlertResponses[address.toLowerCase()];
+      });
+      return undefined;
+    }
+
+    return cached.response;
   };
 
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
@@ -1041,8 +1057,10 @@ export class AppStateController extends BaseController<
     addressSecurityAlertResponse: ScanAddressResponse,
   ): void => {
     this.update((state) => {
-      state.addressSecurityAlertResponses[address.toLowerCase()] =
-        addressSecurityAlertResponse;
+      state.addressSecurityAlertResponses[address.toLowerCase()] = {
+        timestamp: Date.now(),
+        response: addressSecurityAlertResponse,
+      };
     });
   };
 

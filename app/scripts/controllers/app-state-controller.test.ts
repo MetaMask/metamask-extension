@@ -677,6 +677,78 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('addressSecurityAlertResponse TTL', () => {
+    const TEST_ADDRESS = '0x123456789abcdef';
+    const MOCK_RESPONSE = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: 'Benign' as const,
+      label: 'test',
+    };
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should cache and retrieve address security alert response', async () => {
+      await withController(({ controller }) => {
+        // Add response to cache
+        controller.addAddressSecurityAlertResponse(TEST_ADDRESS, MOCK_RESPONSE);
+
+        // Retrieve cached response
+        const cached = controller.getAddressSecurityAlertResponse(TEST_ADDRESS);
+        expect(cached).toEqual(MOCK_RESPONSE);
+      });
+    });
+
+    it('should return undefined for expired cache entries after 15 minutes', async () => {
+      await withController(({ controller }) => {
+        // Add response to cache
+        controller.addAddressSecurityAlertResponse(TEST_ADDRESS, MOCK_RESPONSE);
+
+        // Verify it's cached
+        let cached = controller.getAddressSecurityAlertResponse(TEST_ADDRESS);
+        expect(cached).toEqual(MOCK_RESPONSE);
+
+        // Advance time by 14 minutes - should still be cached
+        jest.advanceTimersByTime(14 * MINUTE);
+        cached = controller.getAddressSecurityAlertResponse(TEST_ADDRESS);
+        expect(cached).toEqual(MOCK_RESPONSE);
+
+        // Advance time by 2 more minutes (total 16 minutes) - should be expired
+        jest.advanceTimersByTime(2 * MINUTE);
+        cached = controller.getAddressSecurityAlertResponse(TEST_ADDRESS);
+        expect(cached).toBeUndefined();
+
+        // Verify the expired entry was removed from state
+        expect(
+          controller.state.addressSecurityAlertResponses[
+            TEST_ADDRESS.toLowerCase()
+          ],
+        ).toBeUndefined();
+      });
+    });
+
+    it('should handle case-insensitive addresses', async () => {
+      await withController(({ controller }) => {
+        // Add response with lowercase address
+        controller.addAddressSecurityAlertResponse(
+          TEST_ADDRESS.toLowerCase(),
+          MOCK_RESPONSE,
+        );
+
+        // Retrieve with uppercase address
+        const cached = controller.getAddressSecurityAlertResponse(
+          TEST_ADDRESS.toUpperCase(),
+        );
+        expect(cached).toEqual(MOCK_RESPONSE);
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
