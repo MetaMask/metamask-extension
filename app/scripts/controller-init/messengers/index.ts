@@ -101,6 +101,11 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
+import {
+  getGasFeeControllerInitMessenger,
+  getGasFeeControllerMessenger,
+} from './gas-fee-controller-messenger';
+import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 
 export type {
   CurrencyRateControllerMessenger,
@@ -118,6 +123,14 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
+export type {
+  GasFeeControllerMessenger,
+  GasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
+export {
+  getGasFeeControllerMessenger,
+  getGasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
@@ -130,6 +143,8 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
+export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -192,6 +207,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
   },
+  GasFeeController: {
+    getMessenger: getGasFeeControllerMessenger,
+    getInitMessenger: getGasFeeControllerInitMessenger,
+  },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
     getInitMessenger: noop,
@@ -251,6 +270,10 @@ export const CONTROLLER_MESSENGERS = {
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
+  },
+  SelectedNetworkController: {
+    getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
   },
   ShieldController: {
     getMessenger: getShieldControllerMessenger,

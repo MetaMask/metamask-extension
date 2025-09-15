@@ -45,7 +45,6 @@ import {
   NetworkController,
   getDefaultNetworkControllerState,
 } from '@metamask/network-controller';
-import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
   MethodNames,
   PermissionController,
@@ -57,7 +56,6 @@ import {
 
 import {
   METAMASK_DOMAIN,
-  SelectedNetworkController,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
@@ -125,6 +123,7 @@ import {
   add0x,
   hexToBytes,
   bytesToHex,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -181,11 +180,6 @@ import {
 } from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
-import {
-  GAS_API_BASE_URL,
-  GAS_DEV_API_BASE_URL,
-  SWAPS_CLIENT_ID,
-} from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
@@ -346,7 +340,6 @@ import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
-import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
@@ -440,6 +433,8 @@ import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
 import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
 import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
+import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
+import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -863,48 +858,6 @@ export default class MetamaskController extends EventEmitter {
         state: initState.metaMetricsDataDeletionController,
       });
 
-    const gasFeeMessenger = this.controllerMessenger.getRestricted({
-      name: 'GasFeeController',
-      allowedActions: [
-        'NetworkController:getEIP1559Compatibility',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-
-    const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
-      ? GAS_DEV_API_BASE_URL
-      : GAS_API_BASE_URL;
-
-    this.gasFeeController = new GasFeeController({
-      state: initState.GasFeeController,
-      interval: 10000,
-      messenger: gasFeeMessenger,
-      clientId: SWAPS_CLIENT_ID,
-      getProvider: () =>
-        this.networkController.getProviderAndBlockTracker().provider,
-      onNetworkDidChange: (eventHandler) => {
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => eventHandler(this.networkController.state),
-        );
-      },
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
-      legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
-      EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
-      getCurrentNetworkLegacyGasAPICompatibility: () => {
-        const chainId = this.#getGlobalChainId();
-        return chainId === CHAIN_IDS.BSC;
-      },
-      getChainId: () => this.#getGlobalChainId(),
-    });
-
     const appStateControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'AppStateController',
       allowedActions: [
@@ -1132,33 +1085,6 @@ export default class MetamaskController extends EventEmitter {
         ...this.getSnapPermissionSpecifications(),
       },
       unrestrictedMethods,
-    });
-
-    this.selectedNetworkController = new SelectedNetworkController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SelectedNetworkController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getState',
-          'NetworkController:getSelectedNetworkClient',
-          'PermissionController:hasPermissions',
-          'PermissionController:getSubjectNames',
-        ],
-        allowedEvents: [
-          'NetworkController:stateChange',
-          'PermissionController:stateChange',
-        ],
-      }),
-      state: initState.SelectedNetworkController,
-      useRequestQueuePreference: true,
-      onPreferencesStateChange: () => {
-        // noop
-        // we have removed the ability to toggle the useRequestQueue preference
-        // both useRequestQueue and onPreferencesStateChange will be removed
-        // once mobile supports per dapp network selection
-        // see https://github.com/MetaMask/core/pull/5065#issue-2736965186
-      },
-      domainProxyMap: new WeakRefObjectMap(),
     });
 
     this.permissionLogController = new PermissionLogController({
@@ -1446,10 +1372,9 @@ export default class MetamaskController extends EventEmitter {
           return { gasLimit, simulationFails };
         },
         // TODO: Remove once GasFeeController exports this action type
-        getEIP1559GasFeeEstimates:
-          this.gasFeeController.fetchGasFeeEstimates.bind(
-            this.gasFeeController,
-          ),
+        getEIP1559GasFeeEstimates: (...args) => {
+          return this.gasFeeController.fetchGasFeeEstimates(...args);
+        },
         // TODO: Remove once TransactionController exports this action type
         getLayer1GasFee: (...args) =>
           this.txController.getLayer1GasFee(...args),
@@ -1566,9 +1491,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
-      getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
-        this.gasFeeController,
-      ),
+      getGasFeeEstimates: (...args) => {
+        return this.gasFeeController.fetchGasFeeEstimates(...args);
+      },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserOperationController',
         allowedActions: [
@@ -1696,7 +1621,6 @@ export default class MetamaskController extends EventEmitter {
     const existingControllers = [
       this.networkController,
       this.preferencesController,
-      this.gasFeeController,
       this.onboardingController,
       this.keyringController,
       this.accountsController,
@@ -1705,11 +1629,13 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       MetaMetricsController: MetaMetricsControllerInit,
+      GasFeeController: GasFeeControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
       CronjobController: CronjobControllerInit,
+      SelectedNetworkController: SelectedNetworkControllerInit,
       SnapController: SnapControllerInit,
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
@@ -1771,8 +1697,11 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.metaMetricsController = controllersByName.MetaMetricsController;
+    this.gasFeeController = controllersByName.GasFeeController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
+    this.selectedNetworkController =
+      controllersByName.SelectedNetworkController;
     this.snapController = controllersByName.SnapController;
     this.snapInsightsController = controllersByName.SnapInsightsController;
     this.snapInterfaceController = controllersByName.SnapInterfaceController;
@@ -1896,6 +1825,52 @@ export default class MetamaskController extends EventEmitter {
             chain_id: notification?.chain_id,
           },
         });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'AccountTreeController:selectedAccountGroupChange',
+      () => {
+        const solAccounts =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [SolScope.Mainnet],
+          });
+
+        // eslint-disable-next-line no-unused-vars
+        let btcAccounts = [];
+        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+        btcAccounts =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [BtcScope.Mainnet],
+          });
+        ///: END:ONLY_INCLUDE_IF(bitcoin)
+
+        const allEnabledNetworks = Object.values(
+          this.networkOrderController.state.enabledNetworkMap,
+        ).reduce((acc, curr) => {
+          return { ...acc, ...curr };
+        }, {});
+
+        if (Object.keys(allEnabledNetworks).length === 1) {
+          const chainId = Object.keys(allEnabledNetworks)[0];
+
+          let shouldEnableMainetNetworks = false;
+          if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+          if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: END:ONLY_INCLUDE_IF(bitcoin)
+
+          if (shouldEnableMainetNetworks) {
+            this.networkOrderController.setEnabledNetworksMultichain(
+              ['0x1'],
+              KnownCaipNamespace.Eip155,
+            );
+          }
+        }
       },
     );
 
@@ -4756,11 +4731,19 @@ export default class MetamaskController extends EventEmitter {
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
       if (isSocialLoginFlow) {
-        // revoke seedless refresh token asynchronously
+        // renew seedless refresh token asynchronously
         this.seedlessOnboardingController
-          .revokeRefreshToken(password)
+          .renewRefreshToken(password)
           .catch((err) => {
             log.error('error while revoking seedless refresh token', err);
+          })
+          .finally(() => {
+            // try to revoke pending refresh tokens asynchronously
+            this.seedlessOnboardingController
+              .revokePendingRefreshTokens()
+              .catch((err) => {
+                log.error('error while revoking pending refresh tokens', err);
+              });
           });
       }
       isPasswordSynced = true;
@@ -4861,9 +4844,17 @@ export default class MetamaskController extends EventEmitter {
 
         // revoke seedless refresh token asynchronously
         this.seedlessOnboardingController
-          .revokeRefreshToken(password)
+          .renewRefreshToken(password)
           .catch((err) => {
             log.error('error while revoking seedless refresh token', err);
+          })
+          .finally(() => {
+            // try to revoke pending refresh tokens asynchronously
+            this.seedlessOnboardingController
+              .revokePendingRefreshTokens()
+              .catch((err) => {
+                log.error('error while revoking pending refresh tokens', err);
+              });
           });
       } catch (err) {
         const errorMessage =
@@ -6693,13 +6684,6 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  /**
-   * @returns {boolean} true if the keyring type supports EIP-1559
-   */
-  async getCurrentAccountEIP1559Compatibility() {
-    return true;
-  }
-
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
@@ -8455,8 +8439,8 @@ export default class MetamaskController extends EventEmitter {
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
+      getEIP1559GasFeeEstimates: (...args) =>
+        this.gasFeeController.fetchGasFeeEstimates(...args),
       getSelectedAddress: () =>
         this.accountsController.getSelectedAccount().address,
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
