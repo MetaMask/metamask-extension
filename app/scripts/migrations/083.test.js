@@ -57,7 +57,7 @@ describe('migration #83', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -67,7 +67,8 @@ describe('migration #83', () => {
             },
             'network-configuration-id-4': {
               chainId: '0x38',
-              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
+              nickname:
+                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },
@@ -98,7 +99,7 @@ describe('migration #83', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -109,7 +110,8 @@ describe('migration #83', () => {
             },
             'network-configuration-id-4': {
               chainId: '0x38',
-              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
+              nickname:
+                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },

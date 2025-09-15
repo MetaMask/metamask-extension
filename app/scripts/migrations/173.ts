@@ -11,7 +11,7 @@ type VersionedData = {
 export const version = 173;
 
 /**
- * This migration updates the SEI network name from `Sei Network` to `Sei`.
+ * This migration updates the SEI network name from `Sei Network` to `Sei Mainnet`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.

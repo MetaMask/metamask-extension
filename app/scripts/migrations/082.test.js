@@ -57,7 +57,7 @@ describe('migration #82', () => {
             },
             {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -67,7 +67,8 @@ describe('migration #82', () => {
             },
             {
               chainId: '0x38',
-              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
+              nickname:
+                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },
@@ -97,7 +98,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -107,7 +108,8 @@ describe('migration #82', () => {
             },
             'network-configuration-id-4': {
               chainId: '0x38',
-              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
+              nickname:
+                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },
@@ -143,7 +145,7 @@ describe('migration #82', () => {
             },
             {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -153,7 +155,8 @@ describe('migration #82', () => {
             },
             {
               chainId: '0x38',
-              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
+              nickname:
+                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },
@@ -171,7 +174,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -212,7 +215,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -237,7 +240,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -247,7 +250,8 @@ describe('migration #82', () => {
             },
             'network-configuration-id-4': {
               chainId: '0x38',
-              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
+              nickname:
+                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },
@@ -279,7 +283,7 @@ describe('migration #82', () => {
             },
             {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -312,7 +316,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -414,7 +418,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -471,7 +475,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -521,7 +525,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -546,7 +550,7 @@ describe('migration #82', () => {
             },
             'network-configuration-id-2': {
               chainId: '0xa4b1',
-              nickname: 'Arbitrum',
+              nickname: 'Arbitrum One',
               rpcPrefs: {
                 blockExplorerUrl: 'https://explorer.arbitrum.io',
               },
@@ -556,7 +560,8 @@ describe('migration #82', () => {
             },
             'network-configuration-id-4': {
               chainId: '0x38',
-              nickname: 'BNB Smart Chain (previously BNB Chain Mainnet)',
+              nickname:
+                'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
               rpcPrefs: {
                 blockExplorerUrl: 'https://bscscan.com/',
               },
@@ -595,7 +600,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -637,7 +642,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
@@ -674,7 +679,7 @@ describe('migration #82', () => {
           },
           previousProviderStore: {
             chainId: '0x89',
-            nickname: 'Polygon',
+            nickname: 'Polygon Mainnet',
             rpcPrefs: {},
             rpcUrl:
               'https://polygon-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
