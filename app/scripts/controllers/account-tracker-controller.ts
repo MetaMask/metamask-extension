@@ -81,20 +81,28 @@ export type AccountTrackerControllerState = {
  */
 const controllerMetadata = {
   accounts: {
+    includeInStateLogs: false,
     persist: true,
     anonymous: false,
+    usedInUi: true,
   },
   currentBlockGasLimit: {
+    includeInStateLogs: false,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   accountsByChainId: {
+    includeInStateLogs: false,
     persist: true,
     anonymous: false,
+    usedInUi: true,
   },
   currentBlockGasLimitByChainId: {
+    includeInStateLogs: false,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
 };
 
