@@ -29,13 +29,13 @@ describe('useGasIncluded7702', () => {
 
   it('returns false when isSendBundleSupportedForChain is true', () => {
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        true,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: true,
+      }),
     );
 
     expect(result.current).toBe(false);
@@ -45,13 +45,13 @@ describe('useGasIncluded7702', () => {
 
   it('returns false when smartAccountOptIn is false', () => {
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        false,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: false,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     expect(result.current).toBe(false);
@@ -61,13 +61,13 @@ describe('useGasIncluded7702', () => {
 
   it('returns false when isSwap is false', () => {
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        false,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: false,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     expect(result.current).toBe(false);
@@ -77,7 +77,13 @@ describe('useGasIncluded7702', () => {
 
   it('returns false when selectedAccount is null', () => {
     const { result } = renderHook(() =>
-      useGasIncluded7702(true, true, null, { chainId: '0x1' }, false),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: null,
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     expect(result.current).toBe(false);
@@ -87,7 +93,13 @@ describe('useGasIncluded7702', () => {
 
   it('returns false when fromChain is null', () => {
     const { result } = renderHook(() =>
-      useGasIncluded7702(true, true, { address: '0x123' }, null, false),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: null,
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     expect(result.current).toBe(false);
@@ -102,13 +114,13 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     await waitForNextUpdate();
@@ -128,13 +140,13 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     // Initial state should be false
@@ -156,13 +168,13 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(false);
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     // Initial state should be false
@@ -181,13 +193,13 @@ describe('useGasIncluded7702', () => {
     mockIsAtomicBatchSupported.mockRejectedValue(new Error('Test error'));
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     // Initial state should be false
@@ -213,13 +225,13 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     await waitForNextUpdate();
@@ -233,13 +245,13 @@ describe('useGasIncluded7702', () => {
     mockIsRelaySupported.mockResolvedValue(true);
 
     const { result } = renderHook(() =>
-      useGasIncluded7702(
-        true,
-        true,
-        { address: '0x123' },
-        { chainId: '0x1' },
-        false,
-      ),
+      useGasIncluded7702({
+        smartAccountOptIn: true,
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      }),
     );
 
     // Initial state should be false
@@ -266,13 +278,13 @@ describe('useGasIncluded7702', () => {
       mockIsRelaySupported.mockResolvedValue(true);
 
       const { result, unmount } = renderHook(() =>
-        useGasIncluded7702(
-          true,
-          true,
-          { address: '0x123' },
-          { chainId: '0x1' },
-          false,
-        ),
+        useGasIncluded7702({
+          smartAccountOptIn: true,
+          isSwap: true,
+          selectedAccount: { address: '0x123' },
+          fromChain: { chainId: '0x1' },
+          isSendBundleSupportedForChain: false,
+        }),
       );
 
       // Initial state should be false
@@ -309,7 +321,13 @@ describe('useGasIncluded7702', () => {
 
       const { result, rerender } = renderHook(
         ({ address, chainId }) =>
-          useGasIncluded7702(true, true, { address }, { chainId }, false),
+          useGasIncluded7702({
+            smartAccountOptIn: true,
+            isSwap: true,
+            selectedAccount: { address },
+            fromChain: { chainId },
+            isSendBundleSupportedForChain: false,
+          }),
         {
           initialProps: { address: '0x123', chainId: '0x1' },
         },
@@ -366,7 +384,13 @@ describe('useGasIncluded7702', () => {
 
       const { result, rerender } = renderHook(
         ({ address, chainId }) =>
-          useGasIncluded7702(true, true, { address }, { chainId }, false),
+          useGasIncluded7702({
+            smartAccountOptIn: true,
+            isSwap: true,
+            selectedAccount: { address },
+            fromChain: { chainId },
+            isSendBundleSupportedForChain: false,
+          }),
         {
           initialProps: { address: addresses[0], chainId: chainIds[0] },
         },
@@ -405,13 +429,13 @@ describe('useGasIncluded7702', () => {
 
       const { result, rerender } = renderHook(
         ({ chainId }) =>
-          useGasIncluded7702(
-            true,
-            true,
-            { address: '0x123' },
-            { chainId },
-            false,
-          ),
+          useGasIncluded7702({
+            smartAccountOptIn: true,
+            isSwap: true,
+            selectedAccount: { address: '0x123' },
+            fromChain: { chainId },
+            isSendBundleSupportedForChain: false,
+          }),
         {
           initialProps: { chainId: '0x1' },
         },

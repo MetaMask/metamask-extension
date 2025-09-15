@@ -238,13 +238,13 @@ const PrepareBridgePage = ({
 
   const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
 
-  const gasIncluded7702 = useGasIncluded7702(
+  const gasIncluded7702 = useGasIncluded7702({
     smartAccountOptIn,
     isSwap,
     selectedAccount,
     fromChain,
     isSendBundleSupportedForChain,
-  );
+  });
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
