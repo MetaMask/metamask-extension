@@ -3,6 +3,8 @@ import { render, fireEvent } from '@testing-library/react';
 
 import { useSendAssets } from '../../../hooks/send/useSendAssets';
 import { useSendAssetFilter } from '../../../hooks/send/useSendAssetFilter';
+import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
+import { AssetFilterMethod } from '../../../context/send-metrics';
 import { Asset } from './asset';
 
 jest.mock('../../../hooks/send/useSendAssets');
@@ -50,22 +52,24 @@ jest.mock('../asset-list', () => ({
     </div>
   ),
 }));
+jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 
 describe('Asset', () => {
   const mockUseSendAssets = jest.mocked(useSendAssets);
   const mockUseSendAssetFilter = jest.mocked(useSendAssetFilter);
-
+  const mockUseAssetSelectionMetrics = jest.mocked(useAssetSelectionMetrics);
   const mockTokens = [
     { name: 'Ethereum', symbol: 'ETH', chainId: '1' },
     { name: 'USDC', symbol: 'USDC', chainId: '1' },
   ];
-
   const mockNfts = [
     { name: 'Cool NFT', collection: { name: 'Cool Collection' }, chainId: '1' },
   ];
-
   const mockFilteredTokens = [mockTokens[0]];
   const mockFilteredNfts = [mockNfts[0]];
+  const mockAddAssetFilterMethod = jest.fn();
+  const mockRemoveAssetFilterMethod = jest.fn();
+  const mockSetAssetListSize = jest.fn();
 
   beforeEach(() => {
     mockUseSendAssets.mockReturnValue({
@@ -77,6 +81,12 @@ describe('Asset', () => {
       filteredTokens: mockFilteredTokens,
       filteredNfts: mockFilteredNfts,
     });
+
+    mockUseAssetSelectionMetrics.mockReturnValue({
+      addAssetFilterMethod: mockAddAssetFilterMethod,
+      removeAssetFilterMethod: mockRemoveAssetFilterMethod,
+      setAssetListSize: mockSetAssetListSize,
+    } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
   });
 
   afterEach(() => {
@@ -143,6 +153,32 @@ describe('Asset', () => {
       nfts: mockNfts,
       selectedChainId: null,
       searchQuery: '',
+    });
+  });
+
+  describe('metrics', () => {
+    it('calls addAssetFilterMethod when search query changes', () => {
+      render(<Asset />);
+      expect(mockSetAssetListSize).toHaveBeenCalledWith(
+        (mockTokens.length + mockNfts.length).toString(),
+      );
+    });
+
+    it('updates metrics when input changes', () => {
+      const { getByTestId } = render(<Asset />);
+      const input = getByTestId('asset-filter-input');
+
+      fireEvent.change(input, { target: { value: 'test query' } });
+
+      expect(mockAddAssetFilterMethod).toHaveBeenCalledWith(
+        AssetFilterMethod.Search,
+      );
+
+      fireEvent.change(input, { target: { value: '' } });
+
+      expect(mockRemoveAssetFilterMethod).toHaveBeenCalledWith(
+        AssetFilterMethod.Search,
+      );
     });
   });
 });

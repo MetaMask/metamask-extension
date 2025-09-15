@@ -19,7 +19,6 @@ jobs:
     name: Run Page Load Benchmarks
     runs-on: ubuntu-latest
     env:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -32,10 +31,10 @@ jobs:
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
 
-      - name: Download artifact 'build-dist-browserify'
+      - name: Download artifact 'build-test-browserify'
         uses: actions/download-artifact@v4
         with:
-          name: build-dist-browserify
+          name: build-test-browserify
 
       - name: Install Playwright browsers
         run: yarn playwright install chromium

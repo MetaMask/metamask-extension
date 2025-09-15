@@ -54,7 +54,56 @@ describe('Amount', () => {
     expect(mockUpdateValue).toHaveBeenCalledWith('1');
   });
 
-  it('amount input is reset when fiatmode is toggled', () => {
+  it('does not call update value method if number of decimals are equal to that in asset', () => {
+    const mockUpdateValue = jest.fn();
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '10.023',
+      rawBalanceNumeric: new Numeric('10.023', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateValue: mockUpdateValue,
+      asset: EVM_ASSET,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      fiatCurrencySymbol: 'USD',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
+    });
+
+    const { getByRole } = render();
+
+    fireEvent.change(getByRole('textbox'), { target: { value: 10.0075 } });
+    expect(mockUpdateValue).not.toHaveBeenCalled();
+  });
+
+  it('does not call update value method if in fiatmode fraction size is equal to 2', () => {
+    const mockUpdateValue = jest.fn();
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '10.023',
+      rawBalanceNumeric: new Numeric('10.023', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateValue: mockUpdateValue,
+      asset: EVM_ASSET,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      fiatCurrencySymbol: 'USD',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+      getNativeDisplayValue: () => 'ETH 1.20001',
+    });
+
+    const { getByRole, getByTestId } = render();
+
+    fireEvent.click(getByTestId('toggle-fiat-mode'));
+    fireEvent.change(getByRole('textbox'), { target: { value: 10.007 } });
+    expect(mockUpdateValue).not.toHaveBeenCalled();
+  });
+
+  it('amount value is changed when fiatmode is toggled', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_ASSET,
       updateValue: jest.fn(),
@@ -75,7 +124,7 @@ describe('Amount', () => {
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
     expect(getByText('~$ 20.00')).toBeInTheDocument();
     fireEvent.click(getByTestId('toggle-fiat-mode'));
-    expect(getByRole('textbox')).toHaveValue('');
+    expect(getByRole('textbox')).toHaveValue('20');
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
     expect(getByText('~ETH 1.20001')).toBeInTheDocument();
   });
