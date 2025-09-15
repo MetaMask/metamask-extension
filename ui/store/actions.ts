@@ -6709,7 +6709,6 @@ export function syncAccountTreeWithUserStorage(): ThunkAction<
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      console.log('syncAccountTreeWithUserStorage');
       const response = await submitRequestToBackground(
         'syncAccountTreeWithUserStorage',
       );

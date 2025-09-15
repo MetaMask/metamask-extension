@@ -2,6 +2,11 @@ import { AccountTreeController } from '@metamask/account-tree-controller';
 import { ControllerInitFunction } from '../types';
 import { AccountTreeControllerMessenger } from '../messengers/accounts';
 import { trace } from '../../../../shared/lib/trace';
+import { AccountTreeControllerInitMessenger } from '../messengers/accounts/account-tree-controller-messenger';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 /**
  * Initialize the account wallet controller.
@@ -13,8 +18,9 @@ import { trace } from '../../../../shared/lib/trace';
  */
 export const AccountTreeControllerInit: ControllerInitFunction<
   AccountTreeController,
-  AccountTreeControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
+  AccountTreeControllerMessenger,
+  AccountTreeControllerInitMessenger
+> = ({ controllerMessenger, persistedState, initMessenger }) => {
   const controller = new AccountTreeController({
     messenger: controllerMessenger,
     state: persistedState.AccountTreeController,
@@ -23,8 +29,14 @@ export const AccountTreeControllerInit: ControllerInitFunction<
       trace,
       backupAndSync: {
         onBackupAndSyncEvent: (event) => {
-          // Handle backup and sync events here, e.g., logging or tracking.
-          console.log('Backup and Sync Event:', event);
+          initMessenger.call('MetaMetricsController:trackEvent', {
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
+            properties: {
+              // @ts-expect-error events coming from the controller are typed and this conflicts with the expected Record<string, Json> type
+              event,
+            },
+          });
         },
       },
     },
