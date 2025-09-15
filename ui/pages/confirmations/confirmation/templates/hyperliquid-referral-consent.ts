@@ -13,7 +13,8 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
-const HYPERLIQUID_REFERRAL_LEARN_MORE_URL = "https://hyperliquid.gitbook.io/hyperliquid-docs/referrals"
+const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
+  "https://hyperliquid.gitbook.io/hyperliquid-docs/referrals"
 
 function getValues(
   pendingApproval: ApprovalRequest<Record<string, any>>,
@@ -158,7 +159,8 @@ function getValues(
     onSubmit: () => {
       const checkbox = document.getElementById('hyperliquid-referral-consent');
       const isChecked = checkbox
-        ? (checkbox as HTMLInputElement).checked || (checkbox as HTMLInputElement).ariaChecked === 'true'
+        ? (checkbox as HTMLInputElement).checked
+        || (checkbox as HTMLInputElement).ariaChecked === 'true'
         : true;
       actions.resolvePendingApproval(pendingApproval.id, {
         approved: isChecked,

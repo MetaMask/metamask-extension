@@ -86,6 +86,7 @@ export const safeComponentList = {
   FormTextField,
   i: 'i',
   img: 'img',
+  input: 'input',
   MetaMaskTranslation,
   NetworkDisplay,
   OriginPill,
