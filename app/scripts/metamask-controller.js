@@ -5239,6 +5239,8 @@ export default class MetamaskController extends EventEmitter {
       }
 
       if (this.isMultichainAccountsFeatureState2Enabled()) {
+        // We want to trigger a full sync of the account tree after importing a new SRP
+        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
         await this.accountTreeController.syncWithUserStorage();
       }
 
@@ -5425,6 +5427,8 @@ export default class MetamaskController extends EventEmitter {
 
       // Clear snap state
       await this.snapController.clearState();
+
+      // Clear account tree state
       this.accountTreeController.clearState();
 
       // Currently, the account-order-controller is not in sync with
