@@ -57,7 +57,7 @@ const CHAINS_TO_RENAME: {
 ];
 
 /**
- * This migration updates the SEI network name from `Sei Network` to `Sei`.
+ * This migration updates network names.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
