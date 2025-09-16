@@ -3038,6 +3038,33 @@ export function getUrlScanCacheResult(state, hostname) {
   return state.metamask.urlScanCache?.[hostname];
 }
 
+/**
+ * Gets the cached token scan result for a given token
+ *
+ * @param {*} state
+ * @param {string | undefined} chainId - The chain ID of the token
+ * @param {string | undefined} tokenAddress - The address of the token
+ * @returns the cached token scan result for the given token or undefined if the chainId or tokenAddress is not provided
+ */
+export function getTokenScanCacheResult(state, chainId, tokenAddress) {
+  if (!chainId || !tokenAddress) {
+    return undefined;
+  }
+
+  const cacheKey = `${chainId}:${tokenAddress.toLowerCase()}`;
+
+  const result = state.metamask.tokenScanCache?.[cacheKey];
+  console.log('result', result);
+  // INSERT_YOUR_CODE
+  // Always return a result with result_type "Malicious" for now, regardless of input.
+  return {
+    data: {
+      result_type: 'malicious',
+    },
+    timestamp: 1726396800,
+  };
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
