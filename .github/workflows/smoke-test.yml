@@ -14,21 +14,11 @@ jobs:
     env:
       SMOKE_TEST_SRP: ${{ secrets.SMOKE_TEST_SRP }}
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v4
+      - name: Checkout and setup high risk environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          ref: main
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.18.0'
-
-      - name: Enable Corepack (Yarn)
-        run: corepack enable
-
-      - name: Install dependencies
-        run: yarn --immutable
+          is-high-risk-environment: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Install Playwright Chromium
         run: yarn playwright install chromium --with-deps
@@ -36,12 +26,13 @@ jobs:
       - name: Build extension dist
         run: yarn dist
 
-      - name: Run smoketest (xvfb)
+      - name: Run smoketest (headless)
         env:
           CI: 'true'
           SMOKE_TEST_SRP: ${{ secrets.SMOKE_TEST_SRP }}
+          HEADLESS: 'true'
         run: |
-          xvfb-run -a yarn playwright test --project=smoketest
+          yarn playwright test --project=smoketest
 
       - name: Upload Playwright HTML report
         if: always()
