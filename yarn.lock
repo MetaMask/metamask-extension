@@ -5674,9 +5674,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.13.0":
-  version: 11.13.0
-  resolution: "@metamask/controller-utils@npm:11.13.0"
+"@metamask/controller-utils@npm:^11.14.0":
+  version: 11.14.0
+  resolution: "@metamask/controller-utils@npm:11.14.0"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
@@ -5691,7 +5691,7 @@ __metadata:
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/608a0174627568ca20176f12781fb7a9bb7148d448bd1b3b7d69347071d5b7bc1b9f93f1dd57f773f91eb34929dd34fbdf7757b2c82a3a87b19b00607dbf8b52
+  checksum: 10/68a30d60a0f94316635dbe6b7f4edb0adc62873b7834a72a1342b2f61ff85fdd1d994a4168af6b15aa23a8385627df7becb14a7aa033b875d96a97b9c07120c4
   languageName: node
   linkType: hard
 
@@ -7526,16 +7526,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@file:./subscription-controller.tgz::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@metamask/subscription-controller@file:./subscription-controller.tgz#./subscription-controller.tgz::hash=27c7f6&locator=metamask-crx%40workspace%3A."
+"@metamask/subscription-controller@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/subscription-controller@npm:0.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
-    "@metamask/controller-utils": "npm:^11.13.0"
+    "@metamask/controller-utils": "npm:^11.14.0"
     "@metamask/utils": "npm:^11.8.0"
   peerDependencies:
     "@metamask/profile-sync-controller": ^25.0.0
-  checksum: 10/982b3115838b70a2d0a89a03a47dc0a125c094101e7ed66f863c9ffb911fb0e061b6430f7b4e698d3724bf3d6b0c78934e5548ec731639a3f7536d0e0bab524a
+  checksum: 10/f99dd74b6b057a357676447222f75a3753ce7522e2ff61002de46809bd67bcc3b8d71d246260aae302c3a458fec62ff543b03cf018d89bf77f1734292d24e6ca
   languageName: node
   linkType: hard
 
@@ -31946,7 +31946,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.3.8"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": ./subscription-controller.tgz
+    "@metamask/subscription-controller": "npm:^0.1.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
