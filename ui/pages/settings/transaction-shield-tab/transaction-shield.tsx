@@ -196,15 +196,20 @@ const TransactionShield = () => {
           position="top"
           title={t('shieldTxMembershipErrorInsufficientTokenTooltip')}
         >
-          <ButtonLink
-            startIconName={IconName.Danger}
-            danger
-            onClick={() => {
-              console.log('Insufficient USDT');
-            }}
-          >
-            {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
-          </ButtonLink>
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+            <Icon
+              name={IconName.Danger}
+              color={IconColor.errorDefault}
+              size={IconSize.Md}
+            />
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.errorDefault}
+              className="underline"
+            >
+              {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+            </Text>
+          </Box>
         </Tooltip>
       );
     }
@@ -216,48 +221,56 @@ const TransactionShield = () => {
           position="top"
           title={t('shieldTxMembershipErrorDeclinedCardTooltip')}
         >
-          <ButtonLink
-            startIconName={IconName.Danger}
-            danger
-            onClick={() => {
-              console.log('Update card details');
-            }}
-          >
-            {t('shieldTxMembershipErrorUpdateCardDetails')}
-          </ButtonLink>
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+            <Icon
+              name={IconName.Danger}
+              color={IconColor.errorDefault}
+              size={IconSize.Md}
+            />
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.errorDefault}
+              className="underline"
+            >
+              {t('shieldTxMembershipErrorUpdateCardDetails')}
+            </Text>
+          </Box>
         </Tooltip>
       );
     }
     if (membershipErrorState === MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS) {
       return (
-        <ButtonLink
-          startIconName={IconName.Danger}
-          startIconProps={{
-            color: IconColor.warningDefault,
-          }}
-          color={TextColor.warningDefault}
-          onClick={() => {
-            console.log('Insufficient funds');
-          }}
-        >
-          USDT
-        </ButtonLink>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+            size={IconSize.Md}
+          />
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.warningDefault}
+          >
+            USDT
+          </Text>
+        </Box>
       );
     }
     if (membershipErrorState === MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING) {
       return (
-        <ButtonLink
-          startIconName={IconName.Danger}
-          startIconProps={{
-            color: IconColor.warningDefault,
-          }}
-          color={TextColor.warningDefault}
-          onClick={() => {
-            console.log('Membership ending');
-          }}
-        >
-          {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
-        </ButtonLink>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+            size={IconSize.Md}
+          />
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.warningDefault}
+            className="underline"
+          >
+            {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+          </Text>
+        </Box>
       );
     }
     return 'USDT';
