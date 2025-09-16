@@ -1,9 +1,8 @@
 import { AddressResolution } from '@metamask/snaps-sdk';
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
-import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import * as SnapNameResolution from '../../../../hooks/snaps/useSnapNameResolution';
