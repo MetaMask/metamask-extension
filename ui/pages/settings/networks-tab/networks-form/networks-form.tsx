@@ -16,7 +16,6 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
   infuraProjectId,
-  WHITELIST_SYMBOL,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import {
@@ -79,6 +78,7 @@ import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
 import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 
 export const NetworksForm = ({
   networkFormState,
@@ -176,9 +176,9 @@ export const NetworksForm = ({
       : undefined;
 
     const isWhitelistedSymbol = chainIdHex
-      ? WHITELIST_SYMBOL[
-          chainIdHex as keyof typeof WHITELIST_SYMBOL
-        ]?.toLowerCase() === ticker?.toLowerCase()
+      ? NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
       : false;
 
     const mismatch =

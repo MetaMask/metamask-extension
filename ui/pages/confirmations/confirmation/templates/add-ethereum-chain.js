@@ -3,9 +3,6 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
-  WHITELIST_NETWORK_NAME,
-  WHITELIST_SYMBOL,
-  WHITELIST_NETWORK_RPC_URL_ORIGIN,
 } from '../../../../../shared/constants/network';
 import {
   AlignItems,
@@ -21,6 +18,7 @@ import {
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -177,16 +175,19 @@ async function getAlerts(pendingApproval, data) {
     if (
       data.matchedChain.name?.toLowerCase() !==
         pendingApproval.requestData.chainName.toLowerCase() &&
-      WHITELIST_NETWORK_NAME[
+      !NETWORKS_BYPASSING_VALIDATION[
         pendingApproval.requestData.chainId
-      ]?.toLowerCase() !== pendingApproval.requestData.chainName.toLowerCase()
+      ]?.name?.toLowerCase() ===
+        pendingApproval.requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
       data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
         pendingApproval.requestData.ticker?.toLowerCase() &&
-      WHITELIST_SYMBOL[pendingApproval.requestData.chainId]?.toLowerCase() !==
+      !NETWORKS_BYPASSING_VALIDATION[
+        pendingApproval.requestData.chainId
+      ]?.symbol?.toLowerCase() ===
         pendingApproval.requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
@@ -197,8 +198,9 @@ async function getAlerts(pendingApproval, data) {
       !data.matchedChain.rpc
         ?.map((rpc) => new URL(rpc).origin)
         .includes(origin) &&
-      WHITELIST_NETWORK_RPC_URL_ORIGIN[pendingApproval.requestData.chainId] !==
-        origin
+      !NETWORKS_BYPASSING_VALIDATION[
+        pendingApproval.requestData.chainId
+      ]?.rpcUrl.includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
