@@ -12,7 +12,7 @@ type Account = {
 };
 
 type UseGasIncluded7702Params = {
-  smartAccountOptIn: boolean;
+  smartAccountOptedIn: boolean;
   isSwap: boolean;
   selectedAccount: Account | null | undefined;
   fromChain: Chain | null | undefined;
@@ -23,7 +23,7 @@ type UseGasIncluded7702Params = {
  * Custom hook to check if gasless 7702 is supported for Smart Accounts
  *
  * @param params - Configuration object
- * @param params.smartAccountOptIn - Whether smart account is opted in
+ * @param params.smartAccountOptedIn - Whether smart account is opted in
  * @param params.isSwap - Whether this is a swap transaction
  * @param params.selectedAccount - The selected account
  * @param params.fromChain - The source chain
@@ -31,7 +31,7 @@ type UseGasIncluded7702Params = {
  * @returns Whether gasless 7702 is supported
  */
 export function useGasIncluded7702({
-  smartAccountOptIn,
+  smartAccountOptedIn,
   isSwap,
   selectedAccount,
   fromChain,
@@ -46,7 +46,7 @@ export function useGasIncluded7702({
     const checkGasIncluded7702Support = async () => {
       if (
         isSendBundleSupportedForChain ||
-        !smartAccountOptIn ||
+        !smartAccountOptedIn ||
         !isSwap ||
         !selectedAccount?.address ||
         !fromChain?.chainId
@@ -101,7 +101,7 @@ export function useGasIncluded7702({
       isCancelled = true;
     };
   }, [
-    smartAccountOptIn,
+    smartAccountOptedIn,
     isSwap,
     selectedAccount?.address,
     fromChain?.chainId,

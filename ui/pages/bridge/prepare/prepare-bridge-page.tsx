@@ -202,7 +202,7 @@ const PrepareBridgePage = ({
     getIsSmartTransaction(state as never, fromChain?.chainId),
   );
 
-  const smartAccountOptIn = useSelector(getUseSmartAccount);
+  const smartAccountOptedIn = useSelector(getUseSmartAccount);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -239,7 +239,7 @@ const PrepareBridgePage = ({
   const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
 
   const gasIncluded7702 = useGasIncluded7702({
-    smartAccountOptIn,
+    smartAccountOptedIn,
     isSwap,
     selectedAccount,
     fromChain,

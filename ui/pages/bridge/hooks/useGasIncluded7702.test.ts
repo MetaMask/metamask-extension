@@ -30,7 +30,7 @@ describe('useGasIncluded7702', () => {
   it('returns false when isSendBundleSupportedForChain is true', () => {
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -43,10 +43,10 @@ describe('useGasIncluded7702', () => {
     expect(mockIsRelaySupported).not.toHaveBeenCalled();
   });
 
-  it('returns false when smartAccountOptIn is false', () => {
+  it('returns false when smartAccountOptedIn is false', () => {
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: false,
+        smartAccountOptedIn: false,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -62,7 +62,7 @@ describe('useGasIncluded7702', () => {
   it('returns false when isSwap is false', () => {
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: false,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -78,7 +78,7 @@ describe('useGasIncluded7702', () => {
   it('returns false when selectedAccount is null', () => {
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: null,
         fromChain: { chainId: '0x1' },
@@ -94,7 +94,7 @@ describe('useGasIncluded7702', () => {
   it('returns false when fromChain is null', () => {
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: null,
@@ -115,7 +115,7 @@ describe('useGasIncluded7702', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -141,7 +141,7 @@ describe('useGasIncluded7702', () => {
 
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -169,7 +169,7 @@ describe('useGasIncluded7702', () => {
 
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -194,7 +194,7 @@ describe('useGasIncluded7702', () => {
 
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -226,7 +226,7 @@ describe('useGasIncluded7702', () => {
 
     const { result, waitForNextUpdate } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -246,7 +246,7 @@ describe('useGasIncluded7702', () => {
 
     const { result } = renderHook(() =>
       useGasIncluded7702({
-        smartAccountOptIn: true,
+        smartAccountOptedIn: true,
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
@@ -279,7 +279,7 @@ describe('useGasIncluded7702', () => {
 
       const { result, unmount } = renderHook(() =>
         useGasIncluded7702({
-          smartAccountOptIn: true,
+          smartAccountOptedIn: true,
           isSwap: true,
           selectedAccount: { address: '0x123' },
           fromChain: { chainId: '0x1' },
@@ -322,7 +322,7 @@ describe('useGasIncluded7702', () => {
       const { result, rerender } = renderHook(
         ({ address, chainId }) =>
           useGasIncluded7702({
-            smartAccountOptIn: true,
+            smartAccountOptedIn: true,
             isSwap: true,
             selectedAccount: { address },
             fromChain: { chainId },
@@ -385,7 +385,7 @@ describe('useGasIncluded7702', () => {
       const { result, rerender } = renderHook(
         ({ address, chainId }) =>
           useGasIncluded7702({
-            smartAccountOptIn: true,
+            smartAccountOptedIn: true,
             isSwap: true,
             selectedAccount: { address },
             fromChain: { chainId },
@@ -430,7 +430,7 @@ describe('useGasIncluded7702', () => {
       const { result, rerender } = renderHook(
         ({ chainId }) =>
           useGasIncluded7702({
-            smartAccountOptIn: true,
+            smartAccountOptedIn: true,
             isSwap: true,
             selectedAccount: { address: '0x123' },
             fromChain: { chainId },
