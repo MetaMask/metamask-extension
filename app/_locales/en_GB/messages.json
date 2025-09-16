@@ -106,7 +106,10 @@
     "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIdenticon": {
-    "message": "Account identicon"
+    "message": "Account icon"
+  },
+  "accountIdenticonDescription": {
+    "message": "Choose from three different styles of unique icons that can help you identify accounts at a glance."
   },
   "accountIsntConnectedToastText": {
     "message": "$1 isn't connected to $2"
@@ -893,10 +896,10 @@
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
   "bridgeApprovalWarning": {
-    "message": "You are allowing access to the specified amount, $1 $2. The contract will not access any additional funds."
+    "message": "You're allowing access to $1 $2. The contract won't access any additional funds."
   },
   "bridgeApprovalWarningForHardware": {
-    "message": "You will need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
+    "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block explorer link copied!"
@@ -946,13 +949,10 @@
     "message": "Net cost"
   },
   "bridgePriceImpact": {
-    "message": "Price Impact"
-  },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Price impact reflects how your swap order affects the market price of the asset. If you do not hold enough funds for gas, part of your source token is automatically allocated to cover fees, which will reduce the amount swapped. MetaMask does not influence or control price impact."
+    "message": "Price impact"
   },
   "bridgePriceImpactNormalWarning": {
-    "message": "Price impact reflects how your swap order affects the market price of the asset. It depends on the trade size and the available liquidity in the pool. MetaMask does not influence or control price impact."
+    "message": "Price impact reflects how your swap affects the market price. If you don't have enough for gas, some of your tokens are used to cover fees, which raises price impact. MetaMask doesn't set or control this."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Price Impact"
@@ -1099,8 +1099,8 @@
   "busy": {
     "message": "Busy"
   },
-  "buyAndSell": {
-    "message": "Buy/Sell"
+  "buy": {
+    "message": "Buy"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -1131,6 +1131,10 @@
   },
   "cancelled": {
     "message": "Cancelled"
+  },
+  "carouselAllCaughtUp": {
+    "message": "You're all caught up!",
+    "description": "Message shown in carousel when all promotional slides have been dismissed"
   },
   "chainId": {
     "message": "Chain ID"
@@ -1199,6 +1203,10 @@
   },
   "closeExtension": {
     "message": "Close extension"
+  },
+  "closeSlide": {
+    "message": "Close $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
@@ -1605,7 +1613,13 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Use this for wallet recovery on all devices."
+    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
+  },
+  "createPasswordDetailsSocialReset": {
+    "message": "MetaMask can't reset it."
+  },
+  "createPasswordMarketing": {
+    "message": "Get product updates, tips, and news including by email. We may use your interactions to improve what we share."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -1807,6 +1821,14 @@
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
   },
+  "deepLink_Error404_CTA": {
+    "message": "$1 and we'll take you to the right place.",
+    "description": "$1 is a link with the text found in `deepLink_Error404_CTA_LinkText`"
+  },
+  "deepLink_Error404_CTA_LinkText": {
+    "message": "Update to the latest version of MetaMask",
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+  },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
   },
@@ -1834,6 +1856,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
+  },
+  "deepLink_thePerpsPage": {
+    "message": "the perps page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
@@ -1925,9 +1950,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Receive at"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Receiving address or ENS"
@@ -2328,6 +2350,18 @@
   },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
+  },
+  "errorLegalTextFirstInfo": {
+    "message": "Technical diagnostic information."
+  },
+  "errorLegalTextNoPersonalInfo": {
+    "message": "No personal information or other device information will be collected."
+  },
+  "errorLegalTextSecondInfo": {
+    "message": "Your browser, operating system, and MetaMask versions."
+  },
+  "errorLegalTextSummary": {
+    "message": "We will receive a single error report, containing:"
   },
   "errorMessage": {
     "message": "Message: $1",
@@ -2771,12 +2805,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howQuotesWork": {
-    "message": "How quotes work"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "This quote has the best return of the quotes we searched. This is based on the swap rate, which includes bridging fees and a $1% MetaMask fee, minus gas fees. Gas fees depend on how busy the network is and how complex the transaction is."
-  },
   "id": {
     "message": "ID"
   },
@@ -3045,9 +3073,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3350,6 +3375,9 @@
   "marketDetails": {
     "message": "Market details"
   },
+  "maskicons": {
+    "message": "Polycons"
+  },
   "max": {
     "message": "Max"
   },
@@ -3419,6 +3447,15 @@
     "message": "M",
     "description": "Shortened form of 'million'"
   },
+  "minimumReceivedExplanation": {
+    "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
+  },
+  "minimumReceivedExplanationTitle": {
+    "message": "Minimum Amount Received"
+  },
+  "minimumReceivedLabel": {
+    "message": "Minimum received"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3470,14 +3507,11 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridging"
+  "multichainQuoteCardRateExplanation": {
+    "message": "The best rate we found from providers, including provider fees and a $1% MetaMask fee."
   },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Quote"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Time"
+  "multichainQuoteCardRateLabel": {
+    "message": "Rate"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
@@ -3634,6 +3668,12 @@
   "networkFee": {
     "message": "Network fee"
   },
+  "networkFeeExplanation": {
+    "message": "Network fees depend on how busy the network is and how complex your transaction is."
+  },
+  "networkFeeExplanationTitle": {
+    "message": "Network Fee"
+  },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
@@ -3745,6 +3785,13 @@
   },
   "newAccount": {
     "message": "New account"
+  },
+  "newAccountIconMessage": {
+    "message": "Weʼve refreshed account icons to help you tell your accounts apart more easily. You can change the style in $1 > $2 > $3.",
+    "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
+  },
+  "newAccountIconTitle": {
+    "message": "New account icon"
   },
   "newAccountNumberName": {
     "message": "Account $1",
@@ -4350,14 +4397,7 @@
     "message": "Enter your new password to stay logged into MetaMask."
   },
   "passwordNotLongEnough": {
-    "message": "Password must have at least 8 characters"
-  },
-  "passwordStrength": {
-    "message": "Password strength: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
+    "message": "Must be at least 8 characters"
   },
   "passwordTermsWarning": {
     "message": "If I forget this password, MetaMask can’t reset it for me."
@@ -4922,7 +4962,7 @@
     "message": "Rank"
   },
   "rateIncludesMMFee": {
-    "message": "Rate includes $1% fee"
+    "message": "Includes $1% MM fee."
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -4946,8 +4986,14 @@
     "message": "Receiving address",
     "description": "Page title when viewing addresses for receiving funds"
   },
+  "recipient": {
+    "message": "Recipient"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Enter public address (0x) or domain name"
+  },
+  "recipientEditAriaLabel": {
+    "message": "Edit recipient"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -5048,6 +5094,9 @@
   },
   "reportIssue": {
     "message": "Report an issue"
+  },
+  "reportThisError": {
+    "message": "Report this error"
   },
   "requestFrom": {
     "message": "Request from"
@@ -5639,6 +5688,41 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
+  "shieldTxMembershipErrorDeclinedCard": {
+    "message": "Membership is paused due to declined card. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorDeclinedCardTooltip": {
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  },
+  "shieldTxMembershipErrorInsufficientFunds": {
+    "message": "Insufficient funds for your $1 renewal. $2 to keep your access.",
+    "description": "The $1 is date and $2 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientToken": {
+    "message": "Insufficient $1",
+    "description": "The $1 is the token symbol"
+  },
+  "shieldTxMembershipErrorInsufficientTokenBalance": {
+    "message": "Membership is paused due to insufficient token balance. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientTokenTooltip": {
+    "message": "Insufficient token balance in your wallet. Top up or select an alternative payment method to resume coverage."
+  },
+  "shieldTxMembershipErrorMembershipEnding": {
+    "message": "Your membership is ending on $1. $2 to maintain uninterrupted access",
+    "description": "The $1 is date and $2 is the action text 'Renew now'"
+  },
+  "shieldTxMembershipErrorRenewNow": {
+    "message": "Renew now"
+  },
+  "shieldTxMembershipErrorUpdateCardDetails": {
+    "message": "Update card details"
+  },
+  "shieldTxMembershipErrorUpdatePayment": {
+    "message": "Update payment"
+  },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
@@ -5855,6 +5939,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Edit slippage"
+  },
+  "slippageExplanation": {
+    "message": "The % change in price you're willing to allow before your transaction is canceled."
   },
   "smartAccount": {
     "message": "Smart account"
@@ -6649,6 +6736,9 @@
   "swapGasFeesExplanationLinkText": {
     "message": "here",
     "description": "Text for link in swapGasFeesExplanation"
+  },
+  "swapGasFeesIncluded": {
+    "message": " Included"
   },
   "swapGasFeesLearnMore": {
     "message": "Learn more about gas fees"
@@ -7549,9 +7639,6 @@
     "message": "Beware of $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Weak"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7577,13 +7664,10 @@
     "message": "What's this?"
   },
   "willApproveAmountForBridging": {
-    "message": "This will approve $1 for bridging."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "You’ll need to confirm two transactions on your hardware wallet."
+    "message": "Approves token for bridge."
   },
   "willApproveAmountForSwapping": {
-    "message": "This will approve $1 for swapping."
+    "message": "Approves token for swap."
   },
   "withdrawing": {
     "message": "Withdrawing"

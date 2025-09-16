@@ -141,7 +141,16 @@ describe('Deep Link', function () {
           if (isInvalidRoute) {
             console.log('Getting error text for invalid route');
             const text = await deepLink.getDescriptionText();
-            assert.equal(text, "We can't find the page you are looking for.");
+            assert.equal(
+              text,
+              `We can't find the page you are looking for.${
+                isSigned
+                  ? `
+Update to the latest version of MetaMask
+and we'll take you to the right place.`
+                  : ''
+              }`,
+            );
           }
 
           console.log('Clicking continue button');
@@ -207,6 +216,41 @@ describe('Deep Link', function () {
 
         await driver.waitForUrl({
           url: `${BaseUrl.Portfolio}/buy`,
+        });
+      },
+    );
+  });
+
+  it('handles /perps route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/perps`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+
+        const url = new URL(signedUrl);
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/perps${url.search}`,
+        });
+
+        await driver.navigate();
+        homePage.checkPageIsLoaded();
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/perps`,
         });
       },
     );

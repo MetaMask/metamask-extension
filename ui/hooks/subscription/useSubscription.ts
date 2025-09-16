@@ -1,53 +1,75 @@
-import { useDispatch, useSelector } from "react-redux";
-import { getUserSubscriptions } from "../../selectors/subscription";
-import { useMemo } from "react";
-import { cancelSubscription, getSubscriptionBillingPortalUrl, getSubscriptions, unCancelSubscription } from "../../store/actions";
-import { ProductType, Subscription } from "@metamask/subscription-controller";
-import { useAsyncCallback, useAsyncResult } from "../useAsync";
-import { MetaMaskReduxDispatch } from "../../store/store";
+import { useDispatch, useSelector } from 'react-redux';
+import { useMemo } from 'react';
+import { ProductType, Subscription } from '@metamask/subscription-controller';
+import { getUserSubscriptions } from '../../selectors/subscription';
+import {
+  cancelSubscription,
+  getSubscriptionBillingPortalUrl,
+  getSubscriptions,
+  unCancelSubscription,
+} from '../../store/actions';
+import { useAsyncCallback, useAsyncResult } from '../useAsync';
+import { MetaMaskReduxDispatch } from '../../store/store';
 
 export const useUserSubscriptions = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const subscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
-    return dispatch(getSubscriptions());
+    return await dispatch(getSubscriptions());
   }, [dispatch]);
 
   return {
     subscriptions,
     loading: result.pending,
     error: result.error,
-  }
+  };
 };
 
-export const useUserSubscriptionByProduct = (product: ProductType, subscriptions: Subscription[]): Subscription | undefined => {
-  return useMemo(() => subscriptions.find((subscription) => subscription.products.some((p) => p.name === product)), [subscriptions, product]);
+export const useUserSubscriptionByProduct = (
+  product: ProductType,
+  subscriptions: Subscription[],
+): Subscription | undefined => {
+  return useMemo(
+    () =>
+      subscriptions.find((subscription) =>
+        subscription.products.some((p) => p.name === product),
+      ),
+    [subscriptions, product],
+  );
 };
 
-export const useCancelSubscription = ({ subscriptionId }: { subscriptionId?: string }) => {
+export const useCancelSubscription = ({
+  subscriptionId,
+}: {
+  subscriptionId?: string;
+}) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   return useAsyncCallback(async () => {
     if (!subscriptionId) {
       return;
     }
-    return dispatch(cancelSubscription({ subscriptionId }));
+    await dispatch(cancelSubscription({ subscriptionId }));
   }, [dispatch, subscriptionId]);
 };
 
-export const useUnCancelSubscription = ({ subscriptionId }: { subscriptionId?: string }) => {
+export const useUnCancelSubscription = ({
+  subscriptionId,
+}: {
+  subscriptionId?: string;
+}) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   return useAsyncCallback(async () => {
     if (!subscriptionId) {
       return;
     }
-    return dispatch(unCancelSubscription({ subscriptionId }));
+    await dispatch(unCancelSubscription({ subscriptionId }));
   }, [dispatch, subscriptionId]);
 };
 
 export const useGetSubscriptionBillingPortalUrl = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   return useAsyncCallback(async () => {
-    return dispatch(getSubscriptionBillingPortalUrl());
+    return await dispatch(getSubscriptionBillingPortalUrl());
   }, [dispatch]);
 };

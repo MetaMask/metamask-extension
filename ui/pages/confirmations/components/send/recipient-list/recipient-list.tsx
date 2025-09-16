@@ -1,12 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { Recipient } from '../../UI/recipient';
 import {
   type Recipient as RecipientType,
   useRecipients,
 } from '../../../hooks/send/useRecipients';
-import { getUseBlockie } from '../../../../../selectors';
 import { Text } from '../../../../../components/component-library';
 import {
   TextColor,
@@ -23,8 +21,6 @@ const AccountsList = ({
   recipients: RecipientType[];
   handleSelectRecipient: (recipient: RecipientType) => void;
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
-
   // Group recipients by wallet name
   const groupedByWallet = recipients.reduce(
     (acc, recipient) => {
@@ -55,7 +51,6 @@ const AccountsList = ({
               isAccount
               key={recipient.address}
               recipient={recipient}
-              useBlockie={useBlockie}
               onClick={handleSelectRecipient}
             />
           ))}
@@ -72,7 +67,6 @@ const ContactsList = ({
   recipients: RecipientType[];
   handleSelectRecipient: (recipient: RecipientType) => void;
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
   const t = useI18nContext();
 
   if (recipients.length === 0) {
@@ -93,7 +87,6 @@ const ContactsList = ({
         <Recipient
           key={recipient.address}
           recipient={recipient}
-          useBlockie={useBlockie}
           onClick={handleSelectRecipient}
         />
       ))}

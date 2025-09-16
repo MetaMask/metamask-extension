@@ -1,5 +1,8 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getDeFiPositionsControllerMessenger } from './defi-positions-controller-messenger';
+import {
+  getDeFiPositionsControllerInitMessenger,
+  getDeFiPositionsControllerMessenger,
+} from './defi-positions-controller-messenger';
 
 describe('getDefiPositionsControllerMessenger', () => {
   it('returns a restricted messenger', () => {
@@ -8,6 +11,18 @@ describe('getDefiPositionsControllerMessenger', () => {
       getDeFiPositionsControllerMessenger(messenger);
 
     expect(defiPositionsControllerMessenger).toBeInstanceOf(
+      RestrictedMessenger,
+    );
+  });
+});
+
+describe('getDeFiPositionsControllerInitMessenger', () => {
+  it('returns a restricted messenger', () => {
+    const messenger = new Messenger<never, never>();
+    const defiPositionsControllerInitMessenger =
+      getDeFiPositionsControllerInitMessenger(messenger);
+
+    expect(defiPositionsControllerInitMessenger).toBeInstanceOf(
       RestrictedMessenger,
     );
   });

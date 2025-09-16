@@ -8,9 +8,12 @@ import {
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxProps,
   Button,
+  ButtonLink,
   ButtonSize,
   Icon,
   IconName,
@@ -44,8 +47,19 @@ import { getShortDateFormatterV2 } from '../../asset/util';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
 import { getTabsAPI } from '../../../../shared/lib/oauth';
+import Tooltip from '../../../components/ui/tooltip';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
+
+const MEMBERSHIP_ERROR_STATES = {
+  INSUFFICIENT_TOKEN_BALANCE: 'insufficient_token_balance',
+  DECLINED_CARD_PAYMENT: 'declined_card_payment',
+  INSUFFICIENT_FUNDS: 'insufficient_funds',
+  MEMBERSHIP_ENDING: 'membership_ending',
+} as const;
+
+type MembershipErrorState =
+  (typeof MEMBERSHIP_ERROR_STATES)[keyof typeof MEMBERSHIP_ERROR_STATES];
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -112,6 +126,7 @@ const TransactionShield = () => {
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
+  const [membershipErrorState] = useState<MembershipErrorState | null>(null);
 
   const shieldDetails = [
     {
@@ -130,6 +145,69 @@ const TransactionShield = () => {
     display: Display.Flex,
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
+  };
+
+  const membershipErrorDetails: Record<
+    MembershipErrorState,
+    {
+      description: string;
+      severity: BannerAlertSeverity;
+    }
+  > = {
+    [MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE]: {
+      description: t('shieldTxMembershipErrorInsufficientTokenBalance', [
+        <ButtonLink
+          key="update-payment"
+          onClick={() => {
+            console.log('update payment');
+          }}
+        >
+          {t('shieldTxMembershipErrorUpdatePayment')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Danger,
+    },
+    [MEMBERSHIP_ERROR_STATES.DECLINED_CARD_PAYMENT]: {
+      description: t('shieldTxMembershipErrorDeclinedCard', [
+        <ButtonLink
+          key="update-payment"
+          onClick={() => {
+            console.log('update payment');
+          }}
+        >
+          {t('shieldTxMembershipErrorUpdatePayment')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Danger,
+    },
+    [MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS]: {
+      description: t('shieldTxMembershipErrorInsufficientFunds', [
+        'April 18',
+        <ButtonLink
+          key="update-payment"
+          onClick={() => {
+            console.log('update payment');
+          }}
+        >
+          {t('shieldTxMembershipErrorUpdatePayment')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Warning,
+    },
+    [MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING]: {
+      description: t('shieldTxMembershipErrorMembershipEnding', [
+        'April 18',
+        <ButtonLink
+          key="renew-now"
+          onClick={() => {
+            console.log('renew now');
+          }}
+        >
+          {t('shieldTxMembershipErrorRenewNow')}
+        </ButtonLink>,
+      ]),
+      severity: BannerAlertSeverity.Warning,
+    },
   };
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
@@ -162,7 +240,7 @@ const TransactionShield = () => {
     );
   };
 
-  const billingDetails = (key: string, value: string) => {
+  const billingDetails = (key: string, value: string | React.ReactNode) => {
     return (
       <Box
         display={Display.Flex}
@@ -184,6 +262,99 @@ const TransactionShield = () => {
     );
   };
 
+  const paymentMethod = useMemo(() => {
+    if (
+      membershipErrorState ===
+      MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE
+    ) {
+      return (
+        <Tooltip
+          position="top"
+          title={t('shieldTxMembershipErrorInsufficientTokenTooltip')}
+        >
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+            <Icon
+              name={IconName.Danger}
+              color={IconColor.errorDefault}
+              size={IconSize.Md}
+            />
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.errorDefault}
+              className="underline"
+            >
+              {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+            </Text>
+          </Box>
+        </Tooltip>
+      );
+    }
+    if (
+      membershipErrorState === MEMBERSHIP_ERROR_STATES.DECLINED_CARD_PAYMENT
+    ) {
+      return (
+        <Tooltip
+          position="top"
+          title={t('shieldTxMembershipErrorDeclinedCardTooltip')}
+        >
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+            <Icon
+              name={IconName.Danger}
+              color={IconColor.errorDefault}
+              size={IconSize.Md}
+            />
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.errorDefault}
+              className="underline"
+            >
+              {t('shieldTxMembershipErrorUpdateCardDetails')}
+            </Text>
+          </Box>
+        </Tooltip>
+      );
+    }
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS) {
+      return (
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+            size={IconSize.Md}
+          />
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.warningDefault}
+          >
+            USDT
+          </Text>
+        </Box>
+      );
+    }
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING) {
+      return (
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+            size={IconSize.Md}
+          />
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.warningDefault}
+            className="underline"
+          >
+            {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+          </Text>
+        </Box>
+      );
+    }
+    return shieldSubscription &&
+      isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+      ? shieldSubscription.paymentMethod.crypto.tokenSymbol
+      : productInfo?.currency.toUpperCase() || '';
+  }, [membershipErrorState, productInfo?.currency, shieldSubscription, t]);
+
   return (
     <Box
       className="transaction-shield-page"
@@ -192,6 +363,18 @@ const TransactionShield = () => {
       flexDirection={FlexDirection.Column}
       padding={4}
     >
+      {membershipErrorState !== null && (
+        <BannerAlert
+          severity={membershipErrorDetails[membershipErrorState].severity}
+          marginBottom={4}
+          descriptionProps={{
+            variant: TextVariant.bodySm,
+          }}
+        >
+          {membershipErrorDetails[membershipErrorState].description}
+        </BannerAlert>
+      )}
+
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
           className={classnames(
@@ -377,9 +560,7 @@ const TransactionShield = () => {
                 )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
-                isCryptoPaymentMethod(shieldSubscription.paymentMethod)
-                  ? shieldSubscription.paymentMethod.crypto.tokenSymbol
-                  : productInfo?.currency.toUpperCase() || '',
+                paymentMethod,
               )}
             </>
           ) : (
