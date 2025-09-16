@@ -49,10 +49,7 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import {
-  USER_STORAGE_FEATURE_NAMES,
-  UserProfileLineage,
-} from '@metamask/profile-sync-controller/sdk';
+import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -2569,6 +2566,10 @@ export function setShowSupportDataConsentModal(show: boolean) {
     payload: show,
   };
 }
+
+export function clearProductTour() {
+  return submitRequestToBackground('setProductTour', ['']);
+}
 export function addToken(
   {
     address,
@@ -4144,6 +4145,41 @@ export function setDataCollectionForMarketing(
   };
 }
 
+export function setIsSocialLoginFlowEnabledForMetrics(
+  isSocialLoginFlowEnabledForMetrics: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch({
+      type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
+      value: isSocialLoginFlowEnabledForMetrics,
+    });
+  };
+}
+
+/**
+ * Sets marketing consent with OAuth service for social login users.
+ */
+export function setMarketingConsent(): ThunkAction<
+  Promise<boolean>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const res = await submitRequestToBackground('setMarketingConsent');
+      return Boolean(res);
+    } catch (error) {
+      logErrorWithMessage(getErrorMessage(error));
+      return false;
+    }
+  };
+}
+
+/**
+ * @deprecated Use setAvatarType instead
+ * @param val - Boolean value for blockie preference
+ */
 export function setUseBlockie(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4157,6 +4193,10 @@ export function setUseBlockie(
       }
     });
   };
+}
+
+export function setAvatarType(value: string) {
+  return setPreference('avatarType', value);
 }
 
 export function setUsePhishDetect(
@@ -6652,14 +6692,14 @@ export function deleteNotificationsById(
 }
 
 /**
- * Synchronizes accounts data with user storage between devices.
+ * Synchronizes account tree data with user storage between devices.
  *
  * This function sends a request to the background script to sync accounts data and update the state accordingly.
  * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
  * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
  */
-export function syncInternalAccountsWithUserStorage(): ThunkAction<
+export function syncAccountTreeWithUserStorage(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -6670,68 +6710,12 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'syncInternalAccountsWithUserStorage',
+        'syncAccountTreeWithUserStorage',
       );
       return response;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
-    }
-  };
-}
-
-/**
- * "Locks" account syncing by setting the necessary flags in UserStorageController.
- * This is used to temporarily prevent account syncing from listening to accounts being changed, and the downward sync to happen.
- *
- * @returns
- */
-export function lockAccountSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground(
-        'setIsAccountSyncingReadyToBeDispatched',
-        [false],
-      );
-      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
-        false,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
- * "Unlocks" account syncing by setting the necessary flags in UserStorageController.
- * This is used to resume account syncing after it has been locked.
- * This will trigger a downward sync if this is called after a lockAccountSyncing call.
- *
- * @returns
- */
-export function unlockAccountSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
-        true,
-      ]);
-      return await submitRequestToBackground(
-        'setIsAccountSyncingReadyToBeDispatched',
-        [true],
-      );
-    } catch (error) {
-      return getErrorMessage(error);
     }
   };
 }
@@ -6754,11 +6738,14 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      const response = await submitRequestToBackground(
-        'deleteAccountSyncingDataFromUserStorage',
-        [USER_STORAGE_FEATURE_NAMES.accounts],
-      );
-      return response;
+      await Promise.all([
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          'multichain_accounts_groups',
+        ]),
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          'multichain_accounts_wallets',
+        ]),
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;

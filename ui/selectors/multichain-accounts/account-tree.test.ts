@@ -32,6 +32,7 @@ import {
   getWallet,
   getAccountGroupsByAddress,
   getInternalAccountListSpreadByScopesByGroupId,
+  getIconSeedAddressByAccountGroupId,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -69,6 +70,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -109,6 +111,7 @@ describe('Multichain Accounts Selectors', () => {
           'keyring:Test': {
             id: 'keyring:Test' as const,
             type: AccountWalletType.Keyring as const,
+            status: 'ready',
             groups: {
               'keyring:Test/address': {
                 id: 'keyring:Test/address' as const,
@@ -150,6 +153,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -202,6 +206,7 @@ describe('Multichain Accounts Selectors', () => {
           'entropy:test': {
             id: 'entropy:test' as const,
             type: AccountWalletType.Entropy as const,
+            status: 'ready',
             groups: {
               'entropy:test/0': {
                 id: 'entropy:test/0' as const,
@@ -736,6 +741,7 @@ describe('Multichain Accounts Selectors', () => {
             'keyring:Test': {
               id: 'keyring:Test' as const,
               type: AccountWalletType.Keyring as const,
+              status: 'ready',
               groups: {
                 'keyring:Test/address': {
                   id: 'keyring:Test/address' as const,
@@ -797,6 +803,7 @@ describe('Multichain Accounts Selectors', () => {
             'keyring:Test': {
               id: 'keyring:Test' as const,
               type: AccountWalletType.Keyring,
+              status: 'ready',
               groups: {
                 'keyring:Test/address': {
                   id: 'keyring:Test/address' as const,
@@ -1137,6 +1144,7 @@ describe('Multichain Accounts Selectors', () => {
             'entropy:ordered': {
               id: 'entropy:ordered',
               type: AccountWalletType.Entropy,
+              status: 'ready',
               groups: {
                 'entropy:ordered/0': {
                   id: 'entropy:ordered/0',
@@ -1271,6 +1279,37 @@ describe('Multichain Accounts Selectors', () => {
       );
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('getIconSeedAddressByAccountGroupId', () => {
+    it('returns EVM address when group has any EVM account', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        ENTROPY_GROUP_1_ID,
+      );
+
+      expect(result).toBe(ACCOUNT_1_ADDRESS);
+    });
+
+    it('returns only address when group has one internal account', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        ENTROPY_GROUP_2_ID,
+      );
+
+      expect(result).toBe(ACCOUNT_3_ADDRESS);
+    });
+
+    it('throws error when no group ID is found', () => {
+      expect(() =>
+        getIconSeedAddressByAccountGroupId(
+          typedMockState,
+          'nonExistentGroupId' as AccountGroupId,
+        ),
+      ).toThrow(
+        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+      );
     });
   });
 });
