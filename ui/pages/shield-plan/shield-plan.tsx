@@ -178,7 +178,7 @@ const ShieldPlan = () => {
         await dispatch(
           startSubscriptionWithCard({
             products: ['shield' as ProductType],
-            isTrialRequested: false,
+            isTrialRequested: true,
             recurringInterval: selectedPlan,
           }),
         );
