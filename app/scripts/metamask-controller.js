@@ -3147,7 +3147,7 @@ export default class MetamaskController extends EventEmitter {
 
     const { completedOnboarding } = this.onboardingController.state;
 
-    let networkVersion = this.deprecatedNetworkVersions[networkClientId];
+    const networkVersion = this.deprecatedNetworkVersions[networkClientId];
     // We use `metamask_getProviderState` to set the initial state of the
     // StreamProvider. The StreamProvider allows the UI to make network requests
     // through the background connection, and it must be initialized before we
@@ -3164,17 +3164,12 @@ export default class MetamaskController extends EventEmitter {
       completedOnboarding &&
       !isInitializingStreamProvider
     ) {
-      try {
-        const result = await networkClient.provider.request({
-          method: 'net_version',
-        });
-        networkVersion = convertNetworkId(result);
-      } catch (error) {
-        console.error(error);
-        networkVersion = null;
-      }
-
-      this.deprecatedNetworkVersions[networkClientId] = networkVersion;
+      this.updateNetworkVersion({
+        origin,
+        networkClient,
+        networkClientId,
+        chainId,
+      });
     }
 
     const metadata =
@@ -3185,6 +3180,41 @@ export default class MetamaskController extends EventEmitter {
       networkVersion: networkVersion ?? 'loading',
       isConnected: metadata?.status === NetworkStatus.Available,
     };
+  }
+
+  async updateNetworkVersion({
+    origin,
+    networkClient,
+    networkClientId,
+    chainId,
+  }) {
+    // Abort, update already pending
+    if (this.pendingNetVersionRequest[chainId]) {
+      return;
+    }
+    this.pendingNetVersionRequest[chainId] =
+      this.getNetworkVersion(networkClient);
+    const networkVersion = await this.pendingNetVersionRequest[chainId];
+    delete this.pendingNetVersionRequest[chainId];
+
+    this.deprecatedNetworkVersions[networkClientId] = networkVersion;
+
+    this.notifyConnections(origin, {
+      method: NOTIFICATION_NAMES.chainChanged,
+      params: await this.getProviderNetworkState({ origin }),
+    });
+  }
+
+  async getNetworkVersion(networkClient) {
+    try {
+      const result = await networkClient.provider.request({
+        method: 'net_version',
+      });
+      return convertNetworkId(result);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 
   //=============================================================================
