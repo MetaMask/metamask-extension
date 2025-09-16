@@ -92,6 +92,7 @@ function onboardingFixture() {
           },
           tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
+          avatarType: 'maskicon',
         },
         useExternalServices: true,
         theme: 'light',
@@ -329,6 +330,12 @@ class FixtureBuilder {
 
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
+  }
+
+  withNetworkControllerOnArbitrumGoerli() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'arbitrum-goerli',
+    });
   }
 
   withNetworkControllerOnLinea() {
@@ -2076,7 +2083,6 @@ class FixtureBuilder {
       isAccountSyncingEnabled = true,
       isProfileSyncingUpdateLoading = false,
       isAccountSyncingUpdateLoading = false,
-      hasAccountSyncingSyncedAtLeastOnce = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
@@ -2084,7 +2090,6 @@ class FixtureBuilder {
       isAccountSyncingEnabled,
       isProfileSyncingUpdateLoading,
       isAccountSyncingUpdateLoading,
-      hasAccountSyncingSyncedAtLeastOnce,
     });
     return this;
   }

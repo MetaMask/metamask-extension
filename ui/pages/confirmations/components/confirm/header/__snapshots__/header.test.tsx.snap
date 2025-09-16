@@ -13,11 +13,10 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class=""
+          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
-            class="identicon"
-            style="height: 32px; width: 32px; border-radius: 16px;"
+            class="flex [&>div]:!rounded-none"
           >
             <div
               style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
@@ -221,11 +220,10 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class=""
+          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
-            class="identicon"
-            style="height: 32px; width: 32px; border-radius: 16px;"
+            class="flex [&>div]:!rounded-none"
           >
             <div
               style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"

@@ -27,8 +27,10 @@ import { getAccountTree } from '../../../../selectors/multichain-accounts/accoun
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
+import { useAllWalletAccountsBalances } from '../../../../hooks/multichain-accounts/useAccountBalance';
 
 type MultichainEditAccountsPageProps = {
+  title?: string;
   defaultSelectedAccountGroups: AccountGroupId[];
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
@@ -38,6 +40,7 @@ type MultichainEditAccountsPageProps = {
 export const MultichainEditAccountsPage: React.FC<
   MultichainEditAccountsPageProps
 > = ({
+  title,
   defaultSelectedAccountGroups,
   supportedAccountGroups,
   onSubmit,
@@ -49,6 +52,7 @@ export const MultichainEditAccountsPage: React.FC<
     defaultSelectedAccountGroups,
   );
   const accountTree = useSelector(getAccountTree);
+  const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
 
   const walletsWithSupportedAccountGroups = useMemo(() => {
     const walletMap = new Map();
@@ -143,7 +147,7 @@ export const MultichainEditAccountsPage: React.FC<
           variant: TextVariant.headingSm,
         }}
       >
-        {t('editAccounts')}
+        {title ?? t('editAccounts')}
       </Header>
       <Content
         paddingLeft={4}
@@ -155,6 +159,10 @@ export const MultichainEditAccountsPage: React.FC<
             wallets={walletsWithSupportedAccountGroups}
             selectedAccountGroups={selectedAccountGroups}
             handleAccountClick={handleAccountClick}
+            formattedAccountGroupBalancesByWallet={
+              formattedAccountGroupBalancesByWallet
+            }
+            showAccountCheckbox={true}
           />
         </Box>
       </Content>
