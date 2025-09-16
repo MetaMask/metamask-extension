@@ -38,17 +38,12 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import {
-  MultichainNetworks,
-  MULTICHAIN_PROVIDER_CONFIGS,
-} from '../../../shared/constants/multichain/networks';
-import {
   getHardwareWalletType,
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
@@ -824,17 +819,10 @@ export const getIsUnifiedUIEnabled = createSelector(
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    // TODO remove this when bridge-controller's types are updated
     return bridgeFeatureFlags?.chains?.[caipChainId]
       ? Boolean(
-          'isSingleSwapBridgeButtonEnabled' in
-            bridgeFeatureFlags.chains[caipChainId]
-            ? (
-                bridgeFeatureFlags.chains[caipChainId] as unknown as {
-                  isSingleSwapBridgeButtonEnabled: boolean;
-                }
-              ).isSingleSwapBridgeButtonEnabled
-            : false,
+          bridgeFeatureFlags.chains[caipChainId]
+            .isSingleSwapBridgeButtonEnabled,
         )
       : false;
   },
