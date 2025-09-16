@@ -77,7 +77,7 @@ const createMockState = (
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         blockExplorerUrls: ['https://etherscan.io'],
         rpcEndpoints: [

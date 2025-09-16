@@ -13,7 +13,7 @@ describe('rpcIdentifierUtility', () => {
     safeChains = [
       {
         chainId: '1',
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: { symbol: 'ETH' },
         rpc: ['https://example.com/rpc', 'https://another-example.com/rpc'],
       },
@@ -99,7 +99,7 @@ describe('useSafeChains', () => {
   const arrange = () => {
     const mockSafeChain: SafeChain = {
       chainId: '1',
-      name: 'Ethereum',
+      name: 'Ethereum Mainnet',
       nativeCurrency: {
         symbol: 'ETH',
       },

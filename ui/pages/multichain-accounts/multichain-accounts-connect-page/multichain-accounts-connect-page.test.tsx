@@ -58,7 +58,7 @@ jest.mock('../../../../shared/modules/selectors/networks', () => ({
   getAllNetworkConfigurationsByCaipChainId: () => ({
     'eip155:1': {
       chainId: 'eip155:1',
-      name: 'Ethereum',
+      name: 'Ethereum Mainnet',
       nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
       rpcUrls: ['https://mainnet.infura.io'],
       blockExplorerUrls: ['https://etherscan.io'],
@@ -70,7 +70,7 @@ jest.mock('../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../selectors/multichain'),
   getMultichainNetwork: () => ({
     chainId: 'eip155:1',
-    name: 'Ethereum',
+    name: 'Ethereum Mainnet',
     nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
   }),
 }));
@@ -125,7 +125,7 @@ const mockNetworkConfigurations = {
   networkConfigurationsByChainId: {
     '0x1': {
       chainId: '0x1',
-      name: 'Ethereum',
+      name: 'Ethereum Mainnet',
       nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
       rpcUrls: ['https://mainnet.infura.io'],
       blockExplorerUrls: ['https://etherscan.io'],
@@ -134,7 +134,7 @@ const mockNetworkConfigurations = {
   multichainNetworkConfigurationsByChainId: {
     'eip155:1': {
       chainId: 'eip155:1',
-      name: 'Ethereum',
+      name: 'Ethereum Mainnet',
       nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
       rpcUrls: ['https://mainnet.infura.io'],
       blockExplorerUrls: ['https://etherscan.io'],
@@ -211,7 +211,7 @@ const render = (
       },
       multichainNetwork: {
         chainId: 'eip155:1',
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
       },
     },
