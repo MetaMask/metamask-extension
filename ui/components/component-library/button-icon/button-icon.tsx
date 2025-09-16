@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import { Link } from 'react-router-dom-v5-compat';
 
 import {
   AlignItems,
@@ -42,10 +43,35 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
     }: ButtonIconProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const tag = href ? 'a' : as || 'button';
+    const tag = as ?? 'button';
     const isDisabled = disabled && tag === 'button';
+
+    if (href) {
+      const css = classnames(
+        'mm-button-icon inline-flex items-center justify-center rounded-lg transition-all hover:text-inherit',
+        `mm-button-icon--size-${String(size)}`,
+        className,
+      );
+
+      return disabled ? (
+        <span aria-label={ariaLabel} ref={ref} className={css}>
+          <Icon
+            name={iconName}
+            size={buttonIconSizeToIconSize[size]}
+            {...iconProps}
+          />
+        </span>
+      ) : (
+        <Link aria-label={ariaLabel} ref={ref} className={css} to={href}>
+          <Icon
+            name={iconName}
+            size={buttonIconSizeToIconSize[size]}
+            {...iconProps}
+          />
+        </Link>
+      );
+    }
+
     return (
       <Box
         aria-label={ariaLabel}

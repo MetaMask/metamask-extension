@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { Header, Page } from '../page';
 import {
   ButtonIcon,
@@ -18,7 +17,6 @@ import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
 
   return (
     <Page
@@ -34,7 +32,7 @@ export const GatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            href={DEFAULT_ROUTE}
             size={ButtonIconSize.Sm}
           />
         }
