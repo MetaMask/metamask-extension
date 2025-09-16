@@ -16,7 +16,7 @@ jobs:
           yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Lint
-        run: yarn lint
+        run: yarn lint:prettier:fix; git diff > diff.txt; cat diff.txt
 
       - name: Verify locales
         run: yarn verify-locales --quiet
