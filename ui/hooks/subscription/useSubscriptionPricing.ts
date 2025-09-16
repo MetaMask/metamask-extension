@@ -76,7 +76,7 @@ export const useAvailableTokenBalances = (params: {
         return false;
       }
       const isSupportedToken = supportedTokensForChain?.some(
-        (t) => t.address === token.address,
+        (t) => t.address.toLowerCase() === token.address.toLowerCase(),
       );
       if (!isSupportedToken) {
         return false;
@@ -101,7 +101,9 @@ export const useAvailableTokenBalances = (params: {
         validTokenBalances.map((token) => {
           const tokenPaymentInfo = paymentChainTokenMap?.[
             token.chainId as Hex
-          ]?.find((t) => t.address === token.address);
+          ]?.find(
+            (t) => t.address.toLowerCase() === token.address.toLowerCase(),
+          );
           if (!tokenPaymentInfo) {
             log.error(
               '[useAvailableTokenBalances] tokenPaymentInfo not found',
