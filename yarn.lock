@@ -6984,7 +6984,7 @@ __metadata:
 
 "@metamask/phishing-controller@file:./../core/packages/phishing-controller::locator=metamask-crx%40workspace%3A.":
   version: 13.1.0
-  resolution: "@metamask/phishing-controller@file:./../core/packages/phishing-controller#./../core/packages/phishing-controller::hash=ba030a&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/phishing-controller@file:./../core/packages/phishing-controller#./../core/packages/phishing-controller::hash=5bb158&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
@@ -6993,7 +6993,7 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/4b133dbe960954d55aa67c49f2cd2cf30d2ebc352f7085f837e288b990a926a1cdc5dc8535cc371b2d1108fa8a9fe2e9224366df8f8aa94372d3f366d241a14d
+  checksum: 10/722b9e56e91b5a20fd234d72d011906a48f8892c45366862b2ea499320e3f3f17df878eb2ac12c2fbc93040b5eafbbbdee3220a1d7408dfe11bcb01968c0184d
   languageName: node
   linkType: hard
 
@@ -7590,7 +7590,7 @@ __metadata:
 
 "@metamask/transaction-controller@file:./../core/packages/transaction-controller::locator=metamask-crx%40workspace%3A.":
   version: 60.3.0
-  resolution: "@metamask/transaction-controller@file:./../core/packages/transaction-controller#./../core/packages/transaction-controller::hash=739db9&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/transaction-controller@file:./../core/packages/transaction-controller#./../core/packages/transaction-controller::hash=868d27&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -7621,7 +7621,7 @@ __metadata:
     "@metamask/network-controller": ^24.0.0
     "@metamask/phishing-controller": ^13.1.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/469875d0275d9ce1706f57daa8d0f6cb5b884198c317e36d0f2a518119e4626b23d21a7cee52e547097293fd2126b044da37885a9c573642cab33043ac2bd36f
+  checksum: 10/f96a317f626f47e74a0823f7b764c3ca7e9b19118c2d460822afb51e5695af86c1ca7d942f9fce1d648e2fc98ccf51e29bca66dc62dcce4f0caf2c0c5b74a99d
   languageName: node
   linkType: hard
 
