@@ -19,11 +19,12 @@ export const useRecipientValidation = () => {
 
   const [debouncedTo, setDebouncedTo] = useState(to);
   const debouncedSetTo = useCallback(
-    debounce((value: string) => {
-      setDebouncedTo(value);
-    }, 300),
+    () =>
+      debounce((value: string) => {
+        setDebouncedTo(value);
+      }, 300),
     [],
-  );
+  )();
 
   useEffect(() => {
     return () => {
