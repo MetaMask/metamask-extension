@@ -221,8 +221,6 @@ const config = {
   devtool: args.devtool === 'none' ? false : args.devtool,
   output: {
     wasmLoading: 'fetch',
-    // required for `integrity` to work in the browser
-    crossOriginLoading: 'anonymous',
     // filenames for *initial* files (essentially JS entry points)
     filename: '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
