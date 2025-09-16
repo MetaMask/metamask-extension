@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { largeDelayMs, WINDOW_TITLES } from '../../../helpers';
-import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
+import { DAPP_HOST_ADDRESS } from '../../../constants';
 import { strict as assert } from 'assert';
 import { getExpectedSessionScope } from '../../../flask/multichain-api/testHelpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -12,7 +12,7 @@ import SitePermissionPage from '../../../page-objects/pages/permission/site-perm
 import { Driver } from '../../../webdriver/driver';
 import {
   SECOND_MULTICHAIN_ACCOUNT_IN_SECOND_TEST_E2E,
-  withMultichainAccountsAndDappConnection,
+  withMultichainAccountsAndDappConnectionFixture,
 } from './common';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 
@@ -135,10 +135,6 @@ export async function connectToMultichainTestDapp(
   }
 }
 
-async function confirmSignature(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}
-
 export async function checkPermissions(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   const homePage = new HomePage(driver);
@@ -185,7 +181,7 @@ export async function removePermissions(
 
 describe('Bip 44 Permissions', function (this: Suite) {
   it.only('grants all default chain permissions when connecting', async function () {
-    await withMultichainAccountsAndDappConnection(
+    await withMultichainAccountsAndDappConnectionFixture(
       {
         title: this.test?.fullTitle(),
       },
@@ -201,7 +197,7 @@ describe('Bip 44 Permissions', function (this: Suite) {
   });
 
   it('connects bip44 accounts and is able to sign', async function () {
-    await withMultichainAccountsAndDappConnection(
+    await withMultichainAccountsAndDappConnectionFixture(
       {
         title: this.test?.fullTitle(),
       },
@@ -265,7 +261,7 @@ describe('Bip 44 Permissions', function (this: Suite) {
   });
 
   it('is able to remove permissions', async function () {
-    await withMultichainAccountsAndDappConnection(
+    await withMultichainAccountsAndDappConnectionFixture(
       {
         title: this.test?.fullTitle(),
       },

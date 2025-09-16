@@ -46,7 +46,7 @@ const solanaMocks = async (mockServer: Mockttp) => {
   await mockGetAccountInfoDevnet(mockServer);
 };
 
-export const withMultichainAccountsAndDappConnection = async (
+export const withMultichainAccountsAndDappConnectionFixture = async (
   {
     title,
     withMultichainDapp = true,
