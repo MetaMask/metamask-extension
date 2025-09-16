@@ -110,8 +110,8 @@ export const AccountOverviewTabs = ({
   return (
     <Box style={{ flexGrow: '1' }}>
       <Tabs
-        defaultActiveTabKey={defaultHomeActiveTabName}
-        onTabClick={handleTabClick}
+        defaultActiveTabKey={defaultHomeActiveTabName || undefined}
+        onTabClick={(tabKey) => handleTabClick(tabKey as AccountOverviewTabKey)}
         tabsClassName="account-overview__tabs"
       >
         {showTokens && (
