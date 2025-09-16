@@ -32,7 +32,7 @@ export default {
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: ['https://etherscan.io'],
         defaultBlockExplorerUrlIndex: 0,
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
       },
     ],

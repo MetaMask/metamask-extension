@@ -82,32 +82,28 @@ const createBaseMockStore = (account, address) => ({
       },
       {
         type: KeyringTypes.snap,
-        accounts:
-          account.type === SolAccountType.DataAccount ? [account.address] : [],
+        accounts: account.type === SolAccountType.DataAccount ? [account.address] : [],
       },
     ],
     useBlockie: false,
     providerConfig: {
       chainId: '0x1',
       type: 'mainnet',
-      rpcUrl:
-        account.type === EthAccountType.Eoa
-          ? 'https://mainnet.infura.io/v3/abc123'
-          : 'https://api.mainnet-beta.solana.com',
-      nickname:
-        account.type === EthAccountType.Eoa ? 'Ethereum' : 'Solana Mainnet',
+      rpcUrl: account.type === EthAccountType.Eoa
+        ? 'https://mainnet.infura.io/v3/abc123'
+        : 'https://api.mainnet-beta.solana.com',
+      nickname: account.type === EthAccountType.Eoa ? 'Ethereum Mainnet' : 'Solana Mainnet',
       ticker: account.type === EthAccountType.Eoa ? 'ETH' : 'SOL',
       rpcPrefs: {
-        blockExplorerUrl:
-          account.type === EthAccountType.Eoa
-            ? 'https://etherscan.io'
-            : 'https://explorer.solana.com',
+        blockExplorerUrl: account.type === EthAccountType.Eoa
+          ? 'https://etherscan.io'
+          : 'https://explorer.solana.com',
       },
     },
     networkConfigurations: {
       mainnet: {
         chainId: '0x1',
-        nickname: 'Ethereum',
+        nickname: 'Ethereum Mainnet',
         rpcUrl: 'https://mainnet.infura.io/v3/abc123',
         ticker: 'ETH',
         type: 'custom',
@@ -120,14 +116,14 @@ const createBaseMockStore = (account, address) => ({
           },
         ],
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
       },
     },
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
-        nickname: 'Ethereum',
+        nickname: 'Ethereum Mainnet',
         rpcUrl: 'https://mainnet.infura.io/v3/abc123',
         ticker: 'ETH',
         type: 'custom',
@@ -140,28 +136,23 @@ const createBaseMockStore = (account, address) => ({
           },
         ],
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
       },
     },
     selectedNetworkClientId: 'mainnet',
     isEvmSelected: account.type !== SolAccountType.DataAccount,
-    selectedMultichainNetworkChainId:
-      account.type === SolAccountType.DataAccount
-        ? 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-        : '0x1',
-    multichainNetworkConfigurationsByChainId:
-      account.type === SolAccountType.DataAccount
-        ? {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-              name: 'Solana Mainnet',
-              nativeCurrency:
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-              isEvm: false,
-            },
-          }
-        : {},
+    selectedMultichainNetworkChainId: account.type === SolAccountType.DataAccount
+      ? 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+      : '0x1',
+    multichainNetworkConfigurationsByChainId: account.type === SolAccountType.DataAccount ? {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        name: 'Solana Mainnet',
+        nativeCurrency: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        isEvm: false,
+      },
+    } : {},
   },
 });
 
@@ -214,13 +205,7 @@ export default {
 // Ethereum Account QR Code Story
 export const EthereumAddressQR = {
   render: () => (
-    <StoryWrapper
-      mockStore={createBaseMockStore(
-        MOCK_ETH_ACCOUNT,
-        MOCK_ETH_ACCOUNT.address,
-      )}
-      address={MOCK_ETH_ACCOUNT.address}
-    >
+    <StoryWrapper mockStore={createBaseMockStore(MOCK_ETH_ACCOUNT, MOCK_ETH_ACCOUNT.address)} address={MOCK_ETH_ACCOUNT.address}>
       <AddressQRCode />
     </StoryWrapper>
   ),
@@ -229,13 +214,7 @@ export const EthereumAddressQR = {
 // Solana Account QR Code Story
 export const SolanaAddressQR = {
   render: () => (
-    <StoryWrapper
-      mockStore={createBaseMockStore(
-        MOCK_SOLANA_ACCOUNT,
-        MOCK_SOLANA_ACCOUNT.address,
-      )}
-      address={MOCK_SOLANA_ACCOUNT.address}
-    >
+    <StoryWrapper mockStore={createBaseMockStore(MOCK_SOLANA_ACCOUNT, MOCK_SOLANA_ACCOUNT.address)} address={MOCK_SOLANA_ACCOUNT.address}>
       <AddressQRCode />
     </StoryWrapper>
   ),

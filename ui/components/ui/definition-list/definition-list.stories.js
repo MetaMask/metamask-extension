@@ -16,7 +16,7 @@ const basic = {
 };
 
 const advanced = {
-  'Network name': 'Ethereum',
+  'Network name': 'Ethereum Mainnet',
   'Chain ID': '1',
   Ticker: 'ETH',
 };
