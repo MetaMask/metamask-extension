@@ -105,14 +105,14 @@ describe('useRecipientValidation', () => {
           { point: 'а', similarTo: 'a' },
           { point: 'е', similarTo: 'e' },
         ],
-        warning: 'confusingEnsDomain',
+        warning: 'confusingDomain',
       });
 
     const { result } = renderHook();
 
     await waitFor(() => {
-      expect(result.current.recipientWarning).toEqual('confusingEnsDomain');
-      expect(mockT).toHaveBeenLastCalledWith('confusingEnsDomain');
+      expect(result.current.recipientWarning).toEqual('confusingDomain');
+      expect(mockT).toHaveBeenLastCalledWith('confusingDomain');
     });
   });
 
@@ -154,7 +154,7 @@ describe('useRecipientValidation', () => {
           { point: 'а', similarTo: 'a' },
           { point: 'е', similarTo: 'e' },
         ],
-        warning: 'confusingEnsDomain',
+        warning: 'confusingDomain',
       });
 
     const { result } = renderHook();

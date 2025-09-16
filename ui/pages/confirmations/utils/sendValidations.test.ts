@@ -55,7 +55,7 @@ describe('SendValidations', () => {
           { point: 'а', similarTo: 'a' },
           { point: 'е', similarTo: 'e' },
         ],
-        warning: 'confusingEnsDomain',
+        warning: 'confusingDomain',
       });
     });
 

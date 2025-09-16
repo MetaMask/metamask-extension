@@ -44,7 +44,7 @@ export const findConfusablesInRecipient = (
 
     return {
       confusableCharacters,
-      warning: 'confusingEnsDomain',
+      warning: 'confusingDomain',
     };
   }
   return {};
