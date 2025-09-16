@@ -1,5 +1,4 @@
-import Tabs from './tabs';
-import Tab from './tab';
+export { Tabs } from './tabs';
+export { Tab } from './tab';
 
-export { Tabs, Tab };
 export type { TabsProps, TabProps, TabChild, TabsHandle } from './tabs.types';

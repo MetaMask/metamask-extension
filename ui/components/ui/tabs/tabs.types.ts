@@ -2,7 +2,7 @@ import React from 'react';
 import { BoxProps } from '../../component-library/box/box.types';
 import { TextProps } from '../../component-library/text/text.types';
 
-export type TabProps = {
+export type TabProps<TKey extends string = string> = {
   /** CSS class name for the active tab state */
   activeClassName?: string;
   /** CSS class name for the tab button */
@@ -18,7 +18,7 @@ export type TabProps = {
   /** Display name for the tab */
   name: React.ReactNode;
   /** Unique key to identify the tab */
-  tabKey: string;
+  tabKey: TKey;
   /** Click handler called with the tab index (set by parent Tabs component) */
   onClick?: (tabIndex: number) => void;
   /** Tab index in the list (set by parent Tabs component) */
@@ -31,15 +31,15 @@ export type TabProps = {
   disabled?: boolean;
 } & Omit<BoxProps<'li'>, 'children' | 'onClick'>;
 
-export type TabChild = {
-  props: TabProps;
-} & React.ReactElement<TabProps>;
+export type TabChild<TKey extends string = string> = {
+  props: TabProps<TKey>;
+} & React.ReactElement<TabProps<TKey>>;
 
-export type TabsProps = {
+export type TabsProps<TKey extends string = string> = {
   /** Key of the tab that should be active by default */
-  defaultActiveTabKey?: string;
+  defaultActiveTabKey?: TKey;
   /** Callback called when a tab is clicked */
-  onTabClick?: (tabKey: string) => void;
+  onTabClick?: (tabKey: TKey) => void;
   /** Tab components to render */
   children: React.ReactNode;
   /** CSS class name for the tabs container */
@@ -52,11 +52,11 @@ export type TabsProps = {
   tabContentProps?: BoxProps<'div'>;
 } & BoxProps<'div'>;
 
-export type TabsHandle = {
+export type TabsHandle<TKey extends string = string> = {
   /** Get the currently active tab index */
   getActiveTabIndex: () => number;
   /** Set the active tab by key */
-  setActiveTabByKey: (tabKey: string) => void;
+  setActiveTabByKey: (tabKey: TKey) => void;
   /** Set the active tab by index */
   setActiveTabByIndex: (index: number) => void;
 };

@@ -10,7 +10,7 @@ import {
 import { Text, Box } from '../../../component-library';
 import { TabProps } from '../tabs.types';
 
-const Tab: React.FC<TabProps> = ({
+export const Tab = <TKey extends string = string>({
   buttonClassName,
   activeClassName,
   className,
@@ -28,7 +28,7 @@ const Tab: React.FC<TabProps> = ({
   textProps,
   disabled = false,
   ...rest
-}) => {
+}: TabProps<TKey>) => {
   const handleClick = (event: React.MouseEvent<HTMLLIElement>) => {
     event.preventDefault();
     if (!disabled && onClick) {
@@ -70,5 +70,3 @@ const Tab: React.FC<TabProps> = ({
     </Box>
   );
 };
-
-export default Tab;

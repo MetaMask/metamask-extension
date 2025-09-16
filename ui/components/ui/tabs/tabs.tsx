@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TabsProps, TabChild } from './tabs.types';
 
-const Tabs: React.FC<TabsProps> = ({
+export const Tabs = <TKey extends string = string>({
   defaultActiveTabKey,
   onTabClick,
   children,
@@ -17,11 +17,11 @@ const Tabs: React.FC<TabsProps> = ({
   tabListProps = {},
   tabContentProps = {},
   ...props
-}) => {
+}: TabsProps<TKey>) => {
   // Helper function to get valid children, filtering out null/undefined/false values
-  const getValidChildren = useMemo((): TabChild[] => {
+  const getValidChildren = useMemo((): TabChild<TKey>[] => {
     return React.Children.toArray(children).filter(
-      (child): child is TabChild =>
+      (child): child is TabChild<TKey> =>
         React.isValidElement(child) &&
         child.props &&
         typeof child.props.tabKey === 'string',
@@ -33,7 +33,7 @@ const Tabs: React.FC<TabsProps> = ({
    *
    * @param tabKey
    */
-  const findChildByKey = (tabKey?: string): number => {
+  const findChildByKey = (tabKey?: TKey): number => {
     if (!tabKey) {
       return -1;
     }
@@ -44,7 +44,7 @@ const Tabs: React.FC<TabsProps> = ({
     Math.max(findChildByKey(defaultActiveTabKey), 0),
   );
 
-  const handleTabClick = (tabIndex: number, tabKey: string): void => {
+  const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {
       setActiveTabIndex(tabIndex);
       onTabClick?.(tabKey);
@@ -112,5 +112,3 @@ const Tabs: React.FC<TabsProps> = ({
     </Box>
   );
 };
-
-export default Tabs;
