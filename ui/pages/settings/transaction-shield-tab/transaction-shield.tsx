@@ -48,9 +48,7 @@ const TransactionShield = () => {
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
   const [isActiveMembership, setIsActiveMembership] = useState(true);
-  const [membershipErrorState] = useState<MembershipErrorState | null>(
-    MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE,
-  );
+  const [membershipErrorState] = useState<MembershipErrorState | null>(null);
 
   const shieldDetails = [
     {
