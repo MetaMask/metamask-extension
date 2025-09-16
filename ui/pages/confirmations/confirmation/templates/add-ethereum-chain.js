@@ -175,9 +175,9 @@ async function getAlerts(pendingApproval, data) {
     if (
       data.matchedChain.name?.toLowerCase() !==
         pendingApproval.requestData.chainName.toLowerCase() &&
-      !NETWORKS_BYPASSING_VALIDATION[
+      NETWORKS_BYPASSING_VALIDATION[
         pendingApproval.requestData.chainId
-      ]?.name?.toLowerCase() ===
+      ]?.name?.toLowerCase() !==
         pendingApproval.requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
@@ -185,9 +185,9 @@ async function getAlerts(pendingApproval, data) {
     if (
       data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
         pendingApproval.requestData.ticker?.toLowerCase() &&
-      !NETWORKS_BYPASSING_VALIDATION[
+      NETWORKS_BYPASSING_VALIDATION[
         pendingApproval.requestData.chainId
-      ]?.symbol?.toLowerCase() ===
+      ]?.symbol?.toLowerCase() !==
         pendingApproval.requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
@@ -198,9 +198,9 @@ async function getAlerts(pendingApproval, data) {
       !data.matchedChain.rpc
         ?.map((rpc) => new URL(rpc).origin)
         .includes(origin) &&
-      !NETWORKS_BYPASSING_VALIDATION[
+      NETWORKS_BYPASSING_VALIDATION[
         pendingApproval.requestData.chainId
-      ]?.rpcUrl.includes(origin)
+      ]?.rpcUrl.includes(origin) === false
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
