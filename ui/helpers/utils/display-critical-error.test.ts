@@ -81,7 +81,7 @@ describe('displayCriticalError', () => {
     jest.clearAllMocks();
   });
 
-  it('renders critical error html into container', async () => {
+  it('renders critical error html into parent of container', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
     await expect(
