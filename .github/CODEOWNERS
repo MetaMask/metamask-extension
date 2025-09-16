@@ -103,6 +103,7 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
 ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
+ui/pages/core                         @MetaMask/wallet-ux
 ui/components/multichain/             @MetaMask/wallet-ux
 
 # Co-owned by accounts and wallet-ux

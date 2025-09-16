@@ -65,7 +65,7 @@ import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-accou
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
-import { HyperliquidReferralConsent } from '../../../pages/hyperliquid-referral-consent/hyperliquid-referral-consent';
+import { HyperliquidReferralConsent } from '../../../pages/core/hyperliquid-referral-consent';
 
 export const safeComponentList = {
   a: 'a',

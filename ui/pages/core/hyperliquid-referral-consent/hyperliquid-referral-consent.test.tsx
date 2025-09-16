@@ -1,13 +1,12 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
-import mockState from '../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
 import { HyperliquidReferralConsent } from './hyperliquid-referral-consent';
 
 const defaultProps = {
   onActionComplete: jest.fn(),
-  allAccounts: true,
   selectedAddress: '0x123',
 };
 
@@ -18,7 +17,7 @@ describe('HyperliquidReferralConsent', () => {
     jest.clearAllMocks();
   });
 
-  it('should render the component with correct title and subtitle', () => {
+  it('renders the component with correct title and subtitle', () => {
     const store = mockStore(mockState);
 
     renderWithProvider(<HyperliquidReferralConsent {...defaultProps} />, store);
@@ -31,7 +30,7 @@ describe('HyperliquidReferralConsent', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render checkbox with default checked state', () => {
+  it('renders the checkbox with default checked state', () => {
     const store = mockStore(mockState);
 
     renderWithProvider(<HyperliquidReferralConsent {...defaultProps} />, store);
@@ -47,7 +46,7 @@ describe('HyperliquidReferralConsent', () => {
     ).toBeInTheDocument();
   });
 
-  it('should call onActionComplete with approved=true when confirm is clicked and checkbox is checked', () => {
+  it('calls onActionComplete with approved=true when confirm is clicked and checkbox is checked', () => {
     const store = mockStore(mockState);
     const mockOnActionComplete = jest.fn();
 
@@ -64,12 +63,11 @@ describe('HyperliquidReferralConsent', () => {
 
     expect(mockOnActionComplete).toHaveBeenCalledWith({
       approved: true,
-      allAccounts: true,
       selectedAddress: '0x123',
     });
   });
 
-  it('should call onActionComplete with approved=false when confirm is clicked and checkbox is unchecked', () => {
+  it('calls onActionComplete with approved=false when confirm is clicked and checkbox is unchecked', () => {
     const store = mockStore(mockState);
     const mockOnActionComplete = jest.fn();
 
@@ -90,7 +88,6 @@ describe('HyperliquidReferralConsent', () => {
 
     expect(mockOnActionComplete).toHaveBeenCalledWith({
       approved: false,
-      allAccounts: true,
       selectedAddress: '0x123',
     });
   });

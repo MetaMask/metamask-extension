@@ -6,7 +6,6 @@ type HyperliquidReferralConsentActions = {
     id: string,
     value: {
       approved: boolean;
-      allAccounts: boolean;
       selectedAddress: string;
     },
   ) => void;
@@ -14,7 +13,6 @@ type HyperliquidReferralConsentActions = {
 
 type HyperliquidReferralConsentResult = {
   approved: boolean;
-  allAccounts: boolean;
   selectedAddress: string;
 };
 
@@ -32,12 +30,11 @@ function getValues(
   actions: HyperliquidReferralConsentActions,
 ) {
   const { requestData } = pendingApproval;
-  const { allAccounts, selectedAddress } = requestData;
+  const { selectedAddress } = requestData;
 
   const onActionComplete = (result: HyperliquidReferralConsentResult) => {
     actions.resolvePendingApproval(pendingApproval.id, {
       approved: result.approved,
-      allAccounts: result.allAccounts,
       selectedAddress: result.selectedAddress,
     });
   };
@@ -49,7 +46,6 @@ function getValues(
         key: 'hyperliquid-referral-consent',
         props: {
           onActionComplete,
-          allAccounts,
           selectedAddress,
         },
       },

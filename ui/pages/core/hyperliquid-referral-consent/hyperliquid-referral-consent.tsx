@@ -4,7 +4,7 @@ import {
   Button,
   Checkbox,
   Text,
-} from '../../components/component-library';
+} from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,32 +16,53 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../helpers/constants/design-system';
-import { useI18nContext } from '../../hooks/useI18nContext';
-
-const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
-  'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals';
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { HYPERLIQUID_REFERRAL_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 
 export type HyperliquidReferralConsentProps = {
   onActionComplete: (result: {
     approved: boolean;
-    allAccounts: boolean;
     selectedAddress: string;
   }) => void;
-  allAccounts: boolean;
   selectedAddress: string;
+};
+
+const HyperliquidLink: React.FC<{ text: string }> = ({ text }) => {
+  return (
+    <a
+      href={HYPERLIQUID_REFERRAL_LEARN_MORE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        color: 'var(--color-primary-default)',
+        cursor: 'pointer',
+      }}
+    >
+      {text}
+    </a>
+  );
+};
+
+const HyperliquidImage: React.FC = () => {
+  return (
+    <img
+      src="./images/hyperliquid-referral.png"
+      alt="Hyperliquid referral image"
+      width={BlockSize.Full}
+    />
+  );
 };
 
 export const HyperliquidReferralConsent: React.FC<
   HyperliquidReferralConsentProps
-> = ({ onActionComplete, allAccounts, selectedAddress }) => {
+> = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const [isChecked, setIsChecked] = useState(true);
 
   const handleSubmit = () => {
     onActionComplete({
       approved: isChecked,
-      allAccounts,
       selectedAddress,
     });
   };
@@ -67,21 +88,11 @@ export const HyperliquidReferralConsent: React.FC<
           fontWeight={FontWeight.Bold}
           paddingBottom={4}
         >
-          {t('metaMaskXHyperliquid')}
+          {t('hyperliquidReferralTitle')}
         </Text>
         <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-          {t('saveOnTradesWithAMetaMaskReferralCode')}{' '}
-          <a
-            href={HYPERLIQUID_REFERRAL_LEARN_MORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: 'var(--color-primary-default)',
-              cursor: 'pointer',
-            }}
-          >
-            {t('learnMoreUpperCase')}
-          </a>
+          {t('hyperliquidReferralSubtitle')}{' '}
+          <HyperliquidLink text={t('learnMoreUpperCase')} />
         </Text>
       </Box>
       <Box
@@ -91,11 +102,7 @@ export const HyperliquidReferralConsent: React.FC<
         height={BlockSize.Full}
       >
         <Box paddingBottom={4}>
-          <img
-            src="./images/hyperliquid-referral.png"
-            alt="Hyperliquid referral image"
-            width={BlockSize.Full}
-          />
+          <HyperliquidImage />
         </Box>
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
@@ -116,7 +123,7 @@ export const HyperliquidReferralConsent: React.FC<
               color={TextColor.textAlternative}
               marginLeft={1}
             >
-              {t('allowMetaMaskToAddAReferralCode')}
+              {t('hyperliquidReferralCheckboxLabel')}
             </Text>
           </Box>
           <Button onClick={handleSubmit} marginTop={4}>
