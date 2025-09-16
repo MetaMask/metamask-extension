@@ -80,6 +80,9 @@ import {
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
   SolScope,
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxScope,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   hexToBigInt,
@@ -212,6 +215,9 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(tron)
+import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -1158,6 +1164,15 @@ export default class MetamaskController extends EventEmitter {
           });
         ///: END:ONLY_INCLUDE_IF(bitcoin)
 
+        // eslint-disable-next-line no-unused-vars
+        let trxAccounts = [];
+        ///: BEGIN:ONLY_INCLUDE_IF(tron)
+        trxAccounts =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [TrxScope.Mainnet],
+          });
+        ///: END:ONLY_INCLUDE_IF(tron)
+
         const allEnabledNetworks = Object.values(
           this.networkEnablementController.state.enabledNetworkMap,
         ).reduce((acc, curr) => {
@@ -1176,6 +1191,12 @@ export default class MetamaskController extends EventEmitter {
             shouldEnableMainetNetworks = true;
           }
           ///: END:ONLY_INCLUDE_IF(bitcoin)
+
+          ///: BEGIN:ONLY_INCLUDE_IF(tron)
+          if (chainId === TrxScope.Mainnet && trxAccounts.length === 0) {
+            shouldEnableMainetNetworks = true;
+          }
+          ///: END:ONLY_INCLUDE_IF(tron)
 
           if (shouldEnableMainetNetworks) {
             this.networkEnablementController.enableNetwork('0x1');
@@ -4874,6 +4895,7 @@ export default class MetamaskController extends EventEmitter {
       const discoveredAccounts = {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
 
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -4917,12 +4939,32 @@ export default class MetamaskController extends EventEmitter {
         }
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      const tronClient =
+        await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
+      const tronScope = TrxScope.Mainnet;
+      const tronAccounts = await tronClient.discoverAccounts(
+        entropySource,
+        tronScope,
+      );
+
+      discoveredAccounts.Tron = tronAccounts.length;
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (tronAccounts.length === 0) {
+        await this._addSnapAccount(entropySource, tronClient, {
+          scope: tronScope,
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
+
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
       return {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
     }
   }
