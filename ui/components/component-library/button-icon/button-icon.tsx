@@ -46,15 +46,21 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
     const tag = as ?? 'button';
     const isDisabled = disabled && tag === 'button';
 
-    if (href) {
-      const css = classnames(
+    const commonProps = {
+      'aria-label': ariaLabel,
+      className: classnames(
         'mm-button-icon inline-flex items-center justify-center rounded-lg transition-all hover:text-inherit',
         `mm-button-icon--size-${String(size)}`,
         className,
-      );
+      ),
+      color,
+      ref,
+      ...props,
+    };
 
+    if (href) {
       return disabled ? (
-        <span aria-label={ariaLabel} ref={ref} className={css}>
+        <span {...commonProps}>
           <Icon
             name={iconName}
             size={buttonIconSizeToIconSize[size]}
@@ -62,7 +68,7 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
           />
         </span>
       ) : (
-        <Link aria-label={ariaLabel} ref={ref} className={css} to={href}>
+        <Link to={href} {...commonProps}>
           <Icon
             name={iconName}
             size={buttonIconSizeToIconSize[size]}
