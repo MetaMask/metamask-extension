@@ -363,6 +363,7 @@
     "@metamask/streams": "^0.4.0",
     "@metamask/subscription-controller": "^2.0.0",
     "@metamask/transaction-controller": "^60.7.0",
+    "@metamask/tron-wallet-snap": "^1.5.0",
     "@metamask/user-operation-controller": "^39.0.0",
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",

@@ -64,6 +64,9 @@ import {
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
   SolScope,
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxScope,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 import {
   hexToBigInt,
@@ -193,6 +196,9 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(tron)
+import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -4150,6 +4156,7 @@ export default class MetamaskController extends EventEmitter {
     const counts = {
       Bitcoin: 0,
       Solana: 0,
+      Tron: 0,
     };
 
     const solanaAccountTypes = Object.values(SolAccountType);
@@ -4199,6 +4206,7 @@ export default class MetamaskController extends EventEmitter {
       return {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
     }
   }
@@ -4649,6 +4657,7 @@ export default class MetamaskController extends EventEmitter {
       const discoveredAccounts = {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
 
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -4692,12 +4701,32 @@ export default class MetamaskController extends EventEmitter {
         }
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      const tronClient =
+        await this._getMultichainWalletSnapClient(TRON_WALLET_SNAP_ID);
+      const tronScope = TrxScope.Mainnet;
+      const tronAccounts = await tronClient.discoverAccounts(
+        entropySource,
+        tronScope,
+      );
+
+      discoveredAccounts.Tron = tronAccounts.length;
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (tronAccounts.length === 0) {
+        await this._addSnapAccount(entropySource, tronClient, {
+          scope: tronScope,
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
+
       return discoveredAccounts;
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
       return {
         Bitcoin: 0,
         Solana: 0,
+        Tron: 0,
       };
     }
   }

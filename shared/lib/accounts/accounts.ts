@@ -17,6 +17,7 @@ import { MultichainNetworks } from '../../constants/multichain/networks';
 import { captureException } from '../sentry';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
+import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 
 /**
  * Supported non-EVM Snaps.
@@ -25,7 +26,8 @@ import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
-  | typeof BITCOIN_WALLET_SNAP_ID;
+  | typeof BITCOIN_WALLET_SNAP_ID
+  | typeof TRON_WALLET_SNAP_ID;
 
 /**
  * Get the next available account name based on the suggestion and the list of
@@ -91,6 +93,9 @@ export async function getNextAvailableSnapAccountName(
       // mainnet, testnet, and devnet. Therefore, we can use this name
       // for all 3 networks.
       return `Solana Account ${accountNumber}`;
+    }
+    case TRON_WALLET_SNAP_ID: {
+      return `Tron Account ${accountNumber}`;
     }
     default:
       return defaultSnapAccountName;
