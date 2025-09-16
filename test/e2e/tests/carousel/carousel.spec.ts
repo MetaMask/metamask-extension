@@ -1,13 +1,100 @@
 import { strict as assert } from 'assert';
+import type { Mockttp } from 'mockttp';
 import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MAX_SLIDES } from '../../../../ui/components/multichain/carousel/constants';
 
+// Mock: client-config flags with carousel slides
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+function mockContentfulClient(mockServer: Mockttp) {
+  return mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          features: {
+            carouselBanners: {
+              enabled: true,
+              slides: [
+                {
+                  id: 'fund',
+                  title: 'Fund your wallet',
+                  description: 'Add or transfer tokens to get started',
+                  dismissible: true,
+                },
+                {
+                  id: 'solana',
+                  title: 'Solana is now supported',
+                  description: 'Create a Solana account to get started',
+                  dismissible: true,
+                },
+              ],
+            },
+          },
+        },
+      };
+    });
+}
+
+// Mock: client-config returns an enabled feature with NO slides
+function mockClientConfigNoSlides(mockServer: Mockttp) {
+  return mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          features: {
+            carouselBanners: {
+              enabled: true,
+              slides: [], // intentionally empty to ensure no hardcoded banners render
+            },
+          },
+        },
+      };
+    });
+}
+
 describe('Carousel component e2e tests', function () {
   const MAX_VISIBLE_SLIDES = MAX_SLIDES;
   const selectedSlideSelector =
     '.mm-carousel .slide.selected .mm-carousel-slide';
+
+  it('does not render banners unless from client-config (No hardcoded banners)', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockClientConfigNoSlides,
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await driver.waitForSelector(
+          '[data-testid="eth-overview__primary-currency"]',
+        );
+
+        const exists = await driver.isElementPresent('.mm-carousel');
+        assert.equal(
+          exists,
+          false,
+          'Carousel should NOT render when flags return empty slides. If this fails, a hardcoded/default banner likely exists.',
+        );
+      },
+    );
+  });
 
   it('renders slides and each visible slide has title & description', async function () {
     const skip = this.skip.bind(this);
@@ -15,6 +102,7 @@ describe('Carousel component e2e tests', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockContentfulClient,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -67,6 +155,7 @@ describe('Carousel component e2e tests', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockContentfulClient,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
