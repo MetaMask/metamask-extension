@@ -1,5 +1,8 @@
 {
   "content_security_policy": "frame-ancestors 'none'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; font-src 'self';",
+  "cross_origin_opener_policy": {
+    "value": "same-origin"
+  },
   "externally_connectable": {
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]

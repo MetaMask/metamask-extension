@@ -160,37 +160,41 @@ export const MultichainAccountList = ({
             const isRemovable = false;
 
             return [
-              <MultichainAccountCell
+              <Box
+                className="multichain-account-menu-popover__list--menu-item"
                 key={`multichain-account-cell-${groupId}`}
-                accountId={groupId as AccountGroupId}
-                accountName={groupData.metadata.name}
-                balance={balanceText ?? ''}
-                selected={selectedAccountGroupsSet.has(
-                  groupId as AccountGroupId,
-                )}
-                onClick={handleAccountClickToUse}
-                startAccessory={
-                  showAccountCheckbox ? (
-                    <Box marginRight={4}>
-                      <Checkbox
-                        isChecked={selectedAccountGroupsSet.has(
-                          groupId as AccountGroupId,
-                        )}
-                        onChange={() => {
-                          handleAccountClickToUse(groupId as AccountGroupId);
-                        }}
-                      />
-                    </Box>
-                  ) : undefined
-                }
-                endAccessory={
-                  <MultichainAccountMenu
-                    accountGroupId={groupId as AccountGroupId}
-                    isRemovable={isRemovable}
-                    handleAccountRenameAction={handleAccountRenameAction}
-                  />
-                }
-              />,
+              >
+                <MultichainAccountCell
+                  accountId={groupId as AccountGroupId}
+                  accountName={groupData.metadata.name}
+                  balance={balanceText ?? ''}
+                  selected={selectedAccountGroupsSet.has(
+                    groupId as AccountGroupId,
+                  )}
+                  onClick={handleAccountClickToUse}
+                  startAccessory={
+                    showAccountCheckbox ? (
+                      <Box marginRight={4}>
+                        <Checkbox
+                          isChecked={selectedAccountGroupsSet.has(
+                            groupId as AccountGroupId,
+                          )}
+                          onChange={() => {
+                            handleAccountClickToUse(groupId as AccountGroupId);
+                          }}
+                        />
+                      </Box>
+                    ) : undefined
+                  }
+                  endAccessory={
+                    <MultichainAccountMenu
+                      accountGroupId={groupId as AccountGroupId}
+                      isRemovable={isRemovable}
+                      handleAccountRenameAction={handleAccountRenameAction}
+                    />
+                  }
+                />
+              </Box>,
             ];
           },
         );
