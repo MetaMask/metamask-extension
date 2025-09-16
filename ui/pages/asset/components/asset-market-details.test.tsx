@@ -78,8 +78,8 @@ describe('AssetMarketDetails', () => {
     // Setup default mock implementations
     mockIsEvmChainId.mockReturnValue(true);
     mockGetConversionRatesForNativeAsset.mockReturnValue({
-      rate: 1,
-      conversionTime: Date.now().toString(),
+      rate: '1',
+      conversionTime: Date.now(),
       marketData: undefined,
     });
 
@@ -172,8 +172,8 @@ describe('AssetMarketDetails', () => {
     // Set up mocks specifically for this test
     mockIsEvmChainId.mockReturnValue(true);
     mockGetConversionRatesForNativeAsset.mockReturnValue({
-      rate: 1,
-      conversionTime: Date.now().toString(),
+      rate: '1',
+      conversionTime: Date.now(),
       marketData: undefined,
     });
 
