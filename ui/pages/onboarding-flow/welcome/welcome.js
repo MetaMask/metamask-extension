@@ -101,9 +101,12 @@ export default function OnboardingWelcome() {
     isFireFox,
   ]);
 
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
-    trackEvent;
+  const {
+    trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+    onboardingParentContext,
+  } = useContext(MetaMetricsContext);
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);

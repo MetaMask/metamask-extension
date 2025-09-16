@@ -792,7 +792,7 @@ const PrepareBridgePage = ({
             ) : (
               <PrepareBridgePageFooter
                 onFetchNewQuotes={() => {
-                  debouncedUpdateQuoteRequestInController(quoteParams, {
+                  debouncedUpdateQuoteRequestInController.current(quoteParams, {
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     stx_enabled: smartTransactionsEnabled,
