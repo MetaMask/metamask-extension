@@ -1931,6 +1931,8 @@ export default class MetamaskController extends EventEmitter {
                   securityAlertId,
                   updateSecurityAlertResponse:
                     this.updateSecurityAlertResponse.bind(this),
+                  getSecurityAlertsConfig:
+                    this.getSecurityAlertsConfig.bind(this),
                 }),
             },
             this.controllerMessenger,
