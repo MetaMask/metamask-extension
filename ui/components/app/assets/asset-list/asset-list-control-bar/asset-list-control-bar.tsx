@@ -204,12 +204,9 @@ const AssetListControlBar = ({
         }),
       );
     }
-  }, [
-    allOpts,
-    currentMultichainNetwork.network.chainId,
-    dispatch,
-    networksToDisplay,
-  ]);
+    // networksToDisplay is intentionally omitted from dependencies to prevent circular dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allOpts, currentMultichainNetwork.network.chainId, dispatch]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
