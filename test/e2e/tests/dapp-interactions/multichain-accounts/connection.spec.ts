@@ -180,7 +180,7 @@ export async function removePermissions(
 }
 
 describe('Bip 44 Permissions', function (this: Suite) {
-  it.only('grants all default chain permissions when connecting', async function () {
+  it('grants all default chain permissions when connecting', async function () {
     await withMultichainAccountsAndDappConnectionFixture(
       {
         title: this.test?.fullTitle(),
