@@ -6375,7 +6375,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Handles Hyperliquid referral consent flow for eth_accounts requests.
-   * Shows consent dialog if needed and manages referral URL redirection.
+   * Shows approval confirmation screen if needed and manages referral URL redirection.
    *
    * @param {object} req - The JSON-RPC request object.
    */
@@ -6418,20 +6418,20 @@ export default class MetamaskController extends EventEmitter {
     const isInPassedAccounts = referralPassedAccounts.includes(permittedAccount);
     const isInDeclinedAccounts = referralDeclinedAccounts.includes(permittedAccount);
 
-    // Show approval screen if the account is not in any of the tracked states
+    // We should show approval screen if the account is not in any of the tracked states
     const shouldShowApprovalScreen =
       !isInApprovedAccounts && !isInPassedAccounts && !isInDeclinedAccounts;
 
-    // Update referral url without showing the approval screen if the account is approved
-    // but not passed or declined
-    const shouldOnlyUpdateReferralUrl =
+    // We should redirect to the referral url immediately
+    // if the account is approved but not passed or declined
+    const shouldRedirectToReferralUrl =
       isInApprovedAccounts && !isInPassedAccounts && !isInDeclinedAccounts;
 
-    if (!shouldShowApprovalScreen && !shouldOnlyUpdateReferralUrl) {
+    if (!shouldShowApprovalScreen && !shouldRedirectToReferralUrl) {
       return;
     }
 
-    else if (shouldShowApprovalScreen) {
+    if (shouldShowApprovalScreen) {
       try {
         const approvalResponse = await this.approvalController.addAndShowApprovalRequest({
           origin,
@@ -6451,7 +6451,7 @@ export default class MetamaskController extends EventEmitter {
           // Mark this account as having received the referral code
           this.preferencesController.addReferralPassedAccount(permittedAccount);
 
-          // Approve all other connected accounts
+          // Approve all connected accounts so they are not shown the approval screen unnecessarily
           for (const account of permittedAccounts) {
             if (account !== permittedAccount) {
               this.preferencesController.addReferralApprovedAccount(account);
@@ -6466,8 +6466,8 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    if (shouldOnlyUpdateReferralUrl) {
-      console.log('shouldOnlyUpdateReferralUrl true');
+    if (shouldRedirectToReferralUrl) {
+      console.log('shouldRedirectToReferralUrl true');
 
       // Update the URL to the referral page
       await this._updateUrlToReferralPage(tabId, HYPERLIQUID_ORIGIN);
