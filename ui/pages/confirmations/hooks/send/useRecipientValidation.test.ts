@@ -1,22 +1,20 @@
 import { AddressResolution } from '@metamask/snaps-sdk';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
-import mockState from '../../../../../../test/data/mock-state.json';
-import {
-  EVM_ASSET,
-  SOLANA_ASSET,
-} from '../../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import * as SnapNameResolution from '../../../../../hooks/snaps/useSnapNameResolution';
-import { useSendContext } from '../../../context/send';
-import * as SendValidationUtils from '../../../utils/sendValidations';
-import { useSendType } from '../useSendType';
+import mockState from '../../../../../test/data/mock-state.json';
+import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
+import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import * as SnapNameResolution from '../../../../hooks/snaps/useSnapNameResolution';
+import { useSendContext } from '../../context/send';
+import * as SendValidationUtils from '../../utils/sendValidations';
+import { useSendType } from './useSendType';
 import { useRecipientValidation } from './useRecipientValidation';
 
-jest.mock('../../../../../hooks/useI18nContext');
-jest.mock('../../../context/send');
-jest.mock('../useSendType');
+jest.mock('../../../../hooks/useI18nContext');
+jest.mock('../../context/send');
+jest.mock('./useSendType');
 
 describe('useRecipientValidation', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
@@ -24,8 +22,6 @@ describe('useRecipientValidation', () => {
   const mockUseSendType = jest.mocked(useSendType);
 
   const mockT = jest.fn((key) => key);
-  const mockValidateEvmRecipient = jest.fn();
-  const mockValidateSolanaRecipient = jest.fn();
 
   function renderHook() {
     return renderHookWithProvider(useRecipientValidation, mockState);
@@ -221,7 +217,7 @@ describe('useRecipientValidation', () => {
     } as unknown as ReturnType<typeof useSendType>);
 
     const mockValidateHexAddress = jest
-      .spyOn(SendValidationUtils, 'validateHexAddress')
+      .spyOn(SendValidationUtils, 'validateEvmHexAddress')
       .mockResolvedValue({
         error: 'invalidAddress',
       });

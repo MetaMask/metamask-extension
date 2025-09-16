@@ -55,7 +55,10 @@ const LOWER_CASED_BURN_ADDRESSES = [
   '0x000000000000000000000000000000000000dead',
 ];
 
-export const validateHexAddress = async (address: string, chainId?: string) => {
+export const validateEvmHexAddress = async (
+  address: string,
+  chainId?: string,
+) => {
   if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
     return {
       error: 'invalidAddress',

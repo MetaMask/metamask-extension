@@ -25,7 +25,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
-import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';

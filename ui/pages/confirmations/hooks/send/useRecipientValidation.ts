@@ -2,20 +2,20 @@ import { AddressResolution } from '@metamask/snaps-sdk';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { useCallback, useRef } from 'react';
 
-import { isSolanaAddress } from '../../../../../../shared/lib/multichain/accounts';
-import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
-import { isValidDomainName } from '../../../../../helpers/utils/util';
-import { useAsyncResult } from '../../../../../hooks/useAsync';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
-import { RecipientValidationResult } from '../../../types/send';
+import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
+import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { isValidDomainName } from '../../../../helpers/utils/util';
+import { useAsyncResult } from '../../../../hooks/useAsync';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useSnapNameResolution } from '../../../../hooks/snaps/useSnapNameResolution';
+import { RecipientValidationResult } from '../../types/send';
 import {
   findConfusablesInRecipient,
-  validateHexAddress,
+  validateEvmHexAddress,
   validateSolanaAddress,
-} from '../../../utils/sendValidations';
-import { useSendContext } from '../../../context/send';
-import { useSendType } from '../useSendType';
+} from '../../utils/sendValidations';
+import { useSendContext } from '../../context/send';
+import { useSendType } from './useSendType';
 import { log } from 'console';
 
 export const useRecipientValidation = () => {
@@ -35,7 +35,7 @@ export const useRecipientValidation = () => {
       }
 
       if (isEvmSendType && isValidHexAddress(to)) {
-        const valResult = await validateHexAddress(to, chainId);
+        const valResult = await validateEvmHexAddress(to, chainId);
         return { ...valResult, toAddressValidated: to };
       }
 
@@ -82,10 +82,10 @@ export const useRecipientValidation = () => {
 
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
-    recipientError: t(result?.error),
+    recipientError: result?.error ? t(result?.error) : undefined,
     recipientResolvedLookup: result?.resolvedLookup,
     toAddressValidated: result?.toAddressValidated,
     recipientValidationLoading: result?.loading ?? pending,
-    recipientWarning: t(result?.warning),
+    recipientWarning: result?.warning ? t(result?.warning) : undefined,
   };
 };

@@ -16,7 +16,7 @@ import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmount
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
-import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
