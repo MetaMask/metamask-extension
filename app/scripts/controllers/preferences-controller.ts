@@ -415,9 +415,9 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
-  referralApprovedAccounts: { persist: true, anonymous: false },
-  referralPassedAccounts: { persist: true, anonymous: false },
-  referralDeclinedAccounts: { persist: true, anonymous: false },
+  referralApprovedAccounts: { persist: false, anonymous: false }, // TODO: persist true
+  referralPassedAccounts: { persist: false, anonymous: false }, // TODO: persist true
+  referralDeclinedAccounts: { persist: false, anonymous: false }, // TODO: persist true
 };
 
 export class PreferencesController extends BaseController<

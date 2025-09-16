@@ -63,10 +63,6 @@ const requestEthereumAccounts = {
     metamaskState: true,
     getCaip25PermissionFromLegacyPermissionsForOrigin: true,
     requestPermissionsForOrigin: true,
-    addReferralApprovedAccount: true,
-    addReferralPassedAccount: true,
-    addReferralDeclinedAccount: true,
-    setAllAccountsReferralApproved: true,
   },
 } satisfies RequestEthereumAccountsConstraint;
 export default requestEthereumAccounts;
