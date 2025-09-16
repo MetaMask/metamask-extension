@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Button, Checkbox, Text } from '../../components/component-library';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Text,
+} from '../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -27,11 +32,9 @@ export type HyperliquidReferralConsentProps = {
   selectedAddress: string;
 };
 
-export const HyperliquidReferralConsent: React.FC<HyperliquidReferralConsentProps> = ({
-  onActionComplete,
-  allAccounts,
-  selectedAddress,
-}) => {
+export const HyperliquidReferralConsent: React.FC<
+  HyperliquidReferralConsentProps
+> = ({ onActionComplete, allAccounts, selectedAddress }) => {
   const t = useI18nContext();
   const [isChecked, setIsChecked] = useState(true);
 
@@ -66,10 +69,7 @@ export const HyperliquidReferralConsent: React.FC<HyperliquidReferralConsentProp
         >
           {t('metaMaskXHyperliquid')}
         </Text>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-        >
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
           {t('saveOnTradesWithAMetaMaskReferralCode')}{' '}
           <a
             href={HYPERLIQUID_REFERRAL_LEARN_MORE_URL}
@@ -97,10 +97,7 @@ export const HyperliquidReferralConsent: React.FC<HyperliquidReferralConsentProp
             width={BlockSize.Full}
           />
         </Box>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-        >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
             display={Display.Flex}
             alignItems={AlignItems.flexStart}
@@ -122,10 +119,7 @@ export const HyperliquidReferralConsent: React.FC<HyperliquidReferralConsentProp
               {t('allowMetaMaskToAddAReferralCode')}
             </Text>
           </Box>
-          <Button
-            onClick={handleSubmit}
-            marginTop={4}
-          >
+          <Button onClick={handleSubmit} marginTop={4}>
             {t('confirm')}
           </Button>
         </Box>
