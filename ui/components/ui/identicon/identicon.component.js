@@ -16,6 +16,9 @@ const getImage = async (image, ipfsGateway) => {
   return await getAssetImageURL(image, ipfsGateway);
 };
 
+/**
+ * @deprecated Use PreferredAvatar instead
+ */
 export default class Identicon extends Component {
   static propTypes = {
     /**

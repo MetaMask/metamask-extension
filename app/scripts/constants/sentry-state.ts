@@ -76,6 +76,7 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
+    productTour: true,
     showPermissionsTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
@@ -381,8 +382,6 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
-    hasAccountSyncingSyncedAtLeastOnce: false,
-    isAccountSyncingReadyToBeDispatched: false,
   },
 };
 
