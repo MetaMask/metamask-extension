@@ -47,7 +47,7 @@ export const useRecipientValidation = () => {
         if (loading) {
           if (prevResolved.current?.domainName === to) {
             return {
-              resolvedLookup: prevResolved.current.domainName,
+              resolvedLookup: prevResolved.current.resolvedAddress,
               ...findConfusablesInRecipient(to),
               toAddressValidated: to,
             };
@@ -63,16 +63,16 @@ export const useRecipientValidation = () => {
           };
         }
         return {
-          error: t('ensUnknownError'),
+          error: 'ensUnknownError',
           toAddressValidated: to,
         };
       }
 
       return {
-        error: t('invalidAddress'),
+        error: 'invalidAddress',
         toAddressValidated: to,
       };
-    }, [isEvmSendType, isSolanaSendType, loading, results]);
+    }, [chainId, isEvmSendType, isSolanaSendType, loading, results, to]);
 
   const { value: result, pending } = useAsyncResult<RecipientValidationResult>(
     async () => validateRecipient(),
