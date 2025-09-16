@@ -64,13 +64,11 @@ The scripts automatically read the yarn version from `package.json`:
 The download command performs these steps:
 
 1. **`corepack pack -o .yarn/yarn-corepack.tgz`**
-
    - Automatically reads version from package.json packageManager field
    - Downloads the specified yarn version
    - Creates `yarn-corepack.tgz` directly in the .yarn directory
 
 2. **`corepack hydrate .yarn/yarn-corepack.tgz --activate`**
-
    - Activates the yarn version from the tarball
    - No configuration files needed
 
@@ -79,7 +77,6 @@ The download command performs these steps:
 The hydrate command activates an existing tarball:
 
 1. **`corepack hydrate .yarn/yarn-corepack.tgz --activate`**
-
    - Activates the existing committed tarball
    - No download needed - uses committed file
    - Version is determined automatically from the tarball contents
