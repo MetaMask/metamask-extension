@@ -10,7 +10,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, uniq } from 'lodash';
-import { KeyringController, KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
@@ -360,7 +360,6 @@ import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
-import { qrKeyringBuilderFactory } from './lib/qr-keyring-builder-factory';
 import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
 import {
   OAuthServiceInit,
