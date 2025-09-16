@@ -1,4 +1,4 @@
-import log from 'console';
+import log from 'loglevel';
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
