@@ -24,15 +24,19 @@ const Tabs: React.FC<TabsProps> = ({
       (child): child is TabChild =>
         React.isValidElement(child) &&
         child.props &&
-        typeof child.props.tabKey === 'string'
+        typeof child.props.tabKey === 'string',
     );
   }, [children]);
 
   /**
    * Returns the index of the child with the given key
+   *
+   * @param tabKey
    */
   const findChildByKey = (tabKey?: string): number => {
-    if (!tabKey) return -1;
+    if (!tabKey) {
+      return -1;
+    }
     return getValidChildren.findIndex((child) => child.props.tabKey === tabKey);
   };
 
@@ -52,7 +56,7 @@ const Tabs: React.FC<TabsProps> = ({
     const numberOfTabs = validChildren.length;
 
     return validChildren.map((child, index) => {
-      const tabKey = child.props.tabKey;
+      const { tabKey } = child.props;
       const isSingleTab = numberOfTabs === 1;
 
       return React.cloneElement(child, {

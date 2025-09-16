@@ -43,16 +43,12 @@ const Tab: React.FC<TabProps> = ({
       onClick={handleClick}
       key={tabKey}
       {...rest}
-      className={classnames(
-        'tab',
-        className || '',
-        {
-          'tab--single': isSingleTab,
-          'tab--active': isActive,
-          'tab--disabled': disabled,
-          ...(activeClassName && isActive && { [activeClassName]: true }),
-        },
-      )}
+      className={classnames('tab', className || '', {
+        'tab--single': isSingleTab,
+        'tab--active': isActive,
+        'tab--disabled': disabled,
+        ...(activeClassName && isActive && { [activeClassName]: true }),
+      })}
     >
       <Text
         as="button"
@@ -63,7 +59,10 @@ const Tab: React.FC<TabProps> = ({
         variant={TextVariant.bodyMd}
         color={TextColor.inherit}
         {...textProps}
-        className={classnames(buttonClassName || '', textProps?.className || '')}
+        className={classnames(
+          buttonClassName || '',
+          textProps?.className || '',
+        )}
         disabled={disabled}
       >
         {name}
