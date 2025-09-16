@@ -511,16 +511,19 @@ export default function Routes() {
       location.pathname === DEFAULT_ROUTE ||
       (getEnvironmentType() === 'popup' && !isOnboardingRoute);
 
-    // Show modal when feature flag transitions from disabled to enabled
+    // Show modal when:
+    // 1. Feature flag transitions from disabled to enabled (upgrade case)
+    // 2. Feature flag is enabled on fresh install
     const flagJustEnabled =
       isMultichainAccountsState2Enabled &&
       !prevMultichainProps.isMultichainAccountsState2Enabled;
+    const flagEnabledFirstTime = isMultichainAccountsState2Enabled;
 
     const shouldShowModal =
       isUnlocked &&
       !hasShownMultichainIntroModal &&
       isMainWalletArea &&
-      flagJustEnabled;
+      (flagJustEnabled || flagEnabledFirstTime);
 
     if (shouldShowModal) {
       dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));

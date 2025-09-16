@@ -6932,7 +6932,7 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
 }
 
 export function setMultichainIntroModalShown(value: boolean) {
-  return async (dispatch: any) => {
+  return async () => {
     await submitRequestToBackground('setHasShownMultichainIntroModal', [value]);
   };
 }
