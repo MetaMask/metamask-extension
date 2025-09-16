@@ -178,7 +178,7 @@ jobs:
           yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Update LavaMoat webpack policy
-        run: yarn webpack --lavamoat --snow --sentry --no-cache --generatePolicy
+        run: yarn webpack --env production --no-cache --generatePolicy
         env:
           INFURA_PROD_PROJECT_ID: 00000000000
           SEGMENT_PROD_WRITE_KEY: 00000000000
