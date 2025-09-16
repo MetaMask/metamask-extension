@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { largeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import { strict as assert } from 'assert';
 import { getExpectedSessionScope } from '../../../flask/multichain-api/testHelpers';
@@ -9,57 +9,87 @@ import ConnectAccountConfirmation from '../../../page-objects/pages/confirmation
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../../page-objects/pages/permission/site-permission-page';
-import { Driver, PAGES } from '../../../webdriver/driver';
-import { withMultichainAccountsAndDappConnection } from './common';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import { Driver } from '../../../webdriver/driver';
+import {
+  SECOND_MULTICHAIN_ACCOUNT_IN_SECOND_TEST_E2E,
+  withMultichainAccountsAndDappConnection,
+} from './common';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 
 // TODO: find a way to get default number of chains that a client has.
 const DEFAULT_EVM_NETWORKS = ['eip155:1', 'eip155:59144', 'eip155:8453']; // mainnet, linea, base
-const DEFAULT_TESTNET_EVM_NETWORKS = [
+const DEFAULT_NON_EVM_NETWORKS = ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']; // solana mainnet
+const DEFAULT_TESTNET_NETWORKS = [
   'eip155:11155111',
   'eip155:59141',
   'eip155:1337',
   'eip155:6342',
   'eip155:10143',
 ]; // sepolia, linea sepolia, localhost, megatestnet, monad testnet
+const DEFAULT_TESTNET_NON_EVM_NETWORKS = [
+  'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+  'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+]; // solana testnet, solana devnet
 
-const EXPECTED_SCOPES = [
+const EXPECTED_EVM_SCOPES = [
   ...DEFAULT_EVM_NETWORKS,
-  ...DEFAULT_TESTNET_EVM_NETWORKS,
+  ...DEFAULT_TESTNET_NETWORKS,
 ];
+const EXPECTED_NON_EVM_SCOPES = [
+  ...DEFAULT_NON_EVM_NETWORKS,
+  ...DEFAULT_TESTNET_NON_EVM_NETWORKS,
+];
+const EXPECTED_SCOPES = [...EXPECTED_EVM_SCOPES, ...EXPECTED_NON_EVM_SCOPES];
 const DEFAULT_NUMBER_OF_NETWORKS = EXPECTED_SCOPES.length;
 
-export async function connectToMultichainTestDapp(
-  driver: Driver,
-  extensionId: string,
+export function validateSessionScopes(
+  sessionResult: any,
+  multichainAccount: {
+    evm: string;
+    solana: string;
+  },
+  evmScopes: string[] = EXPECTED_EVM_SCOPES,
+  nonEvmScopes: string[] = EXPECTED_NON_EVM_SCOPES,
 ) {
-  const testDapp = new TestDappMultichain(driver);
-  await testDapp.openTestDappPage();
-  await testDapp.checkPageIsLoaded();
-  await testDapp.connectExternallyConnectable(extensionId);
-
-  // Requesting only for mainnet
-  await testDapp.initCreateSessionScopes(
-    ['eip155:1'],
-    [`eip155:1:${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}`],
-  );
-
-  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.checkPageIsLoaded();
-  await connectAccountConfirmation.confirmConnect();
-
-  const newgetSessionResult = await testDapp.getSession();
-
-  const expectedNewSessionScopes = EXPECTED_SCOPES.map((scope: string) => ({
+  const expectedNewEvmSessionScopes = evmScopes.map((scope: string) => ({
     [scope]: getExpectedSessionScope(scope, [
-      DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      multichainAccount.evm.toLowerCase(),
     ]),
   }));
 
-  for (const expectedSessionScope of expectedNewSessionScopes) {
+  const expectedSolanaSessionScopes = nonEvmScopes.map((scope: string) => {
+    return {
+      [scope]: {
+        accounts: [`${scope}:${multichainAccount.solana}`],
+        methods:
+          scope !== 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z' // regnet is missing some methods
+            ? [
+                'signAndSendTransaction',
+                'signTransaction',
+                'signMessage',
+                'signIn',
+                'getGenesisHash',
+                'getLatestBlockhash',
+                'getMinimumBalanceForRentExemption',
+              ]
+            : [
+                'signAndSendTransaction',
+                'signTransaction',
+                'signMessage',
+                'signIn',
+              ],
+        notifications: [],
+      },
+    };
+  });
+
+  for (const expectedSessionScope of [
+    ...expectedNewEvmSessionScopes,
+    ...expectedSolanaSessionScopes,
+  ]) {
     const [scopeName] = Object.keys(expectedSessionScope);
     const expectedScopeObject = expectedSessionScope[scopeName];
-    const resultSessionScope = newgetSessionResult.sessionScopes[scopeName];
+    const resultSessionScope = sessionResult.sessionScopes[scopeName];
 
     assert.deepEqual(
       expectedScopeObject,
@@ -69,21 +99,44 @@ export async function connectToMultichainTestDapp(
   }
 }
 
-export async function connectToTestDapp(driver: Driver) {
-  const testDapp = new TestDapp(driver);
+export async function connectToMultichainTestDapp(
+  driver: Driver,
+  extensionId: string,
+  multichainAccount: {
+    evm: string;
+    solana: string;
+  } = SECOND_MULTICHAIN_ACCOUNT_IN_SECOND_TEST_E2E,
+  checkPermissions = true,
+) {
+  const testDapp = new TestDappMultichain(driver);
   await testDapp.openTestDappPage();
   await testDapp.checkPageIsLoaded();
-  await testDapp.connectAccount({
-    publicAddress: DEFAULT_FIXTURE_ACCOUNT,
-  });
-  await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
+  await testDapp.connectExternallyConnectable(extensionId);
+
+  await driver.clickElement('[data-testid="network-checkbox-eip155-1"]');
+  await driver.clickElement(
+    '[data-testid="network-checkbox-solana-5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"]',
+  );
+
+  await testDapp.clickWalletCreateSessionButton();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.delay(largeDelayMs);
+
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  await connectAccountConfirmation.checkPageIsLoaded();
+  await connectAccountConfirmation.confirmConnect();
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+  await testDapp.checkPageIsLoaded();
+
+  if (checkPermissions) {
+    const newgetSessionResult = await testDapp.getSession();
+    validateSessionScopes(newgetSessionResult, multichainAccount);
+  }
 }
 
-export async function signPersonalSignOnTestDapp(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  const testDapp = new TestDapp(driver);
-  await testDapp.personalSign();
-  await testDapp.checkSuccessPersonalSign(DEFAULT_FIXTURE_ACCOUNT);
+async function confirmSignature(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
 export async function checkPermissions(driver: Driver) {
@@ -131,56 +184,104 @@ export async function removePermissions(
 }
 
 describe('Bip 44 Permissions', function (this: Suite) {
-  it('grants all default chain permissions when connecting', async function () {
+  it.only('grants all default chain permissions when connecting', async function () {
     await withMultichainAccountsAndDappConnection(
       {
         title: this.test?.fullTitle(),
       },
       async (driver: Driver, extensionId: string) => {
-        await connectToMultichainTestDapp(driver, extensionId);
+        await connectToMultichainTestDapp(
+          driver,
+          extensionId,
+          SECOND_MULTICHAIN_ACCOUNT_IN_SECOND_TEST_E2E,
+        );
         await checkPermissions(driver);
       },
     );
   });
 
-  it('connects to evm provider with bip44 accounts and is able to sign', async function () {
+  it('connects bip44 accounts and is able to sign', async function () {
     await withMultichainAccountsAndDappConnection(
       {
         title: this.test?.fullTitle(),
-        withMultichainDapp: false,
       },
-      async (driver: Driver) => {
+      async (driver: Driver, extensionId: string) => {
         // Should be able to connect to dapps with the ethereum provider and sign personal sign
-        await connectToTestDapp(driver);
-        await checkPermissions(driver);
-        await signPersonalSignOnTestDapp(driver);
+        await connectToMultichainTestDapp(
+          driver,
+          extensionId,
+          SECOND_MULTICHAIN_ACCOUNT_IN_SECOND_TEST_E2E,
+          false,
+        );
+
+        const testDapp = new TestDappMultichain(driver);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.invokeMethod({
+          scope: 'eip155:1',
+          method: 'personal_sign',
+        });
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmationPage = new Confirmation(driver);
+        await confirmationPage.checkPageIsLoaded();
+        await confirmationPage.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        const evmResult = await testDapp.getInvokeMethodResult({
+          scope: 'eip155:1',
+          method: 'personal_sign',
+        });
+
+        const expectedEvmSignedResult =
+          '0x8ea024660dad01befb17e239d73bc17200d263d7cc2d4f2cac09a4c56dbc32173c47a8061de5e6f52330579add853e35f8d29d13bd08fb8b750561ec92287f371c';
+        assert.ok(evmResult.includes(expectedEvmSignedResult));
+
+        await testDapp.invokeMethod({
+          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          method: 'signMessage',
+        });
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.waitForSelector({
+          testId: 'confirm-sign-message-confirm-snap-footer-button',
+          text: 'Confirm',
+        });
+        await driver.clickElement({
+          testId: 'confirm-sign-message-confirm-snap-footer-button',
+          text: 'Confirm',
+        });
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        const solanaResult = await testDapp.getInvokeMethodResult({
+          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          method: 'signMessage',
+        });
+
+        const expectedSolanaSignedResult =
+          '"signature":"5fkrEnJPrU3LpRxAvyJ1YZrsLXm3tASjvTKVNvPB1e5A29nfCcoLe9vqhEj1RnmnUQy1R7MtyoJNthVzcmyhNXaF"';
+        assert.ok(solanaResult.includes(expectedSolanaSignedResult));
       },
     );
   });
 
-  it('connects to nonevm provider and is able to sign', async function () {
-    await withMultichainAccountsAndDappConnection(
-      {
-        title: this.test?.fullTitle(),
-      },
-      async (driver: Driver) => {
-        // TODO: implement when account provider auto creates solana account
-      },
-    );
-  });
-
-  it.only('is able to remove permissions', async function () {
+  it('is able to remove permissions', async function () {
     await withMultichainAccountsAndDappConnection(
       {
         title: this.test?.fullTitle(),
       },
       async (driver: Driver, extensionId: string) => {
-        await connectToMultichainTestDapp(driver, extensionId);
-        await checkPermissions(driver);
+        await connectToMultichainTestDapp(
+          driver,
+          extensionId,
+          SECOND_MULTICHAIN_ACCOUNT_IN_SECOND_TEST_E2E,
+          false,
+        );
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
-        await driver.navigate(PAGES.HOME);
-
-        await removePermissions(driver, ['eip155:1']);
+        const chainsToRemove = ['eip155:1'];
+        await removePermissions(driver, chainsToRemove);
 
         // Go back to test dapp and get scopes
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
@@ -188,29 +289,18 @@ describe('Bip 44 Permissions', function (this: Suite) {
         await testDapp.checkPageIsLoaded();
         const newgetSessionResult = await testDapp.getSession();
 
-        const expectedNewScopes = EXPECTED_SCOPES.filter(
-          (scope: string) => scope !== 'eip155:1',
+        const expectedEvmScopes = EXPECTED_EVM_SCOPES.filter(
+          (scope: string) => !chainsToRemove.includes(scope),
         );
-        const expectedNewSessionScopes = expectedNewScopes.map(
-          (scope: string) => ({
-            [scope]: getExpectedSessionScope(scope, [
-              DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
-            ]),
-          }),
+        const expectedNonEvmScopes = EXPECTED_NON_EVM_SCOPES.filter(
+          (scope: string) => !chainsToRemove.includes(scope),
         );
-        // Compare scopes in an order-independent way
-        for (const expectedSessionScope of expectedNewSessionScopes) {
-          const [scopeName] = Object.keys(expectedSessionScope);
-          const expectedScopeObject = expectedSessionScope[scopeName];
-          const resultSessionScope =
-            newgetSessionResult.sessionScopes[scopeName];
-
-          assert.deepEqual(
-            expectedScopeObject,
-            resultSessionScope,
-            `${scopeName} does not match expected scope`,
-          );
-        }
+        validateSessionScopes(
+          newgetSessionResult,
+          SECOND_MULTICHAIN_ACCOUNT_IN_SECOND_TEST_E2E,
+          expectedEvmScopes,
+          expectedNonEvmScopes,
+        );
       },
     );
   });

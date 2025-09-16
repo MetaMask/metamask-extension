@@ -157,7 +157,12 @@ export const AccountList = () => {
           onClick={handleOpenAddWalletModal}
           isFullWidth
         >
-          <Text variant={TextVariant.bodyMdMedium}>{t('addWallet')}</Text>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            data-testid="add-wallet-button"
+          >
+            {t('addWallet')}
+          </Text>
         </Button>
       </Footer>
       <AddWalletModal
