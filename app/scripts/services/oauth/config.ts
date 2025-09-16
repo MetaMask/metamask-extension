@@ -113,7 +113,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
 export function isDevOrTestBuild() {
   return (
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.WEBPACK_TEST // for test:webpack, TODO: Verify why webpack is using 'test' instead of 'testing'
   );
 }
 

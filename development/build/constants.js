@@ -23,6 +23,7 @@ const ENVIRONMENT = {
   RELEASE_CANDIDATE: 'release-candidate',
   STAGING: 'staging',
   TESTING: 'testing',
+  WEBPACK_TEST: 'test', // for test:webpack, TODO: Verify why webpack is using 'test' instead of 'testing'
 };
 
 const TASKS = {
