@@ -76,7 +76,7 @@ export const useAvailableTokenBalances = (params: {
         return false;
       }
       const isSupportedToken = supportedTokensForChain?.some(
-        (t) => t.address === token.address,
+        (t) => t.address.toLowerCase() === token.address.toLowerCase(),
       );
       if (!isSupportedToken) {
         return false;
@@ -95,13 +95,15 @@ export const useAvailableTokenBalances = (params: {
     }
 
     const getAvailableTokenBalances = async () => {
-      const avaialbleTokens: TokenWithApprovalAmount[] = [];
+      const availableTokens: TokenWithApprovalAmount[] = [];
 
       const cryptoApprovalAmounts = await Promise.all(
         validTokenBalances.map((token) => {
           const tokenPaymentInfo = paymentChainTokenMap?.[
             token.chainId as Hex
-          ]?.find((t) => t.address === token.address);
+          ]?.find(
+            (t) => t.address.toLowerCase() === token.address.toLowerCase(),
+          );
           if (!tokenPaymentInfo) {
             log.error(
               '[useAvailableTokenBalances] tokenPaymentInfo not found',
@@ -119,7 +121,7 @@ export const useAvailableTokenBalances = (params: {
       cryptoApprovalAmounts.forEach((amount, index) => {
         const token = validTokenBalances[index];
         if (amount) {
-          avaialbleTokens.push({
+          availableTokens.push({
             ...token,
             approvalAmount: amount,
             type: token.isNative ? AssetType.native : AssetType.token,
@@ -127,7 +129,7 @@ export const useAvailableTokenBalances = (params: {
         }
       });
 
-      setAvailableTokenBalances(avaialbleTokens);
+      setAvailableTokenBalances(availableTokens);
     };
 
     getAvailableTokenBalances();

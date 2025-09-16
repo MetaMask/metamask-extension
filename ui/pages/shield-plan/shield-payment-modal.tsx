@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import classnames from 'classnames';
+import { PAYMENT_TYPES, PaymentType } from '@metamask/subscription-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -37,8 +38,11 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import { TokenWithApprovalAmount } from '../../hooks/subscription/useSubscriptionPricing';
-import { PAYMENT_TYPES, PaymentType } from '@metamask/subscription-controller';
-import { AssetWithDisplayData, ERC20Asset, NativeAsset } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 
 export const ShieldPaymentModal = ({
   isOpen,
@@ -55,11 +59,8 @@ export const ShieldPaymentModal = ({
   selectedPaymentMethod: PaymentType;
   setSelectedPaymentMethod: (method: PaymentType) => void;
   availableTokenBalances: TokenWithApprovalAmount[];
-  selectedToken?:
-    TokenWithApprovalAmount;
-  onAssetChange: (
-    asset: TokenWithApprovalAmount,
-  ) => void;
+  selectedToken?: TokenWithApprovalAmount;
+  onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
 }) => {
   const t = useI18nContext();
@@ -86,15 +87,11 @@ export const ShieldPaymentModal = ({
         address?: null | string,
         chainId?: string,
       ) => boolean,
-    ): Generator<
-      AssetWithDisplayData<ERC20Asset | NativeAsset>
-    > {
+    ): Generator<AssetWithDisplayData<ERC20Asset | NativeAsset>> {
       // Filter for USDT and USDC tokens that have balance
       for (const token of availableTokenBalances) {
-        if (
-          filterPredicate(token.symbol, token.address, token.chainId)
-        ) {
-          yield(token);
+        if (filterPredicate(token.symbol, token.address, token.chainId)) {
+          yield token;
         }
       }
     };

@@ -436,6 +436,7 @@ import { NameControllerInit } from './controller-init/confirmations/name-control
 import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
 import { SubscriptionControllerInit } from './controller-init/subscription';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3131,6 +3132,34 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
+  async startSubscriptionWithCard() {
+    const webAuthenticator = webAuthenticatorFactory();
+    const { checkoutSessionUrl } =
+      await this.subscriptionController.startShieldSubscriptionWithCard();
+    // TODO: use chrome.tabs manually to have full browser feature in checkout session (e.g auto-fill form, etc.)
+    // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
+    // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
+    await new Promise((resolve, reject) => {
+      webAuthenticator.launchWebAuthFlow(
+        {
+          url: checkoutSessionUrl,
+          interactive: true,
+        },
+        (responseUrl) => {
+          try {
+            resolve(responseUrl);
+          } catch (error) {
+            reject(error);
+          }
+        },
+      );
+    });
+
+    // fetch latest user subscriptions after checkout
+    const subscriptions = await this.subscriptionController.getSubscriptions();
+    return subscriptions;
+  }
+
   /**
    * Gets relevant state for the provider of an external origin.
    *
@@ -3434,10 +3463,6 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getCryptoApproveTransactionParams.bind(
           this.subscriptionController,
         ),
-      startSubscriptionWithCard:
-        this.subscriptionController.startShieldSubscriptionWithCard.bind(
-          this.subscriptionController,
-        ),
       cancelSubscription: this.subscriptionController.cancelSubscription.bind(
         this.subscriptionController,
       ),
@@ -3449,6 +3474,7 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getBillingPortalUrl.bind(
           this.subscriptionController,
         ),
+      startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),

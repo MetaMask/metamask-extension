@@ -65,7 +65,7 @@ import {
   ProductPrice,
   ProductType,
   RecurringInterval,
-  StartSubscriptionResponse,
+  Subscription,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
@@ -387,39 +387,12 @@ export function startSubscriptionWithCard(params: {
   products: ProductType[];
   isTrialRequested: boolean;
   recurringInterval: RecurringInterval;
-}): ThunkAction<
-  StartSubscriptionResponse,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const identytyAPI = getIdentityAPI();
-    const { checkoutSessionUrl } =
-      await submitRequestToBackground<StartSubscriptionResponse>(
-        'startSubscriptionWithCard',
-        [params],
-      );
-    // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
-    // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
-    await new Promise<string>((resolve, reject) => {
-      identytyAPI.launchWebAuthFlow(
-        {
-          url: checkoutSessionUrl,
-          interactive: true,
-        },
-        (responseUrl) => {
-          try {
-            resolve(responseUrl);
-          } catch (error: unknown) {
-            reject(error);
-          }
-        },
-      );
-    });
-
-    // fetch latest user subscriptions after checkout
-    const subscriptions = await dispatch(getSubscriptions());
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const subscriptions = await submitRequestToBackground<Subscription[]>(
+      'startSubscriptionWithCard',
+      [params],
+    );
 
     return subscriptions;
   };
