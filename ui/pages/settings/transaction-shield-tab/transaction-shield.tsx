@@ -29,6 +29,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Tooltip from '../../../components/ui/tooltip';
 import CancelMembershipModal from './cancel-membership-modal';
 
 const MEMBERSHIP_ERROR_STATES = {
@@ -48,7 +49,7 @@ const TransactionShield = () => {
     useState(false);
   const [isActiveMembership, setIsActiveMembership] = useState(true);
   const [membershipErrorState] = useState<MembershipErrorState | null>(
-    MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING,
+    MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE,
   );
 
   const shieldDetails = [
@@ -191,30 +192,40 @@ const TransactionShield = () => {
       MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE
     ) {
       return (
-        <ButtonLink
-          startIconName={IconName.Danger}
-          danger
-          onClick={() => {
-            console.log('Insufficient USDT');
-          }}
+        <Tooltip
+          position="top"
+          title={t('shieldTxMembershipErrorInsufficientTokenBalanceTooltip')}
         >
-          {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
-        </ButtonLink>
+          <ButtonLink
+            startIconName={IconName.Danger}
+            danger
+            onClick={() => {
+              console.log('Insufficient USDT');
+            }}
+          >
+            {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+          </ButtonLink>
+        </Tooltip>
       );
     }
     if (
       membershipErrorState === MEMBERSHIP_ERROR_STATES.DECLINED_CARD_PAYMENT
     ) {
       return (
-        <ButtonLink
-          startIconName={IconName.Danger}
-          danger
-          onClick={() => {
-            console.log('Update card details');
-          }}
+        <Tooltip
+          position="top"
+          title={t('shieldTxMembershipErrorDeclinedCardTooltip')}
         >
-          {t('shieldTxMembershipErrorUpdateCardDetails')}
-        </ButtonLink>
+          <ButtonLink
+            startIconName={IconName.Danger}
+            danger
+            onClick={() => {
+              console.log('Update card details');
+            }}
+          >
+            {t('shieldTxMembershipErrorUpdateCardDetails')}
+          </ButtonLink>
+        </Tooltip>
       );
     }
     if (membershipErrorState === MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS) {
