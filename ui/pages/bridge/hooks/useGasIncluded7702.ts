@@ -76,10 +76,6 @@ export function useGasIncluded7702({
           fromChain.chainId as Hex,
         );
 
-        if (isCancelled) {
-          return;
-        }
-
         const is7702Supported = Boolean(
           atomicBatchChainSupport?.isSupported && relaySupportsChain,
         );
