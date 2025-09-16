@@ -34,8 +34,10 @@ export const useRecipientValidation = () => {
       }
 
       if (isEvmSendType && isValidHexAddress(to)) {
-        const valResult = await validateEvmHexAddress(to, chainId);
-        return { ...valResult, toAddressValidated: to };
+        return {
+          ...(await validateEvmHexAddress(to, chainId)),
+          toAddressValidated: to,
+        };
       }
 
       if (isSolanaSendType && isSolanaAddress(to)) {
