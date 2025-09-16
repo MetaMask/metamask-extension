@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxProps,
@@ -26,10 +27,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { TRANSACTION_SHIELD_CLAIM_ROUTE } from '../../../helpers/constants/routes';
 import CancelMembershipModal from './cancel-membership-modal';
 
 const TransactionShield = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const [isLoading] = useState(false);
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
@@ -248,7 +251,7 @@ const TransactionShield = () => {
         })}
         {isActiveMembership &&
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
-            // todo: link to submit claim page
+            navigate(TRANSACTION_SHIELD_CLAIM_ROUTE);
           })}
         {isActiveMembership &&
           buttonRow(
