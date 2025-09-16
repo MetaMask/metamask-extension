@@ -110,6 +110,9 @@ export const AppHeaderUnlockedContent = ({
   const shortenedAddress =
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
+  const accountName = isMultichainAccountsState2Enabled
+    ? selectedMultichainAccount.metadata.name
+    : internalAccount.metadata.name;
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -227,7 +230,7 @@ export const AppHeaderUnlockedContent = ({
         >
           <AccountPicker
             address={''} // No address shown in multichain mode
-            name={selectedMultichainAccount.metadata.name}
+            name={accountName}
             showAvatarAccount={false}
             onClick={() => {
               history.push(ACCOUNT_LIST_PAGE_ROUTE);
@@ -258,12 +261,12 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [
     CopyButton,
+    accountName,
     disableAccountPicker,
     handleNetworksClick,
     history,
     isMultichainAccountsState2Enabled,
     numberOfAccountsInGroup,
-    selectedMultichainAccount.metadata.name,
     t,
     trackEvent,
   ]);
@@ -294,7 +297,7 @@ export const AppHeaderUnlockedContent = ({
           >
             <AccountPicker
               address={internalAccount.address}
-              name={internalAccount.metadata.name}
+              name={accountName}
               showAvatarAccount={false}
               onClick={() => {
                 handleAccountMenuClick();
@@ -317,10 +320,11 @@ export const AppHeaderUnlockedContent = ({
       </>
     );
   }, [
-    isMultichainAccountsState2Enabled,
     internalAccount,
+    accountName,
     disableAccountPicker,
     CopyButton,
+    isMultichainAccountsState2Enabled,
     history,
     dispatch,
     trackEvent,
