@@ -8,6 +8,9 @@ export {
 } from './multichain-account-service-messenger';
 export { getInstitutionalSnapControllerMessenger } from './institutional-snap-controller-messenger';
 
-export type { AccountTreeControllerMessenger } from './account-tree-controller-messenger';
+export type {
+  AccountTreeControllerMessenger,
+  AccountTreeControllerInitMessenger,
+} from './account-tree-controller-messenger';
 export type { MultichainAccountServiceMessenger } from './multichain-account-service-messenger';
 export type { InstitutionalSnapControllerMessenger } from './institutional-snap-controller-messenger';

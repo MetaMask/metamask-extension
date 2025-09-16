@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "ビジー状態"
   },
-  "buyAndSell": {
-    "message": "購入・売却"
+  "buy": {
+    "message": "購入"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",
@@ -1835,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "一致するアカウントが見つかりませんでした"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "受取先:"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "受取アドレスまたはENS"
@@ -4196,13 +4193,6 @@
   },
   "passwordNotLongEnough": {
     "message": "パスワードは8文字以上でなければなりません"
-  },
-  "passwordStrength": {
-    "message": "パスワードの強度: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "強力なパスワードは、デバイスが盗まれたり侵入されたりした場合に、ウォレットのセキュリティを高めます。"
   },
   "passwordTermsWarning": {
     "message": "このパスワードを忘れた場合、MetaMask側でリセットすることはできません。"
@@ -7136,9 +7126,6 @@
   "watchOutMessage": {
     "message": "$1にご注意ください。",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "弱"
   },
   "web3": {
     "message": "Web3"

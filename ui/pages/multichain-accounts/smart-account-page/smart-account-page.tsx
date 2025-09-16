@@ -31,7 +31,7 @@ export const SmartAccountPage = () => {
     <Page className="max-w-[600px]">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: TextVariant.headingMd,
         }}
         startAccessory={
           <ButtonIcon

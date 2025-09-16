@@ -6,6 +6,8 @@
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
+    "isAccountTreeSyncingInProgress": "boolean",
+    "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object"
   },
@@ -41,6 +43,7 @@
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
+    "productTour": "accountIcon",
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
@@ -368,9 +371,6 @@
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean",
-    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean"
   }
 }
