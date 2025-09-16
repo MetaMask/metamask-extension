@@ -6,7 +6,9 @@ import { Content, Header, Page } from '../page';
 import {
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
+  IconSize,
   Text,
   Box,
 } from '../../../component-library';
@@ -135,17 +137,17 @@ export const GatorPermissionsPage = () => {
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
           height={BlockSize.Full}
           gap={2}
           padding={4}
         >
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            backgroundColor={BackgroundColor.backgroundDefault}
-            textAlign={TextAlign.Center}
-          >
-            {t('loading')}
-          </Text>
+          <Icon
+            name={IconName.Loading}
+            color={IconColor.iconMuted}
+            size={IconSize.Lg}
+            style={{ animation: 'spin 1.2s linear infinite' }}
+          />
         </Box>
       );
     }

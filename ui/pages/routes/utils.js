@@ -296,7 +296,7 @@ export function hideAppHeader(props) {
   if (isShieldPlanPage) {
     return true;
   }
-  
+
   const isGatorPermissionsPage = Boolean(
     matchPath(location.pathname, {
       path: GATOR_PERMISSIONS,
