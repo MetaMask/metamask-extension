@@ -2,11 +2,14 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
 type HyperliquidReferralConsentActions = {
-  resolvePendingApproval: (id: string, value: {
-    approved: boolean;
-    allAccounts: boolean;
-    selectedAddress: string;
-  }) => void;
+  resolvePendingApproval: (
+    id: string,
+    value: {
+      approved: boolean;
+      allAccounts: boolean;
+      selectedAddress: string;
+    },
+  ) => void;
 };
 
 type HyperliquidReferralConsentResult = {
@@ -19,13 +22,13 @@ type HyperliquidReferralConsentResult = {
  * Returns the templated values to be consumed in the confirmation page.
  *
  * @param pendingApproval - The pending confirmation object.
- * @param t - Translation function.
+ * @param _t - Translation function.
  * @param actions - Object containing safe actions that the template can invoke.
  * @returns An object containing templated values for the confirmation page.
  */
 function getValues(
   pendingApproval: ApprovalRequest<Record<string, Json>>,
-  t: (key: string) => string,
+  _t: (key: string) => string,
   actions: HyperliquidReferralConsentActions,
 ) {
   const { requestData } = pendingApproval;
