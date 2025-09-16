@@ -3442,29 +3442,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('_getConfigForRemoteFeatureFlagRequest', () => {
-      it('returns config in mapping', async () => {
-        const result =
-          await metamaskController._getConfigForRemoteFeatureFlagRequest();
-        expect(result).toStrictEqual({
-          distribution: 'main',
-          environment: 'dev',
-        });
-      });
-
-      it('returna config when not matching default mapping', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'non-existent-distribution';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-
-        const result =
-          await metamaskController._getConfigForRemoteFeatureFlagRequest();
-        expect(result).toStrictEqual({
-          distribution: 'main',
-          environment: 'rc',
-        });
-      });
-    });
-
     describe('generateNewMnemonicAndAddToVault', () => {
       it('generates a new hd keyring instance', async () => {
         const password = 'what-what-what';

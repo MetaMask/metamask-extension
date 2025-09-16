@@ -104,6 +104,7 @@ export type Controller =
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
   | RatesController
+  | RemoteFeatureFlagController
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
   | ShieldController
@@ -160,6 +161,7 @@ export type ControllerFlatState = AccountsController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
+  RemoteFeatureFlagController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
@@ -176,5 +178,4 @@ export type ControllerFlatState = AccountsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'] &
-  RemoteFeatureFlagController['state'];
+  NftDetectionController['state'];
