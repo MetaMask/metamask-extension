@@ -42,7 +42,7 @@ describe('Bridge tests', function (this: Suite) {
         await bridgeTransaction(driver, quote, 2);
 
         // Start the flow again
-        await homePage.startBridgeFlow();
+        await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.enterBridgeQuote(quote);
