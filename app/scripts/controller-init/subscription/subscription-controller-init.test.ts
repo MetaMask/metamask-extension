@@ -14,7 +14,7 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SubscriptionControllerInit } from './subscription-controller-init';
 
-jest.mock('@metamask/seedless-onboarding-controller');
+jest.mock('@metamask/subscription-controller');
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
@@ -59,7 +59,7 @@ describe('SubscriptionControllerInit', () => {
 
     expect(SubscriptionControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.SeedlessOnboardingController,
+      state: requestMock.persistedState.SubscriptionController,
       subscriptionService: expect.any(SubscriptionService),
     });
   });
