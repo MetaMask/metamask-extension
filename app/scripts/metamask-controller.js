@@ -1777,14 +1777,12 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
     }).init();
 
-    this.getSecurityAlertsConfig = () => {
-      return async (url) => {
-        const getToken = () =>
-          this.controllerMessenger.call(
-            'AuthenticationController:getBearerToken',
-          );
-        return getShieldGatewayConfig(getToken, url);
-      };
+    this.getSecurityAlertsConfig = async (url) => {
+      const getToken = () =>
+        this.controllerMessenger.call(
+          'AuthenticationController:getBearerToken',
+        );
+      return getShieldGatewayConfig(getToken, url);
     };
 
     this.notificationServicesController.init();
@@ -6679,7 +6677,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.addAddressSecurityAlertResponse.bind(
           this.appStateController,
         ),
-      getSecurityAlertsConfig: this.getSecurityAlertsConfig(),
+      getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
       ...otherParams,
     };
   }
