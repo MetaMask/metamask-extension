@@ -15,7 +15,13 @@ import {
   InternalAccountsState,
 } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
+import { useAllWalletAccountsBalances } from '../../../../hooks/multichain-accounts/useAccountBalance';
 import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
+
+// Mock the useAllWalletAccountsBalances hook
+jest.mock('../../../../hooks/multichain-accounts/useAccountBalance', () => ({
+  useAllWalletAccountsBalances: jest.fn(),
+}));
 
 const MOCK_WALLET_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 const MOCK_GROUP_ID_1 =
@@ -74,6 +80,20 @@ const mockSolAccount3 = createMockInternalAccount({
   type: SolAccountType.DataAccount,
 });
 
+// Mock balance data for the useAllWalletAccountsBalances hook
+const mockBalanceData = {
+  [MOCK_WALLET_ID]: {
+    [MOCK_GROUP_ID_1]: '$100.50',
+    [MOCK_GROUP_ID_2]: '$250.75',
+    [MOCK_GROUP_ID_3]: '$75.25',
+  },
+};
+
+const mockUseAllWalletAccountsBalances =
+  useAllWalletAccountsBalances as jest.MockedFunction<
+    typeof useAllWalletAccountsBalances
+  >;
+
 const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
   {
     id: MOCK_GROUP_ID_1,
@@ -96,6 +116,8 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
+    walletName: 'Test Wallet',
+    walletId: MOCK_WALLET_ID,
   },
   {
     id: MOCK_GROUP_ID_2,
@@ -118,6 +140,8 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
+    walletName: 'Test Wallet',
+    walletId: MOCK_WALLET_ID,
   },
   {
     id: MOCK_GROUP_ID_3,
@@ -140,6 +164,8 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       },
     ],
+    walletName: 'Test Wallet',
+    walletId: MOCK_WALLET_ID,
   },
 ];
 
@@ -151,7 +177,7 @@ const createMockState = (overrides = {}) => {
         id: MOCK_WALLET_ID,
         type: AccountWalletType.Entropy,
         metadata: {
-          name: 'Test Wallet 1',
+          name: 'Test Wallet',
           entropy: {
             id: '01JKAF3DSGM3AB87EM9N0K41AJ',
           },
@@ -275,6 +301,8 @@ const render = (
 describe('MultichainEditAccountsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Set up the mock return value for useAllWalletAccountsBalances
+    mockUseAllWalletAccountsBalances.mockReturnValue(mockBalanceData);
   });
 
   it('renders modal with correct title', () => {

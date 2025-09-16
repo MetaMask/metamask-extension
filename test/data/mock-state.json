@@ -109,7 +109,6 @@
         }
       }
     },
-    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
@@ -658,6 +657,8 @@
         }
       }
     },
+    "isAccountTreeSyncingInProgress": false,
+    "hasAccountTreeSyncingSyncedAtLeastOnce": false,
     "accountGroupsMetadata": {},
     "accountWalletsMetadata": {},
     "internalAccounts": {
@@ -2335,7 +2336,8 @@
     },
     "txHistory": {},
     "throttledOrigins": {},
-    "delegations": {}
+    "delegations": {},
+    "accountsAssets": {}
   },
   "ramps": {
     "buyableChains": [

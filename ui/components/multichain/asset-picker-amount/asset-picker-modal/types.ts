@@ -50,6 +50,8 @@ export type NativeAsset = {
     ? V
     : never; // only allow wallet's hardcoded symbols
   chainId: Hex | CaipChainId;
+  /** Optional human-readable name for native assets (e.g., Ether) */
+  name?: string;
 };
 
 /**

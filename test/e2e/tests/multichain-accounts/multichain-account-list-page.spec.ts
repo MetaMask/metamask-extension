@@ -27,7 +27,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
 
         // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$ n/a');
+        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
       },
@@ -50,7 +50,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
 
         // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$ n/a');
+        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
       },
@@ -87,7 +87,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         );
 
         // Ensure that an SSK account within the wallet is displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$ n/a');
+        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed(
           'Snap Account 1',

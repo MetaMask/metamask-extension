@@ -2078,6 +2078,7 @@
     }
   ],
   "trezorModel": null,
+  "txHistory": {},
   "unapprovedDecryptMsgCount": 0,
   "unapprovedDecryptMsgs": {},
   "unapprovedEncryptionPublicKeyMsgCount": 0,

@@ -902,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Preisauswirkung"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Die Preisauswirkung spiegelt wider, wie sich Ihre Swap-Order auf den Marktpreis des Assets auswirkt. Falls Sie nicht genügend Guthaben für die Gas-Gebühren haben, wird ein Teil Ihrer Ursprungstokens automatisch zur Deckung der Gebühren verwendet. Dies reduziert den Betrag, der geswappt wird. MetaMask hat keinen Einfluss auf die Preisauswirkung und kontrolliert sie nicht."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Die Preisauswirkung spiegelt wider, wie sich Ihre Swap-Order auf den Marktpreis eines Assets auswirkt. Er hängt von der Trade-Größe und der verfügbaren Liquidität im Pool ab. MetaMask hat keinen Einfluss auf die Preisauswirkung und kontrolliert sie nicht."
   },
@@ -1053,8 +1050,8 @@
   "busy": {
     "message": "Ausgelastet"
   },
-  "buyAndSell": {
-    "message": "Kaufen/Verkaufen"
+  "buy": {
+    "message": "Kaufen"
   },
   "buyMoreAsset": {
     "message": "Mehr $1 kaufen",
@@ -1862,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Keine übereinstimmenden Konten gefunden"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Empfangen am"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Empfangsadresse oder ENS"
@@ -2708,12 +2702,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Funktionsweise von Angeboten"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Dieses Angebot hat die höchste Rendite von den von uns gesuchten Angeboten. Dieser Wert basiert auf dem Swap-Satz, der Bridging-Gebühren und eine MetaMask-Gebühr von $1 % einschließt, abzüglich der Gasgebühren. Die Gasgebühren hängen von der Auslastung des Netzwerks sowie der Komplexität der Transaktion ab."
-  },
   "id": {
     "message": "ID"
   },
@@ -2973,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Eine frühere Transaktion wird noch signiert oder eingereicht"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons und Blockies sind zwei verschiedene Arten von einzigartigen Symbolen, mit denen Sie ein Konto auf einen Blick erkennen können."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3383,15 +3368,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Sie fügen dieses Netzwerk zu MetaMask hinzu und geben dieser Website die Genehmigung, es zu nutzen."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridging"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Angebot"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Zeit"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 möchte $2 Snaps verwenden",
@@ -4247,13 +4223,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Passwort muss mindestens 8 Zeichen lang sein"
-  },
-  "passwordStrength": {
-    "message": "Passwortstärke: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Ein starkes Passwort kann die Sicherheit Ihrer Wallet erhöhen, falls Ihr Gerät gestohlen oder kompromittiert wird."
   },
   "passwordTermsWarning": {
     "message": "Wenn ich dieses Passwort vergesse, kann MetaMask es nicht für mich zurücksetzen."
@@ -7205,9 +7174,6 @@
     "message": "Vorsicht vor $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Schwach"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7226,15 +7192,6 @@
   "welcomeBack": {
     "message": "Willkommen zurück"
   },
-  "welcomeDescription": {
-    "message": "MetaMask ist eine sichere Wallet, die die Welt von web3 für alle zugänglich macht und das Vertrauen von Millionen genießt."
-  },
-  "welcomeGetStarted": {
-    "message": "Erste Schritte"
-  },
-  "welcomeTitle": {
-    "message": "Willkommen bei MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Los geht's"
   },
@@ -7243,9 +7200,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Damit wird $1 für Bridging genehmigt."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Sie werden zwei Transaktionen auf Ihrer Hardware-Wallet bestätigen müssen."
   },
   "willApproveAmountForSwapping": {
     "message": "Damit wird $1 für Swapping genehmigt."

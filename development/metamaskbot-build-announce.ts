@@ -1,5 +1,6 @@
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
+import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 start().catch(console.error);
 
@@ -380,27 +381,14 @@ async function start(): Promise<void> {
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
-  const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/${OWNER}/${REPOSITORY}/issues/${PR_NUMBER}/comments`;
-  console.log(`Announcement:\n${commentBody}`);
-
-  if (PR_COMMENT_TOKEN) {
-    console.log(`Posting to: ${POST_COMMENT_URI}`);
-
-    const response = await fetch(POST_COMMENT_URI, {
-      method: 'POST',
-      body: JSON_PAYLOAD,
-      headers: {
-        'User-Agent': 'metamaskbot',
-        Authorization: `token ${PR_COMMENT_TOKEN}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(
-        `Post comment failed with status '${response.statusText}'`,
-      );
-    }
-  }
+  await postCommentWithMetamaskBot({
+    commentBody,
+    owner: OWNER,
+    repository: REPOSITORY,
+    prNumber: PR_NUMBER,
+    commentToken: PR_COMMENT_TOKEN,
+    optionalLog: `Announcement:\n${commentBody}`,
+  });
 }
 
 async function runBenchmarkGate(

@@ -65,6 +65,8 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     },
     accounts: [mockEvmAccount1, mockSolAccount1],
+    walletName: 'Test Wallet',
+    walletId: MOCK_WALLET_ID,
   },
   {
     id: MOCK_GROUP_ID_2,
@@ -78,6 +80,8 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     },
     accounts: [mockEvmAccount2, mockSolAccount2],
+    walletName: 'Test Wallet',
+    walletId: MOCK_WALLET_ID,
   },
 ];
 
@@ -156,7 +160,7 @@ const createMockState = (overrides = {}) => ({
           id: MOCK_WALLET_ID,
           type: AccountWalletType.Entropy,
           metadata: {
-            name: 'Test Wallet 1',
+            name: 'Test Wallet',
             entropy: {
               id: '01JKAF3DSGM3AB87EM9N0K41AJ',
             },
