@@ -5,20 +5,20 @@ import PropTypes from 'prop-types';
 import { alertIsOpen as invalidCustomNetworkAlertIsOpen } from '../../../ducks/alerts/invalid-custom-network';
 import InvalidCustomNetworkAlert from './invalid-custom-network-alert';
 
-const Alerts = ({ history }) => {
+const Alerts = ({ navigate }) => {
   const _invalidCustomNetworkAlertIsOpen = useSelector(
     invalidCustomNetworkAlertIsOpen,
   );
 
   if (_invalidCustomNetworkAlertIsOpen) {
-    return <InvalidCustomNetworkAlert history={history} />;
+    return <InvalidCustomNetworkAlert navigate={navigate} />;
   }
 
   return null;
 };
 
 Alerts.propTypes = {
-  history: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default Alerts;
