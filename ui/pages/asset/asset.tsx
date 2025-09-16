@@ -1,8 +1,8 @@
 import { Nft } from '@metamask/assets-controllers';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipChainId, Hex, isStrictHexString } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom-v5-compat';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
@@ -14,12 +14,13 @@ import TokenAsset from './components/token-asset';
 /** A page representing a native, token, or NFT asset */
 const Asset = () => {
   const params = useParams<{
-    chainId: Hex;
+    chainId: string;
     asset: string;
     id: string;
   }>();
 
   const { chainId, asset, id } = params;
+  console.log({ chainId, asset, id })
   const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
@@ -52,7 +53,7 @@ const Asset = () => {
 
     const isInvalid = !token || !chainId;
     if (isInvalid) {
-      return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+      return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
     }
 
     const shouldShowToken = !token.isNative && token.address;

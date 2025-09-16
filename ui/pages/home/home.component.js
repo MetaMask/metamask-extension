@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom-v5-compat';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -833,7 +833,7 @@ export default class Home extends PureComponent {
     } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
+      return <Navigate to={{ pathname: RESTORE_VAULT_ROUTE }} />;
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
@@ -918,7 +918,7 @@ export default class Home extends PureComponent {
               defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
+            />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
               <div className="home__support">
