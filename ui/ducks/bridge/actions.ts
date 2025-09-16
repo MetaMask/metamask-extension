@@ -9,6 +9,7 @@ import {
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
 import type {
   AddNetworkFields,
@@ -148,6 +149,7 @@ export const setFromChain = ({
   token = null,
 }: {
   networkConfig?:
+    | MultichainNetworkConfiguration
     | NetworkConfiguration
     | AddNetworkFields
     | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });

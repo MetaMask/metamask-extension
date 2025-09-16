@@ -5,6 +5,7 @@ import {
   formatChainIdToCaip,
   isNativeAddress,
 } from '@metamask/bridge-controller';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import type {
   NetworkConfiguration,
   AddNetworkFields,
@@ -60,8 +61,11 @@ export const isQuoteExpiredOrInvalid = ({
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChain?: NetworkConfiguration | AddNetworkFields;
-  fromChain?: NetworkConfiguration;
+  toChain?:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | MultichainNetworkConfiguration;
+  fromChain?: NetworkConfiguration | MultichainNetworkConfiguration;
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
