@@ -456,6 +456,40 @@ export default class SecurityTab extends PureComponent {
       socialLoginEnabled,
     } = this.props;
 
+    const handleToggle = async (value) => {
+      if (socialLoginEnabled) {
+        try {
+          await this.props.setMarketingConsent(!value);
+          this.setState({
+            hasEmailMarketingConsent: !value,
+            hasEmailMarketingConsentError: false,
+          });
+        } catch (error) {
+          this.setState({
+            hasEmailMarketingConsent: value,
+            hasEmailMarketingConsentError: true,
+          });
+        }
+        return;
+      }
+
+      const newMarketingConsent = Boolean(!value);
+      setDataCollectionForMarketing(newMarketingConsent);
+      if (participateInMetaMetrics) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(newMarketingConsent),
+            location: 'Settings',
+          },
+        });
+      } else {
+        setParticipateInMetaMetrics(true);
+      }
+    };
+
     return (
       <Box>
         <Box
@@ -488,40 +522,7 @@ export default class SecurityTab extends PureComponent {
                   : dataCollectionForMarketing
               }
               disabled={!useExternalServices}
-              onToggle={async (value) => {
-                if (socialLoginEnabled) {
-                  try {
-                    await this.props.setMarketingConsent(!value);
-                    this.setState({
-                      hasEmailMarketingConsent: !value,
-                      hasEmailMarketingConsentError: false,
-                    });
-                    return;
-                  } catch (error) {
-                    this.setState({
-                      hasEmailMarketingConsent: value,
-                      hasEmailMarketingConsentError: true,
-                    });
-                    return;
-                  }
-                }
-
-                const newMarketingConsent = Boolean(!value);
-                setDataCollectionForMarketing(newMarketingConsent);
-                if (participateInMetaMetrics) {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Settings,
-                    event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-                    properties: {
-                      is_metrics_opted_in: true,
-                      has_marketing_consent: Boolean(newMarketingConsent),
-                      location: 'Settings',
-                    },
-                  });
-                } else {
-                  setParticipateInMetaMetrics(true);
-                }
-              }}
+              onToggle={handleToggle}
               offLabel={t('off')}
               onLabel={t('on')}
             />
