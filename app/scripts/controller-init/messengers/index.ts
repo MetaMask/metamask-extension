@@ -12,6 +12,7 @@ import {
   getSnapControllerMessenger,
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
+  getSnapsNameProviderMessenger,
   getSnapsRegistryMessenger,
   getWebSocketServiceMessenger,
 } from './snaps';
@@ -87,9 +88,63 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
+import { getRatesControllerMessenger } from './rates-controller-messenger';
+import {
+  getCurrencyRateControllerInitMessenger,
+  getCurrencyRateControllerMessenger,
+} from './currency-rate-controller-messenger';
+import {
+  getEnsControllerInitMessenger,
+  getEnsControllerMessenger,
+} from './ens-controller-messenger';
+import {
+  getNameControllerInitMessenger,
+  getNameControllerMessenger,
+} from './name-controller-messenger';
+import {
+  getGasFeeControllerInitMessenger,
+  getGasFeeControllerMessenger,
+} from './gas-fee-controller-messenger';
+import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 
+export type {
+  CurrencyRateControllerMessenger,
+  CurrencyRateControllerInitMessenger,
+} from './currency-rate-controller-messenger';
+export {
+  getCurrencyRateControllerMessenger,
+  getCurrencyRateControllerInitMessenger,
+} from './currency-rate-controller-messenger';
+export type {
+  EnsControllerMessenger,
+  EnsControllerInitMessenger,
+} from './ens-controller-messenger';
+export {
+  getEnsControllerMessenger,
+  getEnsControllerInitMessenger,
+} from './ens-controller-messenger';
+export type {
+  GasFeeControllerMessenger,
+  GasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
+export {
+  getGasFeeControllerMessenger,
+  getGasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type { RatesControllerMessenger } from './rates-controller-messenger';
+export { getRatesControllerMessenger } from './rates-controller-messenger';
+export type {
+  NameControllerMessenger,
+  NameControllerInitMessenger,
+} from './name-controller-messenger';
+export {
+  getNameControllerMessenger,
+  getNameControllerInitMessenger,
+} from './name-controller-messenger';
+export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -132,6 +187,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
   },
+  CurrencyRateController: {
+    getMessenger: getCurrencyRateControllerMessenger,
+    getInitMessenger: getCurrencyRateControllerInitMessenger,
+  },
   DeFiPositionsController: {
     getMessenger: getDeFiPositionsControllerMessenger,
     getInitMessenger: getDeFiPositionsControllerInitMessenger,
@@ -140,9 +199,17 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getDelegationControllerMessenger,
     getInitMessenger: getDelegationControllerInitMessenger,
   },
+  EnsController: {
+    getMessenger: getEnsControllerMessenger,
+    getInitMessenger: getEnsControllerInitMessenger,
+  },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
+  },
+  GasFeeController: {
+    getMessenger: getGasFeeControllerMessenger,
+    getInitMessenger: getGasFeeControllerInitMessenger,
   },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
@@ -176,6 +243,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
+  NameController: {
+    getMessenger: getNameControllerMessenger,
+    getInitMessenger: getNameControllerInitMessenger,
+  },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
     getInitMessenger: noop,
@@ -192,13 +263,25 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
   },
+  RatesController: {
+    getMessenger: getRatesControllerMessenger,
+    getInitMessenger: noop,
+  },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
   },
+  SelectedNetworkController: {
+    getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
   ShieldController: {
     getMessenger: getShieldControllerMessenger,
     getInitMessenger: getShieldControllerInitMessenger,
+  },
+  SnapsNameProvider: {
+    getMessenger: getSnapsNameProviderMessenger,
+    getInitMessenger: noop,
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
