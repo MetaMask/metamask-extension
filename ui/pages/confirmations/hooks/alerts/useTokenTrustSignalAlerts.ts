@@ -51,7 +51,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
         alerts.push({
           key: `tokenTrustSignalMalicious-${tokenAddress}`,
           reason: t('alertReasonTokenTrustSignalMalicious'),
-          field: RowAlertKey.EstimatedChangesStatic,
+          field: RowAlertKey.IncomingTokens,
           severity: Severity.Danger,
           message: t('alertMessageTokenTrustSignalMalicious'),
         });
@@ -59,7 +59,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
         alerts.push({
           key: `tokenTrustSignalWarning-${tokenAddress}`,
           reason: t('alertReasonTokenTrustSignalWarning'),
-          field: RowAlertKey.EstimatedChangesStatic,
+          field: RowAlertKey.IncomingTokens,
           severity: Severity.Warning,
           message: t('alertMessageTokenTrustSignalWarning'),
         });
