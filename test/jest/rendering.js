@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { CompatRouter } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
@@ -54,13 +55,17 @@ export function renderWithProvider(component, store, initialEntries) {
   const Wrapper = ({ children }) => {
     const WithoutStore = () => (
       <MemoryRouter initialEntries={initialEntries || ['/']} initialIndex={0}>
-        <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockTrackEvent}>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-            </MetaMetricsContext.Provider>
-          </LegacyI18nProvider>
-        </I18nProvider>
+        <CompatRouter>
+          <I18nProvider currentLocale="en" current={en} en={en}>
+            <LegacyI18nProvider>
+              <MetaMetricsContext.Provider value={mockTrackEvent}>
+                <LegacyMetaMetricsProvider>
+                  {children}
+                </LegacyMetaMetricsProvider>
+              </MetaMetricsContext.Provider>
+            </LegacyI18nProvider>
+          </I18nProvider>
+        </CompatRouter>
       </MemoryRouter>
     );
     return store ? (
