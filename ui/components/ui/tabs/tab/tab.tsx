@@ -11,9 +11,9 @@ import { Text, Box } from '../../../component-library';
 import { TabProps } from '../tabs.types';
 
 export const Tab = <TKey extends string = string>({
-  buttonClassName,
-  activeClassName,
-  className,
+  buttonClassName = '',
+  activeClassName = '',
+  className = '',
   'data-testid': dataTestId,
   isActive = false,
   isSingleTab = false,
@@ -43,7 +43,7 @@ export const Tab = <TKey extends string = string>({
       onClick={handleClick}
       key={tabKey}
       {...rest}
-      className={classnames('tab', className || '', {
+      className={classnames('tab', className, {
         'tab--single': isSingleTab,
         'tab--active': isActive,
         'tab--disabled': disabled,
@@ -59,10 +59,7 @@ export const Tab = <TKey extends string = string>({
         variant={TextVariant.bodyMd}
         color={TextColor.inherit}
         {...textProps}
-        className={classnames(
-          buttonClassName || '',
-          textProps?.className || '',
-        )}
+        className={classnames(buttonClassName, textProps?.className || '')}
         disabled={disabled}
       >
         {name}

@@ -96,7 +96,7 @@ export const Tabs = <TKey extends string = string>({
         {...tabListProps}
         className={classnames(
           'tabs__list',
-          tabsClassName || '',
+          tabsClassName,
           tabListProps.className || '',
         )}
       >
