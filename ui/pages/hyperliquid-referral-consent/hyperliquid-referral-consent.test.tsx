@@ -23,9 +23,11 @@ describe('HyperliquidReferralConsent', () => {
 
     renderWithProvider(<HyperliquidReferralConsent {...defaultProps} />, store);
 
-    expect(screen.getByText('metaMaskXHyperliquid')).toBeInTheDocument();
+    expect(screen.getByText('MetaMask x Hyperliquid')).toBeInTheDocument();
     expect(
-      screen.getByText('saveOnTradesWithAMetaMaskReferralCode'),
+      screen.getByText(
+        'Save up to 4% on trades with a MetaMask referral code.',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -39,7 +41,9 @@ describe('HyperliquidReferralConsent', () => {
     expect(checkbox).toBeChecked();
 
     expect(
-      screen.getByText('allowMetaMaskToAddAReferralCode'),
+      screen.getByText(
+        'Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -55,13 +59,13 @@ describe('HyperliquidReferralConsent', () => {
       store,
     );
 
-    const confirmButton = screen.getByRole('button', { name: 'confirm' });
+    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
     fireEvent.click(confirmButton);
 
     expect(mockOnActionComplete).toHaveBeenCalledWith({
       approved: true,
       allAccounts: true,
-      selectedAddress: '0x123456789abcdef',
+      selectedAddress: '0x123',
     });
   });
 
@@ -81,13 +85,13 @@ describe('HyperliquidReferralConsent', () => {
     const checkbox = screen.getByRole('checkbox');
     fireEvent.click(checkbox);
 
-    const confirmButton = screen.getByRole('button', { name: 'confirm' });
+    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
     fireEvent.click(confirmButton);
 
     expect(mockOnActionComplete).toHaveBeenCalledWith({
       approved: false,
       allAccounts: true,
-      selectedAddress: '0x123456789abcdef',
+      selectedAddress: '0x123',
     });
   });
 });
