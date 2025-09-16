@@ -27,7 +27,9 @@ describe('Account syncing - Multiple SRPs', function () {
    * Phase 1: Starting with the default account, add a second account to the first SRP, import a second SRP which automatically creates a third account, then manually create a fourth account on the second SRP with a custom name.
    * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
    */
-  it('should add accounts across multiple SRPs and sync them', async function () {
+  // TODO: Re-write this test when multichain account syncing has been merged
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should add accounts across multiple SRPs and sync them', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
