@@ -101,7 +101,24 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
+import {
+  getGasFeeControllerInitMessenger,
+  getGasFeeControllerMessenger,
+} from './gas-fee-controller-messenger';
+import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+import {
+  getAccountTrackerControllerInitMessenger,
+  getAccountTrackerControllerMessenger,
+} from './account-tracker-controller-messenger';
 
+export type {
+  AccountTrackerControllerMessenger,
+  AccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
+export {
+  getAccountTrackerControllerMessenger,
+  getAccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,
@@ -118,6 +135,14 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
+export type {
+  GasFeeControllerMessenger,
+  GasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
+export {
+  getGasFeeControllerMessenger,
+  getGasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
@@ -130,6 +155,8 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
+export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -164,6 +191,10 @@ export {
 } from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AccountTrackerController: {
+    getMessenger: getAccountTrackerControllerMessenger,
+    getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
@@ -191,6 +222,10 @@ export const CONTROLLER_MESSENGERS = {
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
+  },
+  GasFeeController: {
+    getMessenger: getGasFeeControllerMessenger,
+    getInitMessenger: getGasFeeControllerInitMessenger,
   },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
@@ -251,6 +286,10 @@ export const CONTROLLER_MESSENGERS = {
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
+  },
+  SelectedNetworkController: {
+    getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
   },
   ShieldController: {
     getMessenger: getShieldControllerMessenger,
