@@ -161,12 +161,14 @@ export async function displayCriticalErrorMessage(
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
   if (criticalErrorContainer) {
-    const restartButton = container.querySelector<HTMLButtonElement>(
-      '#critical-error-button',
-    );
-    const reportCheckbox = container.querySelector<HTMLInputElement>(
-      '#critical-error-checkbox',
-    );
+    const restartButton =
+      criticalErrorContainer.querySelector<HTMLButtonElement>(
+        '#critical-error-button',
+      );
+    const reportCheckbox =
+      criticalErrorContainer.querySelector<HTMLInputElement>(
+        '#critical-error-checkbox',
+      );
 
     // Restart button: report error and restart MetaMask
     restartButton?.addEventListener('click', async () => {
