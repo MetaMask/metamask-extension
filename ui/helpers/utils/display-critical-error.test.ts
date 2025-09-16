@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import { act } from 'react-dom/test-utils';
 import * as errorUtils from '../../../shared/lib/error-utils';
 import {
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   extractEnvelopeUrlFromDsn,
 } from './display-critical-error';
@@ -77,7 +77,7 @@ describe('displayCriticalError', () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
     await expect(
-      displayCriticalError(
+      displayCriticalErrorMessage(
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
@@ -98,7 +98,7 @@ describe('displayCriticalError', () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
     await expect(
-      displayCriticalError(
+      displayCriticalErrorMessage(
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
@@ -202,7 +202,7 @@ describe('displayCriticalError', () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
     await expect(
-      displayCriticalError(
+      displayCriticalErrorMessage(
         container,
         CriticalErrorTranslationKey.SomethingIsWrong,
         error,
