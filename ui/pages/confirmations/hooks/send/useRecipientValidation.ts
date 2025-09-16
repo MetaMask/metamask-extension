@@ -16,7 +16,6 @@ import {
 } from '../../utils/sendValidations';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
-import { log } from 'console';
 
 export const useRecipientValidation = () => {
   const t = useI18nContext();
