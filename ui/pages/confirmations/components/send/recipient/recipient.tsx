@@ -178,12 +178,12 @@ export const Recipient = () => {
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
       />
-      {recipientError && (
+      {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
           {recipientError}
         </HelpText>
       )}
-      {recipientWarning && (
+      {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
           {hasConfusableCharacters &&

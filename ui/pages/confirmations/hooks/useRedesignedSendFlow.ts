@@ -18,10 +18,7 @@ export const useRedesignedSendFlow = () => {
     {}) as SendRedesignFeatureFlag;
 
   // This environment variable is only used for local development to override the remote feature flag
-  if (
-    process.env.SEND_REDESIGN_ENABLED === 'true' &&
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT
-  ) {
+  if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT) {
     return {
       enabled: true,
     };
@@ -36,6 +33,6 @@ export const useRedesignedSendFlow = () => {
   }
 
   return {
-    enabled: true,
+    enabled: false,
   };
 };

@@ -1,30 +1,27 @@
-import { act } from '@testing-library/react';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useAsyncResult } from '../../../../../hooks/useAsync';
-import { useSendContext } from '../../../context/send';
-import { useSendType } from '../useSendType';
+import { AddressResolution } from '@metamask/snaps-sdk';
+import { waitFor } from '@testing-library/react';
+
 import mockState from '../../../../../../test/data/mock-state.json';
+import {
+  EVM_ASSET,
+  SOLANA_ASSET,
+} from '../../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import { useEvmRecipientValidation } from './useEvmRecipientValidation';
-import { useSolanaRecipientValidation } from './useSolanaRecipientValidation';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import * as SnapNameResolution from '../../../../../hooks/snaps/useSnapNameResolution';
+import { useSendContext } from '../../../context/send';
+import * as SendValidationUtils from '../../../utils/sendValidations';
+import { useSendType } from '../useSendType';
 import { useRecipientValidation } from './useRecipientValidation';
 
 jest.mock('../../../../../hooks/useI18nContext');
-jest.mock('../../../../../hooks/useAsync');
 jest.mock('../../../context/send');
 jest.mock('../useSendType');
-jest.mock('./useEvmRecipientValidation');
-jest.mock('./useSolanaRecipientValidation');
 
 describe('useRecipientValidation', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
-  const mockUseAsyncResult = jest.mocked(useAsyncResult);
   const mockUseSendContext = jest.mocked(useSendContext);
   const mockUseSendType = jest.mocked(useSendType);
-  const mockUseEvmRecipientValidation = jest.mocked(useEvmRecipientValidation);
-  const mockUseSolanaRecipientValidation = jest.mocked(
-    useSolanaRecipientValidation,
-  );
 
   const mockT = jest.fn((key) => key);
   const mockValidateEvmRecipient = jest.fn();
@@ -38,7 +35,7 @@ describe('useRecipientValidation', () => {
     jest.clearAllMocks();
     mockUseI18nContext.mockReturnValue(mockT);
     mockUseSendContext.mockReturnValue({
-      to: '',
+      to: '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73',
       chainId: '0x1',
       from: '',
       updateAsset: jest.fn(),
@@ -51,310 +48,220 @@ describe('useRecipientValidation', () => {
       isEvmSendType: true,
       isSolanaSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
-    mockUseEvmRecipientValidation.mockReturnValue({
-      validateEvmRecipient: mockValidateEvmRecipient,
-    });
-    mockUseSolanaRecipientValidation.mockReturnValue({
-      validateSolanaRecipient: mockValidateSolanaRecipient,
-    });
-    mockUseAsyncResult.mockReturnValue({
-      value: null,
-      loading: false,
-      error: null,
-    } as unknown as ReturnType<typeof useAsyncResult>);
   });
 
   it('returns recipient validation functions and state', () => {
     const { result } = renderHook();
 
     expect(result.current).toEqual({
-      recipientError: null,
-      recipientWarning: null,
-      recipientResolvedLookup: null,
-      recipientConfusableCharacters: [],
-      recipientValidationLoading: false,
-      validateRecipient: expect.any(Function),
+      recipientConfusableCharacters: undefined,
+      recipientError: undefined,
+      recipientWarning: undefined,
+      recipientResolvedLookup: undefined,
+      recipientValidationLoading: true,
+      toAddressValidated: undefined,
     });
   });
 
-  it('translates error messages', () => {
-    mockUseAsyncResult.mockReturnValue({
-      value: {
-        error: 'invalidAddress',
-        warning: null,
-        resolvedLookup: null,
-        confusableCharacters: [],
-      },
-      loading: false,
-      error: null,
-    } as unknown as ReturnType<typeof useAsyncResult>);
+  it('translates error messages', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: '0x123',
+      chainId: '0x1',
+      from: '',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateValue: jest.fn(),
+      value: '',
+    } as unknown as ReturnType<typeof useSendContext>);
 
     const { result } = renderHook();
 
-    expect(mockT).toHaveBeenCalledWith('invalidAddress');
-    expect(result.current.recipientError).toBe('invalidAddress');
+    await waitFor(() => {
+      expect(result.current).toEqual({
+        recipientConfusableCharacters: undefined,
+        recipientError: 'invalidAddress',
+        recipientResolvedLookup: undefined,
+        recipientValidationLoading: false,
+        recipientWarning: undefined,
+        toAddressValidated: '0x123',
+      });
+      expect(mockT).toHaveBeenCalledWith('invalidAddress');
+    });
   });
 
-  it('translates warning messages', () => {
-    mockUseAsyncResult.mockReturnValue({
-      value: {
-        error: null,
-        warning: 'warningMessage',
-        resolvedLookup: null,
-        confusableCharacters: [],
-      },
+  it('translates warning messages', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: 'exаmple.eth',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
       loading: false,
-      error: null,
-    } as unknown as ReturnType<typeof useAsyncResult>);
+      results: [{ resolvedAddress: '0x123' } as AddressResolution],
+    });
+
+    jest
+      .spyOn(SendValidationUtils, 'findConfusablesInRecipient')
+      .mockReturnValue({
+        confusableCharacters: [
+          { point: 'а', similarTo: 'a' },
+          { point: 'е', similarTo: 'e' },
+        ],
+        warning: 'confusingEnsDomain',
+      });
 
     const { result } = renderHook();
 
-    expect(mockT).toHaveBeenCalledWith('warningMessage');
-    expect(result.current.recipientWarning).toBe('warningMessage');
+    await waitFor(() => {
+      expect(result.current.recipientWarning).toEqual('confusingEnsDomain');
+      expect(mockT).toHaveBeenLastCalledWith('confusingEnsDomain');
+    });
   });
 
-  it('returns resolved lookup when available', () => {
-    const mockResolvedLookup = { resolvedAddress: '0x123' };
-    mockUseAsyncResult.mockReturnValue({
-      value: {
-        error: null,
-        warning: null,
-        resolvedLookup: mockResolvedLookup,
-        confusableCharacters: [],
-      },
+  it('returns resolved lookup when available', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: 'test.eth',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
       loading: false,
-      error: null,
-    } as unknown as ReturnType<typeof useAsyncResult>);
+      results: [{ resolvedAddress: '0x123' } as AddressResolution],
+    });
 
     const { result } = renderHook();
 
-    expect(result.current.recipientResolvedLookup).toBe(mockResolvedLookup);
+    await waitFor(() => {
+      expect(result.current.recipientResolvedLookup).toBe('0x123');
+    });
   });
 
-  it('returns confusable characters when available', () => {
-    const mockConfusableCharacters = ['а', 'e'];
-    mockUseAsyncResult.mockReturnValue({
-      value: {
-        error: null,
-        warning: null,
-        resolvedLookup: null,
-        confusableCharacters: mockConfusableCharacters,
-      },
+  it('returns confusable characters when available', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: 'exаmple.eth',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
       loading: false,
-      error: null,
-    } as unknown as ReturnType<typeof useAsyncResult>);
+      results: [{ resolvedAddress: '0x123' } as AddressResolution],
+    });
+
+    jest
+      .spyOn(SendValidationUtils, 'findConfusablesInRecipient')
+      .mockReturnValue({
+        confusableCharacters: [
+          { point: 'а', similarTo: 'a' },
+          { point: 'е', similarTo: 'e' },
+        ],
+        warning: 'confusingEnsDomain',
+      });
 
     const { result } = renderHook();
 
-    expect(result.current.recipientConfusableCharacters).toBe(
-      mockConfusableCharacters,
-    );
+    await waitFor(() => {
+      expect(result.current.recipientConfusableCharacters).toEqual([
+        { point: 'а', similarTo: 'a' },
+        { point: 'е', similarTo: 'e' },
+      ]);
+    });
   });
 
-  describe('validateRecipient', () => {
-    it('returns empty result for empty address', async () => {
-      const { result } = renderHook();
+  it('returns empty result for empty address', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: '',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
 
-      let validationResult;
-      await act(async () => {
-        validationResult = await result.current.validateRecipient('');
-      });
+    const { result } = renderHook();
 
-      expect(validationResult).toEqual({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-        confusableCharacters: [],
-      });
-    });
-
-    it('returns empty result for undefined address', async () => {
-      const { result } = renderHook();
-
-      let validationResult;
-      await act(async () => {
-        validationResult = await result.current.validateRecipient(undefined);
-      });
-
-      expect(validationResult).toEqual({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-        confusableCharacters: [],
+    await waitFor(() => {
+      expect(result.current).toEqual({
+        recipientConfusableCharacters: undefined,
+        recipientError: undefined,
+        recipientResolvedLookup: undefined,
+        recipientValidationLoading: false,
+        recipientWarning: undefined,
+        toAddressValidated: undefined,
       });
     });
+  });
 
-    it('uses EVM validation for EVM send type', async () => {
-      mockValidateEvmRecipient.mockResolvedValue({
+  it('returns empty result for undefined address', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: undefined,
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { result } = renderHook();
+
+    await waitFor(() => {
+      expect(result.current).toEqual({
+        recipientConfusableCharacters: undefined,
+        recipientError: undefined,
+        recipientResolvedLookup: undefined,
+        recipientValidationLoading: false,
+        recipientWarning: undefined,
+        toAddressValidated: undefined,
+      });
+    });
+  });
+
+  it('validate hex value for EVM send type', async () => {
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: true,
+      isSolanaSendType: false,
+    } as unknown as ReturnType<typeof useSendType>);
+
+    const mockValidateHexAddress = jest
+      .spyOn(SendValidationUtils, 'validateHexAddress')
+      .mockResolvedValue({
         error: 'invalidAddress',
-        resolvedLookup: null,
-        warning: null,
       });
 
-      const { result } = renderHook();
+    const { result } = renderHook();
 
-      await act(async () => {
-        await result.current.validateRecipient('0x123');
-      });
+    await waitFor(() => {
+      expect(mockValidateHexAddress).toHaveBeenCalled();
+      expect(result.current.recipientError).toEqual('invalidAddress');
+    });
+  });
 
-      expect(mockValidateEvmRecipient).toHaveBeenCalledWith('0x123', '0x1');
-      expect(mockValidateSolanaRecipient).not.toHaveBeenCalled();
+  it('validate solana address for Solana send type', async () => {
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: false,
+      isSolanaSendType: true,
+    } as unknown as ReturnType<typeof useSendType>);
+
+    mockUseSendContext.mockReturnValue({
+      asset: SOLANA_ASSET,
+      to: 'H8UekPGwePSmQ3ttuYGPU1sxKnk7K3SR4VBGp5dAEwQs',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
+      loading: false,
+      results: [],
     });
 
-    it('uses Solana validation for Solana send type', async () => {
-      mockUseSendType.mockReturnValue({
-        isEvmSendType: false,
-        isSolanaSendType: true,
-      } as unknown as ReturnType<typeof useSendType>);
-      mockValidateSolanaRecipient.mockResolvedValue({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-      });
-
-      const { result } = renderHook();
-
-      await act(async () => {
-        await result.current.validateRecipient(
-          'H8UekPGwePSmQ3ttuYGPU1sxKnk7K3SR4VBGp5dAEwQs',
-        );
-      });
-
-      expect(mockValidateSolanaRecipient).toHaveBeenCalledWith(
-        'H8UekPGwePSmQ3ttuYGPU1sxKnk7K3SR4VBGp5dAEwQs',
-        '0x1',
-      );
-      expect(mockValidateEvmRecipient).not.toHaveBeenCalled();
-    });
-
-    it('returns empty result for unknown send type', async () => {
-      mockUseSendType.mockReturnValue({
-        isEvmSendType: false,
-        isSolanaSendType: false,
-      } as unknown as ReturnType<typeof useSendType>);
-
-      const { result } = renderHook();
-
-      let validationResult;
-      await act(async () => {
-        validationResult = await result.current.validateRecipient('address');
-      });
-
-      expect(validationResult).toEqual({
-        confusableCharacters: [],
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-      });
-      expect(mockValidateEvmRecipient).not.toHaveBeenCalled();
-      expect(mockValidateSolanaRecipient).not.toHaveBeenCalled();
-    });
-
-    it('normalizes validation result', async () => {
-      mockValidateEvmRecipient.mockResolvedValue({
+    const mockValidateSolanaAddress = jest
+      .spyOn(SendValidationUtils, 'validateSolanaAddress')
+      .mockReturnValue({
         error: 'invalidAddress',
-        resolvedLookup: { resolvedAddress: '0x456' },
-        warning: 'warningMessage',
-        confusableCharacters: ['а'],
       });
 
-      const { result } = renderHook();
+    const { result } = renderHook();
 
-      let validationResult;
-      await act(async () => {
-        validationResult = await result.current.validateRecipient('0x123');
-      });
-
-      expect(validationResult).toEqual({
-        error: 'invalidAddress',
-        resolvedLookup: { resolvedAddress: '0x456' },
-        warning: 'warningMessage',
-        confusableCharacters: ['а'],
-      });
-    });
-
-    it('handles partial validation results', async () => {
-      mockValidateEvmRecipient.mockResolvedValue({
-        error: undefined,
-        warning: undefined,
-      });
-
-      const { result } = renderHook();
-
-      let validationResult;
-      await act(async () => {
-        validationResult = await result.current.validateRecipient('0x123');
-      });
-
-      expect(validationResult).toEqual({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-        confusableCharacters: [],
-      });
-    });
-
-    it('clears cache when send type changes', async () => {
-      mockValidateEvmRecipient.mockResolvedValue({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-      });
-
-      const { result, rerender } = renderHook();
-
-      await act(async () => {
-        await result.current.validateRecipient('0x123');
-      });
-
-      mockUseSendType.mockReturnValue({
-        isEvmSendType: false,
-        isSolanaSendType: true,
-      } as unknown as ReturnType<typeof useSendType>);
-      mockValidateSolanaRecipient.mockResolvedValue({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-      });
-
-      rerender();
-
-      await act(async () => {
-        await result.current.validateRecipient('0x123');
-      });
-
-      expect(mockValidateSolanaRecipient).toHaveBeenCalledWith('0x123', '0x1');
-    });
-
-    it('clears cache when chainId changes', async () => {
-      mockValidateEvmRecipient.mockResolvedValue({
-        error: null,
-        resolvedLookup: null,
-        warning: null,
-      });
-
-      const { result, rerender } = renderHook();
-
-      await act(async () => {
-        await result.current.validateRecipient('0x123');
-      });
-
-      mockUseSendContext.mockReturnValue({
-        to: '',
-        chainId: '0x89',
-      } as unknown as ReturnType<typeof useSendContext>);
-
-      rerender();
-
-      await act(async () => {
-        await result.current.validateRecipient('0x123');
-      });
-
-      expect(mockValidateEvmRecipient).toHaveBeenCalledTimes(2);
-      expect(mockValidateEvmRecipient).toHaveBeenLastCalledWith(
-        '0x123',
-        '0x89',
-      );
+    await waitFor(() => {
+      expect(mockValidateSolanaAddress).toHaveBeenCalled();
+      expect(result.current.recipientError).toEqual('invalidAddress');
     });
   });
 });

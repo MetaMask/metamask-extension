@@ -1,41 +1,79 @@
+import { AddressResolution } from '@metamask/snaps-sdk';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
+import { isSolanaAddress } from '../../../../../../shared/lib/multichain/accounts';
+import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { isValidDomainName } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
-import { RecipientValidationResult } from '../../../types/send';
-import { useSendContext } from '../../../context/send';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
+import { RecipientValidationResult } from '../../../types/send';
+import {
+  findConfusablesInRecipient,
+  validateHexAddress,
+  validateSolanaAddress,
+} from '../../../utils/sendValidations';
+import { useSendContext } from '../../../context/send';
 import { useSendType } from '../useSendType';
-import { useSolanaRecipientValidation } from './useSolanaRecipientValidation';
-import { useEvmRecipientValidation } from './useEvmRecipientValidation';
+import { log } from 'console';
 
 export const useRecipientValidation = () => {
+  const t = useI18nContext();
   const { chainId, to } = useSendContext();
   const { isEvmSendType, isSolanaSendType } = useSendType();
-  const { validateEvmRecipient } = useEvmRecipientValidation();
-  const { validateSolanaRecipient } = useSolanaRecipientValidation();
   const { results, loading } = useSnapNameResolution({
     chainId: chainId ? formatChainIdToCaip(chainId) : '',
     domain: to ?? '',
   });
+  const prevResolved = useRef<AddressResolution | undefined>();
 
   const validateRecipient =
     useCallback(async (): Promise<RecipientValidationResult> => {
-      let result: RecipientValidationResult = {};
-      if (isEvmSendType) {
-        result = await validateEvmRecipient(results, loading);
-      } else {
-        result = await validateSolanaRecipient(results, loading);
+      if (!to) {
+        return {};
       }
-      return { ...result, toAddressValidated: to };
-    }, [
-      isEvmSendType,
-      isSolanaSendType,
-      loading,
-      results,
-      validateEvmRecipient,
-      validateSolanaRecipient,
-    ]);
+
+      if (isEvmSendType && isValidHexAddress(to)) {
+        const valResult = await validateHexAddress(to, chainId);
+        return { ...valResult, toAddressValidated: to };
+      }
+
+      if (isSolanaSendType && isSolanaAddress(to)) {
+        return { ...validateSolanaAddress(to), toAddressValidated: to };
+      }
+
+      if (isValidDomainName(to)) {
+        const resolvedLookup = results?.[0]?.resolvedAddress;
+        if (loading) {
+          if (prevResolved.current?.domainName === to) {
+            return {
+              resolvedLookup: prevResolved.current.domainName,
+              ...findConfusablesInRecipient(to),
+              toAddressValidated: to,
+            };
+          }
+          return { loading: true };
+        }
+        if (results?.length) {
+          prevResolved.current = results?.[0];
+          return {
+            resolvedLookup,
+            ...findConfusablesInRecipient(to),
+            toAddressValidated: to,
+          };
+        }
+        return {
+          error: t('ensUnknownError'),
+          toAddressValidated: to,
+        };
+      }
+
+      return {
+        error: t('invalidAddress'),
+        toAddressValidated: to,
+      };
+    }, [isEvmSendType, isSolanaSendType, loading, results]);
 
   const { value: result, pending } = useAsyncResult<RecipientValidationResult>(
     async () => validateRecipient(),
@@ -44,10 +82,10 @@ export const useRecipientValidation = () => {
 
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
-    recipientError: result?.error,
+    recipientError: t(result?.error),
     recipientResolvedLookup: result?.resolvedLookup,
     toAddressValidated: result?.toAddressValidated,
-    recipientValidationLoading: pending,
-    recipientWarning: result?.warning,
+    recipientValidationLoading: result?.loading ?? pending,
+    recipientWarning: t(result?.warning),
   };
 };

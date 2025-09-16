@@ -6,25 +6,17 @@ import { findConfusablesInRecipient } from './sendValidations';
 
 jest.mock('unicode-confusables');
 
-const translate = (str: string) => str;
-
 describe('SendValidations', () => {
   describe('findConfusablesInRecipient', () => {
     const mockConfusables = jest.mocked(confusables);
-    const mockLookupDomainAddresses = jest.fn();
-    const mockFormatChainId = jest.fn();
-    const mockFilterResolutions = jest.fn();
 
     beforeEach(() => {
       jest.clearAllMocks();
-      mockLookupDomainAddresses.mockResolvedValue([
-        { resolvedAddress: '0x123456789abcdef' },
-      ]);
       mockConfusables.mockReturnValue([]);
     });
 
     it('returns successful validation when no confusables found', async () => {
-      const result = await findConfusablesInRecipient('example.eth', translate);
+      const result = await findConfusablesInRecipient('example.eth');
 
       expect(result).toEqual({});
     });
@@ -35,7 +27,7 @@ describe('SendValidations', () => {
         { point: 'е', similarTo: 'e' },
       ]);
 
-      const result = await findConfusablesInRecipient('exаmple.eth', translate);
+      const result = await findConfusablesInRecipient('exаmple.eth');
 
       expect(result).toEqual({
         confusableCharacters: [
@@ -52,10 +44,7 @@ describe('SendValidations', () => {
         { point: 'a', similarTo: 'a' },
       ]);
 
-      const result = await findConfusablesInRecipient(
-        'exa‌mple.eth',
-        translate,
-      );
+      const result = await findConfusablesInRecipient('exa‌mple.eth');
 
       expect(result).toEqual({
         error: 'invalidAddress',
@@ -70,7 +59,7 @@ describe('SendValidations', () => {
         { point: 'е', similarTo: 'e' },
       ]);
 
-      const result = await findConfusablesInRecipient('exаmple.eth', translate);
+      const result = await findConfusablesInRecipient('exаmple.eth');
 
       expect(result.confusableCharacters).toEqual([
         { point: 'а', similarTo: 'a' },
@@ -85,7 +74,7 @@ describe('SendValidations', () => {
         { point: 'е', similarTo: 'e' },
       ]);
 
-      const result = await findConfusablesInRecipient('exаmple.eth', translate);
+      const result = await findConfusablesInRecipient('exаmple.eth');
 
       expect(result.confusableCharacters).toEqual([
         { point: 'а', similarTo: 'a' },

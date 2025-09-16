@@ -51,5 +51,5 @@ export type RecipientValidationResult = {
   resolvedLookup?: string;
   warning?: string;
   toAddressValidated?: string;
-  recipientValidationLoading?: boolean;
+  loading?: boolean;
 };

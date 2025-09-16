@@ -3,12 +3,15 @@
 // @ts-ignore
 import { confusables } from 'unicode-confusables';
 
+import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
+import {
+  findNetworkClientIdByChainId,
+  getERC721AssetSymbol,
+} from '../../../store/actions';
 import { RecipientValidationResult } from '../types/send';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const findConfusablesInRecipient = (
   address: string,
-  t: ReturnType<typeof useI18nContext>,
 ): RecipientValidationResult => {
   const confusableCollection = confusables(address) as {
     point: string;
@@ -34,15 +37,65 @@ export const findConfusablesInRecipient = (
 
     if (hasZeroWidthCharacters) {
       return {
-        error: t('invalidAddress'),
-        warning: t('confusableZeroWidthUnicode'),
+        error: 'invalidAddress',
+        warning: 'confusableZeroWidthUnicode',
       };
     }
 
     return {
       confusableCharacters,
-      warning: t('confusingEnsDomain'),
+      warning: 'confusingEnsDomain',
     };
   }
+  return {};
+};
+
+const LOWER_CASED_BURN_ADDRESSES = [
+  '0x0000000000000000000000000000000000000000',
+  '0x000000000000000000000000000000000000dead',
+];
+
+export const validateHexAddress = async (address: string, chainId?: string) => {
+  if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
+  if (chainId) {
+    const networkClientId = await findNetworkClientIdByChainId(chainId);
+    if (networkClientId) {
+      const symbol = await getERC721AssetSymbol(address, networkClientId);
+      if (symbol) {
+        // Contract address detected
+        return {
+          error: 'invalidAddress',
+        };
+      }
+    }
+  }
+
+  return {};
+};
+
+// Common Solana burn addresses - addresses commonly used as burn destinations
+const SOLANA_BURN_ADDRESSES = [
+  '1nc1nerator11111111111111111111111111111111',
+  'So11111111111111111111111111111111111111112',
+];
+
+export const validateSolanaAddress = (address: string) => {
+  if (SOLANA_BURN_ADDRESSES.includes(address)) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
+  if (!isSolanaAddress(address)) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
   return {};
 };
