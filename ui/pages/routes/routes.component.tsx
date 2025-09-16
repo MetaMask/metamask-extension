@@ -460,7 +460,7 @@ export default function Routes() {
 
   // Track whether we've shown the multichain intro modal
   const hasShownMultichainIntroModal = useAppSelector(
-    (state) => state.metamask.hasShownMultichainIntroModal,
+    (state) => (state as any).metamask.hasShownMultichainIntroModal,
   );
 
   const prevPropsRef = useRef({
@@ -511,19 +511,16 @@ export default function Routes() {
       location.pathname === DEFAULT_ROUTE ||
       (getEnvironmentType() === 'popup' && !isOnboardingRoute);
 
-    // Show modal when:
-    // 1. Feature flag transitions from disabled to enabled (upgrade case)
-    // 2. Feature flag is enabled on fresh install
+    // Show modal only when feature flag transitions from disabled to enabled
     const flagJustEnabled =
       isMultichainAccountsState2Enabled &&
       !prevMultichainProps.isMultichainAccountsState2Enabled;
-    const flagEnabledFirstTime = isMultichainAccountsState2Enabled;
 
     const shouldShowModal =
       isUnlocked &&
       !hasShownMultichainIntroModal &&
       isMainWalletArea &&
-      (flagJustEnabled || flagEnabledFirstTime);
+      flagJustEnabled;
 
     if (shouldShowModal) {
       dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
