@@ -8,9 +8,21 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
   maxRefreshCount: 5,
   support: true,
   chains: {
-    '1': { isActiveSrc: true, isActiveDest: true },
-    '42161': { isActiveSrc: true, isActiveDest: true },
-    '59144': { isActiveSrc: true, isActiveDest: true },
+    '1': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+    '42161': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+    '59144': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
   },
 };
 
