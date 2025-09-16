@@ -99,20 +99,20 @@ app/scripts/constants/snaps.ts       @MetaMask/core-platform
 # Co-owned by Confirmations and Snaps
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
-# Wallet UX
-ui/components/app/whats-new-popup     @MetaMask/wallet-ux
-ui/css                                @MetaMask/wallet-ux
-ui/pages/home                         @MetaMask/wallet-ux
-ui/components/multichain/             @MetaMask/wallet-ux
+# Core Extension UX
+ui/components/app/whats-new-popup     @MetaMask/core-extension-ux
+ui/css                                @MetaMask/core-extension-ux
+ui/pages/home                         @MetaMask/core-extension-ux
+ui/components/multichain/             @MetaMask/core-extension-ux
 
-# Co-owned by accounts and wallet-ux
-ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/wallet-ux
-ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/wallet-ux
-ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/wallet-ux
-ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/wallet-ux
-ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
-ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
-ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/wallet-ux
+# Co-owned by accounts and core-extension-ux
+ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
+ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/core-extension-ux
+ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/core-extension-ux
+ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/core-extension-ux
+ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/core-extension-ux
+ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @MetaMask/core-extension-ux
+ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 
 # Web3Auth / Onboarding
 ui/pages/onboarding-flow              @MetaMask/web3auth
