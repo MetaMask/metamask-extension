@@ -53,7 +53,7 @@ const createMockState = () => ({
       },
       '0x89': {
         chainId: '0x89',
-        name: 'Polygon',
+        name: 'Polygon Mainnet',
         nativeCurrency: 'MATIC',
         rpcEndpoints: [
           {
@@ -68,7 +68,7 @@ const createMockState = () => ({
       },
       '0xa4b1': {
         chainId: '0xa4b1',
-        name: 'Arbitrum',
+        name: 'Arbitrum One',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {

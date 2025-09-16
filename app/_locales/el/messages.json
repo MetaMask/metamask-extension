@@ -1438,7 +1438,7 @@
     "message": "Σύνδεση στο δίκτυο δοκιμών Linea Goerli"
   },
   "connectingToLineaMainnet": {
-    "message": "Σύνδεση στο Linea"
+    "message": "Σύνδεση στο Linea Mainnet"
   },
   "connectingToLineaSepolia": {
     "message": "Γίνεται σύνδεση στο δίκτυο δοκιμών Linea Sepolia"
@@ -3134,7 +3134,7 @@
     "message": "Δίκτυο δοκιμών Linea Goerli"
   },
   "lineaMainnet": {
-    "message": "Linea"
+    "message": "Linea Mainnet"
   },
   "lineaSepolia": {
     "message": "Δίκτυο δοκιμών Linea Sepolia"

@@ -24,7 +24,7 @@ describe('MultichainAddressRowsList Utils', () => {
       const items = [
         createNetworkItem('0x89', 'Polygon'),
         createNetworkItem('0xaa36a7', 'Sepolia'), // Test network
-        createNetworkItem('0xa4b1', 'Arbitrum'),
+        createNetworkItem('0xa4b1', 'Arbitrum One'),
         createNetworkItem(MultichainNetworks.SOLANA, 'Solana'),
         createNetworkItem(CHAIN_IDS.MAINNET, 'Ethereum'),
         createNetworkItem('0xa', 'Optimism'),
@@ -35,7 +35,7 @@ describe('MultichainAddressRowsList Utils', () => {
 
       expect(sorted[0].networkName).toBe('Ethereum');
       expect(sorted[1].networkName).toBe('Solana');
-      expect(sorted[2].networkName).toBe('Arbitrum');
+      expect(sorted[2].networkName).toBe('Arbitrum One');
       expect(sorted[3].networkName).toBe('Optimism');
       expect(sorted[4].networkName).toBe('Polygon');
 

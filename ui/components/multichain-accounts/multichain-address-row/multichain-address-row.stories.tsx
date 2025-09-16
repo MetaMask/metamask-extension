@@ -75,7 +75,7 @@ export const WithLongNetworkName: Story = {
 export const ArbitrumNetwork: Story = {
   args: {
     chainId: '0xa4b1',
-    networkName: 'Arbitrum',
+    networkName: 'Arbitrum One',
     address: '0x0123456789abcdef0123456789abcdef01234567',
     copyActionParams: {
       message: 'Copied!',
@@ -101,7 +101,7 @@ export const OptimismNetwork: Story = {
 export const PolygonNetwork: Story = {
   args: {
     chainId: '0x89',
-    networkName: 'Polygon',
+    networkName: 'Polygon Mainnet',
     address: '0xfedcba0987654321fedcba0987654321fedcba09',
     copyActionParams: {
       message: 'Copied!',
