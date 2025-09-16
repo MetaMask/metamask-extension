@@ -1414,7 +1414,7 @@
     "message": "Kumokonekta sa Linea Goerli test network"
   },
   "connectingToLineaMainnet": {
-    "message": "Kumokonekta sa Linea"
+    "message": "Kumokonekta sa Linea Mainnet"
   },
   "connectingToLineaSepolia": {
     "message": "Kumokonekta sa Linea Sepolia test network"
@@ -3104,7 +3104,7 @@
     "message": "Linea Goerli test network"
   },
   "lineaMainnet": {
-    "message": "Linea"
+    "message": "Linea Mainnet"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia test network"
@@ -3534,7 +3534,7 @@
     "message": "Linea"
   },
   "networkNameOpMainnet": {
-    "message": "OP"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"

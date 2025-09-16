@@ -977,7 +977,7 @@ export const getBridgeL2Fixtures = (
       eip155: {
         '0x1': true, // Mainnet
         '0xe708': true, // Linea (source chain for test)
-        '0xa4b1': true, // Arbitrum (destination chain for test)
+        '0xa4b1': true, // Arbitrum One (destination chain for test)
       },
     });
 

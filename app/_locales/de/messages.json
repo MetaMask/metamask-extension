@@ -1438,7 +1438,7 @@
     "message": "Verbindungsaufbau zum Linea-Testnetzwerk"
   },
   "connectingToLineaMainnet": {
-    "message": "Verbindung zum Linea wird hergestellt"
+    "message": "Verbindung zum Linea Mainnet wird hergestellt"
   },
   "connectingToLineaSepolia": {
     "message": "Herstellung der Verbindung zum Linea-Sepolia-Testnetzwerk"
@@ -3134,7 +3134,7 @@
     "message": "Linea-Testnetzwerk"
   },
   "lineaMainnet": {
-    "message": "Linea"
+    "message": "Linea Mainnet"
   },
   "lineaSepolia": {
     "message": "Linea-Sepolia-Testnetzwerk"
@@ -3564,7 +3564,7 @@
     "message": "Linea"
   },
   "networkNameOpMainnet": {
-    "message": "OP"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"

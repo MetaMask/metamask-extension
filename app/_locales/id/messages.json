@@ -1438,7 +1438,7 @@
     "message": "Menghubungkan ke jaringan uji Linea Goerli"
   },
   "connectingToLineaMainnet": {
-    "message": "Menghubungkan ke Linea"
+    "message": "Menghubungkan ke Linea Mainnet"
   },
   "connectingToLineaSepolia": {
     "message": "Menghubungkan ke jaringan uji Linea Sepolia"
@@ -3134,7 +3134,7 @@
     "message": "Jaringan uji Linea Goerli"
   },
   "lineaMainnet": {
-    "message": "Linea"
+    "message": "Linea Mainnet"
   },
   "lineaSepolia": {
     "message": "Jaringan uji Linea Sepolia"
@@ -3564,7 +3564,7 @@
     "message": "Linea"
   },
   "networkNameOpMainnet": {
-    "message": "OP"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
