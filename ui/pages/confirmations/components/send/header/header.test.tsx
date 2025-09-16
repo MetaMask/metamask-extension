@@ -1,20 +1,11 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/dom';
+import { createMemoryHistory } from 'history';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProviderAndHistory } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import { Header } from './header';
-
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
@@ -28,8 +19,16 @@ jest.mock('react-router-dom-v5-compat', () => ({
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const history: any = createMemoryHistory();
 
-  return renderWithProvider(<Header />, store);
+  history.goBack = jest.fn();
+  const mockHistoryBack = jest.spyOn(history, 'goBack');
+
+  return {
+    ...renderWithProviderAndHistory(<Header />, store, history),
+    mockHistoryBack,
+  };
 };
 
 describe('Header', () => {
@@ -40,9 +39,9 @@ describe('Header', () => {
   });
 
   it('go to previous page when previous button is clicked', () => {
-    const { getByRole } = render();
+    const { getByRole, mockHistoryBack } = render();
 
     fireEvent.click(getByRole('button'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockHistoryBack).toHaveBeenCalled();
   });
 });
