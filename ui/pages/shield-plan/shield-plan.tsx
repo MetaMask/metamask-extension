@@ -51,7 +51,6 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import LoadingScreen from '../../components/ui/loading-screen';
@@ -286,14 +285,21 @@ const ShieldPlan = () => {
                   gap={2}
                   alignItems={AlignItems.center}
                 >
-                  {selectedPaymentMethod === PAYMENT_TYPES.byCrypto ? (
+                  {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                  selectedToken ? (
                     <BadgeWrapper
                       badge={
                         <AvatarNetwork
                           size={AvatarNetworkSize.Xs}
-                          name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
+                          name={
+                            NETWORK_TO_NAME_MAP[
+                              selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                            ]
+                          }
                           src={
-                            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]
+                            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                              selectedToken.chainId
+                            ]
                           }
                           borderColor={BorderColor.borderMuted}
                         />
