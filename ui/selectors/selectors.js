@@ -1358,6 +1358,17 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+/**
+ * privacy mode preference
+ *
+ * @param state
+ * @returns {boolean}
+ */
+export function getPrivacyMode(state) {
+  const { privacyMode } = getPreferences(state);
+  return Boolean(privacyMode);
+}
+
 export function getUseExternalNameSources(state) {
   return state.metamask.useExternalNameSources;
 }
@@ -3953,3 +3964,14 @@ export function getShowUpdateModal(state) {
 
   return showUpdateModal;
 }
+
+/**
+ * Selector to get the allow list for non-zero unused approvals from remote feature flags.
+ *
+ * @param state - The MetaMask state object
+ * @returns {string[]} Array of URL strings for the allow list
+ */
+export const selectNonZeroUnusedApprovalsAllowList = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
+);

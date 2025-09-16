@@ -9,6 +9,7 @@ import {
   IconName,
   Text,
   TextField,
+  TextFieldSize,
 } from '../../../../../components/component-library';
 import {
   BlockSize,
@@ -25,6 +26,7 @@ import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversio
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
 import { useSendType } from '../../../hooks/send/useSendType';
+import { getFractionLength } from '../../../utils/send';
 
 export const Amount = () => {
   const t = useI18nContext();
@@ -32,8 +34,12 @@ export const Amount = () => {
   const [amount, setAmount] = useState(value ?? '');
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
-  const { getFiatDisplayValue, getNativeValue, getNativeDisplayValue } =
-    useCurrencyConversions();
+  const {
+    getFiatValue,
+    getFiatDisplayValue,
+    getNativeValue,
+    getNativeDisplayValue,
+  } = useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
   const {
@@ -51,17 +57,26 @@ export const Amount = () => {
   const { amountError } = useAmountValidation();
 
   const onChange = useCallback(
-    (event) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
+      const fractionSize = getFractionLength(newValue);
+      if (
+        (fiatMode && fractionSize > 2) ||
+        (!fiatMode && fractionSize > (asset?.decimals ?? 0))
+      ) {
+        return;
+      }
       updateValue(fiatMode ? getNativeValue(newValue) : newValue);
       setAmount(newValue);
     },
-    [fiatMode, getNativeValue, setAmount, updateValue],
+    [asset, fiatMode, getNativeValue, setAmount, updateValue],
   );
 
   const toggleFiatMode = useCallback(() => {
     const newFiatMode = !fiatMode;
-    setAmount('');
+    if (amount !== undefined) {
+      setAmount(newFiatMode ? getFiatValue(amount) : getNativeValue(amount));
+    }
     setFiatMode(newFiatMode);
     if (newFiatMode) {
       setAmountInputTypeFiat();
@@ -69,7 +84,10 @@ export const Amount = () => {
       setAmountInputTypeToken();
     }
   }, [
+    amount,
     fiatMode,
+    getFiatValue,
+    getNativeValue,
     setAmount,
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
@@ -92,6 +110,7 @@ export const Amount = () => {
 
   const isERC1155 = asset?.standard === ERC1155;
   const isERC721 = asset?.standard === ERC721;
+  const isTokenTransfer = asset && !isERC1155 && !isERC721;
 
   if (isERC721) {
     return null;
@@ -99,7 +118,9 @@ export const Amount = () => {
 
   return (
     <Box marginTop={4}>
-      <Text variant={TextVariant.bodyMd}>{t('amount')}</Text>
+      <Text variant={TextVariant.bodyMd} paddingBottom={1}>
+        {t('amount')}
+      </Text>
       <TextField
         error={Boolean(amountError)}
         onChange={onChange}
@@ -108,7 +129,7 @@ export const Amount = () => {
         value={amount}
         endAccessory={
           <div>
-            {!isERC1155 && (
+            {isTokenTransfer && (
               <ButtonIcon
                 ariaLabel="toggle fiat mode"
                 iconName={IconName.SwapVertical}
@@ -120,6 +141,7 @@ export const Amount = () => {
           </div>
         }
         width={BlockSize.Full}
+        size={TextFieldSize.Lg}
       />
       <Box
         display={Display.Flex}
@@ -132,13 +154,13 @@ export const Amount = () => {
           }
           variant={TextVariant.bodySm}
         >
-          {amountError || `~${alternateDisplayValue}`}
+          {isTokenTransfer ? amountError || `~${alternateDisplayValue}` : ''}
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
             {balance} {asset?.symbol} {t('available')}
           </Text>
-          {!isERC1155 && !isNonEvmNativeSendType && (
+          {!isNonEvmNativeSendType && (
             <ButtonLink
               marginLeft={1}
               onClick={updateToMax}

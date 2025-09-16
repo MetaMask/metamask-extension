@@ -1,14 +1,12 @@
 import { ERC1155 } from '@metamask/controller-utils';
-import { useCallback } from 'react';
+import { useMemo } from 'react';
 
-import { Asset } from '../../types/send';
-import { useAsyncResult } from '../../../../hooks/useAsync';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { isDecimal } from '../../utils/send';
+import { Asset } from '../../types/send';
+import { fromTokenMinUnitsNumeric, isDecimal } from '../../utils/send';
 import { useSendContext } from '../../context/send';
-import { useEvmAmountValidation } from './evm/useEvmAmountValidation';
-import { useNonEvmAmountValidation } from './non-evm/useNonEvmAmountValidation';
-import { useSendType } from './useSendType';
+import { useBalance } from './useBalance';
 
 export const validateERC1155Balance = (
   asset: Asset,
@@ -17,8 +15,21 @@ export const validateERC1155Balance = (
 ) => {
   if (asset?.balance && value) {
     if (parseInt(value, 10) > parseInt(asset.balance.toString(), 10)) {
-      return t('insufficientFunds');
+      return t('insufficientFundsSend');
     }
+  }
+  return undefined;
+};
+
+export const validateTokenBalance = (
+  amount: string,
+  rawBalanceNumeric: Numeric,
+  t: ReturnType<typeof useI18nContext>,
+  decimals?: number,
+) => {
+  const amountInputNumeric = fromTokenMinUnitsNumeric(amount, 10, decimals);
+  if (rawBalanceNumeric.lessThan(amountInputNumeric)) {
+    return t('insufficientFundsSend');
   }
   return undefined;
 };
@@ -26,11 +37,9 @@ export const validateERC1155Balance = (
 export const useAmountValidation = () => {
   const t = useI18nContext();
   const { asset, value } = useSendContext();
-  const { isEvmSendType } = useSendType();
-  const { validateEvmAmount } = useEvmAmountValidation();
-  const { validateNonEvmAmount } = useNonEvmAmountValidation();
+  const { rawBalanceNumeric } = useBalance();
 
-  const validateAmount = useCallback(async (): Promise<string | undefined> => {
+  const amountError = useMemo(() => {
     if (value === undefined || value === null || value === '') {
       return undefined;
     }
@@ -40,12 +49,8 @@ export const useAmountValidation = () => {
     if (asset?.standard === ERC1155) {
       return validateERC1155Balance(asset, value, t);
     }
-    return isEvmSendType ? validateEvmAmount() : await validateNonEvmAmount();
-  }, [asset, isEvmSendType, t, validateEvmAmount, validateNonEvmAmount, value]);
-
-  const { value: amountError } = useAsyncResult(validateAmount, [
-    validateAmount,
-  ]);
+    return validateTokenBalance(value, rawBalanceNumeric, t, asset?.decimals);
+  }, [asset, rawBalanceNumeric, t, value]);
 
   return { amountError };
 };

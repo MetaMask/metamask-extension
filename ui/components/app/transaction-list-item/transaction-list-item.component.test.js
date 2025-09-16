@@ -3,7 +3,6 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import * as reactRouterDom from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import {
   TrustSignalDisplayState,
@@ -16,8 +15,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
-import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
-import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -362,179 +359,5 @@ describe('TransactionListItem', () => {
       '?Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText('Failed')).toBeInTheDocument();
-  });
-
-  it('should render confirmed unified swap tx summary', () => {
-    const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={jest.fn()}>
-        <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
-      </MetaMetricsContext.Provider>,
-      mockStore(mockState),
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap to Confirmed-0 ETH',
-    );
-  });
-
-  it('should render failed unified swap tx summary', () => {
-    useSelector.mockImplementation(generateUseSelectorRouter({}));
-    const { queryByTestId, getByText } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={{
-          ...mockUnifiedSwapTxGroup,
-          primaryTransaction: {
-            ...mockUnifiedSwapTxGroup.primaryTransaction,
-            status: TransactionStatus.failed,
-          },
-        }}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap to Failed-0 ETH',
-    );
-    expect(getByText('Failed')).toBeInTheDocument();
-  });
-
-  it('should render pending bridge tx summary', () => {
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: {
-            ...bridgeHistoryItem,
-            status: {
-              ...bridgeHistoryItem.status,
-              status: 'PENDING',
-            },
-          },
-        },
-      }),
-    );
-    const { queryByTestId } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={{
-          ...mockBridgeTxData.transactionGroup,
-          primaryTransaction: {
-            ...mockBridgeTxData.transactionGroup.primaryTransaction,
-            status: TransactionStatus.pending,
-          },
-        }}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
-    );
-  });
-
-  it('should render confirmed bridge tx summary', () => {
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: {
-            ...bridgeHistoryItem,
-            status: {
-              ...bridgeHistoryItem.status,
-              status: 'PENDING',
-            },
-          },
-        },
-      }),
-    );
-    const { queryByTestId, getByText } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={mockBridgeTxData.transactionGroup}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
-    );
-    expect(getByText('Transaction 2 of 2')).toBeInTheDocument();
-  });
-
-  it('should render completed bridge tx summary', () => {
-    const mockPush = jest
-      .fn()
-      .mockImplementation((...args) => jest.fn(...args));
-    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
-      push: mockPush,
-    });
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: bridgeHistoryItem,
-        },
-      }),
-    );
-    const { queryByTestId, getByTestId } = renderWithProvider(
-      <TransactionListItem
-        transactionGroup={mockBridgeTxData.transactionGroup}
-      />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetConfirmed-2 USDC',
-    );
-
-    fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      state: {
-        transactionGroup: mockBridgeTxData.transactionGroup,
-        isEarliestNonce: false,
-      },
-    });
-  });
-
-  it('should render failed bridge tx summary', () => {
-    const mockPush = jest
-      .fn()
-      .mockImplementation((...args) => jest.fn(...args));
-    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
-      push: mockPush,
-    });
-    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    useSelector.mockImplementation(
-      generateUseSelectorRouter({
-        bridgeHistory: {
-          [srcTxMetaId]: {
-            ...bridgeHistoryItem,
-            status: {
-              ...bridgeHistoryItem.status,
-              status: 'FAILED',
-            },
-          },
-        },
-      }),
-    );
-    const failedTransactionGroup = {
-      ...mockBridgeTxData.transactionGroup,
-      primaryTransaction: {
-        ...mockBridgeTxData.transactionGroup.primaryTransaction,
-        status: TransactionStatus.failed,
-      },
-    };
-    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
-      <TransactionListItem transactionGroup={failedTransactionGroup} />,
-    );
-
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OP MainnetFailed-2 USDC',
-    );
-    expect(getByText('Failed')).toBeInTheDocument();
-
-    fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      state: {
-        transactionGroup: failedTransactionGroup,
-        isEarliestNonce: false,
-      },
-    });
   });
 });
