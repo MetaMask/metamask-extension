@@ -5631,6 +5631,9 @@
     "message": "Membership is paused due to insufficient token balance. $1 to resume coverage.",
     "description": "The $1 is the action text 'Update payment'"
   },
+  "shieldTxMembershipErrorInsufficientTokenTooltip": {
+    "message": "Insufficient token balance in your wallet. Top up or select an alternative payment method to resume coverage."
+  },
   "shieldTxMembershipErrorMembershipEnding": {
     "message": "Your membership is ending on $1. $2 to maintain uninterrupted access",
     "description": "The $1 is date and $2 is the action text 'Renew now'"

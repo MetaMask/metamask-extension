@@ -194,7 +194,7 @@ const TransactionShield = () => {
       return (
         <Tooltip
           position="top"
-          title={t('shieldTxMembershipErrorInsufficientTokenBalanceTooltip')}
+          title={t('shieldTxMembershipErrorInsufficientTokenTooltip')}
         >
           <ButtonLink
             startIconName={IconName.Danger}
