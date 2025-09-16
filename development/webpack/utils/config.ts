@@ -110,7 +110,7 @@ export function getVariables(
   setEnvironmentVariables({
     buildName: getBuildName(type, activeBuild, isDevBuild, args),
     buildType: type,
-    environment: args.test ? 'test' : env,
+    environment: args.test ? 'testing' : env,
     isDevBuild,
     isTestBuild: args.test,
     version: version.versionName,
