@@ -1,15 +1,13 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
   hideModal,
   setMultichainIntroModalShown,
   alignMultichainWallets,
 } from '../../../../store/actions';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../helpers/constants/routes';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MultichainAccountIntroModal,
   MultichainAccountIntroModalProps,
@@ -18,18 +16,8 @@ import {
 export const MultichainAccountIntroModalContainer: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
 
   const handleViewAccounts = useCallback(async () => {
-    // Track analytics
-    trackEvent({
-      category: 'Multichain Accounts',
-      event: MetaMetricsEventName.MultichainAccountIntroViewAccounts,
-      properties: {
-        location: 'intro_modal',
-      },
-    });
-
     // Trigger wallet alignment with minimum 2 second UX feedback
     await Promise.all([
       alignMultichainWallets(),
@@ -42,25 +30,16 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
 
     // Navigate to account list
     history.push(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [dispatch, history, trackEvent]);
+  }, [dispatch, history]);
 
   const handleLearnMore = useCallback(() => {
-    // Track analytics
-    trackEvent({
-      category: 'Multichain Accounts',
-      event: MetaMetricsEventName.MultichainAccountIntroLearnMore,
-      properties: {
-        location: 'intro_modal',
-      },
-    });
-
     // Open multichain accounts support page
     window.open(
       'https://support.metamask.io/multichain-accounts',
       '_blank',
       'noopener,noreferrer',
     );
-  }, [trackEvent]);
+  }, []);
 
   const handleClose = useCallback(() => {
     // Mark modal as shown so it doesn't show again

@@ -735,8 +735,6 @@ export enum MetaMetricsEventName {
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
-  MultichainAccountIntroViewAccounts = 'Multichain Account Intro View Accounts Clicked',
-  MultichainAccountIntroLearnMore = 'Multichain Account Intro Learn More Clicked',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
