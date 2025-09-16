@@ -74,6 +74,7 @@ export const useQuoteFetchEvents = () => {
             ? formatProviderLabel(recommendedQuote.quote)
             : undefined,
           provider: activeQuote ? formatProviderLabel(activeQuote.quote) : '_',
+          gas_included_7702: false, // TODO populate this value
           warnings,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
