@@ -241,6 +241,8 @@ export const BridgeQuotesModal = ({
                           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                           // eslint-disable-next-line @typescript-eslint/naming-convention
                           gas_included: Boolean(quote.quote?.gasIncluded),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           gas_included_7702: false, // TODO populate this value
                         },
                       ),
