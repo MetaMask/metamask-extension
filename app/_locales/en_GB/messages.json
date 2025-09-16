@@ -5630,6 +5630,41 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
+  "shieldTxMembershipErrorDeclinedCard": {
+    "message": "Membership is paused due to declined card. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorDeclinedCardTooltip": {
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  },
+  "shieldTxMembershipErrorInsufficientFunds": {
+    "message": "Insufficient funds for your $1 renewal. $2 to keep your access.",
+    "description": "The $1 is date and $2 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientToken": {
+    "message": "Insufficient $1",
+    "description": "The $1 is the token symbol"
+  },
+  "shieldTxMembershipErrorInsufficientTokenBalance": {
+    "message": "Membership is paused due to insufficient token balance. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientTokenTooltip": {
+    "message": "Insufficient token balance in your wallet. Top up or select an alternative payment method to resume coverage."
+  },
+  "shieldTxMembershipErrorMembershipEnding": {
+    "message": "Your membership is ending on $1. $2 to maintain uninterrupted access",
+    "description": "The $1 is date and $2 is the action text 'Renew now'"
+  },
+  "shieldTxMembershipErrorRenewNow": {
+    "message": "Renew now"
+  },
+  "shieldTxMembershipErrorUpdateCardDetails": {
+    "message": "Update card details"
+  },
+  "shieldTxMembershipErrorUpdatePayment": {
+    "message": "Update payment"
+  },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
