@@ -1,16 +1,15 @@
 # Yarn Binary Management
 
-This document describes how to manage yarn versions for the MetaMask extension project using Corepack, ensuring consistent versions across development and CI/CD environments.
+This document describes how to manage yarn versions for the MetaMask extension project using native Corepack commands, ensuring consistent versions across development and CI/CD environments.
 
 ## Overview
 
-The MetaMask extension uses a Corepack-based approach to manage yarn versions. This system:
+The MetaMask extension uses native Corepack commands to manage yarn versions. This system:
 
 - **Reads version from package.json** - Single source of truth via `packageManager` field
-- **Uses native Node.js tooling** - Leverages built-in `corepack` commands
+- **Uses native corepack commands** - Direct use of built-in `corepack prepare` and `corepack hydrate`
 - **Commits tarballs for offline use** - No network dependencies in CI/CD
 - **Activates versions automatically** - No manual configuration needed
-- **Works without yarnPath** - Corepack handles version activation
 
 ## Quick Start
 
@@ -37,14 +36,15 @@ yarn yarn-binary:download
 yarn yarn-binary:hydrate
 ```
 
-### Direct Node.js Scripts
+These scripts are implemented as native corepack commands in package.json:
 
-```bash
-# Download and activate (same as yarn yarn-binary:download)
-node development/yarn-corepack-tarball.js
-
-# Activate existing tarball (same as yarn yarn-binary:hydrate)
-node development/yarn-corepack-hydrate.js
+```json
+{
+  "scripts": {
+    "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz && corepack hydrate .yarn/yarn-corepack.tgz --activate",
+    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
+  }
+}
 ```
 
 ## How It Works
@@ -59,72 +59,30 @@ The scripts automatically read the yarn version from `package.json`:
 }
 ```
 
-### 2. Tarball Creation (if needed)
+### 2. Download Process (`yarn-binary:download`)
 
-Using `corepack prepare -o`:
+The download command performs these steps:
 
-```bash
-corepack prepare yarn@4.9.4 -o
-# Creates: corepack.tgz (in current directory)
-```
+1. **`corepack pack -o .yarn/yarn-corepack.tgz`**
 
-### 3. Storage and Organization
+   - Automatically reads version from package.json packageManager field
+   - Downloads the specified yarn version
+   - Creates `yarn-corepack.tgz` directly in the .yarn directory
 
-The script moves the tarball to a organized location:
+2. **`corepack hydrate .yarn/yarn-corepack.tgz --activate`**
 
-```bash
-# Moves: corepack.tgz → .yarn/yarn-4.9.4-corepack.tgz
-```
-
-### 4. Activation
-
-Using `corepack hydrate --activate`:
-
-```bash
-corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate
-# Activates the yarn version globally via corepack
-```
-
-### 5. Verification
-
-The script verifies the activation worked:
-
-```bash
-yarn --version  # Should return 4.9.4
-```
-
-## Corepack Commands Used
-
-Our scripts wrap these native Corepack commands:
-
-### Download Process (`yarn-binary:download`)
-
-1. **`corepack prepare yarn@4.9.4 -o`**
-   - Downloads yarn version 4.9.4
-   - Creates `corepack.tgz` in current directory
-   - Contains the complete yarn package manager
-
-2. **File organization** (script handles this)
-   - Moves `corepack.tgz` → `.yarn/yarn-4.9.4-corepack.tgz`
-   - Provides organized storage for version control
-
-3. **`corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate`**
-   - Extracts and installs yarn from the tarball
-   - Activates it as the current yarn version
+   - Activates the yarn version from the tarball
    - No configuration files needed
 
-### Hydrate Process (`yarn-binary:hydrate`)
+### 3. Hydrate Process (`yarn-binary:hydrate`)
 
-1. **Tarball detection** (script handles this)
-   - Reads version from `package.json`
-   - Locates `.yarn/yarn-[version]-corepack.tgz`
+The hydrate command activates an existing tarball:
 
-2. **`corepack hydrate .yarn/yarn-4.9.4-corepack.tgz --activate`**
-   - Activates the existing tarball
+1. **`corepack hydrate .yarn/yarn-corepack.tgz --activate`**
+
+   - Activates the existing committed tarball
    - No download needed - uses committed file
-
-3. **Verification** (script handles this)
-   - Runs `yarn --version` to confirm activation
+   - Version is determined automatically from the tarball contents
 
 ## Workflows
 
@@ -138,7 +96,8 @@ Our scripts wrap these native Corepack commands:
 
 # 2. Download and commit new version
 yarn yarn-binary:download
-git add .yarn/yarn-4.9.5-corepack.tgz
+yarn yarn-binary:hydrate  # Activate the new version
+git add .yarn/yarn-corepack.tgz
 git commit -m "Update yarn to 4.9.5"
 ```
 
@@ -171,6 +130,9 @@ steps:
 # 1. Edit package.json
 "packageManager": "yarn@4.9.1"
 
+# 3. Download the new version
+yarn yarn-binary:download
+
 # 2. Activate
 yarn yarn-binary:hydrate
 
@@ -182,38 +144,22 @@ yarn --version  # Shows 4.9.1
 
 ```text
 .yarn/
-├── yarn-4.9.1-corepack.tgz    # Committed tarball for 4.9.1
-├── yarn-4.9.4-corepack.tgz    # Committed tarball for 4.9.4
+├── yarn-corepack.tgz          # Committed tarball (version determined by package.json)
 └── [other yarn files...]
 
-development/
-├── yarn-corepack-tarball.js   # Download & activate script
-└── yarn-corepack-hydrate.js   # Activate existing script
-
-package.json                    # Contains packageManager version
+package.json                   # Contains packageManager version and scripts
 ```
-
-## Advantages
-
-| Aspect                 | Corepack Approach               | Traditional Approach                |
-| ---------------------- | ------------------------------- | ----------------------------------- |
-| **Configuration**      | ❌ No yarnPath needed           | ✅ Requires yarnPath in .yarnrc.yml |
-| **Version Source**     | ✅ Single source (package.json) | ⚠️ Multiple places to update        |
-| **CI/CD Setup**        | ✅ Just hydrate tarball         | ⚠️ Complex binary management        |
-| **Network Dependency** | ❌ None (committed tarballs)    | ⚠️ Downloads in CI                  |
-| **Native Tooling**     | ✅ Uses Node.js corepack        | ⚠️ Custom scripts                   |
-| **Activation**         | ✅ Automatic via corepack       | ⚠️ Manual configuration             |
 
 ## Troubleshooting
 
 ### Tarball Not Found
 
-```bash
-❌ Tarball not found: .yarn/yarn-4.9.5-corepack.tgz
-💡 Run 'yarn yarn-binary:download' to create the tarball first
-```
+If you get an error about missing tarball:
 
-**Solution**: Run `yarn yarn-binary:download` to create the tarball.
+```bash
+# Download and create the tarball first
+yarn yarn-binary:download
+```
 
 ### Version Mismatch
 
@@ -235,33 +181,14 @@ yarn yarn-binary:download
 - **No external downloads** - CI/CD uses committed files only
 - **Version pinning** - Exact versions specified in package.json
 
-## Migration from Old System
+## Native Corepack Commands
 
-If migrating from the old binary management system:
+For reference, the underlying corepack commands being used:
 
-1. **Remove old files**:
+```bash
+# Pack (download) yarn version from package.json to specific location
+corepack pack -o .yarn/yarn-corepack.tgz
 
-   ```bash
-   rm -rf .yarn/releases/
-   rm .yarn/yarn-config.json
-   ```
-
-2. **Download new format**:
-
-   ```bash
-   yarn yarn-binary:download
-   ```
-
-3. **Commit new tarballs**:
-
-   ```bash
-   git add .yarn/*-corepack.tgz
-   git commit -m "Migrate to corepack-based yarn management"
-   ```
-
-4. **Update CI/CD** to use `yarn yarn-binary:hydrate`
-
-## Summary
-
-The Corepack-based yarn management system provides a clean, native approach to version management with minimal configuration and maximum reliability for CI/CD environments.
-It can also be used to bump up the Yarn version and test it locally first.
+# Hydrate (activate) from a tarball
+corepack hydrate .yarn/yarn-corepack.tgz --activate
+```
