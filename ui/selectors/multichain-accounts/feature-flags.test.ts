@@ -72,13 +72,13 @@ describe('Multichain Accounts Feature Flags', () => {
   });
 
   describe('getIsMultichainAccountsState2Enabled', () => {
-    it.skip('returns false for disabled state', () => {
+    it('returns false for disabled state', () => {
       expect(
         getIsMultichainAccountsState2Enabled(getMockState(disabledStateMock)),
       ).toBe(false);
     });
 
-    it.skip('returns false for state 1', () => {
+    it('returns false for state 1', () => {
       expect(
         getIsMultichainAccountsState2Enabled(getMockState(state1Mock)),
       ).toBe(false);
