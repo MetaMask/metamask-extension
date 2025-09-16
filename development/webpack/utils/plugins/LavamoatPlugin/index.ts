@@ -2,7 +2,6 @@ import { join } from 'node:path';
 import type { WebpackPluginInstance, RuleSetRule, Chunk } from 'webpack';
 import LavamoatPlugin, {
   exclude as LavamoatExcludeLoader,
-  // @ts-expect-error - types are broken due to git install
 } from '@lavamoat/webpack';
 import type { Args } from '../../cli';
 
@@ -91,6 +90,7 @@ export const lavamoatPlugin = (args: Args) =>
         'AbortController',
         'OffscreenCanvas', // Used by browser to generate notifications
         // globals chromedriver needs to function
+        // @ts-expect-error - regex is missing from the types
         /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
         'name',
         'performance',

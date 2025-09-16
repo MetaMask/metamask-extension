@@ -4882,19 +4882,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@git+https://github.com/LavaMoat/LavaMoat.git#head=tmp/webpack-alltogether-202509&workspace=@lavamoat/webpack":
-  version: 1.2.0
-  resolution: "@lavamoat/webpack@https://github.com/LavaMoat/LavaMoat.git#workspace=%40lavamoat%2Fwebpack&commit=3854f0c7efe0636e2e6330501909bb408d989425"
+"@lavamoat/types@npm:^0.0.0":
+  version: 0.0.0
+  resolution: "@lavamoat/types@npm:0.0.0"
+  dependencies:
+    "@babel/types": "npm:7.27.3"
+    type-fest: "npm:4.41.0"
+  checksum: 10/51e5bdb0827bd61063702e203de103ee442e146f1999f5cb7718ecab96f4abcf2a8cd29f538c39d78a03cd2b00c82a5c4c4d568b82ae923aeab24e8ec4680a8e
+  languageName: node
+  linkType: hard
+
+"@lavamoat/webpack@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@lavamoat/webpack@npm:1.3.0"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^4.3.4"
+    "@lavamoat/types": "npm:^0.0.0"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^16.5.1"
+    lavamoat-core: "npm:^16.6.0"
     ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/9864b837c5d77cb36a36babf7505de5ee06a054366cf6cd5f469c572feea9aa61e629a7439d4943e58b837eb847ba41a5e771b9e4934a19bd781c2fdda9f7813
+  checksum: 10/b6aefce735a0acd456bd35e4171888dc7910b49a9b70ee07e5681ea8617e593dad6b70e6b40b790e5887246cd64e750e70cc763ba22e9f7e4ef5464c4c62318e
   languageName: node
   linkType: hard
 
@@ -30617,18 +30628,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.5.1":
-  version: 16.5.1
-  resolution: "lavamoat-core@npm:16.5.1"
+"lavamoat-core@npm:^16.6.0":
+  version: 16.6.0
+  resolution: "lavamoat-core@npm:16.6.0"
   dependencies:
     "@babel/types": "npm:7.27.3"
+    "@lavamoat/types": "npm:^0.0.0"
     json-stable-stringify: "npm:1.3.0"
     lavamoat-tofu: "npm:^8.0.8"
     merge-deep: "npm:3.0.3"
     ses: "npm:1.14.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/91f043b733902b1af02f5efa1862598c21f80fba14d531a276ff6017a6bf51b01dd9cee4cd241eee2279acf59847c220f473d364d1d88290f4e67a029dfb4a5a
+  checksum: 10/9fc55528e6615693e96455eed832cb4bb4c84ca05c2d3dd9dd02904b0c74f471af1cfec2587eb45cf0485778f3d08201cde42d3ae728a7aac4de085820aa1fa8
   languageName: node
   linkType: hard
 
@@ -31862,7 +31874,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.5"
     "@lavamoat/snow": "npm:^2.0.3"
-    "@lavamoat/webpack": "git+https://github.com/LavaMoat/LavaMoat.git#head=tmp/webpack-alltogether-202509&workspace=@lavamoat/webpack"
+    "@lavamoat/webpack": "npm:1.3.0"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
