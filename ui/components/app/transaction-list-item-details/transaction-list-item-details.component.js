@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Link } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
@@ -51,7 +52,6 @@ export default class TransactionListItemDetails extends PureComponent {
     senderNickname: PropTypes.string.isRequired,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
-    history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
@@ -66,7 +66,6 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup: { primaryTransaction },
       networkConfiguration,
       isCustomNetwork,
-      history,
       onClose,
       chainId,
     } = this.props;
@@ -87,7 +86,6 @@ export default class TransactionListItemDetails extends PureComponent {
 
     if (!rpcPrefs.blockExplorerUrl && isCustomNetwork) {
       onClose();
-      history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
@@ -171,7 +169,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { chainId, hash } = transaction;
 
     return (
-      <Popover title={title} onClose={onClose}>
+      <Popover title={title} onClose={onClose} centerTitle>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
             <div className="transaction-list-item-details__header-buttons">
@@ -208,7 +206,7 @@ export default class TransactionListItemDetails extends PureComponent {
           </div>
           <div className="transaction-list-item-details__header">
             <div
-              className="transaction-list-item-details__tx-status"
+              className="transaction-list-item-details__tx-status gap-1 h-auto"
               data-testid="transaction-list-item-details-tx-status"
             >
               <div>{t('status')}</div>
@@ -216,33 +214,32 @@ export default class TransactionListItemDetails extends PureComponent {
                 <TransactionStatus />
               </div>
             </div>
-            <div className="transaction-list-item-details__tx-hash">
-              <div>
-                <Button
-                  type="link"
-                  onClick={this.handleBlockExplorerClick}
+            <div className="transaction-list-item-details__tx-hash gap-1">
+              <Link
+                href={`${NETWORKS_ROUTE}#blockExplorerUrl`}
+                className="text-primary-default"
+                onClick={this.handleBlockExplorerClick}
+                disabled={!hash}
+              >
+                {blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                  ? t('addBlockExplorer')
+                  : t('viewOnBlockExplorer')}
+              </Link>
+
+              <Tooltip
+                wrapperClassName="transaction-list-item-details__header-button"
+                containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                title={justCopied ? t('copiedExclamation') : null}
+              >
+                <button
+                  type="button"
+                  className="text-primary-default"
+                  onClick={this.handleCopyTxId}
                   disabled={!hash}
                 >
-                  {blockExplorerLinkText.firstPart === 'addBlockExplorer'
-                    ? t('addBlockExplorer')
-                    : t('viewOnBlockExplorer')}
-                </Button>
-              </div>
-              <div>
-                <Tooltip
-                  wrapperClassName="transaction-list-item-details__header-button"
-                  containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                  title={justCopied ? t('copiedExclamation') : null}
-                >
-                  <Button
-                    type="link"
-                    onClick={this.handleCopyTxId}
-                    disabled={!hash}
-                  >
-                    {t('copyTransactionId')}
-                  </Button>
-                </Tooltip>
-              </div>
+                  {t('copyTransactionId')}
+                </button>
+              </Tooltip>
             </div>
           </div>
           <div className="transaction-list-item-details__body">

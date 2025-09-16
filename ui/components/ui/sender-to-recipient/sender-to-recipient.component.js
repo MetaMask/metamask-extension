@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -10,7 +11,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Name from '../../app/name/name';
 import { Icon, IconName } from '../../component-library';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
-import Identicon from '../identicon';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import Tooltip from '../tooltip';
 import {
   CARDS_VARIANT,
@@ -48,9 +49,7 @@ function SenderAddress({
   }
   return (
     <div
-      className={classnames(
-        'sender-to-recipient__party sender-to-recipient__party--sender',
-      )}
+      className="sender-to-recipient__party sender-to-recipient__party--sender gap-1"
       onClick={() => {
         setAddressCopied(true);
         copyToClipboard(checksummedSenderAddress, COPY_OPTIONS);
@@ -59,12 +58,10 @@ function SenderAddress({
         }
       }}
     >
-      <div className="sender-to-recipient__sender-icon">
-        <Identicon
-          address={toChecksumHexAddress(senderAddress)}
-          diameter={24}
-        />
-      </div>
+      <PreferredAvatar
+        address={toChecksumHexAddress(senderAddress)}
+        size={AvatarAccountSize.Sm}
+      />
       <Tooltip
         position="bottom"
         html={tooltipHtml}
