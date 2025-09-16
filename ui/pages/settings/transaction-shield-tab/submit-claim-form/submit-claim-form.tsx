@@ -16,6 +16,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -176,7 +177,10 @@ const SubmitClaimForm = () => {
         helpText={
           errors.email ? errors.email.msg : t('shieldClaimEmailHelpText')
         }
-        helpTextProps={{ 'data-testid': 'shield-claim-help-text' }}
+        helpTextProps={{
+          'data-testid': 'shield-claim-help-text',
+          color: TextColor.textAlternativeSoft,
+        }}
         id="email"
         name="email"
         size={FormTextFieldSize.Lg}
@@ -190,6 +194,9 @@ const SubmitClaimForm = () => {
         label={`${t('shieldClaimLossAmount')}*`}
         placeholder="10,000 USDT"
         helpText={t('shieldClaimLossAmountHelpText')}
+        helpTextProps={{
+          color: TextColor.textAlternativeSoft,
+        }}
         id="loss-amount"
         name="loss-amount"
         size={FormTextFieldSize.Lg}
@@ -206,6 +213,7 @@ const SubmitClaimForm = () => {
         }}
         helpTextProps={{
           'data-testid': 'shield-claim-impacted-wallet-address-help-text',
+          color: TextColor.textAlternativeSoft,
         }}
         helpText={
           errors.impactedWalletAddress
@@ -225,7 +233,10 @@ const SubmitClaimForm = () => {
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
         helpText={
-          <Text variant={TextVariant.inherit}>
+          <Text
+            variant={TextVariant.inherit}
+            color={TextColor.textAlternativeSoft}
+          >
             {t('shieldClaimImpactedTxHashHelpText')}{' '}
             <ButtonLink size={ButtonLinkSize.Inherit} externalLink href="#">
               {t('shieldClaimImpactedTxHashHelpTextLink')}
@@ -248,6 +259,7 @@ const SubmitClaimForm = () => {
         }}
         helpTextProps={{
           'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
+          color: TextColor.textAlternativeSoft,
         }}
         helpText={
           errors.reimbursementWalletAddress
