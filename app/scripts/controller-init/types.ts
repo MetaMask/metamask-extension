@@ -14,7 +14,6 @@ import { Browser } from 'webextension-polyfill';
 import { ExportableKeyEncryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
 import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
-import { TrezorConnectBridge } from '@metamask/eth-trezor-keyring';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
