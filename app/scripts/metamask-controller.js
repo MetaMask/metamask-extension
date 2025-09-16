@@ -183,7 +183,6 @@ import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
-  NETWORK_TYPES,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
   getFailoverUrlsForInfuraNetwork,
@@ -276,7 +275,6 @@ import {
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
-import AccountTrackerController from './controllers/account-tracker-controller';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
@@ -295,7 +293,6 @@ import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { PreferencesController } from './controllers/preferences-controller';
 import { AppStateController } from './controllers/app-state-controller';
 import { AlertController } from './controllers/alert-controller';
-import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import SwapsController from './controllers/swaps';
@@ -437,6 +434,8 @@ import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-co
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
 import { SubscriptionControllerInit } from './controller-init/subscription';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
+import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
+import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -920,17 +919,6 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    const onboardingControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'OnboardingController',
-        allowedActions: [],
-        allowedEvents: [],
-      });
-    this.onboardingController = new OnboardingController({
-      messenger: onboardingControllerMessenger,
-      state: initState.OnboardingController,
-    });
-
     const keyringOverrides = this.opts.overrides?.keyrings;
 
     const additionalKeyrings = [
@@ -1132,36 +1120,6 @@ export default class MetamaskController extends EventEmitter {
       withSnapKeyring,
     });
 
-    // account tracker watches balances, nonces, and any code at their address
-    this.accountTrackerController = new AccountTrackerController({
-      state: { accounts: {} },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AccountTrackerController',
-        allowedActions: [
-          'AccountsController:getSelectedAccount',
-          'NetworkController:getState',
-          'NetworkController:getNetworkClientById',
-          'OnboardingController:getState',
-          'PreferencesController:getState',
-        ],
-        allowedEvents: [
-          'AccountsController:selectedEvmAccountChange',
-          'OnboardingController:stateChange',
-          'KeyringController:accountRemoved',
-        ],
-      }),
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-      getNetworkIdentifier: (providerConfig) => {
-        const { type, rpcUrl } =
-          providerConfig ??
-          getProviderConfig({
-            metamask: this.networkController.state,
-          });
-        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-      },
-    });
-
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       const { completedOnboarding } = this.onboardingController.state;
@@ -1171,41 +1129,6 @@ export default class MetamaskController extends EventEmitter {
         this.stopNetworkRequests();
       }
     });
-
-    this.controllerMessenger.subscribe(
-      `${this.onboardingController.name}:stateChange`,
-      previousValueComparator(async (prevState, currState) => {
-        const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const {
-          completedOnboarding: currCompletedOnboarding,
-          firstTimeFlowType,
-        } = currState;
-        if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          const { address } = this.accountsController.getSelectedAccount();
-
-          if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          }
-
-          if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-            // importing multiple SRPs on social login rehydration
-            await this._importAccountsWithBalances();
-          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts();
-          } else {
-            await this._addAccountsWithBalance();
-          }
-
-          this.postOnboardingInitialization();
-          this.triggerNetworkrequests();
-
-          // execute once the token detection on the post-onboarding
-          await this.tokenDetectionController.detectTokens({
-            selectedAddress: address,
-          });
-        }
-      }, this.onboardingController.state),
-    );
 
     const addressBookControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1623,7 +1546,6 @@ export default class MetamaskController extends EventEmitter {
     const existingControllers = [
       this.networkController,
       this.preferencesController,
-      this.onboardingController,
       this.keyringController,
       this.accountsController,
     ];
@@ -1643,6 +1565,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
+      OnboardingController: OnboardingControllerInit,
+      AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       NftController: NftControllerInit,
@@ -1710,6 +1634,8 @@ export default class MetamaskController extends EventEmitter {
     this.snapInterfaceController = controllersByName.SnapInterfaceController;
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
+    this.onboardingController = controllersByName.OnboardingController;
+    this.accountTrackerController = controllersByName.AccountTrackerController;
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
       controllersByName.SmartTransactionsController;
@@ -1876,6 +1802,41 @@ export default class MetamaskController extends EventEmitter {
           }
         }
       },
+    );
+
+    this.controllerMessenger.subscribe(
+      `OnboardingController:stateChange`,
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const {
+          completedOnboarding: currCompletedOnboarding,
+          firstTimeFlowType,
+        } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          const { address } = this.accountsController.getSelectedAccount();
+
+          if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+          }
+
+          if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+            // importing multiple SRPs on social login rehydration
+            await this._importAccountsWithBalances();
+          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.discoverAndCreateAccounts();
+          } else {
+            await this._addAccountsWithBalance();
+          }
+
+          this.postOnboardingInitialization();
+          this.triggerNetworkrequests();
+
+          // execute once the token detection on the post-onboarding
+          await this.tokenDetectionController.detectTokens({
+            selectedAddress: address,
+          });
+        }
+      }, this.onboardingController.state),
     );
 
     const getAccounts = ({ origin: innerOrigin }) => {
