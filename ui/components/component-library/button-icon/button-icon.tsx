@@ -51,6 +51,9 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
       className: classnames(
         'mm-button-icon inline-flex items-center justify-center rounded-lg transition-all hover:text-inherit',
         `mm-button-icon--size-${String(size)}`,
+        {
+          'mm-button-icon--disabled': Boolean(disabled),
+        },
         className,
       ),
       color,
