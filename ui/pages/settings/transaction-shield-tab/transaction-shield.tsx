@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
-  PAYMENT_TYPES,
   Product,
   PRODUCT_TYPES,
   ProductType,
@@ -46,6 +45,7 @@ import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
 import { getTabsAPI } from '../../../../shared/lib/oauth';
 import CancelMembershipModal from './cancel-membership-modal';
+import { isCryptoPaymentMethod } from './types';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -64,7 +64,8 @@ const TransactionShield = () => {
     [shieldSubscription],
   );
   const isCryptoPayment =
-    shieldSubscription?.paymentMethod.type === PAYMENT_TYPES.byCrypto;
+    shieldSubscription?.paymentMethod &&
+    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
 
   const [executeCancelSubscription, cancelSubscriptionResult] =
     useCancelSubscription({
@@ -370,12 +371,14 @@ const TransactionShield = () => {
               {isCryptoPayment &&
                 billingDetails(
                   t('shieldTxMembershipBillingDetailsBillingAccount'),
-                  shieldSubscription.paymentMethod.crypto?.payerAddress || '',
+                  isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+                    ? shieldSubscription.paymentMethod.crypto.payerAddress // payer address for crypto payment method
+                    : `${shieldSubscription.paymentMethod.card.brand} - ${shieldSubscription.paymentMethod.card.last4}`, // display card info for card payment method
                 )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
-                isCryptoPayment
-                  ? shieldSubscription.paymentMethod.crypto?.tokenSymbol || ''
+                isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+                  ? shieldSubscription.paymentMethod.crypto.tokenSymbol
                   : productInfo?.currency.toUpperCase() || '',
               )}
             </>
