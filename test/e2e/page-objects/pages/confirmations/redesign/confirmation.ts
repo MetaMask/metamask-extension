@@ -139,6 +139,13 @@ class Confirmation {
     }
   }
 
+  async clickRejectAllButtonWithoutWaiting(): Promise<void> {
+    console.log(
+      'Clicking reject all button without waiting for window to close',
+    );
+    await this.driver.clickElement(this.rejectAllButton);
+  }
+
   async clickRejectAll(): Promise<void> {
     await this.driver.clickElementAndWaitForWindowToClose(this.rejectAllButton);
   }

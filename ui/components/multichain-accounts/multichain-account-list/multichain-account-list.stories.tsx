@@ -16,7 +16,7 @@ const mockSelectedAccountGroup = mockState.metamask.accountTree
 const defaultArgs: MultichainAccountListProps = {
   wallets: mockState.metamask.accountTree
     .wallets as unknown as AccountTreeWallets,
-  selectedAccountGroup: mockSelectedAccountGroup,
+  selectedAccountGroups: [mockSelectedAccountGroup],
 };
 
 const store = configureStore({
@@ -52,6 +52,22 @@ Default.parameters = {
     description: {
       story:
         'Default state of MultichainAccountList showing various wallets and their accounts.',
+    },
+  },
+};
+
+export const WithCheckboxes: Story = {
+  args: {
+    ...defaultArgs,
+    showAccountCheckbox: true,
+  },
+};
+
+WithCheckboxes.parameters = {
+  docs: {
+    description: {
+      story:
+        'MultichainAccountList with checkboxes enabled for account selection. Checkboxes appear as start accessories on each account row.',
     },
   },
 };
