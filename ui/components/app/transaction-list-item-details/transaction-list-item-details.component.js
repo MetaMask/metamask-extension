@@ -169,7 +169,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { chainId, hash } = transaction;
 
     return (
-      <Popover title={title} onClose={onClose} centerTitle>
+      <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
             <div className="transaction-list-item-details__header-buttons">

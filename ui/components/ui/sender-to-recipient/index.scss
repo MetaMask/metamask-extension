@@ -32,12 +32,10 @@
         border-bottom: 1px solid var(--color-border-muted);
 
         &--sender {
-          padding-right: 30px;
           cursor: pointer;
         }
 
         &--recipient {
-          padding-left: 30px;
           border-left: 1px solid var(--color-border-muted);
 
           &-with-address {
