@@ -248,7 +248,7 @@ const controllerMetadata = {
   },
   isSocialLoginFlowEnabledForMetrics: {
     persist: true,
-    anonymous: false,
+    anonymous: true,
   },
 };
 
