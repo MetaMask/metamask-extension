@@ -10,7 +10,7 @@ import { useRecipientSelectionMetrics } from './useRecipientSelectionMetrics';
 const mockTrackEvent = jest.fn();
 
 const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
+  <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
     {children}
   </MetaMetricsContext.Provider>
 );

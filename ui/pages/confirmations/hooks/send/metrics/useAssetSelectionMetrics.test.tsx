@@ -32,7 +32,7 @@ jest.mock('../useSendAssets');
 jest.mock('../useSendType');
 
 const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
+  <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
     {children}
   </MetaMetricsContext.Provider>
 );

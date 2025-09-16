@@ -45,7 +45,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
   hideAllToasts = () => undefined,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
