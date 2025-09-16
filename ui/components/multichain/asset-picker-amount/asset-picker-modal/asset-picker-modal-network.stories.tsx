@@ -40,7 +40,7 @@ const networks: NetworkConfiguration[] = [
         type: RpcEndpointType.Custom as const,
       },
     ],
-    name: 'OP',
+    name: 'OP Mainnet',
   },
   {
     chainId: CHAIN_IDS.BSC,

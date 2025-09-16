@@ -49,7 +49,7 @@ export default {
     },
   },
   args: {
-    name: 'Arbitrum',
+    name: 'Arbitrum One',
     src: './images/arbitrum.svg',
     size: AvatarNetworkSize.Md,
     showHalo: false,

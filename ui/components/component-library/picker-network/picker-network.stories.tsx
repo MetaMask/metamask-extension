@@ -50,13 +50,13 @@ export const Label: StoryFn<typeof PickerNetwork> = (args) => (
     gap={2}
   >
     <PickerNetwork {...args} />
-    <PickerNetwork {...args} src="" label="Arbitrum" />
-    <PickerNetwork {...args} src="" label="Polygon" />
+    <PickerNetwork {...args} src="" label="Arbitrum One" />
+    <PickerNetwork {...args} src="" label="Polygon Mainnet" />
     <PickerNetwork {...args} src="" label="Optimism" />
     <PickerNetwork
       {...args}
       src=""
-      label="BNB Smart Chain (previously BNB Chain)"
+      label="BNB Smart Chain (previously Binance Smart Chain Mainnet)"
       style={{ maxWidth: '200px' }}
     />
   </Box>
@@ -68,8 +68,12 @@ export const Src: StoryFn<typeof PickerNetwork> = (args) => (
     flexDirection={FlexDirection.Column}
     gap={2}
   >
-    <PickerNetwork {...args} label="Arbitrum" src="./images/arbitrum.svg" />
-    <PickerNetwork {...args} label="Polygon" src="./images/pol-token.svg" />
+    <PickerNetwork {...args} label="Arbitrum One" src="./images/arbitrum.svg" />
+    <PickerNetwork
+      {...args}
+      label="Polygon Mainnet"
+      src="./images/pol-token.svg"
+    />
     <PickerNetwork {...args} label="Optimism" src="./images/optimism.svg" />
   </Box>
 );
@@ -83,7 +87,7 @@ export const Width: StoryFn<typeof PickerNetwork> = (args) => (
 
 export const AvatarGroupProps: StoryFn<typeof PickerNetwork> = () => (
   <PickerNetwork
-    label="Arbitrum"
+    label="Arbitrum One"
     src="./images/arbitrum.svg"
     avatarGroupProps={{
       limit: 2,

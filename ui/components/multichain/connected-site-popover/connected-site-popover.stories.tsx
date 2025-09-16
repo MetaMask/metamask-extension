@@ -17,7 +17,7 @@ export default {
   args: {
     isOpen: true,
     networkImageUrl: './images/eth_logo.svg',
-    networkName: 'Avalanche',
+    networkName: 'Avalanche Network C-Chain',
   },
 };
 
