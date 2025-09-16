@@ -198,9 +198,9 @@ async function getAlerts(pendingApproval, data) {
       !data.matchedChain.rpc
         ?.map((rpc) => new URL(rpc).origin)
         .includes(origin) &&
-      NETWORKS_BYPASSING_VALIDATION[
+      !NETWORKS_BYPASSING_VALIDATION[
         pendingApproval.requestData.chainId
-      ]?.rpcUrl.includes(origin) === false
+      ]?.rpcUrl?.includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }

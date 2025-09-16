@@ -275,6 +275,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   XRPLEVM_TESTNET: '0x161c28',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
+  HYPE: '0x3e7',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -518,6 +519,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   WETHIO: 'ZYN',
   CHZ: 'CHZ',
+  HYPE: 'HYPE',
 };
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -963,6 +965,11 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION = {
   [CHAINLIST_CHAIN_IDS_MAP.WETHIO]: [
     {
       currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+    },
+  ],
+  [CHAINLIST_CHAIN_IDS_MAP.HYPE]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.HYPE,
     },
   ],
 };

@@ -13,11 +13,12 @@ import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
-import { ApprovalType, NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
-  CHAIN_SPEC_URL,
-} from '../../../../shared/constants/network';
+  ApprovalType,
+  NETWORKS_BYPASSING_VALIDATION,
+} from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -401,9 +402,9 @@ export default function ConfirmationPage({
           setProviderError(null);
 
           const isWhitelistedSymbol =
-          NETWORKS_BYPASSING_VALIDATION[
+            NETWORKS_BYPASSING_VALIDATION[
               _pendingConfirmation.requestData.chainId
-            ].symbol?.toLowerCase() ===
+            ]?.symbol?.toLowerCase() ===
             _pendingConfirmation.requestData.ticker?.toLowerCase();
 
           if (
