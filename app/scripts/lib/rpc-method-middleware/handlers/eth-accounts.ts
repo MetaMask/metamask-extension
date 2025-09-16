@@ -14,7 +14,7 @@ import { HandlerWrapper } from './types';
 
 type EthAccountsHandlerOptions = {
   getAccounts: () => string[];
-  handleHyperliquidReferral?: (req: JsonRpcRequest & { origin: string; tabId: number }) => Promise<void>;
+  handleHyperliquidReferral: (req: JsonRpcRequest) => Promise<void>;
 };
 
 type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
@@ -23,7 +23,7 @@ type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
     res: PendingJsonRpcResponse<string[]>,
     _next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
-    { getAccounts }: EthAccountsHandlerOptions,
+    { getAccounts, handleHyperliquidReferral }: EthAccountsHandlerOptions,
   ) => Promise<void>;
 } & HandlerWrapper;
 
@@ -35,7 +35,7 @@ const ethAccounts = {
   implementation: ethAccountsHandler,
   hookNames: {
     getAccounts: true,
-    handleHyperliquidReferral: false, // Optional hook - only provided by createEthAccountsMethodMiddleware
+    handleHyperliquidReferral: true,
   },
 } satisfies EthAccountsConstraint;
 export default ethAccounts;
@@ -62,9 +62,8 @@ async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
   }: EthAccountsHandlerOptions,
 ): Promise<void> {
 
-  // Handle Hyperliquid referral consent flow if needed
   if (handleHyperliquidReferral) {
-    await handleHyperliquidReferral(req as JsonRpcRequest & { origin: string; tabId: number });
+    await handleHyperliquidReferral(req);
   }
 
   res.result = getAccounts();

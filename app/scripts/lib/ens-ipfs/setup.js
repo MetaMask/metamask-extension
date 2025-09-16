@@ -15,7 +15,7 @@ export default function setupEnsIpfsResolver({
   getIpfsGateway,
   getUseAddressBarEnsResolution,
 }) {
-  // install ENS listener
+  // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
   browser.webRequest.onErrorOccurred.addListener(webRequestDidFail, {
     urls: urlPatterns,
@@ -24,6 +24,7 @@ export default function setupEnsIpfsResolver({
 
   // return api object
   return {
+    // uninstall listener
     remove() {
       browser.webRequest.onErrorOccurred.removeListener(webRequestDidFail);
     },

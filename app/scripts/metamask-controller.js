@@ -6383,7 +6383,6 @@ export default class MetamaskController extends EventEmitter {
     const { origin, tabId } = req;
     const HYPERLIQUID_ORIGIN = 'https://app.hyperliquid.xyz';
 
-    // Only handle Hyperliquid origin
     if (origin !== HYPERLIQUID_ORIGIN) {
       return;
     }
