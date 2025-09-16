@@ -30,22 +30,11 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
       },
     });
 
-    const startTime = Date.now();
-
-    try {
-      // Trigger multichain wallet alignment
-      await alignMultichainWallets();
-    } catch (error) {
-      console.error('Failed to align multichain wallets:', error);
-      // Continue even if alignment fails
-    }
-
-    // Ensure minimum 2 seconds loading time
-    const elapsedTime = Date.now() - startTime;
-    const remainingTime = Math.max(0, 2000 - elapsedTime);
-    if (remainingTime > 0) {
-      await new Promise((resolve) => setTimeout(resolve, remainingTime));
-    }
+    // Trigger wallet alignment with minimum 2 second UX feedback
+    await Promise.all([
+      alignMultichainWallets(),
+      new Promise((resolve) => setTimeout(resolve, 2000)),
+    ]);
 
     // Mark modal as shown so it doesn't show again
     dispatch(setMultichainIntroModalShown(true));
