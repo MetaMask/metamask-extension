@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
 import {
   Box,
+  BoxBackgroundColor,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   Checkbox,
-  Text,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
   FontWeight,
-  JustifyContent,
+  Text,
+  TextAlign,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { HYPERLIQUID_REFERRAL_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 
@@ -49,7 +45,7 @@ const HyperliquidImage: React.FC = () => {
     <img
       src="./images/hyperliquid-referral.png"
       alt="Hyperliquid referral image"
-      width={BlockSize.Full}
+      width="full"
     />
   );
 };
@@ -72,63 +68,49 @@ export const HyperliquidReferralConsent: React.FC<
   };
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      height={BlockSize.Full}
-    >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        paddingBottom={6}
-      >
+    <Box flexDirection={BoxFlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="mb-6">
         <Text
-          variant={TextVariant.headingMd}
+          textAlign={TextAlign.Center}
+          variant={TextVariant.HeadingMd}
           fontWeight={FontWeight.Bold}
-          paddingBottom={4}
         >
           {t('hyperliquidReferralTitle')}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('hyperliquidReferralSubtitle')}{' '}
           <HyperliquidLink text={t('learnMoreUpperCase')} />
         </Text>
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.spaceBetween}
-        height={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Between}
       >
-        <Box paddingBottom={4}>
+        <Box paddingBottom={6}>
           <HyperliquidImage />
         </Box>
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box flexDirection={BoxFlexDirection.Column} gap={4}>
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.flexStart}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Start}
             padding={3}
-            backgroundColor={BackgroundColor.backgroundSection}
-            borderRadius={BorderRadius.MD}
+            backgroundColor={BoxBackgroundColor.BackgroundSection}
+            gap={3}
+            className="rounded-lg"
           >
             <Checkbox
               id="hyperliquid-referral-consent"
-              isChecked={isChecked}
+              isSelected={isChecked}
               onChange={handleCheckboxClick}
-              marginRight={2}
             />
             <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              marginLeft={1}
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
             >
               {t('hyperliquidReferralCheckboxLabel')}
             </Text>
           </Box>
-          <Button onClick={handleSubmit} marginTop={4}>
-            {t('confirm')}
-          </Button>
+          <Button onClick={handleSubmit}>{t('confirm')}</Button>
         </Box>
       </Box>
     </Box>
