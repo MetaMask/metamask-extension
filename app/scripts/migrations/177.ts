@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 178;
+export const version = 177;
 
 export const CHAINS_TO_RENAME: {
   readonly id: string;

@@ -1,6 +1,6 @@
-import { migrate, version, CHAINS_TO_RENAME } from './178';
+import { migrate, version, CHAINS_TO_RENAME } from './177';
 
-const oldVersion = 177;
+const oldVersion = 176;
 
 type NetworkConfig = Record<string, { chainId: string; name: string }>;
 // Create network configurations based on CHAINS_TO_RENAME data
