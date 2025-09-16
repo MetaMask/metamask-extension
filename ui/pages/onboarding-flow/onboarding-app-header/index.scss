@@ -2,6 +2,7 @@
 
 .onboarding-app-header {
   position: relative;
+  z-index: design-system.$onboarding-app-header-z-index;
   flex-flow: column nowrap;
   flex: 0 0 auto;
 
