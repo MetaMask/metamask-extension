@@ -36,9 +36,7 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('SubscriptionControllerInit', () => {
-  const SubscriptionControllerClassMock = jest.mocked(
-    SubscriptionController,
-  );
+  const SubscriptionControllerClassMock = jest.mocked(SubscriptionController);
 
   beforeAll(() => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
@@ -50,15 +48,14 @@ describe('SubscriptionControllerInit', () => {
 
   it('should return controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(
-      SubscriptionControllerInit(requestMock).controller,
-    ).toBeInstanceOf(SubscriptionController);
+    expect(SubscriptionControllerInit(requestMock).controller).toBeInstanceOf(
+      SubscriptionController,
+    );
   });
 
   it('initializes with correct messenger and state', () => {
     const requestMock = buildInitRequestMock();
     SubscriptionControllerInit(requestMock);
-
 
     expect(SubscriptionControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,

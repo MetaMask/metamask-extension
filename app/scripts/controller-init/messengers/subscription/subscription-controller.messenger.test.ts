@@ -1,6 +1,9 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 
-import { getSubscriptionControllerMessenger, getSubscriptionControllerInitMessenger } from './subscription-controller-messenger';
+import {
+  getSubscriptionControllerMessenger,
+  getSubscriptionControllerInitMessenger,
+} from './subscription-controller-messenger';
 
 describe('getSubscriptionControllerMessenger', () => {
   it('returns a restricted messenger', () => {
@@ -8,9 +11,7 @@ describe('getSubscriptionControllerMessenger', () => {
     const subscriptionControllerMessenger =
       getSubscriptionControllerMessenger(messenger);
 
-    expect(subscriptionControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(subscriptionControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
 });
 
