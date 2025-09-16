@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,12 +23,16 @@ import {
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
-import { ContainerMaxWidth, Label } from '../../components/component-library';
+import {
+  ButtonLink,
+  ContainerMaxWidth,
+  Label,
+} from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
-import { VALID } from '../../../shared/lib/deep-links/verify';
+import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 
 type TranslateFunction = (
   key: string,
@@ -42,6 +46,13 @@ type Route = {
 
 const { getExtensionURL } = globalThis.platform;
 
+/**
+ * Sets the description and title state for a 404 error.
+ *
+ * @param setDescription - The function to call to set the description state.
+ * @param setTitle - The function to call to set the title state.
+ * @param t - The translation function.
+ */
 function set404(
   setDescription: React.Dispatch<React.SetStateAction<string | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
@@ -57,26 +68,33 @@ function set404(
  *
  * @param urlPathAndQuery - The URL path and query string to parse. (relative to its origin, i.e., /home?utm_source=foo)
  * @param setDescription - The function to call to set the description state.
+ * @param setExtraDescription - The function to call to set the extra description state.
  * @param setIsLoading - The function to call to set the loading state.
  * @param setRoute - The function to call to set the route state.
  * @param setTitle - The function to call to set the title state.
  * @param setCta - The function to call to set the call-to-action state.
  * @param t - The translation function.
+ * @param abortController
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
   setDescription: React.Dispatch<React.SetStateAction<string | null>>,
+  setExtraDescription: React.Dispatch<React.SetStateAction<string | null>>,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setRoute: React.Dispatch<React.SetStateAction<Route | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
   setCta: React.Dispatch<React.SetStateAction<string | null>>,
   t: TranslateFunction,
+  abortController: AbortController,
 ) {
   try {
     const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
     const url = new URL(fullUrlStr);
     setIsLoading(true);
     const parsed = await parse(url);
+    if (abortController.signal.aborted) {
+      return;
+    }
     if (parsed) {
       const { destination } = parsed;
 
@@ -95,6 +113,7 @@ async function updateStateFromUrl(
         ? continueMessage
         : t('deepLink_ThirdPartyDescription', [continueMessage]);
       setDescription(description);
+      setExtraDescription(null);
       setRoute({ href, signed });
       setTitle(
         signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
@@ -104,10 +123,29 @@ async function updateStateFromUrl(
       setRoute(null);
       set404(setDescription, setTitle, t);
       setCta(t('deepLink_GoToTheHomePageButton'));
+
+      const signature = await verify(url);
+      if (abortController.signal.aborted) {
+        return;
+      }
+      if (signature === VALID) {
+        setExtraDescription(
+          t('deepLink_Error404_CTA', [
+            <ButtonLink
+              key="update-metamask-link"
+              as="a"
+              href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+            >
+              {t('deepLink_Error404_CTA_LinkText')}
+            </ButtonLink>,
+          ]),
+        );
+      }
     }
   } catch (e) {
     log.error('Error parsing deep link:', e);
     setDescription(t('deepLink_ErrorOtherDescription'));
+    setExtraDescription(null);
     setRoute(null);
     setTitle(t('deepLink_ErrorOtherTitle'));
     setCta(t('deepLink_GoToTheHomePageButton'));
@@ -130,6 +168,7 @@ export const DeepLink = () => {
   );
 
   const [description, setDescription] = useState<string | null>(null);
+  const [extraDescription, setExtraDescription] = useState<string | null>(null);
   const [route, setRoute] = useState<null | Route>(null);
   const [title, setTitle] = useState<null | string>(null);
   const [cta, setCta] = useState<null | string>(null);
@@ -137,33 +176,94 @@ export const DeepLink = () => {
     useState(skipDeepLinkInterstitial);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const urlStr = params.get('u');
-    if (!urlStr) {
-      const errorCode = params.get('errorCode');
-      setRoute(null);
-      setIsLoading(false);
-      if (errorCode === '404') {
-        set404(setDescription, setTitle, t);
-      } else {
-        setDescription(null);
-        setTitle(t('deepLink_ErrorMissingUrl'));
-      }
-      setCta(t('deepLink_GoToTheHomePageButton'));
-      return;
-    }
+  // Use ref to track current abort controller
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-    updateStateFromUrl(
-      urlStr,
-      setDescription,
-      setIsLoading,
-      setRoute,
-      setTitle,
-      setCta,
-      t,
-    );
-  }, [location.search]);
+  useEffect(() => {
+    // Cancel any previous operation
+    abortControllerRef.current?.abort();
+
+    // Create new abort controller for this operation
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const processDeepLink = async () => {
+      const params = new URLSearchParams(location.search);
+      const urlStr = params.get('u');
+      const errorCode = params.get('errorCode');
+
+      if (!urlStr || errorCode) {
+        setRoute(null);
+        setIsLoading(false);
+        if (errorCode === '404') {
+          set404(setDescription, setTitle, t);
+
+          if (urlStr) {
+            try {
+              const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
+              const url = new URL(fullUrlStr);
+              const signature = await verify(url);
+
+              // Check if aborted after async operation
+              if (abortController.signal.aborted) {
+                return;
+              }
+
+              if (signature === VALID) {
+                setExtraDescription(
+                  t('deepLink_Error404_CTA', [
+                    <ButtonLink
+                      key="update-metamask-link"
+                      as="a"
+                      href="https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+                    >
+                      {t('deepLink_Error404_CTA_LinkText')}
+                    </ButtonLink>,
+                  ]),
+                );
+              } else {
+                setExtraDescription(null);
+              }
+            } catch (e) {
+              // probably a gibberish url, ignore
+              if (abortController.signal.aborted) {
+                return;
+              }
+              setExtraDescription(null);
+            }
+          } else {
+            setExtraDescription(null);
+          }
+        } else {
+          setDescription(null);
+          setExtraDescription(null);
+          setTitle(t('deepLink_ErrorMissingUrl'));
+        }
+        setCta(t('deepLink_GoToTheHomePageButton'));
+        return;
+      }
+
+      await updateStateFromUrl(
+        urlStr,
+        setDescription,
+        setExtraDescription,
+        setIsLoading,
+        setRoute,
+        setTitle,
+        setCta,
+        t,
+        abortController,
+      );
+    };
+
+    processDeepLink();
+
+    // Cleanup function
+    return () => abortController.abort();
+  }, [location.search, t]);
+
+  // Cleanup on unmount
+  useEffect(() => () => abortControllerRef.current?.abort(), []);
 
   function onRemindMeStateChanged() {
     const newValue = !skipDeepLinkInterstitialChecked;
@@ -206,11 +306,20 @@ export const DeepLink = () => {
             )}
             {description && (
               <Box
-                as="p"
+                as="div"
                 data-testid="deep-link-description"
                 paddingBottom={12}
               >
-                {description}
+                <Box as="div" key="description">
+                  {description}
+                </Box>
+                {extraDescription ? (
+                  <Box key="extra-description" paddingTop={4}>
+                    {extraDescription}
+                  </Box>
+                ) : (
+                  ''
+                )}
               </Box>
             )}
 

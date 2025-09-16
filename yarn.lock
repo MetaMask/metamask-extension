@@ -5293,22 +5293,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^0.13.1":
-  version: 0.13.1
-  resolution: "@metamask/account-tree-controller@npm:0.13.1"
+"@metamask/account-tree-controller@npm:^0.15.1":
+  version: 0.15.1
+  resolution: "@metamask/account-tree-controller@npm:0.15.1"
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.4.2"
+    fast-deep-equal: "npm:^3.1.3"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/account-api": ^0.9.0
+    "@metamask/account-api": ^0.12.0
     "@metamask/accounts-controller": ^33.0.0
     "@metamask/keyring-controller": ^23.0.0
+    "@metamask/multichain-account-service": ^0.8.0
+    "@metamask/profile-sync-controller": ^25.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/25b28f2ab16de534526228204fe58f96d65740b96a7c37d2e71866788e0840debd863de84bf1da1a64d61c571750123382c8414fca108676a961bba8bda53bf1
+  checksum: 10/63aca82367c282787fa576cc77cc9ba9c82adfc75348346632a6cd49ae97a6e4b9ba4973370f8ee80c832c220ec4507bd98445d824f4fc9c40a351e5b2bf7fa6
   languageName: node
   linkType: hard
 
@@ -5679,6 +5684,17 @@ __metadata:
     "@metamask/accounts-controller": ^32.0.0
     "@metamask/keyring-controller": ^22.0.0
   checksum: 10/f90dea2affa7d13c227580b3193ac9c30b24f139d249115eb133d87654aa6046eb00263d596f9ca4c6aa4fd5583c140de5c8a70474324d603f76e4faf84d3263
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-core@npm:^0.2.0-rc.1":
+  version: 0.2.0-rc.1
+  resolution: "@metamask/delegation-core@npm:0.2.0-rc.1"
+  dependencies:
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.4.0"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/c4f03f0406fe6ddbc0cb6020880ceee0e61932d10ea4f2b6c543541381f420f8da96fd37cfbe4b5d8e4f85efedd9d2402f982198f4b1e6322edb9d40234a6c8b
   languageName: node
   linkType: hard
 
@@ -6075,7 +6091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^16.0.0, @metamask/eth-snap-keyring@npm:^16.1.0":
+"@metamask/eth-snap-keyring@npm:^16.0.0":
   version: 16.1.0
   resolution: "@metamask/eth-snap-keyring@npm:16.1.0"
   dependencies:
@@ -6667,28 +6683,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/multichain-account-service@npm:0.7.0"
+"@metamask/multichain-account-service@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@metamask/multichain-account-service@npm:0.8.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
-    "@metamask/eth-snap-keyring": "npm:^16.1.0"
-    "@metamask/keyring-api": "npm:^20.1.0"
-    "@metamask/keyring-internal-api": "npm:^8.1.0"
-    "@metamask/keyring-snap-client": "npm:^7.0.0"
+    "@metamask/eth-snap-keyring": "npm:^17.0.0"
+    "@metamask/keyring-api": "npm:^21.0.0"
+    "@metamask/keyring-internal-api": "npm:^9.0.0"
+    "@metamask/keyring-snap-client": "npm:^8.0.0"
     "@metamask/keyring-utils": "npm:^3.1.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.4.2"
+    async-mutex: "npm:^0.5.0"
   peerDependencies:
-    "@metamask/account-api": ^0.9.0
+    "@metamask/account-api": ^0.12.0
     "@metamask/accounts-controller": ^33.0.0
     "@metamask/keyring-controller": ^23.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/41aa2bf1306dea3e8ecd86ca66389d93ea762e5d7d26df14d72d344f59de6891f53f68040dfc0eafb5097128d8d206880513ee7390fe65274419f84e37138576
+  checksum: 10/19156677b854233997c7aa03080ef5052efc982c7d055930daee9306dd416f994f50fdba41f9201295148b5d6ce3fc5cafbf4ca77714ff5dc9ffaa46e89f89aa
   languageName: node
   linkType: hard
 
@@ -7104,25 +7121,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^23.0.0":
-  version: 23.0.0
-  resolution: "@metamask/profile-sync-controller@npm:23.0.0"
+"@metamask/profile-sync-controller@npm:^25.0.0":
+  version: 25.0.0
+  resolution: "@metamask/profile-sync-controller@npm:25.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
-    "@noble/ciphers": "npm:^0.5.2"
-    "@noble/hashes": "npm:^1.4.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
     immer: "npm:^9.0.6"
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^32.0.0
-    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/address-book-controller": ^6.1.1
+    "@metamask/keyring-controller": ^23.0.0
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b2934b92d58f65d8f1b005adb0eb8e3852bec0abbe6d1167f1bd4a9b00ffced02194cb85b87278b1f597cb9fdf5af2b757eb1c40674529f1bec67d47583c0c86
+  checksum: 10/e142a290cda9b5ce96bcbe54adb9a690fe608bcb2e6c9ecef3eecd5764f437c48015dd64e9413e0188535b98f46eed366abefb721d1fa3d1b953e7d2287cd1bb
   languageName: node
   linkType: hard
 
@@ -7763,13 +7780,6 @@ __metadata:
   version: 1.3.0
   resolution: "@noble/ciphers@npm:1.3.0"
   checksum: 10/051660051e3e9e2ca5fb9dece2885532b56b7e62946f89afa7284a0fb8bc02e2bd1c06554dba68162ff42d295b54026456084198610f63c296873b2f1cd7a586
-  languageName: node
-  linkType: hard
-
-"@noble/ciphers@npm:^0.5.2":
-  version: 0.5.3
-  resolution: "@noble/ciphers@npm:0.5.3"
-  checksum: 10/af0ad96b5807feace93e63549e05de6f5e305b36e2e95f02d90532893fbc3af3f19b9621b6de4caa98303659e5df2e7aa082064e5d4a82e6f38c728d48dfae5d
   languageName: node
   linkType: hard
 
@@ -31790,7 +31800,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.10.0"
-    "@metamask/account-tree-controller": "npm:^0.13.1"
+    "@metamask/account-tree-controller": "npm:^0.15.1"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^33.1.0"
     "@metamask/address-book-controller": "npm:^6.1.0"
@@ -31809,6 +31819,7 @@ __metadata:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/delegation-controller": "npm:^0.6.0"
+    "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.11.0"
     "@metamask/design-system-react": "npm:^0.4.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
@@ -31856,7 +31867,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^0.7.0"
+    "@metamask/multichain-account-service": "npm:^0.8.0"
     "@metamask/multichain-api-client": "npm:^0.6.5"
     "@metamask/multichain-api-middleware": "npm:1.0.0"
     "@metamask/multichain-network-controller": "npm:^0.11.1"
@@ -31874,7 +31885,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.38.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.1"
-    "@metamask/profile-sync-controller": "npm:^23.0.0"
+    "@metamask/profile-sync-controller": "npm:^25.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
