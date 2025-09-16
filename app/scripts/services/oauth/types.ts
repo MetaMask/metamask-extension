@@ -1,6 +1,7 @@
 import {
   Web3AuthNetwork,
   AuthConnection,
+  SeedlessOnboardingControllerGetStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import { RestrictedMessenger } from '@metamask/base-controller';
 
@@ -30,8 +31,19 @@ export type OAuthServiceGetNewRefreshTokenAction = {
 /**
  * Revoke the current refresh token and get a new refresh token.
  */
-export type OAuthServiceRevokeAndGetNewRefreshTokenAction = {
-  type: `${ServiceName}:revokeAndGetNewRefreshToken`;
+export type OAuthServiceRevokeRefreshTokenAction = {
+  type: `${ServiceName}:revokeRefreshToken`;
+  handler: (options: {
+    connection: AuthConnection;
+    revokeToken: string;
+  }) => Promise<void>;
+};
+
+/**
+ * Revoke the current refresh token and get a new refresh token.
+ */
+export type OAuthServiceRenewRefreshTokenAction = {
+  type: `${ServiceName}:renewRefreshToken`;
   handler: (options: {
     connection: AuthConnection;
     revokeToken: string;
@@ -44,7 +56,9 @@ export type OAuthServiceRevokeAndGetNewRefreshTokenAction = {
 export type OAuthServiceAction =
   | OAuthServiceStartOAuthLoginAction
   | OAuthServiceGetNewRefreshTokenAction
-  | OAuthServiceRevokeAndGetNewRefreshTokenAction;
+  | OAuthServiceRevokeRefreshTokenAction
+  | OAuthServiceRenewRefreshTokenAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 /**
  * All possible events that the OAuthService can emit.

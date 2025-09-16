@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarTokenSize,
@@ -26,6 +25,7 @@ import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatDate } from '../../../helpers/utils/util';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { PreferredAvatar } from '../preferred-avatar';
 
 /**
  * Renders status of the given permission. Used by PermissionCell component.
@@ -110,10 +110,9 @@ export const PermissionCellStatus = ({
                       alignItems={AlignItems.center}
                       marginTop={2}
                     >
-                      <AvatarAccount
+                      <PreferredAvatar
                         address={account.avatarValue}
                         size={AvatarAccountSize.Xs}
-                        borderColor={BorderColor.backgroundDefault}
                       />
                       <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
                         {account.avatarName}

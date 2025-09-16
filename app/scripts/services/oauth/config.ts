@@ -128,7 +128,7 @@ function isProductionBuild() {
 
 /**
  * Check if the build is from the release candidate branch.
- * Example: `Version-v13.0.0` branch.
+ * Example: `release/13.0.0` branch.
  *
  * @returns true if the build is from the release candidate branch, false otherwise
  */

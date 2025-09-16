@@ -29,8 +29,18 @@ const managerName = 'EncryptionPublicKeyManager';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
 
 const stateMetadata = {
-  unapprovedEncryptionPublicKeyMsgs: { persist: false, anonymous: false },
-  unapprovedEncryptionPublicKeyMsgCount: { persist: false, anonymous: false },
+  unapprovedEncryptionPublicKeyMsgs: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: false,
+    usedInUi: true,
+  },
+  unapprovedEncryptionPublicKeyMsgCount: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: false,
+    usedInUi: true,
+  },
 };
 
 const getDefaultState = () => ({

@@ -83,7 +83,7 @@ export const AccountList = () => {
     <Page className="account-list-page">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: TextVariant.headingMd,
         }}
         startAccessory={
           <ButtonIcon
@@ -99,6 +99,7 @@ export const AccountList = () => {
       <Content className="account-list-page__content">
         <Box
           flexDirection={FlexDirection.Column}
+          paddingTop={1}
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={2}
@@ -156,7 +157,7 @@ export const AccountList = () => {
           onClick={handleOpenAddWalletModal}
           isFullWidth
         >
-          {t('addWallet')}
+          <Text variant={TextVariant.bodyMdMedium}>{t('addWallet')}</Text>
         </Button>
       </Footer>
       <AddWalletModal

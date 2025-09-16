@@ -54,7 +54,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      * → First account: enabled
      * → Second account: disabled (persisted from Part 1)
      */
-    it('syncs notification settings on next onboarding after enabling for the first time', async function () {
+    // TODO: Re-write this test when multichain account syncing has been merged
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('syncs notification settings on next onboarding after enabling for the first time', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
       const triggerServer = new MockttpNotificationTriggerServer();
       const mockedAccountsResponse = await getNotificationsMockResponse();

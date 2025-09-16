@@ -125,7 +125,7 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
               style="margin-top: -4px;"
             >
-              Buy/Sell
+              Buy
             </span>
           </span>
         </button>
@@ -139,7 +139,7 @@ exports[`AssetPage should render a native asset 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/swap-horizontal.svg');"
+              style="mask-image: url('./images/icons/swap-vertical.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -579,13 +579,13 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/money.svg');"
+              style="mask-image: url('./images/icons/dollar.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
               style="margin-top: -4px;"
             >
-              Buy/Sell
+              Buy
             </span>
           </span>
         </button>
@@ -616,7 +616,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/swap-horizontal.svg');"
+              style="mask-image: url('./images/icons/swap-vertical.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -1059,13 +1059,13 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/money.svg');"
+              style="mask-image: url('./images/icons/dollar.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
               style="margin-top: -4px;"
             >
-              Buy/Sell
+              Buy
             </span>
           </span>
         </button>
@@ -1096,7 +1096,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/swap-horizontal.svg');"
+              style="mask-image: url('./images/icons/swap-vertical.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"

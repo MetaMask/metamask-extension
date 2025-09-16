@@ -129,7 +129,7 @@ export const CustomNetworks = React.memo(() => {
   const renderedCustomNetworks = useMemo(() => {
     const filteredNetworks = orderedNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected && !isMultichainAccountsFeatureEnabled) {
+      if (isEvmNetworkSelected) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks

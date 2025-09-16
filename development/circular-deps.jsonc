@@ -89,16 +89,6 @@
     "ui/components/multichain/index.js"
   ],
   [
-    "ui/components/app/transaction-list/index.js",
-    "ui/components/app/transaction-list/transaction-list.component.js",
-    "ui/components/multichain/account-overview/account-overview-eth.tsx",
-    "ui/components/multichain/account-overview/account-overview-layout.tsx",
-    "ui/components/multichain/account-overview/account-overview-tabs.tsx",
-    "ui/components/multichain/account-overview/account-overview.tsx",
-    "ui/components/multichain/account-overview/index.js",
-    "ui/components/multichain/index.js"
-  ],
-  [
     "ui/components/component-library/index.ts",
     "ui/components/component-library/picker-network/index.ts",
     "ui/components/component-library/picker-network/picker-network.tsx",

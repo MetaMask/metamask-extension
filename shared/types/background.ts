@@ -108,6 +108,7 @@ export type ControllerStatePropertiesEnumerated = {
   showPermissionsTour: AppStateControllerState['showPermissionsTour'];
   showNetworkBanner: AppStateControllerState['showNetworkBanner'];
   showAccountBanner: AppStateControllerState['showAccountBanner'];
+  productTour?: AppStateControllerState['productTour'];
   showDownloadMobileAppSlide: AppStateControllerState['showDownloadMobileAppSlide'];
   trezorModel: AppStateControllerState['trezorModel'];
   currentPopupId?: AppStateControllerState['currentPopupId'];
@@ -302,9 +303,6 @@ export type ControllerStatePropertiesEnumerated = {
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
   isBackupAndSyncUpdateLoading: UserStorageController.UserStorageControllerState['isBackupAndSyncUpdateLoading'];
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
-  hasAccountSyncingSyncedAtLeastOnce: UserStorageController.UserStorageControllerState['hasAccountSyncingSyncedAtLeastOnce'];
-  isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
-  isAccountSyncingInProgress: UserStorageController.UserStorageControllerState['isAccountSyncingInProgress'];
   isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
   isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
 };

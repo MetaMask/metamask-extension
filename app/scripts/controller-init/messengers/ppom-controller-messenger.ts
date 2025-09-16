@@ -21,7 +21,6 @@ export type PPOMControllerInitMessenger = ReturnType<
 export function getPPOMControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ): PPOMControllerMessenger {
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   return messenger.getRestricted({
     name: 'PPOMController',
     allowedEvents: [

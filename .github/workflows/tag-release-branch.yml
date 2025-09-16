@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release-branch:
-        description: 'Release branch including version (e.g., Version-v12.0.0)'
+        description: 'Release branch including version (e.g., release/12.0.0)'
         required: true
         type: string
       force-retag:

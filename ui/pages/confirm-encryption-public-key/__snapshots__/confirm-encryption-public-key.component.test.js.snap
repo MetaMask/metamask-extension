@@ -134,11 +134,10 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
           class="request-encryption-public-key__request-icon"
         >
           <div
-            class=""
+            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-[10px] h-10 w-10"
           >
             <div
-              class="identicon"
-              style="height: 40px; width: 40px; border-radius: 20px;"
+              class="flex [&>div]:!rounded-none"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 40px; height: 40px; display: inline-block; background: rgb(245, 228, 0);"

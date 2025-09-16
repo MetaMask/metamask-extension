@@ -15,7 +15,6 @@ type ArrangeMocksMetamaskStateOverrides = {
   isUnlocked?: boolean;
   useExternalServices?: boolean;
   completedOnboarding?: boolean;
-  isAccountSyncingReadyToBeDispatched?: boolean;
 };
 
 const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
@@ -25,7 +24,6 @@ const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
   isUnlocked: true,
   useExternalServices: true,
   completedOnboarding: true,
-  isAccountSyncingReadyToBeDispatched: true,
 };
 
 const arrangeMockState = (
@@ -51,7 +49,6 @@ describe('useShouldDispatchAccountSyncing()', () => {
       'isUnlocked',
       'useExternalServices',
       'completedOnboarding',
-      'isAccountSyncingReadyToBeDispatched',
     ] as const;
     const baseState = {
       isSignedIn: true,
@@ -60,7 +57,6 @@ describe('useShouldDispatchAccountSyncing()', () => {
       isUnlocked: true,
       useExternalServices: true,
       completedOnboarding: true,
-      isAccountSyncingReadyToBeDispatched: true,
     };
 
     const failureStateCases: {
@@ -113,7 +109,7 @@ describe('useAccountSyncing', () => {
   const arrangeMocks = () => {
     const mockSyncAccountsAction = jest.spyOn(
       actions,
-      'syncInternalAccountsWithUserStorage',
+      'syncAccountTreeWithUserStorage',
     );
     return {
       mockSyncAccountsAction,
@@ -152,7 +148,7 @@ describe('useAccountSyncing', () => {
 
   it('should not dispatch conditions are not met', async () => {
     const { mocks, dispatchAccountSyncing, shouldDispatchAccountSyncing } =
-      arrangeAndAct({ isAccountSyncingReadyToBeDispatched: false });
+      arrangeAndAct({ completedOnboarding: false });
 
     await dispatchAccountSyncing();
 

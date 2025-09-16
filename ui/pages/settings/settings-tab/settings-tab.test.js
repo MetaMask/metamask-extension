@@ -9,14 +9,14 @@ import 'jest-canvas-mock';
 
 const mockSetCurrentCurrency = jest.fn();
 const mockUpdateCurrentLocale = jest.fn();
-const mockSetUseBlockie = jest.fn();
+const mockSetAvatarType = jest.fn();
 const mockSetHideZeroBalanceTokens = jest.fn();
 const mockSetShowNativeTokenAsMainBalance = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setCurrentCurrency: () => mockSetCurrentCurrency,
   updateCurrentLocale: () => mockUpdateCurrentLocale,
-  setUseBlockie: () => mockSetUseBlockie,
+  setAvatarType: (value) => () => mockSetAvatarType(value),
   setHideZeroBalanceTokens: () => mockSetHideZeroBalanceTokens,
   setShowNativeTokenAsMainBalancePreference: () =>
     mockSetShowNativeTokenAsMainBalance,
@@ -28,6 +28,7 @@ describe('Settings Tab', () => {
   afterEach(() => {
     mockSetCurrentCurrency.mockReset();
     mockUpdateCurrentLocale.mockReset();
+    mockSetAvatarType.mockReset();
   });
 
   it('selects currency', async () => {
@@ -52,22 +53,29 @@ describe('Settings Tab', () => {
 
   it('clicks jazzicon', () => {
     const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
-
     const jazziconToggle = queryByTestId('jazz_icon');
 
     fireEvent.click(jazziconToggle);
 
-    expect(mockSetUseBlockie).toHaveBeenCalled();
+    expect(mockSetAvatarType).toHaveBeenCalledWith('jazzicon');
   });
 
   it('clicks blockies icon', () => {
     const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
-
     const blockieToggle = queryByTestId('blockie_icon');
 
     fireEvent.click(blockieToggle);
 
-    expect(mockSetUseBlockie).toHaveBeenCalled();
+    expect(mockSetAvatarType).toHaveBeenCalledWith('blockies');
+  });
+
+  it('clicks maskicon', () => {
+    const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
+    const maskiconToggle = queryByTestId('maskicon_icon');
+
+    fireEvent.click(maskiconToggle);
+
+    expect(mockSetAvatarType).toHaveBeenCalledWith('maskicon');
   });
 
   it('toggles hiding zero balance', () => {

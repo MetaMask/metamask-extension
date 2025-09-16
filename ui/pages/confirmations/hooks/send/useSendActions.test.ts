@@ -90,7 +90,7 @@ describe('useSendQueryParams', () => {
       asset: SOLANA_ASSET,
       from: MOCK_ADDRESS_3,
       to: MOCK_ADDRESS_4,
-      value: 10,
+      value: '10',
     } as unknown as SendContext.SendContextType);
 
     const mockSubmitNonEvmTransaction = jest

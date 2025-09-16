@@ -86,28 +86,29 @@ type PreferencesControllerOptions = {
 
 export type Preferences = {
   autoLockTimeLimit?: number;
-  showExtensionInFullSizeView: boolean;
-  showFiatInTestnets: boolean;
-  showTestNetworks: boolean;
-  smartTransactionsOptInStatus: boolean;
-  smartTransactionsMigrationApplied: boolean;
-  showNativeTokenAsMainBalance: boolean;
-  useNativeCurrencyAsPrimaryCurrency: boolean;
+  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  dismissSmartAccountSuggestionEnabled: boolean;
+  featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
-  featureNotificationsEnabled: boolean;
-  showMultiRpcModal: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
+  showExtensionInFullSizeView: boolean;
+  showFiatInTestnets: boolean;
+  showMultiRpcModal: boolean;
+  showNativeTokenAsMainBalance: boolean;
+  showTestNetworks: boolean;
+  skipDeepLinkInterstitial: boolean;
+  smartAccountOptIn: boolean;
+  smartTransactionsOptInStatus: boolean;
+  smartTransactionsMigrationApplied: boolean;
+  tokenNetworkFilter: Record<string, boolean>;
   tokenSortConfig: {
     key: string;
     order: string;
     sortCallback: string;
   };
-  tokenNetworkFilter: Record<string, boolean>;
-  dismissSmartAccountSuggestionEnabled: boolean;
-  skipDeepLinkInterstitial: boolean;
-  smartAccountOptIn: boolean;
+  useNativeCurrencyAsPrimaryCurrency: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -120,33 +121,35 @@ export type PreferencesControllerState = Omit<
   | 'tokenSortConfig'
   | 'useMultiRpcMigration'
 > & {
-  useBlockie: boolean;
-  usePhishDetect: boolean;
+  addSnapAccountEnabled?: boolean;
+  advancedGasFee: Record<string, Record<string, string>>;
+  currentLocale: string;
   dismissSeedBackUpReminder: boolean;
+  enableMV3TimestampSave: boolean;
+  forgottenPassword: boolean;
+  knownMethodData: Record<string, string>;
+  ledgerTransportType: LedgerTransportTypes;
+  manageInstitutionalWallets: boolean;
   overrideContentSecurityPolicyHeader: boolean;
-  useMultiAccountBalanceChecker: boolean;
+  preferences: Preferences;
+  // TODO: Replace `Json` with correct type
+  snapRegistryList: Record<string, Json>;
+  snapsAddSnapAccountModalDismissed?: boolean;
+  textDirection?: string;
+  theme: ThemeType;
   use4ByteResolution: boolean;
+  useAddressBarEnsResolution: boolean;
+  /** @deprecated Use avatarType instead */
+  useBlockie: boolean;
   useCurrencyRateCheck: boolean;
+  useExternalNameSources: boolean;
+  useExternalServices: boolean;
+  useMultiAccountBalanceChecker: boolean;
+  usePhishDetect: boolean;
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
-  addSnapAccountEnabled?: boolean;
-  advancedGasFee: Record<string, Record<string, string>>;
-  knownMethodData: Record<string, string>;
-  currentLocale: string;
-  forgottenPassword: boolean;
-  preferences: Preferences;
-  useAddressBarEnsResolution: boolean;
-  ledgerTransportType: LedgerTransportTypes;
-  // TODO: Replace `Json` with correct type
-  snapRegistryList: Record<string, Json>;
-  theme: ThemeType;
-  snapsAddSnapAccountModalDismissed?: boolean;
-  useExternalNameSources: boolean;
-  enableMV3TimestampSave: boolean;
-  useExternalServices: boolean;
-  textDirection?: string;
-  manageInstitutionalWallets: boolean;
 };
 
 /**
@@ -154,80 +157,59 @@ export type PreferencesControllerState = Omit<
  */
 export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
-    selectedAddress: '',
-    useBlockie: false,
-    usePhishDetect: true,
-    dismissSeedBackUpReminder: false,
-    overrideContentSecurityPolicyHeader: true,
-    useMultiAccountBalanceChecker: true,
-    useSafeChainsListValidation: true,
-    // set to true means the dynamic list from the API is being used
-    // set to false will be using the static list from contract-metadata
-    useTokenDetection: true,
-    useNftDetection: true,
-    use4ByteResolution: true,
-    useCurrencyRateCheck: true,
-    openSeaEnabled: true,
-    securityAlertsEnabled: true,
-    watchEthereumAccountEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
-    featureFlags: {},
-    knownMethodData: {},
     currentLocale: '',
-    identities: {},
-    lostIdentities: {},
+    dismissSeedBackUpReminder: false,
+    enableMV3TimestampSave: true,
+    featureFlags: {},
     forgottenPassword: false,
-    preferences: {
-      autoLockTimeLimit: undefined,
-      showExtensionInFullSizeView: false,
-      showFiatInTestnets: false,
-      showTestNetworks: false,
-      smartTransactionsOptInStatus: true,
-      smartTransactionsMigrationApplied: false,
-      showNativeTokenAsMainBalance: false,
-      useNativeCurrencyAsPrimaryCurrency: true,
-      hideZeroBalanceTokens: false,
-      petnamesEnabled: true,
-      featureNotificationsEnabled: false,
-      showConfirmationAdvancedDetails: false,
-      showMultiRpcModal: false,
-      privacyMode: false,
-      dismissSmartAccountSuggestionEnabled: false,
-      smartAccountOptIn: true,
-      tokenSortConfig: {
-        key: 'tokenFiatAmount',
-        order: 'dsc',
-        sortCallback: 'stringNumeric',
-      },
-      tokenNetworkFilter: {},
-      skipDeepLinkInterstitial: false,
-    },
+    identities: {},
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
     isIpfsGatewayEnabled: true,
-    useAddressBarEnsResolution: true,
+    // from core PreferencesController
+    isMultiAccountBalancesEnabled: true,
+    knownMethodData: {},
     // Ledger transport type is deprecated. We currently only support webhid
     // on chrome, and u2f on firefox.
     ledgerTransportType: window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f,
-    snapRegistryList: {},
-    theme: ThemeType.os,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
-    useExternalNameSources: true,
-    useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
-    // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
-    // Whenever useExternalServices is false, certain features will be disabled.
-    // The flag is true by Default, meaning the toggle is ON by default.
-    useExternalServices: true,
-    // from core PreferencesController
-    isMultiAccountBalancesEnabled: true,
+    lostIdentities: {},
+    manageInstitutionalWallets: false,
+    openSeaEnabled: true,
+    overrideContentSecurityPolicyHeader: true,
+    preferences: {
+      autoLockTimeLimit: undefined,
+      avatarType: 'maskicon',
+      dismissSmartAccountSuggestionEnabled: false,
+      featureNotificationsEnabled: false,
+      hideZeroBalanceTokens: false,
+      petnamesEnabled: true,
+      privacyMode: false,
+      showConfirmationAdvancedDetails: false,
+      showExtensionInFullSizeView: false,
+      showFiatInTestnets: false,
+      showMultiRpcModal: false,
+      showNativeTokenAsMainBalance: false,
+      showTestNetworks: false,
+      skipDeepLinkInterstitial: false,
+      smartAccountOptIn: true,
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: false,
+      tokenNetworkFilter: {},
+      tokenSortConfig: {
+        key: 'tokenFiatAmount',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    securityAlertsEnabled: true,
+    selectedAddress: '',
     showIncomingTransactions: {
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
@@ -250,7 +232,29 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
-    manageInstitutionalWallets: false,
+    snapRegistryList: {},
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IF
+    theme: ThemeType.os,
+    use4ByteResolution: true,
+    useAddressBarEnsResolution: true,
+    useBlockie: false,
+    useCurrencyRateCheck: true,
+    useExternalNameSources: true,
+    // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
+    // Whenever useExternalServices is false, certain features will be disabled.
+    // The flag is true by Default, meaning the toggle is ON by default.
+    useExternalServices: true,
+    useMultiAccountBalanceChecker: true,
+    useNftDetection: true,
+    usePhishDetect: true,
+    useSafeChainsListValidation: true,
+    // set to true means the dynamic list from the API is being used
+    // set to false will be using the static list from contract-metadata
+    useTokenDetection: true,
+    useTransactionSimulations: true,
+    watchEthereumAccountEnabled: false,
   });
 
 /**
@@ -261,15 +265,15 @@ export const getDefaultPreferencesControllerState =
  * the `anonymous` flag.
  */
 const controllerMetadata = {
-  selectedAddress: {
+  addSnapAccountEnabled: {
     persist: true,
     anonymous: false,
   },
-  useBlockie: {
+  advancedGasFee: {
     persist: true,
     anonymous: true,
   },
-  usePhishDetect: {
+  currentLocale: {
     persist: true,
     anonymous: true,
   },
@@ -277,11 +281,115 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  enableMV3TimestampSave: {
+    persist: true,
+    anonymous: true,
+  },
+  featureFlags: {
+    persist: true,
+    anonymous: true,
+  },
+  forgottenPassword: {
+    persist: true,
+    anonymous: true,
+  },
+  identities: {
+    persist: true,
+    anonymous: false,
+  },
+  ipfsGateway: {
+    persist: true,
+    anonymous: false,
+  },
+  isIpfsGatewayEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
+  knownMethodData: {
+    persist: true,
+    anonymous: false,
+  },
+  ledgerTransportType: {
+    persist: true,
+    anonymous: true,
+  },
+  lostIdentities: {
+    persist: true,
+    anonymous: false,
+  },
+  manageInstitutionalWallets: { persist: true, anonymous: false },
+  openSeaEnabled: {
+    persist: true,
+    anonymous: true,
+  },
   overrideContentSecurityPolicyHeader: {
     persist: true,
     anonymous: true,
   },
+  preferences: {
+    persist: true,
+    anonymous: true,
+  },
+  securityAlertsEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  selectedAddress: {
+    persist: true,
+    anonymous: false,
+  },
+  showIncomingTransactions: { persist: true, anonymous: true },
+  snapRegistryList: {
+    persist: true,
+    anonymous: false,
+  },
+  snapsAddSnapAccountModalDismissed: {
+    persist: true,
+    anonymous: false,
+  },
+  textDirection: {
+    persist: true,
+    anonymous: false,
+  },
+  theme: {
+    persist: true,
+    anonymous: true,
+  },
+  use4ByteResolution: {
+    persist: true,
+    anonymous: true,
+  },
+  useAddressBarEnsResolution: {
+    persist: true,
+    anonymous: true,
+  },
+  /** @deprecated Use avatarType instead */
+  useBlockie: {
+    persist: true,
+    anonymous: true,
+  },
+  useCurrencyRateCheck: {
+    persist: true,
+    anonymous: true,
+  },
+  useExternalNameSources: {
+    persist: true,
+    anonymous: false,
+  },
+  useExternalServices: {
+    persist: true,
+    anonymous: false,
+  },
   useMultiAccountBalanceChecker: {
+    persist: true,
+    anonymous: true,
+  },
+  useNftDetection: {
+    persist: true,
+    anonymous: true,
+  },
+  usePhishDetect: {
     persist: true,
     anonymous: true,
   },
@@ -293,127 +401,14 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  useNftDetection: {
+  useTransactionSimulations: {
     persist: true,
     anonymous: true,
-  },
-  use4ByteResolution: {
-    persist: true,
-    anonymous: true,
-  },
-  useCurrencyRateCheck: {
-    persist: true,
-    anonymous: true,
-  },
-  openSeaEnabled: {
-    persist: true,
-    anonymous: true,
-  },
-  securityAlertsEnabled: {
-    persist: true,
-    anonymous: false,
   },
   watchEthereumAccountEnabled: {
     persist: true,
     anonymous: false,
   },
-  addSnapAccountEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  advancedGasFee: {
-    persist: true,
-    anonymous: true,
-  },
-  featureFlags: {
-    persist: true,
-    anonymous: true,
-  },
-  knownMethodData: {
-    persist: true,
-    anonymous: false,
-  },
-  currentLocale: {
-    persist: true,
-    anonymous: true,
-  },
-  identities: {
-    persist: true,
-    anonymous: false,
-  },
-  lostIdentities: {
-    persist: true,
-    anonymous: false,
-  },
-  forgottenPassword: {
-    persist: true,
-    anonymous: true,
-  },
-  preferences: {
-    persist: true,
-    anonymous: true,
-    properties: {
-      smartTransactionsOptInStatus: {
-        persist: true,
-        anonymous: true,
-      },
-      smartTransactionsMigrationApplied: {
-        persist: true,
-        anonymous: true,
-      },
-    },
-  },
-  ipfsGateway: {
-    persist: true,
-    anonymous: false,
-  },
-  isIpfsGatewayEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  useAddressBarEnsResolution: {
-    persist: true,
-    anonymous: true,
-  },
-  ledgerTransportType: {
-    persist: true,
-    anonymous: true,
-  },
-  snapRegistryList: {
-    persist: true,
-    anonymous: false,
-  },
-  theme: {
-    persist: true,
-    anonymous: true,
-  },
-  snapsAddSnapAccountModalDismissed: {
-    persist: true,
-    anonymous: false,
-  },
-  useExternalNameSources: {
-    persist: true,
-    anonymous: false,
-  },
-  useTransactionSimulations: {
-    persist: true,
-    anonymous: true,
-  },
-  enableMV3TimestampSave: {
-    persist: true,
-    anonymous: true,
-  },
-  useExternalServices: {
-    persist: true,
-    anonymous: false,
-  },
-  textDirection: {
-    persist: true,
-    anonymous: false,
-  },
-  isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
-  showIncomingTransactions: { persist: true, anonymous: true },
-  manageInstitutionalWallets: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -463,6 +458,7 @@ export class PreferencesController extends BaseController<
   /**
    * Setter for the `useBlockie` property
    *
+   * @deprecated Use setAvatarType instead
    * @param val - Whether or not the user prefers blockie indicators
    */
   setUseBlockie(val: boolean): void {

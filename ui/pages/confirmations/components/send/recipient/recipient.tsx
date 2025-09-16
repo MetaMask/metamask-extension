@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   Modal,
   ModalOverlay,
@@ -16,9 +15,6 @@ import {
   TextFieldSize,
   HelpText,
   HelpTextSeverity,
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
 } from '../../../../../components/component-library';
 import {
@@ -32,7 +28,7 @@ import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRec
 import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
-import { getUseBlockie } from '../../../../../selectors';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { RecipientList } from '../recipient-list';
 
 export const Recipient = () => {
@@ -48,9 +44,13 @@ export const Recipient = () => {
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
   const { to, updateTo } = useSendContext();
   const [localValue, setLocalValue] = useState(to || '');
-  const { captureRecipientSelected } = useRecipientSelectionMetrics();
+  const {
+    captureRecipientSelected,
+    setRecipientInputMethodManual,
+    setRecipientInputMethodSelectContact,
+    setRecipientInputMethodSelectAccount,
+  } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
-  const useBlockie = useSelector(getUseBlockie);
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);
@@ -62,12 +62,15 @@ export const Recipient = () => {
   }, []);
 
   const onToChange = useCallback(
-    (address: string) => {
+    (address: string, isSelectedFromModal?: boolean) => {
       const toAddress = address;
       setLocalValue(toAddress);
       updateTo(toAddress);
+      if (!isSelectedFromModal) {
+        setRecipientInputMethodManual();
+      }
     },
-    [updateTo],
+    [updateTo, setRecipientInputMethodManual],
   );
 
   const captureMetrics = useCallback(() => {
@@ -82,11 +85,64 @@ export const Recipient = () => {
     updateTo('');
   }, [updateTo]);
 
+  const onRecipientSelectedFromModal = useCallback(
+    (address: string) => {
+      const isRecipientContact = recipients.some(
+        (recipient) =>
+          recipient.address.toLowerCase() === address.toLowerCase() &&
+          recipient.contactName,
+      );
+      if (isRecipientContact) {
+        setRecipientInputMethodSelectContact();
+      } else {
+        setRecipientInputMethodSelectAccount();
+      }
+
+      onToChange(address);
+      captureMetrics();
+    },
+    [
+      captureMetrics,
+      onToChange,
+      recipients,
+      setRecipientInputMethodSelectContact,
+      setRecipientInputMethodSelectAccount,
+    ],
+  );
+
   useEffect(() => {
     if (recipientResolvedLookup) {
       updateTo(recipientResolvedLookup);
     }
   }, [recipientResolvedLookup, updateTo]);
+
+  const hasRecipients = recipients.length > 0;
+
+  const renderEndAccessory = useCallback(() => {
+    if (to) {
+      return (
+        <ButtonIcon
+          ariaLabel="Clear recipient"
+          data-testid="clear-recipient-btn"
+          iconName={IconName.Close}
+          onClick={clearRecipient}
+          size={ButtonIconSize.Sm}
+        />
+      );
+    }
+    if (hasRecipients) {
+      return (
+        <ButtonIcon
+          ariaLabel="Open recipient modal"
+          data-testid="open-recipient-modal-btn"
+          iconName={IconName.Book}
+          onClick={openRecipientModal}
+          size={ButtonIconSize.Sm}
+        />
+      );
+    }
+    return null;
+  }, [to, hasRecipients, clearRecipient, openRecipientModal]);
 
   const matchingRecipient = recipients.find(
     (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
@@ -106,29 +162,14 @@ export const Recipient = () => {
               display={Display.Flex}
               paddingLeft={2}
             >
-              <AvatarAccount
+              <PreferredAvatar
                 address={matchingRecipient.address}
                 size={AvatarAccountSize.Sm}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
               />
             </Box>
           ) : null
         }
-        endAccessory={
-          <ButtonIcon
-            ariaLabel={to ? 'Clear recipient' : 'Open recipient modal'}
-            data-testid={
-              to ? 'clear-recipient-btn' : 'open-recipient-modal-btn'
-            }
-            iconName={to ? IconName.Close : IconName.Book}
-            onClick={to ? clearRecipient : openRecipientModal}
-            size={ButtonIconSize.Sm}
-          />
-        }
+        endAccessory={renderEndAccessory()}
         onChange={(e) => onToChange(e.target.value)}
         onBlur={captureMetrics}
         ref={recipientInputRef}
@@ -179,7 +220,7 @@ export const Recipient = () => {
           <ModalBody>
             <RecipientList
               hideModal={closeRecipientModal}
-              onToChange={onToChange}
+              onToChange={onRecipientSelectedFromModal}
             />
           </ModalBody>
         </ModalContent>

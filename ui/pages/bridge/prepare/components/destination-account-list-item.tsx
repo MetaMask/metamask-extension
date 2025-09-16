@@ -1,63 +1,65 @@
 import React from 'react';
-import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import {
+  formatChainIdToHex,
+  isSolanaChainId,
+} from '@metamask/bridge-controller';
+import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
-  Box,
   Text,
-  AvatarToken,
-  AvatarTokenSize,
+  Tag,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
 } from '../../../../components/component-library';
-
 import {
   AlignItems,
-  BackgroundColor,
-  BorderColor,
-  Display,
+  BlockSize,
   TextColor,
   TextVariant,
-  JustifyContent,
-  TextAlign,
-  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 
 import {
   getShouldHideZeroBalanceTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
-  getShowFiatInTestnets,
 } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
-import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY } from '../../../../helpers/constants/common';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
-import {
-  getMultichainNetwork,
-  getMultichainIsTestnet,
-  getMultichainShouldShowFiat,
-  getMultichainNativeCurrency,
-  getMultichainNativeCurrencyImage,
-} from '../../../../selectors/multichain';
-import { type InternalDestinationAccount } from '../types';
+import { Column, Row } from '../../layout';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { getToChain } from '../../../../ducks/bridge/selectors';
+import { type DestinationAccount } from '../types';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
 type DestinationAccountListItemProps = {
-  account: InternalDestinationAccount;
+  account: DestinationAccount;
   selected?: boolean;
   onClick?: () => void;
+  isExternal?: boolean;
 };
 
 const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   account,
   selected = false,
   onClick,
+  isExternal = false,
 }) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -67,28 +69,12 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   );
   const allChainIDs = useSelector(getChainIdsToPoll);
 
-  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
-  const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
-  const isMainnet = !isTestnet;
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    account,
-  );
-  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat =
-    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+  const isEvmNetwork = isEvmAccountType(account.type);
 
-  const primaryTokenImage = useMultichainSelector(
-    getMultichainNativeCurrencyImage,
-    account,
+  const toChain = useSelector(getToChain);
+  const { balanceByChainId } = useMultichainBalances(
+    'id' in account ? account.id : undefined,
   );
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    account,
-  );
-
-  const accountTotalFiatBalances =
-    useMultichainAccountTotalFiatBalance(account);
 
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
@@ -102,124 +88,107 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
     formattedTokensWithBalancesPerChain,
   );
 
-  // TODO: not working - troubleshoot.
-  // const chainAvatars = Object.values(formattedTokensWithBalancesPerChain).map(
-  //   (chainData) => ({
-  //     avatarValue: chainData.networkImage,
-  //   }),
-  // );
-
   let balanceToTranslate;
   if (isEvmNetwork) {
-    balanceToTranslate =
-      !shouldShowFiat || isTestnet
-        ? // @ts-expect-error: balance is not typed.
-          account.balance
-        : totalFiatBalance;
+    balanceToTranslate = totalFiatBalance;
   } else {
-    balanceToTranslate = accountTotalFiatBalances.totalBalance;
+    const chainIdInHexOrCaip =
+      toChain?.chainId &&
+      (isSolanaChainId(toChain?.chainId)
+        ? toChain.chainId
+        : formatChainIdToHex(toChain?.chainId));
+    balanceToTranslate = chainIdInHexOrCaip
+      ? balanceByChainId[chainIdInHexOrCaip]?.toString()
+      : '0';
   }
 
-  return (
-    <Box
-      display={Display.Flex}
-      padding={4}
-      backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
-      }
-      className={classnames('multichain-account-list-item gap-2', {
-        'multichain-account-list-item--selected': selected,
-      })}
-      onClick={onClick}
-      alignItems={AlignItems.center}
-    >
-      <PreferredAvatar address={account.address} />
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        style={{ flex: 1 }}
-      >
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          gap={2}
-          style={{ width: '100%' }}
-        >
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            style={{ minWidth: 0, flex: '1 1 auto', overflow: 'hidden' }}
-          >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              ellipsis
-              style={{ maxWidth: '200px' }}
-            >
-              {account.displayName}
-            </Text>
-          </Box>
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.flexEnd}
-            gap={1}
-            style={{ minWidth: 'fit-content', flexShrink: 0 }}
-          >
-            {/* <AvatarToken
-              src={primaryTokenImage}
-              name={nativeCurrency}
-              size={AvatarTokenSize.Xs}
-              borderColor={BorderColor.borderDefault}
-            /> */}
-            <Text
-              as="div"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.flexEnd}
-              textAlign={TextAlign.End}
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={balanceToTranslate}
-                type={PRIMARY}
-                showFiat={showFiat}
-                isAggregatedFiatOverviewBalance={showFiat}
-                hideLabel={true}
-                data-testid="first-currency-display"
-              />
-            </Text>
-          </Box>
-        </Box>
+  const t = useI18nContext();
 
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-        >
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            data-testid="account-list-address"
-          >
-            {shortenAddress(normalizeSafeAddress(account.address))}
-          </Text>
-          <Box display={Display.Flex} gap={2}>
-            {/* // TODO: not working - troubleshoot. */}
-            {/* {chainAvatars.length > 0 && (
-              <AvatarGroup members={chainAvatars} limit={4} />
-            )} */}
-            <AvatarToken
-              src={primaryTokenImage}
-              name={nativeCurrency}
-              size={AvatarTokenSize.Xs}
-              borderColor={BorderColor.borderDefault}
-            />
-          </Box>
-        </Box>
+  return (
+    <Row
+      gap={4}
+      padding={2}
+      paddingInline={4}
+      onClick={onClick}
+      className={
+        selected
+          ? 'multichain-account-list-item--selected'
+          : 'multichain-account-list-item'
+      }
+    >
+      <Box
+        style={{
+          borderRadius: 12,
+          // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+          borderColor: '#8b99ff',
+          borderWidth: selected ? 2 : 0,
+          padding: selected ? 1 : 3,
+          height: 38,
+        }}
+      >
+        <PreferredAvatar
+          style={{
+            minWidth: 'max-content',
+            borderRadius: 8,
+          }}
+          address={account.address}
+        />
       </Box>
-    </Box>
+      <Column
+        gap={1}
+        data-testid={selected ? 'selected-to-account' : undefined}
+      >
+        <Row gap={1} style={{ maxWidth: 'min-content' }}>
+          <Text variant={TextVariant.bodyMdMedium} ellipsis>
+            {account.displayName}
+          </Text>
+          {selected && (
+            <Icon
+              name={IconName.CheckBold}
+              size={IconSize.Md}
+              color={IconColor.PrimaryDefault}
+            />
+          )}
+        </Row>
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternativeSoft}
+          data-testid="account-list-address"
+        >
+          {shortenAddress(normalizeSafeAddress(account.address))}
+        </Text>
+      </Column>
+      {isExternal ? (
+        <Tag
+          label={t('externalAccount')}
+          labelProps={{ variant: TextVariant.bodyXs }}
+          style={{ whiteSpace: 'nowrap' }}
+        />
+      ) : (
+        <Column alignItems={AlignItems.flexEnd} width={BlockSize.Max} gap={1}>
+          <UserPreferencedCurrencyDisplay
+            ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+            value={balanceToTranslate}
+            type={PRIMARY}
+            showFiat={true}
+            isAggregatedFiatOverviewBalance={true}
+            hideLabel={true}
+            data-testid="first-currency-display"
+          />
+          <AvatarNetwork
+            src={
+              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                toChain?.chainId && !isSolanaChainId(toChain?.chainId)
+                  ? formatChainIdToHex(toChain?.chainId)
+                  : (toChain?.chainId ?? '')
+              ]
+            }
+            name={toChain?.name ?? ''}
+            size={AvatarNetworkSize.Xs}
+          />
+        </Column>
+      )}
+    </Row>
   );
 };
 

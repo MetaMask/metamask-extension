@@ -1,8 +1,8 @@
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
-import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
+import { getCleanAppState } from '../../../helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -103,6 +103,16 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  async checkPageIsNotLoaded(): Promise<void> {
+    console.log('Check home page is not loaded');
+    await this.driver.assertElementNotPresent(this.activityTab, {
+      waitAtLeastGuard: 500,
+    });
+    await this.driver.assertElementNotPresent(this.tokensTab, {
+      waitAtLeastGuard: 500,
+    });
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -290,7 +300,7 @@ class HomePage {
     console.log('Check if account syncing has synced at least once');
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
     }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 

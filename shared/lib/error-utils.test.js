@@ -50,8 +50,8 @@ describe('Error utils Tests', function () {
           stillGettingMessage: {
             message: 'Still getting this message?',
           },
-          sendBugReport: {
-            message: 'Send us a bug report.',
+          errorPageContactSupport: {
+            message: 'Contact support',
           },
         },
       },
@@ -77,12 +77,13 @@ describe('Error utils Tests', function () {
     const restartMetamaskMessage = currentLocale.restartMetamask.message;
     const stillGettingMessageMessage =
       currentLocale.stillGettingMessage.message;
-    const sendBugReportMessage = currentLocale.sendBugReport.message;
+    const errorPageContactSupport =
+      currentLocale.errorPageContactSupport.message;
 
     expect(errorHtml).toContain(troubleStartingMessage);
     expect(errorHtml).toContain(troubleStartingTitle);
     expect(errorHtml).toContain(restartMetamaskMessage);
     expect(errorHtml).toContain(stillGettingMessageMessage);
-    expect(errorHtml).toContain(sendBugReportMessage);
+    expect(errorHtml).toContain(errorPageContactSupport);
   });
 });

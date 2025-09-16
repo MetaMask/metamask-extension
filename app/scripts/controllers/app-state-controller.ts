@@ -49,55 +49,56 @@ import type {
 } from './preferences-controller';
 
 export type AppStateControllerState = {
-  timeoutMinutes: number;
-  connectedStatusPopoverHasBeenShown: boolean;
-  defaultHomeActiveTabName: AccountOverviewTabKey | null;
+  activeQrCodeScanRequest: QrScanRequest | null;
+  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   browserEnvironment: Record<string, string>;
-  popupGasPollTokens: string[];
-  notificationGasPollTokens: string[];
-  fullScreenGasPollTokens: string[];
-  recoveryPhraseReminderHasBeenShown: boolean;
-  recoveryPhraseReminderLastShown: number;
-  outdatedBrowserWarningLastShown: number | null;
-  nftsDetectionNoticeDismissed: boolean;
-  showTestnetMessageInDropdown: boolean;
-  showBetaHeader: boolean;
-  showPermissionsTour: boolean;
-  showNetworkBanner: boolean;
-  showAccountBanner: boolean;
-  showDownloadMobileAppSlide: boolean;
-  trezorModel: string | null;
+  connectedStatusPopoverHasBeenShown: boolean;
+  // States used for displaying the changed network toast
+  currentExtensionPopupId: number;
   currentPopupId?: number;
-  onboardingDate: number | null;
-  lastViewedUserSurvey: number | null;
-  isRampCardClosed: boolean;
-  newPrivacyPolicyToastClickedOrClosed: boolean | null;
-  newPrivacyPolicyToastShownDate: number | null;
+  defaultHomeActiveTabName: AccountOverviewTabKey | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+  enforcedSimulationsSlippage: number;
+  enforcedSimulationsSlippageForTransactions: Record<string, number>;
+  fullScreenGasPollTokens: string[];
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  activeQrCodeScanRequest: QrScanRequest | null;
-  nftsDropdownState: Json;
-  surveyLinkLastClickedOrClosed: number | null;
-  signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
-  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
-  // States used for displaying the changed network toast
-  currentExtensionPopupId: number;
-  lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
-  termsOfUseLastAgreed?: number;
-  snapsInstallPrivacyWarningShown?: boolean;
-  slides: CarouselSlide[];
-  throttledOrigins: ThrottledOrigins;
+  isRampCardClosed: boolean;
   isUpdateAvailable: boolean;
-  updateModalLastDismissedAt: number | null;
+  lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
-  enableEnforcedSimulations: boolean;
-  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
-  enforcedSimulationsSlippage: number;
-  enforcedSimulationsSlippageForTransactions: Record<string, number>;
+  lastViewedUserSurvey: number | null;
+  newPrivacyPolicyToastClickedOrClosed: boolean | null;
+  newPrivacyPolicyToastShownDate: number | null;
+  nftsDetectionNoticeDismissed: boolean;
+  nftsDropdownState: Json;
+  notificationGasPollTokens: string[];
+  onboardingDate: number | null;
+  outdatedBrowserWarningLastShown: number | null;
+  popupGasPollTokens: string[];
+  productTour?: string;
+  recoveryPhraseReminderHasBeenShown: boolean;
+  recoveryPhraseReminderLastShown: number;
+  showAccountBanner: boolean;
+  showBetaHeader: boolean;
+  showDownloadMobileAppSlide: boolean;
+  showNetworkBanner: boolean;
+  showPermissionsTour: boolean;
+  showTestnetMessageInDropdown: boolean;
+  signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  slides: CarouselSlide[];
+  snapsInstallPrivacyWarningShown?: boolean;
+  surveyLinkLastClickedOrClosed: number | null;
+  termsOfUseLastAgreed?: number;
+  throttledOrigins: ThrottledOrigins;
+  timeoutMinutes: number;
+  trezorModel: string | null;
+  updateModalLastDismissedAt: number | null;
 };
 
 const controllerName = 'AppStateController';
@@ -188,167 +189,66 @@ export type AppStateControllerOptions = {
 };
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
-  timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  activeQrCodeScanRequest: null,
+  browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
-  browserEnvironment: {},
-  popupGasPollTokens: [],
-  notificationGasPollTokens: [],
-  fullScreenGasPollTokens: [],
-  recoveryPhraseReminderHasBeenShown: false,
-  recoveryPhraseReminderLastShown: new Date().getTime(),
-  outdatedBrowserWarningLastShown: null,
-  nftsDetectionNoticeDismissed: false,
-  showTestnetMessageInDropdown: true,
-  showBetaHeader: isBeta(),
-  showPermissionsTour: true,
-  showNetworkBanner: true,
-  showAccountBanner: true,
-  trezorModel: null,
-  onboardingDate: null,
-  lastViewedUserSurvey: null,
-  isRampCardClosed: false,
-  newPrivacyPolicyToastClickedOrClosed: null,
-  newPrivacyPolicyToastShownDate: null,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  surveyLinkLastClickedOrClosed: null,
-  showDownloadMobileAppSlide: true,
-  slides: [],
-  throttledOrigins: {},
-  isUpdateAvailable: false,
-  updateModalLastDismissedAt: null,
-  lastUpdatedAt: null,
   enableEnforcedSimulations: true,
   enableEnforcedSimulationsForTransactions: {},
   enforcedSimulationsSlippage: 10,
   enforcedSimulationsSlippageForTransactions: {},
-  activeQrCodeScanRequest: null,
+  fullScreenGasPollTokens: [],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  hadAdvancedGasFeesSetPriorToMigration92_3: false,
+  isRampCardClosed: false,
+  isUpdateAvailable: false,
+  lastUpdatedAt: null,
+  lastViewedUserSurvey: null,
+  newPrivacyPolicyToastClickedOrClosed: null,
+  newPrivacyPolicyToastShownDate: null,
+  nftsDetectionNoticeDismissed: false,
+  notificationGasPollTokens: [],
+  onboardingDate: null,
+  outdatedBrowserWarningLastShown: null,
+  popupGasPollTokens: [],
+  productTour: 'accountIcon',
+  recoveryPhraseReminderHasBeenShown: false,
+  recoveryPhraseReminderLastShown: new Date().getTime(),
+  showAccountBanner: true,
+  showBetaHeader: isBeta(),
+  showDownloadMobileAppSlide: true,
+  showNetworkBanner: true,
+  showPermissionsTour: true,
+  showTestnetMessageInDropdown: true,
+  slides: [],
+  surveyLinkLastClickedOrClosed: null,
+  throttledOrigins: {},
+  timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  trezorModel: null,
+  updateModalLastDismissedAt: null,
+
   ...getInitialStateOverrides(),
 });
 
+/**
+ * Return initial state for properties that should overwrite persisted state.
+ *
+ * TODO: Stop persisting state that we want to override, so that we can remove this function.
+ *
+ * @returns Initial state for properties that should overwrite persisted state.
+ */
 function getInitialStateOverrides() {
   return {
-    nftsDropdownState: {},
-    signatureSecurityAlertResponses: {},
     addressSecurityAlertResponses: {},
     currentExtensionPopupId: 0,
+    nftsDropdownState: {},
+    signatureSecurityAlertResponses: {},
   };
 }
 
 const controllerMetadata = {
-  timeoutMinutes: {
-    persist: true,
-    anonymous: true,
-  },
-  connectedStatusPopoverHasBeenShown: {
-    persist: true,
-    anonymous: true,
-  },
-  defaultHomeActiveTabName: {
-    persist: true,
-    anonymous: true,
-  },
-  browserEnvironment: {
-    persist: true,
-    anonymous: true,
-  },
-  popupGasPollTokens: {
-    persist: false,
-    anonymous: true,
-  },
-  notificationGasPollTokens: {
-    persist: false,
-    anonymous: true,
-  },
-  fullScreenGasPollTokens: {
-    persist: false,
-    anonymous: true,
-  },
-  recoveryPhraseReminderHasBeenShown: {
-    persist: true,
-    anonymous: true,
-  },
-  recoveryPhraseReminderLastShown: {
-    persist: true,
-    anonymous: true,
-  },
-  outdatedBrowserWarningLastShown: {
-    persist: true,
-    anonymous: true,
-  },
-  nftsDetectionNoticeDismissed: {
-    persist: true,
-    anonymous: true,
-  },
-  showTestnetMessageInDropdown: {
-    persist: true,
-    anonymous: true,
-  },
-  showBetaHeader: {
-    persist: true,
-    anonymous: true,
-  },
-  showPermissionsTour: {
-    persist: true,
-    anonymous: true,
-  },
-  showNetworkBanner: {
-    persist: true,
-    anonymous: true,
-  },
-  showAccountBanner: {
-    persist: true,
-    anonymous: true,
-  },
-  trezorModel: {
-    persist: true,
-    anonymous: true,
-  },
-  currentPopupId: {
-    persist: false,
-    anonymous: true,
-  },
-  onboardingDate: {
-    persist: true,
-    anonymous: true,
-  },
-  lastViewedUserSurvey: {
-    persist: true,
-    anonymous: true,
-  },
-  isRampCardClosed: {
-    persist: true,
-    anonymous: true,
-  },
-  newPrivacyPolicyToastClickedOrClosed: {
-    persist: true,
-    anonymous: true,
-  },
-  newPrivacyPolicyToastShownDate: {
-    persist: true,
-    anonymous: true,
-  },
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  hadAdvancedGasFeesSetPriorToMigration92_3: {
-    persist: true,
-    anonymous: true,
-  },
   activeQrCodeScanRequest: {
-    persist: false,
-    anonymous: true,
-  },
-  nftsDropdownState: {
-    persist: false,
-    anonymous: true,
-  },
-  surveyLinkLastClickedOrClosed: {
-    persist: true,
-    anonymous: true,
-  },
-  signatureSecurityAlertResponses: {
     persist: false,
     anonymous: true,
   },
@@ -356,43 +256,23 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
+  browserEnvironment: {
+    persist: true,
+    anonymous: true,
+  },
+  connectedStatusPopoverHasBeenShown: {
+    persist: true,
+    anonymous: true,
+  },
   currentExtensionPopupId: {
     persist: false,
     anonymous: true,
   },
-  lastInteractedConfirmationInfo: {
-    persist: true,
-    anonymous: true,
-  },
-  termsOfUseLastAgreed: {
-    persist: true,
-    anonymous: true,
-  },
-  snapsInstallPrivacyWarningShown: {
-    persist: true,
-    anonymous: true,
-  },
-  showDownloadMobileAppSlide: {
-    persist: true,
-    anonymous: true,
-  },
-  slides: {
-    persist: true,
-    anonymous: true,
-  },
-  throttledOrigins: {
+  currentPopupId: {
     persist: false,
     anonymous: true,
   },
-  isUpdateAvailable: {
-    persist: false,
-    anonymous: true,
-  },
-  updateModalLastDismissedAt: {
-    persist: true,
-    anonymous: true,
-  },
-  lastUpdatedAt: {
+  defaultHomeActiveTabName: {
     persist: true,
     anonymous: true,
   },
@@ -410,6 +290,140 @@ const controllerMetadata = {
   },
   enforcedSimulationsSlippageForTransactions: {
     persist: false,
+    anonymous: true,
+  },
+  fullScreenGasPollTokens: {
+    persist: false,
+    anonymous: true,
+  },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  hadAdvancedGasFeesSetPriorToMigration92_3: {
+    persist: true,
+    anonymous: true,
+  },
+  isRampCardClosed: {
+    persist: true,
+    anonymous: true,
+  },
+  isUpdateAvailable: {
+    persist: false,
+    anonymous: true,
+  },
+  lastInteractedConfirmationInfo: {
+    persist: true,
+    anonymous: true,
+  },
+  lastUpdatedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  lastViewedUserSurvey: {
+    persist: true,
+    anonymous: true,
+  },
+  newPrivacyPolicyToastClickedOrClosed: {
+    persist: true,
+    anonymous: true,
+  },
+  newPrivacyPolicyToastShownDate: {
+    persist: true,
+    anonymous: true,
+  },
+  nftsDetectionNoticeDismissed: {
+    persist: true,
+    anonymous: true,
+  },
+  nftsDropdownState: {
+    persist: false,
+    anonymous: true,
+  },
+  notificationGasPollTokens: {
+    persist: false,
+    anonymous: true,
+  },
+  onboardingDate: {
+    persist: true,
+    anonymous: true,
+  },
+  outdatedBrowserWarningLastShown: {
+    persist: true,
+    anonymous: true,
+  },
+  popupGasPollTokens: {
+    persist: false,
+    anonymous: true,
+  },
+  productTour: {
+    persist: true,
+    anonymous: true,
+  },
+  recoveryPhraseReminderHasBeenShown: {
+    persist: true,
+    anonymous: true,
+  },
+  recoveryPhraseReminderLastShown: {
+    persist: true,
+    anonymous: true,
+  },
+  showAccountBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  showBetaHeader: {
+    persist: true,
+    anonymous: true,
+  },
+  showDownloadMobileAppSlide: {
+    persist: true,
+    anonymous: true,
+  },
+  showNetworkBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  showPermissionsTour: {
+    persist: true,
+    anonymous: true,
+  },
+  showTestnetMessageInDropdown: {
+    persist: true,
+    anonymous: true,
+  },
+  signatureSecurityAlertResponses: {
+    persist: false,
+    anonymous: true,
+  },
+  slides: {
+    persist: true,
+    anonymous: true,
+  },
+  snapsInstallPrivacyWarningShown: {
+    persist: true,
+    anonymous: true,
+  },
+  surveyLinkLastClickedOrClosed: {
+    persist: true,
+    anonymous: true,
+  },
+  termsOfUseLastAgreed: {
+    persist: true,
+    anonymous: true,
+  },
+  throttledOrigins: {
+    persist: false,
+    anonymous: true,
+  },
+  timeoutMinutes: {
+    persist: true,
+    anonymous: true,
+  },
+  trezorModel: {
+    persist: true,
+    anonymous: true,
+  },
+  updateModalLastDismissedAt: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -928,6 +942,17 @@ export class AppStateController extends BaseController<
   setShowPermissionsTour(showPermissionsTour: boolean): void {
     this.update((state) => {
       state.showPermissionsTour = showPermissionsTour;
+    });
+  }
+
+  /**
+   * Sets the product tour to be shown to the user
+   *
+   * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
+   */
+  setProductTour(productTour: string): void {
+    this.update((state) => {
+      state.productTour = productTour;
     });
   }
 

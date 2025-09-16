@@ -160,7 +160,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Submit')).toBeInTheDocument();
+    expect(getByText('Bridge')).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
   });
 
@@ -241,7 +241,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Submit')).toBeInTheDocument();
+    expect(getByText('Bridge')).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
     expect(container).toMatchSnapshot();
   });

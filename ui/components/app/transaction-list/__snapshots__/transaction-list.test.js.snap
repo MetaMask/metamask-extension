@@ -9,8 +9,9 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
       class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
         data-testid="sort-by-popover-toggle"
+        disabled=""
       >
         <span
           class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -239,8 +240,9 @@ exports[`TransactionList renders TransactionList component with props hideTokenT
       class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
         data-testid="sort-by-popover-toggle"
+        disabled=""
       >
         <span
           class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"

@@ -290,10 +290,53 @@ export type MetaMetricsControllerGetStateAction = ControllerGetStateAction<
   MetaMetricsControllerState
 >;
 
+export type MetaMetricsControllerTrackEventAction = {
+  type: `${typeof controllerName}:trackEvent`;
+  handler: MetaMetricsController['trackEvent'];
+};
+
+export type MetaMetricsControllerGetMetaMetricsIdAction = {
+  type: `${typeof controllerName}:getMetaMetricsId`;
+  handler: MetaMetricsController['getMetaMetricsId'];
+};
+
+export type MetaMetricsControllerCreateEventFragmentAction = {
+  type: `${typeof controllerName}:createEventFragment`;
+  handler: MetaMetricsController['createEventFragment'];
+};
+
+export type MetaMetricsControllerGetEventFragmentByIdAction = {
+  type: `${typeof controllerName}:getEventFragmentById`;
+  handler: MetaMetricsController['getEventFragmentById'];
+};
+
+export type MetaMetricsControllerUpdateEventFragmentAction = {
+  type: `${typeof controllerName}:updateEventFragment`;
+  handler: MetaMetricsController['updateEventFragment'];
+};
+
+export type MetaMetricsControllerDeleteEventFragmentAction = {
+  type: `${typeof controllerName}:deleteEventFragment`;
+  handler: MetaMetricsController['deleteEventFragment'];
+};
+
+export type MetaMetricsControllerFinalizeEventFragmentAction = {
+  type: `${typeof controllerName}:finalizeEventFragment`;
+  handler: MetaMetricsController['finalizeEventFragment'];
+};
+
 /**
  * Actions exposed by the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerActions = MetaMetricsControllerGetStateAction;
+export type MetaMetricsControllerActions =
+  | MetaMetricsControllerGetStateAction
+  | MetaMetricsControllerTrackEventAction
+  | MetaMetricsControllerGetMetaMetricsIdAction
+  | MetaMetricsControllerCreateEventFragmentAction
+  | MetaMetricsControllerGetEventFragmentByIdAction
+  | MetaMetricsControllerUpdateEventFragmentAction
+  | MetaMetricsControllerDeleteEventFragmentAction
+  | MetaMetricsControllerFinalizeEventFragmentAction;
 
 /**
  * Event emitted when the state of the {@link MetaMetricsController} changes.
@@ -428,6 +471,41 @@ export default class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
+
+    this.messagingSystem.registerActionHandler(
+      'MetaMetricsController:trackEvent',
+      this.trackEvent.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'MetaMetricsController:getMetaMetricsId',
+      this.getMetaMetricsId.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'MetaMetricsController:createEventFragment',
+      this.createEventFragment.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'MetaMetricsController:getEventFragmentById',
+      this.getEventFragmentById.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'MetaMetricsController:updateEventFragment',
+      this.updateEventFragment.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'MetaMetricsController:deleteEventFragment',
+      this.deleteEventFragment.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'MetaMetricsController:finalizeEventFragment',
+      this.finalizeEventFragment.bind(this),
+    );
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
 

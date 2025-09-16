@@ -1,6 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../../store/store';
+import mockDefaultState from '../../../../../../test/data/mock-state.json';
 import { Recipient } from './recipient';
 
 const mockContactRecipient = {
@@ -15,13 +17,12 @@ const mockAccountRecipient = {
 };
 
 describe('Recipient', () => {
+  const store = configureStore(mockDefaultState);
+  const render = (ui: React.ReactElement) => renderWithProvider(ui, store);
+
   it('renders contact recipient with correct information', () => {
     const { getByText } = render(
-      <Recipient
-        recipient={mockContactRecipient}
-        useBlockie={false}
-        onClick={jest.fn()}
-      />,
+      <Recipient recipient={mockContactRecipient} onClick={jest.fn()} />,
     );
 
     expect(getByText('John Doe')).toBeInTheDocument();
@@ -33,7 +34,6 @@ describe('Recipient', () => {
       <Recipient
         isAccount={true}
         recipient={mockAccountRecipient}
-        useBlockie={false}
         onClick={jest.fn()}
       />,
     );
@@ -45,11 +45,7 @@ describe('Recipient', () => {
   it('calls onClick when recipient is clicked', () => {
     const mockOnClick = jest.fn();
     const { container } = render(
-      <Recipient
-        recipient={mockContactRecipient}
-        useBlockie={false}
-        onClick={mockOnClick}
-      />,
+      <Recipient recipient={mockContactRecipient} onClick={mockOnClick} />,
     );
 
     fireEvent.click(container.querySelector('.send-recipient') as Element);
@@ -61,7 +57,6 @@ describe('Recipient', () => {
       <Recipient
         isSelected={true}
         recipient={mockContactRecipient}
-        useBlockie={false}
         onClick={jest.fn()}
       />,
     );
@@ -77,7 +72,6 @@ describe('Recipient', () => {
       <Recipient
         isSelected={false}
         recipient={mockContactRecipient}
-        useBlockie={false}
         onClick={jest.fn()}
       />,
     );
@@ -88,29 +82,10 @@ describe('Recipient', () => {
     );
   });
 
-  it('renders blockies avatar when useBlockie is true', () => {
-    render(
-      <Recipient
-        recipient={mockContactRecipient}
-        useBlockie={true}
-        onClick={jest.fn()}
-      />,
-    );
+  it('renders an avatar element', () => {
+    render(<Recipient recipient={mockContactRecipient} onClick={jest.fn()} />);
 
-    const avatarElement = document.querySelector('.mm-avatar-account');
-    expect(avatarElement).toBeInTheDocument();
-  });
-
-  it('renders jazzicon avatar when useBlockie is false', () => {
-    render(
-      <Recipient
-        recipient={mockContactRecipient}
-        useBlockie={false}
-        onClick={jest.fn()}
-      />,
-    );
-
-    const avatarElement = document.querySelector('.mm-avatar-account');
+    const avatarElement = document.querySelector('[data-testid="avatar"]');
     expect(avatarElement).toBeInTheDocument();
   });
 
@@ -119,7 +94,6 @@ describe('Recipient', () => {
       <Recipient
         isAccount={false}
         recipient={mockContactRecipient}
-        useBlockie={false}
         onClick={jest.fn()}
       />,
     );
@@ -132,7 +106,6 @@ describe('Recipient', () => {
       <Recipient
         isAccount={true}
         recipient={mockAccountRecipient}
-        useBlockie={false}
         onClick={jest.fn()}
       />,
     );
@@ -145,11 +118,7 @@ describe('Recipient', () => {
       address: '0x1234567890abcdef1234567890abcdef12345678',
     };
     const { getByText } = render(
-      <Recipient
-        recipient={recipientWithoutName}
-        useBlockie={false}
-        onClick={jest.fn()}
-      />,
+      <Recipient recipient={recipientWithoutName} onClick={jest.fn()} />,
     );
 
     expect(getByText('0x12345...45678')).toBeInTheDocument();
@@ -163,7 +132,6 @@ describe('Recipient', () => {
       <Recipient
         isAccount={true}
         recipient={recipientWithoutName}
-        useBlockie={false}
         onClick={jest.fn()}
       />,
     );

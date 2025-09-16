@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
@@ -1151,6 +1151,75 @@ describe('AccountTrackerController', () => {
           });
         },
       );
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'anonymous',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "currentBlockGasLimit": "",
+            "currentBlockGasLimitByChainId": {},
+          }
+        `);
+      });
+    });
+
+    it('includes expected state in state logs', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInStateLogs',
+          ),
+        ).toMatchInlineSnapshot(`{}`);
+      });
+    });
+
+    it('persists expected state', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "accounts": {},
+            "accountsByChainId": {},
+            "currentBlockGasLimit": "",
+            "currentBlockGasLimitByChainId": {},
+          }
+        `);
+      });
+    });
+
+    it('exposes expected state to UI', async () => {
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'usedInUi',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "accounts": {},
+            "accountsByChainId": {},
+            "currentBlockGasLimit": "",
+            "currentBlockGasLimitByChainId": {},
+          }
+        `);
+      });
     });
   });
 });

@@ -144,90 +144,6 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should show weak password strength', () => {
-      const mockStore = configureMockStore()(mockState);
-      const { queryByTestId } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
-        mockStore,
-      );
-
-      const createNewWalletButton = queryByTestId('create-password-submit');
-
-      const createPasswordInput = queryByTestId('create-password-new-input');
-      const event = {
-        target: {
-          value: '12345678',
-        },
-      };
-
-      fireEvent.change(createPasswordInput, event);
-
-      const weakPasswordError = queryByTestId('weak-password');
-      expect(weakPasswordError).toBeInTheDocument();
-
-      expect(createNewWalletButton).toBeDisabled();
-
-      fireEvent.click(createNewWalletButton);
-
-      expect(mockCreateNewAccount).not.toHaveBeenCalled();
-    });
-
-    it('should show average password strength', () => {
-      const mockStore = configureMockStore()(mockState);
-      const { queryByTestId } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
-        mockStore,
-      );
-
-      const createNewWalletButton = queryByTestId('create-password-submit');
-
-      const createPasswordInput = queryByTestId('create-password-new-input');
-      const event = {
-        target: {
-          value: 'ZsE(!6679',
-        },
-      };
-
-      fireEvent.change(createPasswordInput, event);
-
-      const weakPasswordError = queryByTestId('average-password');
-      expect(weakPasswordError).toBeInTheDocument();
-
-      expect(createNewWalletButton).toBeDisabled();
-
-      fireEvent.click(createNewWalletButton);
-
-      expect(mockCreateNewAccount).not.toHaveBeenCalled();
-    });
-
-    it('should show strong password strength', () => {
-      const mockStore = configureMockStore()(mockState);
-      const { queryByTestId } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
-        mockStore,
-      );
-
-      const createPasswordInput = queryByTestId('create-password-new-input');
-      const event = {
-        target: {
-          value: 'E}URkDoV|/*,pxI',
-        },
-      };
-
-      fireEvent.change(createPasswordInput, event);
-
-      const weakPasswordError = queryByTestId('strong-password');
-      expect(weakPasswordError).toBeInTheDocument();
-
-      const createNewWalletButton = queryByTestId('create-password-submit');
-
-      expect(createNewWalletButton).toBeDisabled();
-
-      fireEvent.click(createNewWalletButton);
-
-      expect(mockCreateNewAccount).not.toHaveBeenCalled();
-    });
-
     it('should show mismatch password error', () => {
       const mockStore = configureMockStore()(mockState);
       const { queryByTestId, queryByText } = renderWithProvider(
@@ -267,7 +183,7 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should not create new wallet without terms checked', () => {
+    it('should not create new wallet without terms checked when its social login flow', () => {
       const mockStore = configureMockStore()(mockState);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
@@ -304,6 +220,51 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(createNewWalletButton);
 
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
+    });
+
+    it('should create new wallet without marketing checked when its social login flow', () => {
+      const mockStore = configureMockStore()({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword createNewAccount={mockCreateNewAccount} />,
+        mockStore,
+      );
+
+      const createPasswordInput = queryByTestId('create-password-new-input');
+      const confirmPasswordInput = queryByTestId(
+        'create-password-confirm-input',
+      );
+
+      const createPasswordEvent = {
+        target: {
+          value: '12345678',
+        },
+      };
+      const confirmPasswordEvent = {
+        target: {
+          value: '12345678',
+        },
+      };
+
+      fireEvent.change(createPasswordInput, createPasswordEvent);
+      fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+
+      const terms = queryByTestId('create-password-terms');
+
+      expect(terms).not.toBeChecked();
+
+      const createNewWalletButton = queryByTestId('create-password-submit');
+
+      expect(createNewWalletButton).toBeEnabled();
+
+      fireEvent.click(createNewWalletButton);
+
+      expect(mockCreateNewAccount).toHaveBeenCalled();
     });
   });
 

@@ -18,6 +18,8 @@ import {
   getLayer1GasFees,
   trimTrailingZeros,
   removeAdditionalDecimalPlaces,
+  getFractionLength,
+  addLeadingZeroIfNeeded,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -161,9 +163,12 @@ describe('Send - utils', () => {
   describe('navigateToSendRoute', () => {
     it('call history.push with send route', () => {
       const mockHistoryPush = jest.fn();
-      navigateToSendRoute({
-        push: mockHistoryPush,
-      });
+      navigateToSendRoute(
+        {
+          push: mockHistoryPush,
+        },
+        false,
+      );
       expect(mockHistoryPush).toHaveBeenCalled();
     });
   });
@@ -224,6 +229,25 @@ describe('Send - utils', () => {
         chainId: '0x1',
         transactionParams: { from: '0x123', value: '0x56bc75e2d63100000' },
       });
+    });
+  });
+
+  describe('getFractionLength', () => {
+    it('return width of fractional part', () => {
+      expect(getFractionLength('.1')).toEqual(1);
+      expect(getFractionLength('0')).toEqual(0);
+      expect(getFractionLength('.0001')).toEqual(4);
+      expect(getFractionLength('0.075')).toEqual(3);
+    });
+  });
+
+  describe('addLeadingZeroIfNeeded', () => {
+    it('add zero to decimal value if needed', () => {
+      expect(addLeadingZeroIfNeeded(undefined)).toEqual(undefined);
+      expect(addLeadingZeroIfNeeded('')).toEqual('');
+      expect(addLeadingZeroIfNeeded('.001')).toEqual('0.001');
+      expect(addLeadingZeroIfNeeded('0.001')).toEqual('0.001');
+      expect(addLeadingZeroIfNeeded('100')).toEqual('100');
     });
   });
 });

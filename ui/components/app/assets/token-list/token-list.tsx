@@ -21,6 +21,7 @@ import useMultiChainAssets from '../hooks/useMultichainAssets';
 import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
+  getAllEnabledNetworksForAllNamespaces,
 } from '../../../../selectors/multichain/networks';
 import {
   getAssetsBySelectedAccountGroup,
@@ -78,6 +79,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       : networkFilter;
   }, [enabledNetworksByNamespace, networkFilter]);
 
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
+
   const sortedFilteredTokens = useMemo(() => {
     if (!isMultichainAccountsState2Enabled) {
       const balances = isEvm ? evmBalances : multichainAssets;
@@ -94,21 +99,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
-        // TODO: This condition needs to be removed when changes to network selector are merged
-        // Until then, it is the only way to display non-evm assets
-        const singleNetworkAndNonEvm =
-          Object.entries(networksToShow).length === 1 &&
-          !chainId.startsWith('0x');
-
-        if (singleNetworkAndNonEvm) {
-          return [];
-        } else if (
-          chainId.startsWith('0x') &&
-          !Object.entries(networksToShow)
-            .filter(([_, shouldShow]) => shouldShow)
-            .map(([networkKey]) => networkKey)
-            .includes(chainId)
-        ) {
+        if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
           return [];
         }
 
@@ -149,6 +140,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     accountGroupIdAssets,
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
+    allEnabledNetworksForAllNamespaces,
   ]);
 
   useEffect(() => {

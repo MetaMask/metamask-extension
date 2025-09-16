@@ -7,6 +7,7 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
+const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -123,6 +124,7 @@ async function withFixtures(options, testSuite) {
     testSpecificMock = function () {
       // do nothing.
     },
+    useMockingPassThrough,
     useBundler,
     usePaymaster,
     ethConversionInUsd,
@@ -270,7 +272,13 @@ async function withFixtures(options, testSuite) {
       await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
     }
 
-    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
+    // Decide between the regular setupMocking and the passThrough version
+    const mockingSetupFunction = useMockingPassThrough
+      ? setupMockingPassThrough
+      : setupMocking;
+
+    // Use the mockingSetupFunction we just chose
+    const { mockedEndpoint, getPrivacyReport } = await mockingSetupFunction(
       mockServer,
       testSpecificMock,
       {
@@ -280,6 +288,7 @@ async function withFixtures(options, testSuite) {
       },
       withSolanaWebSocket,
     );
+
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',

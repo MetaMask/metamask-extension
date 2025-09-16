@@ -205,7 +205,7 @@ describe('DeepLinkRouter', () => {
       expect(browser.tabs.update).not.toHaveBeenCalled();
     });
 
-    it('should handle unparsable URLs and redirect to error page', async () => {
+    it('should handle unparsable URLs and redirect to error page without u param', async () => {
       const url = `something unparseable`;
       const tabId = 1;
       parseMock.mockResolvedValue(false);
@@ -264,7 +264,7 @@ describe('DeepLinkRouter', () => {
       });
     });
 
-    it("should handle routes that don't exist by redirecting to 404", async function () {
+    it("should handle routes that don't exist by redirecting to 404, including u param", async function () {
       const tabId = 1;
       const url = `https://example.com/nonexistent-route`;
       parseMock.mockResolvedValue(false);
@@ -273,7 +273,7 @@ describe('DeepLinkRouter', () => {
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
+        url: 'chrome-extension://extension-id/home.html#link?errorCode=404&u=%2Fnonexistent-route',
       });
     });
   });

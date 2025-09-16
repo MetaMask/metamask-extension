@@ -1,20 +1,24 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureStore from '../../../store/store';
+import mockDefaultState from '../../../../test/data/mock-state.json';
 import {
   MultichainAccountCell,
   MultichainAccountCellProps,
 } from './multichain-account-cell';
 
 describe('MultichainAccountCell', () => {
+  const store = configureStore(mockDefaultState);
   const defaultProps: MultichainAccountCellProps = {
-    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     accountName: 'Test Account',
     balance: '$2,400.00',
     endAccessory: <span data-testid="end-accessory">More</span>,
   };
 
   it('renders with all required props and displays account information correctly', () => {
-    render(<MultichainAccountCell {...defaultProps} />);
+    renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
@@ -33,7 +37,10 @@ describe('MultichainAccountCell', () => {
   });
 
   it('shows selection state correctly and applies proper styling', () => {
-    render(<MultichainAccountCell {...defaultProps} selected={true} />);
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} selected={true} />,
+      store,
+    );
 
     expect(
       screen.getByTestId(
@@ -54,7 +61,10 @@ describe('MultichainAccountCell', () => {
 
   it('handles click events and applies pointer cursor when onClick is provided', () => {
     const handleClick = jest.fn();
-    render(<MultichainAccountCell {...defaultProps} onClick={handleClick} />);
+    renderWithProvider(
+      <MultichainAccountCell {...defaultProps} onClick={handleClick} />,
+      store,
+    );
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
@@ -67,12 +77,13 @@ describe('MultichainAccountCell', () => {
   });
 
   it('renders correctly without optional props', () => {
-    render(
+    renderWithProvider(
       <MultichainAccountCell
         accountId={defaultProps.accountId}
         accountName="Minimal Account"
         balance="$100"
       />,
+      store,
     );
 
     expect(screen.getByText('Minimal Account')).toBeInTheDocument();
@@ -92,7 +103,7 @@ describe('MultichainAccountCell', () => {
 
   it('renders a complete cell with all features enabled', () => {
     const handleClick = jest.fn();
-    render(
+    renderWithProvider(
       <MultichainAccountCell
         accountId={defaultProps.accountId}
         accountName="Complete Account"
@@ -101,6 +112,7 @@ describe('MultichainAccountCell', () => {
         endAccessory={<span data-testid="end-accessory">More</span>}
         selected={true}
       />,
+      store,
     );
 
     expect(screen.getByText('Complete Account')).toBeInTheDocument();
@@ -124,5 +136,45 @@ describe('MultichainAccountCell', () => {
 
     fireEvent.click(cellElement);
     expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders startAccessory when provided', () => {
+    const startAccessoryElement = (
+      <span data-testid="start-accessory">Start</span>
+    );
+
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        startAccessory={startAccessoryElement}
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
+    expect(screen.getByText('Start')).toBeInTheDocument();
+  });
+
+  it('hides selected icon when startAccessory is present', () => {
+    // Arrange
+    const startAccessoryElement = (
+      <span data-testid="start-accessory">Start</span>
+    );
+
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        startAccessory={startAccessoryElement}
+        selected={true}
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(
+        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+      ),
+    ).not.toBeInTheDocument();
   });
 });

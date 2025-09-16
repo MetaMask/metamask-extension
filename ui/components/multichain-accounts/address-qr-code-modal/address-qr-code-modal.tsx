@@ -233,15 +233,8 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
                 size={ButtonSize.Lg}
                 isFullWidth
                 onClick={handleExplorerNavigation}
-                asChild
               >
-                <a
-                  href={`${explorerInfo.url}/address/${address}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {explorerInfo.buttonText}
-                </a>
+                {explorerInfo.buttonText}
               </Button>
             )}
           </Box>

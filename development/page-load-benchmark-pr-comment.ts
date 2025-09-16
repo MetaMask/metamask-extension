@@ -5,6 +5,7 @@ import {
   BenchmarkMetrics,
   BenchmarkSummary,
 } from '../test/e2e/page-objects/benchmark/page-load-benchmark';
+import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 /**
  * Structure of the benchmark results output file.
@@ -575,31 +576,18 @@ async function main(): Promise<void> {
   console.log('Generated comment:');
   console.log(commentBody);
 
-  // Post comment to PR
-  const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/${OWNER}/${REPOSITORY}/issues/${PR_NUMBER}/comments`;
-
-  console.log(`Posting to: ${POST_COMMENT_URI}`);
-
-  const response = await fetch(POST_COMMENT_URI, {
-    method: 'POST',
-    body: JSON_PAYLOAD,
-    headers: {
-      'User-Agent': 'metamaskbot',
-      Authorization: `token ${PR_COMMENT_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
+  const response = await postCommentWithMetamaskBot({
+    commentBody,
+    owner: OWNER,
+    repository: REPOSITORY,
+    prNumber: PR_NUMBER,
+    commentToken: PR_COMMENT_TOKEN,
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      `Post comment failed with status '${response.statusText}': ${errorText}`,
-    );
+  if (response) {
+    const data = await response.json();
+    console.log(`Comment posted successfully: ${data.html_url}`);
   }
-
-  const responseData = await response.json();
-  console.log(`Comment posted successfully: ${responseData.html_url}`);
 }
 
 main().catch((error) => {

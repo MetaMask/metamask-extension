@@ -7,7 +7,6 @@ import {
   ButtonPrimarySize,
   ButtonSize,
   ButtonVariant,
-  IconName,
   Modal,
   ModalContent,
   ModalFooter,
@@ -113,11 +112,7 @@ export const BridgeTransactionSettingsModal = ({
         <Column gap={3} padding={4}>
           <Row gap={1} justifyContent={JustifyContent.flexStart}>
             <Text>{t('swapsMaxSlippage')}</Text>
-            <Tooltip
-              position={PopoverPosition.Top}
-              iconName={IconName.Info}
-              style={{ zIndex: 1051 }}
-            >
+            <Tooltip position={PopoverPosition.Top} style={{ zIndex: 1051 }}>
               {t('swapSlippageTooltip')}
             </Tooltip>
           </Row>

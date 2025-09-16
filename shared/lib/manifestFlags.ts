@@ -91,6 +91,10 @@ export type ManifestFlags = {
      * Whether to simulate an unresponsive background by ignoring connections from the UI
      */
     simulateUnresponsiveBackground?: boolean;
+    /**
+     * The Infura project ID to use for API requests, useful to inject into a test build that doesn't have one
+     */
+    infuraProjectId?: string;
   };
 };
 

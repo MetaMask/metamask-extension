@@ -90,7 +90,7 @@ const mockAccountTreeState = {
     'test-wallet-1': {
       id: 'test-wallet-1',
       name: 'Test Wallet',
-      accountGroups: {
+      groups: {
         'test-group-1': {
           id: 'test-group-1',
           name: 'Test Account Group 1',
@@ -106,7 +106,7 @@ const mockInternalAccountsState = {
   accounts: {
     'test-account-1': {
       id: 'test-account-1',
-      address: '0x123',
+      address: '0xc5b2b5ae370876c0122910f92a13bef85a133e56',
       metadata: {
         name: 'Test Account',
         keyring: { type: 'HD Key Tree' },
@@ -231,12 +231,12 @@ describe('MultichainConnectPage', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('renders correctly', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
   });
 
-  it('should render image icon correctly', () => {
+  it('renders image icon correctly', () => {
     const { getAllByAltText } = render();
 
     const images = getAllByAltText('metamask.github.io logo');
@@ -251,7 +251,7 @@ describe('MultichainConnectPage', () => {
     );
   });
 
-  it('should render fallback icon correctly', () => {
+  it('renders fallback icon correctly', () => {
     const { container } = render({
       props: {
         targetSubjectMetadata: {
@@ -265,7 +265,7 @@ describe('MultichainConnectPage', () => {
     expect(divElement).toHaveTextContent('m');
   });
 
-  it('should render fallback icon correctly for IP address as an origin', () => {
+  it('renders fallback icon correctly for IP address as an origin', () => {
     const { container } = render({
       props: {
         targetSubjectMetadata: {
@@ -280,24 +280,24 @@ describe('MultichainConnectPage', () => {
     expect(divElement).toHaveTextContent('?');
   });
 
-  it('should render title correctly', () => {
+  it('renders title correctly', () => {
     const { getByText } = render();
     expect(getByText('metamask.github.io')).toBeDefined();
   });
 
-  it('should render subtitle correctly', () => {
+  it('renders subtitle correctly', () => {
     const { getByText } = render();
     expect(getByText('Connect this website with MetaMask')).toBeDefined();
   });
 
-  it('should render accounts tab correctly', () => {
+  it('renders accounts tab correctly', () => {
     const { getByText } = render();
 
     expect(getByText('Accounts')).toBeDefined();
     expect(getByText('Edit accounts')).toBeDefined();
   });
 
-  it('should render permissions tab correctly', () => {
+  it('renders permissions tab correctly', () => {
     const { getByText } = render();
 
     const permissionsTab = getByText('Permissions');
@@ -307,7 +307,7 @@ describe('MultichainConnectPage', () => {
     expect(permissionsTab).toBeDefined();
   });
 
-  it('should render edit accounts modal when edit button is clicked', () => {
+  it('renders edit accounts modal when edit button is clicked', () => {
     const { getByText } = render();
 
     const editAccountsButton = getByText('Edit accounts');
@@ -317,7 +317,7 @@ describe('MultichainConnectPage', () => {
     expect(editAccountsButton).toBeDefined();
   });
 
-  it('should close edit accounts modal when close button is clicked', () => {
+  it('closes edit accounts modal when close button is clicked', () => {
     const { getByText } = render();
 
     const editAccountsButton = getByText('Edit accounts');
@@ -327,7 +327,7 @@ describe('MultichainConnectPage', () => {
     expect(editAccountsButton).toBeDefined();
   });
 
-  it('should render confirm and cancel buttons', () => {
+  it('renders confirm and cancel buttons', () => {
     const { getByText } = render();
 
     const confirmButton = getByText('Connect');
@@ -337,7 +337,7 @@ describe('MultichainConnectPage', () => {
     expect(cancelButton).toBeDefined();
   });
 
-  it('should call rejectPermissionsRequest when cancel button is clicked', () => {
+  it('calls rejectPermissionsRequest when cancel button is clicked', () => {
     const mockRejectPermissionsRequest = jest.fn();
     const { getByText } = render({
       props: {
@@ -351,7 +351,7 @@ describe('MultichainConnectPage', () => {
     expect(mockRejectPermissionsRequest).toHaveBeenCalledWith('1');
   });
 
-  it('should call approveConnection when connect button is clicked', () => {
+  it('calls approveConnection when connect button is clicked', () => {
     const mockApproveConnection = jest.fn();
     const { getByText } = render({
       props: {
@@ -365,7 +365,7 @@ describe('MultichainConnectPage', () => {
     expect(mockApproveConnection).toHaveBeenCalled();
   });
 
-  it('should render with existing permissions correctly', () => {
+  it('renders with existing permissions correctly', () => {
     const { container } = render({
       props: {
         request: {
@@ -424,7 +424,7 @@ describe('MultichainConnectPage', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should handle account group selection correctly', () => {
+  it('handles account group selection correctly', () => {
     const { getByText } = render();
 
     const editAccountsButton = getByText('Edit accounts');
@@ -434,7 +434,7 @@ describe('MultichainConnectPage', () => {
     expect(editAccountsButton).toBeDefined();
   });
 
-  it('should handle permissions tab interactions', () => {
+  it('handles permissions tab interactions', () => {
     const { getByText } = render();
 
     const permissionsTab = getByText('Permissions');
@@ -444,7 +444,7 @@ describe('MultichainConnectPage', () => {
     expect(permissionsTab).toBeDefined();
   });
 
-  it('should render with multichain origin request correctly', () => {
+  it('renders with multichain origin request correctly', () => {
     const { container } = render({
       props: {
         request: {
@@ -481,7 +481,7 @@ describe('MultichainConnectPage', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should handle permissions tab being disabled when no accounts selected', () => {
+  it('handles permissions tab being disabled when no accounts selected', () => {
     const { getByTestId } = render();
 
     // Since we have mocked account groups, the tab should be enabled
@@ -490,12 +490,12 @@ describe('MultichainConnectPage', () => {
     expect(permissionsTab).toBeDefined();
   });
 
-  it('should render connect page with correct test id', () => {
+  it('renders connect page with correct test id', () => {
     const { getByTestId } = render();
     expect(getByTestId('connect-page')).toBeDefined();
   });
 
-  it('should render accounts and permissions tabs', () => {
+  it('renders accounts and permissions tabs', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('accounts-tab')).toBeDefined();
