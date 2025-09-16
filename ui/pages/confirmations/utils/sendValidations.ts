@@ -6,7 +6,7 @@ import { confusables } from 'unicode-confusables';
 import { RecipientValidationResult } from '../types/send';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export const validateDomainWithConfusables = (
+export const findConfusablesInRecipient = (
   address: string,
   t: ReturnType<typeof useI18nContext>,
 ): RecipientValidationResult => {

@@ -10,7 +10,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../../types/send';
 import { useSendContext } from '../../../context/send';
-import { validateDomainWithConfusables } from '../../../utils/sendValidations';
+import { findConfusablesInRecipient } from '../../../utils/sendValidations';
 
 const LOWER_CASED_BURN_ADDRESSES = [
   '0x0000000000000000000000000000000000000000',
@@ -66,7 +66,7 @@ export const useEvmRecipientValidation = () => {
           prevResolved.current = to;
           return {
             resolvedLookup,
-            ...validateDomainWithConfusables(to, t),
+            ...findConfusablesInRecipient(to, t),
           };
         }
         return {

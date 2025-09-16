@@ -3,7 +3,7 @@ import { isSolanaAddress } from '../../../../../../shared/lib/multichain/account
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { isValidDomainName } from '../../../../../helpers/utils/util';
 import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
-import { validateDomainWithConfusables } from '../../../utils/sendValidations';
+import { findConfusablesInRecipient } from '../../../utils/sendValidations';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { useSolanaRecipientValidation } from './useSolanaRecipientValidation';
@@ -26,7 +26,7 @@ describe('useSolanaRecipientValidation', () => {
   const mockIsValidDomainName = jest.mocked(isValidDomainName);
   const mockUseSnapNameResolution = jest.mocked(useSnapNameResolution);
   const mockValidateDomainWithConfusables = jest.mocked(
-    validateDomainWithConfusables,
+    findConfusablesInRecipient,
   );
 
   const mockResolveNameLookup = jest.fn();

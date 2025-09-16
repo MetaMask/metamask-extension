@@ -41,7 +41,7 @@ export const useRecipientValidation = () => {
     async () => validateRecipient(),
     [validateRecipient],
   );
-  console.log('*****', result);
+
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
     recipientError: result?.error,

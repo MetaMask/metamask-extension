@@ -6,7 +6,7 @@ import { isValidDomainName } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../../types/send';
 import { useSendContext } from '../../../context/send';
-import { validateDomainWithConfusables } from '../../../utils/sendValidations';
+import { findConfusablesInRecipient } from '../../../utils/sendValidations';
 
 // Common Solana burn addresses - addresses commonly used as burn destinations
 const SOLANA_BURN_ADDRESSES = [
@@ -57,7 +57,7 @@ export const useSolanaRecipientValidation = () => {
           prevResolved.current = to;
           return {
             resolvedLookup,
-            ...validateDomainWithConfusables(to, t),
+            ...findConfusablesInRecipient(to, t),
           };
         }
         return {

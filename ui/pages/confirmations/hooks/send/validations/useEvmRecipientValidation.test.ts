@@ -6,7 +6,7 @@ import {
   getERC721AssetSymbol,
 } from '../../../../../store/actions';
 import { useSnapNameResolution } from '../../../../../hooks/snaps/useSnapNameResolution';
-import { validateDomainWithConfusables } from '../../../utils/sendValidations';
+import { findConfusablesInRecipient } from '../../../utils/sendValidations';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { useEvmRecipientValidation } from './useEvmRecipientValidation';
@@ -35,7 +35,7 @@ describe('useEvmRecipientValidation', () => {
   const mockGetERC721AssetSymbol = jest.mocked(getERC721AssetSymbol);
   const mockUseSnapNameResolution = jest.mocked(useSnapNameResolution);
   const mockValidateDomainWithConfusables = jest.mocked(
-    validateDomainWithConfusables,
+    findConfusablesInRecipient,
   );
 
   const mockResolveNameLookup = jest.fn();
