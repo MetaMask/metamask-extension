@@ -41,7 +41,7 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
           >
-            Ethereum
+            Ethereum Mainnet
           </p>
           <label
             class="toggle-button toggle-button--on toggle-button--disabled"
@@ -303,7 +303,7 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
           >
-            Ethereum
+            Ethereum Mainnet
           </p>
           <label
             class="toggle-button toggle-button--on"
