@@ -1130,21 +1130,22 @@ export function setupController(
         overrides?.getPortStream?.(remotePort) ||
         new ExtensionPortStream(remotePort);
 
-      portStream.on('message-too-large', (event) => {
+      /**
+       * send event to sentry with details about the event
+       * @param {import("extension-port-stream").MessageTooLargeEventData} details
+       */
+      function handleMessageTooLarge({ chunkSize }) {
         /**
-         * @type {import("extension-port-stream").MessageTooLargeEventData}
+         * @type {MetamaskController}
          */
-        const e = event;
-        // send event to sentry with details about the event
-        controller.metaMetricsController.trackEvent({
+        const theController = controller;
+        theController.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PortStreamChunked,
           category: MetaMetricsEventCategory.PortStream,
-          properties: {
-            chunkSize: e.chunkSize,
-            numberOfChunks: e.numberOfChunks,
-          },
+          properties: { chunkSize },
         });
-      });
+      }
+      portStream.on('message-too-large', handleMessageTooLarge);
 
       // communication with popup
       controller.isClientOpen = true;
