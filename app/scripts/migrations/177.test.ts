@@ -1,9 +1,9 @@
-import { migrate, version } from './178';
+import { migrate, version } from './177';
 
 const oldVersion = 177;
 const newVersion = version;
 
-describe('migration #178', () => {
+describe('migration #177', () => {
   it('updates the version metadata', async () => {
     const oldState = {
       meta: { version: oldVersion },
@@ -28,27 +28,27 @@ describe('migration #178', () => {
             'app.uniswap.org': {
               data: {
                 hostname: 'app.uniswap.org',
-                recommendedAction: 'VERIFIED'
+                recommendedAction: 'VERIFIED',
               },
-              timestamp: 1757993550
+              timestamp: 1757993550,
             },
             'img.reservoir.tools': {
               result: { recommendedAction: 'NONE' },
-              timestamp: 1757352398
+              timestamp: 1757352398,
             },
             'metamask.github.io': {
               data: { hostname: 'metamask.github.io' },
-              timestamp: 1757947364
+              timestamp: 1757947364,
             },
             'opensea.io': {
               result: { recommendedAction: 'SAFE' },
-              timestamp: 1757527040
+              timestamp: 1757527040,
             },
             'portfolio.metamask.io': {
               result: { recommendedAction: 'SAFE' },
-              timestamp: 1753231169
-            }
-          }
+              timestamp: 1753231169,
+            },
+          },
         },
       },
     };
