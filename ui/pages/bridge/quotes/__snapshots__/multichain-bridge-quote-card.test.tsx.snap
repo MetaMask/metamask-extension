@@ -118,7 +118,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          undefined%
+          0.5%
         </p>
         <button
           aria-label="Edit slippage"
