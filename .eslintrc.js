@@ -550,6 +550,7 @@ module.exports = {
       files: [
         'app/scripts/lockdown-run.js',
         'app/scripts/lockdown-more.js',
+        'app/scripts/use-lockdown-more.js',
         'test/helpers/protect-intrinsics-helpers.js',
         'test/unit-global/protect-intrinsics.test.js',
       ],
@@ -559,7 +560,11 @@ module.exports = {
       },
     },
     {
-      files: ['app/scripts/lockdown-run.js', 'app/scripts/lockdown-more.js'],
+      files: [
+        'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
+        'app/scripts/use-lockdown-more.js',
+      ],
       parserOptions: {
         sourceType: 'script',
       },

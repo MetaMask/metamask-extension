@@ -50,13 +50,16 @@ export const lavamoatPlugin = (args: Args) =>
       } else if (chunk.name === 'runtime') {
         return {
           mode: 'safe',
-          // If snow is enabled, it needs to run before LavaMoat
-          staticShims: args.snow
-            ? [
-                require.resolve('@lavamoat/snow/snow.prod.js'),
-                join(rootDir, 'app/scripts/use-snow.js'),
-              ]
-            : [],
+          staticShims: [
+            // If snow is enabled, it needs to run before LavaMoat
+            ...(args.snow
+              ? [
+                  require.resolve('@lavamoat/snow/snow.prod.js'),
+                  join(rootDir, 'app/scripts/use-snow.js'),
+                ]
+              : []),
+            join(rootDir, 'app/scripts/use-lockdown-more.js'),
+          ],
         };
       }
       return { mode: 'safe' };
