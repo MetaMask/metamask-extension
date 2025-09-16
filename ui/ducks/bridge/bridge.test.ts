@@ -4,7 +4,6 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
@@ -141,7 +140,7 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         fromToken: null,
         toToken: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: null,
         fromTokenInputValue: null,
         sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
@@ -238,7 +237,7 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: null,
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,

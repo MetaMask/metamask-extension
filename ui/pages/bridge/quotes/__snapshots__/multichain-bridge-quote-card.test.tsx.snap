@@ -300,7 +300,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          undefined%
+          0.5%
         </p>
         <button
           aria-label="Edit slippage"
