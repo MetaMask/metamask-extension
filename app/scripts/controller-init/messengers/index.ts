@@ -137,6 +137,10 @@ import {
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+import {
+  getKeyringControllerInitMessenger,
+  getKeyringControllerMessenger,
+} from './keyring-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -182,6 +186,14 @@ export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
+export type {
+  KeyringControllerMessenger,
+  KeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
+export {
+  getKeyringControllerMessenger,
+  getKeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
@@ -315,6 +327,10 @@ export const CONTROLLER_MESSENGERS = {
   InstitutionalSnapController: {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
+  },
+  KeyringController: {
+    getMessenger: getKeyringControllerMessenger,
+    getInitMessenger: getKeyringControllerInitMessenger,
   },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,

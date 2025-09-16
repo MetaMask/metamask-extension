@@ -11,9 +11,14 @@ import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Browser } from 'webextension-polyfill';
+import { ExportableKeyEncryptor } from '@metamask/keyring-controller';
+import { KeyringClass } from '@metamask/keyring-utils';
+import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
+import { TrezorConnectBridge } from '@metamask/eth-trezor-keyring';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
+import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -72,6 +77,12 @@ export type ControllerInitRequest<
   controllerMessenger: ControllerMessengerType;
 
   /**
+   * An instance of an encryptor to use for encrypting and decrypting
+   * sensitive data.
+   */
+  encryptor?: ExportableKeyEncryptor;
+
+  /**
    * The extension browser API.
    */
   extension: Browser;
@@ -127,6 +138,18 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
+   * Overrides for the keyrings.
+   */
+  keyringOverrides?: {
+    qr?: KeyringClass;
+    qrBridge?: typeof QrKeyringScannerBridge;
+    lattice?: KeyringClass;
+    trezorBridge?: HardwareTransportBridgeClass;
+    oneKey?: HardwareTransportBridgeClass;
+    ledgerBridge?: HardwareTransportBridgeClass;
+  };
+
+  /**
    * Function to update account balance for network of the transaction
    */
   updateAccountBalanceForTransactionNetwork(
@@ -144,6 +167,11 @@ export type ControllerInitRequest<
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: ControllerPersistedState;
+
+  /**
+   * Remove an account from keyring state.
+   */
+  removeAccount(address: string): Promise<string>;
 
   /**
    * Close all connections for the given origin, and removes the references
