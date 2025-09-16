@@ -6,6 +6,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   Display,
   FlexDirection,
@@ -39,8 +40,8 @@ import { getImageForChainId } from '../../../../selectors/multichain';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getShowTestNetworks } from '../../../../selectors/selectors';
 
-// TODO use MultichainNetworkConfiguration type
 type NetworkOption =
+  | MultichainNetworkConfiguration
   | (NetworkConfiguration & {
       nickname?: string;
     })
