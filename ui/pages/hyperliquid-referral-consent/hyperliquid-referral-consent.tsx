@@ -60,7 +60,7 @@ export const HyperliquidReferralConsent: React.FC<
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        paddingBottom={4}
+        paddingBottom={6}
       >
         <Text
           variant={TextVariant.headingMd}
