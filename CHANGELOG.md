@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [13.4.0]
-
 ### Added
-
 - feat: adds verified trust signal to dapp connection page (#35760)
 - feat: hides bridge recipient picker until there is an active bridge quote (#35821)
 - feat: implements bridge destination account picker modal (#35819)
@@ -45,7 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: adds max button to amount page (#35474)
 
 ### Fixed
-
 - fix: fixes a bug that was causing to show spam Solana transactions in the activity list (#35695)
 - fix: fixes an issue that was causing to show an empty symbol instead of UNKNOWN in activity list for Solana tokens with no metadata (#35695)
 - fix: adds UI adjustments for multichain accounts features (#35839)
