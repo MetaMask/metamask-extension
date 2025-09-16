@@ -431,7 +431,6 @@ export default class OAuthService {
 
       const data = await res.json();
 
-      // The API returns `is_opt_in`. Fallback to `opt_in_status` if present.
       return Boolean(data?.is_opt_in ?? false);
     } catch (error) {
       log.error('Failed to get marketing opt in status', error);
