@@ -3,7 +3,6 @@ import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/sm
 import {
   AvatarIcon,
   BannerAlert,
-  Checkbox,
   FormTextField,
   Text,
 } from '../../component-library';
@@ -77,7 +76,6 @@ export const safeComponentList = {
   BannerAlert,
   Box,
   Button,
-  Checkbox,
   Chip,
   ConfirmationNetworkSwitch,
   ConfirmInfoRow,
@@ -89,7 +87,6 @@ export const safeComponentList = {
   FormTextField,
   HyperliquidReferralConsent,
   i: 'i',
-  img: 'img',
   MetaMaskTranslation,
   NetworkDisplay,
   OriginPill,
@@ -129,8 +126,6 @@ export const safeComponentList = {
   Typography,
   SmartTransactionStatusPage,
   UrlIcon,
-  // HTML elements
-  input: 'input',
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateNamedSnapAccount,
   CreateSnapAccount,

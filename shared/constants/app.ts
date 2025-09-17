@@ -63,9 +63,6 @@ export const MESSAGE_TYPE = {
   HYPERLIQUID_REFERRAL_CONSENT: 'hyperliquid_referral_consent',
 } as const;
 
-// Custom ApprovalType for Hyperliquid referral consent
-export const HYPERLIQUID_APPROVAL_TYPE = 'hyperliquid_referral_consent';
-
 export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 
 // Custom ApprovalType for Hyperliquid referral consent
