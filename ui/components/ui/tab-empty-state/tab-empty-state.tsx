@@ -12,15 +12,39 @@ import {
   TextColor,
   TextAlign,
   twMerge,
+  type TextProps,
+  type ButtonProps,
+  type BoxProps,
 } from '@metamask/design-system-react';
 
-export type TabEmptyStateProps = {
+export type TabEmptyStateProps = Omit<BoxProps, 'children' | 'ref'> & {
+  /**
+   * The icon to display in the empty state if this is an png/jpg image you will need to account for light and dark theme with useTheme
+   */
   icon: React.ReactNode;
+  /**
+   * The description to display in the empty state
+   */
   description?: string;
-  descriptionProps?: React.ComponentProps<typeof Text>;
+  /**
+   * The props to pass to the description Text component
+   */
+  descriptionProps?: Partial<TextProps>;
+  /**
+   * The text to display in the action button
+   */
   actionButtonText?: string;
-  actionButtonProps?: React.ComponentProps<typeof Button>;
+  /**
+   * The props to pass to the action button
+   */
+  actionButtonProps?: Partial<ButtonProps>;
+  /**
+   * The function to call when the action button is clicked
+   */
   onAction?: () => void;
+  /**
+   * Additional classNames to apply to the TabEmptyState
+   */
   className?: string;
 };
 
@@ -49,7 +73,7 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
           textAlign={TextAlign.Center}
-          className="mb-4"
+          className="mb-2"
           {...descriptionProps}
         >
           {description}
