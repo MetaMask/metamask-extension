@@ -860,61 +860,6 @@ export default class MetamaskController extends EventEmitter {
       extension: this.extension,
     });
 
-    const currencyRateMessenger = this.controllerMessenger.getRestricted({
-      name: 'CurrencyRateController',
-      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
-    });
-    this.currencyRateController = new CurrencyRateController({
-      includeUsdRate: true,
-      messenger: currencyRateMessenger,
-      state: initState.CurrencyController,
-      useExternalServices: () =>
-        this.preferencesController.state.useExternalServices,
-    });
-    const initialFetchMultiExchangeRate =
-      this.currencyRateController.fetchMultiExchangeRate.bind(
-        this.currencyRateController,
-      );
-    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
-      if (this.preferencesController.state.useCurrencyRateCheck) {
-        return initialFetchMultiExchangeRate(...args);
-      }
-      return {
-        conversionRate: null,
-        usdConversionRate: null,
-      };
-    };
-
-    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenBalancesController',
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'TokensController:getState',
-        'PreferencesController:getState',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:listAccounts',
-        'AccountTrackerController:updateNativeBalances',
-        'AccountTrackerController:updateStakedBalances',
-      ],
-      allowedEvents: [
-        'PreferencesController:stateChange',
-        'TokensController:stateChange',
-        'NetworkController:stateChange',
-        'KeyringController:accountRemoved',
-        'AccountActivityService:balanceUpdated',
-        'AccountActivityService:statusChanged',
-      ],
-    });
-
-    this.tokenBalancesController = new TokenBalancesController({
-      messenger: tokenBalancesMessenger,
-      state: initState.TokenBalancesController,
-      useAccountsAPI: false,
-      queryMultipleAccounts:
-        this.preferencesController.state.useMultiAccountBalanceChecker,
-      interval: 30000,
-    });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',

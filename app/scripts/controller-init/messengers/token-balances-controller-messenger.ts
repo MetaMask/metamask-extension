@@ -81,6 +81,8 @@ export function getTokenBalancesControllerMessenger(
       'TokensController:stateChange',
       'NetworkController:stateChange',
       'KeyringController:accountRemoved',
+      'AccountActivityService:balanceUpdated',
+      'AccountActivityService:statusChanged',
     ],
   });
 }
