@@ -1756,7 +1756,10 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "dataCollectionForMarketingDescriptionSocialLogin": {
+    "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Okay"

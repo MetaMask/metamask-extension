@@ -4232,7 +4232,10 @@ export function setDataCollectionForMarketing(
 export function setIsSocialLoginFlowEnabledForMetrics(
   isSocialLoginFlowEnabledForMetrics: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setIsSocialLoginFlowEnabledForMetrics', [
+      isSocialLoginFlowEnabledForMetrics,
+    ]);
     dispatch({
       type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
       value: isSocialLoginFlowEnabledForMetrics,
@@ -4242,22 +4245,36 @@ export function setIsSocialLoginFlowEnabledForMetrics(
 
 /**
  * Sets marketing consent with OAuth service for social login users.
+ *
+ * @param hasEmailMarketingConsent - Boolean value for marketing consent
  */
-export function setMarketingConsent(): ThunkAction<
-  Promise<boolean>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function setMarketingConsent(
+  hasEmailMarketingConsent: boolean,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      const res = await submitRequestToBackground('setMarketingConsent');
+      const res = await submitRequestToBackground('setMarketingConsent', [
+        hasEmailMarketingConsent,
+      ]);
       return Boolean(res);
     } catch (error) {
       logErrorWithMessage(getErrorMessage(error));
       return false;
     }
   };
+}
+
+/**
+ * Gets marketing consent with OAuth service for social login users.
+ */
+export async function getMarketingConsent() {
+  try {
+    const res = await submitRequestToBackground('getMarketingConsent');
+    return Boolean(res);
+  } catch (error) {
+    logErrorWithMessage(getErrorMessage(error));
+    return false;
+  }
 }
 
 /**
