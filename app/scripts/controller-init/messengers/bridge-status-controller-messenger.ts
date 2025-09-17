@@ -20,6 +20,7 @@ import type {
   BridgeControllerAction,
 } from '@metamask/bridge-controller';
 import type { GetGasFeeState } from '@metamask/gas-fee-controller';
+import { MultichainTransactionsControllerTransactionConfirmedEvent } from '@metamask/multichain-transactions-controller';
 
 type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -36,6 +37,7 @@ type AllowedActions =
   | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedEvents =
+  | MultichainTransactionsControllerTransactionConfirmedEvent
   | TransactionControllerTransactionFailedEvent
   | TransactionControllerTransactionConfirmedEvent;
 
@@ -70,7 +72,7 @@ export function getBridgeStatusControllerMessenger(
       'RemoteFeatureFlagController:getState',
     ],
     allowedEvents: [
-      // 'MultichainTransactionsController:transactionConfirmed',
+      'MultichainTransactionsController:transactionConfirmed',
       'TransactionController:transactionFailed',
       'TransactionController:transactionConfirmed',
     ],
