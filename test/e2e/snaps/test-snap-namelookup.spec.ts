@@ -8,7 +8,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { switchToNetworkFromSendFlow } from '../page-objects/flows/network.flow';
 
-describe('Name lookup TEST', function () {
+describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
     await withFixtures(
       {

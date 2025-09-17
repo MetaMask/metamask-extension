@@ -9,7 +9,7 @@ import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 
-describe('ENS TEST', function (this: Suite) {
+describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
 
   const shortSampleAddress = '0x11111...11111';
