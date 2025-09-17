@@ -7413,7 +7413,7 @@ export default class MetamaskController extends EventEmitter {
           RestrictedMethods.wallet_snap,
         ),
         getIsLocked: () => {
-          const { isUnlocked } = this.messagingSystem.call(
+          const { isUnlocked } = this.controllerMessenger.call(
             'KeyringController:getState',
           );
 
