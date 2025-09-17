@@ -79,14 +79,6 @@ import {
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
-import {
-  RemoteFeatureFlagController,
-  ClientConfigApiService,
-  ClientType,
-  DistributionType,
-  EnvironmentType,
-} from '@metamask/remote-feature-flag-controller';
-
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -242,7 +234,6 @@ import {
   TraceName,
   TraceOperation,
 } from '../../shared/lib/trace';
-import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
@@ -436,6 +427,7 @@ import { SubscriptionControllerInit } from './controller-init/subscription';
 import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
+import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -465,19 +457,6 @@ const API_TYPE = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
-
-const environmentMappingForRemoteFeatureFlag = {
-  [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
-  [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,
-  [ENVIRONMENT.PRODUCTION]: EnvironmentType.Production,
-};
-
-const buildTypeMappingForRemoteFeatureFlag = {
-  flask: DistributionType.Flask,
-  main: DistributionType.Main,
-  beta: DistributionType.Beta,
-  experimental: DistributionType.Main, // experimental builds use main distribution
-};
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -1450,25 +1429,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // RemoteFeatureFlagController has subscription for preferences changes
-    this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        const { useExternalServices: prevUseExternalServices } = prevState;
-        const { useExternalServices: currUseExternalServices } = currState;
-        if (currUseExternalServices && !prevUseExternalServices) {
-          this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController
-            .updateRemoteFeatureFlags()
-            .catch((error) => {
-              console.error('Failed to update remote feature flags:', error);
-            });
-        } else if (!currUseExternalServices && prevUseExternalServices) {
-          this.remoteFeatureFlagController.disable();
-        }
-      }, this.preferencesController.state),
-    );
-
     // MultichainAccountService has subscription for preferences changes
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -1496,53 +1456,6 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    // Initialize RemoteFeatureFlagController
-    const remoteFeatureFlagControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'RemoteFeatureFlagController',
-        allowedActions: [],
-        allowedEvents: [],
-      });
-    remoteFeatureFlagControllerMessenger.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (isRpcFailoverEnabled) => {
-        if (isRpcFailoverEnabled) {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', enabling RPC failover',
-          );
-          this.networkController.enableRpcFailover();
-        } else {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', disabling RPC failover',
-          );
-          this.networkController.disableRpcFailover();
-        }
-      },
-      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
-    );
-    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
-      messenger: remoteFeatureFlagControllerMessenger,
-      fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
-      disabled: !this.preferencesController.state.useExternalServices,
-      getMetaMetricsId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:getMetaMetricsId',
-      ),
-      clientConfigApiService: new ClientConfigApiService({
-        fetch: globalThis.fetch.bind(globalThis),
-        config: {
-          client: ClientType.Extension,
-          distribution:
-            this._getConfigForRemoteFeatureFlagRequest().distribution,
-          environment: this._getConfigForRemoteFeatureFlagRequest().environment,
-        },
-      }),
-    });
-
     const existingControllers = [
       this.networkController,
       this.preferencesController,
@@ -1553,6 +1466,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       MetaMetricsController: MetaMetricsControllerInit,
+      RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
@@ -1624,6 +1538,8 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.metaMetricsController = controllersByName.MetaMetricsController;
+    this.remoteFeatureFlagController =
+      controllersByName.RemoteFeatureFlagController;
     this.gasFeeController = controllersByName.GasFeeController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
@@ -1685,6 +1601,28 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
+
+    this.controllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (isRpcFailoverEnabled) => {
+        if (isRpcFailoverEnabled) {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', enabling RPC failover',
+          );
+          this.networkController.enableRpcFailover();
+        } else {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', disabling RPC failover',
+          );
+          this.networkController.disableRpcFailover();
+        }
+      },
+      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+    );
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
       name: 'PetnamesBridge',
@@ -9279,17 +9217,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       metamask: this.getState(),
     };
-  }
-
-  _getConfigForRemoteFeatureFlagRequest() {
-    const distribution =
-      buildTypeMappingForRemoteFeatureFlag[process.env.METAMASK_BUILD_TYPE] ||
-      DistributionType.Main;
-    const environment =
-      environmentMappingForRemoteFeatureFlag[
-        process.env.METAMASK_ENVIRONMENT
-      ] || EnvironmentType.Development;
-    return { distribution, environment };
   }
 
   /**

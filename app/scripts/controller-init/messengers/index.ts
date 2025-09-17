@@ -115,6 +115,10 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+import {
+  getRemoteFeatureFlagControllerInitMessenger,
+  getRemoteFeatureFlagControllerMessenger,
+} from './remote-feature-flag-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -162,6 +166,14 @@ export {
 } from './name-controller-messenger';
 export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+export type {
+  RemoteFeatureFlagControllerMessenger,
+  RemoteFeatureFlagControllerInitMessenger,
+} from './remote-feature-flag-controller-messenger';
+export {
+  getRemoteFeatureFlagControllerMessenger,
+  getRemoteFeatureFlagControllerInitMessenger,
+} from './remote-feature-flag-controller-messenger';
 export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
@@ -293,6 +305,10 @@ export const CONTROLLER_MESSENGERS = {
   RatesController: {
     getMessenger: getRatesControllerMessenger,
     getInitMessenger: noop,
+  },
+  RemoteFeatureFlagController: {
+    getMessenger: getRemoteFeatureFlagControllerMessenger,
+    getInitMessenger: getRemoteFeatureFlagControllerInitMessenger,
   },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
