@@ -26,10 +26,6 @@ export default {
       control: 'boolean',
       description: 'Whether or not the referral is approved.',
     },
-    allAccounts: {
-      control: 'boolean',
-      description: 'Whether or not the approval applies to all connected accounts.',
-    },
     selectedAddress: {
       control: 'text',
       description: 'The address of the currently selected account.',
@@ -37,7 +33,6 @@ export default {
   },
   args: {
     approved: true,
-    allAccounts: true,
     selectedAddress: '0x123',
   },
 };

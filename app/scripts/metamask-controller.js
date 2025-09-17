@@ -6374,7 +6374,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles Hyperliquid referral consent flow for eth_accounts requests.
+   * Handles Hyperliquid referral approval flow for eth_accounts requests.
    * Shows approval confirmation screen if needed and manages referral URL redirection.
    *
    * @param {object} req - The JSON-RPC request object.
@@ -6399,81 +6399,125 @@ export default class MetamaskController extends EventEmitter {
 
     // Check if there's already a pending approval request to prevent duplicates
     if (this.approvalController.has({ origin })) {
-      console.log("hasApprovalRequestsForOrigin true");
+      console.log('hasApprovalRequestsForOrigin true');
       return;
     }
 
-    // Get fresh preferences state
     const {
-      referralApprovedAccounts = [],
-      referralPassedAccounts = [],
-      referralDeclinedAccounts = [],
+      referralApprovedAccounts: approvedAccounts = [],
+      referralPassedAccounts: passedAccounts = [],
+      referralDeclinedAccounts: declinedAccounts = [],
     } = this.preferencesController.state;
 
-    console.log({ referralApprovedAccounts });
-    console.log({ referralPassedAccounts });
-    console.log({ referralDeclinedAccounts });
+    console.log({
+      approvedAccounts,
+      passedAccounts,
+      declinedAccounts,
+    });
 
-    const isInApprovedAccounts = referralApprovedAccounts.includes(permittedAccount);
-    const isInPassedAccounts = referralPassedAccounts.includes(permittedAccount);
-    const isInDeclinedAccounts = referralDeclinedAccounts.includes(permittedAccount);
+    const hasApproved = approvedAccounts.includes(permittedAccount);
+    const hasBeenRedirected = passedAccounts.includes(permittedAccount);
+    const hasDeclined = declinedAccounts.includes(permittedAccount);
 
     // We should show approval screen if the account is not in any of the tracked states
-    const shouldShowApprovalScreen =
-      !isInApprovedAccounts && !isInPassedAccounts && !isInDeclinedAccounts;
+    const shouldShowApproval =
+      !hasApproved && !hasBeenRedirected && !hasDeclined;
 
     // We should redirect to the referral url immediately
     // if the account is approved but not passed or declined
-    const shouldRedirectToReferralUrl =
-      isInApprovedAccounts && !isInPassedAccounts && !isInDeclinedAccounts;
+    const shouldRedirect = hasApproved && !hasBeenRedirected && !hasDeclined;
 
-    if (!shouldShowApprovalScreen && !shouldRedirectToReferralUrl) {
+    // If we shouldn't show the approval screen and shouldn't redirect, return
+    if (!shouldShowApproval && !shouldRedirect) {
       return;
     }
 
-    if (shouldShowApprovalScreen) {
+    if (shouldShowApproval) {
       try {
-        const approvalResponse = await this.approvalController.addAndShowApprovalRequest({
-          origin,
-          type: HYPERLIQUID_APPROVAL_TYPE,
-          requestData: { selectedAddress: permittedAccount },
-        });
+        const approvalResponse =
+          await this.approvalController.addAndShowApprovalRequest({
+            origin,
+            type: HYPERLIQUID_APPROVAL_TYPE,
+            requestData: { selectedAddress: permittedAccount },
+          });
 
         console.log({ approvalResponse });
 
+        // If user approves the request
         if (approvalResponse?.approved) {
-          // Mark account as approved
-          this.preferencesController.addReferralApprovedAccount(permittedAccount);
-
-          // Update the URL to the referral page
-          await this._updateUrlToReferralPage(tabId, HYPERLIQUID_ORIGIN);
-
-          // Mark this account as having received the referral code
-          this.preferencesController.addReferralPassedAccount(permittedAccount);
-
-          // Approve all connected accounts so they are not shown the approval screen unnecessarily
-          for (const account of permittedAccounts) {
-            if (account !== permittedAccount) {
-              this.preferencesController.addReferralApprovedAccount(account);
-            }
-          }
+          this.preferencesController.addReferralApprovedAccount(
+            permittedAccount,
+          );
+          await this._handleHyperliquidReferralRedirect(
+            tabId,
+            HYPERLIQUID_ORIGIN,
+            permittedAccount,
+          );
+          this._handleHyperliquidPermittedAccounts(
+            permittedAccounts,
+            declinedAccounts,
+          );
         } else {
-          // Store declined state for current account
-          this.preferencesController.addReferralDeclinedAccount(permittedAccount);
+          this.preferencesController.addReferralDeclinedAccount(
+            permittedAccount,
+          );
         }
       } catch (error) {
         console.log('Hyperliquid referral approval error:', error);
       }
     }
 
-    if (shouldRedirectToReferralUrl) {
-      console.log('shouldRedirectToReferralUrl true');
+    if (shouldRedirect) {
+      console.log('shouldRedirect true');
+      await this._handleHyperliquidReferralRedirect(
+        tabId,
+        HYPERLIQUID_ORIGIN,
+        permittedAccount,
+      );
+    }
+  }
 
-      // Update the URL to the referral page
-      await this._updateUrlToReferralPage(tabId, HYPERLIQUID_ORIGIN);
+  /**
+   * Handles redirection to the Hyperliquid referral page.
+   *
+   * @param {number} tabId - The browser tab ID to update.
+   * @param {string} hyperliquidOrigin - The Hyperliquid origin URL.
+   * @param {string} permittedAccount - The permitted account.
+   */
+  async _handleHyperliquidReferralRedirect(
+    tabId,
+    hyperliquidOrigin,
+    permittedAccount,
+  ) {
+    await this._updateHyperliquidReferralUrl(tabId, hyperliquidOrigin);
+    // Mark this account as having been shown the Hyperliquid referral page
+    this.preferencesController.addReferralPassedAccount(permittedAccount);
+  }
 
-      // Mark this account as having received the referral code
-      this.preferencesController.addReferralPassedAccount(permittedAccount);
+  /**
+   * Handles referral state for other permitted accounts after user approval.
+   *
+   * @param {string[]} permittedAccounts - The permitted accounts.
+   * @param {string[]} declinedAccounts - The previously declined permitted accounts.
+   */
+  _handleHyperliquidPermittedAccounts(permittedAccounts, declinedAccounts) {
+    const otherAccounts = permittedAccounts.slice(1);
+    // If there are no previously declined permitted accounts then
+    // we approve all the other permitted accounts so that the user
+    // is not shown the approval screen unnecessarily when switching
+    if (declinedAccounts.length === 0) {
+      otherAccounts.forEach((account) => {
+        this.preferencesController.addReferralApprovedAccount(account);
+      });
+    } else {
+      // However if there are any previously declined permitted accounts then
+      // we do not approve them, but instead remove them from the declined list
+      // so they have the option to participate again in future
+      otherAccounts.forEach((account) => {
+        if (declinedAccounts.includes(account)) {
+          this.preferencesController.removeReferralDeclinedAccount(account);
+        }
+      });
     }
   }
 
@@ -6483,7 +6527,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {number} tabId - The browser tab ID to update.
    * @param {string} hyperliquidOrigin - The Hyperliquid origin URL.
    */
-  async _updateUrlToReferralPage(tabId, hyperliquidOrigin) {
+  async _updateHyperliquidReferralUrl(tabId, hyperliquidOrigin) {
     const METAMASK_REFERRAL_CODE = 'MMREFCSI';
     try {
       const { url } = await browser.tabs.get(tabId);
@@ -6491,7 +6535,10 @@ export default class MetamaskController extends EventEmitter {
       const newUrl = `${hyperliquidOrigin}/join/${METAMASK_REFERRAL_CODE}${search}`;
       await browser.tabs.update(tabId, { url: newUrl });
     } catch (error) {
-      console.error('Failed to update URL to Hyperliquid referral page:', error);
+      console.error(
+        'Failed to update URL to Hyperliquid referral page: ',
+        error,
+      );
     }
   }
 

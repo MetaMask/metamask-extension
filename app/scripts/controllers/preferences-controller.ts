@@ -1005,10 +1005,9 @@ export class PreferencesController extends BaseController<
 
   removeReferralDeclinedAccount(accountAddress: string) {
     this.update((state) => {
-      const index = state.referralDeclinedAccounts.indexOf(accountAddress);
-      if (index > -1) {
-        state.referralDeclinedAccounts.splice(index, 1);
-      }
+      state.referralDeclinedAccounts = state.referralDeclinedAccounts.filter(
+        (account) => account !== accountAddress,
+      );
     });
   }
 
