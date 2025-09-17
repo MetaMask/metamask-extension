@@ -3093,10 +3093,10 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
-  async startSubscriptionWithCard() {
+  async startSubscriptionWithCard(params) {
     const webAuthenticator = webAuthenticatorFactory();
     const { checkoutSessionUrl } =
-      await this.subscriptionController.startShieldSubscriptionWithCard();
+      await this.subscriptionController.startShieldSubscriptionWithCard(params);
     // TODO: use chrome.tabs manually to have full browser feature in checkout session (e.g auto-fill form, etc.)
     // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
     // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
