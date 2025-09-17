@@ -267,8 +267,10 @@ const controllerMetadata = {
     usedInUi: false,
   },
   isSocialLoginFlowEnabledForMetrics: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
 };
 
