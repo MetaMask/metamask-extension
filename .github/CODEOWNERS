@@ -103,6 +103,7 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 ui/components/app/whats-new-popup     @MetaMask/core-extension-ux
 ui/css                                @MetaMask/core-extension-ux
 ui/pages/home                         @MetaMask/core-extension-ux
+ui/pages/core                         @MetaMask/core-extension-ux
 ui/components/multichain/             @MetaMask/core-extension-ux
 
 # Co-owned by accounts and core-extension-ux
