@@ -286,7 +286,6 @@
     "cacheTimestamp": "number"
   },
   "SeedlessOnboardingController": "object",
-  "SubscriptionController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
   "SignatureController": {
@@ -318,6 +317,7 @@
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
+  "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
       "quotes": "object",
