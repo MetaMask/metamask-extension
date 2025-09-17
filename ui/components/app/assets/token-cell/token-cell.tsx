@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useTokenDisplayInfo } from '../hooks';
 import {
   ButtonSecondary,
@@ -49,7 +49,7 @@ export default function TokenCell({
   safeChains,
 }: TokenCellProps) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const isEvm = isEvmChainId(token.chainId);
   const nativeCurrencySymbol = useMemo(
@@ -119,7 +119,7 @@ export default function TokenCell({
               <ButtonSecondary
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId: token.chainId }));
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 }}
                 block
               >

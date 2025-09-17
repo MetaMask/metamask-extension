@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockStore from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications/metamask-notifications';
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications';
 
@@ -13,12 +13,13 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('TurnOnMetamaskNotifications', () => {
   beforeEach(() => {

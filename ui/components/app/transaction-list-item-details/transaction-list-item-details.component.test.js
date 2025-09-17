@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { act, waitFor } from '@testing-library/react';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import mockSwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import TransactionListItemDetails from '.';

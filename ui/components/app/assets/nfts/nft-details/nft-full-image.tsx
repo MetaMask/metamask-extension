@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
@@ -76,7 +76,7 @@ export default function NftFullImage() {
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [visible, setVisible] = useState(false);
 
@@ -94,7 +94,7 @@ export default function NftFullImage() {
               size={ButtonIconSize.Sm}
               ariaLabel={t('back')}
               iconName={IconName.Close}
-              onClick={() => history.push(`${ASSET_ROUTE}/${asset}/${id}`)}
+              onClick={() => navigate(`${ASSET_ROUTE}/${asset}/${id}`)}
               data-testid="nft-details__close"
               paddingLeft={0}
             />

@@ -72,10 +72,16 @@ jest.mock('react-redux', () => {
     useDispatch: jest.fn(),
   };
 });
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(),
-}));
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),

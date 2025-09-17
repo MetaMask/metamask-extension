@@ -7,7 +7,7 @@ import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -49,6 +49,13 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   default: jest.fn(() => ({
     openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
   })),
+  RampsMetaMaskEntry: {
+    BuySellButton: 'ext_buy_sell_button',
+    NftBanner: 'ext_buy_banner_nfts',
+    TokensBanner: 'ext_buy_banner_tokens',
+    ActivityBanner: 'ext_buy_banner_activity',
+    BtcBanner: 'ext_buy_banner_btc',
+  },
 }));
 
 const BUY_BUTTON = 'coin-overview-buy';

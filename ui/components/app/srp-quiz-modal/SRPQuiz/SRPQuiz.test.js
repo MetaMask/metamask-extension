@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import configureStore from '../../../../store/store';
 import { QuizStage } from '../types';
@@ -15,13 +15,11 @@ const store = configureStore({
 
 let openTabSpy;
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
-    useHistory: () => ({
-      push: jest.fn(),
-    }),
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 

@@ -51,7 +51,7 @@ export default class TransactionListItemDetails extends PureComponent {
     senderNickname: PropTypes.string.isRequired,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
@@ -66,7 +66,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup: { primaryTransaction },
       networkConfiguration,
       isCustomNetwork,
-      history,
+      navigate,
       onClose,
       chainId,
     } = this.props;
@@ -87,7 +87,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
     if (!rpcPrefs.blockExplorerUrl && isCustomNetwork) {
       onClose();
-      history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+      navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
