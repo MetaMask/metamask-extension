@@ -2154,13 +2154,16 @@ export default class MetamaskController extends EventEmitter {
       this._getMetaMaskState(),
     );
 
-    const results = await Promise.allSettled(
+    await Promise.allSettled(
       enabledNetworkClientIds.map(async (networkClientId) => {
         return await this.networkController.lookupNetwork(networkClientId);
       }),
     );
 
-    console.log('[MetamaskController] Looked up networks. Results:', results);
+    console.log(
+      '[MetamaskController] Looked up networks, now networksMetadata:',
+      this.networkController.state.networksMetadata,
+    );
   }
 
   triggerNetworkrequests() {

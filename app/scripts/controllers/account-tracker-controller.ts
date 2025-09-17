@@ -791,6 +791,9 @@ export default class AccountTrackerController extends BaseController<
     provider: Provider,
     chainId: Hex,
   ): Promise<void> {
+    // Don't update balance
+    // return;
+
     const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
       'PreferencesController:getState',
     );
@@ -864,6 +867,9 @@ export default class AccountTrackerController extends BaseController<
     provider: Provider,
     chainId: Hex,
   ): Promise<void> {
+    // Don't update balance
+    return;
+
     const ethContract = await new Contract(
       deployedContractAddress,
       SINGLE_CALL_BALANCES_ABI,

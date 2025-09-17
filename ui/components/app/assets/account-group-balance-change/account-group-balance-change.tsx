@@ -54,7 +54,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
           length="10"
         >
           {displayAmountChange}
-        </SensitiveText>{' '}
+        </SensitiveText>
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
@@ -63,7 +63,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
           ellipsis
           length="10"
         >
-          {displayPercentChange}
+          &nbsp;{displayPercentChange}
         </SensitiveText>
       </Box>
       {portfolioButton()}
