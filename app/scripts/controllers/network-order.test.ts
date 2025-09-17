@@ -33,6 +33,7 @@ describe('NetworkOrderController - constructor', () => {
         },
         [KnownCaipNamespace.Solana]: {
           [SolScope.Mainnet]: true,
+          [SolScope.Devnet]: true,
         },
         [KnownCaipNamespace.Bip122]: {},
       },
