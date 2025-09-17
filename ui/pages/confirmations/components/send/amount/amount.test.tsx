@@ -19,14 +19,11 @@ import * as SendType from '../../../hooks/send/useSendType';
 import * as SendContext from '../../../context/send';
 import { Amount } from './amount';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
+const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
 }));
 
 const render = (args?: Record<string, unknown>) => {

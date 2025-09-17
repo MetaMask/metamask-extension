@@ -2,7 +2,7 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { useDispatch } from 'react-redux';
 
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
 import * as UpdateEthereumChainAlerts from './useUpdateEthereumChainAlerts';
 

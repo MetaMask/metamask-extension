@@ -76,7 +76,6 @@ export function renderWithProvider(
 
 export function renderHookWithProvider(hook, state, pathname = '/', Container) {
   const store = state ? configureStore(state) : undefined;
-
   const ProviderWrapper = createProviderWrapper(store, pathname);
 
   const wrapper = Container
@@ -89,7 +88,6 @@ export function renderHookWithProvider(hook, state, pathname = '/', Container) {
 
   return renderHook(hook, { wrapper });
 }
-
 /**
  * Renders a hook with a provider and optional container.
  *

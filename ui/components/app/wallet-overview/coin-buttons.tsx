@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { toHex } from '@metamask/controller-utils';
 import { isCaipChainId, CaipChainId } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
@@ -101,7 +101,7 @@ const CoinButtons = ({
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const { address: selectedAddress } = account;
-  const history = useHistory();
+  const navigate = useNavigate();
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
@@ -292,7 +292,7 @@ const CoinButtons = ({
     if (trackingLocation !== 'home') {
       params = { chainId: chainId.toString() };
     }
-    navigateToSendRoute(history, isSendRedesignEnabled, params);
+    navigateToSendRoute(navigate, isSendRedesignEnabled, params);
   }, [
     chainId,
     account,
@@ -379,7 +379,7 @@ const CoinButtons = ({
           global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
         }
       } else {
-        history.push(PREPARE_SWAP_ROUTE);
+        navigate(PREPARE_SWAP_ROUTE);
       }
     }
   }, [
@@ -409,7 +409,7 @@ const CoinButtons = ({
 
     if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      history.push(
+      navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
       );
     } else {
@@ -419,7 +419,7 @@ const CoinButtons = ({
   }, [
     isMultichainAccountsState2Enabled,
     selectedAccountGroup,
-    history,
+    navigate,
     trackEvent,
     trackingLocation,
     chainId,

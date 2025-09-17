@@ -7,7 +7,7 @@ import {
   EVM_NATIVE_ASSET,
   MOCK_NFT1155,
 } from '../../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AssetFilterMethod,

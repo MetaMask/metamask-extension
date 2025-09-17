@@ -2,7 +2,7 @@ import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { MAX_GAS_LIMIT_DEC } from '../../send-legacy/send.constants';

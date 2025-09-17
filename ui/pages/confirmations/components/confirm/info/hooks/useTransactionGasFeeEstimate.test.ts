@@ -4,7 +4,7 @@ import {
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 
