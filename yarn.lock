@@ -5792,16 +5792,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eip-5792-middleware@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/eip-5792-middleware@npm:1.1.0"
+"@metamask/eip-5792-middleware@npm:@metamask-previews/eip-5792-middleware@1.1.0-preview-0c2c1149":
+  version: 1.1.0-preview-0c2c1149
+  resolution: "@metamask-previews/eip-5792-middleware@npm:1.1.0-preview-0c2c1149"
   dependencies:
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^60.2.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/transaction-controller": "npm:^60.3.0"
+    "@metamask/utils": "npm:^11.8.0"
+    lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/3c5ad33b778792c2dcf7aff9f0c99ce008d93e98531966eb6b2add4effdd7fe51c2317504420fff5caafc25b0eeb8caa072a5e9d7605e7b9ee47ae7ad84e7922
+  checksum: 10/60c8a97e9ee790bc4d3ef73f64ed1855e4d503d9ba73c553af24d1df1aa33fa235005d660ec0d37a005890c50a740b6b0e515a7adaa9f384cefaefceb6da34da
   languageName: node
   linkType: hard
 
@@ -7651,6 +7652,42 @@ __metadata:
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
   checksum: 10/e60cfeb3893951bee5947e3aaeae4542f79a623a59f10b10270dea2ec051a28db8b24be7dc9d2f00284c97ddbf4664432f8b61cc8e5601d1a08c7e7dd2d5f519
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@npm:^60.3.0":
+  version: 60.3.0
+  resolution: "@metamask/transaction-controller@npm:60.3.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/controller-utils": "npm:^11.12.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.4.2"
+    async-mutex: "npm:^0.5.0"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/accounts-controller": ^33.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+    "@metamask/gas-fee-controller": ^24.0.0
+    "@metamask/network-controller": ^24.0.0
+    "@metamask/remote-feature-flag-controller": ^1.5.0
+  checksum: 10/27c17f82dba2e9b8bff71d690f1798995b6d328e4b5006c7de13c4dfa67992d2ceee3dfd4da40f001ef85b1a4ea3a4e3d0cb50dbf8d52b311e5bb33a3131a300
   languageName: node
   linkType: hard
 
@@ -31837,7 +31874,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.4.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
-    "@metamask/eip-5792-middleware": "npm:^1.1.0"
+    "@metamask/eip-5792-middleware": "npm:@metamask-previews/eip-5792-middleware@1.1.0-preview-0c2c1149"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.4"
     "@metamask/error-reporting-service": "npm:^2.0.0"
