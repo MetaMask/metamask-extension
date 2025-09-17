@@ -204,7 +204,6 @@ describe('Revoke Dapp Permissions', function () {
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.clickPersonalSign();
-          await driver.waitUntilXWindowHandles(3);
 
           const revokePermissionsRequest = JSON.stringify({
             jsonrpc: '2.0',

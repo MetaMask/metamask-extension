@@ -1269,6 +1269,66 @@ class Driver {
   }
 
   /**
+   * Waits until there is a window/tab with the given title, without changing the current window focus.
+   *
+   * @param {string} title - The title of the window or tab to wait for.
+   * @param {number} [timeout] - Optional timeout in milliseconds. Defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once a window with the title exists.
+   * @throws {Error} Throws an error if no window with the specified title appears within the timeout.
+   */
+  async waitForWindowWithTitle(title, timeout = this.timeout) {
+    const originalHandle = await this.driver.getWindowHandle();
+
+    if (this.windowHandles) {
+      try {
+        await this.windowHandles.switchToWindowWithProperty('title', title);
+      } finally {
+        await this.driver.switchTo().window(originalHandle);
+      }
+      return;
+    }
+
+    let windowHandles = await this.driver.getAllWindowHandles();
+    const start = Date.now();
+
+    while (Date.now() - start <= timeout) {
+      let found = false;
+      for (const handle of windowHandles) {
+        const handleTitle = await retry(
+          {
+            retries: 25,
+            delay: 200,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getTitle();
+          },
+        );
+
+        if (handleTitle === title) {
+          found = true;
+          break;
+        }
+      }
+
+      // Restore focus after checking this iteration
+      await this.driver.switchTo().window(originalHandle);
+
+      if (found) {
+        return;
+      }
+
+      const delayTime = 1000;
+      await this.delay(delayTime);
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    // Ensure focus is restored before failing
+    await this.driver.switchTo().window(originalHandle);
+    throw new Error(`No window with title: ${title}`);
+  }
+
+  /**
    * Waits for the specified number of window handles to be present and then switches to the window
    * tab with the given title.
    *
