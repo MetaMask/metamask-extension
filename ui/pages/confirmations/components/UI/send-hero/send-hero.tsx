@@ -1,4 +1,10 @@
 import React from 'react';
+import { Hex } from '@metamask/utils';
+
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+} from '../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarNetwork,
@@ -8,8 +14,6 @@ import {
   Box,
   Text,
 } from '../../../../../components/component-library';
-
-import { Asset, NFT_STANDARDS } from '../../../types/send';
 import {
   TextColor,
   TextVariant,
@@ -18,6 +22,8 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
+import { Asset, NFT_STANDARDS } from '../../../types/send';
+import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 
 const NFTHero = ({ asset }: { asset: Asset }) => {
   const nftData = asset;
@@ -77,8 +83,20 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
 };
 
 const TokenHero = ({ asset }: { asset: Asset }) => {
-  const tokenData = asset;
-  const { chainId, image, symbol } = tokenData;
+  console.log('asset = ', JSON.stringify(asset));
+  const chainNetworkNameAndImageMap = useChainNetworkNameAndImageMap();
+
+  const { chainId, image, symbol, isNative, networkImage, networkName } = asset;
+
+  const nativeTokenImage = isNative
+    ? (CHAIN_ID_TOKEN_IMAGE_MAP[
+        chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+      ] ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId as Hex])
+    : undefined;
+
+  const chainNetworkNameAndImage = chainNetworkNameAndImageMap.get(
+    chainId as Hex,
+  );
 
   return (
     <Box
@@ -94,15 +112,15 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
           chainId ? (
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={tokenData.networkName ?? ''}
-              src={tokenData.networkImage}
+              name={networkName || chainNetworkNameAndImage?.networkName || ''}
+              src={networkImage || chainNetworkNameAndImage?.networkImage}
             />
           ) : null
         }
       >
         <AvatarToken
           size={AvatarTokenSize.Xl}
-          src={image}
+          src={image || nativeTokenImage}
           name={symbol}
           showHalo={false}
         />
@@ -112,7 +130,7 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
         color={TextColor.textDefault}
         marginLeft={2}
       >
-        {asset.symbol}
+        {symbol}
       </Text>
     </Box>
   );
