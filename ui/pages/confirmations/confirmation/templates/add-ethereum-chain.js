@@ -1,5 +1,6 @@
 import { providerErrors } from '@metamask/rpc-errors';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
@@ -18,7 +19,6 @@ import {
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
-import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',

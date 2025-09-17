@@ -7,6 +7,7 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -78,7 +79,6 @@ import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
 import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
-import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 
 export const NetworksForm = ({
   networkFormState,
