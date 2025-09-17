@@ -114,8 +114,7 @@ const TransactionShield = () => {
   const loading =
     subscriptionsLoading ||
     cancelSubscriptionResult.pending ||
-    unCancelSubscriptionResult.pending ||
-    getSubscriptionBillingPortalUrlResult.pending;
+    unCancelSubscriptionResult.pending;
 
   useEffect(() => {
     if (!loading && !shieldSubscription) {
@@ -439,8 +438,8 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
-          {isCancelled ||
-            (shieldSubscription?.cancelAtPeriodEnd && (
+          {(isCancelled || shieldSubscription?.cancelAtPeriodEnd) &&
+            !loading && (
               <Box>
                 <Button
                   data-testid="shield-tx-membership-resubscribe-button"
@@ -452,7 +451,7 @@ const TransactionShield = () => {
                   {t('shieldTxMembershipResubscribe')}
                 </Button>
               </Box>
-            ))}
+            )}
         </Box>
 
         <Box
@@ -578,8 +577,8 @@ const TransactionShield = () => {
         <CancelMembershipModal
           onClose={() => setIsCancelMembershipModalOpen(false)}
           onConfirm={async () => {
-            await executeCancelSubscription();
             setIsCancelMembershipModalOpen(false);
+            await executeCancelSubscription();
           }}
         />
       )}
