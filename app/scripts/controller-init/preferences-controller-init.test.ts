@@ -1,11 +1,11 @@
 import { Messenger } from '@metamask/base-controller';
+import { PreferencesController } from '../controllers/preferences-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getPreferencesControllerMessenger,
   PreferencesControllerMessenger,
 } from './messengers';
-import { PreferencesController } from '../controllers/preferences-controller';
 import { PreferencesControllerInit } from './preferences-controller-init';
 
 jest.mock('../controllers/preferences-controller');

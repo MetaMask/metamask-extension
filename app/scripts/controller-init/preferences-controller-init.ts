@@ -1,8 +1,8 @@
-import { ControllerInitFunction } from './types';
 import {
   PreferencesController,
   PreferencesControllerMessenger,
 } from '../controllers/preferences-controller';
+import { ControllerInitFunction } from './types';
 
 /**
  * Initialize the preferences controller.

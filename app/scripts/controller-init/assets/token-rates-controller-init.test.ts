@@ -2,7 +2,7 @@ import {
   TokenRatesController,
   TokenRatesControllerMessenger,
 } from '@metamask/assets-controllers';
-import { Messenger } from '@metamask/base-controller';
+import { ActionConstraint, Messenger } from '@metamask/base-controller';
 import { PreferencesController } from '@metamask/preferences-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
@@ -11,6 +11,7 @@ import {
   getTokenRatesControllerMessenger,
   TokenRatesControllerInitMessenger,
 } from '../messengers/assets';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { TokenRatesControllerInit } from './token-rates-controller-init';
 
 jest.mock('@metamask/assets-controllers');
@@ -49,7 +50,15 @@ function buildInitRequestMock(): jest.Mocked<
     TokenRatesControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = new Messenger<
+    PreferencesControllerGetStateAction | ActionConstraint,
+    never
+  >();
+
+  baseControllerMessenger.registerActionHandler(
+    'PreferencesController:getState',
+    jest.fn().mockResolvedValue({ useCurrencyRateCheck: true }),
+  );
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

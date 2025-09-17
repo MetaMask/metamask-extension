@@ -1,7 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import {
-  getAppStateControllerMessenger,
-} from './app-state-controller-messenger';
+import { getAppStateControllerMessenger } from './app-state-controller-messenger';
 
 describe('getAppStateControllerMessenger', () => {
   it('returns a restricted messenger', () => {
