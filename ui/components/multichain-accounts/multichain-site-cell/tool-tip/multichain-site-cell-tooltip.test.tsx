@@ -164,7 +164,7 @@ describe('MultichainSiteCellTooltip', () => {
     );
 
     const accountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-account-"]',
+      '[data-testid^="avatar-"]',
     );
     expect(accountAvatars.length).toBeGreaterThan(0);
   });
@@ -230,7 +230,7 @@ describe('MultichainSiteCellTooltip', () => {
 
     // Accounts avatar group caps visible members at 4
     const visibleAccountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-account-"]',
+      '[data-testid^="avatar-"]',
     );
     expect(visibleAccountAvatars.length).toBe(4);
   });
@@ -295,7 +295,7 @@ describe('MultichainSiteCellTooltip', () => {
 
     // Accounts avatar group caps visible members at 4
     const visibleAccountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-account-"]',
+      '[data-testid^="avatar-"]',
     );
     expect(visibleAccountAvatars.length).toBe(4);
   });
@@ -343,7 +343,7 @@ describe('MultichainSiteCellTooltip', () => {
     );
 
     const accountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-account-"]',
+      '[data-testid^="avatar-"]',
     );
     expect(accountAvatars.length).toBe(3);
   });
@@ -355,7 +355,7 @@ describe('MultichainSiteCellTooltip', () => {
     );
 
     const networkImages = container.querySelectorAll(
-      '.mm-avatar-token__token-image',
+      '[data-testid^="network-avatar-"]',
     );
     expect(networkImages.length).toBeGreaterThan(0);
   });
