@@ -6382,7 +6382,11 @@ export default class MetamaskController extends EventEmitter {
   async handleHyperliquidReferral(req) {
     const { origin, tabId } = req;
     const HYPERLIQUID_ORIGIN = 'https://app.hyperliquid.xyz';
+    const isHyperliquidReferralEnabled =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUxDefiReferral;
 
+    // TODO: add check for isHyperliquidReferralEnabled here also once flag is enabled
     if (origin !== HYPERLIQUID_ORIGIN) {
       return;
     }
@@ -6441,8 +6445,6 @@ export default class MetamaskController extends EventEmitter {
             requestData: { selectedAddress: permittedAccount },
           });
 
-        console.log({ approvalResponse });
-
         // If user approves the request
         if (approvalResponse?.approved) {
           this._handleHyperliquidApprovedAccount(
@@ -6466,7 +6468,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldRedirect) {
-      console.log('shouldRedirect true');
       await this._handleHyperliquidReferralRedirect(
         tabId,
         HYPERLIQUID_ORIGIN,

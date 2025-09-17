@@ -3975,17 +3975,3 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
 );
-
-/**
- * Determines whether the Hyperliquid referral feature is enabled via remote feature flags.
- * This controls whether users will see referral consent dialogs and automatic
- * referral URL injection when visiting Hyperliquid.
- *
- * @param {object} state - The Redux state object
- * @returns {boolean} True if the Hyperliquid referral feature is enabled, false otherwise
- */
-export const getIsHyperliquidReferralEnabled = createSelector(
-  getRemoteFeatureFlags,
-  (remoteFeatureFlags) =>
-    Boolean(remoteFeatureFlags.extensionUxDefiReferral),
-);
