@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
-  BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
@@ -91,24 +90,21 @@ export const HyperliquidReferralConsent: React.FC<
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} gap={4}>
           <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Start}
-            padding={3}
             backgroundColor={BoxBackgroundColor.BackgroundSection}
-            gap={3}
+            padding={3}
             className="rounded-lg"
           >
             <Checkbox
-              id="hyperliquid-referral-consent"
+              id="hyperliquid-referral-consent-checkbox"
               isSelected={isChecked}
               onChange={handleCheckboxClick}
+              label={t('hyperliquidReferralCheckboxLabel')}
+              labelProps={{
+                variant: TextVariant.BodySm,
+                color: TextColor.TextAlternative,
+              }}
+              className="items-start cursor-pointer"
             />
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('hyperliquidReferralCheckboxLabel')}
-            </Text>
           </Box>
           <Button onClick={handleSubmit}>{t('confirm')}</Button>
         </Box>
