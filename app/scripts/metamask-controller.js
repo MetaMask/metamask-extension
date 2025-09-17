@@ -6338,8 +6338,7 @@ export default class MetamaskController extends EventEmitter {
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.extensionUxDefiReferral;
 
-    // TODO: add check for isHyperliquidReferralEnabled here also once flag is enabled
-    if (origin !== HYPERLIQUID_ORIGIN) {
+    if (origin !== HYPERLIQUID_ORIGIN || !isHyperliquidReferralEnabled) {
       return;
     }
 
