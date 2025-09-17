@@ -26,6 +26,7 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
@@ -84,7 +85,6 @@ import { getMultichainNetwork } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
-import { getSelectedMultichainNetworkChainId } from '../../../../../selectors/multichain/networks';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
