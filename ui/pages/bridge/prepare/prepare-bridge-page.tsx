@@ -177,7 +177,7 @@ const PrepareBridgePage = ({
 
   // Use the appropriate value based on unified UI setting
   const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
-  const isGasIncludedSwap = useSelector(getIsGasIncluded);
+  const gasIncluded = useSelector(getIsGasIncluded);
   const shouldShowMaxButton = useSelector(getShouldShowMaxButton);
 
   const fromToken = useSelector(getFromToken);
@@ -352,10 +352,6 @@ const PrepareBridgePage = ({
   ]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
-
-  const gasIncluded =
-    (smartTransactionsEnabled && isSwap && isSendBundleSupportedForChain) ||
-    gasIncluded7702;
 
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
