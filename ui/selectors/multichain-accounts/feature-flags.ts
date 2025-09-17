@@ -85,3 +85,5 @@ export const getIsMultichainAccountsState2Enabled = (
   const flags = getMultichainAccountsRemoteFeatureFlags(state);
   return isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2);
 };
+
+// Some change
