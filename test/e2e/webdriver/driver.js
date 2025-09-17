@@ -1323,8 +1323,6 @@ class Driver {
       windowHandles = await this.driver.getAllWindowHandles();
     }
 
-    // Ensure focus is restored before failing
-    await this.driver.switchTo().window(originalHandle);
     throw new Error(`No window with title: ${title}`);
   }
 
