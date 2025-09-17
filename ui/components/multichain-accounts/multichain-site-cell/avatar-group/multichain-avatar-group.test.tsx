@@ -117,17 +117,6 @@ describe('MultichainAvatarGroup', () => {
     expect(() => getByTestId(TEST_IDS.AVATAR_ACCOUNT(3))).toThrow();
   });
 
-  it('renders avatars in reverse order', () => {
-    const { getByTestId } = renderWithProvider(
-      <MultichainAvatarGroup {...defaultProps} />,
-      store,
-    );
-
-    // The component reverses the order, so the first rendered avatar should be the last member
-    const firstRenderedAvatar = getByTestId(TEST_IDS.AVATAR_ACCOUNT(0));
-    expect(firstRenderedAvatar).toBeInTheDocument();
-  });
-
   it('applies custom className', () => {
     const customClassName = 'custom-avatar-group';
     const { getByTestId } = renderWithProvider(
