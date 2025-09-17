@@ -65,6 +65,7 @@ describe('Amount', () => {
       asset: EVM_ASSET,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -88,6 +89,7 @@ describe('Amount', () => {
       asset: EVM_ASSET,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -111,6 +113,7 @@ describe('Amount', () => {
       rawBalanceNumeric: new Numeric('10.023', 10),
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -136,6 +139,7 @@ describe('Amount', () => {
       rawBalanceNumeric: new Numeric('10.023', 10),
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -171,6 +175,7 @@ describe('Amount', () => {
       updateValue: mockUpdateValue,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -189,6 +194,7 @@ describe('Amount', () => {
       asset: EVM_ASSET,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -249,6 +255,7 @@ describe('Amount', () => {
       rawBalanceNumeric: new Numeric('1', 10),
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -268,6 +275,27 @@ describe('Amount', () => {
       rawBalanceNumeric: new Numeric('1', 10),
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: false,
+      fiatCurrencySymbol: 'USD',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+    });
+
+    const { queryByText } = render();
+    expect(queryByText('Fiat Mode')).not.toBeInTheDocument();
+  });
+
+  it('fait mode button is not rendered if conversion rate is not available for asset', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: MOCK_NFT1155,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '1',
+      rawBalanceNumeric: new Numeric('1', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: false,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
@@ -290,6 +318,7 @@ describe('Amount', () => {
       rawBalanceNumeric: new Numeric('1', 10),
     } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
     jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
       fiatCurrencySymbol: 'USD',
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',

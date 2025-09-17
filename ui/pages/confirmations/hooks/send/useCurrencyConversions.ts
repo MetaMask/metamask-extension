@@ -82,7 +82,7 @@ export const useCurrencyConversions = () => {
       return 0;
     }
     const { nativeCurrency } = allNetworks[chainId as Hex];
-    return currencyRates[nativeCurrency]?.conversionRate;
+    return currencyRates[nativeCurrency]?.conversionRate ?? 0;
   }, [allNetworks, asset, chainId, currencyRates, isEvmSendType]);
 
   const contractExchangeRates = useSelector(
@@ -158,6 +158,10 @@ export const useCurrencyConversions = () => {
   );
 
   return {
+    conversionSupportedForAsset:
+      conversionRate !== 0 &&
+      asset?.standard !== ERC1155 &&
+      asset?.standard !== ERC721,
     fiatCurrencySymbol: getCurrencySymbol(currentCurrency),
     getFiatValue,
     getFiatDisplayValue,
