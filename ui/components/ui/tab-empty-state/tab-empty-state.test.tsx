@@ -10,10 +10,10 @@ describe('TabEmptyState', () => {
     mockOnAction.mockClear();
   });
 
-  it('should render the component without crashing', () => {
-    render(<TabEmptyState icon={testIcon} />);
+  it('should render the component without crashing when no props are provided', () => {
+    render(<TabEmptyState data-testid="test-empty-state" />);
 
-    expect(screen.getByTestId('test-icon')).toBeInTheDocument();
+    expect(screen.getByTestId('test-empty-state')).toBeInTheDocument();
   });
 
   it('should render the provided icon', () => {
@@ -106,6 +106,7 @@ describe('TabEmptyState', () => {
         icon={testIcon}
         actionButtonText={buttonText}
         onAction={mockOnAction}
+        // @ts-expect-error - ButtonProps from @metamask/design-system-react does not allow arbitrary data-testid, TODO: add data-testids to all metamask/design-system-react components
         actionButtonProps={actionButtonProps}
       />,
     );
@@ -137,5 +138,12 @@ describe('TabEmptyState', () => {
     const { container } = render(<TabEmptyState icon={testIcon} />);
 
     expect(container.firstChild).toHaveClass('max-w-56');
+  });
+
+  it('should render children when provided', () => {
+    const children = <div data-testid="test-children">Test Children</div>;
+    render(<TabEmptyState icon={testIcon}>{children}</TabEmptyState>);
+
+    expect(screen.getByTestId('test-children')).toBeInTheDocument();
   });
 });

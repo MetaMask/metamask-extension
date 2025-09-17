@@ -17,11 +17,11 @@ import {
   type BoxProps,
 } from '@metamask/design-system-react';
 
-export type TabEmptyStateProps = Omit<BoxProps, 'children' | 'ref'> & {
+export type TabEmptyStateProps = Omit<BoxProps, 'ref'> & {
   /**
    * The icon to display in the empty state if this is an png/jpg image you will need to account for light and dark theme with useTheme
    */
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   /**
    * The description to display in the empty state
    */
@@ -46,6 +46,10 @@ export type TabEmptyStateProps = Omit<BoxProps, 'children' | 'ref'> & {
    * Additional classNames to apply to the TabEmptyState
    */
   className?: string;
+  /**
+   * Any additional children to display in the TabEmptyState
+   */
+  children?: React.ReactNode;
 };
 
 export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
@@ -56,6 +60,7 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
   actionButtonProps,
   onAction,
   className,
+  children,
   ...props
 }) => {
   return (
@@ -67,7 +72,7 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       {...props}
     >
-      <Box marginBottom={4}>{icon}</Box>
+      {icon && <Box marginBottom={4}>{icon}</Box>}
       {description && (
         <Text
           variant={TextVariant.BodyMd}
@@ -88,6 +93,7 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
           {actionButtonText}
         </Button>
       )}
+      {children}
     </Box>
   );
 };
