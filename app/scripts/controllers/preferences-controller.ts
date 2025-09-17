@@ -146,9 +146,13 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
-  referralApprovedAccounts: string[];
-  referralPassedAccounts: string[];
-  referralDeclinedAccounts: string[];
+  referrals: {
+    hyperliquid: {
+      approvedAccounts: string[];
+      passedAccounts: string[];
+      declinedAccounts: string[];
+    };
+  };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
@@ -258,9 +262,13 @@ export const getDefaultPreferencesControllerState =
     useTokenDetection: true,
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
-    referralApprovedAccounts: [],
-    referralPassedAccounts: [],
-    referralDeclinedAccounts: [],
+    referrals: {
+      hyperliquid: {
+        approvedAccounts: [],
+        passedAccounts: [],
+        declinedAccounts: [],
+      },
+    },
   });
 
 /**
@@ -415,9 +423,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
-  referralApprovedAccounts: { persist: false, anonymous: false }, // TODO: persist true
-  referralPassedAccounts: { persist: false, anonymous: false }, // TODO: persist true
-  referralDeclinedAccounts: { persist: false, anonymous: false }, // TODO: persist true
+  referrals: { persist: false, anonymous: false }, // TODO: persist true
 };
 
 export class PreferencesController extends BaseController<
@@ -981,47 +987,53 @@ export class PreferencesController extends BaseController<
 
   addReferralApprovedAccount(accountAddress: string) {
     this.update((state) => {
-      if (!state.referralApprovedAccounts.includes(accountAddress)) {
-        state.referralApprovedAccounts.push(accountAddress);
+      if (
+        !state.referrals.hyperliquid.approvedAccounts.includes(accountAddress)
+      ) {
+        state.referrals.hyperliquid.approvedAccounts.push(accountAddress);
       }
     });
   }
 
   addReferralPassedAccount(accountAddress: string) {
     this.update((state) => {
-      if (!state.referralPassedAccounts.includes(accountAddress)) {
-        state.referralPassedAccounts.push(accountAddress);
+      if (
+        !state.referrals.hyperliquid.passedAccounts.includes(accountAddress)
+      ) {
+        state.referrals.hyperliquid.passedAccounts.push(accountAddress);
       }
     });
   }
 
   addReferralDeclinedAccount(accountAddress: string) {
     this.update((state) => {
-      if (!state.referralDeclinedAccounts.includes(accountAddress)) {
-        state.referralDeclinedAccounts.push(accountAddress);
+      if (
+        !state.referrals.hyperliquid.declinedAccounts.includes(accountAddress)
+      ) {
+        state.referrals.hyperliquid.declinedAccounts.push(accountAddress);
       }
     });
   }
 
   removeReferralDeclinedAccount(accountAddress: string) {
     this.update((state) => {
-      state.referralDeclinedAccounts = state.referralDeclinedAccounts.filter(
-        (account) => account !== accountAddress,
-      );
+      state.referrals.hyperliquid.declinedAccounts =
+        state.referrals.hyperliquid.declinedAccounts.filter(
+          (account) => account !== accountAddress,
+        );
     });
-  }
-
-  getReferralConsentState() {
-    return {
-      referralApprovedAccounts: this.state.referralApprovedAccounts,
-      referralPassedAccounts: this.state.referralPassedAccounts,
-      referralDeclinedAccounts: this.state.referralDeclinedAccounts,
-    };
   }
 
   setAllAccountsReferralApproved(accountAddresses: string[]) {
     this.update((state) => {
-      state.referralApprovedAccounts = [...accountAddresses];
+      const existingAccounts = state.referrals.hyperliquid.approvedAccounts;
+      const newAccounts = accountAddresses.filter(
+        (account) => !existingAccounts.includes(account),
+      );
+      state.referrals.hyperliquid.approvedAccounts = [
+        ...existingAccounts,
+        ...newAccounts,
+      ];
     });
   }
 }

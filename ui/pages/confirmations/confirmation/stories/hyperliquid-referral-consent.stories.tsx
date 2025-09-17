@@ -6,9 +6,13 @@ import { PendingApproval } from './util';
 const STATE_MOCK_DEFAULT = {
   metamask: {
     preferences: {
-      referralApprovedAccounts: [],
-      referralPassedAccounts: [],
-      referralDeclinedAccounts: [],
+      referrals: {
+        hyperliquid: {
+          approvedAccounts: [],
+          passedAccounts: [],
+          declinedAccounts: [],
+        },
+      },
     },
   },
 };

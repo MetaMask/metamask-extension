@@ -6404,10 +6404,10 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const {
-      referralApprovedAccounts: approvedAccounts = [],
-      referralPassedAccounts: passedAccounts = [],
-      referralDeclinedAccounts: declinedAccounts = [],
-    } = this.preferencesController.state;
+      approvedAccounts = [],
+      passedAccounts = [],
+      declinedAccounts = [],
+    } = this.preferencesController.state.referrals.hyperliquid;
 
     console.log({
       approvedAccounts,
@@ -6445,17 +6445,15 @@ export default class MetamaskController extends EventEmitter {
 
         // If user approves the request
         if (approvalResponse?.approved) {
-          this.preferencesController.addReferralApprovedAccount(
+          this._handleHyperliquidApprovedAccount(
             permittedAccount,
+            permittedAccounts,
+            declinedAccounts,
           );
           await this._handleHyperliquidReferralRedirect(
             tabId,
             HYPERLIQUID_ORIGIN,
             permittedAccount,
-          );
-          this._handleHyperliquidPermittedAccounts(
-            permittedAccounts,
-            declinedAccounts,
           );
         } else {
           this.preferencesController.addReferralDeclinedAccount(
@@ -6495,25 +6493,30 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles referral state for other permitted accounts after user approval.
+   * Handles referral states for permitted accounts after user approval.
    *
+   * @param {string} permittedAccount - The permitted account.
    * @param {string[]} permittedAccounts - The permitted accounts.
    * @param {string[]} declinedAccounts - The previously declined permitted accounts.
    */
-  _handleHyperliquidPermittedAccounts(permittedAccounts, declinedAccounts) {
-    const otherAccounts = permittedAccounts.slice(1);
-    // If there are no previously declined permitted accounts then
-    // we approve all the other permitted accounts so that the user
-    // is not shown the approval screen unnecessarily when switching
+  _handleHyperliquidApprovedAccount(
+    permittedAccount,
+    permittedAccounts,
+    declinedAccounts,
+  ) {
     if (declinedAccounts.length === 0) {
-      otherAccounts.forEach((account) => {
-        this.preferencesController.addReferralApprovedAccount(account);
-      });
+      // If there are no previously declined permitted accounts then
+      // we approve all permitted accounts so that the user is not
+      // shown the approval screen unnecessarily when switching
+      this.preferencesController.setAllAccountsReferralApproved(
+        permittedAccounts,
+      );
     } else {
-      // However if there are any previously declined permitted accounts then
+      this.preferencesController.addReferralApprovedAccount(permittedAccount);
+      // If there are any previously declined accounts then
       // we do not approve them, but instead remove them from the declined list
       // so they have the option to participate again in future
-      otherAccounts.forEach((account) => {
+      permittedAccounts.slice(1).forEach((account) => {
         if (declinedAccounts.includes(account)) {
           this.preferencesController.removeReferralDeclinedAccount(account);
         }
