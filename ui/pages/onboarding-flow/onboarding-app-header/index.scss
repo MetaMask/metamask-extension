@@ -5,6 +5,8 @@
   z-index: design-system.$onboarding-app-header-z-index;
   flex-flow: column nowrap;
   flex: 0 0 auto;
+  padding-top: 4rem;
+  padding-right: 8rem;
 
 
   &--welcome {
@@ -74,7 +76,7 @@
 
   &__contents {
     flex-flow: row nowrap;
-    max-width: 1280px;
+    // max-width: 1280px;
 
     @include design-system.screen-sm-max {
       height: 100%;

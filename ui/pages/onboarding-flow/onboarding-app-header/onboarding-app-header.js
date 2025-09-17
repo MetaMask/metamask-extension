@@ -1,16 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Dropdown from '../../../components/ui/dropdown';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { updateCurrentLocale } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { Box } from '../../../components/component-library';
 import {
   AlignItems,
@@ -19,11 +16,9 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { ThemeType } from '../../../../shared/constants/preferences';
 
 export default function OnboardingAppHeader({ isWelcomePage }) {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
     return {
@@ -35,7 +30,7 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
   return (
     <Box
       display={Display.Flex}
-      alignItems={AlignItems.center}
+      alignItems={AlignItems.flexEnd}
       backgroundColor={BackgroundColor.backgroundDefault}
       width={BlockSize.Full}
       padding={4}
@@ -46,16 +41,9 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       <Box
         display={Display.Flex}
         width={BlockSize.Full}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={JustifyContent.flexEnd}
         className="onboarding-app-header__contents"
       >
-        <MetaFoxLogo
-          theme={
-            pathname === ONBOARDING_WELCOME_ROUTE ? ThemeType.light : undefined
-          }
-          unsetIconHeight
-          isOnboarding
-        />
         <Dropdown
           data-testid="select-locale"
           className={classnames('onboarding-app-header__dropdown', {
