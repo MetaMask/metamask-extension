@@ -56,6 +56,7 @@ import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_CHAINS,
 } from '../../../../../../shared/constants/network';
@@ -173,10 +174,13 @@ const AssetListControlBar = ({
     );
   }, [currentMultichainNetwork.network.chainId]);
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chainId) => {
-    allOpts[chainId] = true;
-  });
+  const allOpts: Record<string, boolean> = useMemo(() => {
+    const opts: Record<string, boolean> = {};
+    Object.keys(allNetworks || {}).forEach((chainId) => {
+      opts[chainId] = true;
+    });
+    return opts;
+  }, [allNetworks]);
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -200,7 +204,12 @@ const AssetListControlBar = ({
         }),
       );
     }
-  }, []);
+  }, [
+    allOpts,
+    currentMultichainNetwork.network.chainId,
+    dispatch,
+    networksToDisplay,
+  ]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
@@ -407,11 +416,9 @@ const AssetListControlBar = ({
       return undefined;
     }
 
-    return currentMultichainNetwork?.network?.rpcPrefs?.imageUrl;
-  }, [
-    currentMultichainNetwork?.network?.rpcPrefs?.imageUrl,
-    enabledNetworksByNamespace,
-  ]);
+    const singleEnabledChainId = chainIds[0];
+    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
+  }, [enabledNetworksByNamespace]);
 
   return (
     <Box
