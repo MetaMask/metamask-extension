@@ -131,6 +131,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
+    "@metamask/bridge-controller": "npm:@metamask-previews/bridge-controller@43.0.0-preview-8029191",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",

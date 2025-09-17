@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
@@ -9,6 +8,7 @@ import {
   isCrossChain,
   formatChainIdToHex,
   type GenericQuoteRequest,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
@@ -29,7 +29,7 @@ const initialState: BridgeState = {
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
-  slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  slippage: null,
   txAlert: null,
 };
 
@@ -104,6 +104,8 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
+      // Unset user's custom slippage if token changes
+      state.slippage = null;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
@@ -116,6 +118,8 @@ const bridgeSlice = createSlice({
     },
     setToToken: (state, { payload }: TokenPayload) => {
       const toToken = toBridgeToken(payload);
+      // Unset user's custom slippage if token changes
+      state.slippage = null;
       state.toToken = toToken
         ? {
             ...toToken,
@@ -144,6 +148,14 @@ const bridgeSlice = createSlice({
     resetInputFields: () => ({
       ...initialState,
     }),
+    restoreQuoteRequestFromState: (
+      state,
+      { payload: quote }: { payload: QuoteResponse['quote'] },
+    ) => {
+      state.fromToken = toBridgeToken(quote.srcAsset);
+      state.toToken = toBridgeToken(quote.destAsset);
+      state.toChainId = formatChainIdToCaip(quote.destChainId);
+    },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
     },

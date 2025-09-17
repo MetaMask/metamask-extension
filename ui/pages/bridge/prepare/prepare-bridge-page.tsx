@@ -112,7 +112,6 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
-import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
@@ -423,15 +422,6 @@ const PrepareBridgePage = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
 
-  // Use smart slippage defaults
-  useSmartSlippage({
-    fromChain,
-    toChain,
-    fromToken,
-    toToken,
-    isSwap,
-  });
-
   // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
@@ -439,29 +429,8 @@ const PrepareBridgePage = ({
       timestamp: Date.now(),
     });
 
-    // If there's an active quote, assume that the user is returning to the page
-    if (activeQuote) {
-      // Get input data from active quote
-      const { srcAsset, destAsset, destChainId, srcChainId } =
-        activeQuote.quote;
-
-      if (srcAsset && destAsset && destChainId) {
-        dispatch(
-          setFromToken({
-            ...srcAsset,
-            chainId: srcChainId,
-          }),
-        );
-        // Set inputs to values from active quote
-        dispatch(
-          setToToken({
-            ...destAsset,
-            chainId: destChainId,
-          }),
-        );
-      }
-    } else {
-      // Reset controller and inputs on load
+    if (!activeQuote) {
+      // Reset controller and inputs on load if there's no restored active quote
       dispatch(resetBridgeState());
     }
   }, []);
@@ -631,7 +600,7 @@ const PrepareBridgePage = ({
                   toToken &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
                       {
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention

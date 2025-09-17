@@ -90,7 +90,7 @@ export async function bridgeTransaction(
 ) {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
-  await homePage.startBridgeFlow();
+  await homePage.startSwapFlow();
 
   const bridgePage = new BridgeQuotePage(driver);
   await bridgePage.enterBridgeQuote(quote);
@@ -627,7 +627,7 @@ export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
 
 // Expected event types for Bridge metrics
 export enum EventTypes {
-  BridgeLinkClicked = 'Bridge Link Clicked',
+  BridgeLinkClicked = 'Swap Link Clicked',
   SwapBridgeButtonClicked = 'Unified SwapBridge Button Clicked',
   SwapBridgePageViewed = 'Unified SwapBridge Page Viewed',
   SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
@@ -643,7 +643,7 @@ export enum EventTypes {
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
-  SwapBridgeTokenSwitched = 'Unified SwapBridge Source Destination Flipped',
+  SwapBridgeTokenSwitched = 'Unified SwapBridge Source Destination Switched',
 }
 
 export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);

@@ -31,6 +31,7 @@ import {
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import {
   resetBridgeState,
+  restoreQuoteRequestFromState,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
@@ -38,7 +39,10 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { getIsUnifiedUIEnabled } from '../../ducks/bridge/selectors';
+import {
+  getBridgeQuotes,
+  getIsUnifiedUIEnabled,
+} from '../../ducks/bridge/selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -66,11 +70,17 @@ const CrossChainSwap = () => {
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
     getIsUnifiedUIEnabled(state, chainId),
   );
+  const { activeQuote } = useSelector(getBridgeQuotes);
 
   useEffect(() => {
     dispatch(
       trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
     );
+
+    if (activeQuote) {
+      dispatch(restoreQuoteRequestFromState(activeQuote.quote));
+    }
+
     // Reset controller and inputs before unloading the page
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

@@ -15,6 +15,7 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  selectDefaultSlippagePercentage,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -182,10 +183,9 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getMultichainProviderConfig,
-  getFromChains,
-  (providerConfig, fromChains) => {
-    return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
+  [(state) => getMultichainProviderConfig(state).chainId, getFromChains],
+  (providerChainId, fromChains) => {
+    return fromChains.find(({ chainId }) => chainId === providerChainId);
   },
 );
 
@@ -386,8 +386,6 @@ export const getFromTokenBalance = createSelector(
       : null;
   },
 );
-
-export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
@@ -851,4 +849,33 @@ export const getIsUnifiedUIEnabled = createSelector(
         )
       : false;
   },
+);
+
+const getSmartSlippage = createSelector(
+  [
+    (state) => state.metamask,
+    (state) => getFromChain(state)?.chainId,
+    (state) => getToChain(state)?.chainId,
+    (state) => getFromToken(state)?.address,
+    (state) => getToToken(state)?.address,
+  ],
+  (
+    controllerStates,
+    srcChainId,
+    destChainId,
+    srcTokenAddress,
+    destTokenAddress,
+  ) => {
+    return selectDefaultSlippagePercentage(controllerStates, {
+      srcChainId,
+      destChainId,
+      srcTokenAddress,
+      destTokenAddress,
+    });
+  },
+);
+
+export const getSlippage = createSelector(
+  [getSmartSlippage, (state) => state.bridge.slippage],
+  (smartSlippage, slippage) => slippage ?? smartSlippage,
 );
