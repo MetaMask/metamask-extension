@@ -157,8 +157,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
-  let history;
-  let store;
+  const history = createMemoryHistory();
+  const store = mockStore(mockState);
 
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
@@ -173,16 +173,10 @@ describe('TransactionListItem', () => {
     );
   });
 
-  beforeEach(() => {
-    history = createMemoryHistory();
-    store = mockStore(mockState);
-  });
-
   afterAll(() => {
     useGasFeeEstimates.mockRestore();
   });
 
-  // Local helper that uses the shared history and store
   const renderWithProvider = (component) =>
     renderWithProviderAndHistory(component, store, history);
 
