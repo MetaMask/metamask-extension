@@ -96,7 +96,7 @@ const Popover = ({
         })}
         marginBottom={2}
       >
-        {onBack ? (
+        {onBack && (
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
@@ -104,9 +104,8 @@ const Popover = ({
             color={Color.iconDefault}
             size={Size.SM}
           />
-        ) : (
-          <div className="size-6" />
         )}
+        {!onBack && centerTitle && <div className="size-6" />}
         <Text
           textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
           className={classnames('flex-1', {
