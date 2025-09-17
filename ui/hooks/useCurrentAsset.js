@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom-v5-compat';
 import { getTokens } from '../ducks/metamask/metamask';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { ASSET_ROUTE } from '../helpers/constants/routes';
@@ -20,11 +20,15 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 export function useCurrentAsset() {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
-  const match = useRouteMatch({
-    path: `${ASSET_ROUTE}/:asset`,
-    exact: true,
-    strict: true,
-  });
+  const location = useLocation();
+  const match = matchPath(
+    {
+      path: `${ASSET_ROUTE}/:asset`,
+      exact: true,
+      strict: true,
+    },
+    location.pathname,
+  );
   const tokenAddress = match?.params?.asset;
   const knownTokens = useSelector(getTokens);
   const token =

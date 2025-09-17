@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom-v5-compat';
 import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
 
@@ -15,11 +15,15 @@ import { txDataSelector } from '../selectors';
  * }}
  */
 export function useSegmentContext() {
-  const match = useRouteMatch({
-    path: getPaths(),
-    exact: true,
-    strict: true,
-  });
+  const location = useLocation();
+  const match = matchPath(
+    {
+      path: getPaths(),
+      exact: true,
+      strict: true,
+    },
+    location.pathname,
+  );
   const txData = useSelector(txDataSelector) || {};
   const confirmTransactionOrigin = txData.origin;
 

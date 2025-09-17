@@ -1,18 +1,18 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import useBridging from './useBridging';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
@@ -111,9 +111,9 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, isSwap);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
-        expect(mockHistoryPush.mock.calls).toHaveLength(1);
-        expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
+        expect(mockDispatch).toHaveBeenCalledTimes(2);
+        expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+        expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();
       },
     );
