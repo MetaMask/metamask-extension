@@ -1925,12 +1925,12 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           currencyRates: {},
-          ...mockMultichainNetworkState(),
+          selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
           conversionRates: {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
               rate: 1.5,
             },
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            [`${formatChainIdToCaip(ChainId.SOLANA)}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`]:
               {
                 rate: 2.0,
               },
