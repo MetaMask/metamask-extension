@@ -508,14 +508,21 @@ export const getFromTokenConversionRate = createSelector(
               conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
             )
           : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
-      const nativeToUsdRate =
-        isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId)
-          ? Number(
-              conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-            )
-          : (currencyRates[fromChain.nativeCurrency]?.usdConversionRate ??
-            null);
+      let nativeToUsdRate;
+      if (isSolanaChainId(fromChain.chainId)) {
+        nativeToUsdRate = Number(
+          rates?.[fromChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
+            null,
+        );
+      } else if (isBitcoinChainId(fromChain.chainId)) {
+        nativeToUsdRate = Number(
+          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+        );
+      } else {
+        nativeToUsdRate =
+          currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null;
+      }
 
       if (isNativeAddress(fromToken.address)) {
         return {
@@ -537,6 +544,32 @@ export const getFromTokenConversionRate = createSelector(
               null,
           ),
         );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          Number(nativeToCurrencyRate),
+          Number(nativeToUsdRate),
+        );
+      }
+
+      if (
+        isBitcoinChainId(fromChain.chainId) &&
+        nativeAssetId &&
+        tokenAssetId
+      ) {
+        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
+        const nativeAssetRate = Number(
+          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+        );
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          Number(
+            conversionRates?.[tokenAssetId]?.rate ??
+              fromTokenExchangeRate ??
+              null,
+          ),
+          nativeAssetRate,
+        );
+        // Bitcoin doesn't have separate currency/USD rates in the rates object
+        // So we use the native asset rate for both
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
           Number(nativeToCurrencyRate),
@@ -585,7 +618,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     toToken,
     allNetworksByChainId,
     { state, toTokenExchangeRate, toTokenUsdExchangeRate },
-    // rates,
+    rates,
   ) => {
     // When the toChain is not imported, the exchange rate to native asset is not available
     // The rate in the bridge state is used instead
@@ -606,27 +639,38 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         formatChainIdToCaip(toChain.chainId),
       );
 
-      if (
-        (isSolanaChainId(toChain.chainId) ||
-          isBitcoinChainId(toChain.chainId)) &&
-        nativeAssetId &&
-        tokenAssetId
-      ) {
-        // For non-EVM tokens, we use the conversion rates provided by the multichain rates controller
+      if (isSolanaChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
+        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           Number(conversionRates?.[tokenAssetId]?.rate ?? null),
           Number(
             conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
           ),
         );
-        // For non-EVM chains, use the conversion rates directly
-        const nativeRate = Number(
-          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-        );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nativeRate,
-          nativeRate, // Using same rate for USD conversion
+          rates?.[toChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
+            null,
+          rates?.[toChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
+            null,
+        );
+      }
+
+      if (isBitcoinChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
+        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
+        const nativeAssetRate = Number(
+          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+        );
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
+          nativeAssetRate,
+        );
+        // Bitcoin doesn't have separate currency/USD rates in the rates object
+        // So we use the native asset rate for both
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          nativeAssetRate,
+          nativeAssetRate,
         );
       }
 
