@@ -75,14 +75,19 @@ const TransactionShield = () => {
   );
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
+
+  // user can cancel subscription if not canceled and not cancel at period end
+  const canCancel = !isCancelled && !shieldSubscription?.cancelAtPeriodEnd;
+
+  const isCryptoPayment =
+    shieldSubscription?.paymentMethod &&
+    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
+
   const productInfo = useMemo(
     () =>
       shieldSubscription?.products.find((p) => p.name === PRODUCT_TYPES.SHIELD),
     [shieldSubscription],
   );
-  const isCryptoPayment =
-    shieldSubscription?.paymentMethod &&
-    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
 
   const [executeCancelSubscription, cancelSubscriptionResult] =
     useCancelSubscription({
@@ -515,7 +520,7 @@ const TransactionShield = () => {
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
             // todo: link to submit claim page
           })}
-        {!isCancelled &&
+        {canCancel &&
           buttonRow(
             t('shieldTxMembershipCancel'),
             () => {
@@ -576,13 +581,14 @@ const TransactionShield = () => {
           },
         )}
       </Box>
-      {isCancelMembershipModalOpen && (
+      {shieldSubscription && isCancelMembershipModalOpen && (
         <CancelMembershipModal
           onClose={() => setIsCancelMembershipModalOpen(false)}
           onConfirm={async () => {
             setIsCancelMembershipModalOpen(false);
             await executeCancelSubscription();
           }}
+          subscription={shieldSubscription}
         />
       )}
     </Box>
