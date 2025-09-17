@@ -91,6 +91,7 @@ import {
   getEnabledNetworksByNamespace,
   getTokenList,
 } from '../../../selectors';
+import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -113,6 +114,8 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
+import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
@@ -199,15 +202,16 @@ const PrepareBridgePage = ({
     getIsSmartTransaction(state as never, fromChain?.chainId),
   );
 
+  const smartAccountOptedIn = useSelector(getUseSmartAccount);
+
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    activeQuote: activeQuote_,
+    // This quote may be older than the refresh rate, but we keep it for display purposes
+    activeQuote: unvalidatedQuote,
     quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
 
@@ -220,7 +224,7 @@ const PrepareBridgePage = ({
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-    activeQuote: activeQuote_,
+    activeQuote: unvalidatedQuote,
     toToken,
     toChain,
     fromChain,
@@ -228,9 +232,19 @@ const PrepareBridgePage = ({
     insufficientBal: quoteRequest.insufficientBal,
   });
 
-  const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
+  const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
   const selectedAccount = useSelector(getFromAccount);
+
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
+
+  const gasIncluded7702 = useGasIncluded7702({
+    smartAccountOptedIn,
+    isSwap,
+    selectedAccount,
+    fromChain,
+    isSendBundleSupportedForChain,
+  });
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -345,6 +359,10 @@ const PrepareBridgePage = ({
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
+  const gasIncluded =
+    (smartTransactionsEnabled && isSwap && isSendBundleSupportedForChain) ||
+    gasIncluded7702;
+
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
@@ -371,7 +389,8 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: smartTransactionsEnabled && isSwap,
+      gasIncluded,
+      gasIncluded7702,
     }),
     [
       fromToken?.address,
@@ -384,8 +403,8 @@ const PrepareBridgePage = ({
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
-      smartTransactionsEnabled,
-      isSwap,
+      gasIncluded,
+      gasIncluded7702,
     ],
   );
 
@@ -440,29 +459,8 @@ const PrepareBridgePage = ({
       timestamp: Date.now(),
     });
 
-    // If there's an active quote, assume that the user is returning to the page
-    if (activeQuote) {
-      // Get input data from active quote
-      const { srcAsset, destAsset, destChainId, srcChainId } =
-        activeQuote.quote;
-
-      if (srcAsset && destAsset && destChainId) {
-        dispatch(
-          setFromToken({
-            ...srcAsset,
-            chainId: srcChainId,
-          }),
-        );
-        // Set inputs to values from active quote
-        dispatch(
-          setToToken({
-            ...destAsset,
-            chainId: destChainId,
-          }),
-        );
-      }
-    } else {
-      // Reset controller and inputs on load
+    if (!activeQuote) {
+      // Reset controller and inputs on load if there's no restored active quote
       dispatch(resetBridgeState());
     }
   }, []);
@@ -632,7 +630,7 @@ const PrepareBridgePage = ({
                   toToken &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
                       {
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -750,7 +748,7 @@ const PrepareBridgePage = ({
 
           <Column
             justifyContent={
-              isLoading && !activeQuote_
+              isLoading && !unvalidatedQuote
                 ? JustifyContent.center
                 : JustifyContent.flexEnd
             }
@@ -758,7 +756,7 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             gap={3}
           >
-            {!wasTxDeclined && activeQuote_ && (
+            {!wasTxDeclined && unvalidatedQuote && (
               <MultichainBridgeQuoteCard
                 onOpenRecipientModal={() =>
                   setIsDestinationAccountPickerOpen(true)
@@ -767,7 +765,14 @@ const PrepareBridgePage = ({
                 selectedDestinationAccount={selectedDestinationAccount}
               />
             )}
-            {isLoading && !activeQuote_ ? (
+            {isNoQuotesAvailable && !isQuoteExpired && (
+              <BannerAlert
+                severity={BannerAlertSeverity.Danger}
+                description={t('noOptionsAvailableMessage')}
+                textAlign={TextAlign.Left}
+              />
+            )}
+            {isLoading && !unvalidatedQuote ? (
               <>
                 <Text
                   textAlign={TextAlign.Center}
@@ -841,13 +846,6 @@ const PrepareBridgePage = ({
             severity={BannerAlertSeverity.Danger}
             title={t(txAlert.titleId)}
             description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
-            textAlign={TextAlign.Left}
-          />
-        )}
-        {isNoQuotesAvailable && !isQuoteExpired && (
-          <BannerAlert
-            severity={BannerAlertSeverity.Danger}
-            description={t('noOptionsAvailableMessage')}
             textAlign={TextAlign.Left}
           />
         )}
