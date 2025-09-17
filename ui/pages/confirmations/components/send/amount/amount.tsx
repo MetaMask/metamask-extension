@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
+import { ERC721 } from '@metamask/controller-utils';
 
 import {
   Box,
@@ -112,10 +112,7 @@ export const Amount = () => {
     updateValue,
   ]);
 
-  const isERC1155 = asset?.standard === ERC1155;
-  const isERC721 = asset?.standard === ERC721;
-
-  if (isERC721) {
+  if (asset?.standard === ERC721) {
     return null;
   }
 
