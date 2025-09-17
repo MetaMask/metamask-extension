@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom-v5-compat';
 import { ONBOARDING_ROUTE } from '../../constants/routes';
 
 const onboardingRoute = { pathname: ONBOARDING_ROUTE };
@@ -9,7 +9,7 @@ export default function Initialized(props) {
   return props.completedOnboarding ? (
     <Route {...props} />
   ) : (
-    <Redirect to={onboardingRoute} />
+    <Navigate to={onboardingRoute} />
   );
 }
 
