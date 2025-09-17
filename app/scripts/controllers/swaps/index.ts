@@ -132,7 +132,10 @@ export default class SwapsController extends BaseController<
     [aggId: string]: Quote;
   }> = defaultFetchTradesInfo;
 
-  constructor(opts: SwapsControllerOptions, state: SwapsControllerState) {
+  constructor(
+    opts: SwapsControllerOptions,
+    state: Partial<SwapsControllerState> | undefined,
+  ) {
     super({
       name: controllerName,
       metadata,
