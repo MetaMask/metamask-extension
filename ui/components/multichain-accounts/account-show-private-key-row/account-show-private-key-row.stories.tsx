@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';

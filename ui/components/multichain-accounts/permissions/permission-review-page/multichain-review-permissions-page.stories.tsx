@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom-v5-compat';
 import {
   Caip25EndowmentPermissionName,
   Caip25CaveatType,

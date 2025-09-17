@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, act, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -10,14 +10,13 @@ const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
 const errorColorSelector = '.mm-box--color-error-default';
 
-const mockHistoryPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('MultichainAccountMenu', () => {
   beforeEach(() => {
@@ -131,7 +130,7 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
     );
   });

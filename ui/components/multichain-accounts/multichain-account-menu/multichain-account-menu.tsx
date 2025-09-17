@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   Icon,
@@ -29,7 +29,7 @@ export const MultichainAccountMenu = ({
   buttonBackgroundColor,
   handleAccountRenameAction,
 }: MultichainAccountMenuProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -42,7 +42,7 @@ export const MultichainAccountMenu = ({
     const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
       const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      history.push(multichainAccountDetailsPageRoute);
+      navigate(multichainAccountDetailsPageRoute);
     };
 
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
@@ -58,7 +58,7 @@ export const MultichainAccountMenu = ({
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
       const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      history.push(multichainAccountAddressesPageRoute);
+      navigate(multichainAccountAddressesPageRoute);
     };
 
     const handleAccountPinClick = (mouseEvent: React.MouseEvent) => {

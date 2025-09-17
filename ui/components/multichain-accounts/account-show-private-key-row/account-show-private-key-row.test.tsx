@@ -1,9 +1,9 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { AccountShowPrivateKeyRow } from './account-show-private-key-row';
 
@@ -126,9 +126,7 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -148,9 +146,7 @@ describe('AccountShowPrivateKeyRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={hardwareAccount} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={hardwareAccount} />,
         store,
       );
 
@@ -169,9 +165,7 @@ describe('AccountShowPrivateKeyRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={snapAccount} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={snapAccount} />,
         store,
       );
 
@@ -185,9 +179,7 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -207,9 +199,7 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -231,9 +221,7 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -257,9 +245,7 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
@@ -290,9 +276,7 @@ describe('AccountShowPrivateKeyRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={accountWithoutKeyring} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={accountWithoutKeyring} />,
         store,
       );
 

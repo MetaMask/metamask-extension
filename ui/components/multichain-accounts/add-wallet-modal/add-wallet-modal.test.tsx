@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ADD_WALLET_PAGE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -8,15 +8,15 @@ import {
 } from '../../../helpers/constants/routes';
 import { AddWalletModal } from './add-wallet-modal';
 
-const mockHistoryPush = jest.fn();
 const mockOpenExtensionInBrowser = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -27,10 +27,7 @@ describe('AddWalletModal', () => {
   const mockOnClose = jest.fn();
 
   beforeEach(() => {
-    mockOnClose.mockClear();
-    mockHistoryPush.mockClear();
-    mockOpenExtensionInBrowser.mockClear();
-
+    jest.clearAllMocks();
     // @ts-expect-error mocking platform
     global.platform = {
       openExtensionInBrowser: mockOpenExtensionInBrowser,
@@ -57,7 +54,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('Import a wallet'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
   });
 
   it('calls onClose and navigates when import account option is clicked', () => {
@@ -66,7 +63,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('Import an account'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
   });
 
   it('calls onClose and opens hardware wallet route in expanded view', () => {
@@ -78,7 +75,7 @@ describe('AddWalletModal', () => {
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
       CONNECT_HARDWARE_ROUTE,
     );
-    expect(mockHistoryPush).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('does not render when isOpen is false', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

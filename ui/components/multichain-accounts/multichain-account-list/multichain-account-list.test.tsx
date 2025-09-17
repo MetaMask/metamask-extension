@@ -7,7 +7,7 @@ import {
   toAccountWalletId,
 } from '@metamask/account-api';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -16,15 +16,11 @@ import {
   MultichainAccountListProps,
 } from './multichain-account-list';
 
-const mockHistoryPush = jest.fn();
-
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
-    useHistory: () => ({
-      push: mockHistoryPush,
-    }),
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -208,7 +204,7 @@ describe('MultichainAccountList', () => {
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
       walletTwoGroupId,
     );
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('updates selected account when selectedAccountGroup changes', () => {
@@ -523,7 +519,7 @@ describe('MultichainAccountList', () => {
       expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
         walletTwoGroupId,
       );
-      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('handles checkbox click to deselect selected account', () => {
@@ -541,7 +537,7 @@ describe('MultichainAccountList', () => {
       expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
         walletOneGroupId,
       );
-      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('updates checkbox states when selectedAccountGroups prop changes', () => {
