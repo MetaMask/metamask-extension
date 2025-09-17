@@ -28,7 +28,7 @@ export const Tab = <TKey extends string = string>({
   disabled = false,
   ...props
 }: TabProps<TKey>) => {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (!disabled && onClick) {
       onClick(tabIndex);
@@ -38,6 +38,7 @@ export const Tab = <TKey extends string = string>({
   return (
     <Box
       data-testid={dataTestId}
+      onClick={handleClick}
       key={tabKey}
       role="tab"
       tabIndex={isActive ? 0 : -1}
@@ -77,9 +78,7 @@ export const Tab = <TKey extends string = string>({
         {...textProps}
         asChild
       >
-        <button onClick={handleClick} disabled={disabled}>
-          {name}
-        </button>
+        <button disabled={disabled}>{name}</button>
       </Text>
     </Box>
   );
