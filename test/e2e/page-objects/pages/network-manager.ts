@@ -142,7 +142,7 @@ class NetworkManager {
     console.log(`Checking if ${tabName} tab is selected`);
     // Find the active tab and verify it contains "Custom" text
     await this.driver.waitForSelector({
-      css: `${this.tabList} li.tab--active button`,
+      css: `${this.tabList} div.tab--active button`,
       text: tabName,
     });
     console.log(`${tabName} tab is properly selected`);
