@@ -45,16 +45,17 @@ export const BridgeControllerInit: ControllerInitFunction<
     getLayer1GasFee: (...args) =>
       transactionController.getLayer1GasFee(...args),
 
-    // @ts-expect-error: Type of `fetchFn` does not match.
     fetchFn: async (
       url,
-      { cacheOptions, functionName, ...requestOptions }: FetchWithCacheOptions,
+      {
+        cacheOptions,
+        functionName,
+        ...requestOptions
+      }: FetchWithCacheOptions = {},
     ) => {
       if (functionName === 'fetchBridgeTokens') {
         return await fetchWithCache({
-          // @ts-expect-error: `url` can be `URL` but `fetchWithCache` expects a
-          // string.
-          url,
+          url: url.toString(),
           fetchOptions: { method: 'GET', ...requestOptions },
           cacheOptions,
           functionName,
