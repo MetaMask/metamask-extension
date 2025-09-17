@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -79,6 +79,7 @@ import { getMultichainNetwork } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
+import { getSelectedMultichainNetworkChainId } from '../../../../../selectors/multichain/networks';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -125,6 +126,9 @@ const AssetListControlBar = ({
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+
+  const currentMultichainChainId = useSelector(getSelectedMultichainNetworkChainId);
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -300,10 +304,20 @@ const AssetListControlBar = ({
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
+      namespace === KnownCaipNamespace.Eip155 &&
       Object.keys(enabledNetworksByNamespace).length > 1
     ) {
       return t('allNetworks');
     }
+
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      namespace !== KnownCaipNamespace.Eip155 &&
+      Object.keys(enabledNetworksByNamespace).length > 1
+    ) {
+      return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
+    }
+
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length === 0
@@ -328,6 +342,7 @@ const AssetListControlBar = ({
     currentMultichainNetwork?.nickname,
     t,
     allNetworks,
+    namespace,
   ]);
 
   const networkButtonTextEnabledAccountState2 = useMemo(() => {

@@ -47,9 +47,6 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
           <Tab
             tabKey="custom-networks"
             name={t('networkTabCustom') ?? 'Custom'}
-            disabled={
-              !isEvmNetworkSelected && !isMultichainAccountsFeatureEnabled
-            }
           >
             <CustomNetworks />
           </Tab>

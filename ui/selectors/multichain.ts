@@ -8,6 +8,8 @@ import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import { isScopeEqualToAny } from '@metamask/keyring-utils';
+
 import {
   NetworkConfiguration,
   RpcEndpointType,
@@ -217,9 +219,37 @@ export function getMultichainNetwork(
   // on having a non-EVM account being selected!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
-  const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return selectedAccount.scopes.includes(provider.chainId);
-  });
+
+  const selectedChainId = state.metamask.selectedMultichainNetworkChainId;
+
+  let nonEvmNetwork: MultichainProviderConfig | undefined;
+
+  // First try to find network by selectedChainId
+  if (selectedChainId) {
+    nonEvmNetwork = nonEvmNetworks.find(
+      (provider) => provider.chainId === selectedChainId,
+    );
+  }
+
+  // If no network found by selectedChainId, we try to find by scopes
+  if (!nonEvmNetwork && selectedAccount.scopes.length > 0) {
+    // If we have a selectedChainId but didn't find a match, we try to find a network
+    // that matches both the selectedChainId and is in the scopes
+    if (selectedChainId) {
+      nonEvmNetwork = nonEvmNetworks.find(
+        (provider) =>
+          provider.chainId === selectedChainId &&
+          isScopeEqualToAny(provider.chainId, selectedAccount.scopes),
+      );
+    }
+  }
+
+  // If still no network found, we try to find a network that is address compatible
+  if (!nonEvmNetwork) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) => {
+      return selectedAccount.scopes.includes(provider.chainId);
+    });
+  }
 
   if (!nonEvmNetwork) {
     throw new Error(
