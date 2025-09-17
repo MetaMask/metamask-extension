@@ -24,7 +24,6 @@ describe('useCurrencyConversions', () => {
     expect(result.getFiatValue).toBeDefined();
     expect(result.getFiatDisplayValue).toBeDefined();
     expect(result.getNativeValue).toBeDefined();
-    expect(result.getNativeDisplayValue).toBeDefined();
   });
 
   it('use conversion rate from asset if available', () => {
@@ -40,9 +39,8 @@ describe('useCurrencyConversions', () => {
 
     const result = renderHook();
     expect(result.getFiatValue(10)).toEqual('20');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 20');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 20.00');
     expect(result.getNativeValue(5000)).toEqual('2500');
-    expect(result.getNativeDisplayValue(5000)).toEqual('ETH 2500');
   });
 
   it('return correct values for Native assets', () => {
@@ -53,9 +51,8 @@ describe('useCurrencyConversions', () => {
 
     const result = renderHook();
     expect(result.getFiatValue(10)).toEqual('5561.2');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 5561.2');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 5561.20');
     expect(result.getNativeValue(5000)).toEqual('8.990865280874631');
-    expect(result.getNativeDisplayValue(5000)).toEqual('ETH 8.99086');
   });
 
   it('return correct values for ERC20 assets', () => {
@@ -78,9 +75,8 @@ describe('useCurrencyConversions', () => {
     });
 
     expect(result.getFiatValue(10)).toEqual('27806');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 27806');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 27806.00');
     expect(result.getNativeValue(5000)).toEqual('1.7981');
-    expect(result.getNativeDisplayValue(5000)).toEqual('NEU 1.7981');
   });
 
   it('return correct values for solana assets', () => {
@@ -97,8 +93,7 @@ describe('useCurrencyConversions', () => {
     });
 
     expect(result.getFiatValue(10)).toEqual('5');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 5');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 5.00');
     expect(result.getNativeValue(5000)).toEqual('10000');
-    expect(result.getNativeDisplayValue(5000)).toEqual('FARTCOIN 10000');
   });
 });

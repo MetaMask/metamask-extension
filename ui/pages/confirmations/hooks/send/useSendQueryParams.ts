@@ -114,12 +114,6 @@ export const useSendQueryParams = () => {
   ]);
 
   useEffect(() => {
-    if (value === undefined && paramAmount) {
-      updateValue(paramAmount, paramMaxValueMode === 'true');
-    }
-  }, [paramAmount, paramMaxValueMode, updateValue, value]);
-
-  useEffect(() => {
     if (to === undefined && paramRecipient) {
       updateTo(paramRecipient);
     }
@@ -174,15 +168,22 @@ export const useSendQueryParams = () => {
     if (newAsset) {
       updateAsset(newAsset);
     }
+    if (value === undefined && paramAmount) {
+      updateValue(paramAmount, paramMaxValueMode === 'true');
+    }
   }, [
     asset,
     evmTokens,
+    paramAmount,
     paramAsset,
     paramChainId,
     // using only multiChainAssets as dependency causes infinite loading
     multiChainAssets?.length,
     nfts,
+    paramMaxValueMode,
     tokens,
     updateAsset,
+    updateValue,
+    value,
   ]);
 };

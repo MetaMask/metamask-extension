@@ -26,7 +26,7 @@ import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversio
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
 import { useSendType } from '../../../hooks/send/useSendType';
-import { getFractionLength } from '../../../utils/send';
+import { formatToFixedDecimals, getFractionLength } from '../../../utils/send';
 
 export const Amount = () => {
   const t = useI18nContext();
@@ -34,12 +34,8 @@ export const Amount = () => {
   const [amount, setAmount] = useState(value ?? '');
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
-  const {
-    getFiatValue,
-    getFiatDisplayValue,
-    getNativeValue,
-    getNativeDisplayValue,
-  } = useCurrencyConversions();
+  const { getFiatValue, getFiatDisplayValue, getNativeValue } =
+    useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
   const {
@@ -51,8 +47,10 @@ export const Amount = () => {
   } = useAmountSelectionMetrics();
   const alternateDisplayValue = useMemo(
     () =>
-      fiatMode ? getNativeDisplayValue(amount) : getFiatDisplayValue(amount),
-    [amount, fiatMode, getFiatDisplayValue, getNativeDisplayValue],
+      fiatMode
+        ? `${formatToFixedDecimals(value, 5)} ${asset?.symbol}`
+        : getFiatDisplayValue(amount),
+    [amount, fiatMode, getFiatDisplayValue, value],
   );
   const { amountError } = useAmountValidation();
 
@@ -74,13 +72,14 @@ export const Amount = () => {
 
   const toggleFiatMode = useCallback(() => {
     const newFiatMode = !fiatMode;
-    if (amount !== undefined) {
-      setAmount(newFiatMode ? getFiatValue(amount) : getNativeValue(amount));
-    }
     setFiatMode(newFiatMode);
     if (newFiatMode) {
+      if (amount !== undefined) {
+        setAmount(getFiatValue(amount));
+      }
       setAmountInputTypeFiat();
     } else {
+      setAmount(value ?? '');
       setAmountInputTypeToken();
     }
   }, [
@@ -92,17 +91,18 @@ export const Amount = () => {
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
     setFiatMode,
+    value,
   ]);
 
   const updateToMax = useCallback(() => {
     const maxValue = getMaxAmount() ?? '0';
-    updateValue(fiatMode ? getNativeValue(maxValue) : maxValue, true);
-    setAmount(maxValue);
+    setAmount(fiatMode ? getFiatValue(maxValue) : maxValue);
+    updateValue(maxValue, true);
     setAmountInputMethodPressedMax();
   }, [
     fiatMode,
+    getFiatValue,
     getMaxAmount,
-    getNativeValue,
     setAmount,
     setAmountInputMethodPressedMax,
     updateValue,

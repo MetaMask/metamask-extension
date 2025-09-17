@@ -69,7 +69,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { getByRole } = render();
@@ -93,7 +92,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { getByRole, getByTestId } = render();
@@ -117,7 +115,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
     const { getByRole, getByTestId, getByText } = render();
 
@@ -126,7 +123,7 @@ describe('Amount', () => {
     fireEvent.click(getByTestId('toggle-fiat-mode'));
     expect(getByRole('textbox')).toHaveValue('20');
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
-    expect(getByText('~ETH 1.20001')).toBeInTheDocument();
+    expect(getByText('~0 NEU')).toBeInTheDocument();
   });
 
   it('capture metrics when when fiatmode is toggled', () => {
@@ -143,7 +140,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
     const mockSetAmountInputTypeFiat = jest.fn();
     const mockSetAmountInputTypeToken = jest.fn();
@@ -179,7 +175,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { getByRole, getByTestId } = render();
@@ -198,7 +193,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '10.023',
@@ -259,7 +253,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { container } = render();
@@ -279,7 +272,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { queryByText } = render();
@@ -302,7 +294,6 @@ describe('Amount', () => {
       getFiatValue: () => '20',
       getFiatDisplayValue: () => '$ 20.00',
       getNativeValue: () => '20',
-      getNativeDisplayValue: () => 'ETH 1.20001',
     });
 
     const { queryByText } = render();
