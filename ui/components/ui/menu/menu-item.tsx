@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import classnames from 'classnames';
+import { Link } from 'react-router-dom-v5-compat';
 
 import {
   BadgeWrapper,
@@ -23,6 +24,7 @@ type MenuItemProps = {
   'data-testid'?: string;
   iconName: IconName;
   iconColor?: IconColor;
+  to?: string;
   onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
@@ -30,7 +32,10 @@ type MenuItemProps = {
   textVariant?: TextVariant;
 };
 
-const MenuItem = React.forwardRef<HTMLButtonElement, MenuItemProps>(
+const MenuItem = React.forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  MenuItemProps
+>(
   (
     {
       children,
@@ -43,54 +48,88 @@ const MenuItem = React.forwardRef<HTMLButtonElement, MenuItemProps>(
       disabled,
       showInfoDot,
       textVariant,
+      to,
     }: MenuItemProps,
     ref,
-  ) => (
-    <button
-      className={classnames('menu-item', className)}
-      data-testid={dataTestId}
-      onClick={onClick}
-      ref={ref}
-      disabled={disabled}
-    >
-      {iconName && showInfoDot && (
-        <BadgeWrapper
-          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-          display={Display.Block}
-          position={BadgeWrapperPosition.topRight}
-          positionObj={{ top: -6, right: 4 }}
-          badge={
-            <Icon
-              name={IconName.FullCircle}
-              size={IconSize.Xs}
-              color={IconColor.primaryDefault}
-              style={{ '--size': '10px' } as React.CSSProperties}
-            />
-          }
-        >
-          <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
-        </BadgeWrapper>
-      )}
-      {iconName && !showInfoDot && (
-        <Icon
-          name={iconName}
-          size={IconSize.Sm}
-          marginRight={3}
-          color={iconColor}
-        />
-      )}
-      <div>
-        <Text variant={textVariant} as="div">
-          {children}
-        </Text>
-        {subtitle ? (
-          <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
-            {subtitle}
+  ) => {
+    const content = (
+      <>
+        {iconName && showInfoDot && (
+          <BadgeWrapper
+            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+            display={Display.Block}
+            position={BadgeWrapperPosition.topRight}
+            positionObj={{ top: -6, right: 4 }}
+            badge={
+              <Icon
+                name={IconName.FullCircle}
+                size={IconSize.Xs}
+                color={IconColor.primaryDefault}
+                style={{ '--size': '10px' } as React.CSSProperties}
+              />
+            }
+          >
+            <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
+          </BadgeWrapper>
+        )}
+        {iconName && !showInfoDot && (
+          <Icon
+            name={iconName}
+            size={IconSize.Sm}
+            marginRight={3}
+            color={iconColor}
+          />
+        )}
+        <div>
+          <Text variant={textVariant} as="div">
+            {children}
           </Text>
-        ) : null}
-      </div>
-    </button>
-  ),
+          {subtitle ? (
+            <Text
+              variant={TextVariant.bodyXs}
+              color={TextColor.textAlternative}
+            >
+              {subtitle}
+            </Text>
+          ) : null}
+        </div>
+      </>
+    );
+
+    if (to) {
+      return disabled ? (
+        <span
+          className={classnames('menu-item', className)}
+          data-testid={dataTestId}
+          ref={ref as React.Ref<HTMLSpanElement>}
+        >
+          {content}
+        </span>
+      ) : (
+        <Link
+          to={to}
+          className={classnames('menu-item', className)}
+          data-testid={dataTestId}
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          onClick={onClick}
+        >
+          {content}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        className={classnames('menu-item', className)}
+        data-testid={dataTestId}
+        disabled={disabled}
+        ref={ref as React.Ref<HTMLButtonElement>}
+        onClick={onClick}
+      >
+        {content}
+      </button>
+    );
+  },
 );
 
 MenuItem.displayName = 'MenuItem';
