@@ -2,17 +2,19 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { fireEvent } from '@testing-library/react';
 import { StatusTypes } from '@metamask/bridge-controller';
 import React from 'react';
-import { createMemoryHistory } from 'history';
+import * as reactRouterDom from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
-import {
-  renderWithProvider,
-  renderWithProviderAndHistory,
-} from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/jest';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TransactionListItem from '.';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(),
+}));
 
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
@@ -133,10 +135,14 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
   });
 
   it('should render completed bridge tx summary', () => {
-    const history = createMemoryHistory();
-    const mockHistoryPush = jest.spyOn(history, 'push');
+    const mockPush = jest
+      .fn()
+      .mockImplementation((...args) => jest.fn(...args));
+    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
+      push: mockPush,
+    });
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    const { queryByTestId, getByTestId } = renderWithProviderAndHistory(
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <TransactionListItem
         transactionGroup={mockBridgeTxData.transactionGroup}
       />,
@@ -149,7 +155,6 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
           },
         }),
       ),
-      history,
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
@@ -157,7 +162,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockHistoryPush).toHaveBeenCalledWith({
+    expect(mockPush).toHaveBeenCalledWith({
       pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
       state: {
         transactionGroup: mockBridgeTxData.transactionGroup,
@@ -167,8 +172,12 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
   });
 
   it('should render failed bridge tx summary', () => {
-    const history = createMemoryHistory();
-    const mockHistoryPush = jest.spyOn(history, 'push');
+    const mockPush = jest
+      .fn()
+      .mockImplementation((...args) => jest.fn(...args));
+    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
+      push: mockPush,
+    });
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
     const failedTransactionGroup = {
       ...mockBridgeTxData.transactionGroup,
@@ -177,20 +186,18 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
         status: TransactionStatus.failed,
       },
     };
-    const { queryByTestId, getByTestId, getByText } =
-      renderWithProviderAndHistory(
-        <TransactionListItem transactionGroup={failedTransactionGroup} />,
-        configureStore()(
-          createBridgeMockStore({
-            bridgeStatusStateOverrides: {
-              txHistory: {
-                [srcTxMetaId]: bridgeHistoryItem,
-              },
+    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
+      <TransactionListItem transactionGroup={failedTransactionGroup} />,
+      configureStore()(
+        createBridgeMockStore({
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [srcTxMetaId]: bridgeHistoryItem,
             },
-          }),
-        ),
-        history,
-      );
+          },
+        }),
+      ),
+    );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
       '?Bridged to OP MainnetFailed-2 USDC',
@@ -198,7 +205,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     expect(getByText('Failed')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockHistoryPush).toHaveBeenCalledWith({
+    expect(mockPush).toHaveBeenCalledWith({
       pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
       state: {
         transactionGroup: failedTransactionGroup,
