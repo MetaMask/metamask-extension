@@ -5,7 +5,7 @@ import {
 import { ControllerInitFunction } from './types';
 
 /**
- * Initialize the appState controller.
+ * Initialize the app state controller.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.

@@ -10,7 +10,7 @@ export type AppStateControllerMessenger = ReturnType<
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
- * gas fee controller.
+ * app state controller.
  *
  * @param messenger - The base messenger used to create the restricted
  * messenger.
