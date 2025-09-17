@@ -12,7 +12,7 @@ import React, {
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
