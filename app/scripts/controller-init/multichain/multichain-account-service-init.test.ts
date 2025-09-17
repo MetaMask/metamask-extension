@@ -26,7 +26,7 @@ function buildInitRequestMock(): jest.Mocked<
 
   baseControllerMessenger.registerActionHandler(
     'PreferencesController:getState',
-    jest.fn().mockResolvedValue({}),
+    jest.fn().mockReturnValue({}),
   );
 
   return {
