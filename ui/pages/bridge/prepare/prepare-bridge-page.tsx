@@ -535,7 +535,7 @@ const PrepareBridgePage = ({
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            shouldShowMaxButton
+            shouldShowMaxButton || gasIncluded7702
               ? (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
