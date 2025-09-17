@@ -6,24 +6,15 @@ import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-not
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications';
 
 const mockDispatch = jest.fn();
-const mockHistoryPush = jest.fn();
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
-
 describe('TurnOnMetamaskNotifications', () => {
   beforeEach(() => {
     mockDispatch.mockClear();
-    mockHistoryPush.mockClear();
   });
 
   it('renders correctly', () => {

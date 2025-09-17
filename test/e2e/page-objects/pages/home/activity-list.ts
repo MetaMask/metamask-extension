@@ -38,7 +38,7 @@ class ActivityListPage {
 
   private readonly viewTransactionOnExplorerButton = {
     text: 'View on block explorer',
-    tag: 'a',
+    tag: 'button',
   };
 
   private readonly cancelTransactionButton = {
