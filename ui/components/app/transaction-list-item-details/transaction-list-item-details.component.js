@@ -52,6 +52,7 @@ export default class TransactionListItemDetails extends PureComponent {
     senderNickname: PropTypes.string.isRequired,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
+    history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
@@ -66,6 +67,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup: { primaryTransaction },
       networkConfiguration,
       isCustomNetwork,
+      history,
       onClose,
       chainId,
     } = this.props;
@@ -86,6 +88,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
     if (!rpcPrefs.blockExplorerUrl && isCustomNetwork) {
       onClose();
+      history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
@@ -161,22 +164,12 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
-      networkConfiguration,
     } = this.props;
     const {
       primaryTransaction: transaction,
       initialTransaction: { type },
     } = transactionGroup;
     const { chainId, hash } = transaction;
-
-    const blockExplorerUrl =
-      networkConfiguration?.[this.props.chainId]?.blockExplorerUrls[
-        networkConfiguration?.[this.props.chainId]?.defaultBlockExplorerUrlIndex
-      ];
-    const explorerLink =
-      !blockExplorerUrl && this.props.isCustomNetwork
-        ? `${NETWORKS_ROUTE}#blockExplorerUrl`
-        : '';
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -225,15 +218,16 @@ export default class TransactionListItemDetails extends PureComponent {
               </div>
             </div>
             <div className="transaction-list-item-details__tx-hash gap-1">
-              <Link
-                to={explorerLink}
+              <button
+                type="button"
                 className="text-primary-default"
                 onClick={this.handleBlockExplorerClick}
+                disabled={!hash}
               >
                 {blockExplorerLinkText.firstPart === 'addBlockExplorer'
                   ? t('addBlockExplorer')
                   : t('viewOnBlockExplorer')}
-              </Link>
+              </button>
 
               <Tooltip
                 wrapperClassName="transaction-list-item-details__header-button"
