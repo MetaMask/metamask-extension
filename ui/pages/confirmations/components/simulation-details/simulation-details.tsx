@@ -48,7 +48,6 @@ import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
-import { IncomingBalanceChangeList } from './incoming-balance-change-list';
 
 export type StaticRow = {
   label: string;
@@ -481,11 +480,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={outgoing}
           testId="simulation-rows-outgoing"
         />
-        <IncomingBalanceChangeList
+        <BalanceChangeList
           heading={t('simulationDetailsIncomingHeading')}
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
-          transactionId={transactionId}
+          alertKey={RowAlertKey.IncomingTokens}
+          ownerId={transactionId}
         />
       </Box>
     </SimulationDetailsLayout>

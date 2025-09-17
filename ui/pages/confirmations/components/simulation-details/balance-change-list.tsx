@@ -19,6 +19,8 @@ import { sortBalanceChanges } from './sortBalanceChanges';
  * @param props.balanceChanges
  * @param props.testId
  * @param props.labelColor
+ * @param props.alertKey
+ * @param props.ownerId
  * @returns
  */
 export const BalanceChangeList: React.FC<{
@@ -26,7 +28,9 @@ export const BalanceChangeList: React.FC<{
   balanceChanges: BalanceChange[];
   testId?: string;
   labelColor?: TextColor;
-}> = ({ heading, balanceChanges, testId, labelColor }) => {
+  alertKey?: string;
+  ownerId?: string;
+}> = ({ heading, balanceChanges, testId, labelColor, alertKey, ownerId }) => {
   const sortedBalanceChanges = useMemo(() => {
     return sortBalanceChanges(balanceChanges);
   }, [balanceChanges]);
@@ -61,6 +65,8 @@ export const BalanceChangeList: React.FC<{
             balanceChange={balanceChange}
             showFiat={!showFiatTotal && !balanceChange.isUnlimitedApproval}
             labelColor={labelColor}
+            alertKey={index === 0 ? alertKey : undefined}
+            ownerId={index === 0 ? ownerId : undefined}
           />
         ))}
       </Box>

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   TransactionMeta,
   SimulationTokenStandard,
@@ -9,7 +10,37 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { useTokenTrustSignals } from '../../../../hooks/useTokenTrustSignals';
+import { getTokenScanCacheResult } from '../../../../selectors/selectors';
+
+type TokenScanCacheResult = {
+  data: {
+    result_type?: string;
+  };
+  timestamp?: number;
+};
+
+function getTrustState(
+  cachedResult: TokenScanCacheResult | undefined,
+): TrustSignalDisplayState {
+  const resultType = cachedResult?.data?.result_type;
+
+  if (!resultType) {
+    return TrustSignalDisplayState.Unknown;
+  }
+
+  switch (resultType.toLowerCase()) {
+    case 'malicious':
+      return TrustSignalDisplayState.Malicious;
+    case 'warning':
+    case 'suspicious':
+      return TrustSignalDisplayState.Warning;
+    case 'benign':
+    case 'verified':
+      return TrustSignalDisplayState.Verified;
+    default:
+      return TrustSignalDisplayState.Unknown;
+  }
+}
 
 export function useTokenTrustSignalAlerts(): Alert[] {
   const t = useI18nContext();
@@ -23,6 +54,10 @@ export function useTokenTrustSignalAlerts(): Alert[] {
 
   // Filter for incoming tokens (positive balance changes) and ERC20 tokens only
   const incomingTokens = useMemo(() => {
+    if (!tokenBalanceChanges || tokenBalanceChanges.length === 0) {
+      return [];
+    }
+
     return tokenBalanceChanges
       .filter(
         (change) =>
@@ -32,22 +67,35 @@ export function useTokenTrustSignalAlerts(): Alert[] {
       .map((change) => change.address.toLowerCase());
   }, [tokenBalanceChanges]);
 
-  // Check trust signals for all incoming tokens
-  const tokenTrustSignals = incomingTokens.map((tokenAddress) => {
-    const { state } = useTokenTrustSignals(chainId, tokenAddress);
-    return { tokenAddress, state };
+  // Use a selector hook for each token to get their trust states
+  const tokenTrustStates = useSelector((state) => {
+    if (!chainId || !incomingTokens || incomingTokens.length === 0) {
+      return [];
+    }
+
+    return incomingTokens.map((tokenAddress) => {
+      const cachedResult = getTokenScanCacheResult(
+        state,
+        chainId,
+        tokenAddress,
+      );
+      return {
+        tokenAddress,
+        trustState: getTrustState(cachedResult),
+      };
+    });
   });
 
   return useMemo(() => {
-    if (!chainId || incomingTokens.length === 0) {
+    if (!chainId || !tokenTrustStates || tokenTrustStates.length === 0) {
       return [];
     }
 
     const alerts: Alert[] = [];
 
     // Check each incoming token for trust signal alerts
-    tokenTrustSignals.forEach(({ tokenAddress, state }) => {
-      if (state === TrustSignalDisplayState.Malicious) {
+    tokenTrustStates.forEach(({ tokenAddress, trustState }) => {
+      if (trustState === TrustSignalDisplayState.Malicious) {
         alerts.push({
           key: `tokenTrustSignalMalicious-${tokenAddress}`,
           reason: t('alertReasonTokenTrustSignalMalicious'),
@@ -55,7 +103,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
           severity: Severity.Danger,
           message: t('alertMessageTokenTrustSignalMalicious'),
         });
-      } else if (state === TrustSignalDisplayState.Warning) {
+      } else if (trustState === TrustSignalDisplayState.Warning) {
         alerts.push({
           key: `tokenTrustSignalWarning-${tokenAddress}`,
           reason: t('alertReasonTokenTrustSignalWarning'),
@@ -67,5 +115,5 @@ export function useTokenTrustSignalAlerts(): Alert[] {
     });
 
     return alerts;
-  }, [chainId, incomingTokens, tokenTrustSignals, t]);
+  }, [chainId, tokenTrustStates, t]);
 }
