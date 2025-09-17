@@ -139,9 +139,9 @@ export const useTokensWithFiltering = (
     if (!chainId) {
       return undefined;
     }
-    // For non-EVM chains, we need to manually construct the token list
-    if (isSolanaChainId(chainId) || isBitcoinChainId(chainId)) {
-      // Return native asset for Bitcoin/Solana chains
+    // For Bitcoin chains, we only support native asset
+    if (isBitcoinChainId(chainId)) {
+      // Return native asset for Bitcoin chains
       const nativeAsset = getNativeAssetForChainId(chainId);
       if (nativeAsset) {
         return {
@@ -150,6 +150,7 @@ export const useTokensWithFiltering = (
       }
       return undefined;
     }
+    // For Solana and EVM chains, check the cache
     const hexChainId = formatChainIdToHex(chainId);
     return hexChainId ? cachedTokens[hexChainId]?.data : undefined;
   }, [chainId, cachedTokens]);
