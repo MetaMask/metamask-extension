@@ -3,6 +3,19 @@
 exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are not defined 1`] = `
 [
   {
+    "address": "",
+    "assetId": "eip155:1/slip44:60",
+    "balance": "0",
+    "chainId": "0x1",
+    "decimals": 18,
+    "iconUrl": "",
+    "image": "./images/eth_logo.svg",
+    "name": "Ether",
+    "string": "0",
+    "symbol": "ETH",
+    "type": "NATIVE",
+  },
+  {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "balance": "0.00184",
     "chainId": "0x1",
@@ -127,21 +140,6 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
     "string": "0",
     "symbol": "ETH",
     "type": "NATIVE",
-  },
-  {
-    "address": "0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
-    "aggregators": [],
-    "assetId": "eip155:1/erc20:0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
-    "balance": "",
-    "chainId": "0x1",
-    "decimals": 18,
-    "erc20": true,
-    "iconUrl": "images/contract/NGL.svg",
-    "image": "images/contract/NGL.svg",
-    "name": "Entangle",
-    "string": undefined,
-    "symbol": "NGL",
-    "type": "TOKEN",
   },
 ]
 `;
@@ -295,6 +293,19 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
 exports[`useTokensWithFiltering should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance 1`] = `
 [
   {
+    "address": "",
+    "assetId": "eip155:1/slip44:60",
+    "balance": "0",
+    "chainId": "0x1",
+    "decimals": 18,
+    "iconUrl": "",
+    "image": "./images/eth_logo.svg",
+    "name": "Ether",
+    "string": "0",
+    "symbol": "ETH",
+    "type": "NATIVE",
+  },
+  {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "balance": "0.00184",
     "chainId": "0x1",
@@ -420,26 +431,24 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "symbol": "ETH",
     "type": "NATIVE",
   },
-  {
-    "address": "0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
-    "aggregators": [],
-    "assetId": "eip155:1/erc20:0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
-    "balance": "",
-    "chainId": "0x1",
-    "decimals": 18,
-    "erc20": true,
-    "iconUrl": "images/contract/NGL.svg",
-    "image": "images/contract/NGL.svg",
-    "name": "Entangle",
-    "string": undefined,
-    "symbol": "NGL",
-    "type": "TOKEN",
-  },
 ]
 `;
 
 exports[`useTokensWithFiltering should return all tokens when chainId !== activeChainId and chainId has not been imported, sorted by balance 1`] = `
 [
+  {
+    "address": "",
+    "assetId": "eip155:137/slip44:966",
+    "balance": "0",
+    "chainId": "0x89",
+    "decimals": 18,
+    "iconUrl": "",
+    "image": "./images/pol-token.svg",
+    "name": "Polygon",
+    "string": "0",
+    "symbol": "POL",
+    "type": "NATIVE",
+  },
   {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
@@ -572,21 +581,6 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "name": "SEED",
     "string": undefined,
     "symbol": "SEED",
-    "type": "TOKEN",
-  },
-  {
-    "address": "0x487d62468282bd04ddf976631c23128a425555ee",
-    "aggregators": [],
-    "assetId": "eip155:137/erc20:0x487d62468282bd04ddf976631c23128a425555ee",
-    "balance": "",
-    "chainId": "0x89",
-    "decimals": 5,
-    "erc20": true,
-    "iconUrl": "images/contract/UPC.svg",
-    "image": "images/contract/UPC.svg",
-    "name": "UPCX",
-    "string": undefined,
-    "symbol": "UPC",
     "type": "TOKEN",
   },
 ]
