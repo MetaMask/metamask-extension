@@ -1,15 +1,23 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
+import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProviderAndHistory } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/jest';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { AccountShowSrpRow } from './account-show-srp-row';
 
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
+
+const mockPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockPush,
+  }),
+}));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -47,33 +55,21 @@ const createMockState = (
   },
 });
 
-const renderWithHistory = (
-  component: React.ReactElement,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  state: any,
-) => {
-  const store = mockStore(state);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const history: any = createMemoryHistory();
-
-  // Add push method spy for navigation testing
-  history.push = jest.fn();
-  const mockPush = jest.spyOn(history, 'push');
-
-  return {
-    ...renderWithProviderAndHistory(component, store, history),
-    mockPush,
-  };
-};
-
 describe('AccountShowSrpRow', () => {
+  beforeEach(() => {
+    mockPush.mockClear();
+  });
+
   describe('Component Rendering', () => {
     it('should render with basic props', () => {
       const state = createMockState();
+      const store = mockStore(state);
 
-      renderWithHistory(
-        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
-        state,
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
+        </MemoryRouter>,
+        store,
       );
 
       expect(screen.getByText('secretRecoveryPhrase')).toBeInTheDocument();
@@ -89,6 +85,7 @@ describe('AccountShowSrpRow', () => {
           firstTimeFlowType: 'create',
         },
       };
+      const store = mockStore(state);
       const account = {
         ...MOCK_ACCOUNT_EOA,
         options: {
@@ -97,7 +94,12 @@ describe('AccountShowSrpRow', () => {
         },
       };
 
-      renderWithHistory(<AccountShowSrpRow account={account} />, state);
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={account} />
+        </MemoryRouter>,
+        store,
+      );
 
       expect(screen.getByText('secretRecoveryPhrase')).toBeInTheDocument();
       expect(screen.getByText('backup')).toBeInTheDocument();
@@ -106,10 +108,13 @@ describe('AccountShowSrpRow', () => {
 
     it('should not show backup reminder when seed phrase is backed up', () => {
       const state = createMockState(true);
+      const store = mockStore(state);
 
-      renderWithHistory(
-        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
-        state,
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
+        </MemoryRouter>,
+        store,
       );
 
       expect(screen.getByText('secretRecoveryPhrase')).toBeInTheDocument();
@@ -127,6 +132,7 @@ describe('AccountShowSrpRow', () => {
         },
       };
       const state = createMockState(false, [secondHdKeyring]);
+      const store = mockStore(state);
 
       const accountWithSecondKeyring = {
         ...MOCK_ACCOUNT_EOA,
@@ -135,9 +141,11 @@ describe('AccountShowSrpRow', () => {
         },
       };
 
-      renderWithHistory(
-        <AccountShowSrpRow account={accountWithSecondKeyring} />,
-        state,
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={accountWithSecondKeyring} />
+        </MemoryRouter>,
+        store,
       );
 
       expect(screen.getByText('secretRecoveryPhrase')).toBeInTheDocument();
@@ -156,6 +164,7 @@ describe('AccountShowSrpRow', () => {
           firstTimeFlowType: 'create',
         },
       };
+      const store = mockStore(state);
       const account = {
         ...MOCK_ACCOUNT_EOA,
         options: {
@@ -164,9 +173,11 @@ describe('AccountShowSrpRow', () => {
         },
       };
 
-      const { mockPush } = renderWithHistory(
-        <AccountShowSrpRow account={account} />,
-        state,
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={account} />
+        </MemoryRouter>,
+        store,
       );
 
       const row = screen.getByText('secretRecoveryPhrase').closest('div');
@@ -181,10 +192,13 @@ describe('AccountShowSrpRow', () => {
 
     it('should open SRP quiz modal when clicked and seed phrase is backed up', () => {
       const state = createMockState(true);
+      const store = mockStore(state);
 
-      const { mockPush } = renderWithHistory(
-        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
-        state,
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
+        </MemoryRouter>,
+        store,
       );
 
       const row = screen.getByText('secretRecoveryPhrase').closest('div');
@@ -200,10 +214,13 @@ describe('AccountShowSrpRow', () => {
   describe('Error Handling', () => {
     it('should handle missing keyrings gracefully', () => {
       const state = createMockState(true, []);
+      const store = mockStore(state);
 
-      renderWithHistory(
-        <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
-        state,
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />
+        </MemoryRouter>,
+        store,
       );
 
       expect(screen.getByText('secretRecoveryPhrase')).toBeInTheDocument();
@@ -220,6 +237,7 @@ describe('AccountShowSrpRow', () => {
         },
       };
       const state = createMockState(false, [nonHdKeyring]);
+      const store = mockStore(state);
 
       const accountWithSnapKeyring = {
         ...MOCK_ACCOUNT_EOA,
@@ -228,9 +246,11 @@ describe('AccountShowSrpRow', () => {
         },
       };
 
-      renderWithHistory(
-        <AccountShowSrpRow account={accountWithSnapKeyring} />,
-        state,
+      renderWithProvider(
+        <MemoryRouter>
+          <AccountShowSrpRow account={accountWithSnapKeyring} />
+        </MemoryRouter>,
+        store,
       );
 
       expect(screen.getByText('secretRecoveryPhrase')).toBeInTheDocument();

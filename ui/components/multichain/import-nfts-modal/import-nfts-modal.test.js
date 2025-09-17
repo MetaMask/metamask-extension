@@ -1,9 +1,8 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProviderAndHistory } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -21,6 +20,16 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
+// Create a spy for the history push function
+const mockPush = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockPush,
+  }),
+}));
+
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
     .fn()
@@ -36,27 +45,19 @@ jest.mock('../../../store/actions.ts', () => ({
   hideImportNftsModal: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
-const renderWithProvider = (component, storeState = mockState) => {
-  const store = configureMockStore([thunk])(storeState);
-  const history = createMemoryHistory();
-
-  const mockPush = jest.fn();
-  history.push = mockPush;
-
-  return {
-    ...renderWithProviderAndHistory(component, store, history),
-    mockPush,
-  };
-};
-
 describe('ImportNftsModal', () => {
+  let store = configureMockStore([thunk])(mockState);
+
   beforeEach(() => {
     jest.restoreAllMocks();
+    // Reset the push spy before each test
+    mockPush.mockClear();
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
+      store,
     );
     expect(getByText('Import')).not.toBeEnabled();
     const addressInput = getByPlaceholderText('0x...');
@@ -73,6 +74,7 @@ describe('ImportNftsModal', () => {
   it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
+      store,
     );
     expect(getByText('Import')).not.toBeEnabled();
     const addressInput = getByPlaceholderText('0x...');
@@ -95,10 +97,10 @@ describe('ImportNftsModal', () => {
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
-    const store = {
+    store = configureMockStore([thunk])({
       ...mockState,
       appState: { importNftsModal: { ignoreErc20Token: true } },
-    };
+    });
 
     const onClose = jest.fn();
     const { getByPlaceholderText, getByText, getByTestId } = renderWithProvider(
@@ -161,6 +163,7 @@ describe('ImportNftsModal', () => {
 
     const { getByTestId, getByText, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
+      store,
     );
     const addressInput = getByPlaceholderText('0x...');
     const tokenIdInput = getByPlaceholderText('Enter the token id');
@@ -187,6 +190,7 @@ describe('ImportNftsModal', () => {
     const onClose = jest.fn();
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
+      store,
     );
 
     const addressInput = getByPlaceholderText('0x...');
@@ -208,7 +212,7 @@ describe('ImportNftsModal', () => {
       blockExplorerUrl: undefined,
     };
 
-    const customStoreState = {
+    store = configureMockStore([thunk])({
       ...mockState,
       metamask: {
         ...mockState.metamask,
@@ -218,12 +222,12 @@ describe('ImportNftsModal', () => {
           customNetwork,
         ),
       },
-    };
+    });
 
     const onClose = jest.fn();
     const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
-      customStoreState,
+      store,
     );
 
     // Click network selector button
@@ -267,8 +271,9 @@ describe('ImportNftsModal', () => {
 
   it('should route to default route when cancel button is clicked', () => {
     const onClose = jest.fn();
-    const { getByText, mockPush } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
+      store,
     );
 
     const cancelButton = getByText('Cancel');
@@ -281,9 +286,7 @@ describe('ImportNftsModal', () => {
 
   it('should route to default route when close button is clicked', () => {
     const onClose = jest.fn();
-    const { mockPush } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
-    );
+    renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
 
     fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
