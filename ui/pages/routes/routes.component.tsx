@@ -511,23 +511,24 @@ export default function Routes() {
   useEffect(() => {
     const prevMultichainProps = prevMultichainRef.current;
 
-    const isOnboardingRoute =
-      location.pathname.includes('/onboarding') ||
-      location.pathname.includes('/initialize');
-    const isMainWalletArea =
-      location.pathname === DEFAULT_ROUTE ||
-      (getEnvironmentType() === 'popup' && !isOnboardingRoute);
+    // Only show modal on the main wallet/home route
+    const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
-    // Show modal only when feature flag transitions from disabled to enabled
+    // Show modal when feature flag transitions from disabled to enabled (upgrades)
     const flagJustEnabled =
       isMultichainAccountsState2Enabled &&
       !prevMultichainProps.isMultichainAccountsState2Enabled;
+
+    // Also show modal for fresh installs where flag is already enabled
+    const flagEnabledFirstTime =
+      isMultichainAccountsState2Enabled &&
+      !prevMultichainProps.hasOwnProperty('isMultichainAccountsState2Enabled');
 
     const shouldShowModal =
       isUnlocked &&
       !hasShownMultichainIntroModal &&
       isMainWalletArea &&
-      flagJustEnabled;
+      (flagJustEnabled || flagEnabledFirstTime);
 
     if (shouldShowModal) {
       dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
