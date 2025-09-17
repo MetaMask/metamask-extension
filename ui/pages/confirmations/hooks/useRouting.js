@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -9,11 +9,11 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
  */
 
 export function useRouting() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
   const navigateToMostRecentOverviewPage = useCallback(() => {
-    history.push(mostRecentOverviewPage);
-  }, [history, mostRecentOverviewPage]);
+    navigate(mostRecentOverviewPage);
+  }, [navigate, mostRecentOverviewPage]);
   return { navigateToMostRecentOverviewPage };
 }

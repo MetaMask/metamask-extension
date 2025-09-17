@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import {
   Content,
@@ -63,7 +63,7 @@ import {
 } from './types';
 
 const ShieldPlan = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const [isLoading] = useState(false);
 
@@ -100,7 +100,7 @@ const ShieldPlan = () => {
   });
 
   const handleBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const plans: Plan[] = [

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaipAssetType } from '@metamask/utils';
@@ -69,7 +69,7 @@ const TokenButtons = ({
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
@@ -210,7 +210,7 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      navigateToSendRoute(history, isSendRedesignEnabled, {
+      navigateToSendRoute(navigate, isSendRedesignEnabled, {
         address: token.address,
         chainId: token.chainId,
       });
@@ -225,7 +225,7 @@ const TokenButtons = ({
   }, [
     trackEvent,
     dispatch,
-    history,
+    navigate,
     token,
     setCorrectChain,
     account,
@@ -294,13 +294,13 @@ const TokenButtons = ({
         false,
       );
     } else {
-      history.push(PREPARE_SWAP_ROUTE);
+      navigate(PREPARE_SWAP_ROUTE);
     }
   }, [
     currentEvmChainId,
     trackEvent,
     dispatch,
-    history,
+    navigate,
     token,
     usingHardwareWallet,
     setCorrectChain,

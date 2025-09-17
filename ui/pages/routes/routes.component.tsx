@@ -8,9 +8,9 @@ import {
   Route,
   RouteComponentProps,
   Switch,
-  useHistory,
+  useNavigate,
   useLocation,
-} from 'react-router-dom';
+} from 'react-router-dom-v5-compat';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -365,7 +365,7 @@ const MemoizedReviewPermissionsWrapper = React.memo(
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
@@ -509,16 +509,8 @@ export default function Routes() {
   }, [showExtensionInFullSizeView]);
 
   useEffect(() => {
-    const unlisten = history.listen((locationObj: Location, action: 'PUSH') => {
-      if (action === 'PUSH') {
-        dispatch(pageChanged(locationObj.pathname));
-      }
-    });
-
-    return () => {
-      unlisten();
-    };
-  }, [history, dispatch]);
+    dispatch(pageChanged(location.pathname));
+  }, [dispatch, location.pathname]);
 
   useEffect(() => {
     setTheme(theme);
