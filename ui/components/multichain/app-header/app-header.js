@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { matchPath } from 'react-router-dom';
+import { matchPath } from 'react-router-dom-v5-compat';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -21,8 +21,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getUnapprovedTransactions } from '../../../selectors';
-
 import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -30,7 +28,10 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
+import {
+  getSelectedMultichainNetworkConfiguration,
+  getUnapprovedTransactions,
+} from '../../../selectors';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';

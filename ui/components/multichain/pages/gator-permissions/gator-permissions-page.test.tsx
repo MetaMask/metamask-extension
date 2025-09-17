@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { GatorPermissionsPage } from './gator-permissions-page';
 
 describe('Gator Permissions Page', () => {

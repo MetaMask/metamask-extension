@@ -1,6 +1,7 @@
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
@@ -10,6 +11,24 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { ViewExplorerMenuItem } from '.';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    // eslint-disable-next-line react/prop-types
+    Link: ({ children, ...props }) => <a {...props}>{children}</a>,
+  };
+});
+
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getBlockExplorerLinkText: () => ({
+    firstPart: 'viewOnEtherscan',
+    secondPart: 'blockExplorerAccountAction',
+  }),
+}));
 
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',

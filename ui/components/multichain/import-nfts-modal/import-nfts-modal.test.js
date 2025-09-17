@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -20,15 +20,13 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
-// Create a spy for the history push function
-const mockPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
@@ -50,8 +48,6 @@ describe('ImportNftsModal', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks();
-    // Reset the push spy before each test
-    mockPush.mockClear();
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
@@ -281,7 +277,7 @@ describe('ImportNftsModal', () => {
 
     // Verify both onClose and history.push are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should route to default route when close button is clicked', () => {
@@ -292,6 +288,6 @@ describe('ImportNftsModal', () => {
 
     // Verify both onClose and history.push are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });

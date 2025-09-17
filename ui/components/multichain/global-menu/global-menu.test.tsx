@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
+import { fireEvent, waitFor } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { GlobalMenu } from '.';
@@ -21,13 +22,12 @@ const render = (metamaskStateChanges = {}) => {
   );
 };
 
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
-  Link: ({
-    children,
-    ...props
-  }: React.PropsWithChildren<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>
-  >) => <a {...props}>{children}</a>,
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
+  // eslint-disable-next-line react/prop-types
+  Link: ({ children, ...props }) => <a {...props}>{children}</a>,
 }));
 
 const mockLockMetaMask = jest.fn();

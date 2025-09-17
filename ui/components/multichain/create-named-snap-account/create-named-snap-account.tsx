@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CreateAccount } from '..';
@@ -30,7 +30,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   snapSuggestedAccountName,
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
@@ -54,7 +54,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
 
   const onClose = useCallback(async () => {
     await onActionComplete({ success: false });
-    history.push(mostRecentOverviewPage);
+    navigate(mostRecentOverviewPage);
   }, []);
 
   return (

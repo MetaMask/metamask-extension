@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { useLocation } from 'react-router-dom';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';

@@ -1,6 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
@@ -34,10 +33,13 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = (
   state = {},
@@ -111,15 +113,6 @@ const render = (
 };
 
 describe('AccountListMenu', () => {
-  const historyPushMock = jest.fn();
-
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();

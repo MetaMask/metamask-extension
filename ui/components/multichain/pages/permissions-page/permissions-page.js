@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
@@ -31,7 +31,7 @@ import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
   const sitesConnectionsList = useSelector(
@@ -46,7 +46,7 @@ export const PermissionsPage = () => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
 
-    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+    navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>
@@ -72,7 +72,7 @@ export const PermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => navigate(DEFAULT_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

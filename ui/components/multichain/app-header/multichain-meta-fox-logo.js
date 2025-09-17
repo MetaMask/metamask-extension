@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useTheme } from '../../../hooks/useTheme';
 
@@ -14,12 +14,12 @@ import { Box } from '../../component-library';
 import Logo from '../../ui/metafox-logo';
 
 export const MultichainMetaFoxLogo = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const theme = useTheme();
 
   const onClick = useCallback(async () => {
-    history.push(DEFAULT_ROUTE);
-  }, [history]);
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   return (
     <Box

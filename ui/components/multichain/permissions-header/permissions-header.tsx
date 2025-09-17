@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   AlignItems,
   BackgroundColor,
@@ -32,7 +32,7 @@ export const PermissionsHeader = ({
   connectedSubjectsMetadata?: { name: string; iconUrl: string };
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Header
