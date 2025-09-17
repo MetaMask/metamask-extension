@@ -47,7 +47,7 @@ export const useDestinationAccount = () => {
     const currentChainId = toChain?.chainId;
     const previousChainId = previousChainIdRef.current;
 
-    // Check if we're switching between different non-EVM chains
+    // Check if current and previous chains are non-EVM
     const isPreviousNonEvm =
       previousChainId &&
       (isSolanaChainId(previousChainId) || isBitcoinChainId(previousChainId));
@@ -55,12 +55,21 @@ export const useDestinationAccount = () => {
       currentChainId &&
       (isSolanaChainId(currentChainId) || isBitcoinChainId(currentChainId));
 
-    // If switching between different non-EVM chains, clear the selection and open modal
-    if (
-      isPreviousNonEvm &&
-      isCurrentNonEvm &&
-      previousChainId !== currentChainId
-    ) {
+    // Check if previous chain was EVM (not non-EVM and exists)
+    const wasPreviousEvm = previousChainId && !isPreviousNonEvm;
+    // Check if current chain is EVM (not non-EVM and exists)
+    const isCurrentEvm = currentChainId && !isCurrentNonEvm;
+
+    // Open account picker when bridging between non-EVM and EVM chains
+    // Cases: non-EVM -> EVM, EVM -> non-EVM, or switching between different non-EVM chains
+    const shouldOpenPicker =
+      (isPreviousNonEvm && isCurrentEvm) || // non-EVM -> EVM
+      (wasPreviousEvm && isCurrentNonEvm) || // EVM -> non-EVM
+      (isPreviousNonEvm &&
+        isCurrentNonEvm &&
+        previousChainId !== currentChainId); // different non-EVM chains
+
+    if (shouldOpenPicker) {
       setSelectedDestinationAccount(null);
       setIsDestinationAccountPickerOpen(true);
     } else {

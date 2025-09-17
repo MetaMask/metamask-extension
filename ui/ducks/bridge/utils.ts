@@ -18,6 +18,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   isSolanaChainId,
+  isBitcoinChainId,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
@@ -32,6 +33,16 @@ import {
   MultichainNetworks,
 } from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
+
+/**
+ * Checks if a chainId is for a non-EVM chain (Solana or Bitcoin)
+ *
+ * @param chainId - The chain ID to check
+ * @returns True if the chain is non-EVM (Solana or Bitcoin), false otherwise
+ */
+export const isNonEvmChain = (chainId: string | Hex | CaipChainId): boolean => {
+  return isSolanaChainId(chainId) || isBitcoinChainId(chainId);
+};
 
 /**
  * Safely gets the native token name for a given chainId.

@@ -139,7 +139,15 @@ export const useTokensWithFiltering = (
     if (!chainId) {
       return undefined;
     }
+    // For non-EVM chains, we need to manually construct the token list
     if (isSolanaChainId(chainId) || isBitcoinChainId(chainId)) {
+      // Return native asset for Bitcoin/Solana chains
+      const nativeAsset = getNativeAssetForChainId(chainId);
+      if (nativeAsset) {
+        return {
+          [nativeAsset.address || '']: nativeAsset,
+        };
+      }
       return undefined;
     }
     const hexChainId = formatChainIdToHex(chainId);
@@ -233,12 +241,22 @@ export const useTokensWithFiltering = (
           );
         };
 
-        if (
-          !chainId ||
-          !topTokens ||
-          !tokenList ||
-          Object.keys(tokenList).length === 0
-        ) {
+        if (!chainId || !topTokens) {
+          return;
+        }
+
+        // For EVM chains, always yield the native token first (even with zero balance)
+        if (!isSolanaChainId(chainId) && !isBitcoinChainId(chainId)) {
+          const nativeAsset = getNativeAssetForChainId(chainId);
+          if (nativeAsset && shouldAddToken(nativeAsset.symbol, '', chainId)) {
+            const nativeToken = buildTokenData(chainId, nativeAsset);
+            if (nativeToken) {
+              yield nativeToken;
+            }
+          }
+        }
+
+        if (!tokenList || Object.keys(tokenList).length === 0) {
           return;
         }
 
@@ -292,7 +310,7 @@ export const useTokensWithFiltering = (
                 string: token.string ?? undefined,
                 image:
                   (token.image ||
-                    tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
+                    tokenList?.[token.address?.toLowerCase()]?.iconUrl) ??
                   getAssetImageUrl(
                     token.address,
                     formatChainIdToCaip(token.chainId),
@@ -309,7 +327,7 @@ export const useTokensWithFiltering = (
         for (const token_ of topTokens) {
           const matchedToken =
             tokenList?.[token_.address] ??
-            tokenList?.[token_.address.toLowerCase()];
+            tokenList?.[token_.address?.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
           if (
             token &&

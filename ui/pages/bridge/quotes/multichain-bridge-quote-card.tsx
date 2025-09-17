@@ -22,7 +22,7 @@ import {
   getIsSolanaSwap,
   getPriceImpactThresholds,
   getQuoteRequest,
-  getIsToOrFromSolana,
+  getIsToOrFromNonEvm,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -79,7 +79,7 @@ export const MultichainBridgeQuoteCard = ({
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
 
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -377,7 +377,7 @@ export const MultichainBridgeQuoteCard = ({
         )}
 
         {/* Recipient */}
-        {isToOrFromSolana && selectedDestinationAccount && (
+        {isToOrFromNonEvm && selectedDestinationAccount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Text
               variant={TextVariant.bodySm}

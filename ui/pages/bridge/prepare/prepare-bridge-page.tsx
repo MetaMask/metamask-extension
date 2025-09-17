@@ -13,6 +13,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   isSolanaChainId,
+  isBitcoinChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
@@ -114,6 +115,7 @@ import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -141,7 +143,7 @@ export const useEnableMissingNetwork = () => {
           const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
-            // This way users can see their full briding tx activity
+            // This way users can see their full bridging tx activity
             dispatch(enableAllPopularNetworks());
           }
         }
@@ -185,8 +187,12 @@ const PrepareBridgePage = ({
   const toChain = useSelector(getToChain);
 
   const isFromTokensLoading = useMemo(() => {
-    // This is an EVM token list. Solana tokens should not trigger loading state.
-    if (fromChain && isSolanaChainId(fromChain.chainId)) {
+    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
+    if (
+      fromChain &&
+      (isSolanaChainId(fromChain.chainId) ||
+        isBitcoinChainId(fromChain.chainId))
+    ) {
       return false;
     }
     return Object.keys(fromTokens).length === 0;
@@ -256,6 +262,16 @@ const PrepareBridgePage = ({
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
 
+  // Get the default destination account for token filtering when no account is selected
+  const defaultDestinationAccount = useSelector((state) =>
+    toChain?.chainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          formatChainIdToCaip(toChain.chainId),
+        )
+      : null,
+  );
+
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
@@ -268,7 +284,10 @@ const PrepareBridgePage = ({
           let address = '';
           if (isNativeAddress(fromToken.address)) {
             address = '';
-          } else if (isSolanaChainId(fromChain.chainId)) {
+          } else if (
+            isSolanaChainId(fromChain.chainId) ||
+            isBitcoinChainId(fromChain.chainId)
+          ) {
             address = fromToken.address || '';
           } else {
             address = fromToken.address?.toLowerCase() || '';
@@ -282,9 +301,21 @@ const PrepareBridgePage = ({
           };
         })()
       : null,
-    selectedDestinationAccount && 'id' in selectedDestinationAccount
-      ? selectedDestinationAccount.id
-      : undefined,
+    (() => {
+      if (selectedDestinationAccount && 'id' in selectedDestinationAccount) {
+        return selectedDestinationAccount.id;
+      }
+      // For EVM chains, use the default destination account to show native tokens
+      if (
+        toChain &&
+        !isBitcoinChainId(toChain.chainId) &&
+        !isSolanaChainId(toChain.chainId) &&
+        defaultDestinationAccount
+      ) {
+        return defaultDestinationAccount.id;
+      }
+      return undefined;
+    })(),
   );
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
@@ -632,7 +663,7 @@ const PrepareBridgePage = ({
                   toToken &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
                       {
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
