@@ -286,6 +286,7 @@
     "cacheTimestamp": "number"
   },
   "SeedlessOnboardingController": "object",
+  "SubscriptionController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
   "SignatureController": {
