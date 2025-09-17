@@ -317,6 +317,7 @@
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
+  "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
       "quotes": "object",

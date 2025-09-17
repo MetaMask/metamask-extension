@@ -5653,13 +5653,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.9.0":
-  version: 11.12.0
-  resolution: "@metamask/controller-utils@npm:11.12.0"
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.14.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.9.0":
+  version: 11.14.0
+  resolution: "@metamask/controller-utils@npm:11.14.0"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^11.8.0"
     "@spruceid/siwe-parser": "npm:2.1.0"
     "@types/bn.js": "npm:^5.1.5"
     bignumber.js: "npm:^9.1.2"
@@ -5670,7 +5670,7 @@ __metadata:
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/e3cdc3f8f6d7bd8c30c9f3faba63a0323b2f87057b62d05d5ed46f5eec17d221cb1a846d5d57f269f1b7352f89a0be286d6c60ce397592084f38f7880234f994
+  checksum: 10/68a30d60a0f94316635dbe6b7f4edb0adc62873b7834a72a1342b2f61ff85fdd1d994a4168af6b15aa23a8385627df7becb14a7aa033b875d96a97b9c07120c4
   languageName: node
   linkType: hard
 
@@ -7516,6 +7516,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/subscription-controller@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/subscription-controller@npm:0.1.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/controller-utils": "npm:^11.14.0"
+    "@metamask/utils": "npm:^11.8.0"
+  peerDependencies:
+    "@metamask/profile-sync-controller": ^25.0.0
+  checksum: 10/f99dd74b6b057a357676447222f75a3753ce7522e2ff61002de46809bd67bcc3b8d71d246260aae302c3a458fec62ff543b03cf018d89bf77f1734292d24e6ca
+  languageName: node
+  linkType: hard
+
 "@metamask/superstruct@npm:^3.0.0, @metamask/superstruct@npm:^3.1.0, @metamask/superstruct@npm:^3.2.1":
   version: 3.2.1
   resolution: "@metamask/superstruct@npm:3.2.1"
@@ -7667,9 +7680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0":
-  version: 11.7.0
-  resolution: "@metamask/utils@npm:11.7.0"
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.0":
+  version: 11.8.0
+  resolution: "@metamask/utils@npm:11.8.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -7682,7 +7695,7 @@ __metadata:
     pony-cause: "npm:^2.1.10"
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
-  checksum: 10/0f31783f357d1043d0e83af3a7af1e686f56c821e9acc650d71c02f5ea8ee7d5868aa09d240b179305893be05d5a406ccfdd9a8c534d265d6b821c383f51ace1
+  checksum: 10/d5a9d8c04223fc62b0d4a078b505e062f5d1d47e752df36802189bec19a9e68aee7a9b0df9b15e7e6fa15fd9d65f61c7e4909604209dddc21f0943cd9a2fd5d1
   languageName: node
   linkType: hard
 
@@ -31905,6 +31918,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.3.8"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
+    "@metamask/subscription-controller": "npm:^0.1.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"

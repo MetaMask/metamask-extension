@@ -69,6 +69,10 @@ import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
+import {
+  getSubscriptionControllerInitMessenger,
+  getSubscriptionControllerMessenger,
+} from './subscription';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -321,6 +325,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
+  },
+  SubscriptionController: {
+    getMessenger: getSubscriptionControllerMessenger,
+    getInitMessenger: getSubscriptionControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
