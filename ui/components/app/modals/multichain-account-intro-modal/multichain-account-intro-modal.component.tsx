@@ -35,10 +35,6 @@ export const MultichainAccountIntroModal: React.FC<
   const [isLoading, setIsLoading] = useState(false);
   const isMountedRef = useRef(true);
 
-  const handleClose = () => {
-    onClose();
-  };
-
   const handleViewAccounts = async () => {
     setIsLoading(true);
 
@@ -52,10 +48,6 @@ export const MultichainAccountIntroModal: React.FC<
         setIsLoading(false);
       }
     }
-  };
-
-  const handleLearnMore = () => {
-    onLearnMore();
   };
 
   // Cleanup on unmount
@@ -86,7 +78,7 @@ export const MultichainAccountIntroModal: React.FC<
         <Button
           variant={ButtonVariant.Link}
           size={ButtonSize.Sm}
-          onClick={handleClose}
+          onClick={onClose}
           aria-label={t('close')}
         >
           <Icon name={IconName.Close} size={IconSize.Sm} />
@@ -184,7 +176,7 @@ export const MultichainAccountIntroModal: React.FC<
           variant={ButtonVariant.Link}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={handleLearnMore}
+          onClick={onLearnMore}
           disabled={isLoading}
         >
           {t('multichainAccountIntroLearnMore')}
