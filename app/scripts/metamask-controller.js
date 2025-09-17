@@ -432,6 +432,8 @@ import { EnsControllerInit } from './controller-init/confirmations/ens-controlle
 import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
 import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
+import { SubscriptionControllerInit } from './controller-init/subscription';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 
@@ -1595,6 +1597,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      SubscriptionController: SubscriptionControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
@@ -1671,6 +1674,7 @@ export default class MetamaskController extends EventEmitter {
     this.oauthService = controllersByName.OAuthService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+    this.subscriptionController = controllersByName.SubscriptionController;
     this.networkOrderController = controllersByName.NetworkOrderController;
     this.shieldController = controllersByName.ShieldController;
     this.gatorPermissionsController =
@@ -2056,6 +2060,7 @@ export default class MetamaskController extends EventEmitter {
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         SeedlessOnboardingController: this.seedlessOnboardingController,
+        SubscriptionController: this.subscriptionController,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
@@ -3088,6 +3093,34 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
+  async startSubscriptionWithCard(params) {
+    const webAuthenticator = webAuthenticatorFactory();
+    const { checkoutSessionUrl } =
+      await this.subscriptionController.startShieldSubscriptionWithCard(params);
+    // TODO: use chrome.tabs manually to have full browser feature in checkout session (e.g auto-fill form, etc.)
+    // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
+    // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
+    await new Promise((resolve, reject) => {
+      webAuthenticator.launchWebAuthFlow(
+        {
+          url: checkoutSessionUrl,
+          interactive: true,
+        },
+        (responseUrl) => {
+          try {
+            resolve(responseUrl);
+          } catch (error) {
+            reject(error);
+          }
+        },
+      );
+    });
+
+    // fetch latest user subscriptions after checkout
+    const subscriptions = await this.subscriptionController.getSubscriptions();
+    return subscriptions;
+  }
+
   /**
    * Gets relevant state for the provider of an external origin.
    *
@@ -3345,6 +3378,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
         ),
+      setIsSocialLoginFlowEnabledForMetrics:
+        metaMetricsController.setIsSocialLoginFlowEnabledForMetrics.bind(
+          metaMetricsController,
+        ),
       setMarketingCampaignCookieId:
         metaMetricsController.setMarketingCampaignCookieId.bind(
           metaMetricsController,
@@ -3379,6 +3416,19 @@ export default class MetamaskController extends EventEmitter {
       checkIsSeedlessPasswordOutdated:
         this.checkIsSeedlessPasswordOutdated.bind(this),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
+
+      // subscription
+      getSubscriptions: this.subscriptionController.getSubscriptions.bind(
+        this.subscriptionController,
+      ),
+      getSubscriptionPricing: this.subscriptionController.getPricing.bind(
+        this.subscriptionController,
+      ),
+      getSubscriptionCryptoApprovalAmount:
+        this.subscriptionController.getCryptoApproveTransactionParams.bind(
+          this.subscriptionController,
+        ),
+      startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -3677,6 +3727,9 @@ export default class MetamaskController extends EventEmitter {
         this.oauthService,
       ),
       setMarketingConsent: this.oauthService.setMarketingConsent.bind(
+        this.oauthService,
+      ),
+      getMarketingConsent: this.oauthService.getMarketingConsent.bind(
         this.oauthService,
       ),
 

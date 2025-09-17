@@ -114,6 +114,8 @@ export default class SecurityTab extends PureComponent {
     isSeedPhraseBackedUp: PropTypes.bool,
     socialLoginEnabled: PropTypes.bool,
     socialLoginType: PropTypes.string,
+    getMarketingConsent: PropTypes.func,
+    setMarketingConsent: PropTypes.func,
   };
 
   state = {
@@ -122,6 +124,8 @@ export default class SecurityTab extends PureComponent {
     srpQuizModalVisible: false,
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
+    hasEmailMarketingConsent: false,
+    hasEmailMarketingConsentError: false,
   };
 
   settingsRefCounter = 0;
@@ -155,6 +159,11 @@ export default class SecurityTab extends PureComponent {
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
     if (this.props.metaMetricsDataDeletionId) {
       await updateDataDeletionTaskStatus();
+    }
+
+    if (this.props.socialLoginEnabled) {
+      const res = await this.props.getMarketingConsent();
+      this.setState({ hasEmailMarketingConsent: res });
     }
   }
 
@@ -437,58 +446,99 @@ export default class SecurityTab extends PureComponent {
 
   renderDataCollectionForMarketing() {
     const { t } = this.context;
+
     const {
       dataCollectionForMarketing,
       participateInMetaMetrics,
       setDataCollectionForMarketing,
       setParticipateInMetaMetrics,
       useExternalServices,
+      socialLoginEnabled,
     } = this.props;
 
-    return (
-      <Box
-        ref={this.settingsRefs[19]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('dataCollectionForMarketing')}</span>
-          <div className="settings-page__content-description">
-            <span>{t('dataCollectionForMarketingDescription')}</span>
-          </div>
-        </div>
+    const handleToggle = async (value) => {
+      if (socialLoginEnabled) {
+        try {
+          await this.props.setMarketingConsent(!value);
+          this.setState({
+            hasEmailMarketingConsent: !value,
+            hasEmailMarketingConsentError: false,
+          });
+        } catch (error) {
+          this.setState({
+            hasEmailMarketingConsent: value,
+            hasEmailMarketingConsentError: true,
+          });
+        }
+        return;
+      }
 
-        <div
-          className="settings-page__content-item-col"
-          data-testid="data-collection-for-marketing-toggle"
+      const newMarketingConsent = Boolean(!value);
+      setDataCollectionForMarketing(newMarketingConsent);
+      if (participateInMetaMetrics) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(newMarketingConsent),
+            location: 'Settings',
+          },
+        });
+      } else {
+        setParticipateInMetaMetrics(true);
+      }
+    };
+
+    return (
+      <Box>
+        <Box
+          ref={this.settingsRefs[19]}
+          className="settings-page__content-row"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={4}
         >
-          <ToggleButton
-            value={dataCollectionForMarketing}
-            disabled={!useExternalServices}
-            onToggle={(value) => {
-              const newMarketingConsent = Boolean(!value);
-              setDataCollectionForMarketing(newMarketingConsent);
-              if (participateInMetaMetrics) {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-                  properties: {
-                    is_metrics_opted_in: true,
-                    has_marketing_consent: Boolean(newMarketingConsent),
-                    location: 'Settings',
-                  },
-                });
-              } else {
-                setParticipateInMetaMetrics(true);
+          <div className="settings-page__content-item">
+            <span>{t('dataCollectionForMarketing')}</span>
+            <div className="settings-page__content-description">
+              <span>
+                {socialLoginEnabled
+                  ? t('dataCollectionForMarketingDescriptionSocialLogin')
+                  : t('dataCollectionForMarketingDescription')}
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="data-collection-for-marketing-toggle"
+          >
+            <ToggleButton
+              value={
+                socialLoginEnabled
+                  ? this.state.hasEmailMarketingConsent
+                  : dataCollectionForMarketing
               }
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
+              disabled={!useExternalServices}
+              onToggle={handleToggle}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
+        {this.state.hasEmailMarketingConsentError && (
+          <Box paddingBottom={4}>
+            <Text
+              as="p"
+              color={TextColor.errorDefault}
+              variant={TextVariant.bodySm}
+            >
+              {t('notificationsSettingsBoxError')}
+            </Text>
+          </Box>
+        )}
       </Box>
     );
   }

@@ -54,6 +54,7 @@ import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-cont
 import { EncryptionKey } from '@metamask/browser-passworder';
 import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { ShieldController } from '@metamask/shield-controller';
+import { SubscriptionController } from '@metamask/subscription-controller';
 import { EnsController } from '@metamask/ens-controller';
 import { NameController } from '@metamask/name-controller';
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
@@ -111,6 +112,7 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | SubscriptionController
   | SnapsNameProvider
   | TokenBalancesController
   | TokenDetectionController
@@ -167,6 +169,7 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
+  SubscriptionController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
