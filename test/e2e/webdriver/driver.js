@@ -16,6 +16,9 @@ const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
+const {
+  getServerMochaToBackground,
+} = require('../background-socket/server-mocha-to-background');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -1279,40 +1282,57 @@ class Driver {
   async waitForWindowWithTitle(title, timeout = this.timeout) {
     const originalHandle = await this.driver.getWindowHandle();
 
+    // Feature gate: when background socket is enabled, `this.windowHandles` exists
     if (this.windowHandles) {
-      try {
-        await this.windowHandles.switchToWindowWithProperty('title', title);
-      } finally {
-        await this.driver.switchTo().window(originalHandle);
-      }
+      await getServerMochaToBackground().waitUntilWindowWithProperty(
+        'title',
+        title,
+      );
       return;
     }
 
+    // Fallback to manual polling if socket is disabled.
     let windowHandles = await this.driver.getAllWindowHandles();
     const start = Date.now();
 
     while (Date.now() - start <= timeout) {
       let found = false;
       for (const handle of windowHandles) {
-        const handleTitle = await retry(
-          {
-            retries: 25,
-            delay: 200,
-          },
-          async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
-          },
-        );
+        try {
+          const handleTitle = await retry(
+            {
+              retries: 25,
+              delay: 200,
+            },
+            async () => {
+              await this.driver.switchTo().window(handle);
+              return await this.driver.getTitle();
+            },
+          );
 
-        if (handleTitle === title) {
-          found = true;
-          break;
+          if (handleTitle === title) {
+            found = true;
+            break;
+          }
+        } catch (e) {
+          // Handle may have become stale/closed; continue to next handle
         }
       }
 
-      // Restore focus after checking this iteration
-      await this.driver.switchTo().window(originalHandle);
+      // Restore focus after checking this iteration (best-effort)
+      try {
+        await this.driver.switchTo().window(originalHandle);
+      } catch (_) {
+        // If the original handle no longer exists, fall back to any open handle
+        try {
+          const remaining = await this.driver.getAllWindowHandles();
+          if (remaining.length > 0) {
+            await this.driver.switchTo().window(remaining[0]);
+          }
+        } catch (__) {
+          // No valid handles to switch to; continue
+        }
+      }
 
       if (found) {
         return;
