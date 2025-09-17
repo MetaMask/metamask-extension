@@ -19,16 +19,6 @@ import * as SendType from '../../../hooks/send/useSendType';
 import * as SendContext from '../../../context/send';
 import { Amount } from './amount';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
-
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 
