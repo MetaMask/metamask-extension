@@ -719,6 +719,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {
@@ -875,6 +876,7 @@ describe('AppStateController', () => {
               "enableEnforcedSimulations": true,
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainIntroModal": false,
               "isRampCardClosed": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
