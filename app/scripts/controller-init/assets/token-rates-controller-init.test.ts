@@ -57,7 +57,7 @@ function buildInitRequestMock(): jest.Mocked<
 
   baseControllerMessenger.registerActionHandler(
     'PreferencesController:getState',
-    jest.fn().mockResolvedValue({ useCurrencyRateCheck: true }),
+    jest.fn().mockReturnValue({ useCurrencyRateCheck: true }),
   );
 
   const requestMock = {
