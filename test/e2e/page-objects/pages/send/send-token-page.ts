@@ -244,6 +244,19 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
   }
 
+  /**
+   * ENS-only: types the ENS name without clearing or using paste shortcuts,
+   * to mitigate a race condition where name is empty by avoiding extra resolution requests.
+   *
+   * @param ensName - The ENS name to type into the recipient field.
+   */
+  async fillEnsRecipient(ensName: string): Promise<void> {
+    console.log(`Fill recipient ENS-only with ${ensName}`);
+    const inputField = await this.driver.findElement(this.inputRecipient);
+    await inputField.click();
+    await inputField.sendKeys(ensName);
+  }
+
   async fillHexInput(hex: string): Promise<void> {
     console.log(`Filling hex input with: ${hex}`);
     await this.driver.pasteIntoField(this.hexInput, hex);
