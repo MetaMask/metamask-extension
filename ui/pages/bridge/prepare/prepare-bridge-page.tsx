@@ -94,7 +94,6 @@ import {
   getEnabledNetworksByNamespace,
   getTokenList,
 } from '../../../selectors';
-import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -117,7 +116,6 @@ import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
-import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
@@ -204,8 +202,6 @@ const PrepareBridgePage = ({
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
-  const smartAccountOptedIn = useSelector(getUseSmartAccount);
-
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
@@ -238,14 +234,10 @@ const PrepareBridgePage = ({
 
   const selectedAccount = useSelector(getFromAccount);
 
-  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
-
   const gasIncluded7702 = useGasIncluded7702({
-    smartAccountOptedIn,
     isSwap,
     selectedAccount,
     fromChain,
-    isSendBundleSupportedForChain,
   });
 
   const keyring = useSelector(getCurrentKeyring);
