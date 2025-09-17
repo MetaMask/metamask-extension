@@ -113,9 +113,6 @@ async function requestEthereumAccountsHandler<
 
   let ethAccounts = getAccounts(origin);
   if (ethAccounts.length > 0) {
-    console.log(
-      'User already has accounts connected, returning existing accounts',
-    );
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
     // lock state when they were received.
