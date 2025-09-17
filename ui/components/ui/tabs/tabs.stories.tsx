@@ -1,13 +1,27 @@
 import React from 'react';
-import Tab from './tab/tab.component';
-import Tabs from './tabs.component';
+import type { Meta, StoryObj } from '@storybook/react';
+import { Tabs, Tab } from './index';
 
-export default {
+const meta: Meta<typeof Tabs> = {
   title: 'Components/UI/Tabs',
   component: Tabs,
+  argTypes: {
+    defaultActiveTabKey: {
+      control: 'text',
+    },
+    tabsClassName: {
+      control: 'text',
+    },
+    onTabClick: {
+      action: 'tab-clicked',
+    },
+  },
 };
 
-export const Default = {
+export default meta;
+type Story = StoryObj<typeof Tabs>;
+
+export const Default: Story = {
   args: {
     children: [
       <Tab key="tab1" name="Tab 1" tabKey="tab1">
@@ -23,7 +37,7 @@ export const Default = {
   },
 };
 
-export const Disabled = {
+export const Disabled: Story = {
   args: {
     children: [
       <Tab key="tab1" name="Tab 1" tabKey="tab1">

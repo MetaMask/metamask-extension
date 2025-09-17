@@ -73,6 +73,7 @@ import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  SHIELD_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -333,17 +334,23 @@ const MultichainAccountDetailsPage = mmLazy(
       '../multichain-accounts/multichain-account-details-page/index.ts'
     )) as unknown as DynamicImportType,
 );
+
 const SmartAccountPage = mmLazy(
   (() =>
     import(
       '../multichain-accounts/smart-account-page/index.ts'
     )) as unknown as DynamicImportType,
 );
+
 const NonEvmBalanceCheck = mmLazy(
   (() =>
     import(
       '../nonevm-balance-check/index.tsx'
     )) as unknown as DynamicImportType,
+);
+
+const ShieldPlan = mmLazy(
+  (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 
@@ -754,6 +761,7 @@ export default function Routes() {
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
           />
+          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
