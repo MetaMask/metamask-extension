@@ -5,25 +5,36 @@ import {
   toMultichainNetworkConfiguration,
   ActiveNetworksByAddress,
 } from '@metamask/multichain-network-controller';
-import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
+import {
+  NetworkStatus,
+  type NetworkConfiguration as InternalNetworkConfiguration,
+} from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
+import {
+  type CaipChainId,
+  type Hex,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 
+import { createSelector } from 'reselect';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
   getProviderConfig,
   getNetworkConfigurationsByChainId,
   MultichainNetworkConfigurationsByChainIdState,
+  selectDefaultNetworkClientIdsByChainId,
+  getNetworksMetadata,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsSolanaTestnetSupportEnabled,
-  getEnabledNetworks,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
+import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
 
 // Selector types
 
@@ -272,6 +283,34 @@ export const getEnabledNetworkClientIds = createDeepEqualSelector(
         return acc;
       },
       [] as string[],
+    );
+  },
+);
+
+export const selectAnyEnabledNetworksAreAvailable = createSelector(
+  getEnabledNetworks,
+  selectDefaultNetworkClientIdsByChainId,
+  getNetworksMetadata,
+  (allEnabledNetworks, defaultNetworkClientIdsByChainId, networksMetadata) => {
+    return Object.entries(allEnabledNetworks).reduce<boolean>(
+      (result, [namespace, enabledNetworksByChainId]) => {
+        if (namespace === KnownCaipNamespace.Eip155) {
+          const chainIds = Object.entries(enabledNetworksByChainId)
+            .filter(([_chainId, isEnabled]) => isEnabled)
+            .map(([chainId, _isEnabled]) => chainId) as Hex[];
+          const networkClientIds = chainIds.map(
+            (chainId) => defaultNetworkClientIdsByChainId[chainId],
+          );
+          return networkClientIds.some(
+            (networkClientId) =>
+              networksMetadata[networkClientId]?.status ===
+              NetworkStatus.Available,
+          );
+        }
+        // Assume that all non-EVM networks are available
+        return result;
+      },
+      true,
     );
   },
 );

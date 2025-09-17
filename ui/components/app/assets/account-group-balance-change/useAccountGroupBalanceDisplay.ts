@@ -56,6 +56,7 @@ export const useAccountGroupBalanceDisplay = (period: BalanceChangePeriod) => {
   return {
     privacyMode,
     color,
+    portfolioChange,
     displayAmountChange,
     displayPercentChange,
   };

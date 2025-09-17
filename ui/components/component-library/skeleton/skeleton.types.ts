@@ -25,6 +25,19 @@ export type SkeletonStyleUtilityProps = Omit<
    * The children of the Skeleton
    */
   children?: React.ReactNode;
+  /**
+   * Whether to make children invisible or not. This enables an alternative form
+   * of this component, where you use it as a wrapper around existing content
+   * rather than using it on its own. This allows that content to dictate the
+   * size of the skeleton rather than requiring that you supply explicit
+   * dimensions.
+   */
+  hideChildren?: boolean;
+  /**
+   * Intended to be used in conjunction with hideChildren; allows for showing a
+   * skeleton until a certain condition is met.
+   */
+  showUntil?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

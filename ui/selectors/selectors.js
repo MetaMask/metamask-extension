@@ -39,6 +39,8 @@ import {
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
+import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
+
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
@@ -147,6 +149,10 @@ import {
 } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
+
+// Re-export this file so we don't have to update all references
+// TODO: Update all references
+export { getEnabledNetworks };
 
 export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
@@ -2368,25 +2374,6 @@ export function getSortedAnnouncementsToShow(state) {
  */
 export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
-}
-
-/**
- *
- * @param state
- * @returns { Record<string, Record<string, boolean>> }
- * @example
- * {
- *     "eip155": {
- *         "0x1": true,
- *         "0xe708": true,
- *     },
- *     "solana": {
- *         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true
- *     }
- * }
- */
-export function getEnabledNetworks(state) {
-  return state.metamask.enabledNetworkMap;
 }
 
 export function getPinnedAccountsList(state) {

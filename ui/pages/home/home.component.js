@@ -172,6 +172,7 @@ export default class Home extends PureComponent {
     showConnectionsRemovedModal: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
+    lookupEnabledNetworks: PropTypes.func.isRequired,
   };
 
   state = {
@@ -271,6 +272,8 @@ export default class Home extends PureComponent {
 
     // Check for redirect after default page
     this.checkRedirectAfterDefaultPage();
+
+    this.props.lookupEnabledNetworks();
   }
 
   static getDerivedStateFromProps(props) {

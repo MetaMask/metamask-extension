@@ -9,6 +9,7 @@ import {
   getTokensMarketData,
   getPreferences,
   getSelectedInternalAccount,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -26,6 +27,8 @@ import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 import { useFormatters } from '../../../helpers/formatters';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { Skeleton } from '../../component-library/skeleton';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -34,7 +37,11 @@ type MarketDataDetails = {
   pricePercentChange1d: number;
 };
 
-export const AggregatedPercentageOverview = () => {
+export const AggregatedPercentageOverview = ({
+  portfolioButton,
+}: {
+  portfolioButton: () => JSX.Element | null;
+}) => {
   const tokensMarketData: Record<string, MarketDataDetails> =
     useSelector(getTokensMarketData);
   const { formatCurrencyCompact } = useFormatters();
@@ -49,6 +56,10 @@ export const AggregatedPercentageOverview = () => {
   const { totalFiatBalance, orderedTokenList } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
+  );
+
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
   );
 
   // Memoize the calculation to avoid recalculating unless orderedTokenList or tokensMarketData changes
@@ -111,35 +122,43 @@ export const AggregatedPercentageOverview = () => {
   }
 
   return (
-    <Box display={Display.Flex} className="gap-1">
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-value-change"
-        style={{ whiteSpace: 'pre' }}
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedAmountChange}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-percentage-change"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedPercentChange}
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      hideChildren
+      showUntil={anyEnabledNetworksAreAvailable || !isZeroAmount(amountChange)}
+    >
+      <Box display={Display.Flex} className="gap-1">
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-value-change"
+          style={{ whiteSpace: 'pre' }}
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedAmountChange}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-percentage-change"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedPercentChange}
+        </SensitiveText>
+      </Box>
+      {portfolioButton()}
+    </Skeleton>
   );
 };
 
 export const AggregatedMultichainPercentageOverview = ({
+  portfolioButton,
   privacyMode = false,
 }: {
+  portfolioButton: () => JSX.Element | null;
   privacyMode?: boolean;
 }) => {
   const locale = useSelector(getIntlLocale);
@@ -189,30 +208,38 @@ export const AggregatedMultichainPercentageOverview = ({
   );
 
   return (
-    <Box display={Display.Flex}>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-value-change"
-        style={{ whiteSpace: 'pre' }}
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {signPrefix}
-        {localizedAmountChange}{' '}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-percentage-change"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        ({signPrefix}
-        {localizedPercentChange})
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      hideChildren
+      showUntil={
+        anyEnabledNetworksAreAvailable || !isZeroAmount(singleDayAmountChange)
+      }
+    >
+      <Box display={Display.Flex}>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-value-change"
+          style={{ whiteSpace: 'pre' }}
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {signPrefix}
+          {localizedAmountChange}{' '}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-percentage-change"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          ({signPrefix}
+          {localizedPercentChange})
+        </SensitiveText>
+      </Box>
+      {portfolioButton()}
+    </Skeleton>
   );
 };
