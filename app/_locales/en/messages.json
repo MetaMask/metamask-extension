@@ -1395,11 +1395,11 @@
   "confusableZeroWidthUnicode": {
     "message": "Zero-width character found."
   },
+  "confusingDomain": {
+    "message": "We have detected a confusable character in the name. Check the name to avoid a potential scam."
+  },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
-  },
-  "confusingSolanaDomain": {
-    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
   },
   "connect": {
     "message": "Connect"
@@ -1756,7 +1756,10 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "dataCollectionForMarketingDescriptionSocialLogin": {
+    "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Okay"
@@ -6203,9 +6206,6 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
-  },
-  "solanaUnknownError": {
-    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"
