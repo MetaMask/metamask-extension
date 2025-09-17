@@ -842,6 +842,7 @@
       "globals": {
         "AbortController": true,
         "Headers": true,
+        "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
         "clearInterval": true,
@@ -859,11 +860,12 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
+        "@metamask/account-api": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/keyring-api": true,
+        "@metamask/assets-controllers>@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
@@ -897,6 +899,7 @@
     },
     "@metamask/base-controller": {
       "globals": {
+        "console.error": true,
         "setTimeout": true
       },
       "packages": {
@@ -905,6 +908,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/polling-controller>@metamask/base-controller": {
       "globals": {
+        "console.error": true,
         "setTimeout": true
       },
       "packages": {
@@ -1414,6 +1418,14 @@
       }
     },
     "@metamask/accounts-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/keyring-api": {
       "packages": {
         "@metamask/account-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
