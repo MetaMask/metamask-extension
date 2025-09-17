@@ -3,7 +3,7 @@ import {
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
-import { EthAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
@@ -39,6 +39,7 @@ import {
   MultichainAccountGroupScopeToCaipAccountId,
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
+  AccountGroupObjectWithWalletNameAndId,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
@@ -303,6 +304,7 @@ export const getAllAccountGroups = createDeepEqualSelector(
       return Object.values(wallet.groups).map((group) => ({
         ...group,
         walletName: wallet.metadata.name,
+        walletId: wallet.id,
       }));
     });
   },
@@ -349,7 +351,7 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
   getAllAccountGroups,
   getInternalAccounts,
   (
-    accountGroups: (AccountGroupObject & { walletName: string })[],
+    accountGroups: AccountGroupObjectWithWalletNameAndId[],
     internalAccounts: InternalAccount[],
   ): AccountGroupWithInternalAccounts[] => {
     return accountGroups.map((accountGroup) => {
@@ -808,5 +810,34 @@ export const getNetworkAddressCount = createDeepEqualSelector(
     }
 
     return accounts.length;
+  },
+);
+
+/**
+ * Get the corresponding address to generate the account icon
+ * for a specific account group ID.
+ *
+ * @param groupId - The account group ID.
+ * @returns The address to be used as seed for the icon generation.
+ * @throws If no accounts are found in the specified group.
+ */
+export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
+  [getInternalAccountsFromGroupById],
+  (accounts: InternalAccount[]): string => {
+    if (!accounts || accounts.length === 0) {
+      throw new Error(
+        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+      );
+    }
+
+    for (const account of accounts) {
+      if (isEvmAccountType(account.type)) {
+        // Prefer an EVM account if available
+        return account.address;
+      }
+    }
+
+    // In case there are no EVM accounts in the group. We return the first account's address.
+    return accounts[0].address;
   },
 );
