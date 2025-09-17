@@ -13,14 +13,17 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 
 export const useUserSubscriptions = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const subscriptions = useSelector(getUserSubscriptions);
+  const { customerId, subscriptions, trialedProducts } =
+    useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
     return await dispatch(getSubscriptions());
   }, [dispatch]);
 
   return {
+    customerId,
     subscriptions,
+    trialedProducts,
     loading: result.pending,
     error: result.error,
   };

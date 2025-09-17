@@ -64,8 +64,11 @@ type MembershipErrorState =
 const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { subscriptions, loading: subscriptionsLoading } =
-    useUserSubscriptions();
+  const {
+    customerId,
+    subscriptions,
+    loading: subscriptionsLoading,
+  } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
     'shield' as ProductType,
     subscriptions,
@@ -434,7 +437,7 @@ const TransactionShield = () => {
                 variant={TextVariant.bodyXs}
                 className="transaction-shield-page__membership-text"
               >
-                {t('shieldTxMembershipId')}: {shieldSubscription?.id}
+                {t('shieldTxMembershipId')}: {customerId}
               </Text>
             )}
           </Box>
