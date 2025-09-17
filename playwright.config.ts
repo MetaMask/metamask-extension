@@ -68,7 +68,7 @@ const config: PlaywrightTestConfig = {
     // Smoke tests: basic health checks (onboarding via SRP import, etc.)
     {
       name: 'smoketest',
-      testMatch: '/smoketest/specs/**.spec.ts',
+      testMatch: '/smoketest/specs/**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         headless: true,

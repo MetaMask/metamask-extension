@@ -2,8 +2,8 @@
 // Playwright smoketest: New onboarding flow + import existing SRP
 
 import { test } from '@playwright/test';
-import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
-import { OnboardingPage } from '../../page-objects/onboarding-page.ts';
+import { ChromeExtensionPage } from '../../../shared/pageObjects/extension-page';
+import { OnboardingPage } from '../../../shared/pageObjects/onboarding-page';
 
 function getSrp(): string {
   const srp = process.env.SMOKE_TEST_SRP;
@@ -18,8 +18,6 @@ test('MetaMask Onboarding: Import existing SRP via new flow', async () => {
   const page = await extension.initExtension();
   page.setDefaultTimeout(25000);
   const onboarding = new OnboardingPage(page);
-  await onboarding.clickGetStarted();
-  await onboarding.clickScrollAndAgreeTermsOfUse();
   await onboarding.importExistingWallet();
   await onboarding.stopTracing();
   await onboarding.pasteSrp(getSrp());
@@ -31,7 +29,5 @@ test('MetaMask Onboarding: Import existing SRP via new flow', async () => {
   await onboarding.clickCompletion();
   await onboarding.assertWalletVisible();
 });
-
-
 
 

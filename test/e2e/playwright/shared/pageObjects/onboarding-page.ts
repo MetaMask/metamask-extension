@@ -3,8 +3,6 @@ import { type Locator, type Page, expect } from '@playwright/test';
 export class OnboardingPage {
   readonly page: Page;
 
-  readonly agreeButton: Locator;
-
   readonly agreePasswordTermsCheck: Locator;
 
   readonly checkBox: Locator;
@@ -19,10 +17,6 @@ export class OnboardingPage {
 
   readonly createPasswordLabel: Locator;
 
-  readonly dialog: Locator;
-
-  readonly getStartedBtn: Locator;
-
   readonly importWalletButton: Locator;
 
   readonly importWithSrpButton: Locator;
@@ -31,19 +25,10 @@ export class OnboardingPage {
 
   readonly qrContinue: Locator;
 
-  readonly scrollControl: Locator;
-
-  readonly termsCheckbox: Locator;
-
-  readonly termsLabel: Locator;
-
   readonly textarea: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.agreeButton = page.locator(
-      '[data-testid="terms-of-use-agree-button"], button:has-text("Agree"), button:has-text("I agree")',
-    );
     this.agreePasswordTermsCheck = page.getByTestId('create-password-terms');
     this.checkBox = page.getByRole('checkbox');
     this.completionDone = page.locator(
@@ -57,28 +42,17 @@ export class OnboardingPage {
       'button:has-text("Create password")',
     );
     this.createPasswordLabel = page.getByLabel(/Create new password/iu);
-    this.dialog = page.getByRole('dialog');
-    this.getStartedBtn = page.getByTestId('onboarding-get-started-button');
     this.importWalletButton = page.locator(
-      'button:has-text("I have an existing wallet")',
+      '[data-testid="onboarding-import-wallet"], button:has-text("I have an existing wallet")',
     );
     this.importWithSrpButton = page.locator(
-      'button:has-text("Import using Secret Recovery Phrase")',
+      '[data-testid="onboarding-import-srp"], button:has-text("Import using Secret Recovery Phrase")',
     );
     this.metametricsContinue = page.locator(
       '[data-testid="metametrics-i-agree"], button:has-text("I agree")',
     );
     this.qrContinue = page.locator(
       '[data-testid="onboarding-download-app-continue"], [data-testid="onboarding-qr-continue"], button:has-text("Continue")',
-    );
-    this.scrollControl = page.locator(
-      '[data-testid="terms-of-use-scroll-button"], [data-testid="terms-of-use-scroll"]',
-    );
-    this.termsCheckbox = page.locator(
-      '[data-testid="onboarding-terms-checkbox"], #terms-of-use__checkbox, input[type="checkbox"]',
-    );
-    this.termsLabel = page.locator(
-      'label[for="terms-of-use__checkbox"], [data-testid="onboarding-terms-checkbox"] + label',
     );
     this.textarea = page.locator(
       '[data-testid="srp-import__srp-note"], form textarea, textarea[rows]',
@@ -99,25 +73,10 @@ export class OnboardingPage {
     await this.qrContinue.first().click({ timeout: 2000 });
   }
 
-  async clickGetStarted(): Promise<void> {
-    await this.getStartedBtn.waitFor({ state: 'visible', timeout: 10000 });
-    await this.getStartedBtn.click({ timeout: 3000 });
-  }
-
   async clickMetric(): Promise<void> {
     await this.checkBox.first().uncheck({ force: true });
     await this.metametricsContinue.first().scrollIntoViewIfNeeded();
     await this.metametricsContinue.first().click();
-  }
-
-  async clickScrollAndAgreeTermsOfUse(): Promise<void> {
-    await this.dialog.first().waitFor({ state: 'visible', timeout: 15000 });
-    await this.scrollControl.first().click();
-    await this.checkBox.first().check({ force: true });
-    const agree = this.agreeButton.first();
-    await agree.waitFor({ state: 'visible', timeout: 15000 });
-    await expect(agree).toBeEnabled({ timeout: 15000 });
-    await agree.click();
   }
 
   async createPassword(password: string): Promise<void> {
@@ -159,3 +118,5 @@ export class OnboardingPage {
     await ctx.tracing.stopChunk();
   }
 }
+
+
