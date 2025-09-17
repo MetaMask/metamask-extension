@@ -94,6 +94,7 @@ import {
   getEnabledNetworksByNamespace,
   getTokenList,
 } from '../../../selectors';
+import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -115,6 +116,8 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
+import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
+import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
@@ -201,6 +204,8 @@ const PrepareBridgePage = ({
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
+  const smartAccountOptedIn = useSelector(getUseSmartAccount);
+
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
@@ -232,6 +237,16 @@ const PrepareBridgePage = ({
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
   const selectedAccount = useSelector(getFromAccount);
+
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
+
+  const gasIncluded7702 = useGasIncluded7702({
+    smartAccountOptedIn,
+    isSwap,
+    selectedAccount,
+    fromChain,
+    isSendBundleSupportedForChain,
+  });
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -346,6 +361,10 @@ const PrepareBridgePage = ({
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
+  const gasIncluded =
+    (smartTransactionsEnabled && isSwap && isSendBundleSupportedForChain) ||
+    gasIncluded7702;
+
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
@@ -372,7 +391,8 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: isGasIncludedSwap,
+      gasIncluded,
+      gasIncluded7702,
     }),
     [
       fromToken?.address,
@@ -385,7 +405,8 @@ const PrepareBridgePage = ({
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
-      isGasIncludedSwap,
+      gasIncluded,
+      gasIncluded7702,
     ],
   );
 
@@ -632,7 +653,7 @@ const PrepareBridgePage = ({
                   toToken &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
                       {
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
