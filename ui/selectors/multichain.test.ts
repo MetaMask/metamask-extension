@@ -104,12 +104,13 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
             unit: 'BTC',
           },
         },
-        [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: {
-          [MultichainNativeAssets.BITCOIN_TESTNET]: {
-            amount: '2.00000000',
-            unit: 'BTC',
-          },
-        },
+        // TODO: Uncomment this when we want to support Bitcoin Testnet
+        // [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: {
+        //   [MultichainNativeAssets.BITCOIN_TESTNET]: {
+        //     amount: '2.00000000',
+        //     unit: 'BTC',
+        //   },
+        // },
       },
       fiatCurrency: 'usd',
       cryptocurrencies: [Cryptocurrency.Btc],
@@ -395,7 +396,7 @@ describe('Multichain Selectors', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
-      { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+      // { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
     ])(
       'returns $isMainnet if non-EVM account address "$account.address" is compatible with mainnet',
       ({
@@ -431,7 +432,7 @@ describe('Multichain Selectors', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
-      { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+      // { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
     ])(
       'returns $isTestnet if non-EVM account address "$account.address" is compatible with mainnet',
       ({
@@ -465,12 +466,12 @@ describe('Multichain Selectors', () => {
         asset: MultichainNativeAssets.BITCOIN,
         chainId: BtcScope.Mainnet,
       },
-      {
-        network: 'testnet',
-        account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
-        asset: MultichainNativeAssets.BITCOIN_TESTNET,
-        chainId: BtcScope.Testnet,
-      },
+      // {
+      //   network: 'testnet',
+      //   account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+      //   asset: MultichainNativeAssets.BITCOIN_TESTNET,
+      //   chainId: BtcScope.Testnet,
+      // },
     ] as const)(
       'returns cached balance if account is non-EVM: $network',
       ({
