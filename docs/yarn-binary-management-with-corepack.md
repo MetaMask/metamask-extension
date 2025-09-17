@@ -7,7 +7,7 @@ This document describes how to manage yarn versions for the MetaMask extension p
 The MetaMask extension uses native Corepack commands to manage yarn versions. This system:
 
 - **Reads version from package.json** - Single source of truth via `packageManager` field
-- **Uses native corepack commands** - Direct use of built-in `corepack prepare` and `corepack hydrate`
+- **Uses native corepack commands** - Direct use of built-in `corepack pack` and `corepack hydrate`
 - **Commits tarballs for offline use** - No network dependencies in CI/CD
 - **Activates versions automatically** - No manual configuration needed
 
@@ -34,17 +34,6 @@ yarn yarn-binary:download
 
 # Activate existing committed tarball
 yarn yarn-binary:hydrate
-```
-
-These scripts are implemented as native corepack commands in package.json:
-
-```json
-{
-  "scripts": {
-    "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz && corepack hydrate .yarn/yarn-corepack.tgz --activate",
-    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
-  }
-}
 ```
 
 ## How It Works
@@ -108,7 +97,7 @@ steps:
   - name: Setup Node.js
     uses: actions/setup-node@v4
     with:
-      node-version: '18'
+      node-version-file: .nvmrc
 
   - name: Activate committed yarn version
     run: yarn yarn-binary:hydrate
@@ -124,8 +113,8 @@ steps:
 
 ```bash
 # Switch to different committed version
-# 1. Edit package.json
-"packageManager": "yarn@4.9.1"
+# 1. Update the project Yarn version
+yarn set version 4.9.4
 
 # 3. Download the new version
 yarn yarn-binary:download
@@ -134,7 +123,7 @@ yarn yarn-binary:download
 yarn yarn-binary:hydrate
 
 # 3. Verify
-yarn --version  # Shows 4.9.1
+yarn --version  # Shows 4.9.4
 ```
 
 ## File Structure
@@ -146,37 +135,6 @@ yarn --version  # Shows 4.9.1
 
 package.json                   # Contains packageManager version and scripts
 ```
-
-## Troubleshooting
-
-### Tarball Not Found
-
-If you get an error about missing tarball:
-
-```bash
-# Download and create the tarball first
-yarn yarn-binary:download
-```
-
-### Version Mismatch
-
-If `yarn --version` doesn't match `package.json`, corepack might be auto-managing based on the `packageManager` field. This is expected behavior.
-
-### First Time Setup
-
-If you get errors about missing tarballs:
-
-```bash
-# Download and activate current version
-yarn yarn-binary:download
-```
-
-## Security
-
-- **Committed tarballs** - Stored in version control for audit trail
-- **Corepack verification** - Uses Node.js built-in package manager
-- **No external downloads** - CI/CD uses committed files only
-- **Version pinning** - Exact versions specified in package.json
 
 ## Native Corepack Commands
 
