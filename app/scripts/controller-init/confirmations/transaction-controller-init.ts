@@ -37,6 +37,7 @@ import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
 import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
+import { getGlobalChainId } from '../init-utils';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -47,7 +48,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     controllerMessenger,
     initMessenger,
     getFlatState,
-    getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
     updateAccountBalanceForTransactionNetwork,
@@ -80,7 +80,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     getPermittedAccounts,
     // @ts-expect-error Preferences controller uses Record rather than specific type
     getSavedGasFees: () => {
-      const globalChainId = getGlobalChainId();
+      const globalChainId = getGlobalChainId(initMessenger);
       return preferencesController().state.advancedGasFee[globalChainId];
     },
     getSimulationConfig: async (url) => {

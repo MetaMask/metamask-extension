@@ -1,11 +1,9 @@
-import { Provider } from '@metamask/network-controller';
 import {
   ActionConstraint,
   Messenger,
   EventConstraint,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
@@ -95,13 +93,6 @@ export type ControllerInitRequest<
   getFlatState: () => ControllerFlatState;
 
   /**
-   * Retrieve the chain ID of the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getGlobalChainId(): Hex;
-
-  /**
    * Retrieve the permitted accounts for a given origin.
    *
    * @param origin - The origin for which to retrieve permitted accounts.
@@ -114,17 +105,15 @@ export type ControllerInitRequest<
   ): Promise<string[]>;
 
   /**
-   * Retrieve the provider instance for the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getProvider: () => Provider;
-
-  /**
    * Retrieve a transaction metrics request instance.
    * Includes data and callbacks required to generate metrics.
    */
   getTransactionMetricsRequest(): TransactionMetricsRequest;
+
+  /**
+   * The Infura project ID to use for the network controller.
+   */
+  infuraProjectId: string;
 
   /**
    * Function to update account balance for network of the transaction

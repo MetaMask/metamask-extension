@@ -10,6 +10,7 @@ import {
   GasFeeControllerMessenger,
 } from '../messengers';
 import { ControllerInitFunction } from '../types';
+import { getGlobalChainId } from '../init-utils';
 
 const GAS_API_URL = process.env.SWAPS_USE_DEV_APIS
   ? GAS_DEV_API_BASE_URL
@@ -29,19 +30,6 @@ export const GasFeeControllerInit: ControllerInitFunction<
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  const getGlobalChainId = () => {
-    // This replicates `#getGlobalChainId` in the `MetaMaskController`.
-    const networkState = initMessenger.call('NetworkController:getState');
-    const networkClientId = networkState.selectedNetworkClientId;
-
-    const { chainId } = initMessenger.call(
-      'NetworkController:getNetworkClientById',
-      networkClientId,
-    ).configuration;
-
-    return chainId;
-  };
-
   const controller = new GasFeeController({
     // @ts-expect-error: `GasFeeController` does not accept a partial state.
     state: persistedState.GasFeeController,
@@ -76,11 +64,11 @@ export const GasFeeControllerInit: ControllerInitFunction<
 
     getCurrentAccountEIP1559Compatibility: () => true,
     getCurrentNetworkLegacyGasAPICompatibility: () => {
-      const chainId = getGlobalChainId();
+      const chainId = getGlobalChainId(initMessenger);
       return chainId === CHAIN_IDS.BSC;
     },
 
-    getChainId: getGlobalChainId,
+    getChainId: getGlobalChainId.bind(getGlobalChainId, initMessenger),
   });
 
   return {

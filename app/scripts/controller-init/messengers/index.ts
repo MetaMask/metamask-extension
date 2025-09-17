@@ -40,6 +40,7 @@ import {
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerMessenger,
+  getAssetsContractControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -115,6 +116,10 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+import {
+  getNetworkControllerInitMessenger,
+  getNetworkControllerMessenger,
+} from './network-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -150,6 +155,14 @@ export {
 } from './gas-fee-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type {
+  NetworkControllerMessenger,
+  NetworkControllerInitMessenger,
+} from './network-controller-messenger';
+export {
+  getNetworkControllerMessenger,
+  getNetworkControllerInitMessenger,
+} from './network-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type {
@@ -270,6 +283,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
   },
+  NetworkController: {
+    getMessenger: getNetworkControllerMessenger,
+    getInitMessenger: getNetworkControllerInitMessenger,
+  },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
     getInitMessenger: noop,
@@ -372,7 +389,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAssetsContractControllerInitMessenger,
   },
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,
