@@ -132,11 +132,6 @@ class SendTokenPage {
     await this.driver.clickElement(this.accountPickerButton);
   }
 
-  async clickSecondTokenListButton() {
-    const elements = await this.driver.findElements(this.tokenListButton);
-    await elements[1].click();
-  }
-
   async clickOnAssetPicker(
     driver: Driver,
     location: 'src' | 'dest' = 'src',
