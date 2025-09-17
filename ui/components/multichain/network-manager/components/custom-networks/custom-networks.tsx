@@ -88,8 +88,8 @@ export const CustomNetworks = React.memo(() => {
     (network: MultichainNetworkConfiguration) => {
       const convertedChainId = network.isEvm
         ? convertCaipToHexChainId(network.chainId)
-        // keep CAIP for non‑EVM
-        : network.chainId;
+        : // keep CAIP for non‑EVM
+          network.chainId;
 
       const isEnabled = Boolean(enabledNetworksByNamespace[convertedChainId]);
 

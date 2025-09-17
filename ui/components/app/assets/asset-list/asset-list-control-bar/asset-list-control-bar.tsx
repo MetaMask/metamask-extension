@@ -8,7 +8,12 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { Hex, isStrictHexString, KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import {
+  Hex,
+  isStrictHexString,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -127,7 +132,9 @@ const AssetListControlBar = ({
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
 
-  const currentMultichainChainId = useSelector(getSelectedMultichainNetworkChainId);
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allNetworkClientIds = useMemo(() => {

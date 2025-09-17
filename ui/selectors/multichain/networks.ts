@@ -121,7 +121,7 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           multichainNetworkConfigurationsByChainId[BtcScope.Mainnet];
         // TODO: Uncomment this when we want to support Bitcoin Testnet
-          // filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
+        // filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
         //   multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
         // filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
         //   multichainNetworkConfigurationsByChainId[BtcScope.Signet];
