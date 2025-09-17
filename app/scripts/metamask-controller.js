@@ -79,14 +79,6 @@ import {
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
-import {
-  RemoteFeatureFlagController,
-  ClientConfigApiService,
-  ClientType,
-  DistributionType,
-  EnvironmentType,
-} from '@metamask/remote-feature-flag-controller';
-
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -183,7 +175,6 @@ import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
-  NETWORK_TYPES,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
   getFailoverUrlsForInfuraNetwork,
@@ -244,7 +235,6 @@ import {
   TraceName,
   TraceOperation,
 } from '../../shared/lib/trace';
-import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
@@ -277,7 +267,6 @@ import {
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
-import AccountTrackerController from './controllers/account-tracker-controller';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
@@ -296,7 +285,6 @@ import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { PreferencesController } from './controllers/preferences-controller';
 import { AppStateController } from './controllers/app-state-controller';
 import { AlertController } from './controllers/alert-controller';
-import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import SwapsController from './controllers/swaps';
@@ -436,6 +424,11 @@ import { EnsControllerInit } from './controller-init/confirmations/ens-controlle
 import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
 import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
+import { SubscriptionControllerInit } from './controller-init/subscription';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
+import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
+import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
+import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -465,19 +458,6 @@ const API_TYPE = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
-
-const environmentMappingForRemoteFeatureFlag = {
-  [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
-  [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,
-  [ENVIRONMENT.PRODUCTION]: EnvironmentType.Production,
-};
-
-const buildTypeMappingForRemoteFeatureFlag = {
-  flask: DistributionType.Flask,
-  main: DistributionType.Main,
-  beta: DistributionType.Beta,
-  experimental: DistributionType.Main, // experimental builds use main distribution
-};
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -919,17 +899,6 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    const onboardingControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'OnboardingController',
-        allowedActions: [],
-        allowedEvents: [],
-      });
-    this.onboardingController = new OnboardingController({
-      messenger: onboardingControllerMessenger,
-      state: initState.OnboardingController,
-    });
-
     const keyringOverrides = this.opts.overrides?.keyrings;
 
     const additionalKeyrings = [
@@ -1131,36 +1100,6 @@ export default class MetamaskController extends EventEmitter {
       withSnapKeyring,
     });
 
-    // account tracker watches balances, nonces, and any code at their address
-    this.accountTrackerController = new AccountTrackerController({
-      state: { accounts: {} },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AccountTrackerController',
-        allowedActions: [
-          'AccountsController:getSelectedAccount',
-          'NetworkController:getState',
-          'NetworkController:getNetworkClientById',
-          'OnboardingController:getState',
-          'PreferencesController:getState',
-        ],
-        allowedEvents: [
-          'AccountsController:selectedEvmAccountChange',
-          'OnboardingController:stateChange',
-          'KeyringController:accountRemoved',
-        ],
-      }),
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-      getNetworkIdentifier: (providerConfig) => {
-        const { type, rpcUrl } =
-          providerConfig ??
-          getProviderConfig({
-            metamask: this.networkController.state,
-          });
-        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-      },
-    });
-
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       const { completedOnboarding } = this.onboardingController.state;
@@ -1170,41 +1109,6 @@ export default class MetamaskController extends EventEmitter {
         this.stopNetworkRequests();
       }
     });
-
-    this.controllerMessenger.subscribe(
-      `${this.onboardingController.name}:stateChange`,
-      previousValueComparator(async (prevState, currState) => {
-        const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const {
-          completedOnboarding: currCompletedOnboarding,
-          firstTimeFlowType,
-        } = currState;
-        if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          const { address } = this.accountsController.getSelectedAccount();
-
-          if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          }
-
-          if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-            // importing multiple SRPs on social login rehydration
-            await this._importAccountsWithBalances();
-          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts();
-          } else {
-            await this._addAccountsWithBalance();
-          }
-
-          this.postOnboardingInitialization();
-          this.triggerNetworkrequests();
-
-          // execute once the token detection on the post-onboarding
-          await this.tokenDetectionController.detectTokens({
-            selectedAddress: address,
-          });
-        }
-      }, this.onboardingController.state),
-    );
 
     const addressBookControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1526,25 +1430,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // RemoteFeatureFlagController has subscription for preferences changes
-    this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        const { useExternalServices: prevUseExternalServices } = prevState;
-        const { useExternalServices: currUseExternalServices } = currState;
-        if (currUseExternalServices && !prevUseExternalServices) {
-          this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController
-            .updateRemoteFeatureFlags()
-            .catch((error) => {
-              console.error('Failed to update remote feature flags:', error);
-            });
-        } else if (!currUseExternalServices && prevUseExternalServices) {
-          this.remoteFeatureFlagController.disable();
-        }
-      }, this.preferencesController.state),
-    );
-
     // MultichainAccountService has subscription for preferences changes
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -1572,57 +1457,9 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
-    // Initialize RemoteFeatureFlagController
-    const remoteFeatureFlagControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'RemoteFeatureFlagController',
-        allowedActions: [],
-        allowedEvents: [],
-      });
-    remoteFeatureFlagControllerMessenger.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (isRpcFailoverEnabled) => {
-        if (isRpcFailoverEnabled) {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', enabling RPC failover',
-          );
-          this.networkController.enableRpcFailover();
-        } else {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', disabling RPC failover',
-          );
-          this.networkController.disableRpcFailover();
-        }
-      },
-      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
-    );
-    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
-      messenger: remoteFeatureFlagControllerMessenger,
-      fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
-      disabled: !this.preferencesController.state.useExternalServices,
-      getMetaMetricsId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:getMetaMetricsId',
-      ),
-      clientConfigApiService: new ClientConfigApiService({
-        fetch: globalThis.fetch.bind(globalThis),
-        config: {
-          client: ClientType.Extension,
-          distribution:
-            this._getConfigForRemoteFeatureFlagRequest().distribution,
-          environment: this._getConfigForRemoteFeatureFlagRequest().environment,
-        },
-      }),
-    });
-
     const existingControllers = [
       this.networkController,
       this.preferencesController,
-      this.onboardingController,
       this.keyringController,
       this.accountsController,
     ];
@@ -1630,6 +1467,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       MetaMetricsController: MetaMetricsControllerInit,
+      RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
@@ -1642,6 +1480,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
+      OnboardingController: OnboardingControllerInit,
+      AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       NftController: NftControllerInit,
@@ -1672,6 +1512,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
+      SubscriptionController: SubscriptionControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
@@ -1698,6 +1539,8 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.metaMetricsController = controllersByName.MetaMetricsController;
+    this.remoteFeatureFlagController =
+      controllersByName.RemoteFeatureFlagController;
     this.gasFeeController = controllersByName.GasFeeController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
@@ -1708,6 +1551,8 @@ export default class MetamaskController extends EventEmitter {
     this.snapInterfaceController = controllersByName.SnapInterfaceController;
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
+    this.onboardingController = controllersByName.OnboardingController;
+    this.accountTrackerController = controllersByName.AccountTrackerController;
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
       controllersByName.SmartTransactionsController;
@@ -1746,6 +1591,7 @@ export default class MetamaskController extends EventEmitter {
     this.oauthService = controllersByName.OAuthService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
+    this.subscriptionController = controllersByName.SubscriptionController;
     this.networkOrderController = controllersByName.NetworkOrderController;
     this.shieldController = controllersByName.ShieldController;
     this.gatorPermissionsController =
@@ -1756,6 +1602,28 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
+
+    this.controllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (isRpcFailoverEnabled) => {
+        if (isRpcFailoverEnabled) {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', enabling RPC failover',
+          );
+          this.networkController.enableRpcFailover();
+        } else {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', disabling RPC failover',
+          );
+          this.networkController.disableRpcFailover();
+        }
+      },
+      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+    );
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
       name: 'PetnamesBridge',
@@ -1778,14 +1646,12 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
     }).init();
 
-    this.getSecurityAlertsConfig = () => {
-      return async (url) => {
-        const getToken = () =>
-          this.controllerMessenger.call(
-            'AuthenticationController:getBearerToken',
-          );
-        return getShieldGatewayConfig(getToken, url);
-      };
+    this.getSecurityAlertsConfig = async (url) => {
+      const getToken = () =>
+        this.controllerMessenger.call(
+          'AuthenticationController:getBearerToken',
+        );
+      return getShieldGatewayConfig(getToken, url);
     };
 
     this.notificationServicesController.init();
@@ -1875,6 +1741,41 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    this.controllerMessenger.subscribe(
+      `OnboardingController:stateChange`,
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const {
+          completedOnboarding: currCompletedOnboarding,
+          firstTimeFlowType,
+        } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          const { address } = this.accountsController.getSelectedAccount();
+
+          if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+          }
+
+          if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+            // importing multiple SRPs on social login rehydration
+            await this._importAccountsWithBalances();
+          } else if (this.isMultichainAccountsFeatureState2Enabled()) {
+            await this.discoverAndCreateAccounts();
+          } else {
+            await this._addAccountsWithBalance();
+          }
+
+          this.postOnboardingInitialization();
+          this.triggerNetworkrequests();
+
+          // execute once the token detection on the post-onboarding
+          await this.tokenDetectionController.detectTokens({
+            selectedAddress: address,
+          });
+        }
+      }, this.onboardingController.state),
+    );
+
     const getAccounts = ({ origin: innerOrigin }) => {
       if (innerOrigin === ORIGIN_METAMASK) {
         const selectedAddress =
@@ -1934,6 +1835,8 @@ export default class MetamaskController extends EventEmitter {
                   securityAlertId,
                   updateSecurityAlertResponse:
                     this.updateSecurityAlertResponse.bind(this),
+                  getSecurityAlertsConfig:
+                    this.getSecurityAlertsConfig.bind(this),
                 }),
             },
             this.controllerMessenger,
@@ -2096,6 +1999,7 @@ export default class MetamaskController extends EventEmitter {
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         SeedlessOnboardingController: this.seedlessOnboardingController,
+        SubscriptionController: this.subscriptionController,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
@@ -3128,6 +3032,34 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
+  async startSubscriptionWithCard(params) {
+    const webAuthenticator = webAuthenticatorFactory();
+    const { checkoutSessionUrl } =
+      await this.subscriptionController.startShieldSubscriptionWithCard(params);
+    // TODO: use chrome.tabs manually to have full browser feature in checkout session (e.g auto-fill form, etc.)
+    // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
+    // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
+    await new Promise((resolve, reject) => {
+      webAuthenticator.launchWebAuthFlow(
+        {
+          url: checkoutSessionUrl,
+          interactive: true,
+        },
+        (responseUrl) => {
+          try {
+            resolve(responseUrl);
+          } catch (error) {
+            reject(error);
+          }
+        },
+      );
+    });
+
+    // fetch latest user subscriptions after checkout
+    const subscriptions = await this.subscriptionController.getSubscriptions();
+    return subscriptions;
+  }
+
   /**
    * Gets relevant state for the provider of an external origin.
    *
@@ -3385,6 +3317,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
         ),
+      setIsSocialLoginFlowEnabledForMetrics:
+        metaMetricsController.setIsSocialLoginFlowEnabledForMetrics.bind(
+          metaMetricsController,
+        ),
       setMarketingCampaignCookieId:
         metaMetricsController.setMarketingCampaignCookieId.bind(
           metaMetricsController,
@@ -3419,6 +3355,19 @@ export default class MetamaskController extends EventEmitter {
       checkIsSeedlessPasswordOutdated:
         this.checkIsSeedlessPasswordOutdated.bind(this),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
+
+      // subscription
+      getSubscriptions: this.subscriptionController.getSubscriptions.bind(
+        this.subscriptionController,
+      ),
+      getSubscriptionPricing: this.subscriptionController.getPricing.bind(
+        this.subscriptionController,
+      ),
+      getSubscriptionCryptoApprovalAmount:
+        this.subscriptionController.getCryptoApproveTransactionParams.bind(
+          this.subscriptionController,
+        ),
+      startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -3717,6 +3666,9 @@ export default class MetamaskController extends EventEmitter {
         this.oauthService,
       ),
       setMarketingConsent: this.oauthService.setMarketingConsent.bind(
+        this.oauthService,
+      ),
+      getMarketingConsent: this.oauthService.getMarketingConsent.bind(
         this.oauthService,
       ),
 
@@ -6853,7 +6805,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.addAddressSecurityAlertResponse.bind(
           this.appStateController,
         ),
-      getSecurityAlertsConfig: this.getSecurityAlertsConfig(),
+      getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
       ...otherParams,
     };
   }
@@ -9441,17 +9393,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       metamask: this.getState(),
     };
-  }
-
-  _getConfigForRemoteFeatureFlagRequest() {
-    const distribution =
-      buildTypeMappingForRemoteFeatureFlag[process.env.METAMASK_BUILD_TYPE] ||
-      DistributionType.Main;
-    const environment =
-      environmentMappingForRemoteFeatureFlag[
-        process.env.METAMASK_ENVIRONMENT
-      ] || EnvironmentType.Development;
-    return { distribution, environment };
   }
 
   /**

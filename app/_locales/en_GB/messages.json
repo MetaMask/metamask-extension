@@ -1395,11 +1395,11 @@
   "confusableZeroWidthUnicode": {
     "message": "Zero-width character found."
   },
+  "confusingDomain": {
+    "message": "We have detected a confusable character in the name. Check the name to avoid a potential scam."
+  },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
-  },
-  "confusingSolanaDomain": {
-    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
   },
   "connect": {
     "message": "Connect"
@@ -1756,7 +1756,10 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "dataCollectionForMarketingDescriptionSocialLogin": {
+    "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Okay"
@@ -2804,6 +2807,18 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
+  },
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
+    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Save up to 4% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralTitle": {
+    "message": "MetaMask x Hyperliquid",
+    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -5584,6 +5599,67 @@
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
   },
+  "shieldPlanAnnual": {
+    "message": "Annual"
+  },
+  "shieldPlanAnnualPrice": {
+    "message": "$1/year",
+    "description": "The $1 is the price of the annual plan"
+  },
+  "shieldPlanAutoRenew": {
+    "message": "Auto renews for $1/month until canceled",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanCard": {
+    "message": "Card"
+  },
+  "shieldPlanDetails": {
+    "message": "Plan details"
+  },
+  "shieldPlanDetails1": {
+    "message": "No charge now, try free for 14 days"
+  },
+  "shieldPlanDetails2": {
+    "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
+  },
+  "shieldPlanDetails2Card": {
+    "message": "Plan auto-renews at the end of the term"
+  },
+  "shieldPlanDetails3": {
+    "message": "Secures your assets from risky transactions"
+  },
+  "shieldPlanMonthly": {
+    "message": "Monthly"
+  },
+  "shieldPlanMonthlyPrice": {
+    "message": "$1/month",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanNoFunds": {
+    "message": "No available funds"
+  },
+  "shieldPlanPayWith": {
+    "message": "Pay with"
+  },
+  "shieldPlanPayWithCard": {
+    "message": "Pay with card"
+  },
+  "shieldPlanPayWithToken": {
+    "message": "Pay with $1",
+    "description": "The $1 is token"
+  },
+  "shieldPlanPaymentTitle": {
+    "message": "Change payment method"
+  },
+  "shieldPlanSave": {
+    "message": "Save 16%"
+  },
+  "shieldPlanSelectToken": {
+    "message": "Select a token"
+  },
+  "shieldPlanTitle": {
+    "message": "Choose your plan"
+  },
   "shieldTx": {
     "message": "MetaMask Shield"
   },
@@ -6142,9 +6218,6 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
-  },
-  "solanaUnknownError": {
-    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"
