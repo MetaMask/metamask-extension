@@ -69,6 +69,10 @@ import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
+import {
+  getSubscriptionControllerInitMessenger,
+  getSubscriptionControllerMessenger,
+} from './subscription';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -105,7 +109,25 @@ import {
   getGasFeeControllerInitMessenger,
   getGasFeeControllerMessenger,
 } from './gas-fee-controller-messenger';
+import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+import {
+  getAccountTrackerControllerInitMessenger,
+  getAccountTrackerControllerMessenger,
+} from './account-tracker-controller-messenger';
+import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+import {
+  getRemoteFeatureFlagControllerInitMessenger,
+  getRemoteFeatureFlagControllerMessenger,
+} from './remote-feature-flag-controller-messenger';
 
+export type {
+  AccountTrackerControllerMessenger,
+  AccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
+export {
+  getAccountTrackerControllerMessenger,
+  getAccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,
@@ -142,6 +164,18 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
+export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
+export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+export type {
+  RemoteFeatureFlagControllerMessenger,
+  RemoteFeatureFlagControllerInitMessenger,
+} from './remote-feature-flag-controller-messenger';
+export {
+  getRemoteFeatureFlagControllerMessenger,
+  getRemoteFeatureFlagControllerInitMessenger,
+} from './remote-feature-flag-controller-messenger';
+export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -176,6 +210,10 @@ export {
 } from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AccountTrackerController: {
+    getMessenger: getAccountTrackerControllerMessenger,
+    getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
@@ -256,6 +294,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getOAuthServiceMessenger,
     getInitMessenger: noop,
   },
+  OnboardingController: {
+    getMessenger: getOnboardingControllerMessenger,
+    getInitMessenger: noop,
+  },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
@@ -264,9 +306,17 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getRatesControllerMessenger,
     getInitMessenger: noop,
   },
+  RemoteFeatureFlagController: {
+    getMessenger: getRemoteFeatureFlagControllerMessenger,
+    getInitMessenger: getRemoteFeatureFlagControllerInitMessenger,
+  },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
+  },
+  SelectedNetworkController: {
+    getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
   },
   ShieldController: {
     getMessenger: getShieldControllerMessenger,
@@ -291,6 +341,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
+  },
+  SubscriptionController: {
+    getMessenger: getSubscriptionControllerMessenger,
+    getInitMessenger: getSubscriptionControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
