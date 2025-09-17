@@ -36,12 +36,12 @@ import {
   hidePermittedNetworkToast,
 } from '../../../store/actions';
 import {
-  AvatarAccount,
   AvatarAccountSize,
   AvatarNetwork,
   Icon,
   IconName,
 } from '../../component-library';
+import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
@@ -122,11 +122,7 @@ function ConnectAccountToast() {
         dataTestId="connect-account-toast"
         key="connect-account-toast"
         startAdornment={
-          <AvatarAccount
-            address={account.address}
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
-          />
+          <PreferredAvatar address={account.address} className="self-center" />
         }
         text={t('accountIsntConnectedToastText', [
           account?.metadata?.name,
