@@ -227,6 +227,7 @@ describe('NetworkOrderController - constructor', () => {
       ).toMatchInlineSnapshot(`
         {
           "enabledNetworkMap": {
+            "bip122": {},
             "eip155": {
               "0x1": true,
               "0x2105": true,
@@ -256,6 +257,7 @@ describe('NetworkOrderController - constructor', () => {
       ).toMatchInlineSnapshot(`
         {
           "enabledNetworkMap": {
+            "bip122": {},
             "eip155": {
               "0x1": true,
               "0x2105": true,
@@ -284,6 +286,7 @@ describe('NetworkOrderController - constructor', () => {
       ).toMatchInlineSnapshot(`
         {
           "enabledNetworkMap": {
+            "bip122": {},
             "eip155": {
               "0x1": true,
               "0x2105": true,
@@ -313,6 +316,7 @@ describe('NetworkOrderController - constructor', () => {
       ).toMatchInlineSnapshot(`
         {
           "enabledNetworkMap": {
+            "bip122": {},
             "eip155": {
               "0x1": true,
               "0x2105": true,
