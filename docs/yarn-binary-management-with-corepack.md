@@ -24,9 +24,7 @@ yarn yarn-binary:hydrate
 yarn --version  # Should show version from package.json packageManager field
 ```
 
-## Available Commands
-
-### Package.json Scripts
+## Package.json Scripts
 
 ```bash
 # Download yarn tarball and activate version
@@ -87,28 +85,6 @@ git add .yarn/yarn-corepack.tgz
 git commit -m "Update yarn to 4.9.5"
 ```
 
-### CI/CD Setup
-
-```yaml
-# GitHub Actions example
-steps:
-  - uses: actions/checkout@v4
-
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-      node-version-file: .nvmrc
-
-  - name: Activate committed yarn version
-    run: yarn yarn-binary:hydrate
-
-  - name: Install dependencies
-    run: yarn install
-
-  - name: Build
-    run: yarn build
-```
-
 ### Development - Version Switching
 
 ```bash
@@ -134,16 +110,4 @@ yarn --version  # Shows 4.9.4
 └── [other yarn files...]
 
 package.json                   # Contains packageManager version and scripts
-```
-
-## Native Corepack Commands
-
-For reference, the underlying corepack commands being used:
-
-```bash
-# Pack (download) yarn version from package.json to specific location
-corepack pack -o .yarn/yarn-corepack.tgz
-
-# Hydrate (activate) from a tarball
-corepack hydrate .yarn/yarn-corepack.tgz --activate
 ```
