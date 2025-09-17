@@ -3450,6 +3450,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
         ),
+      setIsSocialLoginFlowEnabledForMetrics:
+        metaMetricsController.setIsSocialLoginFlowEnabledForMetrics.bind(
+          metaMetricsController,
+        ),
       setMarketingCampaignCookieId:
         metaMetricsController.setMarketingCampaignCookieId.bind(
           metaMetricsController,
@@ -3782,6 +3786,9 @@ export default class MetamaskController extends EventEmitter {
         this.oauthService,
       ),
       setMarketingConsent: this.oauthService.setMarketingConsent.bind(
+        this.oauthService,
+      ),
+      getMarketingConsent: this.oauthService.getMarketingConsent.bind(
         this.oauthService,
       ),
 
