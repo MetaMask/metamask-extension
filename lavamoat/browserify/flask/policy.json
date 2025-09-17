@@ -2380,6 +2380,15 @@
         "@metamask/snaps-utils>validate-npm-package-name": true
       }
     },
+    "@metamask/subscription-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
+      }
+    },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
       "globals": {
         "URL": true,

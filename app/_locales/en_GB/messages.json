@@ -1395,11 +1395,11 @@
   "confusableZeroWidthUnicode": {
     "message": "Zero-width character found."
   },
+  "confusingDomain": {
+    "message": "We have detected a confusable character in the name. Check the name to avoid a potential scam."
+  },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
-  },
-  "confusingSolanaDomain": {
-    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
   },
   "connect": {
     "message": "Connect"
@@ -1756,7 +1756,10 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "dataCollectionForMarketingDescriptionSocialLogin": {
+    "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Okay"
@@ -1820,6 +1823,14 @@
   },
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
+  },
+  "deepLink_Error404_CTA": {
+    "message": "$1 and we'll take you to the right place.",
+    "description": "$1 is a link with the text found in `deepLink_Error404_CTA_LinkText`"
+  },
+  "deepLink_Error404_CTA_LinkText": {
+    "message": "Update to the latest version of MetaMask",
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
@@ -3368,7 +3379,7 @@
     "message": "Market details"
   },
   "maskicons": {
-    "message": "Maskicons"
+    "message": "Polycons"
   },
   "max": {
     "message": "Max"
@@ -5576,6 +5587,67 @@
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
   },
+  "shieldPlanAnnual": {
+    "message": "Annual"
+  },
+  "shieldPlanAnnualPrice": {
+    "message": "$1/year",
+    "description": "The $1 is the price of the annual plan"
+  },
+  "shieldPlanAutoRenew": {
+    "message": "Auto renews for $1/month until canceled",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanCard": {
+    "message": "Card"
+  },
+  "shieldPlanDetails": {
+    "message": "Plan details"
+  },
+  "shieldPlanDetails1": {
+    "message": "No charge now, try free for 14 days"
+  },
+  "shieldPlanDetails2": {
+    "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
+  },
+  "shieldPlanDetails2Card": {
+    "message": "Plan auto-renews at the end of the term"
+  },
+  "shieldPlanDetails3": {
+    "message": "Secures your assets from risky transactions"
+  },
+  "shieldPlanMonthly": {
+    "message": "Monthly"
+  },
+  "shieldPlanMonthlyPrice": {
+    "message": "$1/month",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanNoFunds": {
+    "message": "No available funds"
+  },
+  "shieldPlanPayWith": {
+    "message": "Pay with"
+  },
+  "shieldPlanPayWithCard": {
+    "message": "Pay with card"
+  },
+  "shieldPlanPayWithToken": {
+    "message": "Pay with $1",
+    "description": "The $1 is token"
+  },
+  "shieldPlanPaymentTitle": {
+    "message": "Change payment method"
+  },
+  "shieldPlanSave": {
+    "message": "Save 16%"
+  },
+  "shieldPlanSelectToken": {
+    "message": "Select a token"
+  },
+  "shieldPlanTitle": {
+    "message": "Choose your plan"
+  },
   "shieldTx": {
     "message": "MetaMask Shield"
   },
@@ -5618,6 +5690,41 @@
   },
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
+  },
+  "shieldTxMembershipErrorDeclinedCard": {
+    "message": "Membership is paused due to declined card. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorDeclinedCardTooltip": {
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  },
+  "shieldTxMembershipErrorInsufficientFunds": {
+    "message": "Insufficient funds for your $1 renewal. $2 to keep your access.",
+    "description": "The $1 is date and $2 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientToken": {
+    "message": "Insufficient $1",
+    "description": "The $1 is the token symbol"
+  },
+  "shieldTxMembershipErrorInsufficientTokenBalance": {
+    "message": "Membership is paused due to insufficient token balance. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientTokenTooltip": {
+    "message": "Insufficient token balance in your wallet. Top up or select an alternative payment method to resume coverage."
+  },
+  "shieldTxMembershipErrorMembershipEnding": {
+    "message": "Your membership is ending on $1. $2 to maintain uninterrupted access",
+    "description": "The $1 is date and $2 is the action text 'Renew now'"
+  },
+  "shieldTxMembershipErrorRenewNow": {
+    "message": "Renew now"
+  },
+  "shieldTxMembershipErrorUpdateCardDetails": {
+    "message": "Update card details"
+  },
+  "shieldTxMembershipErrorUpdatePayment": {
+    "message": "Update payment"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
@@ -6099,9 +6206,6 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
-  },
-  "solanaUnknownError": {
-    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"

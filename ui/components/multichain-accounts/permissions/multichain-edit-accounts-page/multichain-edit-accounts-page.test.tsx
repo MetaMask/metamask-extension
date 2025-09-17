@@ -390,18 +390,6 @@ describe('MultichainEditAccountsPage', () => {
     expect(onSubmit).toHaveBeenCalledWith([MOCK_GROUP_ID_1, MOCK_GROUP_ID_2]);
   });
 
-  it('calls onClose when connect button is clicked', () => {
-    const onClose = jest.fn();
-    const { getByTestId } = render({
-      defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
-      onClose,
-    });
-
-    fireEvent.click(getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON));
-
-    expect(onClose).toHaveBeenCalled();
-  });
-
   it('calls onClose when close button is clicked', () => {
     const onClose = jest.fn();
     const { getByTestId } = render({ onClose });

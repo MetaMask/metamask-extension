@@ -229,11 +229,6 @@ export const GlobalMenu = ({
               <NotificationsTagCounter />
             </Box>
           </MenuItem>
-          <Box
-            borderColor={BorderColor.borderMuted}
-            width={BlockSize.Full}
-            style={{ height: '1px', borderBottomWidth: 0 }}
-          ></Box>
         </>
       )}
       {account && (
@@ -258,9 +253,9 @@ export const GlobalMenu = ({
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
+        to={PERMISSIONS}
         iconName={IconName.SecurityTick}
         onClick={() => {
-          history.push(PERMISSIONS);
           trackEvent({
             event: MetaMetricsEventName.NavPermissionsOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -306,11 +301,9 @@ export const GlobalMenu = ({
         {t('networks')}
       </MenuItem>
       <MenuItem
+        to={SNAPS_ROUTE}
         iconName={IconName.Snaps}
-        onClick={() => {
-          history.push(SNAPS_ROUTE);
-          closeMenu();
-        }}
+        onClick={closeMenu}
         showInfoDot={snapsUpdatesAvailable}
       >
         {t('snaps')}
@@ -341,10 +334,10 @@ export const GlobalMenu = ({
         {supportText}
       </MenuItem>
       <MenuItem
+        to={SETTINGS_ROUTE}
         iconName={IconName.Setting}
         disabled={hasUnapprovedTransactions}
         onClick={() => {
-          history.push(SETTINGS_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
@@ -359,11 +352,11 @@ export const GlobalMenu = ({
         {t('settings')}
       </MenuItem>
       <MenuItem
+        to={DEFAULT_ROUTE}
         ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
-          history.push(DEFAULT_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppLocked,
