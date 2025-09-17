@@ -11,6 +11,8 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringControllerGetStateAction,
   KeyringControllerStateChangeEvent,
+  KeyringControllerAddNewKeyringAction,
+  KeyringControllerGetKeyringsByTypeAction,
 } from '@metamask/keyring-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -24,6 +26,8 @@ type Actions =
   | SnapControllerHandleRequest
   | KeyringControllerGetStateAction
   | KeyringControllerWithKeyringAction
+  | KeyringControllerAddNewKeyringAction
+  | KeyringControllerGetKeyringsByTypeAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerFindNetworkClientIdByChainIdAction;
 
@@ -60,6 +64,8 @@ export function getMultichainAccountServiceMessenger(
       'SnapController:handleRequest',
       'KeyringController:getState',
       'KeyringController:withKeyring',
+      'KeyringController:addNewKeyring',
+      'KeyringController:getKeyringsByType',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
     ],
