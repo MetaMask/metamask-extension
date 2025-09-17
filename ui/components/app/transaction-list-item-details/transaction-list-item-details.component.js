@@ -161,12 +161,22 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
+      networkConfiguration,
     } = this.props;
     const {
       primaryTransaction: transaction,
       initialTransaction: { type },
     } = transactionGroup;
     const { chainId, hash } = transaction;
+
+    const blockExplorerUrl =
+      networkConfiguration?.[this.props.chainId]?.blockExplorerUrls[
+        networkConfiguration?.[this.props.chainId]?.defaultBlockExplorerUrlIndex
+      ];
+    const explorerLink =
+      !blockExplorerUrl && this.props.isCustomNetwork
+        ? `${NETWORKS_ROUTE}#blockExplorerUrl`
+        : '';
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -216,10 +226,9 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
             <div className="transaction-list-item-details__tx-hash gap-1">
               <Link
-                href={`${NETWORKS_ROUTE}#blockExplorerUrl`}
+                to={explorerLink}
                 className="text-primary-default"
                 onClick={this.handleBlockExplorerClick}
-                disabled={!hash}
               >
                 {blockExplorerLinkText.firstPart === 'addBlockExplorer'
                   ? t('addBlockExplorer')
