@@ -4,6 +4,7 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { createMemoryHistory } from 'history';
 import {
   TrustSignalDisplayState,
   useTrustSignals,
@@ -16,7 +17,7 @@ import {
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProviderAndHistory } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -156,6 +157,9 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
+  let history;
+  let store;
+
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -169,9 +173,18 @@ describe('TransactionListItem', () => {
     );
   });
 
+  beforeEach(() => {
+    history = createMemoryHistory();
+    store = mockStore(mockState);
+  });
+
   afterAll(() => {
     useGasFeeEstimates.mockRestore();
   });
+
+  // Local helper that uses the shared history and store
+  const renderWithProvider = (component) =>
+    renderWithProviderAndHistory(component, store, history);
 
   describe('ActivityListItem interactions', () => {
     it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
@@ -181,13 +194,11 @@ describe('TransactionListItem', () => {
         }),
       );
 
-      const store = mockStore(mockState);
       const mockTrackEvent = jest.fn();
       const { queryByTestId } = renderWithProvider(
         <MetaMetricsContext.Provider value={mockTrackEvent}>
           <TransactionListItem transactionGroup={transactionGroup} />
         </MetaMetricsContext.Provider>,
-        store,
       );
       const activityListItem = queryByTestId('activity-list-item');
       fireEvent.click(activityListItem);
@@ -317,7 +328,6 @@ describe('TransactionListItem', () => {
           },
         }}
       />,
-      mockStore(mockState),
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(

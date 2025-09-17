@@ -55,17 +55,13 @@ export function renderWithProvider(component, store, initialEntries) {
   const Wrapper = ({ children }) => {
     const WithoutStore = () => (
       <MemoryRouter initialEntries={initialEntries || ['/']} initialIndex={0}>
-        <CompatRouter>
-          <I18nProvider currentLocale="en" current={en} en={en}>
-            <LegacyI18nProvider>
-              <MetaMetricsContext.Provider value={mockTrackEvent}>
-                <LegacyMetaMetricsProvider>
-                  {children}
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsContext.Provider>
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </CompatRouter>
+        <I18nProvider currentLocale="en" current={en} en={en}>
+          <LegacyI18nProvider>
+            <MetaMetricsContext.Provider value={mockTrackEvent}>
+              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+            </MetaMetricsContext.Provider>
+          </LegacyI18nProvider>
+        </I18nProvider>
       </MemoryRouter>
     );
     return store ? (
