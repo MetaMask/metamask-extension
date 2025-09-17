@@ -1,3 +1,4 @@
+import { DefaultGasEstimates } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
 
 const ONE_HUNDRED_THOUSAND = 100000;
@@ -102,13 +103,13 @@ export type TxGasFees = {
   /** Which estimate level that the API suggested. */
   estimateSuggested: string;
   /** The default estimate for gas. */
-  defaultGasEstimates: string;
+  defaultGasEstimates: DefaultGasEstimates;
   /** same as gasLimit? */
   gas: string;
   /** Original estimate for gas. */
   originalGasEstimate: string;
   /** The gas limit supplied by user. */
-  userEditedGasLimit: string;
+  userEditedGasLimit: boolean;
   /** Estimate level user selected. */
   userFeeLevel: string;
 };
