@@ -7747,6 +7747,12 @@ export default class MetamaskController extends EventEmitter {
 
     // Notify Snaps that the client is open or closed.
     this.controllerMessenger.call('SnapController:setClientActive', open);
+
+    // Handle WebSocket connection lifecycle when client opens/closes
+    if (open && this.backendWebSocketService) {
+      // Extension UI opened - ensure WebSocket is connected
+      this.backendWebSocketService.connect()
+    }
   }
   /* eslint-enable accessor-pairs */
 

@@ -24,6 +24,10 @@ import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
+import type {
+  AccountActivityServiceBalanceUpdatedEvent,
+  AccountActivityServiceStatusChangedEvent,
+} from '@metamask/backend-platform';
 
 // Not exported from `@metamask/assets-controllers`.
 type TokensControllerGetStateAction = ControllerGetStateAction<
@@ -51,7 +55,9 @@ type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
   | NetworkControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent
-  | TokensControllerStateChangeEvent;
+  | TokensControllerStateChangeEvent
+  | AccountActivityServiceBalanceUpdatedEvent
+  | AccountActivityServiceStatusChangedEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -85,6 +91,8 @@ export function getTokenBalancesControllerMessenger(
       'TokensController:stateChange',
       'NetworkController:stateChange',
       'KeyringController:accountRemoved',
+      'KeyringController:unlock',
+      'KeyringController:lock',
       'AccountActivityService:balanceUpdated',
       'AccountActivityService:statusChanged',
     ],
