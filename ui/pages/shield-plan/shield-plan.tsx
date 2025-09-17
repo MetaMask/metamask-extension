@@ -386,8 +386,9 @@ const ShieldPlan = () => {
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
               textAlign={TextAlign.Center}
-            ></Text>
-            {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
+            >
+              {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
+            </Text>
           </Footer>
         </>
       )}
