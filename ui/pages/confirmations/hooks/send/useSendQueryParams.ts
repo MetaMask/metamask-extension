@@ -120,53 +120,54 @@ export const useSendQueryParams = () => {
   }, [to, paramRecipient, updateTo]);
 
   useEffect(() => {
-    if (asset) {
-      return;
-    }
-    let nativeAsset;
-    if (paramChainId && !paramAsset) {
-      nativeAsset = {
-        ...getNativeAssetForChainId(paramChainId),
-        chainId: paramChainId,
-      };
-    }
-    let newAsset;
-    const asAddress =
-      paramAsset ?? nativeAsset?.address ?? nativeAsset?.assetId;
-    if (asAddress) {
-      const cid = paramChainId ?? nativeAsset?.chainId;
-      const chainId =
-        isEvmAddress(asAddress) && cid && !isHexString(cid) ? toHex(cid) : cid;
+    if (!asset) {
+      let nativeAsset;
+      if (paramChainId && !paramAsset) {
+        nativeAsset = {
+          ...getNativeAssetForChainId(paramChainId),
+          chainId: paramChainId,
+        };
+      }
+      let newAsset;
+      const asAddress =
+        paramAsset ?? nativeAsset?.address ?? nativeAsset?.assetId;
+      if (asAddress) {
+        const cid = paramChainId ?? nativeAsset?.chainId;
+        const chainId =
+          isEvmAddress(asAddress) && cid && !isHexString(cid)
+            ? toHex(cid)
+            : cid;
 
-      if (chainId) {
-        newAsset = tokens?.find(
-          ({ assetId, chainId: tokenChainId }) =>
-            chainId === tokenChainId &&
-            assetId?.toLowerCase() === asAddress.toLowerCase(),
-        );
+        if (chainId) {
+          newAsset = tokens?.find(
+            ({ assetId, chainId: tokenChainId }) =>
+              chainId === tokenChainId &&
+              assetId?.toLowerCase() === asAddress.toLowerCase(),
+          );
+        }
+
+        if (!newAsset) {
+          newAsset = nfts?.find(
+            ({ address: tokenAddrress, chainId: tokenChainId }) =>
+              chainId === tokenChainId &&
+              tokenAddrress?.toLowerCase() === asAddress.toLowerCase(),
+          );
+        }
       }
 
-      if (!newAsset) {
-        newAsset = nfts?.find(
-          ({ address: tokenAddrress, chainId: tokenChainId }) =>
-            chainId === tokenChainId &&
-            tokenAddrress?.toLowerCase() === asAddress.toLowerCase(),
-        );
+      if (!newAsset && paramAsset) {
+        if (isEvmAddress(paramAsset)) {
+          newAsset = getAssetFromList(evmTokens, paramAsset as Hex);
+        } else {
+          newAsset = multiChainAssets.find(
+            ({ address }) => address === paramAsset,
+          );
+        }
       }
-    }
 
-    if (!newAsset && paramAsset) {
-      if (isEvmAddress(paramAsset)) {
-        newAsset = getAssetFromList(evmTokens, paramAsset as Hex);
-      } else {
-        newAsset = multiChainAssets.find(
-          ({ address }) => address === paramAsset,
-        );
+      if (newAsset) {
+        updateAsset(newAsset);
       }
-    }
-
-    if (newAsset) {
-      updateAsset(newAsset);
     }
     if (value === undefined && paramAmount) {
       updateValue(paramAmount, paramMaxValueMode === 'true');
