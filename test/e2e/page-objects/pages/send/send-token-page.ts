@@ -127,19 +127,9 @@ class SendTokenPage {
     await this.driver.delay(2000); // Delay to ensure that the send page has cleared up
   }
 
-  async clickFirstTokenListButton() {
-    const elements = await this.driver.findElements(this.tokenListButton);
-    await elements[0].click();
-  }
-
   async clickAccountPickerButton() {
     console.log('Clicking on account picker button on send token screen');
     await this.driver.clickElement(this.accountPickerButton);
-  }
-
-  async clickSecondTokenListButton() {
-    const elements = await this.driver.findElements(this.tokenListButton);
-    await elements[1].click();
   }
 
   async clickOnAssetPicker(

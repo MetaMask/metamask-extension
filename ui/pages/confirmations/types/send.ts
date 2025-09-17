@@ -47,7 +47,9 @@ export type RecipientValidationResult = {
     point: string;
     similarTo: string;
   }[];
-  error?: string | null;
-  resolvedLookup?: string | null;
-  warning?: string | null;
+  error?: string;
+  resolvedLookup?: string;
+  warning?: string;
+  toAddressValidated?: string;
+  loading?: boolean;
 };

@@ -59,6 +59,14 @@ import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
+import {
+  PricingResponse,
+  ProductPrice,
+  ProductType,
+  RecurringInterval,
+  Subscription,
+  TokenPaymentInfo,
+} from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -309,6 +317,82 @@ export function createNewVaultAndSyncWithSocial(
         throw error;
       }
     }
+  };
+}
+
+/**
+ * Fetches user subscriptions.
+ *
+ * @returns The subscriptions.
+ */
+export function getSubscriptions(): ThunkAction<
+  Subscription[],
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground('getSubscriptions');
+  };
+}
+
+/**
+ * Fetches the subscription pricing.
+ *
+ * @returns The subscription pricing.
+ */
+export function getSubscriptionPricing(): ThunkAction<
+  PricingResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground<PricingResponse>(
+      'getSubscriptionPricing',
+    );
+  };
+}
+
+/**
+ * Get crypto total amount needed for a subscription.
+ *
+ * @param params - The parameters.
+ * @param params.price - The price.
+ * @param params.tokenPaymentInfo - The token payment info.
+ * @returns The subscription crypto approval amount.
+ */
+export async function getSubscriptionCryptoApprovalAmount(params: {
+  price: ProductPrice;
+  tokenPaymentInfo: TokenPaymentInfo;
+}): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getSubscriptionCryptoApprovalAmount',
+    [params],
+  );
+}
+
+/**
+ * Starts a subscription with a card.
+ *
+ * @param params - The parameters.
+ * @param params.products - The list of products.
+ * @param params.isTrialRequested - Is trial requested.
+ * @param params.recurringInterval - The recurring interval.
+ * @returns The subscription response.
+ */
+export function startSubscriptionWithCard(params: {
+  products: ProductType[];
+  isTrialRequested: boolean;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const subscriptions = await submitRequestToBackground<Subscription[]>(
+      'startSubscriptionWithCard',
+      [params],
+    );
+
+    return subscriptions;
   };
 }
 
@@ -4148,7 +4232,10 @@ export function setDataCollectionForMarketing(
 export function setIsSocialLoginFlowEnabledForMetrics(
   isSocialLoginFlowEnabledForMetrics: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setIsSocialLoginFlowEnabledForMetrics', [
+      isSocialLoginFlowEnabledForMetrics,
+    ]);
     dispatch({
       type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
       value: isSocialLoginFlowEnabledForMetrics,
@@ -4158,22 +4245,36 @@ export function setIsSocialLoginFlowEnabledForMetrics(
 
 /**
  * Sets marketing consent with OAuth service for social login users.
+ *
+ * @param hasEmailMarketingConsent - Boolean value for marketing consent
  */
-export function setMarketingConsent(): ThunkAction<
-  Promise<boolean>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function setMarketingConsent(
+  hasEmailMarketingConsent: boolean,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      const res = await submitRequestToBackground('setMarketingConsent');
+      const res = await submitRequestToBackground('setMarketingConsent', [
+        hasEmailMarketingConsent,
+      ]);
       return Boolean(res);
     } catch (error) {
       logErrorWithMessage(getErrorMessage(error));
       return false;
     }
   };
+}
+
+/**
+ * Gets marketing consent with OAuth service for social login users.
+ */
+export async function getMarketingConsent() {
+  try {
+    const res = await submitRequestToBackground('getMarketingConsent');
+    return Boolean(res);
+  } catch (error) {
+    logErrorWithMessage(getErrorMessage(error));
+    return false;
+  }
 }
 
 /**

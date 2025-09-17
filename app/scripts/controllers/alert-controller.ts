@@ -109,16 +109,22 @@ export const getDefaultAlertControllerState = (): AlertControllerState => ({
  */
 const controllerMetadata = {
   alertEnabledness: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   unconnectedAccountAlertShownOrigins: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: true,
   },
   web3ShimUsageOrigins: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: true,
   },
 };
 

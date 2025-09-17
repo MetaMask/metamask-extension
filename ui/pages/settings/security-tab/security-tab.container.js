@@ -21,6 +21,8 @@ import {
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
   setSkipDeepLinkInterstitial,
+  getMarketingConsent,
+  setMarketingConsent,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -125,6 +127,8 @@ const mapDispatchToProps = (dispatch) => {
       return updateDataDeletionTaskStatus();
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    getMarketingConsent: () => getMarketingConsent(),
+    setMarketingConsent: (value) => dispatch(setMarketingConsent(value)),
   };
 };
 

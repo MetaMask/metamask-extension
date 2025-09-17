@@ -568,7 +568,7 @@ describe('scope-utils', () => {
               }),
             ],
             walletName: 'Test Wallet 3',
-            walletId: 'entropy:test-group',
+            walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
           },
         ];
 

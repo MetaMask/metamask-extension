@@ -77,8 +77,10 @@ type Network = {
 
 const metadata: StateMetadata<SwapsControllerState> = {
   swapsState: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: false,
+    usedInUi: true,
   },
 };
 

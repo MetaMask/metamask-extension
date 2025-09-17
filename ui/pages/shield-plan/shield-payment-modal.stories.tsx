@@ -1,7 +1,6 @@
 import React from 'react';
 import { ShieldPaymentModal } from './shield-payment-modal';
-import { PAYMENT_METHODS } from './types';
-
+import { PAYMENT_TYPES } from '@metamask/subscription-controller';
 export default {
   title: 'Components/UI/ShieldPlan/ShieldPaymentModal',
   component: ShieldPaymentModal,
@@ -13,11 +12,12 @@ export const DefaultStory = () => {
       <ShieldPaymentModal
         isOpen
         onClose={() => {}}
-        selectedPaymentMethod={PAYMENT_METHODS.TOKEN}
+        selectedPaymentMethod={PAYMENT_TYPES.byCrypto}
         setSelectedPaymentMethod={() => {}}
         selectedToken={undefined}
         onAssetChange={() => {}}
         hasStableTokenWithBalance={true}
+        availableTokenBalances={[]}
       />
     </div>
   );

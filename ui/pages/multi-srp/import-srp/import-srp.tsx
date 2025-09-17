@@ -379,6 +379,7 @@ export const ImportSrp = () => {
                     flexDirection={FlexDirection.Row}
                     alignItems={AlignItems.center}
                     width={BlockSize.Full}
+                    paddingRight={2}
                   >
                     <TextField
                       id={id}

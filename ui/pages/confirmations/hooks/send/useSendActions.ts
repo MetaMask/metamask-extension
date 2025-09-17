@@ -18,8 +18,15 @@ import { useSendType } from './useSendType';
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { asset, chainId, from, fromAccount, maxValueMode, to, value } =
-    useSendContext();
+  const {
+    asset,
+    chainId,
+    from,
+    fromAccount,
+    maxValueMode,
+    toResolved: to,
+    value,
+  } = useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(async () => {

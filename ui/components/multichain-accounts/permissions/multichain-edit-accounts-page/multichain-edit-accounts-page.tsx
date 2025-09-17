@@ -115,14 +115,11 @@ export const MultichainEditAccountsPage: React.FC<
         location: 'Edit Accounts Modal',
       },
     });
-
-    onClose();
   }, [
     selectedAccountGroups,
     defaultSelectedAccountGroups,
     onSubmit,
     trackEvent,
-    onClose,
   ]);
 
   return (

@@ -1,20 +1,17 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
+import { PAYMENT_TYPES } from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import { AssetType } from '../../../shared/constants/transaction';
-import {
-  AssetWithDisplayData,
-  ERC20Asset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { PAYMENT_METHODS } from './types';
+import { TokenWithApprovalAmount } from '../../hooks/subscription/useSubscriptionPricing';
 import { ShieldPaymentModal } from './shield-payment-modal';
 
 const defaultProps = {
   isOpen: true,
   onClose: jest.fn(),
-  selectedPaymentMethod: PAYMENT_METHODS.TOKEN,
+  selectedPaymentMethod: PAYMENT_TYPES.byCrypto,
   setSelectedPaymentMethod: jest.fn(),
   selectedToken: {
     address: '0x0000000000000000000000000000000000000000',
@@ -23,7 +20,11 @@ const defaultProps = {
       'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042194',
     type: AssetType.token,
     chainId: '0x1',
-  } as unknown as AssetWithDisplayData<ERC20Asset>,
+    balance: '100',
+    string: '100',
+    decimals: 18,
+    approvalAmount: '100',
+  } as TokenWithApprovalAmount,
   onAssetChange: jest.fn(),
 };
 
@@ -34,7 +35,11 @@ describe('Change payment method', () => {
   it('should show change payment method modal', async () => {
     const mockStore = configureMockStore([])(mockState);
     const { getByTestId } = renderWithProvider(
-      <ShieldPaymentModal {...defaultProps} hasStableTokenWithBalance={true} />,
+      <ShieldPaymentModal
+        {...defaultProps}
+        hasStableTokenWithBalance={true}
+        availableTokenBalances={[]}
+      />,
       mockStore,
     );
 
@@ -48,6 +53,7 @@ describe('Change payment method', () => {
         {...defaultProps}
         onClose={onCloseStub}
         hasStableTokenWithBalance={true}
+        availableTokenBalances={[]}
       />,
       mockStore,
     );
@@ -68,6 +74,7 @@ describe('Change payment method', () => {
         onClose={onCloseStub}
         setSelectedPaymentMethod={setSelectedPaymentMethodStub}
         hasStableTokenWithBalance={true}
+        availableTokenBalances={[]}
       />,
       mockStore,
     );
@@ -76,7 +83,7 @@ describe('Change payment method', () => {
     fireEvent.click(cardButton);
 
     expect(setSelectedPaymentMethodStub).toHaveBeenCalledWith(
-      PAYMENT_METHODS.CARD,
+      PAYMENT_TYPES.byCard,
     );
     expect(onCloseStub).toHaveBeenCalled();
   });

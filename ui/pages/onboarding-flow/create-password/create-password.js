@@ -250,7 +250,7 @@ export default function CreatePassword({
 
     if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       if (termsChecked) {
-        await dispatch(setMarketingConsent());
+        await dispatch(setMarketingConsent(true));
       }
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {

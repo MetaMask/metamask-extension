@@ -321,10 +321,10 @@ describe('Bridge tests', function (this: Suite) {
               'ETH',
         );
 
-        const swapBridgeTokenFlippedEvents = findEventsByName(
+        const swapBridgeTokenSwitchedEvents = findEventsByName(
           EventTypes.SwapBridgeTokenSwitched,
         );
-        assert.ok(swapBridgeTokenFlippedEvents.length === 1);
+        assert.ok(swapBridgeTokenSwitchedEvents.length === 1);
       },
     );
   });

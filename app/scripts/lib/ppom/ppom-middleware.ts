@@ -72,7 +72,7 @@ export function createPPOMMiddleware<
   appStateController: AppStateController,
   accountsController: AccountsController,
   updateSecurityAlertResponse: UpdateSecurityAlertResponse,
-  getSecurityAlertsConfig?: () => GetSecurityAlertsConfig,
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig,
 ) {
   return async (
     req: PPOMMiddlewareRequest<Params>,
@@ -126,7 +126,7 @@ export function createPPOMMiddleware<
             securityAlertId,
             chainId: chainId as Hex,
             updateSecurityAlertResponse,
-            getSecurityAlertsConfig: getSecurityAlertsConfig?.(),
+            getSecurityAlertsConfig,
           }),
       );
 
