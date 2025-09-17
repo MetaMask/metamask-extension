@@ -29,14 +29,15 @@ export const SubscriptionControllerInit: ControllerInitFunction<
   const subscriptionService = new SubscriptionService({
     env: isDevOrTestBuild() ? Env.UAT : Env.PRD,
     auth: {
-      getAccessToken: () => initMessenger.call('AuthenticationController:getBearerToken'),
+      getAccessToken: () =>
+        initMessenger.call('AuthenticationController:getBearerToken'),
     },
   });
 
   const controller = new SubscriptionController({
     messenger: controllerMessenger,
     state: persistedState.SubscriptionController,
-    subscriptionService: subscriptionService,
+    subscriptionService,
   });
 
   return {

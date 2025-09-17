@@ -110,7 +110,20 @@ import {
   getGasFeeControllerMessenger,
 } from './gas-fee-controller-messenger';
 import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+import {
+  getAccountTrackerControllerInitMessenger,
+  getAccountTrackerControllerMessenger,
+} from './account-tracker-controller-messenger';
+import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 
+export type {
+  AccountTrackerControllerMessenger,
+  AccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
+export {
+  getAccountTrackerControllerMessenger,
+  getAccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,
@@ -147,6 +160,8 @@ export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
+export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
+export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
@@ -183,6 +198,10 @@ export {
 } from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AccountTrackerController: {
+    getMessenger: getAccountTrackerControllerMessenger,
+    getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
@@ -261,6 +280,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   OAuthService: {
     getMessenger: getOAuthServiceMessenger,
+    getInitMessenger: noop,
+  },
+  OnboardingController: {
+    getMessenger: getOnboardingControllerMessenger,
     getInitMessenger: noop,
   },
   RateLimitController: {

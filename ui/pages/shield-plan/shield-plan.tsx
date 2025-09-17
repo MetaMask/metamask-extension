@@ -1,4 +1,4 @@
-import log from 'console';
+import log from 'loglevel';
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
@@ -138,13 +138,15 @@ const ShieldPlan = () => {
     () =>
       pricingPlans
         ?.map((plan) => {
-          const translationLabel =
-            plan.interval === RECURRING_INTERVALS.year ? 'Annual' : 'Monthly';
+          const isYearly = plan.interval === RECURRING_INTERVALS.year;
           const price = getProductPrice(plan);
           return {
             id: plan.interval,
-            label: t(`shieldPlan${translationLabel}`),
-            price: t(`shieldPlan${translationLabel}Price`, [`$${price}`]),
+            label: t(isYearly ? 'shieldPlanAnnual' : 'shieldPlanMonthly'),
+            price: t(
+              isYearly ? 'shieldPlanAnnualPrice' : 'shieldPlanMonthlyPrice',
+              [`$${price}`],
+            ),
           };
         })
         .sort((a, _b) =>
@@ -385,8 +387,9 @@ const ShieldPlan = () => {
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
               textAlign={TextAlign.Center}
-            ></Text>
-            {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
+            >
+              {t('shieldPlanAutoRenew', [selectedPlanData?.price])}
+            </Text>
           </Footer>
         </>
       )}

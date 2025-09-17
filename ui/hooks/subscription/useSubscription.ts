@@ -28,11 +28,11 @@ export const useUserSubscriptions = () => {
 
 export const useUserSubscriptionByProduct = (
   product: ProductType,
-  subscriptions: Subscription[],
+  subscriptions?: Subscription[],
 ): Subscription | undefined => {
   return useMemo(
     () =>
-      subscriptions.find((subscription) =>
+      subscriptions?.find((subscription) =>
         subscription.products.some((p) => p.name === product),
       ),
     [subscriptions, product],

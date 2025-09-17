@@ -14,7 +14,7 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SubscriptionControllerInit } from './subscription-controller-init';
 
-jest.mock('@metamask/seedless-onboarding-controller');
+jest.mock('@metamask/subscription-controller');
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
@@ -36,9 +36,7 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('SubscriptionControllerInit', () => {
-  const SubscriptionControllerClassMock = jest.mocked(
-    SubscriptionController,
-  );
+  const SubscriptionControllerClassMock = jest.mocked(SubscriptionController);
 
   beforeAll(() => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
@@ -50,19 +48,18 @@ describe('SubscriptionControllerInit', () => {
 
   it('should return controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(
-      SubscriptionControllerInit(requestMock).controller,
-    ).toBeInstanceOf(SubscriptionController);
+    expect(SubscriptionControllerInit(requestMock).controller).toBeInstanceOf(
+      SubscriptionController,
+    );
   });
 
   it('initializes with correct messenger and state', () => {
     const requestMock = buildInitRequestMock();
     SubscriptionControllerInit(requestMock);
 
-
     expect(SubscriptionControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.SeedlessOnboardingController,
+      state: requestMock.persistedState.SubscriptionController,
       subscriptionService: expect.any(SubscriptionService),
     });
   });
