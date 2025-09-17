@@ -158,7 +158,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 
 describe('TransactionListItem', () => {
   const history = createMemoryHistory();
-  const store = mockStore(mockState);
 
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
@@ -177,7 +176,7 @@ describe('TransactionListItem', () => {
     useGasFeeEstimates.mockRestore();
   });
 
-  const renderWithProvider = (component) =>
+  const renderWithProvider = (component, store) =>
     renderWithProviderAndHistory(component, store, history);
 
   describe('ActivityListItem interactions', () => {
@@ -188,11 +187,13 @@ describe('TransactionListItem', () => {
         }),
       );
 
+      const store = mockStore(mockState);
       const mockTrackEvent = jest.fn();
       const { queryByTestId } = renderWithProvider(
         <MetaMetricsContext.Provider value={mockTrackEvent}>
           <TransactionListItem transactionGroup={transactionGroup} />
         </MetaMetricsContext.Provider>,
+        store,
       );
       const activityListItem = queryByTestId('activity-list-item');
       fireEvent.click(activityListItem);
