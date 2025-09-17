@@ -476,8 +476,9 @@ export default function Routes() {
   });
 
   // Separate ref for multichain intro modal logic
+  // Initialize as false to detect first-time enable after extension reload
   const prevMultichainRef = useRef({
-    isMultichainAccountsState2Enabled,
+    isMultichainAccountsState2Enabled: false,
   });
 
   useEffect(() => {
@@ -514,30 +515,27 @@ export default function Routes() {
     // Only show modal on the main wallet/home route
     const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
-    // Show modal when feature flag transitions from disabled to enabled (upgrades)
+    // Show modal ONLY when feature flag transitions from disabled to enabled (upgrades)
     const flagJustEnabled =
       isMultichainAccountsState2Enabled &&
       !prevMultichainProps.isMultichainAccountsState2Enabled;
-
-    // Also show modal for fresh installs where flag is already enabled
-    const flagEnabledFirstTime =
-      isMultichainAccountsState2Enabled &&
-      !prevMultichainProps.hasOwnProperty('isMultichainAccountsState2Enabled');
 
     const shouldShowModal =
       isUnlocked &&
       !hasShownMultichainIntroModal &&
       isMainWalletArea &&
-      (flagJustEnabled || flagEnabledFirstTime);
+      flagJustEnabled;
 
     if (shouldShowModal) {
       dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
     }
 
-    // Update prevMultichainProps after the effect logic
-    prevMultichainRef.current = {
-      isMultichainAccountsState2Enabled,
-    };
+    // Only update prevMultichainProps when on main wallet area to preserve transition detection
+    if (isUnlocked && isMainWalletArea) {
+      prevMultichainRef.current = {
+        isMultichainAccountsState2Enabled,
+      };
+    }
   }, [
     isUnlocked,
     isMultichainAccountsState2Enabled,
