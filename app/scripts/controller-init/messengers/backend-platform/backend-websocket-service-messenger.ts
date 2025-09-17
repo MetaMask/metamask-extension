@@ -1,0 +1,20 @@
+import {
+  WebSocketServiceMessenger as BackendPlatformWebSocketServiceMessenger,
+} from '@metamask/backend-platform';
+
+/**
+ * Get a restricted messenger for the Backend Platform WebSocket service.
+ * This is scoped to backend platform operations and services.
+ *
+ * @param messenger - The main controller messenger.
+ * @returns The restricted messenger.
+ */
+export function getBackendWebSocketServiceMessenger(
+  messenger: any, // Using any to avoid type conflicts with the main messenger
+): BackendPlatformWebSocketServiceMessenger {
+  return messenger.getRestricted({
+    name: 'BackendWebSocketService',
+    allowedActions: [],
+    allowedEvents: [],
+  });
+}
