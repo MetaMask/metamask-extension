@@ -63,28 +63,24 @@ const createProviderWrapper = (store, pathname = '/') => {
     store ? (
       <Provider store={store}>
         <Router history={history}>
-          <CompatRouter>
-            <I18nProvider currentLocale="en" current={en} en={en}>
-              <LegacyI18nProvider>
-                <MetaMetricsContext.Provider value={mockTrackEvent}>
-                  <LegacyMetaMetricsProvider>
-                    {children}
-                  </LegacyMetaMetricsProvider>
-                </MetaMetricsContext.Provider>
-              </LegacyI18nProvider>
-            </I18nProvider>
-          </CompatRouter>
+          <I18nProvider currentLocale="en" current={en} en={en}>
+            <LegacyI18nProvider>
+              <MetaMetricsContext.Provider value={mockTrackEvent}>
+                <LegacyMetaMetricsProvider>
+                  {children}
+                </LegacyMetaMetricsProvider>
+              </MetaMetricsContext.Provider>
+            </LegacyI18nProvider>
+          </I18nProvider>
         </Router>
       </Provider>
     ) : (
       <Router history={history}>
-        <CompatRouter>
-          <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockTrackEvent}>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-            </MetaMetricsContext.Provider>
-          </LegacyI18nProvider>
-        </CompatRouter>
+        <LegacyI18nProvider>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+          </MetaMetricsContext.Provider>
+        </LegacyI18nProvider>
       </Router>
     );
 
