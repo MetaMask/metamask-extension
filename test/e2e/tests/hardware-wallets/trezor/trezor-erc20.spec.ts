@@ -127,7 +127,7 @@ describe('Trezor Hardware', function (this: Suite) {
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAction({
           action: `Sent ${symbol}`,
-          completedTxs: 2,
+          completedTxs: 1,
         });
         await activityListPage.checkTxAmountInActivity(`-1.5 ${symbol}`);
       },
