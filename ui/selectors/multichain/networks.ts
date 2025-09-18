@@ -301,10 +301,15 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
           const networkClientIds = chainIds.map(
             (chainId) => defaultNetworkClientIdsByChainId[chainId],
           );
-          return networkClientIds.some(
-            (networkClientId) =>
-              networksMetadata[networkClientId]?.status ===
-              NetworkStatus.Available,
+          return (
+            // If only non-EVM networks are enabled, then we may still
+            // have an entry for EIP-155 but it will be empty
+            networkClientIds.length === 0 ||
+            networkClientIds.some(
+              (networkClientId) =>
+                networksMetadata[networkClientId]?.status ===
+                NetworkStatus.Available,
+            )
           );
         }
         // Assume that all non-EVM networks are available
