@@ -375,6 +375,19 @@ const TransactionShield = () => {
                     backgroundColor={BackgroundColor.backgroundMuted}
                   />
                 )}
+                {shieldSubscription?.status ===
+                  SUBSCRIPTION_STATUSES.paused && (
+                  <Tag
+                    label={t('shieldTxMembershipPaused')}
+                    labelProps={{
+                      variant: TextVariant.bodySmMedium,
+                      color: TextColor.textAlternativeSoft,
+                    }}
+                    borderStyle={BorderStyle.none}
+                    borderRadius={BorderRadius.SM}
+                    backgroundColor={BackgroundColor.backgroundMuted}
+                  />
+                )}
               </Box>
             )}
             {loading ? (

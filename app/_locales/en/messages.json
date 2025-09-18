@@ -5727,6 +5727,9 @@
   "shieldTxMembershipInactive": {
     "message": "Inactive membership"
   },
+  "shieldTxMembershipPaused": {
+    "message": "Paused"
+  },
   "shieldTxMembershipResubscribe": {
     "message": "Resubscribe"
   },
