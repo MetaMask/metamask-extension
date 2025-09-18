@@ -508,7 +508,7 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
-  referrals: { persist: false, anonymous: false }, // TODO: persist true
+  referrals: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
