@@ -231,7 +231,7 @@ import {
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { ALLOWED_BRIDGE_CHAIN_IDS, BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
