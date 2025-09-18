@@ -4875,7 +4875,7 @@ export default class MetamaskController extends EventEmitter {
         { entropySource: keyringIdToDiscover },
       );
 
-      const result = await wallet.discoverAndCreateAccounts();
+      const result = await wallet.discoverAccounts();
 
       return { Bitcoin: 0, ...result };
     } catch (error) {
