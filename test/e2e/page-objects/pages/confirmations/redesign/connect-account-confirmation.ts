@@ -74,7 +74,6 @@ class ConnectAccountConfirmation {
     );
   }
 
-
   async goToPermissionsTab(): Promise<void> {
     await this.driver.clickElement(this.permissionsTab);
   }
