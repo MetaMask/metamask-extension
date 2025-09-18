@@ -91,6 +91,37 @@ function normalizeLocalNodeOptions(localNodeOptions) {
 }
 
 /**
+ * Normalizes the smartContract option into an array of objects with shape { name, deployerOptions? }.
+ * Supports strings, arrays of strings, objects, and mixed arrays.
+ *
+ * Examples:
+ * // Case 1:  Single legacy string: SMART_CONTRACTS.HST
+ * // Case 2: Array of legacy strings: [SMART_CONTRACTS.HST, SMART_CONTRACTS.NFTS]
+ * // Case 3: Object with deployer options: { name: SMART_CONTRACTS.HST, deployerOptions: { fromAddress: '0x...' } }
+ * // Case 4: Mixed array: [SMART_CONTRACTS.HST, { name: SMART_CONTRACTS.NFTS, deployerOptions: { fromPrivateKey: '0x...' } }]
+ *
+ * @param {string | {name: string, deployerOptions?: object} | Array<string | {name: string, deployerOptions?: object}>} smartContract
+ * @returns {{ name: string, deployerOptions?: object }[]}
+ */
+function normalizeSmartContracts(smartContract) {
+  const contractsInput = Array.isArray(smartContract)
+    ? smartContract
+    : [smartContract];
+
+  return contractsInput.map((entry) => {
+    if (typeof entry === 'string') {
+      return { name: entry };
+    }
+    if (entry && typeof entry === 'object' && typeof entry.name === 'string') {
+      return entry;
+    }
+    throw new Error(
+      `Invalid smartContract entry: ${JSON.stringify(entry)}. Expected string or { name, deployerOptions } object.`,
+    );
+  });
+}
+
+/**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
@@ -212,11 +243,10 @@ async function withFixtures(options, testSuite) {
             `Unsupported localNode: '${localNodeOptsNormalized[0].type}'. Cannot deploy smart contracts.`,
           );
       }
-      const contracts =
-        smartContract instanceof Array ? smartContract : [smartContract];
+      const contractsNormalized = normalizeSmartContracts(smartContract);
 
       const hardfork = localNodeOptsNormalized[0].options.hardfork || 'prague';
-      for (const contract of contracts) {
+      for (const contract of contractsNormalized) {
         await seeder.deploySmartContract(
           contract.name,
           hardfork,
