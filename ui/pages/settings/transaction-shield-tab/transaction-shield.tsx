@@ -52,10 +52,9 @@ import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
 const MEMBERSHIP_ERROR_STATES = {
-  INSUFFICIENT_TOKEN_BALANCE: 'insufficient_token_balance',
-  DECLINED_CARD_PAYMENT: 'declined_card_payment',
+  PAUSED: 'paused',
+  ENDING: 'ending',
   INSUFFICIENT_FUNDS: 'insufficient_funds',
-  MEMBERSHIP_ENDING: 'membership_ending',
 } as const;
 
 type MembershipErrorState =
@@ -154,69 +153,6 @@ const TransactionShield = () => {
     padding: 4,
   };
 
-  const membershipErrorDetails: Record<
-    MembershipErrorState,
-    {
-      description: string;
-      severity: BannerAlertSeverity;
-    }
-  > = {
-    [MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE]: {
-      description: t('shieldTxMembershipErrorInsufficientTokenBalance', [
-        <ButtonLink
-          key="update-payment"
-          onClick={() => {
-            console.log('update payment');
-          }}
-        >
-          {t('shieldTxMembershipErrorUpdatePayment')}
-        </ButtonLink>,
-      ]),
-      severity: BannerAlertSeverity.Danger,
-    },
-    [MEMBERSHIP_ERROR_STATES.DECLINED_CARD_PAYMENT]: {
-      description: t('shieldTxMembershipErrorDeclinedCard', [
-        <ButtonLink
-          key="update-payment"
-          onClick={() => {
-            console.log('update payment');
-          }}
-        >
-          {t('shieldTxMembershipErrorUpdatePayment')}
-        </ButtonLink>,
-      ]),
-      severity: BannerAlertSeverity.Danger,
-    },
-    [MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS]: {
-      description: t('shieldTxMembershipErrorInsufficientFunds', [
-        'April 18',
-        <ButtonLink
-          key="update-payment"
-          onClick={() => {
-            console.log('update payment');
-          }}
-        >
-          {t('shieldTxMembershipErrorUpdatePayment')}
-        </ButtonLink>,
-      ]),
-      severity: BannerAlertSeverity.Warning,
-    },
-    [MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING]: {
-      description: t('shieldTxMembershipErrorMembershipEnding', [
-        'April 18',
-        <ButtonLink
-          key="renew-now"
-          onClick={() => {
-            console.log('renew now');
-          }}
-        >
-          {t('shieldTxMembershipErrorRenewNow')}
-        </ButtonLink>,
-      ]),
-      severity: BannerAlertSeverity.Warning,
-    },
-  };
-
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
       <Box
@@ -269,91 +205,108 @@ const TransactionShield = () => {
     );
   };
 
-  const paymentMethod = useMemo(() => {
-    if (
-      membershipErrorState ===
-      MEMBERSHIP_ERROR_STATES.INSUFFICIENT_TOKEN_BALANCE
-    ) {
+  const membershipErrorBanner = useMemo(() => {
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.PAUSED) {
       return (
-        <Tooltip
-          position="top"
-          title={t('shieldTxMembershipErrorInsufficientTokenTooltip')}
-        >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-            <Icon
-              name={IconName.Danger}
-              color={IconColor.errorDefault}
-              size={IconSize.Md}
-            />
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.errorDefault}
-              className="underline"
-            >
-              {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
-            </Text>
-          </Box>
-        </Tooltip>
+        <BannerAlert
+          description={t('shieldTxMembershipErrorPaused')}
+          severity={BannerAlertSeverity.Danger}
+          marginBottom={4}
+          actionButtonLabel={t('shieldTxMembershipErrorUpdatePayment')}
+          actionButtonOnClick={() => {
+            console.log('update payment');
+          }}
+        />
       );
     }
-    if (
-      membershipErrorState === MEMBERSHIP_ERROR_STATES.DECLINED_CARD_PAYMENT
-    ) {
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.ENDING) {
       return (
-        <Tooltip
-          position="top"
-          title={t('shieldTxMembershipErrorDeclinedCardTooltip')}
-        >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-            <Icon
-              name={IconName.Danger}
-              color={IconColor.errorDefault}
-              size={IconSize.Md}
-            />
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.errorDefault}
-              className="underline"
-            >
-              {t('shieldTxMembershipErrorUpdateCardDetails')}
-            </Text>
-          </Box>
-        </Tooltip>
+        <BannerAlert
+          description={t('shieldTxMembershipErrorEnding', ['April 18'])}
+          severity={BannerAlertSeverity.Warning}
+          marginBottom={4}
+          actionButtonLabel={t('shieldTxMembershipErrorRenew')}
+          actionButtonOnClick={() => {
+            console.log('renew');
+          }}
+        />
       );
     }
     if (membershipErrorState === MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS) {
       return (
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-          <Icon
-            name={IconName.Danger}
-            color={IconColor.warningDefault}
-            size={IconSize.Md}
-          />
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.warningDefault}
-          >
-            USDT
-          </Text>
-        </Box>
+        <BannerAlert
+          description={t('shieldTxMembershipErrorInsufficientFunds', [
+            'April 18',
+          ])}
+          severity={BannerAlertSeverity.Warning}
+          marginBottom={4}
+          actionButtonLabel={t('shieldTxMembershipErrorAddFunds')}
+          actionButtonOnClick={() => {
+            console.log('add funds');
+          }}
+        />
       );
     }
-    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.MEMBERSHIP_ENDING) {
+
+    return null;
+  }, [membershipErrorState, t]);
+
+  const paymentMethod = useMemo(() => {
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.PAUSED) {
       return (
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-          <Icon
-            name={IconName.Danger}
-            color={IconColor.warningDefault}
-            size={IconSize.Md}
-          />
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.warningDefault}
-            className="underline"
+        <Tooltip
+          position="top"
+          title={t('shieldTxMembershipErrorPausedTooltip')}
+        >
+          <ButtonLink
+            startIconName={IconName.Danger}
+            startIconProps={{
+              size: IconSize.Md,
+            }}
+            onClick={() => {
+              console.log('update payment');
+            }}
+            danger
           >
             {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
-          </Text>
-        </Box>
+          </ButtonLink>
+        </Tooltip>
+      );
+    }
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.ENDING) {
+      return (
+        <ButtonLink
+          className="warning-button"
+          startIconName={IconName.Danger}
+          startIconProps={{
+            size: IconSize.Md,
+            color: IconColor.warningDefault,
+          }}
+          color={TextColor.warningDefault}
+          onClick={() => {
+            console.log('renew');
+          }}
+        >
+          {t('shieldTxMembershipErrorInsufficientToken', ['USDT'])}
+        </ButtonLink>
+      );
+    }
+    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.INSUFFICIENT_FUNDS) {
+      return (
+        <ButtonLink
+          className="warning-button"
+          startIconName={IconName.Danger}
+          startIconProps={{
+            size: IconSize.Md,
+            color: IconColor.warningDefault,
+          }}
+          color={TextColor.warningDefault}
+          onClick={() => {
+            console.log('add funds');
+          }}
+        >
+          USDT
+        </ButtonLink>
       );
     }
     return shieldSubscription &&
@@ -370,18 +323,7 @@ const TransactionShield = () => {
       flexDirection={FlexDirection.Column}
       padding={4}
     >
-      {membershipErrorState !== null && (
-        <BannerAlert
-          severity={membershipErrorDetails[membershipErrorState].severity}
-          marginBottom={4}
-          descriptionProps={{
-            variant: TextVariant.bodySm,
-          }}
-        >
-          {membershipErrorDetails[membershipErrorState].description}
-        </BannerAlert>
-      )}
-
+      {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
           className={classnames(
