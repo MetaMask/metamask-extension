@@ -207,7 +207,7 @@ const Footer = () => {
       setShowOriginThrottleModal(true);
       return;
     }
-    onCancel();
+    onCancel({ location: MetaMetricsEventLocation.Confirmation });
   }, [onCancel, shouldThrottleOrigin]);
 
   return (

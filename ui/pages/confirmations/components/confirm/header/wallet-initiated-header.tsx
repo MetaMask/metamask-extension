@@ -5,7 +5,9 @@ import {
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import { AssetType } from '../../../../../../shared/constants/transaction';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
   ButtonIcon,
@@ -56,7 +58,7 @@ export const WalletInitiatedHeader = () => {
       isSendRedesignEnabled &&
       (isNativeSend || isERC20TokenSend || isNFTTokenSend)
     ) {
-      onCancel();
+      onCancel({ location: MetaMetricsEventLocation.Confirmation });
       return;
     }
 

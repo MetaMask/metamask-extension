@@ -40,20 +40,23 @@ export const useConfirmActions = () => {
     dispatch(clearConfirmTransaction());
   }, [dispatch]);
 
-  const onCancel = useCallback(() => {
-    if (!currentConfirmation) {
-      return;
-    }
+  const onCancel = useCallback(
+    ({ location }: { location?: MetaMetricsEventLocation }) => {
+      if (!currentConfirmation) {
+        return;
+      }
 
-    navigateBackIfSend();
-    rejectApproval({ location: MetaMetricsEventLocation.Confirmation });
-    resetTransactionState();
-  }, [
-    currentConfirmation,
-    navigateBackIfSend,
-    rejectApproval,
-    resetTransactionState,
-  ]);
+      navigateBackIfSend();
+      rejectApproval({ location });
+      resetTransactionState();
+    },
+    [
+      currentConfirmation,
+      navigateBackIfSend,
+      rejectApproval,
+      resetTransactionState,
+    ],
+  );
 
   return { onCancel, resetTransactionState };
 };
