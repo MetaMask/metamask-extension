@@ -48,7 +48,7 @@ import {
   setDataCollectionForMarketing,
   setEditedNetwork,
   setAccountDetailsAddress,
-  lookupEnabledNetworks,
+  lookupSelectedNetworks,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -243,7 +243,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(clearRedirectAfterDefaultPage()),
     setAccountDetailsAddress: (address) =>
       dispatch(setAccountDetailsAddress(address)),
-    lookupEnabledNetworks: () => dispatch(lookupEnabledNetworks()),
+    lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
   };
 };
 

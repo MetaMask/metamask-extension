@@ -2149,16 +2149,21 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async lookupEnabledNetworks() {
+  /**
+   * Gathers metadata (primarily connectivity status) about the globally selected
+   * network as well as each enabled network and persists it to state.
+   */
+  async lookupSelectedNetworks() {
     const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
       this._getMetaMaskState(),
     );
 
-    await Promise.allSettled(
-      enabledNetworkClientIds.map(async (networkClientId) => {
+    await Promise.allSettled([
+      this.networkController.lookupNetwork(),
+      ...enabledNetworkClientIds.map(async (networkClientId) => {
         return await this.networkController.lookupNetwork(networkClientId);
       }),
-    );
+    ]);
 
     console.log(
       '[MetamaskController] Looked up networks, now networksMetadata:',
@@ -4287,7 +4292,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
-      lookupEnabledNetworks: this.lookupEnabledNetworks.bind(this),
+      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
     };
   }
 
@@ -7340,14 +7345,14 @@ export default class MetamaskController extends EventEmitter {
       },
       setEnabledNetworks: async (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
-        await this.lookupEnabledNetworks();
+        await this.lookupSelectedNetworks();
       },
       setEnabledNetworksMultichain: async (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworksMultichain(
           chainIds,
           namespace,
         );
-        await this.lookupEnabledNetworks();
+        await this.lookupSelectedNetworks();
       },
       getEnabledNetworks: (namespace) => {
         return (
@@ -8746,7 +8751,7 @@ export default class MetamaskController extends EventEmitter {
       throw err;
     }
 
-    await this.lookupEnabledNetworks();
+    await this.lookupSelectedNetworks();
   };
 
   setEnabledNetworksMultichain = async (chainIds, namespace) => {
@@ -8760,7 +8765,7 @@ export default class MetamaskController extends EventEmitter {
       throw err;
     }
 
-    await this.lookupEnabledNetworks();
+    await this.lookupSelectedNetworks();
   };
 
   updateHiddenAccountsList = (hiddenAccountList) => {

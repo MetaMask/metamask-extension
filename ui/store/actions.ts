@@ -6429,12 +6429,12 @@ export async function getNetworkConfigurationByNetworkClientId(
  */
 
 /**
- * Gathers metadata (primarily connectivity status) about each enabled network
- * and persists it to state.
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
  */
-export function lookupEnabledNetworks() {
+export function lookupSelectedNetworks() {
   return async () => {
-    await submitRequestToBackground('lookupEnabledNetworks');
+    await submitRequestToBackground('lookupSelectedNetworks');
   };
 }
 
