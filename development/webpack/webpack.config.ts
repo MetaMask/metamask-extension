@@ -7,7 +7,6 @@ import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
-  DefinePlugin,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
