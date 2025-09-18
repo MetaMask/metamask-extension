@@ -11,6 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import {
+  BATCH_DEFAULT_MODE,
   Caveat,
   DeleGatorEnvironment,
   ExecutionMode,
@@ -146,7 +147,9 @@ export class Delegation7702PublishHook {
       includeTransfer,
     );
 
-    const modes: ExecutionMode[] = [SINGLE_DEFAULT_MODE];
+    const modes: ExecutionMode[] = [
+      includeTransfer ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
+    ];
     const executions = this.#buildExecutions(
       transactionMeta,
       gasFeeToken,
