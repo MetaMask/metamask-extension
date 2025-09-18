@@ -50,7 +50,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Patch, applyPatches } from 'immer';
+import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -7185,6 +7185,57 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   await submitRequestToBackground<void>('endTrace', [
     { ...request, timestamp },
   ]);
+}
+
+/**
+ * Apply the state patches from the background.
+ * Intentionally not using immer as a temporary measure to avoid
+ * freezing the resulting state and requiring further fixes
+ * to remove direct state mutations.
+ *
+ * @param oldState - The current state.
+ * @param patches - The patches to apply.
+ * Only supports 'replace' operations with a single path element.
+ * @returns The new state.
+ */
+function applyPatches(
+  oldState: Record<string, unknown>,
+  patches: Patch[],
+): Record<string, unknown> {
+  const newState = { ...oldState };
+
+  for (const patch of patches) {
+    const { op, path, value } = patch;
+    let current: Record<string, Json> = newState;
+
+    if (path.length !== 1) {
+      for (const segment of path.slice(0, -1)) {
+        current = current[segment] as Record<string, Json>;
+      }
+    }
+
+    const key = path[path.length - 1];
+
+    if (op === 'replace') {
+      current[key] = value;
+    } else if (op === 'add') {
+      if (Array.isArray(current) && key === '-') {
+        (current[key] as Json[]).push(value);
+      } else if (Array.isArray(current)) {
+        current.splice(Number(key), 0, value);
+      } else {
+        current[key] = value;
+      }
+    } else if (op === 'remove') {
+      if (Array.isArray(current)) {
+        current.splice(Number(key), 1);
+      } else {
+        delete current[key];
+      }
+    }
+  }
+
+  return newState;
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
