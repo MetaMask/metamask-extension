@@ -74,7 +74,7 @@ class ConnectAccountConfirmation {
     );
   }
 
-  async confirmConnectWithWaitForWindowToClose(): Promise<void> {
+  async confirmConnectWithoutWaitForWindowToClose(): Promise<void> {
     console.log('Confirm connection on Connect Account confirmation page');
     await this.driver.findElement(this.connectAccountConfirmationButton);
   }

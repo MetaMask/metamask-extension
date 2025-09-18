@@ -7,7 +7,7 @@ class ReviewPermissionsConfirmation {
     '[data-testid="page-container-footer-cancel"]';
 
   private readonly confirmReviewPermissionsButton =
-    '[data-testid="page-container-footer-next"]';
+    '[data-testid="confirm-btn"]';
 
   private readonly connectMoreChainsButton =
     '[data-testid="connect-more-chains-button"]';
@@ -50,6 +50,14 @@ class ReviewPermissionsConfirmation {
     console.log('Click confirm review permissions button');
     await this.driver.clickElement(this.confirmReviewPermissionsButton);
   }
+
+  // async clickConfirmReviewPermissionsButtonWithWaitForWindowToClose(): Promise<void> {
+  //   console.log('Click confirm review permissions button');
+  //   await this.driver.findClickableElement(this.confirmReviewPermissionsButton);
+  //   await this.driver.clickElementAndWaitForWindowToClose(
+  //     this.confirmReviewPermissionsButton,
+  //   );
+  // }
 
   async confirmReviewPermissions(): Promise<void> {
     console.log('Confirm review permissions');
