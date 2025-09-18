@@ -350,11 +350,11 @@ export default function OnboardingWelcome() {
         if (loginOption === LOGIN_OPTION.NEW) {
           await onSocialLoginCreateClick(loginType);
           // if firefox, set isSocialLoginFlowEnabledForMetrics to false, otherwise set to true
+          // sent queued events
+          dispatch(setIsSocialLoginFlowEnabledForMetrics(!isFireFox));
         } else if (loginOption === LOGIN_OPTION.EXISTING) {
           await onSocialLoginImportClick(loginType);
         }
-        // sent queued events
-        dispatch(setIsSocialLoginFlowEnabledForMetrics(!isFireFox));
       } catch (error) {
         handleLoginError(error);
       }

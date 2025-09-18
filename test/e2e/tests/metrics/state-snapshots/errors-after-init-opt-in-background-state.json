@@ -150,7 +150,7 @@
     "traits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
-    "isSocialLoginFlowEnabledForMetrics": "boolean"
+    "isSocialLoginFlowEnabledForMetrics": false
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
