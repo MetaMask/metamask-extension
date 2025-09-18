@@ -3,7 +3,7 @@ import {
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
 } from '@metamask/chain-agnostic-permission';
-import { CaipAccountId, toCaipAccountId } from '@metamask/utils';
+import { toCaipAccountId } from '@metamask/utils';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import {
   getAllPermittedAccountsForCurrentTab,
@@ -16,13 +16,11 @@ import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { selectShowConnectAccountGroupToast } from './selectors';
 
-// Mock external dependencies
 jest.mock('@metamask/chain-agnostic-permission', () => ({
   getAllScopesFromCaip25CaveatValue: jest.fn(),
   isInternalAccountInPermittedAccountIds: jest.fn(),
 }));
 
-// Mock internal selectors
 jest.mock('../../../ducks/metamask/metamask', () => ({
   getAlertEnabledness: jest.fn(),
 }));
@@ -33,17 +31,14 @@ jest.mock('../../../selectors', () => ({
   getPermissions: jest.fn(),
 }));
 
-// Mock utils
 jest.mock('../../../pages/permissions-connect/connect-page/utils', () => ({
   getCaip25CaveatValueFromPermissions: jest.fn(),
 }));
 
-// Mock hooks
 jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   supportsChainIds: jest.fn(),
 }));
 
-// Get mocked functions
 const mockGetAlertEnabledness = getAlertEnabledness as jest.MockedFunction<
   typeof getAlertEnabledness
 >;
