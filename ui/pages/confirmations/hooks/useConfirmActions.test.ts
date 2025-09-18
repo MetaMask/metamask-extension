@@ -42,7 +42,7 @@ describe('useConfirmActions', () => {
       .spyOn(ConfirmSendNavigation, 'useConfirmSendNavigation')
       .mockReturnValue({ navigateBackIfSend: mockNavigateBackIfSend });
     const result = renderHook();
-    result.onCancel();
+    result.onCancel({ location: 'dummy' });
     expect(mockNavigateBackIfSend).toHaveBeenCalled();
   });
 });
