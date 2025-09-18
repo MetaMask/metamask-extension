@@ -29,6 +29,9 @@ describe('Test Snap bip-32', function () {
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         testSpecificMock: mockBip32Snap,
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: [
+          'UnexpectedAlertOpenError: unexpected alert open: {Alert text : Entropy source with ID "invalid" not found.}',
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         // We explicitly choose to await balances to prevent flakiness due to long login times.
