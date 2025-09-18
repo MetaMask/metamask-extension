@@ -1,6 +1,9 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BtcScope } from '@metamask/keyring-api';
 import {
@@ -20,6 +23,7 @@ import {
   MOCK_ACCOUNTS,
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_BIP122_P2WPKH,
+  MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
 import {
   CHAIN_IDS,
@@ -103,13 +107,12 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
             unit: 'BTC',
           },
         },
-        // TODO: Uncomment this when we want to support Bitcoin Testnet
-        // [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: {
-        //   [MultichainNativeAssets.BITCOIN_TESTNET]: {
-        //     amount: '2.00000000',
-        //     unit: 'BTC',
-        //   },
-        // },
+        [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: {
+          [MultichainNativeAssets.BITCOIN_TESTNET]: {
+            amount: '2.00000000',
+            unit: 'BTC',
+          },
+        },
       },
       fiatCurrency: 'usd',
       cryptocurrencies: [Cryptocurrency.Btc],
@@ -124,8 +127,9 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       assetsMetadata: {},
       accountsAssets: {},
       isEvmSelected: false,
-      multichainNetworkConfigurationsByChainId:
-        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      multichainNetworkConfigurationsByChainId: {
+        ...AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      },
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       networksWithTransactionActivity: {},
     },
@@ -395,8 +399,7 @@ describe('Multichain Selectors', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
-      // TODO: Uncomment this when we want to support Bitcoin Testnet
-      // { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+      { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
     ])(
       'returns $isMainnet if non-EVM account address "$account.address" is compatible with mainnet',
       ({
@@ -432,8 +435,7 @@ describe('Multichain Selectors', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
-      // TODO: Uncomment this when we want to support Bitcoin Testnet
-      // { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+      { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
     ])(
       'returns $isTestnet if non-EVM account address "$account.address" is compatible with mainnet',
       ({
@@ -467,13 +469,12 @@ describe('Multichain Selectors', () => {
         asset: MultichainNativeAssets.BITCOIN,
         chainId: BtcScope.Mainnet,
       },
-      // TODO: Uncomment this when we want to support Bitcoin Testnet
-      // {
-      //   network: 'testnet',
-      //   account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
-      //   asset: MultichainNativeAssets.BITCOIN_TESTNET,
-      //   chainId: BtcScope.Testnet,
-      // },
+      {
+        network: 'testnet',
+        account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+        asset: MultichainNativeAssets.BITCOIN_TESTNET,
+        chainId: BtcScope.Testnet,
+      },
     ] as const)(
       'returns cached balance if account is non-EVM: $network',
       ({

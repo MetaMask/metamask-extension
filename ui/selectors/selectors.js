@@ -3061,6 +3061,17 @@ export function getIsSolanaTestnetSupportEnabled(state) {
   return Boolean(solanaTestnetsEnabled);
 }
 
+/**
+ * Get the state of the `bitcoinTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinTestnetsEnabled` remote feature flag.
+ */
+export function getIsBitcoinTestnetSupportEnabled(state) {
+  const { bitcoinTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(bitcoinTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }

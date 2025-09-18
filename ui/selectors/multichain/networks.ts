@@ -22,6 +22,7 @@ import {
   getIsSolanaSupportEnabled,
   getEnabledNetworks,
   getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
@@ -104,10 +105,12 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       state.metamask.multichainNetworkConfigurationsByChainId,
     getIsNonEvmNetworksEnabled,
     getIsSolanaTestnetSupportEnabled,
+    getIsBitcoinTestnetSupportEnabled,
     (
       multichainNetworkConfigurationsByChainId,
       isNonEvmNetworksEnabled,
       isSolanaTestnetSupportEnabled,
+      isBitcoinTestnetSupportEnabled,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
@@ -120,11 +123,13 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           multichainNetworkConfigurationsByChainId[BtcScope.Mainnet];
-        // TODO: Uncomment this when we want to support Bitcoin Testnet
-        // filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
-        //   multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
-        // filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
-        //   multichainNetworkConfigurationsByChainId[BtcScope.Signet];
+      }
+
+      if (bitcoinEnabled && isBitcoinTestnetSupportEnabled) {
+        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
+          multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
+        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
+          multichainNetworkConfigurationsByChainId[BtcScope.Signet];
       }
 
       if (solanaEnabled) {

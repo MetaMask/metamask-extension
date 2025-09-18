@@ -35,6 +35,9 @@ jest.mock('../selectors', () => ({
   getIsSolanaTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.solanaTestnetsEnabled,
   ),
+  getIsBitcoinTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.bitcoinTestnetsEnabled,
+  ),
   getEnabledNetworks: jest.fn(() => ({ eip155: {} })),
 }));
 
@@ -126,6 +129,7 @@ const mockState: TestState = {
     remoteFeatureFlags: {
       addSolanaAccount: true,
       solanaTestnetsEnabled: true,
+      bitcoinTestnetsEnabled: false,
       addBitcoinAccount: true,
     },
     multichainNetworkConfigurationsByChainId: {
