@@ -1,9 +1,6 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  NetworkConfiguration,
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BtcScope } from '@metamask/keyring-api';
 import {
