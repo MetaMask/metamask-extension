@@ -6344,7 +6344,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const permittedAccounts = this.getPermittedAccounts(origin);
-    console.log({ permittedAccounts });
 
     // Only show consent if Hyperliquid has permitted accounts
     if (permittedAccounts.length === 0) {
@@ -6356,7 +6355,6 @@ export default class MetamaskController extends EventEmitter {
     // Check if there's already a pending approval request to prevent duplicates
     // TODO: could be a problem if other approvals are shown on this url?
     if (this.approvalController.has({ origin })) {
-      console.log('hasApprovalRequestsForOrigin true');
       return;
     }
 
@@ -6365,12 +6363,6 @@ export default class MetamaskController extends EventEmitter {
       passedAccounts = [],
       declinedAccounts = [],
     } = this.preferencesController.state.referrals.hyperliquid;
-
-    console.log({
-      approvedAccounts,
-      passedAccounts,
-      declinedAccounts,
-    });
 
     const hasApproved = approvedAccounts.includes(permittedAccount);
     const hasBeenRedirected = passedAccounts.includes(permittedAccount);
@@ -6398,7 +6390,6 @@ export default class MetamaskController extends EventEmitter {
             requestData: { selectedAddress: permittedAccount },
           });
 
-        // If user approves the request
         if (approvalResponse?.approved) {
           this._handleHyperliquidApprovedAccount(
             permittedAccount,
