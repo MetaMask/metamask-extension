@@ -74,10 +74,7 @@ import {
   NONEVM_BALANCE_CHECK_ROUTE,
   SHIELD_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getProviderConfig,
-  isNetworkLoading as getIsNetworkLoading,
-} from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
