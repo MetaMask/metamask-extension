@@ -8,14 +8,21 @@ class OnboardingCompletePage {
     tag: 'h2',
   };
 
-  private readonly onboardingCompleteDoneButton =
-    '[data-testid="onboarding-complete-done"]';
+  private readonly onboardingCompleteDoneButton = {
+    testId: 'onboarding-complete-done',
+    text: 'Done',
+  };
 
-  private readonly downloadAppContinueButton =
-    '[data-testid="download-app-continue"]';
+  private readonly downloadAppContinueButton = {
+    testId: 'download-app-continue',
+    text: 'Continue',
+  };
 
   private readonly pinExtensionDoneButton =
-    '[data-testid="pin-extension-done"]';
+    {
+      testId: 'pin-extension-done',
+      text: 'Done',
+    }
 
   private readonly pinExtensionMessage = {
     text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
