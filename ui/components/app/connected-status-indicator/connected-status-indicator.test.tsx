@@ -87,6 +87,7 @@ describe('ConnectedStatusIndicator', () => {
       },
       permissionHistory: {
         'https://test.dapp': {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {},
           },
@@ -183,6 +184,7 @@ describe('ConnectedStatusIndicator', () => {
       const mockState = createMockState({
         permissionHistory: {
           'https://test.dapp': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_accounts: {
               accounts: {
                 [mockAccount1.address]: 1234567890,
@@ -244,6 +246,7 @@ describe('ConnectedStatusIndicator', () => {
         },
         permissionHistory: {
           'https://test.dapp': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_accounts: {
               accounts: {
                 '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd': 1234567890,
@@ -277,6 +280,7 @@ describe('ConnectedStatusIndicator', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               wallet_snap: {
                 caveats: [],
                 date: 1234567890,
@@ -406,6 +410,7 @@ describe('ConnectedStatusIndicator', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               wallet_snap: {
                 caveats: [],
                 date: 1234567890,
@@ -444,6 +449,7 @@ describe('ConnectedStatusIndicator', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               wallet_snap: {
                 caveats: [],
                 date: 1234567890,
@@ -456,6 +462,7 @@ describe('ConnectedStatusIndicator', () => {
         },
         permissionHistory: {
           'https://test.dapp': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_accounts: {
               accounts: {
                 [mockAccount1.address]: 1234567890,
