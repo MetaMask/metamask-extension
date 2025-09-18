@@ -1,16 +1,19 @@
-const {
-  default: NetworkManager,
-} = require('../../page-objects/pages/network-manager');
-
-const FixtureBuilder = require('../../fixture-builder');
-const {
+import FixtureBuilder from '../../fixture-builder';
+import {
   DAPP_ONE_URL,
   DAPP_URL,
-  openDapp,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
-} = require('../../helpers');
+} from '../../helpers';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
+import NetworkManager from '../../page-objects/pages/network-manager';
+import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
@@ -43,40 +46,39 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
             },
           },
         ],
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open Dapp One
-        await openDapp(driver, undefined, DAPP_URL);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         // Connect to dapp
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const permissionsTab = await driver.findElement(
-          '[data-testid="permissions-tab"]',
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
         );
-        await permissionsTab.click();
-
-        const editButtons = await driver.findElements('[data-testid="edit"]');
-
-        await editButtons[1].click();
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.goToPermissionsTab();
+        await connectAccountConfirmation.openEditNetworksModal();
 
         // Disconnect Localhost 8545
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'p',
+        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
+          driver,
+        );
+        await networkPermissionSelectModal.checkPageIsLoaded();
+        await networkPermissionSelectModal.selectNetwork({
+          networkName: 'Localhost 8545',
+          shouldBeSelected: false,
         });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await networkPermissionSelectModal.clickConfirmEditButton();
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -85,23 +87,16 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Network Selector
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await networkManager.selectNetworkByName('Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        const testDappTwo = new TestDapp(driver);
+        await testDappTwo.openTestDappPage({ url: DAPP_ONE_URL });
+        await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await testDappTwo.connectAccount({});
 
         await driver.switchToWindowWithUrl(DAPP_URL);
 
@@ -118,18 +113,22 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          text: 'Use your enabled networks',
-          tag: 'p',
-        });
+
+        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+          driver,
+        );
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
+        await reviewPermissionsConfirmation.checkUseEnabledNetworksMessageIsDisplayed();
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
-        await driver.clickElement('#sendButton');
+        await testDapp.checkPageIsLoaded();
+        await testDappTwo.clickSimpleSendButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
+        await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButton();
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -141,18 +140,10 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        await driver.findElement({
-          css: 'p',
-          text: 'Localhost 8546',
-        });
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        // Wait for the first dapp's connect confirmation to disappear
-        await driver.waitUntilXWindowHandles(3);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 8546');
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
       },
     );
   });
@@ -187,39 +178,41 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
             },
           },
         ],
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Open Dapp One
-        await openDapp(driver, undefined, DAPP_URL);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
 
         // Connect to dapp
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const permissionsTab = await driver.findElement(
-          '[data-testid="permissions-tab"]',
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
         );
-        await permissionsTab.click();
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.goToPermissionsTab();
+        await connectAccountConfirmation.openEditNetworksModal();
 
-        const editButtons = await driver.findElements('[data-testid="edit"]');
-
-        await editButtons[1].click();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Disconnect Localhost 8545
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'p',
+        const networkPermissionSelectModal = new NetworkPermissionSelectModal(
+          driver,
+        );
+        await networkPermissionSelectModal.checkPageIsLoaded();
+        await networkPermissionSelectModal.selectNetwork({
+          networkName: 'Localhost 8545',
+          shouldBeSelected: false,
         });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await networkPermissionSelectModal.clickConfirmEditButton();
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -228,25 +221,19 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Network Selector
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
-        await networkManager.selectTab('Custom');
-        await driver.clickElement('[data-testid="Localhost 8546"]');
+        await networkManager.selectNetworkByName('Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        const testDappTwo = new TestDapp(driver);
+        await testDappTwo.openTestDappPage({ url: DAPP_ONE_URL });
+        await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await testDappTwo.connectAccount({});
 
         await driver.switchToWindowWithUrl(DAPP_URL);
+        await testDapp.checkPageIsLoaded();
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -261,12 +248,15 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         );
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-
-        await driver.clickElement('#sendButton');
+        await testDappTwo.checkPageIsLoaded();
+        await testDappTwo.clickSimpleSendButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElement({ text: 'Cancel', tag: 'button' });
+        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+          driver,
+        );
+        await reviewPermissionsConfirmation.checkPageIsLoaded();
+        await reviewPermissionsConfirmation.clickCancelReviewPermissionsButton();
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         // Wait for switch confirmation to close then tx confirmation to show.
@@ -277,32 +267,24 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        await driver.findElement({
-          css: 'p',
-          text: 'Localhost 8546',
-        });
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 8546');
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         // Switch back to the extension
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
 
         // Check for transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        await new ActivityListPage(
+          driver,
+        ).checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });

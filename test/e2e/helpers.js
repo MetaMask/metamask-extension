@@ -544,14 +544,6 @@ const openPopupWithActiveTabOrigin = async (driver, origin = DAPP_URL) => {
   await driver.driver.manage().window().setRect({ width: 400, height: 600 });
 };
 
-const openDappConnectionsPage = async (driver) => {
-  await driver.openNewPage(
-    `${driver.extensionUrl}/home.html#connections/${encodeURIComponent(
-      DAPP_URL,
-    )}`,
-  );
-};
-
 const createDappTransaction = async (driver, transaction) => {
   await openDapp(
     driver,
@@ -574,27 +566,6 @@ const switchToOrOpenDapp = async (
   if (!handle) {
     await openDapp(driver, contract, dappURL);
   }
-};
-
-/**
- *
- * @param {import('./webdriver/driver').Driver} driver
- */
-const connectToDapp = async (driver) => {
-  await openDapp(driver);
-  // Connect to dapp
-  await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
-  });
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.clickElementAndWaitForWindowToClose({
-    text: 'Connect',
-    tag: 'button',
-  });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 };
 
 const PRIVATE_KEY =
@@ -642,25 +613,6 @@ const clickNestedButton = async (driver, tabName) => {
       xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
     });
   }
-};
-
-const sendScreenToConfirmScreen = async (
-  driver,
-  recipientAddress,
-  quantity,
-) => {
-  await openActionMenuAndStartSendFlow(driver);
-  await driver.waitForSelector('[data-testid="ens-input"]');
-  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
-
-  // check if element exists and click it
-  await driver.clickElementSafe({
-    text: 'I understand',
-    tag: 'button',
-  });
-
-  await driver.clickElement({ text: 'Continue', tag: 'button' });
 };
 
 const sendTransaction = async (
@@ -802,40 +754,6 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
-  const initialBalance = roundToXDecimalPlaces(
-    generateRandNumBetween(minETHBal, maxETHBal),
-    decimalPlaces,
-  );
-
-  const initialBalanceInHex = convertETHToHexGwei(initialBalance);
-
-  return { initialBalance, initialBalanceInHex };
-}
-
-/**
- * This method handles clicking the sign button on signature confirmation
- * screen.
- *
- * @param {object} options - Options for the function.
- * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
- */
-async function clickSignOnRedesignedSignatureConfirmation({
-  driver,
-  snapSigInsights = false,
-}) {
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-
-  if (snapSigInsights) {
-    // there is no condition we can wait for to know the snap is ready,
-    // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(largeDelayMs);
-  }
-
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
-}
-
 /**
  * @deprecated since the background socket was added, and special handling is no longer necessary
  * Just call `await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)` instead.
@@ -961,16 +879,6 @@ async function initBundler(
   }
 }
 
-/**
- * Opens the account options menu safely
- *
- * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
- * @returns {Promise<void>} A promise that resolves when the menu is opened and any necessary waits are complete.
- */
-async function openMenuSafe(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-}
-
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 module.exports = {
@@ -994,13 +902,10 @@ module.exports = {
   createDownloadFolder,
   openDapp,
   openPopupWithActiveTabOrigin,
-  openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
-  connectToDapp,
   multipleGanacheOptions,
   sendTransaction,
-  sendScreenToConfirmScreen,
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
@@ -1009,16 +914,13 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  clickSignOnRedesignedSignatureConfirmation,
   switchToNotificationWindow,
   getEventPayloads,
   assertInAnyOrder,
-  genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,
 };
