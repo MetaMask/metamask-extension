@@ -30,6 +30,7 @@ env:
   # For a `pull_request` event, the branch is `github.head_ref``.
   # For a `push` event, the branch is `github.ref_name`.
   BRANCH: ${{ github.head_ref || github.ref_name }}
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
   # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
   # For a `push` event, the fork is `github.event.repository.fork`.
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
@@ -48,7 +49,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
@@ -77,7 +78,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -217,7 +218,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -305,7 +306,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -343,7 +344,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4

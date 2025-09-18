@@ -15,8 +15,8 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
@@ -1123,8 +1123,30 @@ export function setupController(
     }
 
     if (isMetaMaskInternalProcess) {
+      /**
+       * @type {ExtensionPortStream}
+       */
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort);
+
+      /**
+       * send event to sentry with details about the event
+       * @param {import("extension-port-stream").MessageTooLargeEventData} details
+       */
+      function handleMessageTooLarge({ chunkSize }) {
+        /**
+         * @type {MetamaskController}
+         */
+        const theController = controller;
+        theController.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PortStreamChunked,
+          category: MetaMetricsEventCategory.PortStream,
+          properties: { chunkSize },
+        });
+      }
+      portStream.on('message-too-large', handleMessageTooLarge);
+
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -1176,7 +1198,8 @@ export function setupController(
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
       const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1205,14 +1228,16 @@ export function setupController(
         )
       ) {
         const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+          overrides?.getPortStream?.(remotePort) ||
+          new ExtensionPortStream(remotePort, { chunkSize: 0 });
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
@@ -1232,7 +1257,8 @@ export function setupController(
 
   connectExternallyConnectable = (remotePort) => {
     const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      overrides?.getPortStream?.(remotePort) ||
+      new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
     // if the sender.id value is present it means the caller is an extension rather
     // than a site. When the caller is an extension we want to fallback to connecting
