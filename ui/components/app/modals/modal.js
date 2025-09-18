@@ -18,7 +18,7 @@ import {
 } from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
-import MultichainAccountIntroModalContainer from './multichain-account-intro-modal';
+import MultichainAccountIntroModalContainer from './multichain-accounts/intro-modal';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';

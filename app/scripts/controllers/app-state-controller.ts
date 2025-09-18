@@ -519,6 +519,7 @@ const controllerMetadata = {
   hasShownMultichainIntroModal: {
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
 };
 
