@@ -346,6 +346,7 @@ export default function CreatePassword({
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
       height={BlockSize.Full}
+      width={BlockSize.Full}
       gap={4}
       as="form"
       className="create-password"
@@ -373,17 +374,6 @@ export default function CreatePassword({
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isSocialLoginFlow && (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('stepOf', [
-                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-              ])}
-            </Text>
-          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
@@ -415,17 +405,11 @@ export default function CreatePassword({
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
         <Box
           className="create-password__terms-container"
-          alignItems={
-            isSocialLoginFlow ? AlignItems.center : AlignItems.flexStart
-          }
+          alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
           marginTop={6}
-          backgroundColor={
-            isSocialLoginFlow
-              ? BackgroundColor.backgroundMuted
-              : BackgroundColor.backgroundDefault
-          }
-          padding={isSocialLoginFlow ? 3 : 0}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          padding={3}
           borderRadius={BorderRadius.LG}
         >
           <Checkbox
@@ -437,7 +421,8 @@ export default function CreatePassword({
             }}
             label={
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
-                {checkboxLabel} &nbsp;
+                {checkboxLabel}
+                <br />
                 {!isSocialLoginFlow && createPasswordLink}
               </Text>
             }
