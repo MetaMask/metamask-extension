@@ -97,9 +97,11 @@ class OnboardingCompletePage {
   async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
     if (!isSocialImportFlow) {
-      await this.driver.delay(5000);
       await this.clickCreateWalletDoneButton();
     }
+
+    // We need a hardcoded delay to avoid race conditions on the app side, where the Metametrics page appears (Issue #36070)
+    await this.driver.delay(5000);
 
     await this.displayDownloadAppPageAndContinue();
 
