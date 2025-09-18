@@ -67,6 +67,7 @@ import {
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { TRANSACTION_SHIELD_ROUTE } from '../../helpers/constants/routes';
+import { useAsyncCallback } from '../../hooks/useAsync';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -93,17 +94,15 @@ const ShieldPlan = () => {
     }
   }, [navigate, shieldSubscription]);
 
+  const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
+    RECURRING_INTERVALS.year,
+  );
+
   const {
     subscriptionPricing,
     loading: subscriptionPricingLoading,
     error: subscriptionPricingError,
   } = useSubscriptionPricing();
-
-  const [isLoadingCardPayment, setIsLoadingCardPayment] = useState(false);
-
-  const loading =
-    subscriptionsLoading || subscriptionPricingLoading || isLoadingCardPayment;
-  const error = subscriptionsError || subscriptionPricingError;
 
   const pricingPlans = useSubscriptionProductPlans(
     'shield' as ProductType,
@@ -114,9 +113,6 @@ const ShieldPlan = () => {
     subscriptionPricing,
   );
 
-  const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
-    RECURRING_INTERVALS.year,
-  );
   const selectedProductPrice = useMemo(() => {
     return pricingPlans?.find((plan) => plan.interval === selectedPlan);
   }, [pricingPlans, selectedPlan]);
@@ -137,6 +133,31 @@ const ShieldPlan = () => {
   >(() => {
     return availableTokenBalances[0];
   });
+
+  const [handleContinue, continueResult] = useAsyncCallback(async () => {
+    try {
+      if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
+        await dispatch(
+          startSubscriptionWithCard({
+            products: ['shield' as ProductType],
+            isTrialRequested: true,
+            recurringInterval: selectedPlan,
+          }),
+        );
+      } else {
+        log.error('Crypto payment method is not supported at the moment');
+      }
+    } catch (err) {
+      log.error('Error starting subscription', err);
+    }
+  }, []);
+
+  const loading =
+    subscriptionsLoading ||
+    subscriptionPricingLoading ||
+    continueResult.pending;
+  const error =
+    subscriptionsError || subscriptionPricingError || continueResult.error;
 
   const plans: Plan[] = useMemo(
     () =>
@@ -175,27 +196,6 @@ const ShieldPlan = () => {
 
   const handleBack = () => {
     navigate(-1);
-  };
-
-  const handleContinue = async () => {
-    try {
-      if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
-        setIsLoadingCardPayment(true);
-        await dispatch(
-          startSubscriptionWithCard({
-            products: ['shield' as ProductType],
-            isTrialRequested: true,
-            recurringInterval: selectedPlan,
-          }),
-        );
-      } else {
-        log.error('Crypto payment method is not supported at the moment');
-      }
-    } catch (err) {
-      log.error('Error starting subscription', err);
-    } finally {
-      setIsLoadingCardPayment(false);
-    }
   };
 
   const rowsStyleProps: BoxProps<'div'> = {
