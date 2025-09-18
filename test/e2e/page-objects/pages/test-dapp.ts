@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import { DAPP_URL } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -31,9 +30,6 @@ class TestDapp {
 
   private readonly confirmSignatureButtonRedesign =
     '[data-testid="confirm-footer-button"]';
-
-  private readonly footerNextButton =
-    '[data-testid="page-container-footer-next"]';
 
   private readonly connectAccountButton = '#connectButton';
 
@@ -241,16 +237,6 @@ class TestDapp {
     tag: 'h2',
   };
 
-  private readonly transferRequestMessage = {
-    text: 'Transfer request',
-    tag: 'h3',
-  };
-
-  private readonly networkTextElement = (networkText: string) => ({
-    css: 'p',
-    text: networkText,
-  });
-
   private transferTokensButton = '#transferTokens';
 
   private transferTokensWithoutGasButton = '#transferTokensWithoutGas';
@@ -278,23 +264,6 @@ class TestDapp {
     text: 'Connect',
     tag: 'button',
   };
-
-  private readonly dappNumberConnected = (dappNumber: string) =>
-    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
-
-  private readonly dappCancelButton = {
-    tag: 'button',
-    text: 'Cancel',
-  };
-
-  private readonly dappConfirmButton = { tag: 'button', text: 'Confirm' };
-
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
-
-  private readonly ethereumMainnetOption = '[data-testid="Ethereum Mainnet"]';
 
   /**
    * Sends a JSON-RPC request to the connected wallet using window.ethereum.
@@ -1170,92 +1139,6 @@ class TestDapp {
   async checkNetworkIsConnected(networkId: string) {
     console.log(`Check testdapp is connected to network ${networkId}`);
     await this.driver.waitForSelector(this.connectedNetwork(networkId));
-  }
-
-  /**
-   * Check the number of dapps connected
-   *
-   * @param numberOfDapps - The number of dapps connected
-   */
-  async checkNumberOfDappsConnected(numberOfDapps: string) {
-    await this.driver.waitForSelector(this.dappNumberConnected(numberOfDapps));
-  }
-
-  /**
-   * Click the cancel button
-   */
-  async clickCancelButton() {
-    await this.driver.clickElement(this.dappCancelButton);
-  }
-
-  /**
-   * Click the confirm button
-   */
-  async clickConfirmButton() {
-    await this.driver.clickElement(this.dappConfirmButton);
-  }
-
-  /**
-   * Click the footer next button in a MetaMask dialog and wait for window to close
-   */
-  async clickFooterNextButton(): Promise<void> {
-    console.log('Clicking footer next button and waiting for window to close');
-    await this.driver.findClickableElement(this.footerNextButton);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.footerNextButton,
-    );
-  }
-
-  /**
-   * Check if transfer request message is displayed
-   */
-  async checkTransferRequest(): Promise<void> {
-    console.log('Checking for transfer request message');
-    await this.driver.waitForSelector(this.transferRequestMessage);
-  }
-
-  /**
-   * Check if network text is displayed
-   *
-   * @param networkText - The expected network text to verify
-   */
-  async checkNetwork(networkText: string): Promise<void> {
-    console.log(`Checking for network text: ${networkText}`);
-    await this.driver.waitForSelector(this.networkTextElement(networkText));
-  }
-
-  /**
-   * Open the connection menu
-   */
-  async openConnectionMenu(): Promise<void> {
-    console.log('Opening connection menu');
-    await this.driver.clickElement(this.connectionMenu);
-  }
-
-  /**
-   * Click the connected site popover network button
-   */
-  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
-    console.log('Clicking connected site popover network button');
-    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
-  }
-
-  /**
-   * Select Ethereum Mainnet from the network options
-   */
-  async selectEthereumMainnet(): Promise<void> {
-    console.log('Selecting Ethereum Mainnet');
-    await this.driver.clickElement(this.ethereumMainnetOption);
-  }
-
-  /**
-   * Switch to Ethereum Mainnet using the connection menu
-   */
-  async switchToEthereumMainnet(): Promise<void> {
-    console.log('Switching to Ethereum Mainnet via connection menu');
-    await this.openConnectionMenu();
-    await this.clickConnectedSitePopoverNetworkButton();
-    await this.selectEthereumMainnet();
   }
 }
 

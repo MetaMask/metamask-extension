@@ -24,6 +24,12 @@ import { Anvil } from '../../seeder/anvil';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -45,6 +51,11 @@ async function openDappAndSwitchChain(
 ): Promise<void> {
   // Open the dapp
   const testDapp = new TestDapp(driver);
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+    driver,
+  );
+
   await testDapp.openTestDappPage({ url: dappUrl });
 
   // Connect to the dapp
@@ -52,7 +63,8 @@ async function openDappAndSwitchChain(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await testDapp.clickConnectAccountButtonAndWaitForWindowToClose();
+  await connectAccountConfirmation.checkPageIsLoaded();
+  await connectAccountConfirmation.confirmConnect();
 
   // Switch back to the dapp
   await driver.switchToWindowWithUrl(dappUrl);
@@ -93,7 +105,7 @@ async function openDappAndSwitchChain(
       await driver.delay(veryLargeDelayMs);
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-      await testDapp.clickFooterNextButton();
+      await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButton();
 
       // Switch back to the dapp
       await driver.switchToWindowWithUrl(dappUrl);
@@ -106,12 +118,13 @@ async function selectDappClickSend(
   dappUrl: string,
 ): Promise<void> {
   const testDapp = new TestDapp(driver);
+  const transactionConfirmation = new TransactionConfirmation(driver);
 
   await driver.switchToWindowWithUrl(dappUrl);
   await testDapp.clickSimpleSendButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await testDapp.checkTransferRequest();
+  await transactionConfirmation.checkDappInitiatedHeadingTitle();
 }
 
 async function selectDappClickPersonalSign(
@@ -131,18 +144,21 @@ async function switchToDialogPopoverValidateDetailsRedesign(
   // Switches to the MetaMask Dialog window for confirmation
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  const testDapp = new TestDapp(driver);
-  await testDapp.checkNetwork(expectedDetails.networkText);
+  const tokenTransferTransactionConfirmation =
+    new TokenTransferTransactionConfirmation(driver);
+  await tokenTransferTransactionConfirmation.checkNetwork(
+    expectedDetails.networkText,
+  );
 }
 
 async function rejectTransactionRedesign(driver: Driver): Promise<void> {
-  const testDapp = new TestDapp(driver);
-  await testDapp.clickCancelButton();
+  const confirmation = new Confirmation(driver);
+  await confirmation.clickFooterCancelButton();
 }
 
 async function confirmTransaction(driver: Driver): Promise<void> {
-  const testDapp = new TestDapp(driver);
-  await testDapp.clickConfirmButton();
+  const confirmation = new Confirmation(driver);
+  await confirmation.clickFooterConfirmButton();
 }
 
 async function openPopupWithActiveTabOrigin(
@@ -177,7 +193,6 @@ async function validateBalanceAndActivity(
 describe('Request-queue UI changes', function () {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
 
-  // Done
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -305,15 +320,15 @@ describe('Request-queue UI changes', function () {
         await selectDappClickSend(driver, DAPP_ONE_URL);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const testDapp = new TestDapp(driver);
-        await testDapp.checkNumberOfDappsConnected('1 of 2');
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkNumberOfDappsConnected('1 of 2');
 
         if (!IS_FIREFOX) {
           // Trigger a send confirmation on the third dapp, do not confirm or reject
           await selectDappClickSend(driver, DAPP_TWO_URL);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          await testDapp.checkNumberOfDappsConnected('1 of 3');
+          await transactionConfirmation.checkNumberOfDappsConnected('1 of 3');
         }
 
         // Switch to the Notification window, ensure first transaction still showing
@@ -335,7 +350,7 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await testDapp.clickCancelButton();
+        await rejectTransactionRedesign(driver);
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
@@ -478,13 +493,16 @@ describe('Request-queue UI changes', function () {
 
         // Ensure the dapp starts on the correct network
         const testDapp = new TestDapp(driver);
+        const headerNavbar = new HeaderNavbar(driver);
         await testDapp.checkNetworkIsConnected('0x539');
 
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
         // Switch to mainnet using per-dapp connected network flow
-        await testDapp.switchToEthereumMainnet();
+        await headerNavbar.openConnectionMenu();
+        await headerNavbar.clickConnectedSitePopoverNetworkButton();
+        await headerNavbar.selectNetwork('Ethereum Mainnet');
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
