@@ -107,6 +107,8 @@ class OnboardingCompletePage {
         await this.driver.clickElementAndWaitToDisappear(
           this.downloadAppContinueButton,
         );
+        await this.driver.waitForSelector(this.installCompleteMessage);
+        await this.driver.waitForSelector(this.pinExtensionMessage);
       } catch (_) {
         // If MetaMetrics is also not present, rethrow the original error
         throw e;
