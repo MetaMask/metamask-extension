@@ -271,7 +271,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockGetAllScopesFromCaip25CaveatValue.mockReturnValue(['eip155:1']);
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockImplementation(
-      (account, permittedAccounts) => {
+      (account, _) => {
         // Account 2 is connected (in the permitted accounts list)
         return account.id === mockAccount2.id;
       },
@@ -300,7 +300,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockGetAllScopesFromCaip25CaveatValue.mockReturnValue(['eip155:1']);
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockImplementation(
-      (account, permittedAccounts) => {
+      (account, _) => {
         // Account 1 is connected, Account 2 and Account 3 are not
         return account.id === mockAccount1.id;
       },
