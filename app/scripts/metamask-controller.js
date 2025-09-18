@@ -4856,6 +4856,31 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Counts the number of accounts discovered by provider.
+   *
+   * @param {Array} accounts - The discovered accounts to count by provider.
+   */
+  getDiscoveryCountByProvider(accounts) {
+    // count includes Bitcoin to maintain return type for the ImportSRP component
+    const counts = {
+      Bitcoin: 0,
+      Solana: 0,
+    };
+
+    const solanaAccountTypes = Object.values(SolAccountType);
+
+    for (const account of accounts) {
+      // Newly supported account types should be added here
+      // No BTC discovery/account creation until the provider is added to the MultichainAccountsService
+      if (solanaAccountTypes.includes(account.type)) {
+        counts.Solana += 1;
+      }
+    }
+
+    return counts;
+  }
+
+  /**
    * Discovers and creates accounts for the given keyring id.
    *
    * @param {string} id - The keyring id to discover and create accounts for.
@@ -4865,7 +4890,14 @@ export default class MetamaskController extends EventEmitter {
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
-        id || this.keyringController.state.keyrings[0].metadata.id;
+        id ||
+        this.keyringController.state.keyrings.find(
+          (keyring) => keyring.type === KeyringTypes.hd,
+        )?.metadata.id;
+
+      if (!keyringIdToDiscover) {
+        throw new Error('No keyring id to discover accounts for');
+      }
 
       // Ensure the snap keyring is initialized
       await this.getSnapKeyring();
@@ -4877,9 +4909,11 @@ export default class MetamaskController extends EventEmitter {
 
       const result = await wallet.discoverAccounts();
 
-      return { Bitcoin: 0, ...result };
+      const counts = this.getDiscoveryCountByProvider(result);
+
+      return counts;
     } catch (error) {
-      log.warn(`Failed to add accounts with balance. Error: ${error}`);
+      log.warn(`Failed to add accounts with balance. ${error}`);
       return {
         Bitcoin: 0,
         Solana: 0,
