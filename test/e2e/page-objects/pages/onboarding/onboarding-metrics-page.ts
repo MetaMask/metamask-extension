@@ -8,10 +8,8 @@ class OnboardingMetricsPage {
   private readonly dataCollectionForMarketingCheckbox =
     '[data-testid="metametrics-data-collection-checkbox"]';
 
-  private readonly dataCollectionForMarketingCheckedState = {
-    testId: 'metametrics-opt-in',
-    css: '.mm-checkbox__input--checked',
-  };
+  private readonly dataCollectionForMarketingCheckedState =
+    '.mm-checkbox__input--checked#metametrics-opt-in';
 
   private readonly metametricsMessage = {
     text: 'Help us improve MetaMask',
