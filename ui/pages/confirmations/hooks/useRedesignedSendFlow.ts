@@ -15,6 +15,6 @@ export const useRedesignedSendFlow = () => {
     {}) as SendRedesignFeatureFlag;
 
   return {
-    enabled: isSendRedesignEnabled,
+    enabled: isSendRedesignEnabled === true,
   };
 };
