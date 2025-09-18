@@ -36,6 +36,6 @@ export const useRedesignedSendFlow = () => {
   }
 
   return {
-    enabled: false,
+    enabled: true,
   };
 };
