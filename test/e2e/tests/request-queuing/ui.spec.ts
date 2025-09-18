@@ -15,6 +15,7 @@ import {
   WINDOW_TITLES,
   veryLargeDelayMs,
   DAPP_TWO_URL,
+  openDapp,
 } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
@@ -56,15 +57,15 @@ async function openDappAndSwitchChain(
     driver,
   );
 
-  await testDapp.openTestDappPage({ url: dappUrl });
+  // Open the dapp
+  await openDapp(driver, undefined, dappUrl);
 
   // Connect to the dapp
   await testDapp.clickConnectAccountButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await connectAccountConfirmation.confirmConnectWithoutWaitForWindowToClose();
-  await driver.delay(2000);
+  await connectAccountConfirmation.confirmConnect();
 
   // Switch back to the dapp
   await driver.switchToWindowWithUrl(dappUrl);
@@ -193,7 +194,6 @@ async function validateBalanceAndActivity(
 describe('Request-queue UI changes', function () {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
 
-  // Failed
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -260,7 +260,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Failed
   it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
@@ -515,7 +514,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Failed
   it('should gracefully handle network connectivity failure for signatures', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -595,7 +593,6 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  // Failed
   it('should gracefully handle network connectivity failure for confirmations', async function () {
     const port = 8546;
     const chainId = 1338;

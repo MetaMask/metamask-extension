@@ -7,7 +7,7 @@ class ReviewPermissionsConfirmation {
     '[data-testid="page-container-footer-cancel"]';
 
   private readonly confirmReviewPermissionsButton =
-    '[data-testid="confirm-btn"]';
+    '[data-testid="page-container-footer-next"]';
 
   private readonly connectMoreChainsButton =
     '[data-testid="connect-more-chains-button"]';
