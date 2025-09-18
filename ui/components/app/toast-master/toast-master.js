@@ -216,7 +216,7 @@ function ConnectAccountGroupToast() {
       .map((account) => account.address);
   }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
 
-  // This shouldn't happen because there is always an account group.
+  // Early return if selectedAccountGroupInternalAccounts is undefined
   if (!selectedAccountGroupInternalAccounts) {
     return null;
   }
@@ -228,12 +228,12 @@ function ConnectAccountGroupToast() {
         key="connect-account-toast"
         startAdornment={
           <PreferredAvatar
-            address={selectedAccountGroupInternalAccounts?.id}
+            address={selectedAccountGroupInternalAccounts.id}
             className="self-center"
           />
         }
         text={t('accountIsntConnectedToastText', [
-          selectedAccountGroupInternalAccounts?.metadata?.name,
+          selectedAccountGroupInternalAccounts.metadata?.name,
           getURLHost(activeTabOrigin),
         ])}
         actionText={t('connectAccount')}
