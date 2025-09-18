@@ -118,5 +118,3 @@ export class OnboardingPage {
     await ctx.tracing.stopChunk();
   }
 }
-
-

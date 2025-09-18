@@ -37,8 +37,7 @@ export class ChromeExtensionPage {
       }
     }
 
-    await page.waitForSelector('[data-testid="onboarding-import-wallet"]',
-    );
+    await page.waitForSelector('[data-testid="onboarding-import-wallet"]');
     return page;
   }
 }

@@ -3,7 +3,7 @@
 
 import { test } from '@playwright/test';
 import { ChromeExtensionPage } from '../../../shared/pageObjects/extension-page';
-import { OnboardingPage } from '../../../shared/pageObjects/onboarding-page';
+import { OnboardingPage } from '../../../shared/page-objects/onboarding-page';
 
 function getSrp(): string {
   const srp = process.env.SMOKE_TEST_SRP;
