@@ -33,10 +33,10 @@ const mockFormatPercentageChange = jest.mocked(formatPercentageChange);
 type MockVar = any;
 
 describe('useAccountGroupBalanceDisplay', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  let mockBalanceChange: BalanceChangeResult;
 
-    const mockBalanceChange: BalanceChangeResult = {
+  beforeEach(() => {
+    mockBalanceChange = {
       amountChangeInUserCurrency: 100.5,
       percentChange: 5.25,
       period: '1d',
@@ -81,6 +81,7 @@ describe('useAccountGroupBalanceDisplay', () => {
     expect(result.current).toEqual({
       privacyMode: false,
       color: TextColor.successDefault,
+      portfolioChange: mockBalanceChange,
       displayAmountChange: '+$100.50',
       displayPercentChange: '(+5.25%)',
     });

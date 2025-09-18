@@ -23,8 +23,8 @@ describe('Change assets', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const accountListPage = new AccountListPage(driver);

@@ -167,6 +167,9 @@ export const AggregatedMultichainPercentageOverview = ({
   const historicalAggregatedBalances = useSelector((state) =>
     getHistoricalMultichainAggregatedBalance(state, selectedAccount),
   );
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
   let color = TextColor.textAlternative;
 
