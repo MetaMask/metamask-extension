@@ -6334,6 +6334,7 @@ export default class MetamaskController extends EventEmitter {
   async handleHyperliquidReferral(req) {
     const { origin, tabId } = req;
     const HYPERLIQUID_ORIGIN = 'https://app.hyperliquid.xyz';
+
     const isHyperliquidReferralEnabled =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.extensionUxDefiReferral;
@@ -6353,6 +6354,7 @@ export default class MetamaskController extends EventEmitter {
     const permittedAccount = permittedAccounts[0];
 
     // Check if there's already a pending approval request to prevent duplicates
+    // TODO: could be a problem if other approvals are shown on this url?
     if (this.approvalController.has({ origin })) {
       console.log('hasApprovalRequestsForOrigin true');
       return;
@@ -6414,7 +6416,7 @@ export default class MetamaskController extends EventEmitter {
           );
         }
       } catch (error) {
-        console.log('Hyperliquid referral approval error:', error);
+        // We expect to get here if user switches account without approving
       }
     }
 
@@ -6490,10 +6492,7 @@ export default class MetamaskController extends EventEmitter {
       const newUrl = `${hyperliquidOrigin}/join/${METAMASK_REFERRAL_CODE}${search}`;
       await browser.tabs.update(tabId, { url: newUrl });
     } catch (error) {
-      console.error(
-        'Failed to update URL to Hyperliquid referral page: ',
-        error,
-      );
+      log.error('Failed to update URL to Hyperliquid referral page: ', error);
     }
   }
 
