@@ -860,18 +860,15 @@ const getIsGasIncludedSwapSupported = createSelector(
   [
     (state) => getFromChain(state)?.chainId,
     (state) => getToChain(state)?.chainId,
-    (state) => getBridgeFeatureFlags(state).chains,
+    (_, isSendBundleSupportedForChain: boolean) =>
+      isSendBundleSupportedForChain,
   ],
-  (fromChainId, toChainId, bridgeFeatureFlags) => {
-    if (!fromChainId || !bridgeFeatureFlags) {
+  (fromChainId, toChainId, isSendBundleSupportedForChain) => {
+    if (!fromChainId) {
       return false;
     }
     const isSwap = !isCrossChain(fromChainId, toChainId);
-    return (
-      isSwap &&
-      // @ts-expect-error TODO add this to bridge-controller type
-      bridgeFeatureFlags[formatChainIdToCaip(fromChainId)]?.isGaslessSwapEnabled
-    );
+    return isSwap && isSendBundleSupportedForChain;
   },
 );
 
@@ -884,16 +881,5 @@ export const getIsGasIncluded = createSelector(
   [getIsStxEnabled, getIsGasIncludedSwapSupported],
   (isStxEnabled, isGasIncludedSwapSupported) => {
     return isStxEnabled && isGasIncludedSwapSupported;
-  },
-);
-
-export const getShouldShowMaxButton = createSelector(
-  [getIsGasIncluded, getFromToken],
-  (isGasIncluded, fromToken) => {
-    if (!fromToken?.chainId) {
-      return false;
-    }
-
-    return isNativeAddress(fromToken.address) ? isGasIncluded : true;
   },
 );

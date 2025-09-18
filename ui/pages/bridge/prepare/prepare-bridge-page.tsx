@@ -55,7 +55,6 @@ import {
   getTxAlerts,
   getFromAccount,
   getIsStxEnabled,
-  getShouldShowMaxButton,
   getIsGasIncluded,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -117,6 +116,7 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
+import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -177,8 +177,10 @@ const PrepareBridgePage = ({
 
   // Use the appropriate value based on unified UI setting
   const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
-  const gasIncluded = useSelector(getIsGasIncluded);
-  const shouldShowMaxButton = useSelector(getShouldShowMaxButton);
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
+  const gasIncluded = useSelector((state) =>
+    getIsGasIncluded(state, isSendBundleSupportedForChain),
+  );
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -236,9 +238,15 @@ const PrepareBridgePage = ({
 
   const gasIncluded7702 = useGasIncluded7702({
     isSwap,
+    isSendBundleSupportedForChain,
     selectedAccount,
     fromChain,
   });
+
+  const shouldShowMaxButton =
+    fromToken && isNativeAddress(fromToken.address)
+      ? gasIncluded || gasIncluded7702
+      : true;
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -535,7 +543,7 @@ const PrepareBridgePage = ({
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            shouldShowMaxButton || gasIncluded7702
+            shouldShowMaxButton
               ? (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
