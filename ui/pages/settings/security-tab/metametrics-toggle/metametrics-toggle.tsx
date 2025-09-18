@@ -55,13 +55,31 @@ const MetametricsToggle = ({
     getIsSocialLoginFlowEnabledForMetrics,
   );
 
-  const handleUseParticipateInMetaMetrics = async () => {
+  const handleUseParticipateInMetaMetrics = async (toggleValue: boolean) => {
     if (isSocialLoginFlowEnabled) {
       dispatch(
         setIsSocialLoginFlowEnabledForMetrics(
           !isSocialLoginFlowEnabledForMetrics,
         ),
       );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: toggleValue
+          ? MetaMetricsEventName.TurnOnMetaMetrics
+          : MetaMetricsEventName.TurnOffMetaMetrics,
+      });
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: toggleValue,
+          location: 'Settings',
+        },
+      });
       return;
     }
 
@@ -130,7 +148,7 @@ const MetametricsToggle = ({
           <ToggleButton
             value={participateInMetaMetrics}
             disabled={!useExternalServices}
-            onToggle={handleUseParticipateInMetaMetrics}
+            onToggle={(value) => handleUseParticipateInMetaMetrics(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />
