@@ -7,6 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 
 import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
+import { DecodedPermission } from '@metamask/gator-permissions-controller';
 
 export type TypedSignDataV1Type = {
   name: string;
@@ -42,6 +43,7 @@ export type SignatureRequestType = {
   securityAlertResponse?: SecurityAlertResponse;
   decodingLoading?: boolean;
   decodingData?: DecodingData;
+  decodedPermission?: DecodedPermission;
 };
 
 export type Confirmation = SignatureRequestType | TransactionMeta;
