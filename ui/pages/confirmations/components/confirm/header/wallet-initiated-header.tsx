@@ -31,13 +31,14 @@ import { useConfirmContext } from '../../../context/confirm';
 import { navigateToSendRoute } from '../../../utils/send';
 import { useRedesignedSendFlow } from '../../../hooks/useRedesignedSendFlow';
 import { AdvancedDetailsButton } from './advanced-details-button';
+import { useConfirmActions } from '../../../hooks/useConfirmActions';
 
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
-
+  const { onCancel } = useConfirmActions();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const handleBackButtonClick = useCallback(async () => {
@@ -50,6 +51,14 @@ export const WalletInitiatedHeader = () => {
     const isNFTTokenSend =
       currentConfirmation.type === TransactionType.tokenMethodTransferFrom ||
       currentConfirmation.type === TransactionType.tokenMethodSafeTransferFrom;
+
+    if (
+      isSendRedesignEnabled &&
+      (isNativeSend || isERC20TokenSend || isNFTTokenSend)
+    ) {
+      onCancel();
+      return;
+    }
 
     let assetType: AssetType;
     if (isNativeSend) {
@@ -66,7 +75,7 @@ export const WalletInitiatedHeader = () => {
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
     navigateToSendRoute(history, isSendRedesignEnabled);
-  }, [currentConfirmation, dispatch, history, isSendRedesignEnabled]);
+  }, [currentConfirmation, dispatch, history, isSendRedesignEnabled, onCancel]);
 
   return (
     <Box
