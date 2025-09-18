@@ -150,7 +150,11 @@ export const useTokensWithFiltering = (
       }
       return undefined;
     }
-    // For Solana and EVM chains, check the cache
+    // For Solana chains, we don't cache in the same way, return undefined to trigger fetch
+    if (isSolanaChainId(chainId)) {
+      return undefined;
+    }
+    // For EVM chains, check the cache
     const hexChainId = formatChainIdToHex(chainId);
     return hexChainId ? cachedTokens[hexChainId]?.data : undefined;
   }, [chainId, cachedTokens]);
