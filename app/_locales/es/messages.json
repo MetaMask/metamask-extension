@@ -3741,9 +3741,6 @@
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
-  "noDeFiPositions": {
-    "message": "¿No encuentras lo que buscas?"
-  },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
   },
@@ -4635,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
-  },
-  "protocolNotSupported": {
-    "message": "Es posible que aún no admitamos tu protocolo."
   },
   "provide": {
     "message": "Proporcionar"

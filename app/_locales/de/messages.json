@@ -3741,9 +3741,6 @@
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
-  "noDeFiPositions": {
-    "message": "Sie finden nicht, wonach Sie suchen?"
-  },
   "noDomainResolution": {
     "message": "Keine Auflösung für die Domain angegeben."
   },
@@ -4635,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Vorgeschlagenes Genehmigungslimit"
-  },
-  "protocolNotSupported": {
-    "message": "Möglicherweise unterstützen wir Ihr Protokoll noch nicht."
   },
   "provide": {
     "message": "Bereitstellen"

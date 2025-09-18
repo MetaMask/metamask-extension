@@ -3962,9 +3962,6 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
-  "noDeFiPositions": {
-    "message": "Can't find what you're looking for?"
-  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
@@ -4872,9 +4869,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
-  },
-  "protocolNotSupported": {
-    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"
