@@ -207,44 +207,70 @@ export type MetaMaskState = {
  */
 const controllerMetadata = {
   metaMetricsId: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   participateInMetaMetrics: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   latestNonAnonymousEventTimestamp: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   fragments: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: true,
   },
   eventsBeforeMetricsOptIn: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: false,
   },
   tracesBeforeMetricsOptIn: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: false,
   },
   traits: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: false,
   },
   dataCollectionForMarketing: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: true,
   },
   marketingCampaignCookieId: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   segmentApiCalls: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: false,
+  },
+  isSocialLoginFlowEnabledForMetrics: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
   },
 };
 
@@ -280,6 +306,7 @@ export type MetaMetricsControllerState = {
       payload: SegmentEventPayload;
     }
   >;
+  isSocialLoginFlowEnabledForMetrics: boolean;
 };
 
 /**
@@ -401,6 +428,7 @@ export const getDefaultMetaMetricsControllerState =
     traits: {},
     fragments: {},
     segmentApiCalls: {},
+    isSocialLoginFlowEnabledForMetrics: false,
   });
 
 export default class MetaMetricsController extends BaseController<
@@ -603,6 +631,15 @@ export default class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
+  }
+
+  setIsSocialLoginFlowEnabledForMetrics(
+    isSocialLoginFlowEnabledForMetrics: boolean,
+  ): void {
+    this.update((state) => {
+      state.isSocialLoginFlowEnabledForMetrics =
+        isSocialLoginFlowEnabledForMetrics;
+    });
   }
 
   finalizeAbandonedFragments(): void {

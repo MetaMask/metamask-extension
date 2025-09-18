@@ -8,7 +8,7 @@ on:
       - synchronize
 
 jobs:
-  build:
+  fitness-functions:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
