@@ -53,7 +53,7 @@ class OnboardingMetricsPage {
   }
 
   async validateDataCollectionForMarketingIsChecked(): Promise<void> {
-    await this.driver.isElementPresent(
+    await this.driver.waitForSelector(
       this.dataCollectionForMarketingCheckedState,
     );
   }
