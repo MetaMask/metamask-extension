@@ -8,7 +8,7 @@ import {
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
-import { renderWithProvider } from '../../../test/jest/rendering';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';

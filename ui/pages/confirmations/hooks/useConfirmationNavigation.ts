@@ -34,7 +34,8 @@ export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const navigate = useNavigate();
-  const { search: queryString } = useLocation();
+  const location = useLocation();
+  const queryString = location?.search || '';
 
   const getIndex = useCallback(
     (confirmationId?: string) => {

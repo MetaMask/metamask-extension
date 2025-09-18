@@ -34,12 +34,11 @@ import {
 export function isConfirmTransactionRoute(pathname) {
   return Boolean(
     matchPath(
-      pathname,
       {
         path: CONFIRM_TRANSACTION_ROUTE,
         exact: false,
       },
-      location.pathname,
+      pathname,
     ),
   );
 }
