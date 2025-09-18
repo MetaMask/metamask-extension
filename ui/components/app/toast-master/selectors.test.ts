@@ -4,6 +4,11 @@ import {
   isInternalAccountInPermittedAccountIds,
 } from '@metamask/chain-agnostic-permission';
 import { toCaipAccountId } from '@metamask/utils';
+import {
+  AccountGroupType,
+  AccountWalletId,
+  AccountGroupId,
+} from '@metamask/account-api';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import {
   getAllPermittedAccountsForCurrentTab,
@@ -102,16 +107,21 @@ describe('#selectShowConnectAccountGroupToast', () => {
   const createMockAccountGroup = (
     groupId: string,
     accounts: InternalAccount[],
-  ): AccountGroupWithInternalAccounts =>
-    ({
-      id: groupId,
-      name: `MetaMask HD Wallet`,
-      type: 'hd' as any,
-      metadata: {},
-      walletName: 'MetaMask HD Wallet',
-      walletId: 'metamask-hd-wallet',
-      accounts,
-    }) as unknown as AccountGroupWithInternalAccounts;
+  ): AccountGroupWithInternalAccounts => ({
+    id: `entropy:01JKAF3DSGM3AB87EM9N0K41AJ/${groupId}` as AccountGroupId,
+    type: AccountGroupType.MultichainAccount,
+    metadata: {
+      name: 'MetaMask HD Wallet',
+      pinned: false,
+      hidden: false,
+      entropy: {
+        groupIndex: 0,
+      },
+    },
+    walletName: 'MetaMask HD Wallet',
+    walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ' as AccountWalletId,
+    accounts,
+  });
 
   const createMockCaip25CaveatValue = () => ({
     requiredScopes: {},
@@ -124,7 +134,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     appState: {},
     metamask: {},
     activeTab: { origin: 'https://example.com' },
-  };
+  } as const;
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -144,7 +154,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-1', [
+    const accountGroup = createMockAccountGroup('0', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -169,7 +179,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-2', [
+    const accountGroup = createMockAccountGroup('1', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -192,7 +202,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockGetAllScopesFromCaip25CaveatValue.mockReturnValue(['eip155:1']);
     mockSupportsChainIds.mockReturnValue(false);
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-3', [
+    const accountGroup = createMockAccountGroup('3', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -209,22 +219,24 @@ describe('#selectShowConnectAccountGroupToast', () => {
     ]);
     mockGetOriginOfCurrentTab.mockReturnValue(null);
     mockGetPermissions.mockReturnValue(null);
-    mockGetCaip25CaveatValueFromPermissions.mockReturnValue(null as any);
+    // @ts-expect-error - Testing null case
+    mockGetCaip25CaveatValueFromPermissions.mockReturnValue(null);
     mockGetAllScopesFromCaip25CaveatValue.mockReturnValue([]);
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-4', [
+    const accountGroup = createMockAccountGroup('4', [
       mockAccount2,
       mockAccount3,
     ]);
     const stateWithoutOrigin = {
       ...baseState,
-      activeTab: { origin: null as any },
+      activeTab: { origin: null },
     };
 
     const result = selectShowConnectAccountGroupToast(
-      stateWithoutOrigin as any,
+      // @ts-expect-error - Testing null origin case
+      stateWithoutOrigin,
       accountGroup,
     );
 
@@ -235,7 +247,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockGetAlertEnabledness.mockReturnValue({ unconnectedAccount: true });
     mockGetAllPermittedAccountsForCurrentTab.mockReturnValue([]);
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-5', [
+    const accountGroup = createMockAccountGroup('5', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -265,7 +277,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
       },
     );
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-6', [
+    const accountGroup = createMockAccountGroup('6', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -294,7 +306,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
       },
     );
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-7', [
+    const accountGroup = createMockAccountGroup('7', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -311,12 +323,13 @@ describe('#selectShowConnectAccountGroupToast', () => {
     ]);
     mockGetOriginOfCurrentTab.mockReturnValue('https://example.com');
     mockGetPermissions.mockReturnValue(null);
-    mockGetCaip25CaveatValueFromPermissions.mockReturnValue(null as any);
+    // @ts-expect-error - Testing null case
+    mockGetCaip25CaveatValueFromPermissions.mockReturnValue(null);
     mockGetAllScopesFromCaip25CaveatValue.mockReturnValue([]);
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-8', [
+    const accountGroup = createMockAccountGroup('8', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -344,7 +357,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
 
-    const accountGroup = createMockAccountGroup('hd-wallet-group-9', [
+    const accountGroup = createMockAccountGroup('9', [
       mockAccount2,
       mockAccount3,
     ]);
@@ -368,10 +381,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockSupportsChainIds.mockReturnValue(true);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
 
-    const emptyAccountGroup = createMockAccountGroup(
-      'hd-wallet-group-empty',
-      [],
-    );
+    const emptyAccountGroup = createMockAccountGroup('empty', []);
 
     const result = selectShowConnectAccountGroupToast(
       baseState,

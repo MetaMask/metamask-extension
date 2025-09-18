@@ -53,7 +53,6 @@ import {
   getAccountGroupWithInternalAccounts,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { useAccountGroupsForPermissions } from '../../../hooks/useAccountGroupsForPermissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import {
