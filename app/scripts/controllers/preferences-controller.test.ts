@@ -1212,4 +1212,170 @@ describe('preferences controller', () => {
       `);
     });
   });
+
+  describe('Hyperliquid referral methods', () => {
+    describe('addReferralApprovedAccount', () => {
+      const { controller } = setupController({});
+
+      it('adds an account to approved accounts list', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(testAccount);
+        expect(controller.state.referrals.hyperliquid.approvedAccounts).toStrictEqual([testAccount]);
+      });
+
+      it('should not add duplicate accounts', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(testAccount);
+        controller.addReferralApprovedAccount(testAccount);
+        expect(controller.state.referrals.hyperliquid.approvedAccounts).toStrictEqual([testAccount]);
+      });
+
+      it('should add multiple unique accounts', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+
+        controller.addReferralApprovedAccount(testAccount1);
+        controller.addReferralApprovedAccount(testAccount2);
+        expect(controller.state.referrals.hyperliquid.approvedAccounts).toStrictEqual([testAccount1, testAccount2]);
+      });
+    });
+
+    describe('addReferralPassedAccount', () => {
+      const { controller } = setupController({});
+
+      it('should add account to passed accounts list', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(testAccount);
+        expect(controller.state.referrals.hyperliquid.passedAccounts).toStrictEqual([testAccount]);
+      });
+
+      it('should not add duplicate accounts', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(testAccount);
+        controller.addReferralPassedAccount(testAccount);
+        expect(controller.state.referrals.hyperliquid.passedAccounts).toStrictEqual([testAccount]);
+      });
+    });
+
+    describe('addReferralDeclinedAccount', () => {
+      const { controller } = setupController({});
+
+      it('should add account to declined accounts list', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(controller.state.referrals.hyperliquid.declinedAccounts).toStrictEqual([testAccount]);
+      });
+
+      it('should not add duplicate accounts', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(testAccount);
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(controller.state.referrals.hyperliquid.declinedAccounts).toStrictEqual([testAccount]);
+      });
+    });
+
+    describe('removeReferralDeclinedAccount', () => {
+      it('should remove the specified account from the declined accounts list', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                approvedAccounts: [],
+                passedAccounts: [],
+                declinedAccounts: [testAccount1, testAccount2],
+              },
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(testAccount1);
+        expect(controller.state.referrals.hyperliquid.declinedAccounts).toStrictEqual([testAccount2]);
+      });
+
+      it('should handle removing non-existent account gracefully', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                approvedAccounts: [],
+                passedAccounts: [],
+                declinedAccounts: [testAccount1],
+              },
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(testAccount2);
+        expect(controller.state.referrals.hyperliquid.declinedAccounts).toStrictEqual([testAccount1]);
+      });
+    });
+
+    describe('setAllAccountsReferralApproved', () => {
+      it('should add new accounts to approved accounts list', () => {
+        const { controller } = setupController({});
+        const testAccounts = ['0x123', '0x456'];
+
+        controller.setAllAccountsReferralApproved(testAccounts);
+        expect(controller.state.referrals.hyperliquid.approvedAccounts).toStrictEqual(testAccounts);
+      });
+
+      it('should merge with existing approved accounts without duplicates', () => {
+        const duplicateExistingAccount = '0x123';
+        const newAccounts = [duplicateExistingAccount, '0x456', '0x789'];
+
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                approvedAccounts: [duplicateExistingAccount],
+                passedAccounts: [],
+                declinedAccounts: [],
+              },
+            },
+          },
+        });
+
+        controller.setAllAccountsReferralApproved(newAccounts);
+        expect(controller.state.referrals.hyperliquid.approvedAccounts).toStrictEqual(newAccounts);
+      });
+
+      it('should handle empty array input', () => {
+        const existingAccount = '0x123';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                approvedAccounts: [existingAccount],
+                passedAccounts: [],
+                declinedAccounts: [],
+              },
+            },
+          },
+        });
+
+        controller.setAllAccountsReferralApproved([]);
+        expect(controller.state.referrals.hyperliquid.approvedAccounts).toStrictEqual([existingAccount]);
+      });
+    });
+
+    describe('referral state defaults', () => {
+      it('should initialize with empty referral arrays', () => {
+        const { controller } = setupController({});
+
+        expect(controller.state.referrals.hyperliquid.approvedAccounts).toStrictEqual([]);
+        expect(controller.state.referrals.hyperliquid.passedAccounts).toStrictEqual([]);
+        expect(controller.state.referrals.hyperliquid.declinedAccounts).toStrictEqual([]);
+      });
+    });
+  });
 });
