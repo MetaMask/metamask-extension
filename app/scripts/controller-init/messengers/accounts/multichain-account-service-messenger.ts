@@ -18,6 +18,10 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
@@ -72,6 +76,14 @@ export function getMultichainAccountServiceMessenger(
   });
 }
 
+type AllowedInitializationActions = PreferencesControllerGetStateAction;
+
+type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+
+export type MultichainAccountServiceInitMessenger = ReturnType<
+  typeof getMultichainAccountServiceInitMessenger
+>;
+
 /**
  * Get a restricted messenger for the account wallet controller. This is scoped to the
  * actions and events that this controller is allowed to handle.
@@ -80,9 +92,14 @@ export function getMultichainAccountServiceMessenger(
  * @returns The restricted controller messenger.
  */
 export function getMultichainAccountServiceInitMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: Messenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
-  // Our `init` method needs the same actions, so just re-use the same messenger
-  // function here.
-  return getMultichainAccountServiceMessenger(messenger);
+  return messenger.getRestricted({
+    name: 'MultichainAccountServiceInit',
+    allowedActions: ['PreferencesController:getState'],
+    allowedEvents: ['PreferencesController:stateChange'],
+  });
 }

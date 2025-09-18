@@ -39,6 +39,7 @@ import {
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
+  getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
 } from './assets';
 import {
@@ -55,6 +56,7 @@ import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
+  getMultichainAccountServiceInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -128,6 +130,8 @@ import {
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
 import { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+import { getPreferencesControllerMessenger } from './preferences-controller-messenger';
+import { getAppStateControllerMessenger } from './app-state-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -137,6 +141,8 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
+export type { AppStateControllerMessenger } from './app-state-controller-messenger';
+export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type {
   BridgeControllerMessenger,
   BridgeControllerInitMessenger,
@@ -185,6 +191,8 @@ export {
 } from './name-controller-messenger';
 export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+export type { PreferencesControllerMessenger } from './preferences-controller-messenger';
+export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
@@ -240,6 +248,10 @@ export const CONTROLLER_MESSENGERS = {
   AccountTrackerController: {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
+  AppStateController: {
+    getMessenger: getAppStateControllerMessenger,
+    getInitMessenger: noop,
   },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
@@ -389,6 +401,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
   },
+  PreferencesController: {
+    getMessenger: getPreferencesControllerMessenger,
+    getInitMessenger: noop,
+  },
   TokenBalancesController: {
     getMessenger: getTokenBalancesControllerMessenger,
     getInitMessenger: getTokenBalancesControllerInitMessenger,
@@ -415,7 +431,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   TokenRatesController: {
     getMessenger: getTokenRatesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getTokenRatesControllerInitMessenger,
   },
   NftController: {
     getMessenger: getNftControllerMessenger,
@@ -443,7 +459,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   MultichainAccountService: {
     getMessenger: getMultichainAccountServiceMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAccountServiceInitMessenger,
   },
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,

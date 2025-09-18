@@ -170,6 +170,11 @@ export type ControllerInitRequest<
   }): void;
 
   /**
+   * Lock the extension.
+   */
+  setLocked(): void;
+
+  /**
    * Show a native notification.
    *
    * @param title - The title of the notification.
@@ -194,6 +199,11 @@ export type ControllerInitRequest<
   initMessenger: InitMessengerType;
 
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
+
+  /**
+   * The user's preferred language code, if any.
+   */
+  initLangCode: string | null;
 };
 
 /**
