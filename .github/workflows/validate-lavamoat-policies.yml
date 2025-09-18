@@ -1,0 +1,66 @@
+name: Validate LavaMoat policies
+
+on:
+  workflow_call:
+
+jobs:
+  validate-lavamoat-policy-build:
+    name: Validate LavaMoat build policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Validate LavaMoat build policy
+        run: yarn lavamoat:build:auto
+        env:
+          INFURA_PROJECT_ID: 00000000000
+          GOOGLE_PROD_CLIENT_ID: 00000000000
+          APPLE_PROD_CLIENT_ID: 00000000000
+          GOOGLE_BETA_CLIENT_ID: 00000000000
+          APPLE_BETA_CLIENT_ID: 00000000000
+          GOOGLE_FLASK_CLIENT_ID: 00000000000
+          APPLE_FLASK_CLIENT_ID: 00000000000
+
+      - name: Check working tree
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi
+
+  validate-lavamoat-policy-webapp:
+    name: Validate LavaMoat webapp policy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build-type: [main, beta, experimental, flask]
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Validate LavaMoat ${{ matrix.build-type }} policy
+        run: yarn lavamoat:webapp:auto:ci --build-types=${{ matrix.build-type }}
+        env:
+          INFURA_PROJECT_ID: 00000000000
+          GOOGLE_PROD_CLIENT_ID: 00000000000
+          APPLE_PROD_CLIENT_ID: 00000000000
+          GOOGLE_BETA_CLIENT_ID: 00000000000
+          APPLE_BETA_CLIENT_ID: 00000000000
+          GOOGLE_FLASK_CLIENT_ID: 00000000000
+          APPLE_FLASK_CLIENT_ID: 00000000000
+
+      - name: Check working tree
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi
