@@ -182,9 +182,7 @@ describe('NFT Details', () => {
         details: { ...nfts[5], tokenId: '1' },
       });
 
-      expect(mockHistoryPush).toHaveBeenCalledWith(
-        '/send/amount-recipient?asset=0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414&chainId=0x1',
-      );
+      expect(mockHistoryPush).toHaveBeenCalledWith('/send');
     });
   });
 
