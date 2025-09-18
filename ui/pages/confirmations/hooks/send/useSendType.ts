@@ -1,5 +1,5 @@
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { isNativeAddress, isSolanaChainId } from '@metamask/bridge-controller';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
 
 import { useSendContext } from '../../context/send';

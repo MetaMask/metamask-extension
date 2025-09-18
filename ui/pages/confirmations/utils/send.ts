@@ -5,7 +5,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
-import { isNativeAddress } from '@metamask/bridge-controller';
 import { useHistory } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
