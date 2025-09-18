@@ -35,21 +35,16 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
             // Tab click handler - intentionally empty for now
           }}
           tabListProps={{
-            className: 'network-manager__tab-list',
+            className: 'network-manager__tab-list px-4',
           }}
           tabContentProps={{
             className: 'network-manager__tab-content',
           }}
         >
-          <Tab
-            className="w-full"
-            tabKey="networks"
-            name={t('networkTabPopular') ?? 'Popular'}
-          >
+          <Tab tabKey="networks" name={t('networkTabPopular') ?? 'Popular'}>
             <DefaultNetworks />
           </Tab>
           <Tab
-            className="w-full"
             tabKey="custom-networks"
             name={t('networkTabCustom') ?? 'Custom'}
             disabled={
