@@ -206,10 +206,18 @@ function ConnectAccountGroupToast() {
   );
 
   const addressesToPermit = useMemo(() => {
+    if (!selectedAccountGroupInternalAccounts?.accounts) {
+      return [];
+    }
     return selectedAccountGroupInternalAccounts.accounts
       .filter((account) => hasChainIdSupport(account.scopes, existingChainIds))
       .map((account) => account.address);
-  }, [existingChainIds, selectedAccountGroupInternalAccounts.accounts]);
+  }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
+
+  // This shouldn't happen because there is always an account group.
+  if (!selectedAccountGroupInternalAccounts) {
+    return null;
+  }
 
   return (
     Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
@@ -218,7 +226,7 @@ function ConnectAccountGroupToast() {
         key="connect-account-toast"
         startAdornment={
           <PreferredAvatar
-            address={selectedAccountGroupInternalAccounts.id}
+            address={selectedAccountGroupInternalAccounts?.id}
             className="self-center"
           />
         }
