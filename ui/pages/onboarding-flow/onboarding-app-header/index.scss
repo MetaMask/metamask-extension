@@ -7,6 +7,14 @@
   flex: 0 0 auto;
   height: auto;
 
+  &__banner-tip {
+    border-radius: 20px;
+
+    &-icon {
+     margin-bottom: -4px;
+    }
+  }
+
 
   &--welcome {
     background-color: transparent;
