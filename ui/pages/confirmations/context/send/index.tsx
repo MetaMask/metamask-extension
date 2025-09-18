@@ -33,7 +33,7 @@ export type SendContextType = {
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
   updateTo: (to: string) => void;
-  updateToResolved: (to: string) => void;
+  updateToResolved: (to: string | undefined) => void;
   updateValue: (value: string, maxValueMode?: boolean) => void;
   value?: string;
 };
