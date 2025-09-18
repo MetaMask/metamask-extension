@@ -25,7 +25,7 @@ import { exactExecution } from '../../../../../shared/lib/delegation/caveatBuild
 import { limitedCalls } from '../../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
 import { specificActionERC20TransferBatch } from '../../../../../shared/lib/delegation/caveatBuilder/specificActionERC20TransferBatchBuilder';
 import type { Delegation } from '../../../../../shared/lib/delegation/delegation';
-import { encodeRedeemDelegations } from '../../../../../shared/lib/delegation/delegation';
+import { ANY_BENEFICIARY, encodeRedeemDelegations } from '../../../../../shared/lib/delegation/delegation';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
@@ -278,7 +278,7 @@ export class Delegation7702PublishHook {
 
     const delegation = createDelegation({
       from: transactionMeta.txParams.from as Hex,
-      to: transactionMeta.txParams.from as Hex,
+      to: ANY_BENEFICIARY,
       caveats,
     });
 
