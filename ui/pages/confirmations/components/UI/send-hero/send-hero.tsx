@@ -83,7 +83,6 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
 };
 
 const TokenHero = ({ asset }: { asset: Asset }) => {
-  console.log('asset = ', JSON.stringify(asset));
   const chainNetworkNameAndImageMap = useChainNetworkNameAndImageMap();
 
   const { chainId, image, symbol, isNative, networkImage, networkName } = asset;
