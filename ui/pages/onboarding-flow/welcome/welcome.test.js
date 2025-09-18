@@ -195,8 +195,8 @@ describe('Welcome Page', () => {
         },
       });
 
-      // should set isSocialLoginFlowEnabledForMetrics to true and send the queued events to Segment
-      expect(enabledMetricsSpy).toHaveBeenCalledWith(true);
+      // should not set Metametrics optin status for social login import
+      expect(enabledMetricsSpy).not.toHaveBeenCalled();
     });
   });
 });
