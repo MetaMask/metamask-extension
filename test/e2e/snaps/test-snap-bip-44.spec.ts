@@ -71,10 +71,8 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'bip44EntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('bip44EntropyDropDown', 'SRP 2');
+
         await testSnaps.fillMessage('messageBip44Input', 'foo bar');
         await testSnaps.clickButton('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
@@ -84,10 +82,8 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'bip44EntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('bip44EntropyDropDown', 'Invalid');
+
         await testSnaps.fillMessage('messageBip44Input', 'foo bar');
         await testSnaps.clickButton('signBip44MessageButton');
         await driver.waitForAlert(

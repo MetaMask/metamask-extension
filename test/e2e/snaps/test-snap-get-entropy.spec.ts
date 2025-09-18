@@ -22,7 +22,9 @@ describe('Test Snap getEntropy', function (this: Suite) {
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         testSpecificMock: mockGetEntropySnap,
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['UnexpectedAlertOpenError: unexpected alert open: {Alert text : Entropy source with ID "invalid" not found.}'],
+        ignoredConsoleErrors: [
+          'UnexpectedAlertOpenError: unexpected alert open: {Alert text : Entropy source with ID "invalid" not found.}',
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         // We explicitly choose to await balances to prevent flakiness due to long login times.
@@ -59,10 +61,8 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'getEntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('getEntropyDropDown', 'SRP 2');
+
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.checkMessageResultSpan(
@@ -71,10 +71,8 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source invalid, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'getEntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('getEntropyDropDown', 'Invalid');
+
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await driver.waitForAlert(

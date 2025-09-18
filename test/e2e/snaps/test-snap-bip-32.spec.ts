@@ -106,10 +106,8 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'bip32EntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('bip32EntropyDropDown', 'SRP 2');
+
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
@@ -119,10 +117,7 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'bip32EntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('bip32EntropyDropDown', 'Invalid');
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
 
