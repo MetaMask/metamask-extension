@@ -6,6 +6,8 @@
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
+    "isAccountTreeSyncingInProgress": "boolean",
+    "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object"
   },
@@ -41,6 +43,7 @@
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
+    "productTour": "accountIcon",
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
@@ -127,6 +130,7 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean"
   },
+  "GatorPermissionsController": "object",
   "InstitutionalSnapController": "object",
   "KeyringController": {
     "isUnlocked": true,
@@ -145,7 +149,8 @@
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object"
+    "segmentApiCalls": "object",
+    "isSocialLoginFlowEnabledForMetrics": "boolean"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -313,6 +318,7 @@
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
+  "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
       "quotes": "object",
@@ -367,9 +373,6 @@
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean",
-    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean"
   }
 }

@@ -63,8 +63,13 @@ export type MultichainAccountGroupScopeToCaipAccountId = Map<
   CaipAccountId
 >;
 
+export type AccountGroupObjectWithWalletNameAndId = AccountGroupObject & {
+  walletName: string;
+  walletId: AccountWalletId;
+};
+
 export type AccountGroupWithInternalAccounts = {
-  [K in keyof AccountGroupObject]: K extends 'accounts'
+  [K in keyof AccountGroupObjectWithWalletNameAndId]: K extends 'accounts'
     ? InternalAccount[]
-    : AccountGroupObject[K];
+    : AccountGroupObjectWithWalletNameAndId[K];
 };

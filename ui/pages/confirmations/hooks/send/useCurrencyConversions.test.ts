@@ -60,8 +60,9 @@ describe('useCurrencyConversions', () => {
 
   it('return correct values for ERC20 assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: EVM_ASSET,
+      asset: { ...EVM_ASSET, decimals: 4 },
       chainId: '0x5',
+      decimals: 4,
     } as unknown as SendContext.SendContextType);
 
     const result = renderHook({
@@ -78,8 +79,8 @@ describe('useCurrencyConversions', () => {
 
     expect(result.getFiatValue(10)).toEqual('27806');
     expect(result.getFiatDisplayValue(10)).toEqual('$ 27806');
-    expect(result.getNativeValue(5000)).toEqual('1.79817305617492635');
-    expect(result.getNativeDisplayValue(5000)).toEqual('NEU 1.79817');
+    expect(result.getNativeValue(5000)).toEqual('1.7981');
+    expect(result.getNativeDisplayValue(5000)).toEqual('NEU 1.7981');
   });
 
   it('return correct values for solana assets', () => {

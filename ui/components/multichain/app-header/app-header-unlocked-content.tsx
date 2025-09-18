@@ -3,6 +3,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import browser from 'webextension-polyfill';
@@ -62,6 +63,7 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
   REVIEW_PERMISSIONS,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
@@ -69,9 +71,11 @@ import {
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
 import { PreferredAvatar } from '../../app/preferred-avatar';
+import { AccountIconTour } from '../../app/account-icon-tour/account-icon-tour';
 import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
+  getNetworkAddressCount,
 } from '../../../selectors/multichain-accounts/account-tree';
 
 type AppHeaderUnlockedContentProps = {
@@ -89,12 +93,16 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
   const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
   const selectedMultichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
+  );
+  const numberOfAccountsInGroup = useSelector((state) =>
+    getNetworkAddressCount(state, selectedMultichainAccountId),
   );
 
   // Used for account picker
@@ -139,15 +147,21 @@ export const AppHeaderUnlockedContent = ({
     origin &&
     origin !== browser.runtime.id;
 
-  const handleMainMenuOpened = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NavMainMenuOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Home',
-      },
+  const handleMainMenuToggle = () => {
+    setAccountOptionsMenuOpen((previous) => {
+      const isMenuOpen = !previous;
+      if (isMenuOpen) {
+        trackEvent({
+          event: MetaMetricsEventName.NavMainMenuOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            location: 'Home',
+          },
+        });
+      }
+
+      return isMenuOpen;
     });
-    setAccountOptionsMenuOpen(true);
   };
 
   const handleConnectionsRoute = () => {
@@ -195,6 +209,69 @@ export const AppHeaderUnlockedContent = ({
     [copied, handleCopyClick, shortenedAddress],
   );
 
+  const handleNetworksClick = useCallback(() => {
+    history.push(
+      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`,
+    );
+  }, [history, selectedMultichainAccountId]);
+
+  const multichainAccountAppContent = useMemo(() => {
+    const networksLabel =
+      numberOfAccountsInGroup === 1 ? t('network') : t('networks');
+
+    return (
+      <Box>
+        <Text
+          as="div"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexStart}
+          ellipsis
+        >
+          <AccountPicker
+            address={''} // No address shown in multichain mode
+            name={accountName}
+            showAvatarAccount={false}
+            onClick={() => {
+              history.push(ACCOUNT_LIST_PAGE_ROUTE);
+              trackEvent({
+                event: MetaMetricsEventName.NavAccountMenuOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: 'Home',
+                },
+              });
+            }}
+            disabled={disableAccountPicker}
+            paddingLeft={0}
+            paddingRight={0}
+          />
+          <>{!isMultichainAccountsState2Enabled && CopyButton}</>
+        </Text>
+        <Text
+          color={TextColor.primaryDefault}
+          variant={TextVariant.bodyXs}
+          onClick={handleNetworksClick}
+          data-testid="networks-subtitle-test-id"
+          className="networks-subtitle"
+        >
+          {`${numberOfAccountsInGroup} ${networksLabel.toLowerCase()}`}
+        </Text>
+      </Box>
+    );
+  }, [
+    CopyButton,
+    accountName,
+    disableAccountPicker,
+    handleNetworksClick,
+    history,
+    isMultichainAccountsState2Enabled,
+    numberOfAccountsInGroup,
+    t,
+    trackEvent,
+  ]);
+
+  // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
@@ -206,12 +283,10 @@ export const AppHeaderUnlockedContent = ({
 
     return (
       <>
-        {!isMultichainAccountsState2Enabled && (
-          <PreferredAvatar
-            address={internalAccount.address}
-            className="shrink-0"
-          />
-        )}
+        <div ref={tourAnchorRef} className="flex">
+          <PreferredAvatar address={internalAccount.address} />
+        </div>
+
         {internalAccount && (
           <Text
             as="div"
@@ -239,19 +314,20 @@ export const AppHeaderUnlockedContent = ({
               paddingLeft={2}
               paddingRight={2}
             />
-            <>{!isMultichainAccountsState2Enabled && CopyButton}</>
+            <>{CopyButton}</>
           </Text>
         )}
       </>
     );
   }, [
-    disableAccountPicker,
-    dispatch,
     internalAccount,
-    trackEvent,
+    accountName,
+    disableAccountPicker,
     CopyButton,
-    history,
     isMultichainAccountsState2Enabled,
+    history,
+    dispatch,
+    trackEvent,
   ]);
 
   return (
@@ -263,7 +339,9 @@ export const AppHeaderUnlockedContent = ({
         gap={2}
         className="min-w-0"
       >
-        {AppContent}
+        {isMultichainAccountsState2Enabled
+          ? multichainAccountAppContent
+          : AppContent}
       </Box>
       <Box
         display={Display.Flex}
@@ -287,7 +365,7 @@ export const AppHeaderUnlockedContent = ({
             style={{ position: 'relative' }}
           >
             {!accountOptionsMenuOpen && (
-              <Box onClick={() => handleMainMenuOpened()}>
+              <Box onClick={handleMainMenuToggle}>
                 <NotificationsTagCounter noLabel />
               </Box>
             )}
@@ -295,9 +373,7 @@ export const AppHeaderUnlockedContent = ({
               iconName={IconName.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
-              onClick={() => {
-                handleMainMenuOpened();
-              }}
+              onClick={handleMainMenuToggle}
               size={ButtonIconSize.Lg}
             />
           </Box>
@@ -305,13 +381,19 @@ export const AppHeaderUnlockedContent = ({
         <GlobalMenu
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={() => {
+            setAccountOptionsMenuOpen(false);
+          }}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
       </Box>
+
+      {!isMultichainAccountsState2Enabled && (
+        <AccountIconTour anchorElement={tourAnchorRef.current} />
+      )}
     </>
   );
 };

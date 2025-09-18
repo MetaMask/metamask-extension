@@ -1358,6 +1358,17 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+/**
+ * privacy mode preference
+ *
+ * @param state
+ * @returns {boolean}
+ */
+export function getPrivacyMode(state) {
+  const { privacyMode } = getPreferences(state);
+  return Boolean(privacyMode);
+}
+
 export function getUseExternalNameSources(state) {
   return state.metamask.useExternalNameSources;
 }

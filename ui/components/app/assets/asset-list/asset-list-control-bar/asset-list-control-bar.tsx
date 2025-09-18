@@ -13,11 +13,15 @@ import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
+  getIsMultichainAccountsState2Enabled,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
-import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getEnabledNetworksByNamespace,
+} from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   AvatarNetwork,
@@ -46,6 +50,7 @@ import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_CHAINS,
 } from '../../../../../../shared/constants/network';
@@ -106,7 +111,14 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -151,10 +163,13 @@ const AssetListControlBar = ({
     );
   }, [currentMultichainNetwork.network.chainId]);
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chainId) => {
-    allOpts[chainId] = true;
-  });
+  const allOpts: Record<string, boolean> = useMemo(() => {
+    const opts: Record<string, boolean> = {};
+    Object.keys(allNetworks || {}).forEach((chainId) => {
+      opts[chainId] = true;
+    });
+    return opts;
+  }, [allNetworks]);
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -178,7 +193,12 @@ const AssetListControlBar = ({
         }),
       );
     }
-  }, []);
+  }, [
+    allOpts,
+    currentMultichainNetwork.network.chainId,
+    dispatch,
+    networksToDisplay,
+  ]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
@@ -319,6 +339,50 @@ const AssetListControlBar = ({
     allNetworks,
   ]);
 
+  const networkButtonTextEnabledAccountState2 = useMemo(() => {
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworksForAllNamespaces).length === 1
+    ) {
+      const chainId = allEnabledNetworksForAllNamespaces[0];
+      return isStrictHexString(chainId)
+        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
+        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+    }
+
+    // > 1 network selected, show "all networks"
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworksForAllNamespaces).length > 1
+    ) {
+      return t('allPopularNetworks');
+    }
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworksForAllNamespaces).length === 0
+    ) {
+      return t('noNetworksSelected');
+    }
+    if (
+      (!isGlobalNetworkSelectorRemoved &&
+        isTokenNetworkFilterEqualCurrentNetwork) ||
+      (!isGlobalNetworkSelectorRemoved &&
+        !currentMultichainNetwork.isEvmNetwork)
+    ) {
+      return currentMultichainNetwork?.nickname ?? t('currentNetwork');
+    }
+
+    return t('popularNetworks');
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    currentMultichainNetwork.isEvmNetwork,
+    currentMultichainNetwork.network.nickname,
+    currentMultichainNetwork?.nickname,
+    t,
+    allNetworks,
+    allEnabledNetworksForAllNamespaces,
+  ]);
+
   const singleNetworkIconUrl = useMemo(() => {
     if (!isGlobalNetworkSelectorRemoved) {
       return undefined;
@@ -330,11 +394,9 @@ const AssetListControlBar = ({
       return undefined;
     }
 
-    return currentMultichainNetwork?.network?.rpcPrefs?.imageUrl;
-  }, [
-    currentMultichainNetwork?.network?.rpcPrefs?.imageUrl,
-    enabledNetworksByNamespace,
-  ]);
+    const singleEnabledChainId = chainIds[0];
+    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
+  }, [enabledNetworksByNamespace]);
 
   return (
     <Box
@@ -376,7 +438,9 @@ const AssetListControlBar = ({
               />
             )}
             <Text variant={TextVariant.bodySmMedium} ellipsis>
-              {networkButtonText}
+              {isMultichainAccountsState2Enabled
+                ? networkButtonTextEnabledAccountState2
+                : networkButtonText}
             </Text>
           </Box>
         </ButtonBase>

@@ -24,6 +24,7 @@ const addEthereumChain = {
     rejectApprovalRequestsForOrigin: true,
     setTokenNetworkFilter: true,
     setEnabledNetworks: true,
+    setEnabledNetworksMultichain: true,
     getEnabledNetworks: true,
   },
 };
@@ -47,6 +48,7 @@ async function addEthereumChainHandler(
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    setEnabledNetworksMultichain,
     getEnabledNetworks,
   },
 ) {
@@ -200,6 +202,7 @@ async function addEthereumChainHandler(
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    setEnabledNetworksMultichain,
     getEnabledNetworks,
   });
 }
