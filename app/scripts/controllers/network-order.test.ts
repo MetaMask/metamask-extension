@@ -236,6 +236,7 @@ describe('NetworkOrderController - constructor', () => {
             },
             "solana": {
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
             },
           },
           "orderedNetworkList": [],
@@ -266,6 +267,7 @@ describe('NetworkOrderController - constructor', () => {
             },
             "solana": {
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
             },
           },
         }
@@ -295,6 +297,7 @@ describe('NetworkOrderController - constructor', () => {
             },
             "solana": {
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
             },
           },
           "orderedNetworkList": [],
@@ -325,6 +328,7 @@ describe('NetworkOrderController - constructor', () => {
             },
             "solana": {
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
             },
           },
           "orderedNetworkList": [],
