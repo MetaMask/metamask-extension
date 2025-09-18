@@ -91,12 +91,10 @@ function normalizeLocalNodeOptions(localNodeOptions) {
 }
 
 /**
- * Normalizes the smartContract option into an array of objects with shape { name, deployerOptions? }.
- * Supports strings, arrays of strings, objects, and mixed arrays.
- *
+ * Normalizes the smartContract option into a consistent format to handle different data structures.
  * Examples:
- * // Case 1:  Single legacy string: SMART_CONTRACTS.HST
- * // Case 2: Array of legacy strings: [SMART_CONTRACTS.HST, SMART_CONTRACTS.NFTS]
+ * // Case 1: Single string: SMART_CONTRACTS.HST
+ * // Case 2: Array of strings: [SMART_CONTRACTS.HST, SMART_CONTRACTS.NFTS]
  * // Case 3: Object with deployer options: { name: SMART_CONTRACTS.HST, deployerOptions: { fromAddress: '0x...' } }
  * // Case 4: Mixed array: [SMART_CONTRACTS.HST, { name: SMART_CONTRACTS.NFTS, deployerOptions: { fromPrivateKey: '0x...' } }]
  *
