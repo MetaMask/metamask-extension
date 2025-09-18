@@ -119,6 +119,15 @@ import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
 } from './remote-feature-flag-controller-messenger';
+import {
+  getSwapsControllerInitMessenger,
+  getSwapsControllerMessenger,
+} from './swaps-controller-messenger';
+import {
+  getBridgeControllerInitMessenger,
+  getBridgeControllerMessenger,
+} from './bridge-controller-messenger';
+import { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -128,6 +137,16 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
+export type {
+  BridgeControllerMessenger,
+  BridgeControllerInitMessenger,
+} from './bridge-controller-messenger';
+export {
+  getBridgeControllerMessenger,
+  getBridgeControllerInitMessenger,
+} from './bridge-controller-messenger';
+export type { BridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger,
@@ -177,6 +196,14 @@ export {
 export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type {
+  SwapsControllerMessenger,
+  SwapsControllerInitMessenger,
+} from './swaps-controller-messenger';
+export {
+  getSwapsControllerMessenger,
+  getSwapsControllerInitMessenger,
+} from './swaps-controller-messenger';
+export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
@@ -217,6 +244,14 @@ export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
+  },
+  BridgeController: {
+    getMessenger: getBridgeControllerMessenger,
+    getInitMessenger: getBridgeControllerInitMessenger,
+  },
+  BridgeStatusController: {
+    getMessenger: getBridgeStatusControllerMessenger,
+    getInitMessenger: noop,
   },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
@@ -341,6 +376,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
+  },
+  SwapsController: {
+    getMessenger: getSwapsControllerMessenger,
+    getInitMessenger: getSwapsControllerInitMessenger,
   },
   SubscriptionController: {
     getMessenger: getSubscriptionControllerMessenger,
