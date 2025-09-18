@@ -292,6 +292,14 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
   selectDefaultNetworkClientIdsByChainId,
   getNetworksMetadata,
   (allEnabledNetworks, defaultNetworkClientIdsByChainId, networksMetadata) => {
+    console.log(
+      '[selectAnyEnabledNetworksAreAvailable] allEnabledNetworks',
+      allEnabledNetworks,
+      'defaultNetworkClientIdsByChainId',
+      defaultNetworkClientIdsByChainId,
+      'networksMetadata',
+      networksMetadata,
+    );
     return Object.entries(allEnabledNetworks).reduce<boolean>(
       (result, [namespace, enabledNetworksByChainId]) => {
         if (namespace === KnownCaipNamespace.Eip155) {

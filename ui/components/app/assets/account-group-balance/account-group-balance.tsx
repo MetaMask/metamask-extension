@@ -49,6 +49,10 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
+  console.log(
+    '[AccountGroupBalance] anyEnabledNetworksAreAvailable',
+    anyEnabledNetworksAreAvailable,
+  );
 
   const total = selectedGroupBalance?.totalBalanceInUserCurrency;
   const currency = selectedGroupBalance
