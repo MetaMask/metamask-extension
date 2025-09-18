@@ -4103,6 +4103,10 @@ export function resetOnboarding(): ThunkAction<
       if (isSocialLoginFlow) {
         await dispatch(resetOAuthLoginState());
       }
+
+      // reset metametrics optin status
+      dispatch(setParticipateInMetaMetrics(null));
+      dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
     } catch (err) {
       console.error(err);
     }
