@@ -47,15 +47,32 @@ export class PatchStore {
   }
 
   private _onStateChange({
-    oldState,
     newState,
+    oldState,
+    patches: eventPatches,
   }: {
     controllerKey: string;
     oldState: Record<string, unknown>;
     newState: Record<string, unknown>;
+    patches?: Patch[];
   }) {
     const sanitizedNewState = sanitizeUIState(newState);
-    const patches = this._generatePatches(oldState, sanitizedNewState);
+
+    const normalizePatches = eventPatches?.flatMap((patch) => {
+      if (patch.path.length > 0) {
+        return [patch];
+      }
+
+      return Object.keys(patch.value).map((key) => ({
+        op: patch.op,
+        path: [key],
+        value: patch.value[key],
+      }));
+    });
+
+    const patches =
+      normalizePatches ?? this._generatePatches(oldState, sanitizedNewState);
+
     const isInitialized = Boolean(newState.vault);
 
     if (isInitialized) {
