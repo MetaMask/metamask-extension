@@ -16,6 +16,7 @@ describe('AccountGroupBalanceChange', () => {
   const createBalanceDisplayData = () => ({
     privacyMode: false,
     color: TextColor.successDefault,
+    portfolioChange: null,
     displayAmountChange: '+$200.00',
     displayPercentChange: '(+10.00%)',
   });
@@ -36,7 +37,10 @@ describe('AccountGroupBalanceChange', () => {
   };
 
   const renderComponent = () =>
-    renderWithProvider(<AccountGroupBalanceChange period="1d" />, mockStore);
+    renderWithProvider(
+      <AccountGroupBalanceChange period="1d" portfolioButton={() => null} />,
+      mockStore,
+    );
 
   const actAssertTextContent = (props: { value: string; percent: string }) => {
     const { getByTestId } = renderComponent();

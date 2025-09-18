@@ -60,9 +60,9 @@ describe('AccountGroupBalance', () => {
       mockStore,
     );
 
-  const actAssertSpinnerPresent = () => {
+  const actAssertSkeletonPresent = () => {
     const { container } = renderComponent();
-    expect(container.querySelector('.loading-overlay__spinner')).toBeTruthy();
+    expect(container.querySelector('.mm-skeleton')).toBeTruthy();
   };
 
   const actAssertBalanceContent = (props: {
@@ -78,9 +78,9 @@ describe('AccountGroupBalance', () => {
     jest.clearAllMocks();
   });
 
-  it('renders spinner when no selected group balance', () => {
+  it('renders a skeleton when no selected group balance', () => {
     arrange();
-    actAssertSpinnerPresent();
+    actAssertSkeletonPresent();
   });
 
   it('renders formatted balance and currency when data available', () => {
