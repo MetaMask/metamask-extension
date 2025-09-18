@@ -7,9 +7,7 @@ import type {
   JsonRpcParams,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import {
-  MESSAGE_TYPE,
-} from '../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { HandlerWrapper } from './types';
 
 type EthAccountsHandlerOptions = {
@@ -56,14 +54,10 @@ async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
   res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  {
-    getAccounts,
-    handleHyperliquidReferral,
-  }: EthAccountsHandlerOptions,
+  { getAccounts, handleHyperliquidReferral }: EthAccountsHandlerOptions,
 ): Promise<void> {
-
   if (handleHyperliquidReferral) {
-    await handleHyperliquidReferral(req);
+    handleHyperliquidReferral(req);
   }
 
   res.result = getAccounts();
