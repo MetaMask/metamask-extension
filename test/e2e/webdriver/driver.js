@@ -1275,11 +1275,11 @@ class Driver {
    * Waits until there is a window/tab with the given title, without changing the current window focus.
    *
    * @param {string} title - The title of the window or tab to wait for.
-   * @param {number} [timeout] - Optional timeout in milliseconds. Defaults to `this.timeout`.
+   * @param {number} [timeout] - Optional timeout in milliseconds for the manual polling fallback. Defaults to `this.timeout`.
    * @returns {Promise<void>} Promise that resolves once a window with the title exists.
    * @throws {Error} Throws an error if no window with the specified title appears within the timeout.
    */
-  async waitForWindowWithTitle(title, timeout = this.timeout) {
+  async waitForWindowWithTitleToBePresent(title, timeout = this.timeout) {
     const originalHandle = await this.driver.getWindowHandle();
 
     // Feature gate: when background socket is enabled, `this.windowHandles` exists
@@ -1291,7 +1291,7 @@ class Driver {
       return;
     }
 
-    // Fallback to manual polling if socket is disabled.
+    // Fallback to manual polling if socket is disabled
     let windowHandles = await this.driver.getAllWindowHandles();
     const start = Date.now();
 

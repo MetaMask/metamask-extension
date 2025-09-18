@@ -744,17 +744,17 @@ class TestDapp {
 
   async clickAddTokenToWallet() {
     await this.driver.clickElement(this.addTokensToWalletButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickAddNetworkButton() {
     await this.driver.clickElement(this.addNetworkButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickConnectAccountButton() {
     await this.driver.clickElement(this.connectAccountButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickConnectAccountButtonAndWaitForWindowToClose() {
@@ -777,7 +777,7 @@ class TestDapp {
 
   async clickApproveTokens() {
     await this.driver.clickElement(this.approveTokensButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickDecryptButton() {
@@ -786,37 +786,37 @@ class TestDapp {
 
   async clickApproveTokensWithoutGas() {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155DeployButton() {
     await this.driver.clickElement(this.erc1155DeployButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155MintButton() {
     await this.driver.clickElement(this.erc1155MintButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155SetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155WatchButton() {
     await this.driver.clickElement(this.erc1155WatchButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20CreateTokenButton() {
     await this.driver.clickElement(this.erc20CreateTokenButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20IncreaseAllowanceButton() {
@@ -828,57 +828,57 @@ class TestDapp {
       state: 'enabled',
     });
     await this.driver.clickElement(this.erc20TokenTransferButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721DeployButton() {
     await this.driver.clickElement(this.erc721DeployButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721MintButton() {
     await this.driver.clickElement(this.erc721MintButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721Permit() {
     await this.driver.clickElement(this.sign721PermitButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721ApproveButton() {
     await this.driver.clickElement(this.erc721ApproveButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721SetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721TransferFromButton() {
     await this.driver.clickElement(this.erc721TransferFromButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickGetEncryptionKeyButton() {
     await this.driver.clickElement(this.getEncryptionKeyButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickEthSignButton() {
@@ -887,27 +887,27 @@ class TestDapp {
 
   async clickPersonalSign() {
     await this.driver.clickElement(this.personalSignButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSendCalls() {
     await this.driver.clickElement(this.sendCallsButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedData() {
     await this.driver.clickElement(this.signTypedDataButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedDatav3() {
     await this.driver.clickElement(this.signTypedDataV3Button);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedDatav4() {
     await this.driver.clickElement(this.signTypedDataV4Button);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSimpleSendButton() {
@@ -915,27 +915,27 @@ class TestDapp {
       state: 'enabled',
     });
     await this.driver.clickElement(this.simpleSendButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSiwe() {
     await this.driver.clickElement(this.signSiweButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSwieBadDomain() {
     await this.driver.clickElement(this.signSiweBadDomainButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickTransferTokens() {
     await this.driver.clickElement(this.transferTokensButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickTransferTokensWithoutGas() {
     await this.driver.clickElement(this.transferTokensWithoutGasButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async confirmConnectAccountModal() {
@@ -950,27 +950,27 @@ class TestDapp {
 
   async clickMaliciousERC20TransferButton() {
     await this.driver.clickElement(this.maliciousERC20TransferButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousApprovalButton() {
     await this.driver.clickElement(this.maliciousApprovalButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousContractInteractionButton() {
     await this.driver.clickElement(this.maliciousContractInteractionButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousEthTransferButton() {
     await this.driver.clickElement(this.maliciousEthTransferButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousTradeOrderButton() {
     await this.driver.clickElement(this.maliciousTradeOrderButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   /**
@@ -1062,7 +1062,7 @@ class TestDapp {
    */
   async clickCreateToken() {
     await this.driver.clickElement(this.createTokenButton);
-    await this.driver.waitForWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   /**
