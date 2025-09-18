@@ -107,7 +107,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               >
                 <div
                   class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-                  data-testid="multichain-account-cell-test-group-1"
+                  data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
                   style="cursor: default;"
                 >
                   <div
@@ -343,7 +343,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               >
                 <div
                   class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-                  data-testid="multichain-account-cell-test-group-1"
+                  data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
                   style="cursor: default;"
                 >
                   <div
@@ -579,7 +579,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               >
                 <div
                   class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-                  data-testid="multichain-account-cell-test-group-1"
+                  data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
                   style="cursor: default;"
                 >
                   <div
