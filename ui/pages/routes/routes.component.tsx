@@ -467,7 +467,7 @@ export default function Routes() {
 
   // Track whether we've shown the multichain intro modal
   const hasShownMultichainIntroModal = useAppSelector(
-    (state) => state.metamask.hasShownMultichainIntroModal,
+    (state) => state.appState.hasShownMultichainIntroModal,
   );
 
   const prevPropsRef = useRef({
