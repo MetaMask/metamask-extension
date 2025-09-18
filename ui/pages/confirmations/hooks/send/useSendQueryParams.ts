@@ -128,6 +128,7 @@ export const useSendQueryParams = () => {
     paramMaxValueMode,
     nfts,
     updateAsset,
+    updateValue,
     value,
   ]);
 };

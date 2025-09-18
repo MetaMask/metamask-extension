@@ -15,7 +15,7 @@ const getBalance = (asset?: Asset) => {
     };
   }
 
-  let rawBalanceHex = asset?.rawBalance ?? '0x0';
+  const rawBalanceHex = asset?.rawBalance ?? '0x0';
 
   return {
     balance: formatToFixedDecimals(
