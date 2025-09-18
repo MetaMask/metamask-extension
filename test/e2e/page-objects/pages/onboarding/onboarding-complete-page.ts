@@ -107,7 +107,6 @@ class OnboardingCompletePage {
         await this.driver.clickElementAndWaitToDisappear(
           this.downloadAppContinueButton,
         );
-
       } catch (_) {
         // If MetaMetrics is also not present, rethrow the original error
         throw e;
