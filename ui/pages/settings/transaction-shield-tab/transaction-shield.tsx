@@ -313,11 +313,13 @@ const TransactionShield = () => {
         </ButtonLink>
       );
     }
-    return shieldSubscription &&
-      isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+    if (!shieldSubscription) {
+      return '';
+    }
+    return isCryptoPaymentMethod(shieldSubscription.paymentMethod)
       ? shieldSubscription.paymentMethod.crypto.tokenSymbol
-      : productInfo?.currency.toUpperCase() || '';
-  }, [membershipErrorState, productInfo?.currency, shieldSubscription, t]);
+      : `${shieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + shieldSubscription.paymentMethod.card.brand.slice(1)} - ${shieldSubscription.paymentMethod.card.last4}`; // display card info for card payment method;
+  }, [membershipErrorState, shieldSubscription, t]);
 
   return (
     <Box
@@ -531,7 +533,7 @@ const TransactionShield = () => {
                   t('shieldTxMembershipBillingDetailsBillingAccount'),
                   isCryptoPaymentMethod(shieldSubscription.paymentMethod)
                     ? shieldSubscription.paymentMethod.crypto.payerAddress // payer address for crypto payment method
-                    : `${shieldSubscription.paymentMethod.card.brand} - ${shieldSubscription.paymentMethod.card.last4}`, // display card info for card payment method
+                    : '',
                 )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
