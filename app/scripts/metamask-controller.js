@@ -1531,6 +1531,10 @@ export default class MetamaskController extends EventEmitter {
           const { address } = this.accountsController.getSelectedAccount();
 
           if (this.isMultichainAccountsFeatureState2Enabled()) {
+            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+            await this.getSnapKeyring();
+            ///: END:ONLY_INCLUDE_IF
+
             await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           }
 
@@ -5199,6 +5203,9 @@ export default class MetamaskController extends EventEmitter {
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts();
         } else {
@@ -5376,6 +5383,9 @@ export default class MetamaskController extends EventEmitter {
       );
       if (isHdKeyring) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts(metadata.id);
         } else {
