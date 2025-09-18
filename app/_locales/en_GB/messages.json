@@ -1132,6 +1132,10 @@
   "cancelled": {
     "message": "Cancelled"
   },
+  "carouselAllCaughtUp": {
+    "message": "You're all caught up!",
+    "description": "Message shown in carousel when all promotional slides have been dismissed"
+  },
   "chainId": {
     "message": "Chain ID"
   },
@@ -1199,6 +1203,10 @@
   },
   "closeExtension": {
     "message": "Close extension"
+  },
+  "closeSlide": {
+    "message": "Close $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
@@ -1605,7 +1613,13 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Use this for wallet recovery on all devices."
+    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
+  },
+  "createPasswordDetailsSocialReset": {
+    "message": "MetaMask can't reset it."
+  },
+  "createPasswordMarketing": {
+    "message": "Get product updates, tips, and news including by email. We may use your interactions to improve what we share."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -1806,6 +1820,14 @@
   },
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
+  },
+  "deepLink_Error404_CTA": {
+    "message": "$1 and we'll take you to the right place.",
+    "description": "$1 is a link with the text found in `deepLink_Error404_CTA_LinkText`"
+  },
+  "deepLink_Error404_CTA_LinkText": {
+    "message": "Update to the latest version of MetaMask",
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
@@ -3354,7 +3376,7 @@
     "message": "Market details"
   },
   "maskicons": {
-    "message": "Maskicons"
+    "message": "Polycons"
   },
   "max": {
     "message": "Max"
@@ -4375,14 +4397,7 @@
     "message": "Enter your new password to stay logged into MetaMask."
   },
   "passwordNotLongEnough": {
-    "message": "Password must have at least 8 characters"
-  },
-  "passwordStrength": {
-    "message": "Password strength: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
+    "message": "Must be at least 8 characters"
   },
   "passwordTermsWarning": {
     "message": "If I forget this password, MetaMask can’t reset it for me."
@@ -7527,9 +7542,6 @@
   "watchOutMessage": {
     "message": "Beware of $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Weak"
   },
   "web3": {
     "message": "Web3"
