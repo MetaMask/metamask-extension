@@ -175,7 +175,7 @@ function ConnectAccountGroupToast() {
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const selectedAccountGroupInternalAccounts = useSelector((state) =>
     getAccountGroupWithInternalAccounts(state, selectedAccountGroup),
-  ).find((accountGroup) => accountGroup.id === selectedAccountGroup);
+  )?.find((accountGroup) => accountGroup.id === selectedAccountGroup);
 
   // If the account has changed, allow the connect account toast again
   const prevAccountGroup = usePrevious(selectedAccountGroup);
@@ -184,10 +184,12 @@ function ConnectAccountGroupToast() {
   }
 
   const showConnectAccountToast = useSelector((state) =>
-    selectShowConnectAccountGroupToast(
-      state,
-      selectedAccountGroupInternalAccounts,
-    ),
+    selectedAccountGroupInternalAccounts
+      ? selectShowConnectAccountGroupToast(
+          state,
+          selectedAccountGroupInternalAccounts,
+        )
+      : false,
   );
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
