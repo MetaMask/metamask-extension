@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -9,10 +9,11 @@ import {
   BlockSize,
   FlexDirection,
   AlignItems,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   Box,
@@ -21,7 +22,13 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { getCurrentKeyring } from '../../../selectors';
+import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -29,9 +36,22 @@ export default function OnboardingDownloadApp() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const currentKeyring = useSelector(getCurrentKeyring);
+  const trackEvent = useContext(MetaMetricsContext);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const handleClick = async () => {
-    navigate(ONBOARDING_PIN_EXTENSION_ROUTE);
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExtensionPinned,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        wallet_setup_type:
+          firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
+      },
+    });
+    navigate(ONBOARDING_COMPLETION_ROUTE);
   };
 
   useEffect(() => {
@@ -66,7 +86,9 @@ export default function OnboardingDownloadApp() {
             alt="Download the app"
           />
         </Box>
-        <Text variant={TextVariant.bodyMd}>{t('downloadAppDescription')}</Text>
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          {t('downloadAppDescription')}
+        </Text>
       </Box>
       <Box>
         <Button
