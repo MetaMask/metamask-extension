@@ -1,11 +1,8 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 // Detect scuttling by prodding globals until found
 // This for loop is likely running only once, unless the first global it finds is in the exceptions list. The test is immune to changes to scuttling exceptions.
@@ -33,22 +30,18 @@ function assertScuttling() {
 function assertLockdown() {
   if (
     !(
-      Object.isFrozen(Object) &&
-      Object.isFrozen(Object.prototype) &&
-      Object.isFrozen(Function) &&
-      Object.isFrozen(Function.prototype) &&
-      Function.prototype.constructor !== Function // this is proof that repairIntrinsics part of lockdown worked
+      Object.isFrozen(window.Object) &&
+      Object.isFrozen(window.Object.prototype) &&
+      Object.isFrozen(window.Function) &&
+      Object.isFrozen(window.Function.prototype) &&
+      Function.prototype.constructor !== window.Function // this is proof that repairIntrinsics part of lockdown worked
     )
   ) {
     throw Error('Lockdown is not in effect');
   }
 }
 
-// We set globalThis to window in Firefox because the test fails otherwise.
-// We believe this is due to some Selenium-related shenanigans.
-// In the browser, this behavior is not a problem.
 const testCode = `
-${isFirefox ? 'globalThis = window;' : ''}
 ${assertLockdown.toString()};
 assertLockdown();
 ${assertScuttling.toString()};
@@ -87,7 +80,6 @@ describe('lockdown', function (this: Mocha.Suite) {
         } else {
           await driver.navigate(PAGES.BACKGROUND);
         }
-        await driver.delay(1000);
         assert(
           await driver.executeScript(testCode),
           'Expected script execution to be complete. driver.executeScript might have failed silently.',
