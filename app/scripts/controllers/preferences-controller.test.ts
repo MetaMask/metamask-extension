@@ -963,6 +963,13 @@ describe('preferences controller', () => {
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
           },
+          "referrals": {
+            "hyperliquid": {
+              "approvedAccounts": [],
+              "declinedAccounts": [],
+              "passedAccounts": [],
+            },
+          },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
           "showIncomingTransactions": {
@@ -1065,6 +1072,13 @@ describe('preferences controller', () => {
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
           },
+          "referrals": {
+            "hyperliquid": {
+              "approvedAccounts": [],
+              "declinedAccounts": [],
+              "passedAccounts": [],
+            },
+          },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
           "showIncomingTransactions": {
@@ -1166,6 +1180,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+          },
+          "referrals": {
+            "hyperliquid": {
+              "approvedAccounts": [],
+              "declinedAccounts": [],
+              "passedAccounts": [],
+            },
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",

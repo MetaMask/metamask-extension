@@ -508,7 +508,12 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
-  referrals: { persist: true, anonymous: false },
+  referrals: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: false,
+    usedInUi: true,
+  },
 };
 
 export class PreferencesController extends BaseController<
