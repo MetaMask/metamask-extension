@@ -317,21 +317,20 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
-    // > 1 network selected, show "all networks"
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      namespace === KnownCaipNamespace.Eip155 &&
-      Object.keys(enabledNetworksByNamespace).length > 1
-    ) {
-      return t('allNetworks');
-    }
-
     if (
       isGlobalNetworkSelectorRemoved &&
       namespace !== KnownCaipNamespace.Eip155 &&
       Object.keys(enabledNetworksByNamespace).length > 1
     ) {
       return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
+    }
+
+    // > 1 network selected, show "all networks"
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(enabledNetworksByNamespace).length > 1
+    ) {
+      return t('allNetworks');
     }
 
     if (
