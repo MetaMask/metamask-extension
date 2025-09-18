@@ -7,6 +7,8 @@ import {
   ButtonVariant,
 } from '../../../components/component-library';
 import {
+  AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
@@ -51,11 +53,24 @@ export default function WelcomeLogin({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
-      gap={4}
+      gap={12}
       marginInline="auto"
       className="welcome-login"
       data-testid="get-started"
     >
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        width={BlockSize.Full}
+      >
+        <img
+          src="images/logo/metamask-logo.svg"
+          alt="MetaMask Logo"
+          height={180}
+          width={180}
+        />
+      </Box>
       <Box
         data-theme={ThemeType.dark}
         display={Display.Flex}
