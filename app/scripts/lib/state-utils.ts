@@ -2,6 +2,7 @@ import { AuthenticationControllerState } from '@metamask/profile-sync-controller
 import { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
+import { Patch } from 'immer';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,6 +22,16 @@ const REMOVE_KEYS = [
   'encryptionKey',
   'encryptionSalt',
 ];
+
+export function sanitizePatches(patches: Patch[]): Patch[] {
+  return patches.filter((patch) => {
+    if (REMOVE_KEYS.includes(patch.path[0] as string)) {
+      return false;
+    }
+
+    return true;
+  });
+}
 
 export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   const newState = { ...state };

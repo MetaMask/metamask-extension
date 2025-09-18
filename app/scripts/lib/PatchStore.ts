@@ -2,7 +2,7 @@ import { createProjectLogger } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
 import ComposableObservableStore from './ComposableObservableStore';
-import { sanitizeUIState } from './state-utils';
+import { sanitizePatches, sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');
 
@@ -11,7 +11,7 @@ export class PatchStore {
 
   private observableStore: ComposableObservableStore;
 
-  private pendingPatches: Map<string, Patch> = new Map();
+  private pendingPatches: Patch[] = [];
 
   private listener: (request: {
     controllerKey: string;
@@ -30,9 +30,9 @@ export class PatchStore {
   }
 
   flushPendingPatches(): Patch[] {
-    const patches = [...this.pendingPatches.values()];
+    const patches = this.pendingPatches;
 
-    this.pendingPatches.clear();
+    this.pendingPatches = [];
 
     for (const patch of patches) {
       log('Flushed', patch.path.join('.'), this.id, patch);
@@ -70,8 +70,12 @@ export class PatchStore {
       }));
     });
 
+    const sanitizedPatches = normalizePatches
+      ? sanitizePatches(normalizePatches)
+      : undefined;
+
     const patches =
-      normalizePatches ?? this._generatePatches(oldState, sanitizedNewState);
+      sanitizedPatches ?? this._generatePatches(oldState, sanitizedNewState);
 
     const isInitialized = Boolean(newState.vault);
 
@@ -90,9 +94,9 @@ export class PatchStore {
     for (const patch of patches) {
       const path = patch.path.join('.');
 
-      this.pendingPatches.set(path, patch);
+      this.pendingPatches.push(patch);
 
-      log('Updated', path, this.id, patch);
+      log('Added', path, this.id, patch);
     }
   }
 
