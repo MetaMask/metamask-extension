@@ -63,7 +63,7 @@ async function openDappAndSwitchChain(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await connectAccountConfirmation.confirmConnect();
+  await connectAccountConfirmation.confirmConnectWithWaitForWindowToClose();
 
   // Switch back to the dapp
   await driver.switchToWindowWithUrl(dappUrl);

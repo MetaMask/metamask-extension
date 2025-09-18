@@ -74,6 +74,11 @@ class ConnectAccountConfirmation {
     );
   }
 
+  async confirmConnectWithWaitForWindowToClose(): Promise<void> {
+    console.log('Confirm connection on Connect Account confirmation page');
+    await this.driver.findElement(this.connectAccountConfirmationButton);
+  }
+
   async goToPermissionsTab(): Promise<void> {
     await this.driver.clickElement(this.permissionsTab);
   }
