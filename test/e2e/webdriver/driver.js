@@ -16,6 +16,9 @@ const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
+const {
+  getServerMochaToBackground,
+} = require('../background-socket/server-mocha-to-background');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -1262,6 +1265,81 @@ class Driver {
       await this.delay(delayTime);
       timeElapsed += delayTime;
       // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    throw new Error(`No window with title: ${title}`);
+  }
+
+  /**
+   * Waits until there is a window/tab with the given title, without changing the current window focus.
+   *
+   * @param {string} title - The title of the window or tab to wait for.
+   * @param {number} [timeout] - Optional timeout in milliseconds for the manual polling fallback. Defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once a window with the title exists.
+   * @throws {Error} Throws an error if no window with the specified title appears within the timeout.
+   */
+  async waitForWindowWithTitleToBePresent(title, timeout = this.timeout) {
+    const originalHandle = await this.driver.getWindowHandle();
+
+    // Feature gate: when background socket is enabled, `this.windowHandles` exists
+    if (this.windowHandles) {
+      await getServerMochaToBackground().waitUntilWindowWithProperty(
+        'title',
+        title,
+      );
+      return;
+    }
+
+    // Fallback to manual polling if socket is disabled
+    let windowHandles = await this.driver.getAllWindowHandles();
+    const start = Date.now();
+
+    while (Date.now() - start <= timeout) {
+      let found = false;
+      for (const handle of windowHandles) {
+        try {
+          const handleTitle = await retry(
+            {
+              retries: 25,
+              delay: 200,
+            },
+            async () => {
+              await this.driver.switchTo().window(handle);
+              return await this.driver.getTitle();
+            },
+          );
+
+          if (handleTitle === title) {
+            found = true;
+            break;
+          }
+        } catch (e) {
+          // Handle may have become stale/closed; continue to next handle
+        }
+      }
+
+      // Restore focus after checking this iteration (best-effort)
+      try {
+        await this.driver.switchTo().window(originalHandle);
+      } catch (_) {
+        // If the original handle no longer exists, fall back to any open handle
+        try {
+          const remaining = await this.driver.getAllWindowHandles();
+          if (remaining.length > 0) {
+            await this.driver.switchTo().window(remaining[0]);
+          }
+        } catch (__) {
+          // No valid handles to switch to; continue
+        }
+      }
+
+      if (found) {
+        return;
+      }
+
+      const delayTime = 1000;
+      await this.delay(delayTime);
       windowHandles = await this.driver.getAllWindowHandles();
     }
 
