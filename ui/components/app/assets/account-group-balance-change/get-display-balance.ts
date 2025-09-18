@@ -42,31 +42,3 @@ export const formatPercentageChange = (
 
   return `(${localizedPercent})`;
 };
-
-export const formatAmountChange = (
-  amountChange: number | undefined,
-  fiatCurrency: string,
-  locale: string,
-): string => {
-  if (!isValidAmount(amountChange)) {
-    return '';
-  }
-
-  try {
-    return `${Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: fiatCurrency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      signDisplay: 'always', // sets '+' for positive, '-' for negative
-    }).format(amountChange)}`;
-  } catch {
-    // Fallback to decimal formatting if currency formatting fails
-    return `${Intl.NumberFormat(locale, {
-      style: 'decimal',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      signDisplay: 'always', // sets '+' for positive, '-' for negative
-    }).format(amountChange)}`;
-  }
-};

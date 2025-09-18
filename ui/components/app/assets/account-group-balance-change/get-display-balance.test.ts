@@ -2,7 +2,6 @@ import { TextColor } from '../../../../helpers/constants/design-system';
 import {
   determineBalanceColor,
   formatPercentageChange,
-  formatAmountChange,
 } from './get-display-balance';
 
 describe('determineBalanceColor', () => {
@@ -74,61 +73,5 @@ describe('formatPercentageChange', () => {
   it('handles decimal precision', () => {
     expect(formatPercentageChange(1.234567, 'en-US')).toBe('(+1.23%)');
     expect(formatPercentageChange(1.236, 'en-US')).toBe('(+1.24%)');
-  });
-});
-
-describe('formatAmountChange', () => {
-  it('formats positive amounts with plus sign and currency', () => {
-    expect(formatAmountChange(100.5, 'USD', 'en-US')).toBe('+$100.50');
-    expect(formatAmountChange(1000, 'USD', 'en-US')).toBe('+$1,000.00');
-    expect(formatAmountChange(0.01, 'USD', 'en-US')).toBe('+$0.01');
-  });
-
-  it('formats negative amounts with minus sign and currency', () => {
-    expect(formatAmountChange(-100.5, 'USD', 'en-US')).toBe('-$100.50');
-    expect(formatAmountChange(-1000, 'USD', 'en-US')).toBe('-$1,000.00');
-    expect(formatAmountChange(-0.01, 'USD', 'en-US')).toBe('-$0.01');
-  });
-
-  it('formats zero with plus sign', () => {
-    expect(formatAmountChange(0, 'USD', 'en-US')).toBe('+$0.00');
-  });
-
-  it('works with different currencies', () => {
-    expect(formatAmountChange(100, 'EUR', 'en-US')).toBe('+€100.00');
-    expect(formatAmountChange(100, 'GBP', 'en-US')).toBe('+£100.00');
-    expect(formatAmountChange(100, 'JPY', 'en-US')).toBe('+¥100.00');
-  });
-
-  it('returns empty string for invalid amounts', () => {
-    [undefined, NaN, Infinity, -Infinity].forEach((v) =>
-      expect(formatAmountChange(v, 'USD', 'en-US')).toBe(''),
-    );
-  });
-
-  it('falls back to decimal formatting when currency is invalid', () => {
-    const result = formatAmountChange(100.5, 'INVALID', 'en-US');
-    expect(result).toBe('+100.50');
-  });
-
-  it('handles fallback with negative numbers', () => {
-    const result = formatAmountChange(-100.5, 'INVALID', 'en-US');
-    expect(result).toBe('-100.50');
-  });
-
-  it('always shows 2 decimal places', () => {
-    expect(formatAmountChange(100, 'USD', 'en-US')).toBe('+$100.00');
-    expect(formatAmountChange(100.1, 'USD', 'en-US')).toBe('+$100.10');
-  });
-
-  it('handles very large numbers', () => {
-    expect(formatAmountChange(1000000.99, 'USD', 'en-US')).toBe(
-      '+$1,000,000.99',
-    );
-  });
-
-  it('handles very small numbers with rounding', () => {
-    expect(formatAmountChange(0.001, 'USD', 'en-US')).toBe('+$0.00');
-    expect(formatAmountChange(0.009, 'USD', 'en-US')).toBe('+$0.01');
   });
 });
