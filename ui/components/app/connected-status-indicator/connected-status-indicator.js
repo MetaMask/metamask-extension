@@ -42,6 +42,7 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const currentTabIsConnectedToAccountGroup =
     selectedAccountGroupId &&
+    accountGroupInternalAccounts &&
     accountGroupInternalAccounts.some((account) =>
       isInternalAccountInPermittedAccountIds(account, permittedAccounts),
     );
