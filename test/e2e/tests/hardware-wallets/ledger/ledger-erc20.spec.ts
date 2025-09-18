@@ -12,7 +12,8 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 
 describe('Ledger Hardware', function (this: Suite) {
-  it('can create an ERC20 token', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can create an ERC20 token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

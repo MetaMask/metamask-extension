@@ -5,22 +5,38 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
-import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
 import { Recipient } from './recipient';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useRecipientSelectionMetrics');
-jest.mock('../../../hooks/send/validations/useRecipientValidation');
+jest.mock('../../../hooks/send/useRecipientValidation');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
 jest.mock('../recipient-list', () => ({
-  RecipientList: ({ hideModal }: { hideModal: () => void }) => (
-    <div data-testid="recipient-list">
-      <button onClick={hideModal}>Close Modal</button>
-    </div>
-  ),
+  RecipientList: ({
+    hideModal,
+    onToChange,
+  }: {
+    hideModal: () => void;
+    onToChange: (address: string) => void;
+  }) => {
+    return (
+      <div data-testid="recipient-list">
+        <button onClick={hideModal}>Close Modal</button>
+        <button
+          onClick={() =>
+            onToChange('0x1234567890abcdef1234567890abcdef12345678')
+          }
+          data-testid="select-recipient-btn"
+        >
+          Select Recipient
+        </button>
+      </div>
+    );
+  },
 }));
 
 describe('Recipient', () => {
@@ -34,8 +50,22 @@ describe('Recipient', () => {
 
   const mockUpdateTo = jest.fn();
   const mockCaptureRecipientSelected = jest.fn();
+  const mockSetRecipientInputMethodManual = jest.fn();
+  const mockSetRecipientInputMethodSelectContact = jest.fn();
+  const mockSetRecipientInputMethodSelectAccount = jest.fn();
 
   const mockStore = configureStore(mockState);
+
+  const mockRecipients = [
+    {
+      address: '0x1234567890abcdef1234567890abcdef12345678',
+      name: 'Recipient 1',
+    },
+    {
+      address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+      name: 'Recipient 2',
+    },
+  ];
 
   const renderComponent = () => {
     return renderWithProvider(<Recipient />, mockStore);
@@ -45,6 +75,11 @@ describe('Recipient', () => {
     mockUseI18nContext.mockReturnValue((key: string) => key.toUpperCase());
     mockUseRecipientSelectionMetrics.mockReturnValue({
       captureRecipientSelected: mockCaptureRecipientSelected,
+      setRecipientInputMethodManual: mockSetRecipientInputMethodManual,
+      setRecipientInputMethodSelectContact:
+        mockSetRecipientInputMethodSelectContact,
+      setRecipientInputMethodSelectAccount:
+        mockSetRecipientInputMethodSelectAccount,
     } as unknown as ReturnType<typeof useRecipientSelectionMetrics>);
     mockUseRecipientValidation.mockReturnValue({
       recipientConfusableCharacters: [],
@@ -70,7 +105,8 @@ describe('Recipient', () => {
     expect(getByRole('textbox')).toBeInTheDocument();
   });
 
-  it('renders recipient modal button', () => {
+  it('renders recipient modal button when recipients exist', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId } = renderComponent();
 
     expect(getByTestId('open-recipient-modal-btn')).toBeInTheDocument();
@@ -98,6 +134,7 @@ describe('Recipient', () => {
   });
 
   it('opens recipient modal when button is clicked', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, queryByText } = renderComponent();
 
     expect(queryByText('SELECTRECIPIENT')).not.toBeInTheDocument();
@@ -108,6 +145,7 @@ describe('Recipient', () => {
   });
 
   it('closes recipient modal when close button is clicked', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, queryByText } = renderComponent();
 
     fireEvent.click(getByTestId('open-recipient-modal-btn'));
@@ -118,6 +156,7 @@ describe('Recipient', () => {
   });
 
   it('renders recipient list in modal when open', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('open-recipient-modal-btn'));
@@ -126,6 +165,7 @@ describe('Recipient', () => {
   });
 
   it('closes modal when recipient list hide callback is called', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, getByText, queryByText } = renderComponent();
 
     fireEvent.click(getByTestId('open-recipient-modal-btn'));
@@ -164,6 +204,7 @@ describe('Recipient', () => {
   });
 
   it('blurs input when opening modal', () => {
+    mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, getByRole } = renderComponent();
     const input = getByRole('textbox');
     const button = getByTestId('open-recipient-modal-btn');
@@ -174,5 +215,50 @@ describe('Recipient', () => {
     fireEvent.click(button);
 
     expect(document.activeElement).not.toBe(input);
+  });
+
+  it('renders clear button when to value exists', () => {
+    mockUseSendContext.mockReturnValue({
+      to: '0x1234567890abcdef',
+      updateTo: mockUpdateTo,
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByTestId } = renderComponent();
+
+    expect(getByTestId('clear-recipient-btn')).toBeInTheDocument();
+  });
+
+  it('clears recipient when clear button is clicked', () => {
+    mockUseSendContext.mockReturnValue({
+      to: '0x1234567890abcdef',
+      updateTo: mockUpdateTo,
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByTestId } = renderComponent();
+
+    fireEvent.click(getByTestId('clear-recipient-btn'));
+
+    expect(mockUpdateTo).toHaveBeenCalledWith('');
+  });
+
+  it('does not render modal button when no recipients exist', () => {
+    mockUseRecipients.mockReturnValue([]);
+    const { queryByTestId } = renderComponent();
+
+    expect(queryByTestId('open-recipient-modal-btn')).not.toBeInTheDocument();
+  });
+
+  describe('metrics', () => {
+    it('calls updateTo when recipient is selected from modal', () => {
+      mockUseRecipients.mockReturnValue(mockRecipients);
+      const { getByTestId } = renderComponent();
+
+      fireEvent.click(getByTestId('open-recipient-modal-btn'));
+      fireEvent.click(getByTestId('select-recipient-btn'));
+
+      expect(mockUpdateTo).toHaveBeenCalledWith(
+        '0x1234567890abcdef1234567890abcdef12345678',
+      );
+    });
   });
 });

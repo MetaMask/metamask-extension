@@ -29,9 +29,11 @@ export type SendContextType = {
   from: string;
   maxValueMode?: boolean;
   to?: string;
+  toResolved?: string;
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
   updateTo: (to: string) => void;
+  updateToResolved: (to: string) => void;
   updateValue: (value: string, maxValueMode?: boolean) => void;
   value?: string;
 };
@@ -44,9 +46,11 @@ export const SendContext = createContext<SendContextType>({
   from: '',
   maxValueMode: undefined,
   to: undefined,
+  toResolved: undefined,
   updateAsset: () => undefined,
   updateCurrentPage: () => undefined,
   updateTo: () => undefined,
+  updateToResolved: () => undefined,
   updateValue: () => undefined,
   value: undefined,
 });
@@ -54,7 +58,7 @@ export const SendContext = createContext<SendContextType>({
 export const SendContextProvider: React.FC<{
   children: ReactElement[] | ReactElement;
 }> = ({ children }) => {
-  const [asset, updateAsset] = useState<Asset>();
+  const [asset, setAsset] = useState<Asset>();
   const from = useSelector(getSelectedAccount);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
@@ -63,6 +67,7 @@ export const SendContextProvider: React.FC<{
   const [fromAccount, updateFromAccount] = useState<InternalAccount>();
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
   const [to, updateTo] = useState<string>();
+  const [toResolved, updateToResolved] = useState<string>();
   const [value, setValue] = useState<string>();
   const [currentPage, updateCurrentPage] = useState<SendPages>();
 
@@ -71,7 +76,15 @@ export const SendContextProvider: React.FC<{
       updateMaxValueMode(maxMode ?? false);
       setValue(val);
     },
-    [updateMaxValueMode, setValue],
+    [setValue, updateMaxValueMode],
+  );
+
+  const updateAsset = useCallback(
+    (newAsset: Asset) => {
+      updateValue('', false);
+      setAsset(newAsset);
+    },
+    [setAsset, updateValue],
   );
 
   const chainId =
@@ -111,9 +124,11 @@ export const SendContextProvider: React.FC<{
         from: from?.address as string,
         maxValueMode,
         to,
+        toResolved: toResolved ?? to,
         updateAsset,
         updateCurrentPage,
         updateTo,
+        updateToResolved,
         updateValue,
         value,
       }}

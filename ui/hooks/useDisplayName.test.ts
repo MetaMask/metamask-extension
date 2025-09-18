@@ -1,4 +1,4 @@
-import { NameType } from '@metamask/name-controller';
+import { NameOrigin, NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
@@ -11,6 +11,8 @@ import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getDomainResolutions } from '../ducks/domains';
 import { IconName } from '../components/component-library';
 import { IconColor } from '../helpers/constants/design-system';
+import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
+import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
@@ -21,6 +23,12 @@ jest.mock('./useNftCollectionsMetadata');
 jest.mock('./useTrustSignals');
 jest.mock('../ducks/domains', () => ({
   getDomainResolutions: jest.fn(),
+}));
+jest.mock('../pages/confirmations/selectors/accounts', () => ({
+  selectAccountGroupNameByInternalAccount: jest.fn(),
+}));
+jest.mock('../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState2Enabled: jest.fn(),
 }));
 
 const VALUE_MOCK = 'testvalue';
@@ -35,24 +43,39 @@ const SYMBOL_MOCK = 'tes';
 const NFT_IMAGE_MOCK = 'testNftImage';
 const ERC20_IMAGE_MOCK = 'testImage';
 const OTHER_NAME_TYPE = 'test' as NameType;
+const GROUP_NAME_MOCK = 'My Account Group';
 
 describe('useDisplayName', () => {
   const useNamesMock = jest.mocked(useNames);
   const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
   const useTrustSignalsMock = jest.mocked(useTrustSignals);
   const domainResolutionsMock = jest.mocked(getDomainResolutions);
+  const selectAccountGroupNameByInternalAccountMock = jest.mocked(
+    selectAccountGroupNameByInternalAccount,
+  );
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let state: any;
 
-  function mockPetname(name: string) {
+  function mockAccountGroupName(value: string, groupName: string | null) {
+    selectAccountGroupNameByInternalAccountMock.mockImplementation(
+      (_state, address) => {
+        if (address === value) {
+          return groupName;
+        }
+        return null;
+      },
+    );
+  }
+
+  function mockPetname(name: string, origin?: NameOrigin) {
     useNamesMock.mockReturnValue([
       {
         name,
         sourceId: null,
         proposedNames: {},
-        origin: null,
+        origin: origin ?? null,
       },
     ]);
   }
@@ -123,6 +146,8 @@ describe('useDisplayName', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    selectAccountGroupNameByInternalAccountMock.mockReturnValue(null);
 
     useNftCollectionsMetadataMock.mockReturnValue({});
 
@@ -796,6 +821,191 @@ describe('useDisplayName', () => {
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
+      });
+    });
+  });
+
+  describe('Account Group Names', () => {
+    it('returns account group name when multichain accounts state 2 is enabled', () => {
+      mockPetname(PETNAME_MOCK);
+      mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
+
+      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
+        multichainAccountsState2: true,
+      });
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(selectAccountGroupNameByInternalAccountMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        VALUE_MOCK,
+      );
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: true,
+        image: undefined,
+        name: GROUP_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Petname,
+        icon: null,
+      });
+    });
+
+    it(`does not use group name when overridden by user's custom name`, () => {
+      mockPetname(PETNAME_MOCK, NameOrigin.API);
+      mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
+      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
+        multichainAccountsState2: true,
+      });
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(selectAccountGroupNameByInternalAccountMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        VALUE_MOCK,
+      );
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: true,
+        image: undefined,
+        name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Petname,
+        icon: null,
+      });
+    });
+
+    it('does not use account group name when multichain accounts state 2 is disabled', () => {
+      mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(selectAccountGroupNameByInternalAccountMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        VALUE_MOCK,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: false,
+        image: ERC20_IMAGE_MOCK,
+        name: ERC20_TOKEN_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
+      });
+    });
+
+    it('returns null when no group name found for ethereum address', () => {
+      mockAccountGroupName(VALUE_MOCK, null);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(selectAccountGroupNameByInternalAccountMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        VALUE_MOCK,
+      );
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
+      });
+    });
+
+    it('returns null when type is not ethereum address', () => {
+      mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
+      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: OTHER_NAME_TYPE,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
+      });
+    });
+
+    it('handles empty group name', () => {
+      mockAccountGroupName(VALUE_MOCK, '');
+
+      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
       });
     });
   });
