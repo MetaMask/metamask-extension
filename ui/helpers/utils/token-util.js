@@ -9,6 +9,7 @@ import { TokenStandard } from '../../../shared/constants/transaction';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -76,7 +77,7 @@ async function getDecimalsFromContract(tokenAddress) {
 }
 
 export function getTokenMetadata(tokenAddress, tokenList) {
-  return tokenAddress && tokenList[tokenAddress.toLowerCase()];
+  return tokenAddress && tokenList[toChecksumHexAddress(tokenAddress)];
 }
 
 async function getSymbol(tokenAddress, tokenList) {
