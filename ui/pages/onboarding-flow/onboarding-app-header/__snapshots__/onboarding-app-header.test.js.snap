@@ -3,7 +3,7 @@
 exports[`OnboardingAppHeader should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box onboarding-app-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end mm-box--width-full mm-box--background-color-background-default"
+    class="mm-box onboarding-app-header mm-box--padding-top-8 mm-box--padding-bottom-4 mm-box--display-flex mm-box--align-items-flex-end mm-box--width-full mm-box--background-color-background-default"
   >
     <div
       class="mm-box onboarding-app-header__contents mm-box--display-flex mm-box--justify-content-flex-end mm-box--width-full"

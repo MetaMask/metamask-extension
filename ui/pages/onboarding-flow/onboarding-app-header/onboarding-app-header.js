@@ -33,7 +33,8 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       alignItems={AlignItems.flexEnd}
       backgroundColor={BackgroundColor.backgroundDefault}
       width={BlockSize.Full}
-      padding={4}
+      paddingTop={8}
+      paddingBottom={4}
       className={classnames('onboarding-app-header', {
         'onboarding-app-header--welcome': isWelcomePage,
       })}
