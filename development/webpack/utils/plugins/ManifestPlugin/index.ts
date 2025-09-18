@@ -14,12 +14,7 @@ import {
   AsyncZipDeflate,
   ZipPassThrough,
 } from 'fflate';
-import {
-  noop,
-  type Manifest,
-  Browser,
-  browserifyOnlyScripts,
-} from '../../helpers';
+import { noop, type Manifest, Browser } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 
@@ -259,29 +254,6 @@ export class ManifestPlugin<Z extends boolean> {
       ? `${baseManifest.description} – ${this.options.description}`
       : baseManifest.description;
     const { version } = this.options;
-
-    // browserifyOnlyScripts are only relevant for the browserify build
-    // so we need to remove them from the manifest when building with webpack
-    baseManifest.content_scripts = baseManifest.content_scripts?.map(
-      (script) => {
-        // Check to make sure the browserifyOnlyScripts are actually in the manifest
-        if (script.run_at === 'document_start') {
-          for (const browserifyOnlyScript of browserifyOnlyScripts) {
-            if (!script.js?.includes(browserifyOnlyScript)) {
-              throw new Error(
-                `Congrats on your build failure! We expected '${browserifyOnlyScript}' to be in the manifest, but it was not found. This is a good thing. You should update ${__filename} to update or remove this check.`,
-              );
-            }
-          }
-        }
-        return {
-          ...script,
-          js: script.js?.filter(
-            (filename) => !browserifyOnlyScripts.includes(filename),
-          ),
-        };
-      },
-    );
 
     this.options.browsers.forEach((browser) => {
       let manifest: Manifest = { ...baseManifest, description, version };
