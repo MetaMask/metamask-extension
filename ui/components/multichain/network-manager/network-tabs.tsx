@@ -41,10 +41,15 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
             className: 'network-manager__tab-content',
           }}
         >
-          <Tab tabKey="networks" name={t('networkTabPopular') ?? 'Popular'}>
+          <Tab
+            className="w-full"
+            tabKey="networks"
+            name={t('networkTabPopular') ?? 'Popular'}
+          >
             <DefaultNetworks />
           </Tab>
           <Tab
+            className="w-full"
             tabKey="custom-networks"
             name={t('networkTabCustom') ?? 'Custom'}
             disabled={

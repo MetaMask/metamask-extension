@@ -58,6 +58,8 @@ import { SubscriptionController } from '@metamask/subscription-controller';
 import { EnsController } from '@metamask/ens-controller';
 import { NameController } from '@metamask/name-controller';
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
+import { BridgeController } from '@metamask/bridge-controller';
+import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -67,13 +69,17 @@ import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
+import { AppStateController } from '../controllers/app-state-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
   | AccountTrackerController
+  | AppStateController
   | AuthenticationController
+  | BridgeController
+  | BridgeStatusController
   | CronjobController
   | CurrencyRateController
   | DelegationController
@@ -115,6 +121,7 @@ export type Controller =
   | SnapInsightsController
   | SubscriptionController
   | SnapsNameProvider
+  | SwapsController
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -136,7 +143,10 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
+  AppStateController['state'] &
   AuthenticationController['state'] &
+  BridgeController['state'] &
+  BridgeStatusController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -172,12 +182,12 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
   SubscriptionController['state'] &
+  SwapsController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   TransactionController['state'] &
-  SwapsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &

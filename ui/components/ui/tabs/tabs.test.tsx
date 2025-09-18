@@ -62,7 +62,7 @@ describe('Tabs', () => {
   it('applies tabsClassName to the tab list', () => {
     const { container } = renderTabs({ tabsClassName: 'custom-tabs-class' });
 
-    expect(container.querySelector('.tabs__list')).toHaveClass(
+    expect(container.querySelector('[role="tablist"]')).toHaveClass(
       'custom-tabs-class',
     );
   });
@@ -133,9 +133,6 @@ describe('Tabs', () => {
         </Tab>
       </Tabs>,
     );
-
-    const disabledTab = getByText('Tab 2').closest('li');
-    expect(disabledTab).toHaveClass('tab--disabled');
 
     const disabledButton = getByText('Tab 2').closest('button');
     expect(disabledButton).toHaveAttribute('disabled');

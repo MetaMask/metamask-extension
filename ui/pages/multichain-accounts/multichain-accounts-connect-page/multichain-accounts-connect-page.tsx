@@ -20,6 +20,10 @@ import {
 
 import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
+import {
+  BoxBackgroundColor,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
@@ -443,17 +447,17 @@ export const MultichainAccountsConnectPage: React.FC<
       >
         <Tabs
           onTabClick={() => null}
-          backgroundColor={BackgroundColor.transparent}
-          justifyContent={JustifyContent.center}
+          backgroundColor={BoxBackgroundColor.Transparent}
+          justifyContent={BoxJustifyContent.Center}
           defaultActiveTabKey="accounts"
           tabListProps={{
-            backgroundColor: BackgroundColor.transparent,
+            backgroundColor: BoxBackgroundColor.Transparent,
           }}
         >
           <Tab
             name={t('accounts')}
             tabKey="accounts"
-            width={BlockSize.Full}
+            className="w-full"
             data-testid="accounts-tab"
           >
             <Box
@@ -523,7 +527,7 @@ export const MultichainAccountsConnectPage: React.FC<
           <Tab
             name={t('permissions')}
             tabKey="permissions"
-            width={BlockSize.Full}
+            className="w-full"
             data-testid="permissions-tab"
             disabled={selectedAccountGroupIds.length === 0}
           >
