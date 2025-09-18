@@ -98,7 +98,11 @@ const ShieldPlan = () => {
     loading: subscriptionPricingLoading,
     error: subscriptionPricingError,
   } = useSubscriptionPricing();
-  const loading = subscriptionsLoading || subscriptionPricingLoading;
+
+  const [isLoadingCardPayment, setIsLoadingCardPayment] = useState(false);
+
+  const loading =
+    subscriptionsLoading || subscriptionPricingLoading || isLoadingCardPayment;
   const error = subscriptionsError || subscriptionPricingError;
 
   const pricingPlans = useSubscriptionProductPlans(
@@ -176,6 +180,7 @@ const ShieldPlan = () => {
   const handleContinue = async () => {
     try {
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
+        setIsLoadingCardPayment(true);
         await dispatch(
           startSubscriptionWithCard({
             products: ['shield' as ProductType],
@@ -188,6 +193,8 @@ const ShieldPlan = () => {
       }
     } catch (err) {
       log.error('Error starting subscription', err);
+    } finally {
+      setIsLoadingCardPayment(false);
     }
   };
 
