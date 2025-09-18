@@ -5292,11 +5292,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^0.16.0":
-  version: 0.16.0
-  resolution: "@metamask/account-tree-controller@npm:0.16.0"
+"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@0.15.1-preview-9873b6ef":
+  version: 0.15.1-preview-9873b6ef
+  resolution: "@metamask-previews/account-tree-controller@npm:0.15.1-preview-9873b6ef"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.0"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -5312,7 +5312,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/7452c79cbd47944bdca2a60077594095d0ffda85ee20deae51cd2af4cc310eb5381c4d3511708a76105c5cc40ebd2ba858e5681eb38d86768a52596678a71f47
+  checksum: 10/9863093fc79f50a769b30e46a1959a9df82ce6998a0ca1772d17918632a553a8b3d29adbbd0845fc49f681ac525da80d0b9983bb7c01ad3fbd0afcb99f235ff9
   languageName: node
   linkType: hard
 
@@ -31761,7 +31761,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.12.0"
-    "@metamask/account-tree-controller": "npm:^0.16.0"
+    "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@0.15.1-preview-9873b6ef"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^33.1.0"
     "@metamask/address-book-controller": "npm:^6.1.0"
