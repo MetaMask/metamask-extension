@@ -6,6 +6,7 @@ on:
       - opened
       - reopened
       - synchronize
+  merge_group:
 
 jobs:
   fitness-functions:
@@ -20,6 +21,7 @@ jobs:
           yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Run fitness functions
+        if: ${{ github.event_name != 'merge_group' }}  # Skip this step for merge_group events
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
