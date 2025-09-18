@@ -18,11 +18,10 @@ class OnboardingCompletePage {
     text: 'Continue',
   };
 
-  private readonly pinExtensionDoneButton =
-    {
-      testId: 'pin-extension-done',
-      text: 'Done',
-    }
+  private readonly pinExtensionDoneButton = {
+    testId: 'pin-extension-done',
+    text: 'Done',
+  };
 
   private readonly pinExtensionMessage = {
     text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
