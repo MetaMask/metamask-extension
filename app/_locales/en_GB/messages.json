@@ -1884,17 +1884,14 @@
   "defi": {
     "message": "DeFi"
   },
+  "defiEmptyDescription": {
+    "message": "Lend, borrow, and trade, right in your wallet."
+  },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
   },
   "defiTabErrorTitle": {
     "message": "We could not load this page."
-  },
-  "defiEmptyDescription": {
-    "message": "Lend, borrow, and trade, right in your wallet."
-  },
-  "exploreDefi": {
-    "message": "Explore DeFi"
   },
   "delete": {
     "message": "Delete"
@@ -2466,6 +2463,9 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exploreDefi": {
+    "message": "Explore DeFi"
   },
   "exploreweb3": {
     "message": "Explore web3"
