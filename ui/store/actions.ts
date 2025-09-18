@@ -7203,9 +7203,9 @@ function applyPatches2(
   patches: Patch[],
 ): Record<string, unknown> {
   const immer = new Immer();
-  immer.autoFreeze_ = false;
+  immer.setAutoFreeze(false);
 
-  return applyPatches(oldState, patches);
+  return immer.applyPatches(oldState, patches);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
