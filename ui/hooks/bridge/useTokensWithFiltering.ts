@@ -254,9 +254,40 @@ export const useTokensWithFiltering = (
         if (!isSolanaChainId(chainId) && !isBitcoinChainId(chainId)) {
           const nativeAsset = getNativeAssetForChainId(chainId);
           if (nativeAsset && shouldAddToken(nativeAsset.symbol, '', chainId)) {
-            const nativeToken = buildTokenData(chainId, nativeAsset);
-            if (nativeToken) {
-              yield nativeToken;
+            // Check if we have a balance for the native token in multichain tokens
+            const nativeTokenWithBalance = multichainTokensWithBalance.find(
+              (token) =>
+                (isNativeAddress(token.address) || token.isNative) &&
+                token.chainId === chainId,
+            );
+
+            if (nativeTokenWithBalance) {
+              // Use the native token with actual balance from multichain tokens
+              yield {
+                symbol: nativeTokenWithBalance.symbol,
+                chainId: nativeTokenWithBalance.chainId,
+                tokenFiatAmount: nativeTokenWithBalance.tokenFiatAmount,
+                decimals: nativeTokenWithBalance.decimals,
+                address: '',
+                type: AssetType.native,
+                balance: nativeTokenWithBalance.balance ?? '0',
+                string: nativeTokenWithBalance.string ?? undefined,
+                image:
+                  CHAIN_ID_TOKEN_IMAGE_MAP[
+                    formatChainIdToHex(
+                      nativeTokenWithBalance.chainId,
+                    ) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                  ] ??
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  (nativeAsset.icon || nativeAsset.iconUrl || ''),
+              };
+            } else {
+              // Fall back to building with zero balance if not found in multichain tokens
+              const nativeToken = buildTokenData(chainId, nativeAsset);
+              if (nativeToken) {
+                yield nativeToken;
+              }
             }
           }
         }
@@ -275,6 +306,14 @@ export const useTokensWithFiltering = (
             )
           ) {
             if (isNativeAddress(token.address) || token.isNative) {
+              // Skip native tokens for EVM chains as they were already yielded above
+              if (
+                !isSolanaChainId(chainId) &&
+                !isBitcoinChainId(chainId) &&
+                token.chainId === chainId
+              ) {
+                continue;
+              }
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,

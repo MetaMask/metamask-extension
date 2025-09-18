@@ -115,7 +115,6 @@ import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -262,16 +261,6 @@ const PrepareBridgePage = ({
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
 
-  // Get the default destination account for token filtering when no account is selected
-  const defaultDestinationAccount = useSelector((state) =>
-    toChain?.chainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(
-          state,
-          formatChainIdToCaip(toChain.chainId),
-        )
-      : null,
-  );
-
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
@@ -301,21 +290,9 @@ const PrepareBridgePage = ({
           };
         })()
       : null,
-    (() => {
-      if (selectedDestinationAccount && 'id' in selectedDestinationAccount) {
-        return selectedDestinationAccount.id;
-      }
-      // For EVM chains, use the default destination account to show native tokens
-      if (
-        toChain &&
-        !isBitcoinChainId(toChain.chainId) &&
-        !isSolanaChainId(toChain.chainId) &&
-        defaultDestinationAccount
-      ) {
-        return defaultDestinationAccount.id;
-      }
-      return undefined;
-    })(),
+    selectedDestinationAccount && 'id' in selectedDestinationAccount
+      ? selectedDestinationAccount.id
+      : undefined,
   );
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
