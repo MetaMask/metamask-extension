@@ -70,15 +70,15 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      gap={3}
       {...props}
     >
-      {icon && <Box marginBottom={4}>{icon}</Box>}
+      {icon}
       {description && (
         <Text
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
           textAlign={TextAlign.Center}
-          className="mb-2"
           {...descriptionProps}
         >
           {description}
@@ -86,14 +86,14 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
       )}
       {actionButtonText && (
         <Button
-          variant={ButtonVariant.Tertiary}
+          variant={ButtonVariant.Secondary}
           onClick={onAction}
           {...actionButtonProps}
         >
-          {actionButtonText}
+          {actionButtonProps?.asChild ? children : actionButtonText}
         </Button>
       )}
-      {children}
+      {!actionButtonProps?.asChild && children}
     </Box>
   );
 };

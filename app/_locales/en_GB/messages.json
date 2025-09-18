@@ -1890,6 +1890,12 @@
   "defiTabErrorTitle": {
     "message": "We could not load this page."
   },
+  "defiEmptyDescription": {
+    "message": "Lend, borrow, and trade, right in your wallet."
+  },
+  "exploreDefi": {
+    "message": "Explore DeFi"
+  },
   "delete": {
     "message": "Delete"
   },
