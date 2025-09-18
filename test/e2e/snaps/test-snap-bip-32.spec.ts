@@ -2,11 +2,10 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockBip32Snap } from '../mock-response-data/snaps/snap-binary-mocks';
-import SnapInstall from '../page-objects/pages/dialog/snap-install';
 
 const bip32PublicKey =
   '"0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"';
@@ -64,15 +63,9 @@ describe('Test Snap bip-32', function () {
           bip32CompressedPublicKey,
         );
 
-        const snapEntropyDialog = new SnapInstall(driver);
-
         // Enter secp256k1 signature message, click sign button, approve and validate the result
         await testSnaps.fillMessage('messageSecp256k1Input', 'foo bar');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapEntropyDialog.checkPageIsLoaded();
-        await snapEntropyDialog.clickApproveButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.checkMessageResultSpan(
           'bip32MessageResultSecp256k1Span',
