@@ -1,8 +1,11 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 // Detect scuttling by prodding globals until found
 // This for loop is likely running only once, unless the first global it finds is in the exceptions list. The test is immune to changes to scuttling exceptions.
@@ -41,8 +44,11 @@ function assertLockdown() {
   }
 }
 
-// typescript is likely to mess the functions up in transpilation if they contain any function calls, but we got them to work without importing a js file.
+// We set globalThis to window in Firefox because the test fails otherwise.
+// We believe this is due to some Selenium-related shenanigans.
+// In the browser, this behavior is not a problem.
 const testCode = `
+${isFirefox ? 'globalThis = window;' : ''}
 ${assertLockdown.toString()};
 assertLockdown();
 ${assertScuttling.toString()};

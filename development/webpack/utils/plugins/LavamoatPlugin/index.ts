@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import type { WebpackPluginInstance, RuleSetRule, Chunk } from 'webpack';
-import LavamoatPlugin, {
+import {
+  LavaMoatPlugin,
   exclude as LavamoatExcludeLoader,
 } from '@lavamoat/webpack';
 import type { Args } from '../../cli';
@@ -13,7 +14,7 @@ const rootDir = join(__dirname, '../../../../../');
 const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
 export const lavamoatPlugin = (args: Args) =>
-  new LavamoatPlugin({
+  new LavaMoatPlugin({
     rootDir,
     diagnosticsVerbosity: 0,
     generatePolicyOnly: args.generatePolicy,
