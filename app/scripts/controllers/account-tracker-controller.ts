@@ -868,7 +868,7 @@ export default class AccountTrackerController extends BaseController<
     chainId: Hex,
   ): Promise<void> {
     // Don't update balance
-    return;
+    // return;
 
     const ethContract = await new Contract(
       deployedContractAddress,
