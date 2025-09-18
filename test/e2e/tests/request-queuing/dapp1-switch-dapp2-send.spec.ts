@@ -122,7 +122,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
-        await testDapp.checkPageIsLoaded();
+        await testDappTwo.checkPageIsLoaded();
         await testDappTwo.clickSimpleSendButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
