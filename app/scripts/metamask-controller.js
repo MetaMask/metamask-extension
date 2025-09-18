@@ -1712,6 +1712,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
+      PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
