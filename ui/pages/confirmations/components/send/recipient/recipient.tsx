@@ -112,9 +112,7 @@ export const Recipient = () => {
   );
 
   useEffect(() => {
-    if (recipientResolvedLookup) {
-      updateToResolved(recipientResolvedLookup);
-    }
+    updateToResolved(recipientResolvedLookup);
   }, [recipientResolvedLookup, updateToResolved]);
 
   const hasRecipients = recipients.length > 0;
