@@ -6,6 +6,14 @@
   flex-flow: column nowrap;
   flex: 0 0 auto;
 
+  &__banner-tip {
+    border-radius: 20px;
+
+    &-icon {
+     margin-bottom: -4px;
+    }
+  }
+
 
   &--welcome {
     background-color: transparent;

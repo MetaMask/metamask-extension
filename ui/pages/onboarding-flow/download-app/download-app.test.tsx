@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
-  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -109,9 +109,7 @@ describe('Download App Onboarding View', () => {
       fireEvent.click(continueButton);
 
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_PIN_EXTENSION_ROUTE,
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });
 
