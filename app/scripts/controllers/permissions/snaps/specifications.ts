@@ -368,10 +368,7 @@ export function getSnapPermissionSpecifications(
           );
 
           if (!snapKeyring) {
-            await hooks.addNewKeyring(
-              'KeyringController:addNewKeyring',
-              KeyringType.snap,
-            );
+            await hooks.addNewKeyring(KeyringType.snap);
 
             return messenger.call(
               'KeyringController:getKeyringsByType',

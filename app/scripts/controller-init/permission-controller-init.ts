@@ -38,6 +38,8 @@ export const PermissionControllerInit: ControllerInitFunction<
 
   const controller = new PermissionController({
     state: persistedState.PermissionController,
+    // @ts-expect-error: The permission controller needs certain actions that
+    // are not declared in the messenger's type.
     messenger: controllerMessenger,
     caveatSpecifications: getCaveatSpecifications({
       listAccounts: initMessenger.call.bind(
