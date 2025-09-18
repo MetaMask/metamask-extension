@@ -1200,32 +1200,6 @@ class Driver {
   }
 
   /**
-   * Switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
-   *
-   * @param {int} handleId - unique ID for the tab whose title is needed.
-   * @param {string} expectedTitle - the title we are expecting.
-   * @returns nothing on success.
-   * @throws {Error} Throws an error if the window title is incorrect.
-   */
-  async switchToHandleAndWaitForTitleToBe(handleId, expectedTitle) {
-    await this.driver.switchTo().window(handleId);
-
-    let currentTitle = await this.driver.getTitle();
-
-    // Wait 25 x 200ms = 5 seconds for the title to be set properly
-    for (let i = 0; i < 25 && currentTitle !== expectedTitle; i++) {
-      await this.driver.sleep(200);
-      currentTitle = await this.driver.getTitle();
-    }
-
-    if (currentTitle !== expectedTitle) {
-      throw new Error(
-        `switchToHandleAndWaitForTitleToBe got title ${currentTitle} instead of ${expectedTitle}`,
-      );
-    }
-  }
-
-  /**
    * Switches the context of the browser session to the window tab with the given title.
    * This functionality is especially valuable in complex testing scenarios involving multiple window tabs,
    * allowing for interaction with a particular window or tab based on its title
@@ -1471,27 +1445,6 @@ class Driver {
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
-  }
-
-  /**
-   * Closes all windows except those in the given list of exceptions
-   *
-   * @param {Array<string>} exceptions - The list of window handle exceptions
-   * @param {Array} [windowHandles] - The full list of window handles
-   * @returns {Promise<void>}
-   */
-  async closeAllWindowHandlesExcept(exceptions, windowHandles) {
-    // eslint-disable-next-line no-param-reassign
-    windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
-
-    for (const handle of windowHandles) {
-      if (!exceptions.includes(handle)) {
-        await this.driver.switchTo().window(handle);
-        await this.delay(1000);
-        await this.driver.close();
-        await this.delay(1000);
-      }
-    }
   }
 
   // Error handling
