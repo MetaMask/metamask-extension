@@ -58,7 +58,7 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'bip44EntropyDropDown',
           'SRP 1 (primary)',
         );
@@ -71,7 +71,7 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'bip44EntropyDropDown',
           'SRP 2',
         );
@@ -84,7 +84,7 @@ describe('Test Snap bip-44', function () {
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'bip44EntropyDropDown',
           'Invalid',
         );
