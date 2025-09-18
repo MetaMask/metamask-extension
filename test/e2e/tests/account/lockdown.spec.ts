@@ -58,6 +58,7 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
+        await driver.delay(1000);
         assert(
           await driver.executeScript(testCode),
           'Expected script execution to be complete. driver.executeScript might have failed silently.',
@@ -80,6 +81,7 @@ describe('lockdown', function (this: Mocha.Suite) {
         } else {
           await driver.navigate(PAGES.BACKGROUND);
         }
+        await driver.delay(1000);
         assert(
           await driver.executeScript(testCode),
           'Expected script execution to be complete. driver.executeScript might have failed silently.',
