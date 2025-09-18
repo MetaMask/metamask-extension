@@ -3714,9 +3714,6 @@
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng palitan"
   },
-  "noDeFiPositions": {
-    "message": "Hindi makita ang hinahanap mo?"
-  },
   "noDomainResolution": {
     "message": "Walang resolusyon para sa ibinigay na domain."
   },
@@ -4607,9 +4604,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Iminumungkahing Limitasyon sa Pag-apruba"
-  },
-  "protocolNotSupported": {
-    "message": "Maaaring hindi pa namin sinusuportahan ang iyong protocol."
   },
   "provide": {
     "message": "Ibigay"

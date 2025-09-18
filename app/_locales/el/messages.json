@@ -3744,9 +3744,6 @@
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
   },
-  "noDeFiPositions": {
-    "message": "Δεν μπορείτε να βρείτε αυτό που ψάχνετε;"
-  },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
   },
@@ -4641,9 +4638,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Προτεινόμενο όριο έγκρισης"
-  },
-  "protocolNotSupported": {
-    "message": "Ενδέχεται να μην υποστηρίζουμε ακόμη το πρωτόκολλό σας."
   },
   "provide": {
     "message": "Παροχή"

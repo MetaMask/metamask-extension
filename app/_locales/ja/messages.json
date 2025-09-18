@@ -3714,9 +3714,6 @@
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
   },
-  "noDeFiPositions": {
-    "message": "お探しのものが見つかりませんか？"
-  },
   "noDomainResolution": {
     "message": "指定されたドメインの名前解決ができません。"
   },
@@ -4607,9 +4604,6 @@
   },
   "proposedApprovalLimit": {
     "message": "提案された承認限度額"
-  },
-  "protocolNotSupported": {
-    "message": "お使いのプロトコルはまだサポートされていない可能性があります。"
   },
   "provide": {
     "message": "提供"
