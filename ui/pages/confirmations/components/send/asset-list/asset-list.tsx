@@ -88,7 +88,7 @@ export const AssetList = ({
     <>
       {tokens.map((token) => (
         <AssetComponent
-          key={`${token.address}-${token.chainId}`}
+          key={`${token.address ?? token.assetId}-${token.chainId}`}
           asset={token}
           onClick={() => handleAssetClick(token)}
         />
