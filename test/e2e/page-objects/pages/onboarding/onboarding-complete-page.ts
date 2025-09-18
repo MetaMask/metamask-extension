@@ -8,20 +8,14 @@ class OnboardingCompletePage {
     tag: 'h2',
   };
 
-  private readonly onboardingCompleteDoneButton = {
-    testId: 'onboarding-complete-done',
-    text: 'Done',
-  };
+  private readonly onboardingCompleteDoneButton =
+    '[data-testid="onboarding-complete-done"]';
 
-  private readonly downloadAppContinueButton = {
-    testId: 'download-app-continue',
-    text: 'Continue',
-  };
+  private readonly downloadAppContinueButton =
+    '[data-testid="download-app-continue"]';
 
-  private readonly pinExtensionDoneButton = {
-    testId: 'pin-extension-done',
-    text: 'Done',
-  };
+  private readonly pinExtensionDoneButton =
+    '[data-testid="pin-extension-done"]';
 
   private readonly pinExtensionMessage = {
     text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
@@ -103,6 +97,7 @@ class OnboardingCompletePage {
   async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
     console.log('Complete onboarding');
     if (!isSocialImportFlow) {
+      await this.driver.delay(5000);
       await this.clickCreateWalletDoneButton();
     }
 
