@@ -4,6 +4,7 @@ import {
   Product,
   PRODUCT_TYPES,
   ProductType,
+  RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -48,6 +49,8 @@ import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
 import { getTabsAPI } from '../../../../shared/lib/oauth';
 import Tooltip from '../../../components/ui/tooltip';
+import { ThemeType } from '../../../../shared/constants/preferences';
+import { useFormatters } from '../../../helpers/formatters';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -63,6 +66,7 @@ type MembershipErrorState =
 const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { formatCurrency } = useFormatters();
   const {
     customerId,
     subscriptions,
@@ -345,6 +349,7 @@ const TransactionShield = () => {
             gap={loading ? 2 : 0}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
+            data-theme={ThemeType.dark}
           >
             {loading ? (
               <Skeleton width="60%" height={20} />
@@ -511,7 +516,15 @@ const TransactionShield = () => {
               )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
-                `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()}/${shieldSubscription.interval}`,
+                isCryptoPayment
+                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanYearly') : t('shieldPlanMonthly')})`
+                  : `${formatCurrency(
+                      getProductPrice(productInfo as Product),
+                      productInfo?.currency.toUpperCase(),
+                      {
+                        maximumFractionDigits: 0,
+                      },
+                    )} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanYearly') : t('shieldPlanMonthly')})`,
               )}
               {isCryptoPayment &&
                 billingDetails(

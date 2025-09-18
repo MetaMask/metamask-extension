@@ -4773,6 +4773,9 @@
   "primaryType": {
     "message": "Primary type"
   },
+  "priority": {
+    "message": "Priority"
+  },
   "priorityFee": {
     "message": "Priority fee"
   },
@@ -5595,7 +5598,7 @@
     "description": "The $1 is the price of the annual plan"
   },
   "shieldPlanAutoRenew": {
-    "message": "Auto renews for $1/month until canceled",
+    "message": "Auto renews for $1 until canceled",
     "description": "The $1 is the price of the monthly plan"
   },
   "shieldPlanCard": {
@@ -5648,8 +5651,11 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
+  "shieldPlanYearly": {
+    "message": "Yearly"
+  },
   "shieldTx": {
-    "message": "MetaMask Transaction Shield"
+    "message": "Transaction Shield"
   },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
