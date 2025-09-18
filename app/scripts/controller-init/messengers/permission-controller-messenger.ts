@@ -9,6 +9,8 @@ import type {
 import type { GetSubjectMetadata } from '@metamask/permission-controller';
 import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import {
+  GetPermittedSnaps,
+  InstallSnaps,
   MultichainRouterGetSupportedAccountsAction,
   MultichainRouterIsSupportedScopeAction,
 } from '@metamask/snaps-controllers';
@@ -19,7 +21,9 @@ type AllowedActions =
   | HasApprovalRequest
   | AcceptRequest
   | RejectRequest
-  | GetSubjectMetadata;
+  | GetSubjectMetadata
+  | GetPermittedSnaps
+  | InstallSnaps;
 
 export type PermissionControllerMessenger = ReturnType<
   typeof getPermissionControllerMessenger
@@ -42,6 +46,8 @@ export function getPermissionControllerMessenger(
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
       'ApprovalController:rejectRequest',
+      'SnapController:getPermitted',
+      'SnapController:install',
       'SubjectMetadataController:getSubjectMetadata',
     ],
     allowedEvents: [],
