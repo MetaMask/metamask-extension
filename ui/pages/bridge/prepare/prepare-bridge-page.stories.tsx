@@ -5,7 +5,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 import CrossChainSwap from '../index';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,

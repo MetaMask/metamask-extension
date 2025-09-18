@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom-v5-compat';
 import {
   BridgeAppState,
   UnifiedSwapBridgeEventName,
@@ -52,7 +52,7 @@ const CrossChainSwap = () => {
   useSwapsFeatureFlags();
   useBridging();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
@@ -94,10 +94,7 @@ const CrossChainSwap = () => {
 
   const redirectToDefaultRoute = async () => {
     await resetControllerAndInputStates();
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };
@@ -113,8 +110,6 @@ const CrossChainSwap = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={redirectToDefaultRoute}
           />
         }
@@ -132,27 +127,35 @@ const CrossChainSwap = () => {
         {isSwap || isUnifiedUIEnabled ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
-        <Switch>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
-            <BridgeTransactionSettingsModal
-              isOpen={isSettingsModalOpen}
-              onClose={() => {
-                setIsSettingsModalOpen(false);
-              }}
-            />
-            <PrepareBridgePage
-              onOpenSettings={() => setIsSettingsModalOpen(true)}
-            />
-          </Route>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
-            <Content>
-              <AwaitingSignatures />
-            </Content>
-            <Footer>
-              <AwaitingSignaturesCancelButton />
-            </Footer>
-          </Route>
-        </Switch>
+        <Routes>
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => setIsSettingsModalOpen(false)}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+        </Routes>
       </Content>
     </Page>
   );

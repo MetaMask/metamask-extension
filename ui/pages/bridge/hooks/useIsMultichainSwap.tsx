@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useEffect, useMemo } from 'react';
 import {
   getIsUnifiedUIEnabled,
@@ -20,7 +20,7 @@ import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap
  */
 export const useIsMultichainSwap = () => {
   const { search, pathname } = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const isSolana = useSelector(getMultichainIsSolana);
 
@@ -42,16 +42,19 @@ export const useIsMultichainSwap = () => {
       !isSwapQueryParamSet
     ) {
       searchParams.set(BridgeQueryParams.SWAPS, 'true');
-      history.replace({
-        pathname,
-        search: searchParams.toString(),
-      });
+      navigate(
+        {
+          pathname,
+          search: searchParams.toString(),
+        },
+        { replace: true },
+      );
     }
   }, [
     isQuoteRequestSwap,
     isSolana,
     isUnifiedUIEnabled,
-    history,
+    navigate,
     search,
     pathname,
   ]);

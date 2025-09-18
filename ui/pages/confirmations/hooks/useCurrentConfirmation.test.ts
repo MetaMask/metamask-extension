@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-named-as-default
-import Router from 'react-router-dom';
+import Router from 'react-router-dom-v5-compat';
 
 import { AbstractMessage } from '@metamask/message-manager';
 import { ApprovalRequest } from '@metamask/approval-controller';
