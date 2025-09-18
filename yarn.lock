@@ -5548,7 +5548,7 @@ __metadata:
 
 "@metamask/assets-controllers@file:../core/packages/assets-controllers::locator=metamask-crx%40workspace%3A.":
   version: 75.0.0
-  resolution: "@metamask/assets-controllers@file:../core/packages/assets-controllers#../core/packages/assets-controllers::hash=5e5c44&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/assets-controllers@file:../core/packages/assets-controllers#../core/packages/assets-controllers::hash=4288f0&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5593,7 +5593,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/f2eed4a975b828cccee352a8420ec62b123281a670edd0d79dd5881a96262cb36a9bd8c6d593ddeeeb89aa919d1a66e962bd159e7f09d1cd16d932bfef4046e2
+  checksum: 10/79356d51d03f326a8c5baf770347b10ce2df1b4124de610c9de754b72bcdaf721593bf35243d82f26aa833047f1f3c8f0ef191750a6c900cf7d92e9c0f5cab9f
   languageName: node
   linkType: hard
 
@@ -5646,25 +5646,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/backend-platform@file:../backend-platform::locator=%40metamask%2Fassets-controllers%40file%3A..%2Fcore%2Fpackages%2Fassets-controllers%23..%2Fcore%2Fpackages%2Fassets-controllers%3A%3Ahash%3D5e5c44%26locator%3Dmetamask-crx%2540workspace%253A.":
+"@metamask/backend-platform@file:../backend-platform::locator=%40metamask%2Fassets-controllers%40file%3A..%2Fcore%2Fpackages%2Fassets-controllers%23..%2Fcore%2Fpackages%2Fassets-controllers%3A%3Ahash%3D4288f0%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 0.0.0
-  resolution: "@metamask/backend-platform@file:../backend-platform#../backend-platform::hash=8517cc&locator=%40metamask%2Fassets-controllers%40file%3A..%2Fcore%2Fpackages%2Fassets-controllers%23..%2Fcore%2Fpackages%2Fassets-controllers%3A%3Ahash%3D5e5c44%26locator%3Dmetamask-crx%2540workspace%253A."
+  resolution: "@metamask/backend-platform@file:../backend-platform#../backend-platform::hash=f1005b&locator=%40metamask%2Fassets-controllers%40file%3A..%2Fcore%2Fpackages%2Fassets-controllers%23..%2Fcore%2Fpackages%2Fassets-controllers%3A%3Ahash%3D4288f0%26locator%3Dmetamask-crx%2540workspace%253A."
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/01cc0ab967750f721dcc0886bab798334ed382c87deedf72679b9c364ae5e03db937b87dcfb331f8100dc103eaaf5cc4e0331bbaf7baf1492405bee74909b550
+    uuid: "npm:^8.3.2"
+  checksum: 10/485e1ed546d68b70e1a933aa50f3301dde2bc502da9783e46e4ac120ca1dd2ca3bb723e4a309420c652896e9b00b8f67f557f43ca819bfe789efc589b9ac4ebe
   languageName: node
   linkType: hard
 
 "@metamask/backend-platform@file:../core/packages/backend-platform::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/backend-platform@file:../core/packages/backend-platform#../core/packages/backend-platform::hash=8517cc&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/backend-platform@file:../core/packages/backend-platform#../core/packages/backend-platform::hash=f1005b&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/01cc0ab967750f721dcc0886bab798334ed382c87deedf72679b9c364ae5e03db937b87dcfb331f8100dc103eaaf5cc4e0331bbaf7baf1492405bee74909b550
+    uuid: "npm:^8.3.2"
+  checksum: 10/485e1ed546d68b70e1a933aa50f3301dde2bc502da9783e46e4ac120ca1dd2ca3bb723e4a309420c652896e9b00b8f67f557f43ca819bfe789efc589b9ac4ebe
   languageName: node
   linkType: hard
 
