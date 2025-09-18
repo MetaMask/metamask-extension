@@ -45,8 +45,6 @@ describe('Segment User Traits', function () {
           dataCollectionForMarketing: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        console.log("LENGTH========", events.length)
-        console.log(events[0]);
         assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
         assert.deepStrictEqual(events[0].traits.has_marketing_consent, true);
