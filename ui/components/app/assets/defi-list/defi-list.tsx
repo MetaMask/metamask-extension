@@ -145,10 +145,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           );
         })
       ) : (
-        <DeFiEmptyStateMessage
-          primaryText={t('noDeFiPositions')}
-          secondaryText={t('protocolNotSupported')}
-        />
+        <DeFiEmptyStateMessage />
       )}
     </>
   );
