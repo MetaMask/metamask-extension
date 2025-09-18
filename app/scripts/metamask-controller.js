@@ -75,7 +75,6 @@ import {
   ERC721,
   BlockExplorerUrl,
   ChainId,
-  handleFetch,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -84,12 +83,9 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import { UserOperationController } from '@metamask/user-operation-controller';
 import {
-  BridgeController,
   BRIDGE_CONTROLLER_NAME,
   BridgeUserAction,
   BridgeBackgroundAction,
-  BridgeClientId,
-  UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
 
 import {
@@ -155,7 +151,6 @@ import {
   getCaip25PermissionFromLegacyPermissions,
 } from '@metamask/chain-agnostic-permission';
 import {
-  BridgeStatusController,
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
@@ -236,7 +231,6 @@ import {
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
@@ -286,11 +280,9 @@ import { AppStateController } from './controllers/app-state-controller';
 import { AlertController } from './controllers/alert-controller';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
-import SwapsController from './controllers/swaps';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
-  getEnvironmentType,
   getMethodDataName,
   previousValueComparator,
   initializeRpcProviderDomains,
@@ -428,6 +420,9 @@ import { webAuthenticatorFactory } from './services/oauth/web-authenticator-fact
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
+import { SwapsControllerInit } from './controller-init/swaps-controller-init';
+import { BridgeControllerInit } from './controller-init/bridge-controller-init';
+import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1246,153 +1241,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    const swapsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'SwapsController',
-      // TODO: allow these internal calls once GasFeeController and TransactionController
-      // export these action types and register its action handlers
-      // allowedActions: [
-      //   'GasFeeController:getEIP1559GasFeeEstimates',
-      //   'TransactionController:getLayer1GasFee',
-      // ],
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'TokenRatesController:getState',
-      ],
-      allowedEvents: [],
-    });
-
-    this.swapsController = new SwapsController(
-      {
-        messenger: swapsControllerMessenger,
-        getBufferedGasLimit: async (txMeta, multiplier) => {
-          const { gas: gasLimit, simulationFails } =
-            await this.txController.estimateGasBuffered(
-              txMeta.txParams,
-              multiplier,
-              this.#getGlobalNetworkClientId(),
-            );
-
-          return { gasLimit, simulationFails };
-        },
-        // TODO: Remove once GasFeeController exports this action type
-        getEIP1559GasFeeEstimates: (...args) => {
-          return this.gasFeeController.fetchGasFeeEstimates(...args);
-        },
-        // TODO: Remove once TransactionController exports this action type
-        getLayer1GasFee: (...args) =>
-          this.txController.getLayer1GasFee(...args),
-        trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'MetaMetricsController:trackEvent',
-        ),
-      },
-      initState.SwapsController,
-    );
-
-    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
-      name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: [
-        'AccountsController:getSelectedMultichainAccount',
-        'SnapController:handleRequest',
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:findNetworkClientIdByChainId',
-        'TokenRatesController:getState',
-        'MultichainAssetsRatesController:getState',
-        'RemoteFeatureFlagController:getState',
-        'CurrencyRateController:getState',
-      ],
-      allowedEvents: [],
-    });
-    this.bridgeController = new BridgeController({
-      messenger: bridgeControllerMessenger,
-      clientId: BridgeClientId.EXTENSION,
-      // TODO: Remove once TransactionController exports this action type
-      getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (
-        url,
-        { cacheOptions, functionName, ...requestOptions },
-      ) => {
-        if (functionName === 'fetchBridgeTokens') {
-          return await fetchWithCache({
-            url,
-            fetchOptions: { method: 'GET', ...requestOptions },
-            cacheOptions,
-            functionName,
-          });
-        }
-        return await handleFetch(url, {
-          method: 'GET',
-          ...requestOptions,
-        });
-      },
-      trackMetaMetricsFn: (event, properties) => {
-        const actionId = (Date.now() + Math.random()).toString();
-        const trackEvent = this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'MetaMetricsController:trackEvent',
-        );
-        trackEvent({
-          category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
-          event,
-          properties: {
-            ...(properties ?? {}),
-            environmentType: getEnvironmentType(),
-            actionId,
-          },
-        });
-      },
-      traceFn: (...args) => trace(...args),
-      config: {
-        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
-      },
-    });
-
-    const bridgeStatusControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: BRIDGE_STATUS_CONTROLLER_NAME,
-        allowedActions: [
-          'AccountsController:getSelectedMultichainAccount',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:findNetworkClientIdByChainId',
-          'NetworkController:getState',
-          'BridgeController:getBridgeERC20Allowance',
-          'BridgeController:trackUnifiedSwapBridgeEvent',
-          'BridgeController:stopPollingForQuotes',
-          'GasFeeController:getState',
-          'AccountsController:getAccountByAddress',
-          'SnapController:handleRequest',
-          'TransactionController:getState',
-          'RemoteFeatureFlagController:getState',
-        ],
-        allowedEvents: [
-          'MultichainTransactionsController:transactionConfirmed',
-          'TransactionController:transactionFailed',
-          'TransactionController:transactionConfirmed',
-        ],
-      });
-    this.bridgeStatusController = new BridgeStatusController({
-      messenger: bridgeStatusControllerMessenger,
-      state: initState.BridgeStatusController,
-      fetchFn: async (url, requestOptions) => {
-        return await handleFetch(url, {
-          method: 'GET',
-          ...requestOptions,
-        });
-      },
-      addTransactionFn: (...args) => this.txController.addTransaction(...args),
-      addTransactionBatchFn: (...args) =>
-        this.txController.addTransactionBatch(...args),
-      estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
-      updateTransactionFn: (...args) =>
-        this.txController.updateTransaction(...args),
-      config: {
-        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
-      },
-      traceFn: (...args) => trace(...args),
-    });
-
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: (...args) => {
@@ -1483,6 +1331,9 @@ export default class MetamaskController extends EventEmitter {
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
+      SwapsController: SwapsControllerInit,
+      BridgeController: BridgeControllerInit,
+      BridgeStatusController: BridgeStatusControllerInit,
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
@@ -1555,6 +1406,9 @@ export default class MetamaskController extends EventEmitter {
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
       controllersByName.SmartTransactionsController;
+    this.swapsController = controllersByName.SwapsController;
+    this.bridgeController = controllersByName.BridgeController;
+    this.bridgeStatusController = controllersByName.BridgeStatusController;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
