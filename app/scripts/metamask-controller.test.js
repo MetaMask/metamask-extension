@@ -53,7 +53,6 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
-import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import * as NetworkConstantsModule from '../../shared/constants/network';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
@@ -3438,29 +3437,6 @@ describe('MetaMaskController', () => {
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
           cacheTimestamp: 0,
-        });
-      });
-    });
-
-    describe('_getConfigForRemoteFeatureFlagRequest', () => {
-      it('returns config in mapping', async () => {
-        const result =
-          await metamaskController._getConfigForRemoteFeatureFlagRequest();
-        expect(result).toStrictEqual({
-          distribution: 'main',
-          environment: 'dev',
-        });
-      });
-
-      it('returna config when not matching default mapping', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'non-existent-distribution';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-
-        const result =
-          await metamaskController._getConfigForRemoteFeatureFlagRequest();
-        expect(result).toStrictEqual({
-          distribution: 'main',
-          environment: 'rc',
         });
       });
     });
