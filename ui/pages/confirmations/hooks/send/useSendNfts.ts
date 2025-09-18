@@ -24,7 +24,7 @@ export const useSendNfts = () => {
       internalAccounts,
       chainNetworkNAmeAndImageMap,
     );
-  }, [nftsOwnedByAccounts, internalAccounts]);
+  }, [chainNetworkNAmeAndImageMap, nftsOwnedByAccounts, internalAccounts]);
 
   // Memoize the balance fetching function
   const fetchNftsWithBalances = useCallback(
