@@ -4528,7 +4528,7 @@ describe('MetaMaskController', () => {
         metamaskController.keyringController.state.keyrings[0].metadata.id;
 
       const wallet = {
-        discoverAndCreateAccounts: jest
+        discoverAccounts: jest
           .fn()
           .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
       };
@@ -4544,7 +4544,7 @@ describe('MetaMaskController', () => {
         { entropySource: primaryId },
       );
 
-      expect(wallet.discoverAndCreateAccounts).toHaveBeenCalledTimes(1);
+      expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
     });
 
@@ -4552,7 +4552,7 @@ describe('MetaMaskController', () => {
       const providedId = 'test-keyring-id';
 
       const wallet = {
-        discoverAndCreateAccounts: jest
+        discoverAccounts: jest
           .fn()
           .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
       };
@@ -4574,9 +4574,7 @@ describe('MetaMaskController', () => {
 
     it('returns zero counts on error', async () => {
       const wallet = {
-        discoverAndCreateAccounts: jest
-          .fn()
-          .mockRejectedValue(new Error('boom')),
+        discoverAccounts: jest.fn().mockRejectedValue(new Error('boom')),
       };
       metamaskController.messenger = {
         call: jest.fn().mockReturnValue(wallet),
