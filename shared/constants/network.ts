@@ -1,6 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
@@ -611,6 +611,7 @@ export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
+export const TRON_IMAGE_URL = './images/tron-logo.svg';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
   './images/xrplevm-native.svg';
@@ -1087,6 +1088,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
+  [MultichainNetworks.TRON]: TRON_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
@@ -1480,6 +1482,7 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
   SolScope.Mainnet,
   BtcScope.Mainnet,
+  TrxScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

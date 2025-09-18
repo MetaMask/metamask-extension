@@ -1,4 +1,4 @@
-import { SolScope } from '@metamask/keyring-api';
+import { SolScope, TrxScope } from '@metamask/keyring-api';
 import { Hex, KnownCaipNamespace } from '@metamask/utils';
 import {
   CHAIN_IDS,
@@ -27,6 +27,9 @@ const generateDefaultNetworkOrderControllerState =
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
           },
+          [KnownCaipNamespace.Tron]: {
+            [TrxScope.Mainnet]: true,
+          },
         },
       };
     }
@@ -39,6 +42,9 @@ const generateDefaultNetworkOrderControllerState =
         },
         [KnownCaipNamespace.Solana]: {
           [SolScope.Mainnet]: true,
+        },
+        [KnownCaipNamespace.Tron]: {
+          [TrxScope.Mainnet]: true,
         },
       },
     };

@@ -3088,6 +3088,18 @@ export function getIsSolanaSupportEnabled(state) {
 }
 
 /**
+ * Get the state of the `tronSupportEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `tronSupportEnabled` remote feature flag.
+ */
+export function getIsTronSupportEnabled(state) {
+  // const { addTronAccount } = getRemoteFeatureFlags(state);
+  // return Boolean(addTronAccount);
+  return true
+}
+
+/**
  * Checks if the new settings redesign is enabled
  *
  * @param state - The state of the application
