@@ -16,6 +16,9 @@ import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 import {
   MultichainAccountServiceCreateMultichainAccountGroupAction,
+  MultichainAccountServiceGetMultichainAccountWalletsAction,
+  MultichainAccountServiceMultichainAccountGroupCreatedEvent,
+  MultichainAccountServiceMultichainAccountGroupUpdatedEvent,
   MultichainAccountServiceWalletStatusChangeEvent,
 } from '@metamask/multichain-account-service';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
@@ -34,6 +37,7 @@ type Actions =
   | UserStorageController.UserStorageControllerPerformBatchSetStorage
   | AuthenticationController.AuthenticationControllerGetSessionProfile
   | MultichainAccountServiceCreateMultichainAccountGroupAction
+  | MultichainAccountServiceGetMultichainAccountWalletsAction
   | MetaMetricsControllerTrackEventAction;
 
 type Events =
@@ -41,6 +45,8 @@ type Events =
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerSelectedAccountChangeEvent
   | UserStorageController.UserStorageControllerStateChangeEvent
+  | MultichainAccountServiceMultichainAccountGroupCreatedEvent
+  | MultichainAccountServiceMultichainAccountGroupUpdatedEvent
   | MultichainAccountServiceWalletStatusChangeEvent;
 
 export type AccountTreeControllerMessenger = ReturnType<
@@ -65,6 +71,8 @@ export function getAccountTreeControllerMessenger(
       'AccountsController:selectedAccountChange',
       'UserStorageController:stateChange',
       'MultichainAccountService:walletStatusChange',
+      'MultichainAccountService:multichainAccountGroupCreated',
+      'MultichainAccountService:multichainAccountGroupUpdated',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
@@ -78,6 +86,7 @@ export function getAccountTreeControllerMessenger(
       'UserStorageController:performBatchSetStorage',
       'AuthenticationController:getSessionProfile',
       'MultichainAccountService:createMultichainAccountGroup',
+      'MultichainAccountService:getMultichainAccountWallets',
       'SnapController:get',
       'KeyringController:getState',
     ],
