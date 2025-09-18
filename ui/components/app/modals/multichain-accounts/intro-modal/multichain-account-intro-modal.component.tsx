@@ -9,7 +9,7 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 import {
   Box,
   Button,
@@ -19,8 +19,8 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../../component-library';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type MultichainAccountIntroModalProps = {
   onViewAccounts: () => void;

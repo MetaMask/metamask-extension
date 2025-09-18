@@ -6,8 +6,8 @@ import {
   hideModal,
   setMultichainIntroModalShown,
   alignMultichainWallets,
-} from '../../../../store/actions';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../helpers/constants/routes';
+} from '../../../../../store/actions';
+import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   MultichainAccountIntroModal,
   MultichainAccountIntroModalProps,
