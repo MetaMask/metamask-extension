@@ -1,13 +1,13 @@
 import React from 'react';
 import { DefaultRootState } from 'react-redux';
+import { fireEvent } from '@testing-library/react';
+
 import { getMockTokenTransferConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import * as RedesignedSendFlow from '../../../hooks/useRedesignedSendFlow';
 import * as ConfirmActions from '../../../hooks/useConfirmActions';
-
 import { WalletInitiatedHeader } from './wallet-initiated-header';
-import { fireEvent } from '@testing-library/react';
 
 const render = (
   state: DefaultRootState = getMockTokenTransferConfirmState({}),
