@@ -156,7 +156,8 @@ export const MultichainBridgeQuoteCard = ({
             >
               {t('multichainQuoteCardRateExplanation', [
                 new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                  ? BRIDGE_MM_FEE_RATE
+                  ? (activeQuote.quote.feeData.metabridge.quoteBpsFee ?? // TODO: add to typing in bridge-controller
+                    BRIDGE_MM_FEE_RATE)
                   : '0',
               ])}
             </Tooltip>
