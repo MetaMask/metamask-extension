@@ -20,7 +20,11 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  FEATURED_NETWORK_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -220,13 +224,26 @@ export class NetworkOrderController extends BaseController<
     const { namespace } = parseCaipChainId(caipId);
 
     if (namespace === (KnownCaipNamespace.Eip155 as string)) {
-      this.update((state) => {
-        // Enable the newly added network
-        state.enabledNetworkMap[namespace][networkId] = true;
-      });
+      // For EVM networks, check if it's a featured/additional network
+      const isFeaturedOrAdditionalNetwork =
+        FEATURED_NETWORK_CHAIN_IDS.includes(networkId);
+
+      if (isFeaturedOrAdditionalNetwork) {
+        this.update((state) => {
+          // For featured/additional networks, add to existing enabled networks
+          state.enabledNetworkMap[namespace][networkId] = true;
+        });
+      } else {
+        this.update((state) => {
+          // For custom networks, enable ONLY the custom network (disable all others)
+          state.enabledNetworkMap[namespace] = {
+            [networkId]: true,
+          };
+        });
+      }
     } else {
       this.update((state) => {
-        // Enable the newly added non-EVM network
+        // For non-EVM networks, add to existing enabled networks
         state.enabledNetworkMap[namespace][caipId] = true;
       });
     }

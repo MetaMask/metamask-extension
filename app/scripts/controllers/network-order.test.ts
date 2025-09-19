@@ -135,7 +135,7 @@ describe('NetworkOrderController - constructor', () => {
     });
   });
 
-  it('enables network when NetworkController:networkAdded event is emitted', () => {
+  it('enables featured network when NetworkController:networkAdded event is emitted', () => {
     const mocks = arrangeMockMessenger();
     const controller = new NetworkOrderController({
       messenger: mocks.messenger,
@@ -153,18 +153,56 @@ describe('NetworkOrderController - constructor', () => {
       },
     });
 
-    // Test EVM network addition
+    // Test featured EVM network addition (Base is in FEATURED_NETWORK_CHAIN_IDS)
     mocks.globalMessenger.publish('NetworkController:networkAdded', {
-      chainId: CHAIN_IDS.POLYGON,
+      chainId: CHAIN_IDS.BASE,
     } as unknown as NetworkConfiguration);
 
     expect(controller.state.enabledNetworkMap).toStrictEqual({
       [KnownCaipNamespace.Eip155]: {
         [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.POLYGON]: true, // Polygon has been enabled
+        [CHAIN_IDS.BASE]: true, // Base has been enabled
       },
       [KnownCaipNamespace.Solana]: {
         [SolScope.Mainnet]: true,
+      },
+      [KnownCaipNamespace.Bip122]: {},
+    });
+  });
+
+  it('enables only custom network and disables others when custom NetworkController:networkAdded event is emitted', () => {
+    const mocks = arrangeMockMessenger();
+    const controller = new NetworkOrderController({
+      messenger: mocks.messenger,
+      state: {
+        orderedNetworkList: [],
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.BASE]: true,
+          },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: true,
+          },
+          [KnownCaipNamespace.Bip122]: {},
+        },
+      },
+    });
+
+    // Test custom EVM network addition (0x1337 is NOT in FEATURED_NETWORK_CHAIN_IDS)
+    mocks.globalMessenger.publish('NetworkController:networkAdded', {
+      chainId: '0x1337',
+    } as unknown as NetworkConfiguration);
+
+    // Custom networks should disable all other EVM networks and enable only the custom network
+    expect(controller.state.enabledNetworkMap).toStrictEqual({
+      [KnownCaipNamespace.Eip155]: {
+        '0x1337': true, // Only the custom network is enabled
+        // All other EVM networks (Mainnet, Polygon, Base) are disabled
+      },
+      [KnownCaipNamespace.Solana]: {
+        [SolScope.Mainnet]: true, // Non-EVM networks remain unchanged
       },
       [KnownCaipNamespace.Bip122]: {},
     });
