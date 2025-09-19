@@ -27,42 +27,33 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
     reconnectDelay: 1000, // Conservative reconnect strategy
     maxReconnectDelay: 30000, // Allow longer delays for backend stability
     requestTimeout: 20000, // Reasonable timeout for backend requests
+    // Feature flag integration - service will check this callback before connecting/reconnecting
+    enabledCallback: () => {
+      try {
+        // Check for local environment variable override first (for development)
+        const envOverride = process.env.BACKEND_WEBSOCKET_CONNECTION_ENABLED as string | boolean | null;
+        if (envOverride !== null) {
+          return envOverride === true || envOverride === 'true';
+        }
+
+        // Fall back to remote feature flag
+        const remoteFeatureFlagState = initMessenger?.call('RemoteFeatureFlagController:getState');
+        return Boolean(
+          remoteFeatureFlagState?.remoteFeatureFlags?.backendWebSocketConnectionEnabled
+        );
+      } catch (error) {
+        // If feature flag check fails, default to NOT connecting for safer startup
+        console.warn('[BackendWebSocketService] Could not check feature flag, defaulting to NOT connect:', error);
+        return false;
+      }
+    },
   });
 
-  // Check feature flag before connecting
-  try {
-    let isWebSocketEnabled: boolean;
-
-    // Check for local environment variable override first (for development)
-    const envOverride = process.env.BACKEND_WEBSOCKET_CONNECTION_ENABLED as string | boolean | null;
-    if (envOverride !== null) {
-      isWebSocketEnabled = envOverride === true || envOverride === 'true';
-      console.log(`[BackendWebSocketService] Using environment variable override: ${isWebSocketEnabled}`);
-    } else {
-      // Fall back to remote feature flag
-      const remoteFeatureFlagState = initMessenger?.call('RemoteFeatureFlagController:getState');
-      isWebSocketEnabled = Boolean(
-        remoteFeatureFlagState?.remoteFeatureFlags?.backendWebSocketConnectionEnabled
-      );
-      console.log(`[BackendWebSocketService] Using remote feature flag: ${isWebSocketEnabled}`);
-    }
-
-    if (isWebSocketEnabled) {
-      // Connect to WebSocket if feature flag is enabled
-      controller.connect().catch((error) => {
-        console.warn('[BackendWebSocketService] Failed to connect during initialization:', error);
-        // Don't throw here - let the service handle reconnection logic
-      });
-    } else {
-      console.log('[BackendWebSocketService] Connection disabled by feature flag');
-    }
-  } catch (error) {
-    // If feature flag check fails, default to connecting for backward compatibility
-    console.warn('[BackendWebSocketService] Could not check feature flag, defaulting to connect:', error);
-    controller.connect().catch((connectionError) => {
-      console.warn('[BackendWebSocketService] Failed to connect during initialization:', connectionError);
-    });
-  }
+  // Start connection attempt (service will check enabledCallback internally)
+  controller.connect().catch((error) => {
+    console.warn('[BackendWebSocketService] Failed to connect during initialization:', error);
+    // Don't throw here - let the service handle reconnection logic
+  });
 
   return {
     memStateKey: null,
