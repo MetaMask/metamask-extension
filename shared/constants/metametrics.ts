@@ -777,6 +777,7 @@ export enum MetaMetricsEventName {
   PhishingPageDisplayed = 'Phishing Page Displayed',
   ProceedAnywayClicked = 'Proceed Anyway Clicked',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
+  EmptyDeFiTabButtonClicked = 'Empty DeFi Tab Button Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',

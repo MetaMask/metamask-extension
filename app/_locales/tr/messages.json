@@ -3714,9 +3714,6 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
-  "noDeFiPositions": {
-    "message": "Aradığınızı bulamıyor musunuz?"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
@@ -4607,9 +4604,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
-  },
-  "protocolNotSupported": {
-    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
   },
   "provide": {
     "message": "Sun"

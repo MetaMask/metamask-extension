@@ -3744,9 +3744,6 @@
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
-  "noDeFiPositions": {
-    "message": "Không tìm thấy điều bạn đang tìm kiếm?"
-  },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
   },
@@ -4641,9 +4638,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
-  },
-  "protocolNotSupported": {
-    "message": "Chúng tôi có thể chưa hỗ trợ giao thức của bạn."
   },
   "provide": {
     "message": "Cung cấp"
