@@ -68,6 +68,11 @@ class NetworkManager {
     await this.driver.clickElementSafe(this.networkListItem(chainId));
   }
 
+  async selectNetworkByName(networkName: string): Promise<void> {
+    console.log(`Selecting network by name: ${networkName} on network manager`);
+    await this.driver.clickElement(`[data-testid="${networkName}"]`);
+  }
+
   async checkAllPopularNetworksIsSelected(): Promise<void> {
     console.log('Checking if "All popular networks" is selected');
 
@@ -142,7 +147,7 @@ class NetworkManager {
     console.log(`Checking if ${tabName} tab is selected`);
     // Find the active tab and verify it contains "Custom" text
     await this.driver.waitForSelector({
-      css: `${this.tabList} li.tab--active button`,
+      css: `${this.tabList} div.tab--active button`,
       text: tabName,
     });
     console.log(`${tabName} tab is properly selected`);

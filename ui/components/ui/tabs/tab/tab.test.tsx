@@ -20,9 +20,14 @@ describe('Tab', () => {
     expect(getByText('Test Tab')).toBeInTheDocument();
   });
 
-  it('applies active class when isActive is true', () => {
-    const { container } = renderTab({ isActive: true });
-    expect(container.firstChild).toHaveClass('tab--active');
+  it('sets aria-selected to true when isActive is true', () => {
+    const { getByRole } = renderTab({ isActive: true });
+    expect(getByRole('tab')).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('sets aria-selected to false when isActive is false', () => {
+    const { getByRole } = renderTab({ isActive: false });
+    expect(getByRole('tab')).toHaveAttribute('aria-selected', 'false');
   });
 
   it('applies custom activeClassName when provided and active', () => {
@@ -98,9 +103,9 @@ describe('Tab', () => {
     expect(getByTestId('complex-name')).toBeInTheDocument();
   });
 
-  it('applies disabled class when disabled is true', () => {
-    const { container } = renderTab({ disabled: true });
-    expect(container.firstChild).toHaveClass('tab--disabled');
+  it('sets aria-disabled to true when disabled is true', () => {
+    const { getByRole } = renderTab({ disabled: true });
+    expect(getByRole('tab')).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('does not call onClick when disabled and clicked', () => {
