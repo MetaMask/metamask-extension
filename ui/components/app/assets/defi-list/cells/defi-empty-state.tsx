@@ -51,7 +51,7 @@ export const DeFiEmptyStateMessage: FC = () => {
 
   return (
     <TabEmptyState
-      icon={<img src={defiIcon} alt={t('defi')} width={64} height={64} />}
+      icon={<img src={defiIcon} alt={t('defi')} width={72} height={72} />}
       description={t('defiEmptyDescription')}
       actionButtonText={t('exploreDefi')}
       onAction={handleExploreDefi}

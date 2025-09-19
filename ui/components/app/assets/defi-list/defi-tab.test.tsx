@@ -175,7 +175,6 @@ describe('DefiList', () => {
     });
 
     await waitFor(() => {
-      // Check for new TabEmptyState content
       expect(
         screen.getByText('Lend, borrow, and trade, right in your wallet.'),
       ).toBeInTheDocument();
