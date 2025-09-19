@@ -3,14 +3,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { NftEmptyState } from './nft-empty-state';
-
-// Mock the portfolio utility
-jest.mock('../../../../../helpers/utils/portfolio', () => ({
-  getPortfolioUrl: jest.fn(
-    () => 'https://portfolio.metamask.io/explore/nfts?test=params',
-  ),
-}));
 
 // Mock global platform
 const mockOpenTab = jest.fn();
@@ -23,8 +17,8 @@ global.platform = {
 describe('NftEmptyState', () => {
   const mockStore = configureMockStore([]);
 
-  const renderComponent = (props = {}) => {
-    const store = mockStore(mockState);
+  const renderComponent = (props = {}, stateOverride = {}) => {
+    const store = mockStore({ ...mockState, ...stateOverride });
     return renderWithProvider(<NftEmptyState {...props} />, store);
   };
 
@@ -32,50 +26,64 @@ describe('NftEmptyState', () => {
     jest.clearAllMocks();
   });
 
-  describe('Rendering', () => {
-    it('should render the component with correct test id', () => {
-      renderComponent();
-      expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
-    });
-
-    it('should render description text', () => {
-      renderComponent();
-      expect(
-        screen.getByText(
-          "There's a world of NFTs out there. Start your collection today.",
-        ),
-      ).toBeInTheDocument();
-    });
-
-    it('should render discover button', () => {
-      renderComponent();
-      expect(
-        screen.getByRole('button', { name: 'Discover NFTs' }),
-      ).toBeInTheDocument();
-    });
-
-    it('should apply custom className when provided', () => {
-      const customClassName = 'custom-test-class';
-      renderComponent({ className: customClassName });
-
-      const emptyState = screen.getByTestId('nft-tab-empty-state');
-      expect(emptyState).toHaveClass(customClassName);
-    });
+  it('should render the component with correct test id', () => {
+    renderComponent();
+    expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
   });
 
-  describe('User Interactions', () => {
-    it('should call openTab when discover button is clicked', () => {
-      renderComponent();
+  it('should render description text', () => {
+    renderComponent();
+    expect(
+      screen.getByText(
+        "There's a world of NFTs out there. Start your collection today.",
+      ),
+    ).toBeInTheDocument();
+  });
 
-      const discoverButton = screen.getByRole('button', {
-        name: 'Discover NFTs',
-      });
-      fireEvent.click(discoverButton);
+  it('should render discover button', () => {
+    renderComponent();
+    expect(
+      screen.getByRole('button', { name: 'Discover NFTs' }),
+    ).toBeInTheDocument();
+  });
 
-      expect(mockOpenTab).toHaveBeenCalledTimes(1);
-      expect(mockOpenTab).toHaveBeenCalledWith({
-        url: 'https://portfolio.metamask.io/explore/nfts?test=params',
-      });
+  it('should apply custom className when provided', () => {
+    const customClassName = 'custom-test-class';
+    renderComponent({ className: customClassName });
+
+    const emptyState = screen.getByTestId('nft-tab-empty-state');
+    expect(emptyState).toHaveClass(customClassName);
+  });
+
+  it('should call openTab when discover button is clicked', () => {
+    renderComponent();
+
+    const discoverButton = screen.getByRole('button', {
+      name: 'Discover NFTs',
     });
+    fireEvent.click(discoverButton);
+
+    expect(mockOpenTab).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render light theme icon by default', () => {
+    renderComponent();
+
+    const image = screen.getByAltText('NFTs');
+    expect(image).toHaveAttribute('src', './images/empty-state-nfts-light.png');
+  });
+
+  it('should render dark theme icon when theme is dark', () => {
+    const darkThemeState = {
+      metamask: {
+        ...mockState.metamask,
+        theme: ThemeType.dark,
+      },
+    };
+
+    renderComponent({}, darkThemeState);
+
+    const image = screen.getByAltText('NFTs');
+    expect(image).toHaveAttribute('src', './images/empty-state-nfts-dark.png');
   });
 });
