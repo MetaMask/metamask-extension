@@ -42,16 +42,9 @@ function wrapElementWithAPI(element, driver) {
     // The 'fill' method in playwright replaces existing input
     await driver.wait(until.elementIsVisible(element));
 
-    // Try 2 ways to clear input fields, first try with clear() method
-    // Use keyboard simulation if the input field is not empty
-    await element.sendKeys(
-      Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
-    );
-
     // Wait for DOM to update before checking if clearing worked
     await new Promise((resolve) => setTimeout(resolve, 200));
 
-    // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
     if ((await element.getProperty('value')) !== '') {
       await driver.driver
         .actions()
@@ -64,7 +57,7 @@ function wrapElementWithAPI(element, driver) {
       // Wait for second clearing method to complete
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
-    await element.sendKeys(input);
+    await driver.driver.actions().click(element).sendKeys(input).perform();
   };
 
   element.waitForElementState = async (state, timeout) => {
@@ -682,6 +675,7 @@ class Driver {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
         const element = await this.findClickableElement(rawLocator);
+        await this.scrollToElement(element);
         await element.click();
         return;
       } catch (error) {
@@ -878,7 +872,7 @@ class Driver {
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
-      'arguments[0].scrollIntoView(true)',
+      'arguments[0].scrollIntoView({block: "center", inline: "center", behavior: "instant"});',
       element,
     );
   }
@@ -987,11 +981,25 @@ class Driver {
         '\\"',
       )}")`,
     );
-    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+    const element = await this.findElement(rawLocator);
+    await this.driver
+      .actions()
+      .click(element)
+      .keyDown(this.Key.MODIFIER)
+      .sendKeys('v')
+      .keyUp(this.Key.MODIFIER)
+      .perform();
   }
 
   async pasteFromClipboardIntoField(rawLocator) {
-    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+    const element = await this.findElement(rawLocator);
+    await this.driver
+      .actions()
+      .click(element)
+      .keyDown(this.Key.MODIFIER)
+      .sendKeys('v')
+      .keyUp(this.Key.MODIFIER)
+      .perform();
   }
 
   // Navigation
@@ -1210,8 +1218,8 @@ class Driver {
    */
   async switchToWindowWithTitle(title) {
     if (this.windowHandles) {
-      await this.windowHandles.switchToWindowWithProperty('title', title);
-      return;
+        await this.windowHandles.switchToWindowWithProperty('title', title);
+        return;
     }
 
     let windowHandles = await this.driver.getAllWindowHandles();
@@ -1240,10 +1248,10 @@ class Driver {
       timeElapsed += delayTime;
       // refresh the window handles
       windowHandles = await this.driver.getAllWindowHandles();
-    }
+          }
 
     throw new Error(`No window with title: ${title}`);
-  }
+    }
 
   /**
    * Waits until there is a window/tab with the given title, without changing the current window focus.

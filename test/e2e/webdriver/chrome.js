@@ -31,7 +31,7 @@ class ChromeDriver {
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,DisableLoadExtensionCommandLineSwitch', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
     ];
@@ -76,9 +76,7 @@ class ChromeDriver {
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
-
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
+    options.setBrowserVersion('140');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
@@ -88,9 +86,18 @@ class ChromeDriver {
       });
     }
 
+    // To to make Chrome extension target pages available, that would otherwise be hidden by default from Chrome 136 onward
+    const chromeOptionsCaps = {
+      args,
+      enableExtensionTargets: true,
+    };
+
     const builder = new Builder()
       .forBrowser('chrome')
-      .setChromeOptions(options);
+      .setChromeOptions(options)
+      .withCapabilities({
+        'goog:chromeOptions': chromeOptionsCaps,
+      });
     const service = new chrome.ServiceBuilder();
 
     // Enables Chrome logging. Default: enabled
@@ -138,7 +145,9 @@ class ChromeDriver {
 
       for (let i = 0; i < extensions.length; i++) {
         const extension = extensions[i].shadowRoot
-        const name = extension.querySelector('#name').textContent
+        const nameElement = extension.querySelector('#name');
+        const name = nameElement.textContent?.trim();
+
         if (name.startsWith("${extensionName}")) {
           return extensions[i].getAttribute("id")
         }
