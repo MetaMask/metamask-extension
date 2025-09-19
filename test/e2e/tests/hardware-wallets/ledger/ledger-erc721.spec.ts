@@ -91,7 +91,7 @@ describe('Ledger Hardware', function (this: Suite) {
           balance?.toString(),
         );
 
-        const contractAddress = contractRegistry.getContractAddress(erc721);
+        const contractAddress = await contractRegistry.getContractAddress(erc721);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
           contractAddress,
@@ -153,7 +153,7 @@ describe('Ledger Hardware', function (this: Suite) {
           balance?.toString(),
         );
 
-        const contractAddress = contractRegistry.getContractAddress(erc721);
+        const contractAddress = await contractRegistry.getContractAddress(erc721);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
           contractAddress,
@@ -213,7 +213,7 @@ describe('Ledger Hardware', function (this: Suite) {
           balance?.toString(),
         );
 
-        const contractAddress = contractRegistry.getContractAddress(erc721);
+        const contractAddress = await contractRegistry.getContractAddress(erc721);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
           contractAddress,
