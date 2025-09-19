@@ -1,5 +1,6 @@
 import { providerErrors } from '@metamask/rpc-errors';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
@@ -173,20 +174,33 @@ async function getAlerts(pendingApproval, data) {
   if (data.matchedChain) {
     if (
       data.matchedChain.name?.toLowerCase() !==
-      pendingApproval.requestData.chainName.toLowerCase()
+        pendingApproval.requestData.chainName.toLowerCase() &&
+      NETWORKS_BYPASSING_VALIDATION[
+        pendingApproval.requestData.chainId
+      ]?.name?.toLowerCase() !==
+        pendingApproval.requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
       data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
-      pendingApproval.requestData.ticker?.toLowerCase()
+        pendingApproval.requestData.ticker?.toLowerCase() &&
+      NETWORKS_BYPASSING_VALIDATION[
+        pendingApproval.requestData.chainId
+      ]?.symbol?.toLowerCase() !==
+        pendingApproval.requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
     if (
-      !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
+      !data.matchedChain.rpc
+        ?.map((rpc) => new URL(rpc).origin)
+        .includes(origin) &&
+      !NETWORKS_BYPASSING_VALIDATION[
+        pendingApproval.requestData.chainId
+      ]?.rpcUrl?.includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }

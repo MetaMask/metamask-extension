@@ -91,6 +91,15 @@ describe('isOriginalNativeTokenSymbol', () => {
     expect(result).toBe(true);
   });
 
+  it('should return true when ticker HYPE (Hyper EVM) is found in the network collision map', async () => {
+    const params = arrangeParams();
+    params.chainId = '0x3e7';
+    params.ticker = 'HYPE';
+
+    const result = await isOriginalNativeTokenSymbol(params);
+    expect(result).toBe(true);
+  });
+
   it('should return false when ticker does not match the network collision map', async () => {
     const params = arrangeParams();
     params.chainId = '0x15b38';
