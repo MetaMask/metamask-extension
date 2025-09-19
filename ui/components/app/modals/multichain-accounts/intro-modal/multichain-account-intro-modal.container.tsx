@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -16,13 +16,33 @@ import {
 export const MultichainAccountIntroModalContainer: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [isAligning, setIsAligning] = useState(false);
+
+  // Start alignment when modal opens (like mobile)
+  useEffect(() => {
+    const performAlignment = async () => {
+      setIsAligning(true);
+      try {
+        await Promise.all([
+          alignMultichainWallets(),
+          new Promise((resolve) => setTimeout(resolve, 2000)), // Minimum 2s UX feedback
+        ]);
+      } catch (error) {
+        console.error('Wallet alignment failed:', error);
+      } finally {
+        setIsAligning(false);
+      }
+    };
+
+    performAlignment();
+  }, []);
 
   const handleViewAccounts = useCallback(async () => {
-    // Trigger wallet alignment with minimum 2 second UX feedback
-    await Promise.all([
-      alignMultichainWallets(),
-      new Promise((resolve) => setTimeout(resolve, 2000)),
-    ]);
+    // If alignment is still in progress, wait for it
+    if (isAligning) {
+      // Wait for alignment to complete
+      return;
+    }
 
     // Mark modal as shown so it doesn't show again
     dispatch(setMultichainIntroModalShown(true));
@@ -30,7 +50,7 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
 
     // Navigate to account list
     history.push(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [dispatch, history]);
+  }, [dispatch, history, isAligning]);
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page
@@ -51,6 +71,7 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
     onViewAccounts: handleViewAccounts,
     onLearnMore: handleLearnMore,
     onClose: handleClose,
+    isLoading: isAligning,
   };
 
   return <MultichainAccountIntroModal {...props} />;

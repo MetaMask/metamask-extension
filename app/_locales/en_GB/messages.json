@@ -3527,6 +3527,10 @@
     "message": "Same address, more networks",
     "description": "Title for the second section of the multichain account intro modal"
   },
+  "multichainAccountIntroSettingUp": {
+    "message": "Setting up your accounts...",
+    "description": "Loading text shown while setting up multichain accounts"
+  },
   "multichainAccountIntroViewAccounts": {
     "message": "View accounts",
     "description": "Button text to view accounts from the intro modal"

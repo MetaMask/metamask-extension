@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import {
   AlignItems,
   BackgroundColor,
@@ -26,37 +26,14 @@ export type MultichainAccountIntroModalProps = {
   onViewAccounts: () => void;
   onLearnMore: () => void;
   onClose: () => void;
+  isLoading?: boolean;
 };
 
 export const MultichainAccountIntroModal: React.FC<
   MultichainAccountIntroModalProps
-> = ({ onViewAccounts, onLearnMore, onClose }) => {
+> = ({ onViewAccounts, onLearnMore, onClose, isLoading = false }) => {
   const t = useI18nContext();
-  const [isLoading, setIsLoading] = useState(false);
-  const isMountedRef = useRef(true);
 
-  const handleViewAccounts = async () => {
-    setIsLoading(true);
-
-    try {
-      await onViewAccounts();
-    } catch (error) {
-      console.error('Failed to process view accounts:', error);
-    } finally {
-      // Only update state if component is still mounted
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  // Cleanup on unmount
-  React.useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
 
   return (
     <Box
@@ -165,11 +142,14 @@ export const MultichainAccountIntroModal: React.FC<
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={handleViewAccounts}
+          onClick={onViewAccounts}
           loading={isLoading}
           disabled={isLoading}
         >
-          {t('multichainAccountIntroViewAccounts')}
+          {isLoading
+            ? t('multichainAccountIntroSettingUp')
+            : t('multichainAccountIntroViewAccounts')
+          }
         </Button>
 
         <Button
