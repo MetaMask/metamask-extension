@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../test/data/mock-state.json';
+import { EVM_ASSET } from '../../../../../../test/data/send/assets';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
@@ -10,7 +11,6 @@ import * as SendActions from '../../../hooks/send/useSendActions';
 import * as SendContext from '../../../context/send';
 import * as RecipientValidation from '../../../hooks/send/useRecipientValidation';
 import { AmountRecipient } from './amount-recipient';
-import { EVM_ASSET } from '../../../../../../test/data/send/assets';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 
