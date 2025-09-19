@@ -8,10 +8,10 @@ import { useSelector } from 'react-redux';
 import { toHex } from '../../../../../shared/lib/delegation/utils';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import { useSendContext } from '../../context/send';
 import { useSendNfts } from './useSendNfts';
-import { Asset } from '../../types/send';
 
 export const useSendQueryParams = () => {
   const {

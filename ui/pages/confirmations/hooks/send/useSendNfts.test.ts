@@ -3,6 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
+import {
+  getAccountGroupWithInternalAccounts,
+  getSelectedAccountGroup,
+} from '../../../../selectors/multichain-accounts/account-tree';
 // This is fine to use it in send flow - might be removed in the future
 // eslint-disable-next-line no-restricted-syntax
 import { getNftsByChainByAccount } from '../../../../selectors/nft';
@@ -10,10 +14,6 @@ import { AssetStandard, type Asset } from '../../types/send';
 import * as useChainNetworkNameAndImageModule from '../useChainNetworkNameAndImage';
 import * as useERC1155BalanceCheckerModule from './useERC1155BalanceChecker';
 import { useSendNfts } from './useSendNfts';
-import {
-  getAccountGroupWithInternalAccounts,
-  getSelectedAccountGroup,
-} from '../../../../selectors/multichain-accounts/account-tree';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

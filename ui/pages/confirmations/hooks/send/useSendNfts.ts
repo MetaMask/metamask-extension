@@ -6,14 +6,14 @@ import { useSelector } from 'react-redux';
 // This is fine to use it in send flow - might be removed in the future
 // eslint-disable-next-line no-restricted-syntax
 import { getNftsByChainByAccount } from '../../../../selectors/nft';
-import { getInternalAccounts } from '../../../../selectors';
-import { type Asset, AssetStandard } from '../../types/send';
-import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
-import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';
 import {
   getAccountGroupWithInternalAccounts,
   getSelectedAccountGroup,
 } from '../../../../selectors/multichain-accounts/account-tree';
+import { getInternalAccounts } from '../../../../selectors';
+import { type Asset, AssetStandard } from '../../types/send';
+import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
+import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';
 
 export const useSendNfts = () => {
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
