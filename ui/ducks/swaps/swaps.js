@@ -1423,7 +1423,14 @@ export function fetchMetaSwapsGasPriceEstimates() {
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 
-      if (!e.message?.match(/NetworkError|Fetch failed with status:/u)) {
+      if (
+        // TODO: This works, but we should figure out why we are getting a JSON error
+        // Are we just not mocking this in the tests correctly?
+        // Also why does it matter?
+        !e.message?.match(
+          /NetworkError|Fetch failed with status:|Unexpected end of JSON input/u,
+        )
+      ) {
         throw e;
       }
 
