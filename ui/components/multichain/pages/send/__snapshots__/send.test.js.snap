@@ -67,7 +67,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="mm-box min-w-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -237,7 +237,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                               >
                                 <div
-                                  class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                                  class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                                 >
                                   <div
                                     class="flex [&>div]:!rounded-none"
@@ -296,7 +296,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                         class="mm-box mm-box--display-none mm-box--sm:display-flex"
                       >
                         <div
-                          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                         >
                           <div
                             class="flex [&>div]:!rounded-none"

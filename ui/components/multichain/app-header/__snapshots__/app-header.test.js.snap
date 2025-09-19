@@ -103,7 +103,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           class="flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
