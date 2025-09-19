@@ -1,15 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  Box,
-} from '../../../component-library';
-import {
-  Display,
-  JustifyContent,
-  AlignItems,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
+import { Box } from '../../../component-library';
 import Spinner from '../../../ui/spinner';
 import {
   getIsMainnet,
@@ -32,8 +24,8 @@ import {
 import { getNftImage } from '../../../../helpers/utils/nfts';
 import { useRedesignedSendFlow } from '../../../../pages/confirmations/hooks/useRedesignedSendFlow';
 import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
-import { NFT } from './types';
 import { NftEmptyState } from '../../../app/assets/nfts/nft-empty-state';
+import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
   collectionName: string;
