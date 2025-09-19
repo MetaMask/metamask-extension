@@ -3753,9 +3753,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Τα Snaps και τα περισσότερα πορτοφόλια υλικού δεν θα λειτουργούν με την τρέχουσα έκδοση του προγράμματος περιήγησής σας."
   },
-  "noNFTs": {
-    "message": "Δεν υπάρχουν NFT ακόμα"
-  },
   "noNetworksAvailable": {
     "message": "Δεν υπάρχουν διαθέσιμα δίκτυα"
   },

@@ -3753,9 +3753,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
   },
-  "noNFTs": {
-    "message": "Chưa có NFT"
-  },
   "noNetworksAvailable": {
     "message": "Không có mạng nào khả dụng"
   },
