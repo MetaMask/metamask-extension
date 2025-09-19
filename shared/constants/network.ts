@@ -294,26 +294,26 @@ export const DEPRECATED_NETWORKS = [
  */
 export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 
-export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
+export const MAINNET_DISPLAY_NAME = 'Ethereum';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
 export const LINEA_GOERLI_DISPLAY_NAME = 'Linea Goerli';
 export const LINEA_SEPOLIA_DISPLAY_NAME = 'Linea Sepolia';
-export const LINEA_MAINNET_DISPLAY_NAME = 'Linea Mainnet';
+export const LINEA_MAINNET_DISPLAY_NAME = 'Linea';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
-export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
+export const BSC_DISPLAY_NAME = 'BNB Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
-export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
-export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
+export const AVALANCHE_DISPLAY_NAME = 'Avalanche';
+export const ARBITRUM_DISPLAY_NAME = 'Arbitrum';
 export const BNB_DISPLAY_NAME = 'BNB Chain';
-export const OPTIMISM_DISPLAY_NAME = 'OP Mainnet';
+export const OPTIMISM_DISPLAY_NAME = 'OP';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
-export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
-export const BASE_DISPLAY_NAME = 'Base Mainnet';
+export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era';
+export const BASE_DISPLAY_NAME = 'Base';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CRONOS_DISPLAY_NAME = 'Cronos';
 export const POLYGON_ZKEVM_DISPLAY_NAME = 'Polygon zkEVM';
@@ -340,7 +340,7 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
-export const SEI_DISPLAY_NAME = 'Sei Mainnet';
+export const SEI_DISPLAY_NAME = 'Sei';
 export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
@@ -1413,7 +1413,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
   },
   {
     chainId: CHAIN_IDS.POLYGON,
-    name: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
+    name: POLYGON_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.POL,
     rpcEndpoints: [
       {

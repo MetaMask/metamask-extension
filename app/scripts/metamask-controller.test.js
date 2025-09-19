@@ -3871,6 +3871,83 @@ describe('MetaMaskController', () => {
           ).toHaveLength(0);
         });
       });
+
+      it('updates network names for new users (Linea and Base)', () => {
+        const initState = cloneDeep(firstTimeState);
+        delete initState.NetworkController;
+
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+        });
+
+        const networkState = metamaskController.networkController.state;
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.LINEA_MAINNET]
+            .name,
+        ).toBe('Linea');
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE].name,
+        ).toBe('Base');
+      });
+
+      it('does not update network names for existing users', () => {
+        const initState = cloneDeep(firstTimeState);
+        initState.NetworkController = mockNetworkState(
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            nickname: 'Ethereum Mainnet',
+          },
+          {
+            chainId: CHAIN_IDS.LINEA_MAINNET,
+            nickname: 'Linea Mainnet',
+          },
+          {
+            chainId: CHAIN_IDS.BASE,
+            nickname: 'Base Mainnet',
+          },
+        );
+
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+        });
+
+        const networkState = metamaskController.networkController.state;
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.LINEA_MAINNET]
+            .name,
+        ).toBe('Linea Mainnet');
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE].name,
+        ).toBe('Base Mainnet');
+      });
     });
 
     describe('#syncSeedPhrases', () => {

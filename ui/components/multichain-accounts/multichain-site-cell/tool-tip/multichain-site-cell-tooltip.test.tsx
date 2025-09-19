@@ -9,6 +9,13 @@ import { AccountGroupWithInternalAccounts } from '../../../../selectors/multicha
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
 import { getIconSeedAddressesByAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
 import {
+  BNB_DISPLAY_NAME,
+  LINEA_MAINNET_DISPLAY_NAME,
+  MAINNET_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
+} from '../../../../../shared/constants/network';
+import {
   MultichainSiteCellTooltip,
   MultichainSiteCellTooltipProps,
 } from './multichain-site-cell-tooltip';
@@ -103,7 +110,7 @@ describe('MultichainSiteCellTooltip', () => {
 
   const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
     {
-      name: 'Ethereum Mainnet',
+      name: MAINNET_DISPLAY_NAME,
       chainId: '0x1',
       caipChainId: 'eip155:1' as CaipChainId,
       blockExplorerUrls: ['mock-mainnet-url'],
@@ -118,7 +125,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: 'zkSync Era Mainnet',
+      name: ZK_SYNC_ERA_DISPLAY_NAME,
       chainId: '0x144',
       caipChainId: 'eip155:324' as CaipChainId,
       blockExplorerUrls: ['mock-zksync-url'],
@@ -133,7 +140,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: 'Binance Smart Chain',
+      name: BNB_DISPLAY_NAME,
       chainId: '0x38',
       caipChainId: 'eip155:56' as CaipChainId,
       blockExplorerUrls: ['mock-bsc-url'],
@@ -148,7 +155,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: 'Polygon',
+      name: POLYGON_DISPLAY_NAME,
       chainId: '0x89',
       caipChainId: 'eip155:137' as CaipChainId,
       blockExplorerUrls: ['mock-polygon-url'],
@@ -163,7 +170,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: 'Linea Mainnet',
+      name: LINEA_MAINNET_DISPLAY_NAME,
       chainId: '0xe708',
       caipChainId: 'eip155:59144' as CaipChainId,
       blockExplorerUrls: ['mock-linea-url'],

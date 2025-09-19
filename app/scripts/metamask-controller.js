@@ -610,6 +610,11 @@ export default class MetamaskController extends EventEmitter {
       networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('base-mainnet');
 
+      // Update default popular network names
+      networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
+      networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
+      networks[CHAIN_IDS.BASE].name = 'Base';
+
       let network;
       if (process.env.IN_TEST) {
         network = {
