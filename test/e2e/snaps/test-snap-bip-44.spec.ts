@@ -91,7 +91,6 @@ describe('Test Snap bip-44', function () {
           text: 'Entropy source with ID "invalid" not found.',
           windowTitle: WINDOW_TITLES.TestSnaps,
         });
-        await driver.closeAlertPopup();
       },
     );
   });

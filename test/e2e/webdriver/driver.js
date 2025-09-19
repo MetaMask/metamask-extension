@@ -1483,7 +1483,7 @@ class Driver {
               /Alert text\s*:\s*(.+?)(?:\s*\}|$)/u,
             );
             if (alertTextMatch) {
-              const alertText = alertTextMatch[1];
+              const alertText = alertTextMatch[1].trim();
               if (alertText !== text) {
                 throw new Error(
                   `Expected alert text to be "${text}", but got "${alertText}".`,
@@ -1492,7 +1492,7 @@ class Driver {
               return true;
             }
             throw new Error(
-              'Could not extract alert text from UnexpectedAlertOpenError',
+              `Could not extract alert text from UnexpectedAlertOpenError. Full error message: "${error.message}"`,
             );
           } else {
             throw error;

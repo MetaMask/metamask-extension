@@ -121,13 +121,12 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
 
-        // Check the error message and close the alert.
+        // Verify that the expected error alert appears
 
         await driver.waitForBrowserAlert({
           text: 'Entropy source with ID "invalid" not found.',
           windowTitle: WINDOW_TITLES.TestSnaps,
         });
-        await driver.closeAlertPopup();
       },
     );
   });
