@@ -34,9 +34,10 @@ const mapStateToProps = (state) => {
     };
   }
 
-  const selectedAccount = getSelectedInternalAccount(state);
   return {
-    accountLabel: selectedAccount?.metadata?.name ?? selectedAccount.address,
+    accountLabel:
+      getSelectedInternalAccount(state)?.metadata?.name ??
+      getSelectedInternalAccount(state).address,
     connectedSubjects,
     subjects: getPermissionSubjects(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
