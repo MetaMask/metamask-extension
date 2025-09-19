@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import {
   type QuoteResponse,
-  isSolanaChainId,
   formatChainIdToCaip,
   isNativeAddress,
 } from '@metamask/bridge-controller';
@@ -13,6 +12,7 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
+import { isNonEvmChain } from '../../../ducks/bridge/utils';
 
 export const formatTokenAmount = (
   locale: string,
@@ -65,12 +65,12 @@ export const isQuoteExpiredOrInvalid = ({
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
-  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-Solana chains)
+  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-EVM chains)
   if (
     isQuoteExpired &&
     (!insufficientBal ||
-      // `insufficientBal` is always true for Solana
-      (fromChain && isSolanaChainId(fromChain.chainId)))
+      // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
+      (fromChain && isNonEvmChain(fromChain.chainId)))
   ) {
     return true;
   }
