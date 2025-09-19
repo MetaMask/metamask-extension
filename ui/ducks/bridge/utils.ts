@@ -40,7 +40,9 @@ import type { TokenPayload, BridgeToken } from './types';
  * @param chainId - The chain ID to check
  * @returns True if the chain is non-EVM (Solana or Bitcoin), false otherwise
  */
-export const isNonEvmChain = (chainId: string | Hex | CaipChainId): boolean => {
+export const isNonEvmChain = (
+  chainId: string | number | Hex | CaipChainId,
+): boolean => {
   return isSolanaChainId(chainId) || isBitcoinChainId(chainId);
 };
 

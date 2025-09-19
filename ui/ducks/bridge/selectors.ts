@@ -83,6 +83,7 @@ import {
   tokenPriceInNativeAsset,
   getDefaultToToken,
   toBridgeToken,
+  isNonEvmChain,
 } from './utils';
 import type { BridgeState } from './types';
 
@@ -375,7 +376,7 @@ const _getFromNativeBalance = createSelector(
     const { decimals, address, assetId } = getNativeAssetForChainId(chainId);
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
-    if (isSolanaChainId(chainId) || isBitcoinChainId(chainId)) {
+    if (isNonEvmChain(chainId)) {
       let caipAssetType: CaipAssetType | string;
       if (isSolanaChainId(chainId)) {
         caipAssetType = isNativeAddress(address)
@@ -423,7 +424,7 @@ export const getFromTokenBalance = createSelector(
     const { chainId, decimals, address, assetId } = fromToken;
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
-    if (isSolanaChainId(chainId) || isBitcoinChainId(chainId)) {
+    if (isNonEvmChain(chainId)) {
       let caipAssetType: CaipAssetType | string;
       if (isSolanaChainId(chainId)) {
         caipAssetType = isNativeAddress(address)
@@ -501,13 +502,11 @@ export const getFromTokenConversionRate = createSelector(
         fromToken.address,
         formatChainIdToCaip(fromChain.chainId),
       );
-      const nativeToCurrencyRate =
-        isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId)
-          ? Number(
-              conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-            )
-          : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
+      const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
+        ? Number(
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+          )
+        : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
       let nativeToUsdRate;
       if (isSolanaChainId(fromChain.chainId)) {
         nativeToUsdRate = Number(
