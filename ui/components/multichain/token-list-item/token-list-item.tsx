@@ -5,8 +5,10 @@ import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -76,7 +78,12 @@ type TokenListItemProps = {
   isPrimaryTokenSymbolHidden?: boolean;
   privacyMode?: boolean;
   nativeCurrencySymbol?: string;
+  isDestinationToken?: boolean;
 };
+
+// TODO: Use noFeeAssets feature flag instead of hardcoded contract address
+const NO_FEE_MUSD_CONTRACT_ADDRESS =
+  '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 
 export const TokenListItemComponent = ({
   className,
@@ -98,6 +105,7 @@ export const TokenListItemComponent = ({
   showPercentage = false,
   privacyMode = false,
   nativeCurrencySymbol,
+  isDestinationToken = false,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
@@ -148,6 +156,10 @@ export const TokenListItemComponent = ({
   const tokenTitle = getTokenTitle();
   const tokenMainTitleToDisplay =
     shouldShowPercentage && !isTitleNetworkName ? tokenTitle : tokenSymbol;
+
+  const isNoFeeAsset =
+    isDestinationToken &&
+    address?.toLowerCase() === NO_FEE_MUSD_CONTRACT_ADDRESS.toLowerCase();
 
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -238,17 +250,30 @@ export const TokenListItemComponent = ({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            {title?.length > 12 ? (
-              <Tooltip
-                position="bottom"
-                html={title}
-                tooltipInnerClassName="multichain-token-list-item__tooltip"
-              >
+            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+              {title?.length > 12 ? (
+                <Tooltip
+                  position="bottom"
+                  html={title}
+                  tooltipInnerClassName="multichain-token-list-item__tooltip"
+                >
+                  <Text
+                    as="span"
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.bodyMd}
+                    display={Display.Block}
+                    ellipsis
+                  >
+                    {tokenMainTitleToDisplay}
+                    {isStakeable && (
+                      <StakeableLink chainId={chainId} symbol={tokenSymbol} />
+                    )}
+                  </Text>
+                </Tooltip>
+              ) : (
                 <Text
-                  as="span"
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
-                  display={Display.Block}
                   ellipsis
                 >
                   {tokenMainTitleToDisplay}
@@ -256,19 +281,35 @@ export const TokenListItemComponent = ({
                     <StakeableLink chainId={chainId} symbol={tokenSymbol} />
                   )}
                 </Text>
-              </Tooltip>
-            ) : (
-              <Text
-                fontWeight={FontWeight.Medium}
-                variant={TextVariant.bodyMd}
-                ellipsis
-              >
-                {tokenMainTitleToDisplay}
-                {isStakeable && (
-                  <StakeableLink chainId={chainId} symbol={tokenSymbol} />
-                )}
-              </Text>
-            )}
+              )}
+              {isNoFeeAsset && (
+                <Box
+                  backgroundColor={BackgroundColor.backgroundSection}
+                  borderRadius={BorderRadius.SM}
+                  paddingInline={1}
+                  paddingTop={0}
+                  paddingBottom={0}
+                  style={{
+                    height: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    variant={TextVariant.bodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.textAlternative}
+                    style={{
+                      lineHeight: '20px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {/* // TODO: translation */}
+                    No MM fee
+                  </Text>
+                </Box>
+              )}
+            </Box>
 
             {showScamWarning ? (
               <ButtonIcon
