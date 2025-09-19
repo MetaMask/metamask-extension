@@ -25,7 +25,7 @@ export default function InlineAlert({
   style,
 }: InlineAlertProps) {
   return (
-    <Box>
+    <Box display={Display.Flex}>
       <Box
         data-testid="inline-alert"
         borderRadius={BorderRadius.SM}
