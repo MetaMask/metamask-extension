@@ -80,6 +80,7 @@ export default class SecurityTab extends PureComponent {
     dataCollectionForMarketing: PropTypes.bool,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
+    setParticipateInMetaMetrics: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
     setUse4ByteResolution: PropTypes.func.isRequired,
@@ -193,6 +194,9 @@ export default class SecurityTab extends PureComponent {
           location: 'Settings',
         },
       });
+    } else if (!this.props.socialLoginEnabled) {
+      // for non-social login users, we need to set the participate in meta metrics to true if they have data collection for marketing
+      this.props.setParticipateInMetaMetrics(true);
     }
   }
 

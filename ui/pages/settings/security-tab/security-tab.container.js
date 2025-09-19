@@ -22,6 +22,7 @@ import {
   setSkipDeepLinkInterstitial,
   getMarketingConsent,
   setMarketingConsent,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -89,6 +90,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setParticipateInMetaMetrics: (val) =>
+      dispatch(setParticipateInMetaMetrics(val)),
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
