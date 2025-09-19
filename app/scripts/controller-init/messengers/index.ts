@@ -12,6 +12,7 @@ import {
   getSnapControllerMessenger,
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
+  getSnapsNameProviderMessenger,
   getSnapsRegistryMessenger,
   getWebSocketServiceMessenger,
 } from './snaps';
@@ -38,6 +39,7 @@ import {
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
+  getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
 } from './assets';
 import {
@@ -54,6 +56,7 @@ import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
+  getMultichainAccountServiceInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -68,6 +71,10 @@ import {
   getShieldControllerInitMessenger,
   getShieldControllerMessenger,
 } from './shield/shield-controller-messenger';
+import {
+  getSubscriptionControllerInitMessenger,
+  getSubscriptionControllerMessenger,
+} from './subscription';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -87,9 +94,123 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
+import { getRatesControllerMessenger } from './rates-controller-messenger';
+import {
+  getCurrencyRateControllerInitMessenger,
+  getCurrencyRateControllerMessenger,
+} from './currency-rate-controller-messenger';
+import {
+  getEnsControllerInitMessenger,
+  getEnsControllerMessenger,
+} from './ens-controller-messenger';
+import {
+  getNameControllerInitMessenger,
+  getNameControllerMessenger,
+} from './name-controller-messenger';
+import {
+  getGasFeeControllerInitMessenger,
+  getGasFeeControllerMessenger,
+} from './gas-fee-controller-messenger';
+import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+import {
+  getAccountTrackerControllerInitMessenger,
+  getAccountTrackerControllerMessenger,
+} from './account-tracker-controller-messenger';
+import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+import {
+  getRemoteFeatureFlagControllerInitMessenger,
+  getRemoteFeatureFlagControllerMessenger,
+} from './remote-feature-flag-controller-messenger';
+import {
+  getSwapsControllerInitMessenger,
+  getSwapsControllerMessenger,
+} from './swaps-controller-messenger';
+import {
+  getBridgeControllerInitMessenger,
+  getBridgeControllerMessenger,
+} from './bridge-controller-messenger';
+import { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+import { getPreferencesControllerMessenger } from './preferences-controller-messenger';
+import { getAppStateControllerMessenger } from './app-state-controller-messenger';
 
+export type {
+  AccountTrackerControllerMessenger,
+  AccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
+export {
+  getAccountTrackerControllerMessenger,
+  getAccountTrackerControllerInitMessenger,
+} from './account-tracker-controller-messenger';
+export type { AppStateControllerMessenger } from './app-state-controller-messenger';
+export { getAppStateControllerMessenger } from './app-state-controller-messenger';
+export type {
+  BridgeControllerMessenger,
+  BridgeControllerInitMessenger,
+} from './bridge-controller-messenger';
+export {
+  getBridgeControllerMessenger,
+  getBridgeControllerInitMessenger,
+} from './bridge-controller-messenger';
+export type { BridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
+export type {
+  CurrencyRateControllerMessenger,
+  CurrencyRateControllerInitMessenger,
+} from './currency-rate-controller-messenger';
+export {
+  getCurrencyRateControllerMessenger,
+  getCurrencyRateControllerInitMessenger,
+} from './currency-rate-controller-messenger';
+export type {
+  EnsControllerMessenger,
+  EnsControllerInitMessenger,
+} from './ens-controller-messenger';
+export {
+  getEnsControllerMessenger,
+  getEnsControllerInitMessenger,
+} from './ens-controller-messenger';
+export type {
+  GasFeeControllerMessenger,
+  GasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
+export {
+  getGasFeeControllerMessenger,
+  getGasFeeControllerInitMessenger,
+} from './gas-fee-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type { RatesControllerMessenger } from './rates-controller-messenger';
+export { getRatesControllerMessenger } from './rates-controller-messenger';
+export type {
+  NameControllerMessenger,
+  NameControllerInitMessenger,
+} from './name-controller-messenger';
+export {
+  getNameControllerMessenger,
+  getNameControllerInitMessenger,
+} from './name-controller-messenger';
+export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
+export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+export type { PreferencesControllerMessenger } from './preferences-controller-messenger';
+export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
+export type {
+  RemoteFeatureFlagControllerMessenger,
+  RemoteFeatureFlagControllerInitMessenger,
+} from './remote-feature-flag-controller-messenger';
+export {
+  getRemoteFeatureFlagControllerMessenger,
+  getRemoteFeatureFlagControllerInitMessenger,
+} from './remote-feature-flag-controller-messenger';
+export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export type {
+  SwapsControllerMessenger,
+  SwapsControllerInitMessenger,
+} from './swaps-controller-messenger';
+export {
+  getSwapsControllerMessenger,
+  getSwapsControllerInitMessenger,
+} from './swaps-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -124,13 +245,33 @@ export {
 } from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AccountTrackerController: {
+    getMessenger: getAccountTrackerControllerMessenger,
+    getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
+  AppStateController: {
+    getMessenger: getAppStateControllerMessenger,
+    getInitMessenger: noop,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
   },
+  BridgeController: {
+    getMessenger: getBridgeControllerMessenger,
+    getInitMessenger: getBridgeControllerInitMessenger,
+  },
+  BridgeStatusController: {
+    getMessenger: getBridgeStatusControllerMessenger,
+    getInitMessenger: noop,
+  },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
+  },
+  CurrencyRateController: {
+    getMessenger: getCurrencyRateControllerMessenger,
+    getInitMessenger: getCurrencyRateControllerInitMessenger,
   },
   DeFiPositionsController: {
     getMessenger: getDeFiPositionsControllerMessenger,
@@ -140,9 +281,17 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getDelegationControllerMessenger,
     getInitMessenger: getDelegationControllerInitMessenger,
   },
+  EnsController: {
+    getMessenger: getEnsControllerMessenger,
+    getInitMessenger: getEnsControllerInitMessenger,
+  },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
+  },
+  GasFeeController: {
+    getMessenger: getGasFeeControllerMessenger,
+    getInitMessenger: getGasFeeControllerInitMessenger,
   },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
@@ -176,6 +325,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
+  NameController: {
+    getMessenger: getNameControllerMessenger,
+    getInitMessenger: getNameControllerInitMessenger,
+  },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
     getInitMessenger: noop,
@@ -188,17 +341,37 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getOAuthServiceMessenger,
     getInitMessenger: noop,
   },
+  OnboardingController: {
+    getMessenger: getOnboardingControllerMessenger,
+    getInitMessenger: noop,
+  },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
     getInitMessenger: getRateLimitControllerInitMessenger,
+  },
+  RatesController: {
+    getMessenger: getRatesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  RemoteFeatureFlagController: {
+    getMessenger: getRemoteFeatureFlagControllerMessenger,
+    getInitMessenger: getRemoteFeatureFlagControllerInitMessenger,
   },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
     getInitMessenger: getSeedlessOnboardingControllerInitMessenger,
   },
+  SelectedNetworkController: {
+    getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
   ShieldController: {
     getMessenger: getShieldControllerMessenger,
     getInitMessenger: getShieldControllerInitMessenger,
+  },
+  SnapsNameProvider: {
+    getMessenger: getSnapsNameProviderMessenger,
+    getInitMessenger: noop,
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
@@ -216,9 +389,21 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
   },
+  SwapsController: {
+    getMessenger: getSwapsControllerMessenger,
+    getInitMessenger: getSwapsControllerInitMessenger,
+  },
+  SubscriptionController: {
+    getMessenger: getSubscriptionControllerMessenger,
+    getInitMessenger: getSubscriptionControllerInitMessenger,
+  },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
     getInitMessenger: getPPOMControllerInitMessenger,
+  },
+  PreferencesController: {
+    getMessenger: getPreferencesControllerMessenger,
+    getInitMessenger: noop,
   },
   TokenBalancesController: {
     getMessenger: getTokenBalancesControllerMessenger,
@@ -246,7 +431,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   TokenRatesController: {
     getMessenger: getTokenRatesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getTokenRatesControllerInitMessenger,
   },
   NftController: {
     getMessenger: getNftControllerMessenger,
@@ -274,7 +459,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   MultichainAccountService: {
     getMessenger: getMultichainAccountServiceMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAccountServiceInitMessenger,
   },
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
