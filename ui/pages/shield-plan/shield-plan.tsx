@@ -150,7 +150,7 @@ const ShieldPlan = () => {
     } catch (err) {
       log.error('Error starting subscription', err);
     }
-  }, []);
+  }, [selectedPlan, selectedPaymentMethod, dispatch]);
 
   const loading =
     subscriptionsLoading ||
