@@ -8727,11 +8727,8 @@ export default class MetamaskController extends EventEmitter {
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
-<<<<<<< HEAD
       initLangCode: this.opts.initLangCode,
-=======
       keyringOverrides: this.opts.overrides?.keyrings,
->>>>>>> 9b499d6f5c (Refactor keyring controller to use modular init pattern)
       updateAccountBalanceForTransactionNetwork:
         this.updateAccountBalanceForTransactionNetwork.bind(this),
       offscreenPromise: this.offscreenPromise,
