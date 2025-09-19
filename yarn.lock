@@ -5726,9 +5726,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@metamask/design-system-react@npm:0.4.1"
+"@metamask/design-system-react@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/design-system-react@npm:0.5.0"
   dependencies:
     "@metamask/design-system-shared": "npm:^0.1.1"
     "@metamask/jazzicon": "npm:^2.0.0"
@@ -5741,7 +5741,7 @@ __metadata:
     "@metamask/utils": ^11.8.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/f80d57512ec490c2b2c9d833daffe837132b08779a9f228b9de8d77585022e0c9b840611c4fd79799539519d300542b543b057bb71102dd31686c59331ebfe18
+  checksum: 10/111b2bf69bfb59487471923bcd9d7dc47631ad00d94cd38eb5204db18f2d78a12d6a903d5e264572937a1cf81ad28595772b9d5eec1a091d20ec39e6e9ad916c
   languageName: node
   linkType: hard
 
@@ -7646,25 +7646,6 @@ __metadata:
   linkType: hard
 
 "@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.0":
-  version: 11.8.0
-  resolution: "@metamask/utils@npm:11.8.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@noble/hashes": "npm:^1.3.1"
-    "@scure/base": "npm:^1.1.3"
-    "@types/debug": "npm:^4.1.7"
-    "@types/lodash": "npm:^4.17.20"
-    debug: "npm:^4.3.4"
-    lodash: "npm:^4.17.21"
-    pony-cause: "npm:^2.1.10"
-    semver: "npm:^7.5.4"
-    uuid: "npm:^9.0.1"
-  checksum: 10/d5a9d8c04223fc62b0d4a078b505e062f5d1d47e752df36802189bec19a9e68aee7a9b0df9b15e7e6fa15fd9d65f61c7e4909604209dddc21f0943cd9a2fd5d1
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^11.8.0":
   version: 11.8.0
   resolution: "@metamask/utils@npm:11.8.0"
   dependencies:
@@ -31818,7 +31799,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^0.7.0"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.11.0"
-    "@metamask/design-system-react": "npm:^0.4.1"
+    "@metamask/design-system-react": "npm:^0.5.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^1.1.0"
