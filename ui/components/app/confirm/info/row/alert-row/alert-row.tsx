@@ -31,9 +31,29 @@ export function getAlertTextColors(
     case ConfirmInfoRowVariant.Warning:
     case Severity.Warning:
       return TextColor.warningDefault;
+    case Severity.Info:
+      return TextColor.infoDefault;
     case ConfirmInfoRowVariant.Default:
     default:
       return TextColor.textDefault;
+  }
+}
+
+function getAlertHoverTextColors(
+  variant?: ConfirmInfoRowVariant | Severity,
+): TextColor {
+  switch (variant) {
+    case ConfirmInfoRowVariant.Critical:
+    case Severity.Danger:
+      return TextColor.errorAlternative;
+    case ConfirmInfoRowVariant.Warning:
+    case Severity.Warning:
+      return TextColor.warningInverse;
+    case Severity.Info:
+      return TextColor.infoInverse;
+    case ConfirmInfoRowVariant.Default:
+    default:
+      return TextColor.textMuted;
   }
 }
 
@@ -64,9 +84,7 @@ export const ConfirmInfoAlertRow = ({
   };
 
   const handleMouseEnter = () => {
-    if (hasFieldAlert) {
-      setIsHovered(true);
-    }
+    setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
@@ -75,8 +93,14 @@ export const ConfirmInfoAlertRow = ({
 
   const confirmInfoRowProps = {
     ...rowProperties,
-    style: { background: 'transparent', ...rowProperties.style },
-    color: getAlertTextColors(variant ?? selectedAlertSeverity),
+    style: {
+      background: 'transparent',
+      transition: 'color 0.2s ease',
+      ...rowProperties.style,
+    },
+    color: isHovered
+      ? getAlertHoverTextColors(variant ?? selectedAlertSeverity)
+      : getAlertTextColors(variant ?? selectedAlertSeverity),
     variant,
     onClick: hasFieldAlert ? handleInlineAlertClick : undefined,
     onMouseEnter: handleMouseEnter,
