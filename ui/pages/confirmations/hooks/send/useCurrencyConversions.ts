@@ -31,7 +31,7 @@ const getFiatDisplayValueFn = ({
   currentCurrency,
 }: ConversionArgs) => {
   if (!amount) {
-    return '0.00';
+    return `${getCurrencySymbol(currentCurrency)} 0.00`;
   }
   const amt = amount
     ? formatToFixedDecimals(
