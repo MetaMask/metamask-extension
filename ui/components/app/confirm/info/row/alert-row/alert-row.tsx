@@ -52,6 +52,7 @@ export const ConfirmInfoAlertRow = ({
   const selectedAlertKey = fieldAlerts[0]?.key;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const handleModalClose = () => {
     setAlertModalVisible(false);
@@ -62,12 +63,24 @@ export const ConfirmInfoAlertRow = ({
     trackInlineAlertClicked(selectedAlertKey);
   };
 
+  const handleMouseEnter = () => {
+    if (hasFieldAlert) {
+      setIsHovered(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   const confirmInfoRowProps = {
     ...rowProperties,
     style: { background: 'transparent', ...rowProperties.style },
     color: getAlertTextColors(variant ?? selectedAlertSeverity),
     variant,
     onClick: hasFieldAlert ? handleInlineAlertClick : undefined,
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
   };
 
   if (isShownWithAlertsOnly && !hasFieldAlert) {
@@ -76,7 +89,10 @@ export const ConfirmInfoAlertRow = ({
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
-      <InlineAlert severity={selectedAlertSeverity} />
+      <InlineAlert
+        severity={selectedAlertSeverity}
+        isParentHovered={isHovered}
+      />
     </Box>
   ) : null;
 

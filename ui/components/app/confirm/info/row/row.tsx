@@ -42,6 +42,8 @@ export type ConfirmInfoRowProps = {
   label: string;
   labelChildren?: React.ReactNode;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
   style?: React.CSSProperties;
   tooltip?: string;
   tooltipIcon?: IconName;
@@ -92,6 +94,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   tooltipIcon,
   tooltipIconColor,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -125,6 +129,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           ...style,
         }}
         onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
         {copyEnabled && (
           <CopyIcon
