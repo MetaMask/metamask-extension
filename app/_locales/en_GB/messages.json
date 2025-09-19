@@ -3934,6 +3934,12 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "nftEmptyDescription": {
+    "message": "There's a world of NFTs out there. Start your collection today."
+  },
+  "discoverNFTs": {
+    "message": "Discover NFTs"
+  },
   "noNetworksAvailable": {
     "message": "No networks available"
   },
