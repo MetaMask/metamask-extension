@@ -821,6 +821,7 @@ export enum MetaMetricsEventName {
   TokenSortPreference = 'Token Sort Preference',
   TokenListRefreshed = 'Token List Refreshed',
   NFTRemoved = 'NFT Removed',
+  NFTDiscoveryClicked = 'NFT Discovery Clicked',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',

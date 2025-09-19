@@ -7,9 +7,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
@@ -20,12 +17,7 @@ import {
   getNftIsStillFetchingIndication,
   getPreferences,
 } from '../../../../../selectors';
-import {
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../../component-library';
+import { Box } from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
@@ -39,10 +31,10 @@ import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import PulseLoader from '../../../../ui/pulse-loader';
+import { NftEmptyState } from '../nft-empty-state';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -146,43 +138,7 @@ export default function NftsTab() {
             />
           </Box>
         ) : (
-          <>
-            <Box
-              padding={12}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-            >
-              <Box
-                paddingTop={6}
-                marginTop={12}
-                marginBottom={12}
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                flexDirection={FlexDirection.Column}
-                className="nfts-tab__link"
-              >
-                <Text
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMdMedium}
-                  textAlign={TextAlign.Center}
-                >
-                  {t('noNFTs')}
-                </Text>
-                {
-                  <ButtonLink
-                    size={ButtonLinkSize.Md}
-                    href={ZENDESK_URLS.NFT_TOKENS}
-                    externalLink
-                  >
-                    {t('learnMoreUpperCase')}
-                  </ButtonLink>
-                }
-              </Box>
-            </Box>
-          </>
+          <NftEmptyState className="mx-auto mt-4" />
         )}
       </Box>
     </>
