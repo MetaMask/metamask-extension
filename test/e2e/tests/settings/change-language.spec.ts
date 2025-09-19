@@ -23,7 +23,8 @@ const selectors = {
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
   dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
-  hyperText: { text: 'Tudjon meg többet', tag: 'a' },
+  // TODO: Update to check translated text once discoverNFTs translation is available in all locales
+  hyperText: { css: '[data-testid="nft-tab-empty-state"] button' },
   discoverText: { text: 'खोजें', tag: 'a' },
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
