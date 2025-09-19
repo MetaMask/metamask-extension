@@ -3,6 +3,7 @@ import {
   NetworkConfiguration,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,
+  NetworkControllerNetworkAddedEvent,
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
   NetworkState,
@@ -130,6 +131,74 @@ describe('NetworkOrderController - constructor', () => {
     expect(controller.state.enabledNetworkMap).toStrictEqual({
       [KnownCaipNamespace.Eip155]: {
         [CHAIN_IDS.MAINNET]: true, // Mainnet was added added as a fallback as no networks were selected
+      },
+    });
+  });
+
+  it('enables network when NetworkController:networkAdded event is emitted', () => {
+    const mocks = arrangeMockMessenger();
+    const controller = new NetworkOrderController({
+      messenger: mocks.messenger,
+      state: {
+        orderedNetworkList: [],
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: true,
+          },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: true,
+          },
+          [KnownCaipNamespace.Bip122]: {},
+        },
+      },
+    });
+
+    // Test EVM network addition
+    mocks.globalMessenger.publish('NetworkController:networkAdded', {
+      chainId: CHAIN_IDS.POLYGON,
+    } as unknown as NetworkConfiguration);
+
+    expect(controller.state.enabledNetworkMap).toStrictEqual({
+      [KnownCaipNamespace.Eip155]: {
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.POLYGON]: true, // Polygon has been enabled
+      },
+      [KnownCaipNamespace.Solana]: {
+        [SolScope.Mainnet]: true,
+      },
+      [KnownCaipNamespace.Bip122]: {},
+    });
+  });
+
+  it('enables non-EVM network when NetworkController:networkAdded event is emitted', () => {
+    const mocks = arrangeMockMessenger();
+    const controller = new NetworkOrderController({
+      messenger: mocks.messenger,
+      state: {
+        orderedNetworkList: [],
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: true,
+          },
+          [KnownCaipNamespace.Solana]: {},
+          [KnownCaipNamespace.Bip122]: {},
+        },
+      },
+    });
+
+    // Test non-EVM network addition (using a Bitcoin testnet CAIP chain ID)
+    const bitcoinTestnetChainId = 'bip122:000000000933ea01ad0ee984209779ba';
+    mocks.globalMessenger.publish('NetworkController:networkAdded', {
+      chainId: bitcoinTestnetChainId,
+    } as unknown as NetworkConfiguration);
+
+    expect(controller.state.enabledNetworkMap).toStrictEqual({
+      [KnownCaipNamespace.Eip155]: {
+        [CHAIN_IDS.MAINNET]: true,
+      },
+      [KnownCaipNamespace.Solana]: {},
+      [KnownCaipNamespace.Bip122]: {
+        [bitcoinTestnetChainId]: true, // Bitcoin testnet has been enabled
       },
     });
   });
@@ -341,7 +410,9 @@ describe('NetworkOrderController - constructor', () => {
 function arrangeMockMessenger() {
   const globalMessenger = new Messenger<
     NetworkControllerGetStateAction | NetworkControllerSetActiveNetworkAction,
-    NetworkControllerStateChangeEvent | NetworkControllerNetworkRemovedEvent
+    | NetworkControllerStateChangeEvent
+    | NetworkControllerNetworkRemovedEvent
+    | NetworkControllerNetworkAddedEvent
   >();
   const messenger: NetworkOrderControllerMessenger =
     globalMessenger.getRestricted({
@@ -349,6 +420,7 @@ function arrangeMockMessenger() {
       allowedEvents: [
         'NetworkController:stateChange',
         'NetworkController:networkRemoved',
+        'NetworkController:networkAdded',
       ],
       allowedActions: [
         'NetworkController:getState',

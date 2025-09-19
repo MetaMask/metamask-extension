@@ -14,6 +14,7 @@ import {
   NetworkControllerStateChangeEvent,
   NetworkState,
   NetworkControllerNetworkRemovedEvent,
+  NetworkControllerNetworkAddedEvent,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -66,7 +67,8 @@ type AllowedActions =
 
 type AllowedEvents =
   | NetworkControllerStateChangeEvent
-  | NetworkControllerNetworkRemovedEvent;
+  | NetworkControllerNetworkRemovedEvent
+  | NetworkControllerNetworkAddedEvent;
 
 // Type for the messenger of NetworkOrderController
 export type NetworkOrderControllerMessenger = RestrictedMessenger<
@@ -156,6 +158,13 @@ export class NetworkOrderController extends BaseController<
         this.onNetworkRemoved(removedNetwork.chainId);
       },
     );
+
+    this.messagingSystem.subscribe(
+      'NetworkController:networkAdded',
+      (addedNetwork) => {
+        this.onNetworkAdded(addedNetwork.chainId);
+      },
+    );
   }
 
   /**
@@ -201,6 +210,26 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
+  }
+
+  onNetworkAdded(networkId: Hex) {
+    const caipId: CaipChainId = isCaipChainId(networkId)
+      ? networkId
+      : toEvmCaipChainId(networkId);
+
+    const { namespace } = parseCaipChainId(caipId);
+
+    if (namespace === (KnownCaipNamespace.Eip155 as string)) {
+      this.update((state) => {
+        // Enable the newly added network
+        state.enabledNetworkMap[namespace][networkId] = true;
+      });
+    } else {
+      this.update((state) => {
+        // Enable the newly added non-EVM network
+        state.enabledNetworkMap[namespace][caipId] = true;
+      });
+    }
   }
 
   onNetworkRemoved(networkId: Hex) {
