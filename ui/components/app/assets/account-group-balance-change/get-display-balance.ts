@@ -20,25 +20,3 @@ export const determineBalanceColor = (
   }
   return TextColor.textDefault;
 };
-
-export const formatPercentageChange = (
-  percentChange: number | undefined,
-  locale: string,
-): string => {
-  const percentNumber = typeof percentChange === 'number' ? percentChange : 0;
-
-  // Clamp absolute value to minimum 0.01, preserve sign
-  const displayPercent =
-    percentNumber === 0
-      ? 0
-      : Math.sign(percentNumber) * Math.max(Math.abs(percentNumber), 0.01);
-
-  const localizedPercent = Intl.NumberFormat(locale, {
-    style: 'percent',
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-    signDisplay: 'always', // sets '+' for positive, '-' for negative
-  }).format(displayPercent / 100);
-
-  return `(${localizedPercent})`;
-};
