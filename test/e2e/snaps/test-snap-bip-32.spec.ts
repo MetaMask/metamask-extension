@@ -1,5 +1,4 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
@@ -122,9 +121,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
 
-        const snapInstall = new SnapInstall(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.clickApproveButton();
+        // Check the error message and close the alert.
 
         await driver.waitForBrowserAlert({
           text: 'Entropy source with ID "invalid" not found.',
