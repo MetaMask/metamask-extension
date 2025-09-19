@@ -3753,9 +3753,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, y la mayoría de los monederos físicos, no funcionarán con la versión actual de su navegador."
   },
-  "noNFTs": {
-    "message": "No hay ningún NFT aún"
-  },
   "noNetworksAvailable": {
     "message": "No hay redes disponibles"
   },
