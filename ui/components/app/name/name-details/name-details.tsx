@@ -48,7 +48,10 @@ import {
 import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
-import { getNameSources } from '../../../../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  getNameSources,
+} from '../../../../selectors';
 import {
   setName as saveName,
   updateProposedNames,
@@ -58,6 +61,7 @@ import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -224,11 +228,15 @@ export default function NameDetails({
     type,
     variation,
   );
+  const isBIP44 = useSelector(getIsMultichainAccountsState2Enabled);
+  const walletsWithAccounts = useSelector(getWalletsWithAccounts);
+  const hasMoreThanOneWallet = Object.keys(walletsWithAccounts).length > 1;
 
   const {
     name: displayName,
     hasPetname: hasSavedPetname,
     displayState,
+    walletName,
   } = useDisplayName({
     value,
     type,
@@ -380,8 +388,15 @@ export default function NameDetails({
         <ModalContent>
           <ModalHeader onClose={handleClose}>{title}</ModalHeader>
           <ModalBody className="name-details__modal-body">
-            <div
-              style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              marginBottom={4}
+              marginTop={2}
+              style={{
+                textAlign: 'center',
+              }}
             >
               <NameDisplay
                 value={value}
@@ -389,7 +404,17 @@ export default function NameDetails({
                 variation={variation}
                 showFullName
               />
-            </div>
+              {walletName && isBIP44 && hasMoreThanOneWallet && (
+                <Text
+                  as="span"
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  style={{ marginLeft: 4 }}
+                >
+                  {walletName}
+                </Text>
+              )}
+            </Box>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
               {instructions}
             </Text>
