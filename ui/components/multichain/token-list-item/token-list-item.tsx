@@ -55,6 +55,7 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -80,10 +81,6 @@ type TokenListItemProps = {
   nativeCurrencySymbol?: string;
   isDestinationToken?: boolean;
 };
-
-// TODO: Use noFeeAssets feature flag instead of hardcoded contract address
-const NO_FEE_MUSD_CONTRACT_ADDRESS =
-  '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 
 export const TokenListItemComponent = ({
   className,
@@ -111,6 +108,7 @@ export const TokenListItemComponent = ({
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
   const currencyRates = useSelector(getCurrencyRates);
+  const noFeeAssets = useSelector((state) => selectNoFeeAssets(state, chainId));
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
@@ -159,7 +157,8 @@ export const TokenListItemComponent = ({
 
   const isNoFeeAsset =
     isDestinationToken &&
-    address?.toLowerCase() === NO_FEE_MUSD_CONTRACT_ADDRESS.toLowerCase();
+    address &&
+    noFeeAssets?.includes(address.toLowerCase());
 
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -304,8 +303,7 @@ export const TokenListItemComponent = ({
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {/* // TODO: translation */}
-                    No MM fee
+                    {t('bridgeNoMMFee')}
                   </Text>
                 </Box>
               )}
