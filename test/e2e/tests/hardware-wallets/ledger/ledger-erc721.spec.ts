@@ -10,9 +10,11 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
 describe('Ledger Hardware', function (this: Suite) {
-  it('can perform actions on an ERC-721 token', async function () {
+  const erc721 = SMART_CONTRACTS.NFTS;
+  it('deploys an ERC-721 token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -49,8 +51,47 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.checkERC721TokenAddressesValue(
           '0xcB17707e0623251182A654BEdaE16429C78A7424',
         );
+      },
+    );
+  });
+  it('mints an ERC-721 token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withLedgerAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+        smartContract: [
+          {
+            name: erc721,
+            deployerOptions: {
+              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            },
+          },
+        ],
+      },
+      async ({ driver, localNodes, contractRegistry }) => {
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
 
-        // mint action
+        const contractAddress = contractRegistry.getContractAddress(erc721);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+        });
+        await testDappPage.checkPageIsLoaded();
         await testDappPage.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const mintConfirmation = new TransactionConfirmation(driver);
@@ -61,15 +102,53 @@ describe('Ledger Hardware', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
-        // Check that NFT image is displayed in NFT tab on homepagexp
+        // Check that NFT image is displayed in NFT tab on homepage
         await nftListPage.checkNftImageIsDisplayed();
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText('Deposit');
         await activityListPage.checkWaitForTransactionStatus('confirmed');
+      },
+    );
+  });
+  it('approves an ERC-721 token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withLedgerAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+        smartContract: [
+          {
+            name: erc721,
+            deployerOptions: {
+              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            },
+          },
+        ],
+      },
+      async ({ driver, localNodes, contractRegistry }) => {
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
 
-        // approve action
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const contractAddress = contractRegistry.getContractAddress(erc721);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+        });
+        await testDappPage.checkPageIsLoaded();
         await testDappPage.clickERC721ApproveButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const approveConfirmation = new TransactionConfirmation(driver);
@@ -77,14 +156,55 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const homePage = new HomePage(driver);
         await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText(
           'Approve TDN spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
+      },
+    );
+  });
+  it('sets approval for all an ERC-721 token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withLedgerAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+        smartContract: [
+          {
+            name: erc721,
+            deployerOptions: {
+              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            },
+          },
+        ],
+      },
+      async ({ driver, localNodes, contractRegistry }) => {
+        (await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        )) ?? console.error('localNodes is undefined or empty');
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
 
-        // set approval for all
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const contractAddress = contractRegistry.getContractAddress(erc721);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+        });
+        await testDappPage.checkPageIsLoaded();
+
         await testDappPage.clickERC721SetApprovalForAllButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const setApprovalForAllConfirmation =
@@ -96,6 +216,8 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const homePage = new HomePage(driver);
+        const activityListPage = new ActivityListPage(driver);
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
           'Approve TDN with no spend limit',
