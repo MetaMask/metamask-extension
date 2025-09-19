@@ -56,22 +56,14 @@ export class PatchStore {
     newState: Record<string, unknown>;
     patches?: Patch[];
   }) {
-    const sanitizedNewState = sanitizeUIState(newState);
+    const sanitizedNewState = eventPatches
+      ? newState
+      : sanitizeUIState(newState);
 
-    const normalizePatches = eventPatches?.flatMap((patch) => {
-      if (patch.path.length > 0) {
-        return [patch];
-      }
+    const normalizedPatches = this._normalizeEventPatches(eventPatches);
 
-      return Object.keys(patch.value).map((key) => ({
-        op: patch.op,
-        path: [key],
-        value: patch.value[key],
-      }));
-    });
-
-    const sanitizedPatches = normalizePatches
-      ? sanitizePatches(normalizePatches)
+    const sanitizedPatches = normalizedPatches
+      ? sanitizePatches(normalizedPatches)
       : undefined;
 
     const patches =
@@ -120,5 +112,19 @@ export class PatchStore {
         };
       })
       .filter(Boolean) as Patch[];
+  }
+
+  private _normalizeEventPatches(eventPatches?: Patch[]): Patch[] | undefined {
+    return eventPatches?.flatMap((patch) => {
+      if (patch.path.length > 0) {
+        return [patch];
+      }
+
+      return Object.keys(patch.value).map((key) => ({
+        op: patch.op,
+        path: [key],
+        value: patch.value[key],
+      }));
+    });
   }
 }

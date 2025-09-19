@@ -160,6 +160,36 @@ describe('State Utils', () => {
   });
 
   describe('sanitizePatches', () => {
+    it('ignores patch if path matches remove key', () => {
+      const patches: Patch[] = [
+        {
+          op: 'replace',
+          path: ['snapStates'],
+          value: 'value1',
+        },
+        {
+          op: 'replace',
+          path: ['phishingLists', 'other'],
+          value: 'value2',
+        },
+        {
+          op: 'replace',
+          path: ['other'],
+          value: 'value3',
+        },
+      ];
+
+      const sanitizedPatches = sanitizePatches(patches);
+
+      expect(sanitizedPatches).toStrictEqual([
+        {
+          op: 'replace',
+          path: ['other'],
+          value: 'value3',
+        },
+      ]);
+    });
+
     it('removes large snap data if in path', () => {
       const patches: Patch[] = [
         {

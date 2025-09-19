@@ -78,15 +78,10 @@ export default class TokenList extends Component {
               .fill(undefined)
               .map((_, i) => {
                 const { symbol, name, address, chainId } = results[i] || {};
-
-                const currentResult = results[i]
-                  ? { ...results[i] }
-                  : undefined;
-
                 let tokenAlreadyAdded = false;
                 if (isTokenNetworkFilterEqualCurrentNetwork) {
                   tokenAlreadyAdded = checkExistingAddresses(address, tokens);
-                  currentResult.chainId = currentNetwork?.chainId;
+                  results[i].chainId = currentNetwork?.chainId;
                 } else {
                   tokenAlreadyAdded = checkExistingAllTokens(
                     address,
@@ -97,9 +92,9 @@ export default class TokenList extends Component {
                 }
 
                 const onClick = () =>
-                  !tokenAlreadyAdded && onToggleToken(currentResult);
+                  !tokenAlreadyAdded && onToggleToken(results[i]);
                 return (
-                  Boolean(currentResult?.iconUrl || symbol || name) && (
+                  Boolean(results[i]?.iconUrl || symbol || name) && (
                     <Box
                       key={address}
                       display={Display.Flex}
@@ -145,7 +140,7 @@ export default class TokenList extends Component {
                                         currentNetwork?.chainId
                                       ]
                                     : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                        currentResult?.chainId
+                                        results[i]?.chainId
                                       ]
                                 }
                                 backgroundColor={testNetworkBackgroundColor}
@@ -158,7 +153,7 @@ export default class TokenList extends Component {
                           >
                             <AvatarToken
                               name={symbol}
-                              src={currentResult?.iconUrl}
+                              src={results[i]?.iconUrl}
                             />
                           </BadgeWrapper>
                         </Box>
