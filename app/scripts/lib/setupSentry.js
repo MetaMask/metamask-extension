@@ -168,18 +168,11 @@ function getMetaMetricsEnabledFromAppState(appState) {
   } else if (appState.state) {
     // UI
     if (appState.state.metamask) {
-      return (
-        Boolean(appState.state.metamask.participateInMetaMetrics) ||
-        Boolean(appState.state.metamask.isSocialLoginFlowEnabledForMetrics)
-      );
+      return Boolean(appState.state.metamask.participateInMetaMetrics);
     }
     // background
-    return (
-      Boolean(appState.state.MetaMetricsController?.participateInMetaMetrics) ||
-      Boolean(
-        appState.state.MetaMetricsController
-          ?.isSocialLoginFlowEnabledForMetrics,
-      )
+    return Boolean(
+      appState.state.MetaMetricsController?.participateInMetaMetrics,
     );
   }
   // during initialization, before first persisted state is read
@@ -194,14 +187,8 @@ function getMetaMetricsEnabledFromAppState(appState) {
  * is enabled, `false` otherwise.
  */
 function getMetaMetricsEnabledFromPersistedState(persistedState) {
-  return (
-    Boolean(
-      persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
-    ) ||
-    Boolean(
-      persistedState?.data?.MetaMetricsController
-        ?.isSocialLoginFlowEnabledForMetrics,
-    )
+  return Boolean(
+    persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
   );
 }
 

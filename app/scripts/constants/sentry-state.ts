@@ -174,7 +174,6 @@ export const SENTRY_BACKGROUND_STATE = {
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
-    isSocialLoginFlowEnabledForMetrics: true,
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,

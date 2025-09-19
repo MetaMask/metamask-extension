@@ -23,7 +23,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   setFirstTimeFlowType,
   startOAuthLogin,
-  setIsSocialLoginFlowEnabledForMetrics,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
@@ -333,7 +333,6 @@ export default function OnboardingWelcome() {
     async (loginType, loginOption) => {
       try {
         if (loginType === LOGIN_TYPE.SRP) {
-          dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
           if (loginOption === LOGIN_OPTION.NEW) {
             await onCreateClick();
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
@@ -349,11 +348,13 @@ export default function OnboardingWelcome() {
 
         if (loginOption === LOGIN_OPTION.NEW) {
           await onSocialLoginCreateClick(loginType);
-          // if firefox, set isSocialLoginFlowEnabledForMetrics to false, otherwise set to true
-          // sent queued events
-          dispatch(setIsSocialLoginFlowEnabledForMetrics(!isFireFox));
         } else if (loginOption === LOGIN_OPTION.EXISTING) {
           await onSocialLoginImportClick(loginType);
+        }
+
+        if (!isFireFox) {
+          // sent queued events
+          dispatch(setParticipateInMetaMetrics(true));
         }
       } catch (error) {
         handleLoginError(error);

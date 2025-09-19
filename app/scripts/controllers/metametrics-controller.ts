@@ -266,12 +266,6 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: false,
   },
-  isSocialLoginFlowEnabledForMetrics: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
 };
 
 /**
@@ -306,7 +300,6 @@ export type MetaMetricsControllerState = {
       payload: SegmentEventPayload;
     }
   >;
-  isSocialLoginFlowEnabledForMetrics: boolean;
 };
 
 /**
@@ -428,7 +421,6 @@ export const getDefaultMetaMetricsControllerState =
     traits: {},
     fragments: {},
     segmentApiCalls: {},
-    isSocialLoginFlowEnabledForMetrics: false,
   });
 
 export default class MetaMetricsController extends BaseController<
@@ -631,46 +623,6 @@ export default class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
-  }
-
-  setIsSocialLoginFlowEnabledForMetrics(
-    isSocialLoginFlowEnabledForMetrics: boolean,
-  ): string | null {
-    const { metaMetricsId: existingMetaMetricsId } = this.state;
-
-    const metaMetricsId =
-      isSocialLoginFlowEnabledForMetrics && !existingMetaMetricsId
-        ? this.generateMetaMetricsId()
-        : existingMetaMetricsId;
-
-    this.update((state) => {
-      state.isSocialLoginFlowEnabledForMetrics =
-        isSocialLoginFlowEnabledForMetrics;
-      state.metaMetricsId = metaMetricsId;
-    });
-
-    if (isSocialLoginFlowEnabledForMetrics) {
-      this.trackEventsAfterMetricsOptIn();
-      this.clearEventsAfterMetricsOptIn();
-      this.trackTracesAfterMetricsOptIn();
-      this.clearTracesAfterMetricsOptIn();
-    } else if (this.state.marketingCampaignCookieId) {
-      this.setMarketingCampaignCookieId(null);
-    }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    if (
-      this.#environment !== ENVIRONMENT.DEVELOPMENT &&
-      metaMetricsId !== null
-    ) {
-      this.updateExtensionUninstallUrl(
-        isSocialLoginFlowEnabledForMetrics,
-        metaMetricsId,
-      );
-    }
-    ///: END:ONLY_INCLUDE_IF
-
-    return metaMetricsId;
   }
 
   finalizeAbandonedFragments(): void {
@@ -917,8 +869,8 @@ export default class MetaMetricsController extends BaseController<
    * @param userTraits
    */
   identify(userTraits: Partial<MetaMetricsUserTraits>): void {
-    const { metaMetricsId } = this.state;
-    if (!this.#isMetricsEnabled() || !metaMetricsId || !userTraits) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    if (!participateInMetaMetrics || !metaMetricsId || !userTraits) {
       return;
     }
     if (typeof userTraits !== 'object') {
@@ -1105,7 +1057,7 @@ export default class MetaMetricsController extends BaseController<
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): Promise<void> {
-    if (!this.#isMetricsEnabled() && !options?.isOptIn) {
+    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return;
     }
 
@@ -1244,7 +1196,7 @@ export default class MetaMetricsController extends BaseController<
     request: TraceRequest,
     fn?: TraceCallback<TraceResultType>,
   ): TraceResultType | undefined {
-    if (this.#isMetricsEnabled()) {
+    if (this.state.participateInMetaMetrics) {
       return fn ? trace(request, fn) : (trace(request) as TraceResultType);
     }
 
@@ -1276,7 +1228,7 @@ export default class MetaMetricsController extends BaseController<
    * @param request - The end trace request
    */
   bufferedEndTrace(request: EndTraceRequest): void {
-    if (this.#isMetricsEnabled()) {
+    if (this.state.participateInMetaMetrics) {
       endTrace(request);
     } else {
       this.addTraceBeforeMetricsOptIn({
@@ -1761,8 +1713,12 @@ export default class MetaMetricsController extends BaseController<
     payload: Partial<SegmentEventPayload>,
     callback?: (result: unknown) => unknown,
   ): void {
-    const { metaMetricsId, latestNonAnonymousEventTimestamp } = this.state;
-    if (!this.#isMetricsEnabled() || !metaMetricsId) {
+    const {
+      metaMetricsId,
+      latestNonAnonymousEventTimestamp,
+      participateInMetaMetrics,
+    } = this.state;
+    if (!participateInMetaMetrics || !metaMetricsId) {
       return;
     }
 
@@ -1827,12 +1783,5 @@ export default class MetaMetricsController extends BaseController<
 
       return totalCount + addressNameCount;
     }, 0);
-  }
-
-  #isMetricsEnabled(): boolean {
-    return (
-      Boolean(this.state.participateInMetaMetrics) ||
-      Boolean(this.state.isSocialLoginFlowEnabledForMetrics)
-    );
   }
 }

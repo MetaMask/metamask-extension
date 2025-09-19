@@ -4106,7 +4106,6 @@ export function resetOnboarding(): ThunkAction<
 
       // reset metametrics optin status
       dispatch(setParticipateInMetaMetrics(null));
-      dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
     } catch (err) {
       console.error(err);
     }
@@ -4229,20 +4228,6 @@ export function setDataCollectionForMarketing(
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
-    });
-  };
-}
-
-export function setIsSocialLoginFlowEnabledForMetrics(
-  isSocialLoginFlowEnabledForMetrics: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setIsSocialLoginFlowEnabledForMetrics', [
-      isSocialLoginFlowEnabledForMetrics,
-    ]);
-    dispatch({
-      type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
-      value: isSocialLoginFlowEnabledForMetrics,
     });
   };
 }
