@@ -36,7 +36,7 @@ export const DeFiEmptyStateMessage: FC = () => {
     global.platform.openTab({ url });
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
+      event: MetaMetricsEventName.EmptyDeFiTabButtonClicked,
       properties: {
         location: 'DeFiTab',
         text: 'Explore DeFi',
