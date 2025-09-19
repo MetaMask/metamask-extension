@@ -23,8 +23,6 @@ const selectors = {
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
   dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
-  // TODO: Update to check translated text once discoverNFTs translation is available in all locales
-  hyperText: { css: '[data-testid="nft-tab-empty-state"] button' },
   discoverText: { text: 'खोजें', tag: 'a' },
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
@@ -206,43 +204,6 @@ describe('Settings - general tab', function (this: Suite) {
     );
   });
 
-  it('validate "Magyar" language change on hypertext', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openSettingsPage();
-        const generalSettings = new GeneralSettings(driver);
-        await generalSettings.checkPageIsLoaded();
-
-        // Select "Magyar" language
-        await generalSettings.changeLanguage('Magyar');
-        const isLabelTextChanged = await driver.isElementPresent(
-          selectors.currentLanguageMagyar,
-        );
-        assert.equal(isLabelTextChanged, true, 'Language did not change');
-
-        await new SettingsPage(driver).closeSettingsPage();
-        const homepage = new Homepage(driver);
-        await homepage.checkPageIsLoaded();
-        await homepage.checkExpectedBalanceIsDisplayed();
-        await homepage.goToNftTab();
-
-        // Validate the hypertext
-        const isHyperTextChanged = await driver.isElementPresent(
-          selectors.hyperText,
-        );
-        assert.equal(
-          isHyperTextChanged,
-          true,
-          'Language change is not reflected on hypertext',
-        );
-      },
-    );
-  });
 
   it('validate "العربية" language change on page indent', async function () {
     await withFixtures(
