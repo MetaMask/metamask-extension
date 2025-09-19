@@ -62,6 +62,7 @@ import { SelectedNetworkController } from '@metamask/selected-network-controller
 import { BridgeController } from '@metamask/bridge-controller';
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { ApprovalController } from '@metamask/approval-controller';
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -122,6 +123,7 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | SnapKeyring
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController

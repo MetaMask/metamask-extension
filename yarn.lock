@@ -6091,9 +6091,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^17.0.0, @metamask/eth-snap-keyring@npm:^17.1.0":
-  version: 17.1.0
-  resolution: "@metamask/eth-snap-keyring@npm:17.1.0"
+"@metamask/eth-snap-keyring@npm:^17.0.0, @metamask/eth-snap-keyring@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@metamask/eth-snap-keyring@npm:17.2.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@metamask/base-controller": "npm:^8.3.0"
@@ -6108,7 +6108,7 @@ __metadata:
     uuid: "npm:^9.0.1"
   peerDependencies:
     "@metamask/keyring-api": ^21.0.0
-  checksum: 10/ec7f33cb5c84155b458e19cccedf9a12642ad85a90fc45fe36acc2fb734099202d6a3bd6a18637a2f7c14a8c18b79b44e83cbd7c74721239e562a74429dc396b
+  checksum: 10/5ef553d895fb1416fee5dafa8424d0d3770ab4271924902f50c3f03652b5e6104aa60cbdaf3a37fdb9cbba4fe86bc3b87ce589f5d14d1b2b8cd671b420a2c922
   languageName: node
   linkType: hard
 
@@ -31820,7 +31820,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/eth-snap-keyring": "npm:^17.1.0"
+    "@metamask/eth-snap-keyring": "npm:^17.2.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^9.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"

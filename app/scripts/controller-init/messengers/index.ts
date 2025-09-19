@@ -57,6 +57,8 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapKeyringMessenger,
+  getSnapKeyringInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -423,6 +425,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
+  },
+  SnapKeyring: {
+    getMessenger: getSnapKeyringMessenger,
+    getInitMessenger: getSnapKeyringInitMessenger,
   },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,

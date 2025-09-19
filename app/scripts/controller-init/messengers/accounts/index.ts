@@ -17,3 +17,12 @@ export type {
   MultichainAccountServiceInitMessenger,
 } from './multichain-account-service-messenger';
 export type { InstitutionalSnapControllerMessenger } from './institutional-snap-controller-messenger';
+
+export type {
+  SnapKeyringMessenger,
+  SnapKeyringInitMessenger,
+} from './snap-keyring-messenger';
+export {
+  getSnapKeyringMessenger,
+  getSnapKeyringInitMessenger,
+} from './snap-keyring-messenger';

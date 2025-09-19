@@ -35,11 +35,14 @@ import {
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.persistedState
- * @param request.initMessenger
- * @param request.keyringOverrides
- * @param request.encryptor
- * @param request.removeAccount
+ * @param request.persistedState - The persisted state to use for the
+ * controller.
+ * @param request.initMessenger - The messenger to use for initialization
+ * actions.
+ * @param request.keyringOverrides - Optional overrides for keyring classes and
+ * bridges.
+ * @param request.encryptor - Optional encryptor to use for the controller.
+ * @param request.getController - Function to get other controllers.
  * @returns The initialized controller.
  */
 export const KeyringControllerInit: ControllerInitFunction<
@@ -52,7 +55,7 @@ export const KeyringControllerInit: ControllerInitFunction<
   initMessenger,
   keyringOverrides,
   encryptor,
-  removeAccount,
+  getController,
 }) => {
   const additionalKeyrings = [
     qrKeyringBuilderFactory(
@@ -103,22 +106,10 @@ export const KeyringControllerInit: ControllerInitFunction<
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  const persistAndUpdateAccounts = async () => {
-    await initMessenger.call('KeyringController:persistAllKeyrings');
-    await initMessenger.call('AccountsController:updateAccounts');
-  };
+  const snapKeyring = getController('SnapKeyring');
 
-  additionalKeyrings.push(
-    // @ts-expect-error: `SnapKeyring` seems to be missing `addAccount`.
-    snapKeyringBuilder(initMessenger, {
-      persistKeyringHelper: () => persistAndUpdateAccounts(),
-      removeAccountHelper: (address) => removeAccount(address),
-      trackEvent: initMessenger.call.bind(
-        initMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
-    }),
-  );
+  // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
+  additionalKeyrings.push(snapKeyringBuilder(snapKeyring));
   ///: END:ONLY_INCLUDE_IF
 
   // @ts-expect-error: The types for the encryptor are not correct.

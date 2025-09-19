@@ -398,6 +398,7 @@ import { AppStateControllerInit } from './controller-init/app-state-controller-i
 import { PermissionControllerInit } from './controller-init/permission-controller-init';
 import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
 import { KeyringControllerInit } from './controller-init/keyring-controller-init';
+import { SnapKeyringInit } from './controller-init/accounts/snap-keyring-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1032,6 +1033,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       PreferencesController: PreferencesControllerInit,
+      SnapKeyring: SnapKeyringInit,
       KeyringController: KeyringControllerInit,
       PermissionController: PermissionControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
