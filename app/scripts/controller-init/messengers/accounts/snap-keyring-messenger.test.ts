@@ -16,8 +16,7 @@ describe('getSnapKeyringMessenger', () => {
 describe('getSnapKeyringInitMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const SnapKeyringInitMessenger =
-      getSnapKeyringInitMessenger(messenger);
+    const SnapKeyringInitMessenger = getSnapKeyringInitMessenger(messenger);
 
     expect(SnapKeyringInitMessenger).toBeInstanceOf(RestrictedMessenger);
   });
