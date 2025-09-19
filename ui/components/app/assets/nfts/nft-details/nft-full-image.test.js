@@ -23,11 +23,13 @@ const mockAsset = nfts[0].address;
 const mockId = nfts[0].tokenId;
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation,
     useParams: () => ({
       asset: mockAsset,
       id: mockId,

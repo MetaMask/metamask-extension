@@ -15,14 +15,6 @@ const store = configureStore({
 
 let openTabSpy;
 
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
-  return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
-  };
-});
-
 async function waitForStage(stage) {
   return await waitFor(() => {
     expect(screen.getByTestId(`srp_stage_${stage}`)).toBeInTheDocument();
