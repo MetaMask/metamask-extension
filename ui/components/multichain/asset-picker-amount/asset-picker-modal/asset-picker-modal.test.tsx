@@ -252,8 +252,7 @@ describe('AssetPickerModal', () => {
     );
 
     fireEvent.click(screen.getByText('nfts'));
-    expect(screen.getByText('noNFTs')).toBeInTheDocument();
-    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
+    expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
   });
 
   it('filters tokens based on search query', () => {
