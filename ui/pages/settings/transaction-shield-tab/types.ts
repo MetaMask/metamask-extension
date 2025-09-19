@@ -1,4 +1,9 @@
-import { PAYMENT_TYPES, SubscriptionCardPaymentMethod, SubscriptionCryptoPaymentMethod, SubscriptionPaymentMethod } from "@metamask/subscription-controller";
+import {
+  PAYMENT_TYPES,
+  SubscriptionCardPaymentMethod,
+  SubscriptionCryptoPaymentMethod,
+  SubscriptionPaymentMethod,
+} from '@metamask/subscription-controller';
 
 export function isCryptoPaymentMethod(
   paymentMethod: SubscriptionPaymentMethod,
