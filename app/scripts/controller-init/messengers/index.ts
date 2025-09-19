@@ -25,6 +25,7 @@ import {
 } from './transaction-controller-messenger';
 import {
   getBackendWebSocketServiceMessenger,
+  getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
 } from './backend-platform';
 import {
@@ -688,7 +689,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   BackendWebSocketService: {
     getMessenger: getBackendWebSocketServiceMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getBackendWebSocketServiceInitMessenger,
   },
   AccountActivityService: {
     getMessenger: getAccountActivityServiceMessenger,
