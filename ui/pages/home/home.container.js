@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -82,6 +82,7 @@ import {
 } from '../../ducks/history/history';
 
 import Home from './home.component';
+import withRouterHooks from "../../helpers/higher-order-components/with-router-hooks/with-router-hooks";
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
@@ -246,6 +247,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(Home);

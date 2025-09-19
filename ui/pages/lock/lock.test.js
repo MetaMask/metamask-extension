@@ -1,36 +1,35 @@
 import React from 'react';
-import sinon from 'sinon';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import Lock from './lock.component';
 
 describe('Lock', () => {
-  it('replaces history with default route when isUnlocked false', () => {
+  it('navigates to default route when isUnlocked false', () => {
+    const mockNavigate = jest.fn();
     const props = {
       isUnlocked: false,
-      history: {
-        replace: sinon.spy(),
-      },
+      navigate: mockNavigate,
     };
 
     renderWithProvider(<Lock {...props} />);
 
-    expect(props.history.replace.getCall(0).args[0]).toStrictEqual('/');
+    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 
-  it('locks and pushes history with default route when isUnlocked true', async () => {
+  it('locks and navigates to default route when isUnlocked true', async () => {
+    const mockLockMetamask = jest.fn().mockResolvedValue();
+    const mockNavigate = jest.fn();
     const props = {
       isUnlocked: true,
-      lockMetamask: sinon.stub(),
-      history: {
-        push: sinon.spy(),
-      },
+      lockMetamask: mockLockMetamask,
+      navigate: mockNavigate,
     };
-
-    props.lockMetamask.resolves();
 
     renderWithProvider(<Lock {...props} />);
 
-    expect(await props.lockMetamask.calledOnce).toStrictEqual(true);
-    expect(props.history.push.getCall(0).args[0]).toStrictEqual('/');
+    // Wait for async operations to complete
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(mockLockMetamask).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

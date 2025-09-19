@@ -1,7 +1,7 @@
 import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -38,14 +38,14 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
-import { getHDEntropyIndex } from '../../selectors/selectors';
+import { getHDEntropyIndex } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
 export default function RevealSeedPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { keyringId } = useParams();
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -273,7 +273,7 @@ export default function RevealSeedPage() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.goBack();
+            navigate(-1);
           }}
         >
           {t('cancel')}
@@ -322,7 +322,7 @@ export default function RevealSeedPage() {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
-            history.goBack();
+            navigate(-1);
           }}
         >
           {t('close')}
