@@ -6,6 +6,7 @@ import {
   CaveatSpecificationConstraint,
   PermissionController,
   PermissionSpecificationConstraint,
+  SubjectMetadataController,
 } from '@metamask/permission-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -60,6 +61,7 @@ import { NameController } from '@metamask/name-controller';
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { BridgeController } from '@metamask/bridge-controller';
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
+import { ApprovalController } from '@metamask/approval-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -76,6 +78,7 @@ import { AppStateController } from '../controllers/app-state-controller';
  */
 export type Controller =
   | AccountTrackerController
+  | ApprovalController
   | AppStateController
   | AuthenticationController
   | BridgeController
@@ -121,6 +124,7 @@ export type Controller =
   | SnapInsightsController
   | SubscriptionController
   | SnapsNameProvider
+  | SubjectMetadataController
   | SwapsController
   | TokenBalancesController
   | TokenDetectionController
@@ -143,6 +147,7 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
+  ApprovalController['state'] &
   AppStateController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &

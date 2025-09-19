@@ -128,7 +128,9 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
     "attributions:check": "./development/attributions-check.sh",
-    "attributions:generate": "./development/generate-attributions.sh"
+    "attributions:generate": "./development/generate-attributions.sh",
+    "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
+    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
     "http-cache-semantics": "^4.1.1",
@@ -261,7 +263,7 @@
     "@material-ui/core": "^4.12.4",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^0.12.0",
-    "@metamask/account-tree-controller": "^0.16.0",
+    "@metamask/account-tree-controller": "^0.16.1",
     "@metamask/account-watcher": "^4.1.3",
     "@metamask/accounts-controller": "^33.1.0",
     "@metamask/address-book-controller": "^6.1.0",
@@ -809,7 +811,7 @@
       "@metamask/streams": false
     }
   },
-  "packageManager": "yarn@4.9.1",
+  "packageManager": "yarn@4.9.4",
   "foundryup": {
     "binaries": [
       "anvil"

@@ -47,10 +47,8 @@ import {
 } from '@metamask/network-controller';
 import {
   MethodNames,
-  PermissionController,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
-  SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
 
@@ -65,8 +63,6 @@ import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
-  buildSnapEndowmentSpecifications,
-  buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
 import {
   ApprovalType,
@@ -181,11 +177,7 @@ import {
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-import {
-  RestrictedMethods,
-  ExcludedSnapPermissions,
-  ExcludedSnapEndowments,
-} from '../../shared/constants/permissions';
+import { RestrictedMethods } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
@@ -292,14 +284,11 @@ import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
 import {
-  getCaveatSpecifications,
   diffMap,
   getPermissionBackgroundApiMethods,
-  getPermissionSpecifications,
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
-  unrestrictedMethods,
   getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
@@ -423,6 +412,8 @@ import { BridgeControllerInit } from './controller-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './controller-init/preferences-controller-init';
 import { AppStateControllerInit } from './controller-init/app-state-controller-init';
+import { PermissionControllerInit } from './controller-init/permission-controller-init';
+import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -962,59 +953,12 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.permissionController = new PermissionController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'PermissionController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:hasRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-          `SnapController:getPermitted`,
-          `SnapController:install`,
-          `SubjectMetadataController:getSubjectMetadata`,
-        ],
-      }),
-      state: initState.PermissionController,
-      caveatSpecifications: getCaveatSpecifications({
-        listAccounts: this.accountsController.listAccounts.bind(
-          this.accountsController,
-        ),
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
-        isNonEvmScopeSupported: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'MultichainRouter:isSupportedScope',
-        ),
-        getNonEvmAccountAddresses: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'MultichainRouter:getSupportedAccounts',
-        ),
-      }),
-      permissionSpecifications: {
-        ...getPermissionSpecifications(),
-        ...this.getSnapPermissionSpecifications(),
-      },
-      unrestrictedMethods,
-    });
-
     this.permissionLogController = new PermissionLogController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PermissionLogController',
       }),
       restrictedMethods: new Set(Object.keys(RestrictedMethods)),
       state: initState.PermissionLogController,
-    });
-
-    this.subjectMetadataController = new SubjectMetadataController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SubjectMetadataController',
-        allowedActions: [`${this.permissionController.name}:hasPermissions`],
-      }),
-      state: initState.SubjectMetadataController,
-      subjectCacheLimit: 100,
     });
 
     // @TODO(snaps): This fixes an issue where `withKeyring` would lock the `KeyringController` mutex.
@@ -1030,10 +974,10 @@ export default class MetamaskController extends EventEmitter {
     const multichainRouterMessenger = this.controllerMessenger.getRestricted({
       name: 'MultichainRouter',
       allowedActions: [
-        `SnapController:getAll`,
-        `SnapController:handleRequest`,
-        `${this.permissionController.name}:getPermissions`,
-        `AccountsController:listMultichainAccounts`,
+        'SnapController:getAll',
+        'SnapController:handleRequest',
+        'PermissionController:getPermissions',
+        'AccountsController:listMultichainAccounts',
       ],
       allowedEvents: [],
     });
@@ -1216,6 +1160,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const existingControllers = [
+      this.approvalController,
       this.networkController,
       this.keyringController,
       this.accountsController,
@@ -1224,6 +1169,8 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       PreferencesController: PreferencesControllerInit,
+      PermissionController: PermissionControllerInit,
+      SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
@@ -1301,6 +1248,9 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.preferencesController = controllersByName.PreferencesController;
+    this.permissionController = controllersByName.PermissionController;
+    this.subjectMetadataController =
+      controllersByName.SubjectMetadataController;
     this.appStateController = controllersByName.AppStateController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
     this.remoteFeatureFlagController =
@@ -1531,6 +1481,10 @@ export default class MetamaskController extends EventEmitter {
           const { address } = this.accountsController.getSelectedAccount();
 
           if (this.isMultichainAccountsFeatureState2Enabled()) {
+            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+            await this.getSnapKeyring();
+            ///: END:ONLY_INCLUDE_IF
+
             await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           }
 
@@ -2014,236 +1968,6 @@ export default class MetamaskController extends EventEmitter {
       'SnapController:handleRequest',
       args,
     );
-  }
-
-  /**
-   * Gets the currently selected locale from the PreferencesController.
-   *
-   * @returns The currently selected locale.
-   */
-  getLocale() {
-    const { currentLocale } = this.preferencesController.state;
-
-    return currentLocale;
-  }
-
-  /**
-   * Gets a subset of preferences from the PreferencesController to pass to a snap.
-   *
-   * @returns {object} A subset of preferences.
-   */
-  getPreferences() {
-    const {
-      preferences,
-      securityAlertsEnabled,
-      useCurrencyRateCheck,
-      useTransactionSimulations,
-      useTokenDetection,
-      useMultiAccountBalanceChecker,
-      openSeaEnabled,
-      useNftDetection,
-    } = this.preferencesController.state;
-
-    return {
-      privacyMode: preferences.privacyMode,
-      showTestnets: preferences.showTestNetworks,
-      securityAlertsEnabled,
-      useCurrencyRateCheck,
-      useTransactionSimulations,
-      useTokenDetection,
-      useMultiAccountBalanceChecker,
-      openSeaEnabled,
-      useNftDetection,
-    };
-  }
-
-  /**
-   * Constructor helper for getting Snap permission specifications.
-   */
-  getSnapPermissionSpecifications() {
-    return {
-      ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
-      ...buildSnapRestrictedMethodSpecifications(
-        Object.keys(ExcludedSnapPermissions),
-        {
-          getPreferences: () => {
-            const locale = this.getLocale();
-            const currency = this.currencyRateController.state.currentCurrency;
-            const {
-              privacyMode,
-              securityAlertsEnabled,
-              useCurrencyRateCheck,
-              useTransactionSimulations,
-              useTokenDetection,
-              useMultiAccountBalanceChecker,
-              openSeaEnabled,
-              useNftDetection,
-              showTestnets,
-            } = this.getPreferences();
-            return {
-              locale,
-              currency,
-              hideBalances: privacyMode,
-              useSecurityAlerts: securityAlertsEnabled,
-              useExternalPricingData: useCurrencyRateCheck,
-              simulateOnChainActions: useTransactionSimulations,
-              useTokenDetection,
-              batchCheckBalances: useMultiAccountBalanceChecker,
-              displayNftMedia: openSeaEnabled,
-              useNftDetection,
-              showTestnets,
-            };
-          },
-          clearSnapState: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'SnapController:clearSnapState',
-          ),
-          getMnemonic: async (source) => {
-            if (!source) {
-              return this.getPrimaryKeyringMnemonic();
-            }
-
-            try {
-              const { type, mnemonic } = await this.controllerMessenger.call(
-                'KeyringController:withKeyring',
-                {
-                  id: source,
-                },
-                async ({ keyring }) => ({
-                  type: keyring.type,
-                  mnemonic: keyring.mnemonic,
-                }),
-              );
-
-              if (type !== KeyringTypes.hd || !mnemonic) {
-                // The keyring isn't guaranteed to have a mnemonic (e.g.,
-                // hardware wallets, which can't be used as entropy sources),
-                // so we throw an error if it doesn't.
-                throw new Error(
-                  `Entropy source with ID "${source}" not found.`,
-                );
-              }
-
-              return mnemonic;
-            } catch {
-              throw new Error(`Entropy source with ID "${source}" not found.`);
-            }
-          },
-          getMnemonicSeed: async (source) => {
-            if (!source) {
-              return this.getPrimaryKeyringMnemonicSeed();
-            }
-
-            try {
-              const { type, seed } = await this.controllerMessenger.call(
-                'KeyringController:withKeyring',
-                {
-                  id: source,
-                },
-                async ({ keyring }) => ({
-                  type: keyring.type,
-                  seed: keyring.seed,
-                }),
-              );
-
-              if (type !== KeyringTypes.hd || !seed) {
-                // The keyring isn't guaranteed to have a seed (e.g.,
-                // hardware wallets, which can't be used as entropy sources),
-                // so we throw an error if it doesn't.
-                throw new Error(
-                  `Entropy source with ID "${source}" not found.`,
-                );
-              }
-
-              return seed;
-            } catch {
-              throw new Error(`Entropy source with ID "${source}" not found.`);
-            }
-          },
-          getUnlockPromise: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'AppStateController:getUnlockPromise',
-          ),
-          getSnap: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'SnapController:get',
-          ),
-          handleSnapRpcRequest: this.handleSnapRequest.bind(this),
-          getSnapState: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'SnapController:getSnapState',
-          ),
-          requestUserApproval:
-            this.approvalController.addAndShowApprovalRequest.bind(
-              this.approvalController,
-            ),
-          showNativeNotification: (origin, args) =>
-            this.controllerMessenger.call(
-              'RateLimitController:call',
-              origin,
-              'showNativeNotification',
-              origin,
-              args.message,
-            ),
-          showInAppNotification: (origin, args) => {
-            const { message, title, footerLink } = args;
-            const notificationArgs = {
-              interfaceId: args.content,
-              message,
-              title,
-              footerLink,
-            };
-            return this.controllerMessenger.call(
-              'RateLimitController:call',
-              origin,
-              'showInAppNotification',
-              origin,
-              notificationArgs,
-            );
-          },
-          updateSnapState: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'SnapController:updateSnapState',
-          ),
-          maybeUpdatePhishingList: () => {
-            const { usePhishDetect } = this.preferencesController.state;
-
-            if (!usePhishDetect) {
-              return;
-            }
-
-            this.controllerMessenger.call(
-              'PhishingController:maybeUpdateState',
-            );
-          },
-          isOnPhishingList: (url) => {
-            const { usePhishDetect } = this.preferencesController.state;
-
-            if (!usePhishDetect) {
-              return false;
-            }
-
-            return this.controllerMessenger.call(
-              'PhishingController:testOrigin',
-              url,
-            ).result;
-          },
-          createInterface: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'SnapInterfaceController:createInterface',
-          ),
-          getInterface: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'SnapInterfaceController:getInterface',
-          ),
-          // We don't currently use special cryptography for the extension client.
-          getClientCryptography: () => ({}),
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          getSnapKeyring: this.getSnapKeyring.bind(this),
-          ///: END:ONLY_INCLUDE_IF
-        },
-      ),
-    };
   }
 
   /**
@@ -5199,6 +4923,9 @@ export default class MetamaskController extends EventEmitter {
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts();
         } else {
@@ -5376,6 +5103,9 @@ export default class MetamaskController extends EventEmitter {
       );
       if (isHdKeyring) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts(metadata.id);
         } else {

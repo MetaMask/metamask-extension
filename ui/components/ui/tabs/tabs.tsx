@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import classnames from 'classnames';
-import { Box } from '../../component-library';
 import {
-  BackgroundColor,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  twMerge,
+} from '@metamask/design-system-react';
 import { TabsProps, TabChild } from './tabs.types';
 
 export const Tabs = <TKey extends string = string>({
@@ -86,26 +86,31 @@ export const Tabs = <TKey extends string = string>({
   };
 
   return (
-    <Box className="tabs" {...props}>
+    <Box
+      className={twMerge('tabs', 'transform-gpu', props.className)}
+      {...props}
+    >
       <Box
-        as="ul"
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexStart}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        role="tablist"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Start}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
         gap={0}
         {...tabListProps}
-        className={classnames(
+        className={twMerge(
           'tabs__list',
+          'top-0 z-[2]',
           tabsClassName,
-          tabListProps.className || '',
+          tabListProps?.className,
         )}
       >
         {renderTabs()}
       </Box>
       {subHeader}
       <Box
+        role="tabpanel"
         {...tabContentProps}
-        className={classnames('tabs__content', tabContentProps.className || '')}
+        className={twMerge('tabs__content', tabContentProps?.className || '')}
       >
         {renderActiveTabContent()}
       </Box>
