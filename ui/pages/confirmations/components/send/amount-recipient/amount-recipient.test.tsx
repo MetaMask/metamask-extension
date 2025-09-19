@@ -10,6 +10,7 @@ import * as SendActions from '../../../hooks/send/useSendActions';
 import * as SendContext from '../../../context/send';
 import * as RecipientValidation from '../../../hooks/send/useRecipientValidation';
 import { AmountRecipient } from './amount-recipient';
+import { EVM_ASSET } from '../../../../../../test/data/send/assets';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 
@@ -41,6 +42,22 @@ const render = (args?: Record<string, unknown>) => {
 
 describe('AmountRecipient', () => {
   it('should render correctly', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+
     const { getByText } = render();
 
     expect(getByText('Amount')).toBeInTheDocument();
@@ -64,7 +81,7 @@ describe('AmountRecipient', () => {
 
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       toResolved: MOCK_ADDRESS,
-      asset: undefined,
+      asset: EVM_ASSET,
       chainId: '0x1',
       from: 'from-address',
       updateAsset: jest.fn(),
@@ -116,6 +133,18 @@ describe('AmountRecipient', () => {
     jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
       amountError: 'Insufficient Funds',
     } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
 
     const { getAllByRole, getByRole } = render();
 
