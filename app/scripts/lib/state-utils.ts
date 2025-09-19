@@ -3,13 +3,14 @@ import { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 import { Patch } from 'immer';
+import { cloneDeep } from 'lodash';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlattenedUIState = Record<string, any>;
 
 /*
- * Top-level state keys to remove.
+ * Top-level state keys to not send to UI.
  * Temporary mechanism pending new state metadata property.
  */
 const REMOVE_KEYS = [
@@ -196,13 +197,16 @@ function deletePathFromPatch(patch: Patch, removePath: (string | boolean)[]) {
       return true;
     }
 
-    if (!isMatch && isEndOfPatchKey) {
-      const remainingPath = removePath.slice(i);
-      deletePathInObject(patch.value, remainingPath);
+    if (!isMatch && !isEndOfPatchKey) {
       return false;
     }
 
-    if (!isMatch) {
+    if (!isMatch && isEndOfPatchKey) {
+      const remainingPath = removePath.slice(i);
+
+      patch.value = cloneDeep(patch.value);
+      deletePathInObject(patch.value, remainingPath);
+
       return false;
     }
   }
