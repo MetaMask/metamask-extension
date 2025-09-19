@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const Tenderly = {
   Mainnet: {
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     rpcName: 'Tenderly - Mainnet',
     url: 'https://virtual.mainnet.rpc.tenderly.co/6a1cf1d8-3625-4ba0-b07e-c620d326ecb9',
     chainID: '0x1',

@@ -324,7 +324,7 @@ describe('NetworkListMenu', () => {
     );
     expect(selectedNodes).toHaveLength(1);
 
-    expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(queryByText('Ethereum')).toBeInTheDocument();
   });
 
   it('narrows down search results', () => {
@@ -621,7 +621,7 @@ describe('NetworkListMenu', () => {
 
       const searchBox = getByPlaceholderText('Search');
       fireEvent.focus(searchBox);
-      fireEvent.change(searchBox, { target: { value: 'Main' } });
+      fireEvent.change(searchBox, { target: { value: 'Ethereum' } });
 
       // Search should still work
       expect(queryByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
