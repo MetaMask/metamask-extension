@@ -1,5 +1,7 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { act, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
+import { useSelector } from 'react-redux';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -10,6 +12,9 @@ jest.mock('../../../store/controller-actions/transaction-controller', () => ({
   isAtomicBatchSupported: jest.fn(),
 }));
 
+jest.mock('../../../../shared/modules/selectors');
+jest.mock('react-redux');
+
 describe('useGasIncluded7702', () => {
   const mockIsRelaySupported = jest.requireMock(
     '../../../store/actions',
@@ -17,10 +22,17 @@ describe('useGasIncluded7702', () => {
   const mockIsAtomicBatchSupported = jest.requireMock(
     '../../../store/controller-actions/transaction-controller',
   ).isAtomicBatchSupported;
+  const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
+  const mockUseSelector = jest.mocked(useSelector);
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    mockGetIsSmartTransaction.mockReturnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockUseSelector.mockImplementation((selector: any) =>
+      selector({} as never),
+    );
   });
 
   afterEach(() => {
@@ -28,6 +40,7 @@ describe('useGasIncluded7702', () => {
   });
 
   it('returns false when isSendBundleSupportedForChain is true', () => {
+    mockGetIsSmartTransaction.mockReturnValue(true);
     const { result } = renderHook(() =>
       useGasIncluded7702({
         smartAccountOptedIn: true,
