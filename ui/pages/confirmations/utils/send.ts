@@ -20,6 +20,7 @@ import {
   generateERC721TransferData,
 } from '../send-legacy/send.utils';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
+import { isHex } from '../../../../shared/lib/delegation/utils';
 
 export const trimTrailingZeros = (numStr: string) => {
   return numStr.replace(/(\.\d*?[1-9])0+$/gu, '$1').replace(/\.0*$/u, '');
@@ -98,9 +99,10 @@ export function formatToFixedDecimals(
   decimalsToShow: string | number = 5,
   trimTrailingZerosEnabled = true,
 ) {
-  if (!value) {
+  if (!value || !isValidPositiveNumericString(value)) {
     return '0';
   }
+
   const val = new Numeric(value, 10);
   if (val.isZero()) {
     return '0';
@@ -240,8 +242,13 @@ export const getLayer1GasFees = async ({
   })) as Hex | undefined;
 };
 
-export function isDecimal(value: string) {
-  return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
+export function isValidPositiveNumericString(str: string) {
+  try {
+    const num = new Numeric(str, isHex(str) ? 16 : 10);
+    return num.greaterThanOrEqualTo(new Numeric('0', 10));
+  } catch (err) {
+    return false;
+  }
 }
 
 export function convertedCurrency(
@@ -249,7 +256,7 @@ export function convertedCurrency(
   conversionRate?: number,
   decimals?: string | number,
 ) {
-  if (!isDecimal(value) || parseFloat(value) < 0) {
+  if (!isValidPositiveNumericString(value)) {
     return undefined;
   }
 
