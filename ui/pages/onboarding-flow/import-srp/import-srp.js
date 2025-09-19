@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isValidMnemonic } from '@ethersproject/hdnode';
@@ -45,16 +45,16 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const [srpError, setSrpError] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const t = useI18nContext();
   const currentKeyring = useSelector(getCurrentKeyring);
 
   useEffect(() => {
     if (currentKeyring) {
-      history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+      navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
-  }, [currentKeyring, history]);
+  }, [currentKeyring, navigate]);
   const trackEvent = useContext(MetaMetricsContext);
 
   const onShowSrpDetailsModal = useCallback(() => {
@@ -91,13 +91,13 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [
     secretRecoveryPhrase,
     t,
     hdEntropyIndex,
     trackEvent,
-    history,
+    navigate,
     submitSecretRecoveryPhrase,
   ]);
 
@@ -126,7 +126,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             size={ButtonIconSize.Md}
             data-testid="import-srp-back-button"
             onClick={() => {
-              history.replace(ONBOARDING_WELCOME_ROUTE);
+              navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
             }}
             ariaLabel={t('back')}
           />

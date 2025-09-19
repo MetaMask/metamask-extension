@@ -6,11 +6,34 @@ import {
   TRIGGER_TYPES,
   defaultState,
 } from '@metamask/notification-services-controller/notification-services';
+import semver from 'semver';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import packageJson from '../../../package.json';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from '../remote-feature-flags';
+
+const APP_VERSION = packageJson.version;
+
+export const filterNonValidFeatureAnnouncements = (n: Notification) => {
+  // Skip non announcements
+  if (n.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT) {
+    return true;
+  }
+
+  // Field is not set, so show by default
+  if (!n.data.extensionMinimumVersionNumber) {
+    return true;
+  }
+
+  try {
+    return semver.gte(APP_VERSION, n.data.extensionMinimumVersionNumber);
+  } catch {
+    // Invalid mobile version number, not showing notification
+    return false;
+  }
+};
 
 export type NotificationAppState = RemoteFeatureFlagsState & {
   metamask: Partial<NotificationServicesControllerState>;
@@ -42,7 +65,10 @@ export function getIsNotificationEnabledByDefaultFeatureFlag(
  */
 export const getMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask): Notification[] => metamask.metamaskNotificationsList,
+  (metamask): Notification[] => {
+    const notifications = metamask.metamaskNotificationsList;
+    return notifications.filter((n) => filterNonValidFeatureAnnouncements(n));
+  },
 );
 
 /**

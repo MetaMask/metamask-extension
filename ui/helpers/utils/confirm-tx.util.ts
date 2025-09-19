@@ -57,6 +57,12 @@ export function getTransactionFee({
   return fee.round(numberOfDecimals).toString();
 }
 
+/**
+ * @deprecated Use formatters from `@metamask/core` instead
+ * @param value
+ * @param currencyCode
+ * @param precision
+ */
 export function formatCurrency(
   value: string,
   currencyCode: string,

@@ -1,8 +1,15 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import NativeTransferInfo from './native-transfer';
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useLocation: () => ({ pathname: '/' }),
+  useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
+}));
 
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext',

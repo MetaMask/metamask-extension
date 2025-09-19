@@ -71,7 +71,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func.isRequired,
     openSeaEnabled: PropTypes.bool,
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
@@ -114,6 +114,8 @@ export default class SecurityTab extends PureComponent {
     isSeedPhraseBackedUp: PropTypes.bool,
     socialLoginEnabled: PropTypes.bool,
     socialLoginType: PropTypes.string,
+    getMarketingConsent: PropTypes.func,
+    setMarketingConsent: PropTypes.func,
   };
 
   state = {
@@ -122,6 +124,8 @@ export default class SecurityTab extends PureComponent {
     srpQuizModalVisible: false,
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
+    hasEmailMarketingConsent: false,
+    hasEmailMarketingConsentError: false,
   };
 
   settingsRefCounter = 0;
@@ -156,6 +160,11 @@ export default class SecurityTab extends PureComponent {
     if (this.props.metaMetricsDataDeletionId) {
       await updateDataDeletionTaskStatus();
     }
+
+    if (this.props.socialLoginEnabled) {
+      const res = await this.props.getMarketingConsent();
+      this.setState({ hasEmailMarketingConsent: res });
+    }
   }
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
@@ -175,10 +184,11 @@ export default class SecurityTab extends PureComponent {
   renderSeedWords() {
     const { t } = this.context;
     const {
-      history,
       isSeedPhraseBackedUp,
       socialLoginEnabled,
       socialLoginType,
+      navigate,
+      hdEntropyIndex,
     } = this.props;
 
     const getBannerDescription = () => {
@@ -244,7 +254,7 @@ export default class SecurityTab extends PureComponent {
                     properties: {
                       key_type: MetaMetricsEventKeyType.Srp,
                       location: 'Settings',
-                      hd_entropy_index: this.props.hdEntropyIndex,
+                      hd_entropy_index: hdEntropyIndex,
                     },
                   });
                   this.context.trackEvent({
@@ -255,9 +265,7 @@ export default class SecurityTab extends PureComponent {
                       location: 'Settings',
                     },
                   });
-                  history.push({
-                    pathname: REVEAL_SRP_LIST_ROUTE,
-                  });
+                  navigate(REVEAL_SRP_LIST_ROUTE);
                 }}
               >
                 {getButtonText()}
@@ -277,7 +285,7 @@ export default class SecurityTab extends PureComponent {
 
   renderChangePassword() {
     const { t } = this.context;
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     return (
       <>
@@ -304,7 +312,7 @@ export default class SecurityTab extends PureComponent {
                 data-testid="change-password-button"
                 size={ButtonSize.Lg}
                 onClick={() => {
-                  history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
+                  navigate(SECURITY_PASSWORD_CHANGE_ROUTE);
                 }}
               >
                 {t('securityChangePassword')}
@@ -438,64 +446,106 @@ export default class SecurityTab extends PureComponent {
 
   renderDataCollectionForMarketing() {
     const { t } = this.context;
+
     const {
       dataCollectionForMarketing,
       participateInMetaMetrics,
       setDataCollectionForMarketing,
       setParticipateInMetaMetrics,
       useExternalServices,
+      socialLoginEnabled,
     } = this.props;
 
-    return (
-      <Box
-        ref={this.settingsRefs[19]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('dataCollectionForMarketing')}</span>
-          <div className="settings-page__content-description">
-            <span>{t('dataCollectionForMarketingDescription')}</span>
-          </div>
-        </div>
+    const handleToggle = async (value) => {
+      if (socialLoginEnabled) {
+        try {
+          await this.props.setMarketingConsent(!value);
+          this.setState({
+            hasEmailMarketingConsent: !value,
+            hasEmailMarketingConsentError: false,
+          });
+        } catch (error) {
+          this.setState({
+            hasEmailMarketingConsent: value,
+            hasEmailMarketingConsentError: true,
+          });
+        }
+        return;
+      }
 
-        <div
-          className="settings-page__content-item-col"
-          data-testid="data-collection-for-marketing-toggle"
+      const newMarketingConsent = Boolean(!value);
+      setDataCollectionForMarketing(newMarketingConsent);
+      if (participateInMetaMetrics) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(newMarketingConsent),
+            location: 'Settings',
+          },
+        });
+      } else {
+        setParticipateInMetaMetrics(true);
+      }
+    };
+
+    return (
+      <Box>
+        <Box
+          ref={this.settingsRefs[19]}
+          className="settings-page__content-row"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={4}
         >
-          <ToggleButton
-            value={dataCollectionForMarketing}
-            disabled={!useExternalServices}
-            onToggle={(value) => {
-              const newMarketingConsent = Boolean(!value);
-              setDataCollectionForMarketing(newMarketingConsent);
-              if (participateInMetaMetrics) {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-                  properties: {
-                    is_metrics_opted_in: true,
-                    has_marketing_consent: Boolean(newMarketingConsent),
-                    location: 'Settings',
-                  },
-                });
-              } else {
-                setParticipateInMetaMetrics(true);
+          <div className="settings-page__content-item">
+            <span>{t('dataCollectionForMarketing')}</span>
+            <div className="settings-page__content-description">
+              <span>
+                {socialLoginEnabled
+                  ? t('dataCollectionForMarketingDescriptionSocialLogin')
+                  : t('dataCollectionForMarketingDescription')}
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="data-collection-for-marketing-toggle"
+          >
+            <ToggleButton
+              value={
+                socialLoginEnabled
+                  ? this.state.hasEmailMarketingConsent
+                  : dataCollectionForMarketing
               }
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
+              disabled={!useExternalServices}
+              onToggle={handleToggle}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
+        {this.state.hasEmailMarketingConsentError && (
+          <Box paddingBottom={4}>
+            <Text
+              as="p"
+              color={TextColor.errorDefault}
+              variant={TextVariant.bodySm}
+            >
+              {t('notificationsSettingsBoxError')}
+            </Text>
+          </Box>
+        )}
       </Box>
     );
   }
 
   renderChooseYourNetworkButton() {
     const { t } = this.context;
+    const { navigate } = this.props;
 
     return (
       <Box
@@ -538,7 +588,7 @@ export default class SecurityTab extends PureComponent {
                 ? global.platform.openExtensionInBrowser(
                     ADD_POPULAR_CUSTOM_NETWORK,
                   )
-                : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
+                : navigate(ADD_POPULAR_CUSTOM_NETWORK);
             }}
           >
             {t('addCustomNetwork')}
@@ -602,6 +652,12 @@ export default class SecurityTab extends PureComponent {
 
   renderIpfsGatewayControl() {
     const { t } = this.context;
+    const {
+      setIpfsGateway,
+      setIsIpfsGatewayEnabled,
+      useAddressBarEnsResolution,
+      setUseAddressBarEnsResolution,
+    } = this.props;
     let ipfsError = '';
 
     const handleIpfsGatewayChange = (url) => {
@@ -621,7 +677,7 @@ export default class SecurityTab extends PureComponent {
           }
 
           if (ipfsError.length === 0) {
-            this.props.setIpfsGateway(urlObj.host);
+            setIpfsGateway(urlObj.host);
           }
         } catch (error) {
           ipfsError = t('invalidIpfsGateway');
@@ -667,11 +723,11 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 if (value) {
                   // turning from true to false
-                  this.props.setIsIpfsGatewayEnabled(false);
-                  this.props.setIpfsGateway('');
+                  setIsIpfsGatewayEnabled(false);
+                  setIpfsGateway('');
                 } else {
                   // turning from false to true
-                  this.props.setIsIpfsGatewayEnabled(true);
+                  setIsIpfsGatewayEnabled(true);
                   handleIpfsGatewayChange(this.state.ipfsGateway);
                 }
 
@@ -746,10 +802,8 @@ export default class SecurityTab extends PureComponent {
             data-testid="ipfs-gateway-resolution-container"
           >
             <ToggleButton
-              value={this.props.useAddressBarEnsResolution}
-              onToggle={(value) =>
-                this.props.setUseAddressBarEnsResolution(!value)
-              }
+              value={useAddressBarEnsResolution}
+              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />

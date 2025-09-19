@@ -150,53 +150,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     delete (global as any).ethereumProvider;
   });
 
-  it('displays the alert when network is busy', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedMetaMaskState,
-          gasFeeEstimatesByChainId: {
-            '0xaa36a7': {
-              gasFeeEstimates: {
-                networkCongestion: 1.0005,
-              },
-            },
-          },
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    fireEvent.click(await screen.findByTestId('inline-alert'));
-
-    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
-
-    expect(
-      await screen.findByTestId('alert-modal__selected-alert'),
-    ).toBeInTheDocument();
-
-    expect(
-      await screen.findByTestId('alert-modal__selected-alert'),
-    ).toHaveTextContent('Gas prices are high and estimates are less accurate.');
-
-    expect(await screen.findByTestId('alert-modal-button')).toBeInTheDocument();
-    const alertModalConfirmButton =
-      await screen.findByTestId('alert-modal-button');
-
-    fireEvent.click(alertModalConfirmButton);
-
-    expect(screen.queryByTestId('alert-modal')).not.toBeInTheDocument();
-  });
-
   it('displays the alert when gas estimate fails', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[

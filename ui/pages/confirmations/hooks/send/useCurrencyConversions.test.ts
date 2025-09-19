@@ -22,21 +22,47 @@ describe('useCurrencyConversions', () => {
   it('return fields for currency conversion', () => {
     const result = renderHook();
     expect(result.getFiatValue).toBeDefined();
+    expect(result.getFiatDisplayValue).toBeDefined();
     expect(result.getNativeValue).toBeDefined();
+    expect(result.getNativeDisplayValue).toBeDefined();
   });
 
-  it('return correct rate for Native assets', () => {
+  it('use conversion rate from asset if available', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        ...EVM_NATIVE_ASSET,
+        fiat: {
+          conversionRate: 2,
+        },
+      },
+      chainId: '0x5',
+    } as unknown as SendContext.SendContextType);
+
+    const result = renderHook();
+    expect(result.getFiatValue(10)).toEqual('20');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 20');
+    expect(result.getNativeValue(5000)).toEqual('2500');
+    expect(result.getNativeDisplayValue(5000)).toEqual('ETH 2500');
+  });
+
+  it('return correct values for Native assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: EVM_NATIVE_ASSET,
+      chainId: '0x5',
     } as unknown as SendContext.SendContextType);
 
     const result = renderHook();
     expect(result.getFiatValue(10)).toEqual('5561.2');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 5561.2');
+    expect(result.getNativeValue(5000)).toEqual('8.990865280874631');
+    expect(result.getNativeDisplayValue(5000)).toEqual('ETH 8.99086');
   });
 
-  it('return correct rate for ERC20 assets', () => {
+  it('return correct values for ERC20 assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: EVM_ASSET,
+      asset: { ...EVM_ASSET, decimals: 4 },
+      chainId: '0x5',
+      decimals: 4,
     } as unknown as SendContext.SendContextType);
 
     const result = renderHook({
@@ -52,9 +78,12 @@ describe('useCurrencyConversions', () => {
     });
 
     expect(result.getFiatValue(10)).toEqual('27806');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 27806');
+    expect(result.getNativeValue(5000)).toEqual('1.7981');
+    expect(result.getNativeDisplayValue(5000)).toEqual('NEU 1.7981');
   });
 
-  it('return correct rate for solana assets', () => {
+  it('return correct values for solana assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
     } as unknown as SendContext.SendContextType);
@@ -68,5 +97,8 @@ describe('useCurrencyConversions', () => {
     });
 
     expect(result.getFiatValue(10)).toEqual('5');
+    expect(result.getFiatDisplayValue(10)).toEqual('$ 5');
+    expect(result.getNativeValue(5000)).toEqual('10000');
+    expect(result.getNativeDisplayValue(5000)).toEqual('FARTCOIN 10000');
   });
 });

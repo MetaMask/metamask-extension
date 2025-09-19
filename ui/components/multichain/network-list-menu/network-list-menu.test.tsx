@@ -27,6 +27,7 @@ const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
 const mockEnableAllPopularNetworks = jest.fn();
 const mockEnableSingleNetwork = jest.fn();
+const mockSetEnabledNetworksMultichain = jest.fn();
 const mockAddPermittedChain = jest.fn();
 const mockShowPermittedNetworkToast = jest.fn();
 
@@ -81,6 +82,10 @@ jest.mock('../../../store/controller-actions/network-order-controller', () => ({
   enableSingleNetwork: () => {
     mockEnableSingleNetwork();
     return { type: 'ENABLE_SINGLE_NETWORKS' };
+  },
+  setEnabledNetworksMultichain: () => {
+    mockSetEnabledNetworksMultichain();
+    return { type: 'SET_ENABLED_NETWORKS_MULTICHAIN' };
   },
 }));
 

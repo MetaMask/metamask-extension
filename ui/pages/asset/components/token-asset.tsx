@@ -1,10 +1,17 @@
 import { Token } from '@metamask/assets-controllers';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import {
+  CaipAssetType,
+  Hex,
+  isCaipChainId,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -16,18 +23,13 @@ import {
 } from '../../../helpers/utils/util';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import {
-  getSelectedInternalAccount,
-  getTokenList,
-  selectERC20TokensByChain,
-} from '../../../selectors';
+import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -45,7 +47,13 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       ? null
       : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const caipChainId = isCaipChainId(chainId)
+    ? chainId
+    : formatChainIdToCaip(chainId);
+  const selectedAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+  ) as InternalAccount;
+
   const { address: walletAddress } = selectedAccount;
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
@@ -54,7 +62,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     getMultichainNetwork,
     selectedAccount,
   );
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(chainId);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -124,6 +132,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       optionsButton={
         <AssetOptions
           isNativeAsset={false}
+          isEvm={isEvm}
           onRemove={() =>
             dispatch(
               showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),

@@ -4,7 +4,6 @@ import {
   AvatarAccount,
   AvatarAccountProps,
   AvatarAccountVariant,
-  AvatarBaseShape,
 } from '@metamask/design-system-react';
 import type { MetaMaskReduxState } from '../../../store/store';
 
@@ -14,22 +13,18 @@ import type { MetaMaskReduxState } from '../../../store/store';
  * @param props - Props to pass to AvatarAccount
  */
 export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
-  const variant = useSelector(getUseBlockie)
-    ? AvatarAccountVariant.Blockies
-    : AvatarAccountVariant.Jazzicon;
+  const variant = useSelector(getAvatarType);
 
-  return (
-    <AvatarAccount
-      {...props}
-      variant={variant}
-      shape={AvatarBaseShape.Circle} // Remove once we switch to Maskicon
-    />
-  );
+  return <AvatarAccount {...props} variant={variant} />;
 };
 
-// Inlining to avoid having to import the selectors barrel file and cause
-// circular dependencies in certain situations. This will be revised once
-// we switch to Maskicon.
-function getUseBlockie(state: MetaMaskReduxState) {
-  return state.metamask.useBlockie;
+const avatarTypeMap = {
+  maskicon: AvatarAccountVariant.Maskicon,
+  jazzicon: AvatarAccountVariant.Jazzicon,
+  blockies: AvatarAccountVariant.Blockies,
+};
+
+function getAvatarType({ metamask: { preferences } }: MetaMaskReduxState) {
+  const avatarType = preferences?.avatarType;
+  return avatarType ? avatarTypeMap[avatarType] : undefined;
 }

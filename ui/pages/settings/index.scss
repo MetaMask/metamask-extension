@@ -6,6 +6,7 @@
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
 @import 'security-tab/index';
+@import 'transaction-shield-tab/index';
 
 .settings-page {
   position: relative;
@@ -317,27 +318,6 @@
       display: flex;
       flex-direction: row;
       align-items: baseline;
-
-      &__item {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        background: unset;
-        border: 1px solid transparent;
-
-        &__icon {
-          &--active {
-            height: 40px;
-            width: 40px;
-            border-radius: 40px;
-            border: 2px solid var(--color-primary-default);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-        }
-      }
     }
 
     &__description {

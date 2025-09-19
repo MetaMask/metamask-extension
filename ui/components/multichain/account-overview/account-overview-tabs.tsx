@@ -11,14 +11,18 @@ import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllChainsToPoll } from '../../../selectors';
-import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  getAllChainsToPoll,
+  getIsMultichainAccountsState2Enabled,
+} from '../../../selectors';
+import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { useAssetListTokenDetection } from '../../app/assets/hooks';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import TransactionList from '../../app/transaction-list';
+import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { AccountOverviewCommonProps } from './common';
@@ -98,6 +102,11 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
+  const isBIP44FeatureFlagEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
+
   return (
     <Box style={{ flexGrow: '1' }}>
       <Tabs
@@ -156,7 +165,11 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__activity-tab"
             {...tabProps}
           >
-            <TransactionList />
+            {showUnifiedTransactionList ? (
+              <UnifiedTransactionList />
+            ) : (
+              <TransactionList />
+            )}
           </Tab>
         )}
       </Tabs>

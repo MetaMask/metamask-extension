@@ -6,18 +6,12 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import DeFiPage from './defi-details-page';
 
-const mockHistoryPush = jest.fn();
-
 const mockUseParams = jest
   .fn()
   .mockReturnValue({ chainId: CHAIN_IDS.MAINNET, protocolId: 'aave' });
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({ search: '' })),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
   useParams: () => mockUseParams(),
 }));
 

@@ -20,7 +20,6 @@ export type IconButtonProps = ButtonBaseProps<'button'> & {
   label: string;
   className?: string;
   tooltipRender?: (content: React.ReactElement) => React.ReactElement;
-  round?: boolean;
 };
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(

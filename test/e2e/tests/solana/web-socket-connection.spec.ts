@@ -8,6 +8,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import LocalWebSocketServer from '../../websocket-server';
+import { DEFAULT_SOLANA_WS_MOCKS } from './mocks/websocketDefaultMocks';
 
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
@@ -15,7 +16,10 @@ describe('Solana Web Socket', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        withSolanaWebSocket: true,
+        withSolanaWebSocket: {
+          server: true,
+          mocks: DEFAULT_SOLANA_WS_MOCKS,
+        },
         manifestFlags: {
           remoteFeatureFlags: {
             addSolanaAccount: true,
@@ -50,7 +54,10 @@ describe('Solana Web Socket', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        withSolanaWebSocket: true,
+        withSolanaWebSocket: {
+          server: true,
+          mocks: DEFAULT_SOLANA_WS_MOCKS,
+        },
         manifestFlags: {
           remoteFeatureFlags: {
             addSolanaAccount: true,
@@ -95,7 +102,10 @@ describe('Solana Web Socket', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        withSolanaWebSocket: true,
+        withSolanaWebSocket: {
+          server: true,
+          mocks: DEFAULT_SOLANA_WS_MOCKS,
+        },
         manifestFlags: {
           remoteFeatureFlags: {
             addSolanaAccount: true,

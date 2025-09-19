@@ -19,9 +19,7 @@ import PulseLoader from '../../../ui/pulse-loader';
 import { Box } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import { formatWithThreshold } from '../util/formatWithThreshold';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-
+import { useFormatters } from '../../../../helpers/formatters';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
@@ -40,8 +38,7 @@ export default function DefiList({ onClick }: DefiListProps) {
   const t = useI18nContext();
   const { networkFilter } = useNetworkFilter();
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const locale = useSelector(getIntlLocale);
-
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedAccount = useSelector(getSelectedAccount);
 
@@ -76,6 +73,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     ).flatMap(([chainId, chainData]) =>
       Object.entries(chainData.protocols).map(([protocolId, protocol]) => {
         const { name: protocolName, iconUrl } = protocol.protocolDetails;
+        // TODO: Get market value in user's preferred currency
         const marketValue = protocol.aggregatedMarketValue;
         const iconGroup = extractUniqueIconAndSymbols(protocol);
 
@@ -84,10 +82,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           title: protocolName,
           tokenImage: iconUrl,
           underlyingSymbols: iconGroup.map(({ symbol }) => symbol),
-          marketValue: formatWithThreshold(marketValue, 0.01, locale, {
-            style: 'currency',
-            currency: 'USD',
-          }),
+          marketValue: formatCurrencyWithMinThreshold(marketValue, 'USD'),
           chainId: chainId as Hex,
           iconGroup,
         };
@@ -108,7 +103,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     return sortAssets(filteredAssets, tokenSortConfig);
   }, [
     allDefiPositions,
-    locale,
+    formatCurrencyWithMinThreshold,
     networkFilter,
     selectedAccount,
     tokenSortConfig,

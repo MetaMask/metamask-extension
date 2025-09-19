@@ -5,7 +5,6 @@ import {
   switchToNetworkFromSendFlow,
   searchAndSwitchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
-import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
@@ -22,10 +21,6 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // disable smart transactions step by step for all bridge flows
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        await disableStxSetting(driver);
 
         const homePage = new HomePage(driver);
 

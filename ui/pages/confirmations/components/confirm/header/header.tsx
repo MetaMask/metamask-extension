@@ -10,7 +10,7 @@ import {
   Box,
   Text,
 } from '../../../../../components/component-library';
-import Identicon from '../../../../../components/ui/identicon';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
   AlignItems,
   Display,
@@ -51,7 +51,7 @@ const Header = () => {
     >
       <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
         <Box display={Display.Flex} marginTop={2}>
-          <Identicon address={fromAddress} diameter={32} />
+          <PreferredAvatar address={fromAddress} />
           <AvatarNetwork
             src={networkImageUrl}
             name={networkDisplayName}

@@ -7,12 +7,15 @@ import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
+  MOCK_NFT1155,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import * as SendContext from '../../context/send';
 import { useSendQueryParams } from './useSendQueryParams';
+import { useSendAssets } from './useSendAssets';
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
@@ -23,6 +26,12 @@ jest.mock('react-router-dom-v5-compat', () => ({
 jest.mock('../../../../store/actions', () => {
   return {
     getTokenStandardAndDetails: jest.fn(),
+  };
+});
+
+jest.mock('./useSendAssets', () => {
+  return {
+    useSendAssets: jest.fn().mockReturnValue({ tokens: [], nfts: [] }),
   };
 });
 
@@ -57,6 +66,8 @@ function renderHook(args: DefaultRootState = {}) {
 }
 
 describe('useSendQueryParams', () => {
+  const useSendAssetsMocked = jest.mocked(useSendAssets);
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -86,7 +97,67 @@ describe('useSendQueryParams', () => {
     expect(mockGetNativeAssetForChainId).toHaveBeenCalledWith('0x1');
   });
 
-  it('get asset details from state of ERC20 token if passed', () => {
+  it('use tokens returned by useSendAssetsMocked hook', () => {
+    const token = {
+      ...EVM_ASSET,
+      chainId: '0x5',
+      assetId: EVM_ASSET.address,
+    };
+    useSendAssetsMocked.mockReturnValue({ tokens: [token], nfts: [] });
+    const mockUpdateAsset = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateAsset: mockUpdateAsset,
+      updateCurrentPage: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+    const mockUseSearchParams = jest.mocked(useSearchParams);
+    mockUseSearchParams.mockReturnValue([
+      {
+        get: (param: string) => {
+          if (param === 'asset') {
+            return token.address;
+          }
+          if (param === 'chainId') {
+            return token.chainId;
+          }
+          return undefined;
+        },
+      },
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
+    renderHook();
+    expect(mockUpdateAsset).toHaveBeenCalledWith(token);
+  });
+
+  it('use nft returned by useSendAssetsMocked hook', () => {
+    const nft = {
+      ...MOCK_NFT1155,
+      chainId: '0x5',
+      assetId: MOCK_NFT1155.address,
+    };
+    useSendAssetsMocked.mockReturnValue({ tokens: [], nfts: [nft as Asset] });
+    const mockUpdateAsset = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateAsset: mockUpdateAsset,
+      updateCurrentPage: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+    const mockUseSearchParams = jest.mocked(useSearchParams);
+    mockUseSearchParams.mockReturnValue([
+      {
+        get: (param: string) => {
+          if (param === 'asset') {
+            return nft.address;
+          }
+          if (param === 'chainId') {
+            return nft.chainId;
+          }
+          return undefined;
+        },
+      },
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
+    renderHook();
+    expect(mockUpdateAsset).toHaveBeenCalledWith(nft);
+  });
+
+  it('get asset details from state for ERC20 token if passed', () => {
     const mockUpdateAsset = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateAsset: mockUpdateAsset,
@@ -155,12 +226,18 @@ describe('useSendQueryParams', () => {
     mockUseSearchParams.mockReturnValue([
       {
         get: (param: string) => {
-          return param === 'amount' ? '10' : undefined;
+          if (param === 'amount') {
+            return '10';
+          }
+          if (param === 'maxValueMode') {
+            return 'true';
+          }
+          return undefined;
         },
       },
     ] as unknown as [URLSearchParams, SetURLSearchParams]);
     renderHook();
-    expect(mockUpdateValue).toHaveBeenCalledWith('10');
+    expect(mockUpdateValue).toHaveBeenCalledWith('10', true);
   });
 
   it('does not update amount if it is already defined in send context', () => {
@@ -174,7 +251,7 @@ describe('useSendQueryParams', () => {
     expect(mockUpdateValue).not.toHaveBeenCalled();
   });
 
-  it('update amount if it is present in the params', () => {
+  it('update recipient if it is present in the params', () => {
     const mockUpdateTo = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateTo: mockUpdateTo,

@@ -8,18 +8,13 @@ exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
   >
     <div
       class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-      title="$82.65 USD"
+      title="$82.65"
     >
       <span
         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         data-testid="account-value-and-suffix"
       >
         $82.65
-      </span>
-      <span
-        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-      >
-        USD
       </span>
     </div>
   </div>

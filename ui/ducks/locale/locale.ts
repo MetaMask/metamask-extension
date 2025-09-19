@@ -72,7 +72,7 @@ type AppState = {
  * @returns The user's selected locale
  */
 export const getCurrentLocale = (state: AppState): string | undefined =>
-  state.localeMessages.currentLocale;
+  state.localeMessages?.currentLocale;
 
 /**
  * This selector returns a BCP 47 Language Tag for use with the Intl API.

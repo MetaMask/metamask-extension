@@ -20,11 +20,10 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="flex [&>div]:!rounded-none"
               >
                 <div
                   style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
@@ -281,11 +280,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="flex [&>div]:!rounded-none"
               />
             </div>
             <div
@@ -770,11 +768,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="flex [&>div]:!rounded-none"
               />
             </div>
             <div
@@ -1206,11 +1203,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="flex [&>div]:!rounded-none"
               >
                 <div
                   style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
@@ -1985,11 +1981,10 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="flex [&>div]:!rounded-none"
               >
                 <div
                   style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
@@ -2460,11 +2455,10 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="flex [&>div]:!rounded-none"
               >
                 <div
                   style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
@@ -3155,9 +3149,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="identicon__image-border"
-              style="height: 32px; width: 32px; border-radius: 16px;"
-            />
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            >
+              <div
+                class="flex [&>div]:!rounded-none"
+              />
+            </div>
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
@@ -3266,11 +3263,10 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class=""
+              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
-                class="identicon"
-                style="height: 32px; width: 32px; border-radius: 16px;"
+                class="flex [&>div]:!rounded-none"
               />
             </div>
             <div

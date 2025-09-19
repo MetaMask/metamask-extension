@@ -17,4 +17,9 @@ export type MultichainAccountMenuProps = {
    * If not provided, falls back to BackgroundColor.backgroundMuted
    */
   buttonBackgroundColor?: BackgroundColor;
+
+  /**
+   * Optional callback for account rename action.
+   */
+  handleAccountRenameAction?: (accountGroupId: AccountGroupId) => void;
 };

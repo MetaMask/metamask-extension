@@ -1,8 +1,10 @@
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import * as ConfirmContext from '../context/confirm';
-
+import { useRedesignedSendFlow } from './useRedesignedSendFlow';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
+
+const mockUseRedesignedSendFlow = jest.mocked(useRedesignedSendFlow);
 
 const mockHistory = {
   goBack: jest.fn(),
@@ -23,34 +25,89 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-function renderHook() {
-  const { result } = renderHookWithProvider(
-    useConfirmSendNavigation,
-    mockState,
-  );
-  return result.current;
-}
+jest.mock('./useRedesignedSendFlow');
 
 describe('useConfirmSendNavigation', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('result returns method navigateBackIfSend', () => {
+  const renderHook = () => {
+    const { result } = renderHookWithProvider(
+      useConfirmSendNavigation,
+      mockState,
+    );
+    return result.current;
+  };
+
+  it('returns navigateBackIfSend method', () => {
     jest
       .spyOn(ConfirmContext, 'useConfirmContext')
       .mockReturnValue({} as unknown as ConfirmContext.ConfirmContextType);
+    mockUseRedesignedSendFlow.mockReturnValue({ enabled: false });
+
     const result = renderHook();
+
     expect(result.navigateBackIfSend).toBeDefined();
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('result returns method handleBack to goto previous page', () => {
+  it('does not navigate back when send redesign is disabled', () => {
     jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
     } as unknown as ConfirmContext.ConfirmContextType);
+    mockUseRedesignedSendFlow.mockReturnValue({ enabled: false });
+
     const result = renderHook();
     result.navigateBackIfSend();
+
+    expect(mockHistory.goBack).not.toHaveBeenCalled();
+  });
+
+  it('navigates back when send redesign is enabled and confirmation is metamask simpleSend', () => {
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
+    } as unknown as ConfirmContext.ConfirmContextType);
+    mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
+
+    const result = renderHook();
+    result.navigateBackIfSend();
+
     expect(mockHistory.goBack).toHaveBeenCalled();
+  });
+
+  it('does not navigate back when send redesign is enabled but origin is not metamask', () => {
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: { origin: 'dapp', type: 'simpleSend' },
+    } as unknown as ConfirmContext.ConfirmContextType);
+    mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
+
+    const result = renderHook();
+    result.navigateBackIfSend();
+
+    expect(mockHistory.goBack).not.toHaveBeenCalled();
+  });
+
+  it('does not navigate back when send redesign is enabled but type is not simpleSend', () => {
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: { origin: 'metamask', type: 'contractInteraction' },
+    } as unknown as ConfirmContext.ConfirmContextType);
+    mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
+
+    const result = renderHook();
+    result.navigateBackIfSend();
+
+    expect(mockHistory.goBack).not.toHaveBeenCalled();
+  });
+
+  it('does not navigate back when send redesign is enabled but both origin and type do not match', () => {
+    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: { origin: 'dapp', type: 'contractInteraction' },
+    } as unknown as ConfirmContext.ConfirmContextType);
+    mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
+
+    const result = renderHook();
+    result.navigateBackIfSend();
+
+    expect(mockHistory.goBack).not.toHaveBeenCalled();
   });
 });

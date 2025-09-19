@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   NestedTransactionMetadata,
+  SimulationErrorCode,
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
   TransactionMeta,
@@ -103,6 +104,9 @@ function runHook({
   nestedTransactions = [],
   simulationData,
   approveBalanceChanges = [],
+  useTransactionSimulations = true,
+  simulationError = undefined,
+  remoteFeatureFlags = {},
 }: {
   currentConfirmation?: Partial<TransactionMeta>;
   nestedTransactions?: NestedTransactionMetadata[];
@@ -110,13 +114,21 @@ function runHook({
     tokenBalanceChanges: SimulationTokenBalanceChange[];
   };
   approveBalanceChanges?: ApprovalBalanceChange[];
+  useTransactionSimulations?: boolean;
+  simulationError?: SimulationErrorCode | null | undefined;
+  remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
   const confirmation = currentConfirmation
     ? {
         ...genUnapprovedContractInteractionConfirmation({ chainId: '0x5' }),
         ...currentConfirmation,
         nestedTransactions,
-        simulationData,
+        simulationData: simulationData
+          ? {
+              ...simulationData,
+              error: simulationError ? { code: simulationError } : undefined,
+            }
+          : undefined,
       }
     : undefined;
 
@@ -134,6 +146,8 @@ function runHook({
     metamask: {
       pendingApprovals,
       transactions: confirmation ? [confirmation] : [],
+      useTransactionSimulations,
+      remoteFeatureFlags,
     },
   });
 
@@ -749,6 +763,164 @@ describe('useMultipleApprovalsAlerts', () => {
     });
   });
 
+  describe('simulation error', () => {
+    const MOCK_APPROVAL_PARSE_RESULT = {
+      name: 'approve',
+      amountOrTokenId: new BigNumber('1000'),
+      tokenAddress: undefined,
+      isRevokeAll: false,
+    };
+
+    const BASE_CONFIRMATION = {
+      txParams: { from: ACCOUNT_ADDRESS },
+      chainId: '0x5',
+    };
+
+    const SINGLE_TRANSACTION = [
+      createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+    ];
+
+    const EXPECTED_ALERT = {
+      field: RowAlertKey.EstimatedChangesStatic,
+      isBlocking: false,
+      key: 'multipleApprovals',
+      reason: 'alertReasonMultipleApprovals',
+      content: 'alertContentMultipleApprovals',
+      severity: Severity.Danger,
+    };
+
+    const runSimulationErrorTest = ({
+      isSimulationEnabled = true,
+      simulationError = null,
+      expectAlerts = false,
+    }: {
+      isSimulationEnabled?: boolean;
+      simulationError?: SimulationErrorCode | null | undefined;
+      expectAlerts?: boolean;
+    }) => {
+      mockParseApprovalTransactionData.mockReturnValue(
+        MOCK_APPROVAL_PARSE_RESULT,
+      );
+
+      const alerts = runHook({
+        currentConfirmation: BASE_CONFIRMATION as TransactionMeta,
+        nestedTransactions: SINGLE_TRANSACTION,
+        simulationData: { tokenBalanceChanges: [] },
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
+        useTransactionSimulations: isSimulationEnabled,
+        simulationError,
+      });
+
+      const expected = expectAlerts ? [EXPECTED_ALERT] : [];
+      expect(alerts).toEqual(expected);
+
+      return alerts;
+    };
+
+    describe('when simulation is disabled at user level', () => {
+      it('returns no alerts even with unused approvals', () => {
+        runSimulationErrorTest({
+          isSimulationEnabled: false,
+          simulationError: null,
+        });
+      });
+
+      it('returns no alerts even when simulation has errors', () => {
+        runSimulationErrorTest({
+          isSimulationEnabled: false,
+          simulationError: SimulationErrorCode.ChainNotSupported,
+        });
+      });
+    });
+
+    describe('when simulation is enabled but has blocking errors', () => {
+      const blockingErrorCases = [
+        {
+          name: 'chain is not supported',
+          error: SimulationErrorCode.ChainNotSupported,
+        },
+        {
+          name: 'simulation is disabled via error',
+          error: SimulationErrorCode.Disabled,
+        },
+      ];
+
+      blockingErrorCases.forEach(({ name, error }) => {
+        it(`returns no alerts when ${name}`, () => {
+          runSimulationErrorTest({
+            isSimulationEnabled: true,
+            simulationError: error,
+          });
+        });
+      });
+    });
+
+    describe('when simulation is enabled with non-blocking errors', () => {
+      const nonBlockingErrorCases = [
+        {
+          name: 'other errors (simulation still considered supported)',
+          error: SimulationErrorCode.InvalidResponse,
+        },
+        {
+          name: 'reverted error',
+          error: SimulationErrorCode.Reverted,
+        },
+      ];
+
+      nonBlockingErrorCases.forEach(({ name, error }) => {
+        it(`returns alerts when simulation has ${name}`, () => {
+          runSimulationErrorTest({
+            isSimulationEnabled: true,
+            simulationError: error,
+            expectAlerts: true,
+          });
+        });
+      });
+    });
+
+    describe('when simulation is fully supported', () => {
+      const supportedCases = [
+        { name: 'no simulation errors', error: null },
+        { name: 'undefined simulation error', error: undefined },
+      ];
+
+      supportedCases.forEach(({ name, error }) => {
+        it(`returns alerts with ${name}`, () => {
+          runSimulationErrorTest({
+            isSimulationEnabled: true,
+            simulationError: error,
+            expectAlerts: true,
+          });
+        });
+      });
+    });
+
+    describe('edge cases with simulation errors', () => {
+      const edgeCases = [
+        {
+          name: 'malformed simulation error object',
+          error: 'INVALID_CODE',
+          expectAlerts: true,
+        },
+        {
+          name: 'simulation error without code property',
+          error: {},
+          expectAlerts: true,
+        },
+      ];
+
+      edgeCases.forEach(({ name, error, expectAlerts }) => {
+        it(`handles ${name}`, () => {
+          runSimulationErrorTest({
+            isSimulationEnabled: true,
+            simulationError: error as unknown as SimulationErrorCode,
+            expectAlerts,
+          });
+        });
+      });
+    });
+  });
+
   describe('edge cases', () => {
     it('handles case-insensitive token address matching', () => {
       const nestedTransactions = [
@@ -786,6 +958,40 @@ describe('useMultipleApprovalsAlerts', () => {
       });
 
       expect(alerts).toEqual([]); // should match despite case difference
+    });
+  });
+
+  describe('when origin is in allow list', () => {
+    it('returns no alerts', () => {
+      const originAllowedMock = 'https://example.com';
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+          origin: originAllowedMock,
+        },
+        nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
+        remoteFeatureFlags: {
+          nonZeroUnusedApprovals: [originAllowedMock],
+        },
+      });
+
+      expect(alerts).toHaveLength(0);
     });
   });
 });

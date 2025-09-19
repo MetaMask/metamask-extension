@@ -80,9 +80,7 @@ describe('CreateNewVault', () => {
 
     fireEvent.change(passwordInput, passwordEvent);
 
-    const passwordError = queryByText(
-      'Password must have at least 8 characters',
-    );
+    const passwordError = queryByText('Must be at least 8 characters');
 
     expect(passwordError).toBeInTheDocument();
 

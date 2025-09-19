@@ -38,7 +38,13 @@ export type NameProps = {
 };
 
 const Name = memo(
-  ({ value, type, preferContractSymbol = false, variation }: NameProps) => {
+  ({
+    value,
+    type,
+    preferContractSymbol = false,
+    variation,
+    ...props
+  }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
@@ -83,13 +89,13 @@ const Name = memo(
             onClose={handleModalClose}
           />
         )}
-
         <NameDisplay
           value={value}
           type={type}
           preferContractSymbol={preferContractSymbol}
           variation={variation}
           handleClick={handleClick}
+          {...props}
         />
       </Box>
     );

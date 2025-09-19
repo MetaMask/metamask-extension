@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import {
@@ -37,7 +37,7 @@ import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -46,7 +46,7 @@ export default function SecureYourWallet() {
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const searchParams = new URLSearchParams(search);
   const isFromReminderParam = searchParams.get('isFromReminder')
-    ? '/?isFromReminder=true'
+    ? '?isFromReminder=true'
     : '';
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const onboardingCompleted = useSelector(getCompletedOnboarding);
@@ -72,7 +72,7 @@ export default function SecureYourWallet() {
         hd_entropy_index: hdEntropyIndex ?? 0,
       },
     });
-    history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}/${isFromReminderParam}`);
+    navigate(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
 
   const handleClickNotRecommended = () => {
@@ -90,9 +90,9 @@ export default function SecureYourWallet() {
     // During the onboarding flow, this page does not belong to the social login flow,
     // so we need to redirect to the other pages (based on the browser)
     if (!onboardingCompleted && isSocialLoginFlow) {
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
-  }, [onboardingCompleted, history, isSocialLoginFlow]);
+  }, [onboardingCompleted, navigate, isSocialLoginFlow]);
 
   return (
     <Box

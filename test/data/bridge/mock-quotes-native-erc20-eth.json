@@ -17,6 +17,7 @@
       },
       "destChainId": 42161,
       "destTokenAmount": "3104367033",
+      "minDestTokenAmount": "3004367033",
       "destAsset": {
         "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
         "chainId": 42161,
@@ -147,6 +148,7 @@
       },
       "destChainId": 42161,
       "destTokenAmount": "3104601473",
+      "minDestTokenAmount": "3004601473",
       "destAsset": {
         "assetId": "asset:0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
         "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
