@@ -2,7 +2,7 @@
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
 import { SolScope } from '@metamask/keyring-api';
-import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
@@ -329,7 +329,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
 
-        await connectToDapp(driver);
+        await testDapp.connectAccount({});
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

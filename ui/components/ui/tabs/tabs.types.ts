@@ -1,8 +1,10 @@
 import React from 'react';
-import { BoxProps } from '../../component-library/box/box.types';
-import { TextProps } from '../../component-library/text/text.types';
+import { type BoxProps, type TextProps } from '@metamask/design-system-react';
 
-export type TabProps<TKey extends string = string> = {
+export type TabProps<TKey extends string = string> = Omit<
+  BoxProps,
+  'children' | 'onClick' | 'ref'
+> & {
   /** CSS class name for the active tab state */
   activeClassName?: string;
   /** CSS class name for the tab button */
@@ -26,16 +28,19 @@ export type TabProps<TKey extends string = string> = {
   /** Content to render when this tab is active */
   children?: React.ReactNode;
   /** Props to pass to the Text component used for the tab button */
-  textProps?: Partial<TextProps<'button'>>;
+  textProps?: Partial<TextProps>;
   /** Whether the tab is disabled */
   disabled?: boolean;
-} & Omit<BoxProps<'li'>, 'children' | 'onClick'>;
+};
 
 export type TabChild<TKey extends string = string> = {
   props: TabProps<TKey>;
 } & React.ReactElement<TabProps<TKey>>;
 
-export type TabsProps<TKey extends string = string> = {
+export type TabsProps<TKey extends string = string> = Omit<
+  BoxProps,
+  'children' | 'ref'
+> & {
   /** Key of the tab that should be active by default */
   defaultActiveTabKey?: TKey;
   /** Callback called when a tab is clicked */
@@ -47,10 +52,10 @@ export type TabsProps<TKey extends string = string> = {
   /** Additional content to render between tabs and content */
   subHeader?: React.ReactNode;
   /** Props to pass to the tab list container */
-  tabListProps?: BoxProps<'ul'>;
+  tabListProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab content container */
-  tabContentProps?: BoxProps<'div'>;
-} & BoxProps<'div'>;
+  tabContentProps?: Omit<BoxProps, 'children' | 'ref'>;
+};
 
 export type TabsHandle<TKey extends string = string> = {
   /** Get the currently active tab index */
