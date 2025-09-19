@@ -187,7 +187,7 @@ describe('TokenHero', () => {
     const avatarNetwork = getByTestId('avatar-network');
     expect(avatarNetwork).toBeInTheDocument();
     expect(avatarNetwork).toHaveAttribute('data-size', 'xs');
-    expect(avatarNetwork).toHaveAttribute('data-name', 'Polygon Mainnet');
+    expect(avatarNetwork).toHaveAttribute('data-name', 'Polygon');
     expect(avatarNetwork).toHaveAttribute('data-src', './images/pol-token.svg');
   });
 
