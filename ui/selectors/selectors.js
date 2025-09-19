@@ -1122,14 +1122,14 @@ export function getAddressBookEntryOrAccountName(state, address) {
     (account) => isEqualCaseInsensitive(account.address, address),
   );
 
-  return internalAccount?.metadata.name || address;
+  return internalAccount?.metadata?.name || address;
 }
 
 export function getAccountName(accounts, accountAddress) {
   const account = accounts.find((internalAccount) =>
     isEqualCaseInsensitive(internalAccount.address, accountAddress),
   );
-  return account && account.metadata.name !== '' ? account.metadata.name : '';
+  return account && account.metadata?.name !== '' ? account.metadata?.name : '';
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
@@ -2113,13 +2113,13 @@ export const getConnectedSitesList = createDeepEqualSelector(
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
-            internalAccount?.metadata.name || ''; // Map address to name
+            internalAccount?.metadata?.name || ''; // Map address to name
         } else {
           sitesList[siteKey] = {
             ...app,
             addresses: [connectedAddress],
             addressToNameMap: {
-              [connectedAddress]: internalAccount?.metadata.name || '',
+              [connectedAddress]: internalAccount?.metadata?.name || '',
             },
           };
         }
