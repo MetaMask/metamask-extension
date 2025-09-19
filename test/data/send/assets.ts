@@ -5,6 +5,7 @@ export const EVM_ASSET = {
   metadata: {},
   symbol: 'NEU',
   decimals: 0,
+  rawBalanceHex: '0x5',
 };
 
 export const EVM_NATIVE_ASSET = {
