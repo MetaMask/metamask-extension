@@ -1,6 +1,10 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -3058,12 +3062,12 @@ describe('Actions', () => {
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
         deleteAccountSyncingDataFromUserStorageStub.calledWith(
-          'multichain_accounts_groups',
+          USER_STORAGE_GROUPS_FEATURE_KEY,
         ),
       ).toBe(true);
       expect(
         deleteAccountSyncingDataFromUserStorageStub.calledWith(
-          'multichain_accounts_wallets',
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ),
       ).toBe(true);
     });

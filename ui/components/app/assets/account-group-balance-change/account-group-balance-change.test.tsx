@@ -17,8 +17,8 @@ describe('AccountGroupBalanceChange', () => {
     privacyMode: false,
     color: TextColor.successDefault,
     portfolioChange: null,
-    displayAmountChange: '+$200.00',
-    displayPercentChange: '(+10.00%)',
+    amountChange: 200,
+    percentChange: 0.1,
   });
 
   const arrange = () => {

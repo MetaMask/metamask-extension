@@ -54,6 +54,10 @@ import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
@@ -6864,10 +6868,10 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
     try {
       await Promise.all([
         submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          'multichain_accounts_groups',
+          USER_STORAGE_GROUPS_FEATURE_KEY,
         ]),
         submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          'multichain_accounts_wallets',
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ]),
       ]);
     } catch (error) {

@@ -83,7 +83,7 @@ export const useCurrencyConversions = () => {
     }
     const { nativeCurrency } = allNetworks[chainId as Hex];
     return currencyRates[nativeCurrency]?.conversionRate ?? 0;
-  }, [allNetworks, asset, chainId, currencyRates, isEvmSendType]);
+  }, [allNetworks, chainId, currencyRates, isEvmSendType]);
 
   const contractExchangeRates = useSelector(
     getCrossChainTokenExchangeRates,

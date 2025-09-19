@@ -8,7 +8,6 @@ describe('Tabs', () => {
     const defaultProps = {
       defaultActiveTabKey: '',
       onTabClick: () => null,
-      tabsClassName: '',
       subHeader: null,
     };
 
@@ -57,14 +56,6 @@ describe('Tabs', () => {
     fireEvent.click(getByText('Tab 2'));
 
     expect(onTabClick).toHaveBeenCalledWith('tab2');
-  });
-
-  it('applies tabsClassName to the tab list', () => {
-    const { container } = renderTabs({ tabsClassName: 'custom-tabs-class' });
-
-    expect(container.querySelector('[role="tablist"]')).toHaveClass(
-      'custom-tabs-class',
-    );
   });
 
   it('renders subHeader when provided', () => {

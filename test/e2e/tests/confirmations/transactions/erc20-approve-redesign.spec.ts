@@ -85,11 +85,11 @@ async function importTST(driver: Driver) {
   await driver.clickElement('[data-testid="importTokens"]');
 
   await driver.waitForSelector({
-    css: '.import-tokens-modal__button-tab',
+    css: '[data-testid="import-tokens-modal-custom-token-tab"]',
     text: 'Custom token',
   });
   await driver.clickElement({
-    css: '.import-tokens-modal__button-tab',
+    css: '[data-testid="import-tokens-modal-custom-token-tab"]',
     text: 'Custom token',
   });
 

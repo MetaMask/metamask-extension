@@ -22,8 +22,7 @@ import {
   getPreferences,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatWithThreshold } from '../util/formatWithThreshold';
+import { useFormatters } from '../../../../helpers/formatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../component-library/skeleton';
@@ -41,7 +40,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   handleSensitiveToggle,
 }) => {
   const { privacyMode } = useSelector(getPreferences);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrency } = useFormatters();
   const t = useI18nContext();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
@@ -59,22 +58,12 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
     : undefined;
 
-  const formattedFiatDisplay =
-    total === undefined || currency === undefined
-      ? undefined
-      : formatWithThreshold(total, 0.0, locale, {
-          style: 'currency',
-          currency: currency.toUpperCase(),
-        });
-
   return (
     <Skeleton
       hideChildren
       showUntil={
         anyEnabledNetworksAreAvailable ||
-        (selectedGroupBalance !== null &&
-          !isZeroAmount(total) &&
-          currency !== undefined)
+        (!isZeroAmount(total) && currency !== undefined)
       }
     >
       <Box
@@ -92,14 +81,8 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
         >
-          {formattedFiatDisplay}
-        </SensitiveText>
-        <SensitiveText
-          marginInlineStart={privacyMode ? 0 : 1}
-          variant={TextVariant.inherit}
-          isHidden={privacyMode}
-        >
-          {currency?.toUpperCase()}
+          {/* We should always show something but the check is just to appease TypeScript */}
+          {total === undefined ? null : formatCurrency(total, currency)}
         </SensitiveText>
 
         <ButtonIcon

@@ -146,7 +146,7 @@ describe('rampsSlice', () => {
         {
           active: true,
           chainId: 1,
-          chainName: 'Ethereum Mainnet',
+          chainName: 'Ethereum',
           nativeTokenSupported: true,
           shortName: 'Ethereum',
         },

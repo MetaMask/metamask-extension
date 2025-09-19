@@ -5,6 +5,8 @@ import {
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useFormatters } from '../../../../helpers/formatters';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getIsMultichainAccountsState2Enabled,
   selectAnyEnabledNetworksAreAvailable,
@@ -24,13 +26,10 @@ const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 const AccountGroupBalanceChangeComponent: React.FC<
   AccountGroupBalanceChangeProps
 > = ({ period, portfolioButton }) => {
-  const {
-    privacyMode,
-    color,
-    portfolioChange,
-    displayAmountChange,
-    displayPercentChange,
-  } = useAccountGroupBalanceDisplay(period);
+  const { privacyMode, color, amountChange, percentChange } =
+    useAccountGroupBalanceDisplay(period);
+  const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
+  const currency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
@@ -38,12 +37,9 @@ const AccountGroupBalanceChangeComponent: React.FC<
   return (
     <Skeleton
       hideChildren
-      showUntil={
-        anyEnabledNetworksAreAvailable ||
-        !isZeroAmount(portfolioChange?.amountChangeInUserCurrency)
-      }
+      showUntil={anyEnabledNetworksAreAvailable || !isZeroAmount(amountChange)}
     >
-      <Box display={Display.Flex}>
+      <Box display={Display.Flex} gap={1}>
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
@@ -53,7 +49,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
           ellipsis
           length="10"
         >
-          {displayAmountChange}
+          {formatCurrency(amountChange, currency, { signDisplay: 'always' })}
         </SensitiveText>
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
@@ -63,7 +59,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
           ellipsis
           length="10"
         >
-          &nbsp;{displayPercentChange}
+          {`(${formatPercentWithMinThreshold(percentChange, { signDisplay: 'always' })})`}
         </SensitiveText>
       </Box>
       {portfolioButton()}
