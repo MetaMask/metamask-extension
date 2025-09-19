@@ -3702,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noActivity": {
-    "message": "Nenhuma atividade ainda"
-  },
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },

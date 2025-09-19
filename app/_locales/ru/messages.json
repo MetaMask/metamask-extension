@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noActivity": {
-    "message": "Пока нет активности"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },
