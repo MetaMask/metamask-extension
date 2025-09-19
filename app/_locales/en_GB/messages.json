@@ -7166,15 +7166,15 @@
   "tokenSymbol": {
     "message": "Token symbol"
   },
+  "tokenTransfer": {
+    "message": "Token transfer"
+  },
   "tokens": {
     "message": "Tokens"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
-  },
-  "tokenTransfer": {
-    "message": "Token transfer"
   },
   "tokensInCollection": {
     "message": "Tokens in collection"
