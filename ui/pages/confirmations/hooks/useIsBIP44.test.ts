@@ -11,7 +11,10 @@ jest.mock('../../../selectors', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockGetIsMultichainAccountsState2Enabled = getIsMultichainAccountsState2Enabled as jest.MockedFunction<typeof getIsMultichainAccountsState2Enabled>;
+const mockGetIsMultichainAccountsState2Enabled =
+  getIsMultichainAccountsState2Enabled as jest.MockedFunction<
+    typeof getIsMultichainAccountsState2Enabled
+  >;
 
 describe('useIsBIP44', () => {
   beforeEach(() => {
@@ -24,7 +27,9 @@ describe('useIsBIP44', () => {
     const result = useIsBIP44();
 
     expect(result).toBe(true);
-    expect(mockUseSelector).toHaveBeenCalledWith(mockGetIsMultichainAccountsState2Enabled);
+    expect(mockUseSelector).toHaveBeenCalledWith(
+      mockGetIsMultichainAccountsState2Enabled,
+    );
   });
 
   it('returns false when multichain accounts state2 is disabled', () => {
@@ -33,6 +38,8 @@ describe('useIsBIP44', () => {
     const result = useIsBIP44();
 
     expect(result).toBe(false);
-    expect(mockUseSelector).toHaveBeenCalledWith(mockGetIsMultichainAccountsState2Enabled);
+    expect(mockUseSelector).toHaveBeenCalledWith(
+      mockGetIsMultichainAccountsState2Enabled,
+    );
   });
 });
