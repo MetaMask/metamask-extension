@@ -2,6 +2,8 @@ import {
   WebSocketServiceMessenger as BackendPlatformWebSocketServiceMessenger,
 } from '@metamask/backend-platform';
 
+export type BackendWebSocketServiceMessenger = BackendPlatformWebSocketServiceMessenger;
+
 /**
  * Get a restricted messenger for the Backend Platform WebSocket service.
  * This is scoped to backend platform operations and services.
@@ -16,5 +18,19 @@ export function getBackendWebSocketServiceMessenger(
     name: 'BackendWebSocketService',
     allowedActions: [],
     allowedEvents: [],
+  });
+}
+
+export type BackendWebSocketServiceInitMessenger = ReturnType<
+  typeof getBackendWebSocketServiceInitMessenger
+>;
+
+export function getBackendWebSocketServiceInitMessenger(
+  messenger: any,
+) {
+  return messenger.getRestricted({
+    name: 'BackendWebSocketServiceInit',
+    allowedEvents: [],
+    allowedActions: ['RemoteFeatureFlagController:getState'],
   });
 }

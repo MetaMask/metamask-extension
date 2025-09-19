@@ -1,8 +1,10 @@
 import {
-  type AccountActivityServiceMessenger,
+  type AccountActivityServiceMessenger as BackendPlatformAccountActivityServiceMessenger,
   ACCOUNT_ACTIVITY_SERVICE_ALLOWED_ACTIONS,
   ACCOUNT_ACTIVITY_SERVICE_ALLOWED_EVENTS,
 } from '@metamask/backend-platform';
+
+export type AccountActivityServiceMessenger = BackendPlatformAccountActivityServiceMessenger;
 
 /**
  * Get a restricted messenger for the Account Activity service. This is scoped to the
@@ -13,7 +15,7 @@ import {
  */
 export function getAccountActivityServiceMessenger(
   messenger: any, // Using any to avoid type conflicts with the main messenger
-): AccountActivityServiceMessenger {
+): BackendPlatformAccountActivityServiceMessenger {
   return messenger.getRestricted({
     name: 'AccountActivityService',
     allowedActions: [...ACCOUNT_ACTIVITY_SERVICE_ALLOWED_ACTIONS],

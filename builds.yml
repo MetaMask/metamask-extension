@@ -214,6 +214,10 @@ env:
   # Backend Platform Services
   ###
   - METAMASK_BACKEND_WEBSOCKET_URL: wss://gateway.dev-api.cx.metamask.io/v1
+  # Backend WebSocket Connection Feature Flag (for local development)
+  # Set to "true" to enable WebSocket connection, "false" to disable
+  # Overrides remote feature flag when set
+  - BACKEND_WEBSOCKET_CONNECTION_ENABLED: null
 
   ###
   # Notifications Feature
