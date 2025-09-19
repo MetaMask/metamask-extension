@@ -112,7 +112,7 @@ export const Amount = () => {
     updateValue,
   ]);
 
-  if (asset?.standard === ERC721) {
+  if (!asset || asset?.standard === ERC721) {
     return null;
   }
 
