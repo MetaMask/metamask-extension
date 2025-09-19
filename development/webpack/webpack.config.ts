@@ -393,9 +393,9 @@ const config = {
           codeFenceLoader,
         ],
       },
-      // images, fonts, wasm, etc.
+      // images, fonts, wasm, riv etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm|riv)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },

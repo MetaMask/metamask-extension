@@ -9824,6 +9824,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rive-app/canvas-lite@npm:2.31.5":
+  version: 2.31.5
+  resolution: "@rive-app/canvas-lite@npm:2.31.5"
+  checksum: 10/7b0d6953684e985d3cfac7947e0d5d02751d4744a5a77cecc4a9e755e66797385d4aceb9297ac7027c503ec3d1bbb8e416448c88b1f0024459c14ec0908a723f
+  languageName: node
+  linkType: hard
+
+"@rive-app/canvas@npm:2.31.5":
+  version: 2.31.5
+  resolution: "@rive-app/canvas@npm:2.31.5"
+  checksum: 10/5b1cdb87a21c4b02ef500325b2081a573748821634789f2cc4b3d78894e0d92c6fac4bbc8eec57db8198eb3491f8b4ed3d154ccf02ac80946d920b5c71d74c85
+  languageName: node
+  linkType: hard
+
+"@rive-app/webgl2@npm:2.31.5":
+  version: 2.31.5
+  resolution: "@rive-app/webgl2@npm:2.31.5"
+  checksum: 10/abc4edb26e5c3ccb9849f8e49f3591c56d00280497d717a997558c16298626741c1a9bd9f4434d2bda446236f96ed489900e38ea842e90601e833c5b4b02ba1a
+  languageName: node
+  linkType: hard
+
+"@rive-app/webgl@npm:2.31.5":
+  version: 2.31.5
+  resolution: "@rive-app/webgl@npm:2.31.5"
+  checksum: 10/8d70c045f0a3a4d498cdba78e82189503da13df7525688ba1a976bdf2022cfc8f952adf5840817d3b34efe27279dafc9552e68da934fcba5c6db1053cf1359e4
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-inject@npm:^5.0.5":
   version: 5.0.5
   resolution: "@rollup/plugin-inject@npm:5.0.5"
@@ -14770,6 +14798,13 @@ __metadata:
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
   checksum: 10/7fd6f9c25053e9b5bb6bc9f9f76c1d89e6c04f7707a7ba0e44cc01f17ef5284adb82f230f542c2d5557d69407c9a40f0f3515e8319afd14e1e16b5543ac6cdba
+  languageName: node
+  linkType: hard
+
+"@types/raf@npm:^3":
+  version: 3.4.3
+  resolution: "@types/raf@npm:3.4.3"
+  checksum: 10/70b0d8ce4ed1fdd60abbee8ff2a572bd2947bd764691f98ef948748375f5012db7ee39a037dd063cfbbb52c0b7479bec68111bbb95ce5de023ec581794c9b85f
   languageName: node
   linkType: hard
 
@@ -32261,6 +32296,7 @@ __metadata:
     "@types/node": "npm:^20"
     "@types/path-browserify": "npm:^1.0.2"
     "@types/pify": "npm:^5.0.1"
+    "@types/raf": "npm:^3"
     "@types/react": "npm:^17.0.11"
     "@types/react-beautiful-dnd": "npm:^13"
     "@types/react-dom": "npm:^17.0.11"
@@ -32465,6 +32501,7 @@ __metadata:
     remove-trailing-slash: "npm:^0.1.1"
     reselect: "npm:^5.1.1"
     resolve-url-loader: "npm:^3.1.5"
+    rive-react: "npm:^4.23.3"
     sass-embedded: "npm:^1.71.0"
     sass-loader: "npm:^14.1.1"
     schema-utils: "npm:^4.2.0"
@@ -38439,6 +38476,20 @@ __metadata:
     "@xrplf/isomorphic": "npm:^1.0.0"
     ripple-address-codec: "npm:^5.0.0"
   checksum: 10/401ade8b179b8693f9689457346a5f0b5b7d789bb88613f27917c2a1ef907edc23bb1902ba5e8158dcd303e462f160e39897047fb778227af2dc6fab8897f503
+  languageName: node
+  linkType: hard
+
+"rive-react@npm:^4.23.3":
+  version: 4.23.3
+  resolution: "rive-react@npm:4.23.3"
+  dependencies:
+    "@rive-app/canvas": "npm:2.31.5"
+    "@rive-app/canvas-lite": "npm:2.31.5"
+    "@rive-app/webgl": "npm:2.31.5"
+    "@rive-app/webgl2": "npm:2.31.5"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
+  checksum: 10/603e5cc1d62081cf6299151ef711e101085a5258dad965444a1b4b2794b33e3ebdda3c22c2aed21f7d4540d9df15031b9fc979b4226d8b14570ec384c31d0138
   languageName: node
   linkType: hard
 
