@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import * as ConfirmTransactionDucks from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import * as Actions from '../../../store/actions';
 import _mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 
 import {
@@ -22,7 +22,7 @@ jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => mockUseParams(),
+    useParams: () => mockUseParams,
   };
 });
 
@@ -60,16 +60,6 @@ jest.mock(
     }),
   }),
 );
-
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useHistory: () => ({
-      replace: jest.fn(),
-    }),
-  };
-});
 
 jest.mock('../../confirm-decrypt-message', () => {
   return {

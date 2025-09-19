@@ -86,7 +86,6 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
         { replace: true }
-        { replace: true }
       );
     });
 

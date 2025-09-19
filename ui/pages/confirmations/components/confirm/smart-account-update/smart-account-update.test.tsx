@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/dom';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../types/confirm';
 import { setSmartAccountOptIn } from '../../../../../store/actions';
@@ -21,14 +21,13 @@ jest.mock('../../../../../store/actions', () => ({
   setSmartAccountOptIn: jest.fn(),
 }));
 
-const mockReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockReplace,
-  }),
-}));
-
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 const mockDispatch = jest.fn();
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -39,7 +38,7 @@ jest.mock('react-redux', () => {
 });
 
 describe('SmartAccountUpdate', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
@@ -49,10 +48,7 @@ describe('SmartAccountUpdate', () => {
         upgradeAccountConfirmation as Confirmation,
       ),
     );
-    const { getByText } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<SmartAccountUpdate />, mockStore);
 
     expect(getByText('Use smart account?')).toBeInTheDocument();
   });
@@ -63,8 +59,10 @@ describe('SmartAccountUpdate', () => {
         upgradeAccountConfirmation as Confirmation,
       ),
     );
-    const { getByRole, getByText, container } =
-      renderWithConfirmContextProvider(<SmartAccountUpdate />, mockStore);
+    const { getByRole, getByText, container } = renderWithProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
 
     expect(container.firstChild).not.toBeNull();
 
@@ -78,18 +76,18 @@ describe('SmartAccountUpdate', () => {
     expect(getByText('Successful!')).toBeDefined();
   });
 
-  it('call history.replace when close button is clicked', () => {
+  it('call useNavigate when close button is clicked', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
       ),
     );
-    const { getByTestId } = renderWithConfirmContextProvider(
+    const { getByTestId } = renderWithProvider(
       <SmartAccountUpdate />,
       mockStore,
     );
 
     fireEvent.click(getByTestId('smart-account-update-close'));
-    expect(mockReplace).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 });

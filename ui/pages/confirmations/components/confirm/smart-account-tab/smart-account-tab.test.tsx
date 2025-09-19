@@ -2,7 +2,7 @@ import React from 'react';
 import { Hex } from '@metamask/utils';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { SmartAccountTab } from './smart-account-tab';
 

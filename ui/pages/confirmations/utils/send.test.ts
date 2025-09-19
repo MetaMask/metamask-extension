@@ -30,6 +30,14 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 describe('Send - utils', () => {
   describe('trimTrailingZeros', () => {
     it('removes trailing zeros', async () => {
@@ -165,15 +173,9 @@ describe('Send - utils', () => {
   });
 
   describe('navigateToSendRoute', () => {
-    it('call history.push with send route', () => {
-      const mockHistoryPush = jest.fn();
-      navigateToSendRoute(
-        {
-          push: mockHistoryPush,
-        },
-        false,
-      );
-      expect(mockHistoryPush).toHaveBeenCalled();
+    it('call useNavigate with send route', () => {
+      navigateToSendRoute(mockUseNavigate, false);
+      expect(mockUseNavigate).toHaveBeenCalled();
     });
   });
 

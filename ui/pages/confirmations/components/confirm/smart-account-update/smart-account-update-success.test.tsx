@@ -3,21 +3,21 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
-const mockReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('SmartAccountUpdateSuccess', () => {
   it('renders correctly', () => {
     const mockStore = configureMockStore([])(mockState);
-    const { getByText } = renderWithConfirmContextProvider(
+    const { getByText } = renderWithProvider(
       <SmartAccountUpdateSuccess />,
       mockStore,
     );
@@ -30,14 +30,14 @@ describe('SmartAccountUpdateSuccess', () => {
     ).toBeInTheDocument();
   });
 
-  it('call history.replace when close button is clicked', () => {
+  it('call useNavigate when close button is clicked', () => {
     const mockStore = configureMockStore([])(mockState);
-    const { getByRole } = renderWithConfirmContextProvider(
+    const { getByRole } = renderWithProvider(
       <SmartAccountUpdateSuccess />,
       mockStore,
     );
 
     fireEvent.click(getByRole('button'));
-    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 });

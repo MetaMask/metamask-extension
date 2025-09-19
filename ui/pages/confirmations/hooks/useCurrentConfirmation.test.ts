@@ -10,7 +10,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useCurrentConfirmation from './useCurrentConfirmation';
@@ -25,10 +25,6 @@ const MESSAGE_MOCK = {
   },
 };
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-}));
-
 const APPROVAL_MOCK = {
   id: ID_MOCK,
   type: ApprovalType.EthSignTypedData,
@@ -40,6 +36,15 @@ const TRANSACTION_MOCK = {
   status: TransactionStatus.unapproved,
   type: TransactionType.contractInteraction,
 };
+
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useParams: jest.fn().mockReturnValue({ id: '123-456' }),
+  };
+});
+
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
