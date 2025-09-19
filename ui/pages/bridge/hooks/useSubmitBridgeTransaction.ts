@@ -12,11 +12,8 @@ import {
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import {
-  getIsSmartTransaction,
-  isHardwareWallet,
-} from '../../../../shared/modules/selectors';
-import { getFromChain } from '../../../ducks/bridge/selectors';
+import { isHardwareWallet } from '../../../../shared/modules/selectors';
+import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -59,10 +56,7 @@ export default function useSubmitBridgeTransaction() {
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
-  const fromChain = useSelector(getFromChain);
-  const smartTransactionsEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as never, fromChain?.chainId),
-  );
+  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
