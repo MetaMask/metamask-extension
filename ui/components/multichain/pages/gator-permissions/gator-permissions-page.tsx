@@ -28,6 +28,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
   PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
@@ -58,6 +59,9 @@ export const GatorPermissionsPage = () => {
     switch (assetType) {
       case 'sites':
         history.push(PERMISSIONS);
+        break;
+      case 'token-transfer':
+        history.push(TOKEN_TRANSFER_ROUTE);
         break;
       default:
         console.error('Invalid asset type:', assetType);
@@ -115,8 +119,8 @@ export const GatorPermissionsPage = () => {
             {renderCategoryHeader(t('assets'))}
             <PermissionListItem
               total={totalGatorPermissions}
-              name={'token transfers'}
-              onClick={() => handleAssetClick('token-transfers')}
+              name={t('tokenTransfer')}
+              onClick={() => handleAssetClick('token-transfer')}
             />
           </>
         )}

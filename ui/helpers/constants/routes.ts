@@ -66,6 +66,7 @@ export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
 export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
 export const GATOR_PERMISSIONS = '/gator-permissions';
+export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
@@ -649,6 +650,11 @@ export const ROUTES = [
   {
     path: GATOR_PERMISSIONS,
     label: 'Gator Permissions',
+    trackInAnalytics: false,
+  },
+  {
+    path: TOKEN_TRANSFER_ROUTE,
+    label: 'Gator Permissions Token Transfer',
     trackInAnalytics: false,
   },
   ///: END:ONLY_INCLUDE_IF
