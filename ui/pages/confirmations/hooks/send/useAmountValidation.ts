@@ -1,29 +1,56 @@
 import { ERC1155 } from '@metamask/controller-utils';
-import { useCallback } from 'react';
+import { useMemo } from 'react';
 
-import { useAsyncResult } from '../../../../hooks/useAsync';
+import { Numeric } from '../../../../../shared/modules/Numeric';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Asset } from '../../types/send';
+import { fromTokenMinUnitsNumeric, isDecimal } from '../../utils/send';
 import { useSendContext } from '../../context/send';
-import { useEvmAmountValidation } from './evm/useEvmAmountValidation';
-import { useNonEvmAmountValidation } from './non-evm/useNonEvmAmountValidation';
-import { useSendType } from './useSendType';
+import { useBalance } from './useBalance';
+
+export const validateERC1155Balance = (
+  asset: Asset,
+  value: string | undefined,
+  t: ReturnType<typeof useI18nContext>,
+) => {
+  if (asset?.balance && value) {
+    if (parseInt(value, 10) > parseInt(asset.balance.toString(), 10)) {
+      return t('insufficientFundsSend');
+    }
+  }
+  return undefined;
+};
+
+export const validateTokenBalance = (
+  amount: string,
+  rawBalanceNumeric: Numeric,
+  t: ReturnType<typeof useI18nContext>,
+  decimals?: number,
+) => {
+  const amountInputNumeric = fromTokenMinUnitsNumeric(amount, 10, decimals);
+  if (rawBalanceNumeric.lessThan(amountInputNumeric)) {
+    return t('insufficientFundsSend');
+  }
+  return undefined;
+};
 
 export const useAmountValidation = () => {
-  const { asset } = useSendContext();
-  const { isEvmSendType } = useSendType();
-  const { validateEvmAmount } = useEvmAmountValidation();
-  const { validateNonEvmAmount } = useNonEvmAmountValidation();
+  const t = useI18nContext();
+  const { asset, value } = useSendContext();
+  const { rawBalanceNumeric } = useBalance();
 
-  const validateAmount = useCallback(async (): Promise<string | undefined> => {
-    if (asset?.standard === ERC1155) {
-      // todo: add logic to check units for ERC1155 tokens
+  const amountError = useMemo(() => {
+    if (value === undefined || value === null || value === '') {
       return undefined;
     }
-    return isEvmSendType ? validateEvmAmount() : await validateNonEvmAmount();
-  }, [asset?.standard, isEvmSendType, validateEvmAmount, validateNonEvmAmount]);
-
-  const { value: amountError } = useAsyncResult(validateAmount, [
-    validateAmount,
-  ]);
+    if (!isDecimal(value) || Number(value) < 0) {
+      return t('invalidValue');
+    }
+    if (asset?.standard === ERC1155) {
+      return validateERC1155Balance(asset, value, t);
+    }
+    return validateTokenBalance(value, rawBalanceNumeric, t, asset?.decimals);
+  }, [asset, rawBalanceNumeric, t, value]);
 
   return { amountError };
 };

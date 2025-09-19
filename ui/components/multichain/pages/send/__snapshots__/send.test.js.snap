@@ -38,6 +38,7 @@ exports[`SendPage render and initialization should render correctly even when a 
       </div>
       <div
         class="mm-box multichain-page-content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        style="overflow: auto;"
       >
         <div
           class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
@@ -66,7 +67,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="mm-box min-w-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                    class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -171,33 +172,43 @@ exports[`SendPage render and initialization should render correctly even when a 
             class="mm-box multichain-send-page__recipient"
           >
             <div
-              class="mm-box tabs"
+              class="tabs transform-gpu"
             >
-              <ul
-                class="mm-box tabs__list mm-box--display-flex mm-box--gap-0 mm-box--justify-content-flex-start mm-box--background-color-background-default"
+              <div
+                class="flex flex-row gap-0 justify-start bg-default tabs__list top-0 z-[2]"
+                role="tablist"
               >
-                <li
-                  class="mm-box tab tab--active"
+                <div
+                  aria-disabled="false"
+                  aria-selected="true"
+                  class="tab tab--active border-b-2 border-muted font-medium ease-out text-default border-b-text-default transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1)"
+                  role="tab"
+                  tabindex="0"
                 >
                   <button
-                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
                   >
                     Your accounts
                   </button>
-                </li>
-                <li
-                  class="mm-box tab"
+                </div>
+                <div
+                  aria-disabled="false"
+                  aria-selected="false"
+                  class="tab border-b-2 border-muted text-alternative font-medium transition-colors duration-200 ease-out"
                   data-testid="send-contacts-tab"
+                  role="tab"
+                  tabindex="-1"
                 >
                   <button
-                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
                   >
                     Contacts
                   </button>
-                </li>
-              </ul>
+                </div>
+              </div>
               <div
-                class="mm-box tabs__content"
+                class="tabs__content"
+                role="tabpanel"
               >
                 <div
                   class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
@@ -234,7 +245,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                               >
                                 <div
-                                  class="items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8 flex"
+                                  class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                                 >
                                   <div
                                     class="flex [&>div]:!rounded-none"
@@ -293,7 +304,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                         class="mm-box mm-box--display-none mm-box--sm:display-flex"
                       >
                         <div
-                          class="inline-flex items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                         >
                           <div
                             class="flex [&>div]:!rounded-none"
@@ -360,18 +371,13 @@ exports[`SendPage render and initialization should render correctly even when a 
                               <div
                                 class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                                 data-testid="first-currency-display"
-                                title="$0.00 USD"
+                                title="$0.00"
                               >
                                 <span
                                   class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                                   data-testid="account-value-and-suffix"
                                 >
                                   $0.00
-                                </span>
-                                <span
-                                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                                >
-                                  USD
                                 </span>
                               </div>
                             </div>

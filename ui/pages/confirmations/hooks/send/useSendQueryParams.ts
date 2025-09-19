@@ -1,75 +1,128 @@
-import { Hex } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { useEffect } from 'react';
+import { isHexString } from '@metamask/utils';
+import { isSolanaChainId } from '@metamask/bridge-controller';
+import { useEffect, useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
-import useMultiChainAssets from '../../../../components/app/assets/hooks/useMultichainAssets';
-import { getAllTokens } from '../../../../selectors';
-import { Asset } from '../../types/send';
+import { toHex } from '../../../../../shared/lib/delegation/utils';
+import { SEND_ROUTE } from '../../../../helpers/constants/routes';
+import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { SendPages } from '../../constants/send';
 import { useSendContext } from '../../context/send';
-
-export const getAssetFromList = (
-  evmTokens: Record<Hex, Record<Hex, Asset[]>>,
-  address: Hex,
-) => {
-  let asset;
-  Object.entries(evmTokens).forEach(
-    ([chainId, assetsObj]: [string, Record<Hex, Asset[]>]) => {
-      return Object.values(assetsObj).forEach((assets) => {
-        const filteredAsset = assets.find((ast) => ast.address === address);
-        if (filteredAsset) {
-          asset = { ...filteredAsset, chainId };
-        }
-      });
-    },
-  );
-  return asset;
-};
+import { useSendNfts } from './useSendNfts';
 
 export const useSendQueryParams = () => {
-  const { updateCurrentPage, updateAsset } = useSendContext();
+  const {
+    asset,
+    currentPage,
+    maxValueMode,
+    to,
+    updateValue,
+    updateCurrentPage,
+    updateAsset,
+    updateTo,
+    value,
+  } = useSendContext();
+  const history = useHistory();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
-  const multiChainAssets = useMultiChainAssets();
-  const evmTokens: Record<Hex, Record<Hex, Asset[]>> = useSelector(
-    getAllTokens,
-  );
+  const nfts = useSendNfts();
+  const assets = useSelector(getAssetsBySelectedAccountGroup);
+  const flatAssets = useMemo(() => Object.values(assets).flat(), [assets]);
 
-  const address = searchParams.get('address');
-  const chainId = searchParams.get('chainId');
-  const tokenId = searchParams.get('tokenId');
+  const subPath = useMemo(() => {
+    const path = pathname.split('/').filter(Boolean)[1];
+    if (Object.values(SendPages).includes(path as SendPages)) {
+      return path;
+    }
+    return undefined;
+  }, [pathname]);
+
+  const paramAsset = searchParams.get('asset');
+  const paramAmount = searchParams.get('amount');
+  const paramChainId = searchParams.get('chainId');
+  const paramRecipient = searchParams.get('recipient');
+  const paramMaxValueMode = searchParams.get('maxValueMode');
 
   useEffect(() => {
-    const subPath = pathname.split('/').filter(Boolean)[1];
+    if (currentPage === subPath) {
+      return;
+    }
     updateCurrentPage((subPath as SendPages) ?? SendPages.ASSET);
-  }, [pathname, updateCurrentPage]);
+  }, [currentPage, subPath, updateCurrentPage]);
+
+  // syncing with url params is done to be able to navigate back to send from
+  // other pages remembering state
+  useEffect(() => {
+    if (!subPath) {
+      return;
+    }
+    const queryParams = new URLSearchParams(searchParams);
+    if (value !== undefined && paramAmount !== value) {
+      queryParams.set('amount', value);
+    }
+    if (asset?.address !== undefined && paramAsset !== asset.address) {
+      queryParams.set('asset', asset.address);
+    }
+    if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
+      queryParams.set('chainId', asset.chainId.toString());
+    }
+    if (maxValueMode !== undefined && paramMaxValueMode !== `${maxValueMode}`) {
+      queryParams.set('maxValueMode', maxValueMode.toString());
+    }
+    if (to !== undefined && paramRecipient !== to) {
+      queryParams.set('recipient', to);
+    }
+    history.replace(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`);
+  }, [
+    asset,
+    history,
+    maxValueMode,
+    paramAmount,
+    paramAsset,
+    paramChainId,
+    paramMaxValueMode,
+    paramRecipient,
+    searchParams,
+    subPath,
+    to,
+    value,
+  ]);
 
   useEffect(() => {
-    let asset;
-    if (address) {
-      if (isEvmAddress(address)) {
-        asset = getAssetFromList(evmTokens, address as Hex);
-      } else {
-        asset = multiChainAssets.find(
-          ({ address: assetAddress }) => assetAddress === address,
-        );
-      }
-    } else if (chainId) {
-      asset = { ...getNativeAssetForChainId(chainId), chainId };
+    if (to === undefined && paramRecipient) {
+      updateTo(paramRecipient);
     }
-    if (asset) {
-      updateAsset(asset);
+  }, [to, paramRecipient, updateTo]);
+
+  useEffect(() => {
+    if (asset || !paramChainId) {
+      return;
     }
-  }, [
-    address,
-    chainId,
-    // using only multiChainAssets as dependency causes infinite loading
-    multiChainAssets?.length,
-    evmTokens,
-    tokenId,
-    updateAsset,
-  ]);
+    const chainId =
+      !isSolanaChainId(paramChainId) && !isHexString(paramChainId)
+        ? toHex(paramChainId)
+        : paramChainId;
+
+    const newAsset = [...flatAssets, ...nfts]?.find(
+      ({ assetId, chainId: tokenChainId, isNative }) =>
+        chainId === tokenChainId &&
+        ((paramAsset && assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
+          (!paramAsset && isNative)),
+    );
+
+    if (newAsset) {
+      updateAsset(newAsset);
+    }
+  }, [asset, flatAssets, paramAsset, paramChainId, nfts, updateAsset]);
+
+  useEffect(() => {
+    if (!asset) {
+      return;
+    }
+    if (value === undefined && paramAmount) {
+      updateValue(paramAmount, paramMaxValueMode === 'true');
+    }
+  }, [asset, paramAmount, paramMaxValueMode, updateValue, value]);
 };

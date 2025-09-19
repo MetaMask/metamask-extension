@@ -67,6 +67,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -92,6 +93,10 @@ export const GlobalMenu = ({
   const { notificationsReadCount } = useReadNotificationsCounter();
 
   const account = useSelector(getSelectedInternalAccount);
+
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
@@ -224,11 +229,6 @@ export const GlobalMenu = ({
               <NotificationsTagCounter />
             </Box>
           </MenuItem>
-          <Box
-            borderColor={BorderColor.borderMuted}
-            width={BlockSize.Full}
-            style={{ height: '1px', borderBottomWidth: 0 }}
-          ></Box>
         </>
       )}
       {account && (
@@ -238,11 +238,13 @@ export const GlobalMenu = ({
             closeMenu={closeMenu}
             address={account.address}
           />
-          <ViewExplorerMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            account={account}
-          />
+          {isMultichainAccountsState2Enabled ? null : (
+            <ViewExplorerMenuItem
+              metricsLocation={METRICS_LOCATION}
+              closeMenu={closeMenu}
+              account={account}
+            />
+          )}
         </>
       )}
       <Box
@@ -251,9 +253,9 @@ export const GlobalMenu = ({
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
+        to={PERMISSIONS}
         iconName={IconName.SecurityTick}
         onClick={() => {
-          history.push(PERMISSIONS);
           trackEvent({
             event: MetaMetricsEventName.NavPermissionsOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -299,11 +301,9 @@ export const GlobalMenu = ({
         {t('networks')}
       </MenuItem>
       <MenuItem
+        to={SNAPS_ROUTE}
         iconName={IconName.Snaps}
-        onClick={() => {
-          history.push(SNAPS_ROUTE);
-          closeMenu();
-        }}
+        onClick={closeMenu}
         showInfoDot={snapsUpdatesAvailable}
       >
         {t('snaps')}
@@ -334,10 +334,10 @@ export const GlobalMenu = ({
         {supportText}
       </MenuItem>
       <MenuItem
+        to={SETTINGS_ROUTE}
         iconName={IconName.Setting}
         disabled={hasUnapprovedTransactions}
         onClick={() => {
-          history.push(SETTINGS_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
@@ -352,11 +352,11 @@ export const GlobalMenu = ({
         {t('settings')}
       </MenuItem>
       <MenuItem
+        to={DEFAULT_ROUTE}
         ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
-          dispatch(lockMetamask());
-          history.push(DEFAULT_ROUTE);
+          dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppLocked,

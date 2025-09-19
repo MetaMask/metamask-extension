@@ -242,7 +242,7 @@ export function createMockInternalAccount({
       const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
 
       scopes = [isMainnet ? BtcScope.Mainnet : BtcScope.Testnet];
-      methods = [BtcMethod.SendBitcoin];
+      methods = Object.values(BtcMethod);
       break;
     }
     case SolAccountType.DataAccount:

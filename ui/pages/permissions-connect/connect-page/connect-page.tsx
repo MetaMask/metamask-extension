@@ -22,6 +22,11 @@ import {
 } from '@metamask/utils';
 
 import { isEqual } from 'lodash';
+import { Tooltip } from 'react-tippy';
+import {
+  BoxBackgroundColor,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissions,
@@ -38,6 +43,9 @@ import {
   ButtonLink,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../components/component-library';
 import {
@@ -54,6 +62,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -82,6 +91,8 @@ import {
 } from '../../../selectors/selectors.types';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
+import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
+import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
@@ -441,6 +452,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
+  const originTrustSignals = useOriginTrustSignals(
+    targetSubjectMetadata.origin,
+  );
 
   return (
     <Page
@@ -491,9 +505,36 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
-          {title}
-        </Text>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          gap={2}
+          marginBottom={1}
+        >
+          <Text
+            variant={TextVariant.headingLg}
+            style={{
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
+            }}
+          >
+            {title}
+          </Text>
+          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
+            <Tooltip
+              title={t('alertReasonOriginTrustSignalVerified')}
+              position="bottom"
+              style={{ display: 'flex' }}
+            >
+              <Icon
+                name={IconName.VerifiedFilled}
+                color={IconColor.infoDefault}
+                size={IconSize.Sm}
+              />
+            </Tooltip>
+          )}
+        </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
@@ -507,17 +548,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       >
         <Tabs
           onTabClick={() => null}
-          backgroundColor={BackgroundColor.transparent}
-          justifyContent={JustifyContent.center}
+          backgroundColor={BoxBackgroundColor.Transparent}
+          justifyContent={BoxJustifyContent.Center}
           defaultActiveTabKey="accounts"
           tabListProps={{
-            backgroundColor: BackgroundColor.transparent,
+            backgroundColor: BoxBackgroundColor.Transparent,
           }}
         >
           <Tab
             name={t('accounts')}
             tabKey="accounts"
-            width={BlockSize.Full}
+            className="w-full"
             data-testid="accounts-tab"
           >
             <Box marginTop={4}>
@@ -617,7 +658,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           <Tab
             name={t('permissions')}
             tabKey="permissions"
-            width={BlockSize.Full}
+            className="w-full"
             data-testid="permissions-tab"
             disabled={
               promptToCreateSolanaAccount &&

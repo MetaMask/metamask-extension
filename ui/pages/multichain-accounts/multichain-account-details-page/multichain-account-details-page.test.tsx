@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
 const backButtonTestId = 'back-button';
@@ -11,8 +12,8 @@ const accountDetailsRowNetworksTestId = 'account-details-row-networks';
 const accountDetailsRowPrivateKeysTestId = 'account-details-row-private-keys';
 const accountDetailsRowSmartAccountTestId = 'account-details-row-smart-account';
 const accountDetailsRowWalletTestId = 'account-details-row-wallet';
-const accountDetailsRowSecretRecoveryPhraseTestId =
-  'account-details-row-secret-recovery-phrase';
+const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
+const accountNameInputDataTestId = 'account-name-input';
 
 const mockHistoryPush = jest.fn();
 const mockHistoryGoBack = jest.fn();
@@ -75,7 +76,7 @@ describe('MultichainAccountDetailsPage', () => {
   it('displays the address count from the selector', () => {
     renderComponent();
 
-    expect(screen.getByText(/2 addresses/iu)).toBeInTheDocument();
+    expect(screen.getByText(/10 addresses/iu)).toBeInTheDocument();
   });
 
   it('calls history.goBack when back button is clicked', () => {
@@ -95,7 +96,7 @@ describe('MultichainAccountDetailsPage', () => {
 
     expect(mockHistoryPush).toHaveBeenCalledTimes(1);
     expect(mockHistoryPush).toHaveBeenCalledWith(
-      '/wallet-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ',
+      `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
     );
   });
 
@@ -123,5 +124,29 @@ describe('MultichainAccountDetailsPage', () => {
     renderComponent();
 
     expect(screen.getByText(/remove account/iu)).toBeInTheDocument();
+  });
+
+  it('opens account rename modal when account name action button is clicked', () => {
+    renderComponent();
+
+    const accountNameActionButton = screen.getByTestId('account-name-action');
+    fireEvent.click(accountNameActionButton);
+
+    expect(screen.getByText(/rename/iu)).toBeInTheDocument();
+    expect(screen.getByTestId(accountNameInputDataTestId)).toBeInTheDocument();
+  });
+
+  it('closes account rename modal when close button is clicked', () => {
+    renderComponent();
+
+    const accountNameActionButton = screen.getByTestId('account-name-action');
+    fireEvent.click(accountNameActionButton);
+
+    expect(screen.getByText(/rename/iu)).toBeInTheDocument();
+
+    const closeButton = screen.getByLabelText('Close');
+    fireEvent.click(closeButton);
+
+    expect(screen.queryByText(/rename/iu)).not.toBeInTheDocument();
   });
 });

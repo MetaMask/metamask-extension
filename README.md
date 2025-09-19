@@ -108,6 +108,8 @@ You can also start a development build using the `yarn webpack` command, or `yar
 
 #### React and Redux DevTools
 
+To use React or Redux DevTools you'll first need to set `METAMASK_REACT_REDUX_DEVTOOLS` to `true` in `.metamaskrc`.
+
 To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
 
 To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):

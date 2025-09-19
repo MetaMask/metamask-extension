@@ -9,6 +9,7 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../../test/data/mock-accounts';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
 const mockStore = configureStore([]);
@@ -22,6 +23,16 @@ const accounts: Record<string, InternalAccount> = {
     scopes: ['eip155:137'],
   },
   solana: { ...MOCK_ACCOUNT_SOLANA_MAINNET, scopes: ['solana:*'] },
+  solanaTestnet: {
+    ...MOCK_ACCOUNT_SOLANA_MAINNET,
+    id: 'solana-testnet-account',
+    address: '9A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGD',
+    scopes: [MultichainNetworks.SOLANA_TESTNET],
+    metadata: {
+      ...MOCK_ACCOUNT_SOLANA_MAINNET.metadata,
+      name: 'Solana Testnet Account',
+    },
+  },
   bitcoin: { ...MOCK_ACCOUNT_BIP122_P2WPKH, scopes: ['bip122:*'] },
 };
 
@@ -77,10 +88,16 @@ const createMockState = () => ({
       ),
     },
     multichainNetworkConfigurationsByChainId: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      [MultichainNetworks.SOLANA]: {
+        chainId: MultichainNetworks.SOLANA,
         name: 'Solana with a really long name',
-        nativeCurrency: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        nativeCurrency: 'SOL',
+        isEvm: false,
+      },
+      [MultichainNetworks.SOLANA_TESTNET]: {
+        chainId: MultichainNetworks.SOLANA_TESTNET,
+        name: 'Solana Testnet',
+        nativeCurrency: 'SOL',
         isEvm: false,
       },
     },
@@ -111,7 +128,14 @@ export default meta;
 type Story = StoryObj<typeof MultichainAddressRowsList>;
 
 export const MultipleDifferentAccounts: Story = {
-  args: { accounts: [accounts.ethereum, accounts.solana, accounts.bitcoin] },
+  args: {
+    accounts: [
+      accounts.ethereum,
+      accounts.solana,
+      accounts.solanaTestnet,
+      accounts.bitcoin,
+    ],
+  },
 };
 
 export const SingleEthereumAccount: Story = {

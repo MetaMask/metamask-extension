@@ -2,6 +2,7 @@ import {
   type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { type Transaction } from '@metamask/keyring-api';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -25,19 +26,22 @@ const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
 export type UseBridgeChainInfoProps = {
   bridgeHistoryItem?: BridgeHistoryItem;
   srcTxMeta?: TransactionMeta;
+  nonEvmTransaction?: Transaction;
 };
 
 export default function useBridgeChainInfo({
   bridgeHistoryItem,
   srcTxMeta,
+  nonEvmTransaction,
 }: UseBridgeChainInfoProps): {
   srcNetwork?: ChainInfo;
   destNetwork?: ChainInfo;
 } {
-  if (
+  const isEvmSwapOrBridge =
     srcTxMeta?.type &&
-    ![TransactionType.bridge, TransactionType.swap].includes(srcTxMeta.type)
-  ) {
+    [TransactionType.bridge, TransactionType.swap].includes(srcTxMeta.type);
+
+  if (!isEvmSwapOrBridge && !nonEvmTransaction) {
     return {
       srcNetwork: undefined,
       destNetwork: undefined,
@@ -47,8 +51,8 @@ export default function useBridgeChainInfo({
   const { srcChainId, destChainId } = bridgeHistoryItem
     ? getSourceAndDestChainIds(bridgeHistoryItem)
     : {
-        srcChainId: srcTxMeta?.chainId,
-        destChainId: srcTxMeta?.chainId,
+        srcChainId: srcTxMeta?.chainId ?? nonEvmTransaction?.chain,
+        destChainId: srcTxMeta?.chainId ?? nonEvmTransaction?.chain,
       };
 
   if (!srcChainId || !destChainId) {

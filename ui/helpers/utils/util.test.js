@@ -1479,7 +1479,7 @@ describe('util', () => {
     it('should return the correct title for origin with subdomain', () => {
       expect(
         util.transformOriginToTitle('https://metamask.github.io/test-dapp/'),
-      ).toBe('github.io');
+      ).toBe('metamask.github.io');
     });
 
     it('should return the correct title for localhost', () => {

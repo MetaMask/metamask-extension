@@ -71,7 +71,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTokens', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/tokens?includeBlockedTokens=true')
         .reply(200, TOKENS);
@@ -90,7 +90,7 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
@@ -109,7 +109,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssetsList', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);
@@ -136,7 +136,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssets', () => {
     beforeEach(() => {
-      nock('https://swap.api.cx.metamask.io')
+      nock('https://bridge.api.cx.metamask.io')
         .persist()
         .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);

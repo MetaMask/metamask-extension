@@ -5,12 +5,16 @@ import { ModalHeader, ModalBody, Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { t } from '../../../../shared/lib/translate';
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
 
 // Network tabs component
 export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
+  const isMultichainAccountsFeatureEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
   const dispatch = useDispatch();
   const handleClose = useCallback(() => {
     dispatch(hideModal());
@@ -37,13 +41,20 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
             className: 'network-manager__tab-content',
           }}
         >
-          <Tab tabKey="networks" name={t('networkTabPopular') ?? 'Popular'}>
+          <Tab
+            className="w-full"
+            tabKey="networks"
+            name={t('networkTabPopular') ?? 'Popular'}
+          >
             <DefaultNetworks />
           </Tab>
           <Tab
+            className="w-full"
             tabKey="custom-networks"
             name={t('networkTabCustom') ?? 'Custom'}
-            disabled={!isEvmNetworkSelected}
+            disabled={
+              !isEvmNetworkSelected && !isMultichainAccountsFeatureEnabled
+            }
           >
             <CustomNetworks />
           </Tab>
