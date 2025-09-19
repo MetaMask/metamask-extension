@@ -32,6 +32,8 @@ const { CaveatTypes } = require('../../../../shared/constants/permissions');
 // validate two dapps instead of 3
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
+// Test e2e UI
+
 async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   // Open the dapp
   await openDapp(driver, undefined, dappUrl);

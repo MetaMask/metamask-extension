@@ -41,6 +41,14 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
+  private readonly connectionMenu = '[data-testid="connection-menu"]';
+
+  private readonly connectedSitePopoverNetworkButton =
+    '[data-testid="connected-site-popover-network-button"]';
+
+  private readonly networkOption = (networkId: string) =>
+    `[data-testid="${networkId}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -193,6 +201,32 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Open the connection menu
+   */
+  async openConnectionMenu(): Promise<void> {
+    console.log('Opening connection menu');
+    await this.driver.clickElement(this.connectionMenu);
+  }
+
+  /**
+   * Click the connected site popover network button
+   */
+  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
+    console.log('Clicking connected site popover network button');
+    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  }
+
+  /**
+   * Select a network from the network options
+   *
+   * @param networkId - The id of the network to select.
+   */
+  async selectNetwork(networkId: string): Promise<void> {
+    console.log(`Selecting network ${networkId}`);
+    await this.driver.clickElement(this.networkOption(networkId));
   }
 }
 
