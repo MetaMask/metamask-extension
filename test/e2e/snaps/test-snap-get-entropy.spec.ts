@@ -81,6 +81,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
           text: 'Entropy source with ID "invalid" not found.',
           windowTitle: WINDOW_TITLES.TestSnaps,
         });
+        await driver.closeAlertPopup();
       },
     );
   });
