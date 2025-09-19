@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
   },
-  "noActivity": {
-    "message": "अभी तक कोई गतिविधि नहीं"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
   },

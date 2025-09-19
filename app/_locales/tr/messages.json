@@ -3702,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noActivity": {
-    "message": "Henüz herhangi bir aktivite yok"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },

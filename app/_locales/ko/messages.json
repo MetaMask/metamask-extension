@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noActivity": {
-    "message": "아직 활동 내역이 없습니다"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
