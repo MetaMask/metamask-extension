@@ -41,19 +41,24 @@ export const BridgeCTAInfoText = () => {
     return null;
   }
 
-  if (!hasMMFee && !hasApproval) {
+  const feeMessage = hasMMFee
+    ? t('rateIncludesMMFee', [
+        activeQuote.quote.feeData.metabridge.quoteBpsFee ?? BRIDGE_MM_FEE_RATE,
+      ])
+    : t('noMMFeeSwapping', [activeQuote.quote.destAsset.symbol]);
+
+  const shouldShowFeeMessage = activeQuote && !isQuoteExpired;
+  const shouldShowContent = shouldShowFeeMessage || hasApproval;
+
+  if (!shouldShowContent) {
     return null;
   }
 
-  if (isQuoteExpired) {
-    return null;
-  }
-
-  return hasMMFee || hasApproval ? (
+  return (
     <Row gap={1} justifyContent={JustifyContent.center}>
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternativeSoft}>
         {[
-          hasMMFee ? t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE]) : null,
+          shouldShowFeeMessage ? feeMessage : null,
           hasApproval &&
             (isCrossChain(
               activeQuote.quote.srcChainId,
@@ -85,5 +90,5 @@ export const BridgeCTAInfoText = () => {
         </Tooltip>
       ) : null}
     </Row>
-  ) : null;
+  );
 };

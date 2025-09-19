@@ -4979,6 +4979,9 @@
   "rateIncludesMMFee": {
     "message": "Includes $1% MM fee."
   },
+  "noMMFeeSwapping": {
+    "message": "No MM fee swapping into $1."
+  },
   "reAddAccounts": {
     "message": "re-add any other accounts"
   },
