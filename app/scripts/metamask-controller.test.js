@@ -4534,7 +4534,7 @@ describe('MetaMaskController', () => {
           .fn()
           .mockResolvedValue([
             { type: SolAccountType.DataAccount },
-            { type: SolAccountType.DataAccount },
+            { type: EthAccountType.Eoa },
           ]),
       };
 
@@ -4550,7 +4550,7 @@ describe('MetaMaskController', () => {
       );
 
       expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 2 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
     });
 
     it('passes provided keyring id to wallet getter', async () => {
@@ -4561,7 +4561,7 @@ describe('MetaMaskController', () => {
           .fn()
           .mockResolvedValue([
             { type: SolAccountType.DataAccount },
-            { type: SolAccountType.DataAccount },
+            { type: EthAccountType.Eoa },
           ]),
       };
 
@@ -4577,7 +4577,7 @@ describe('MetaMaskController', () => {
         { entropySource: providedId },
       );
 
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 2 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
     });
 
     it('returns zero counts and warns when no HD keyring can be derived (no keyring id provided or HD keyring found)', async () => {
@@ -4589,8 +4589,6 @@ describe('MetaMaskController', () => {
       const warnSpy = jest.spyOn(log, 'warn');
 
       const result = await metamaskController.discoverAndCreateAccounts();
-
-      console.log(warnSpy.mock.calls);
 
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
       expect(warnSpy).toHaveBeenCalledWith(

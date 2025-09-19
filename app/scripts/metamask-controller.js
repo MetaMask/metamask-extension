@@ -4890,10 +4890,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
-        id ||
-        this.keyringController.state.keyrings.find(
-          (keyring) => keyring.type === KeyringTypes.hd,
-        )?.metadata.id;
+        id || this.keyringController.state.keyrings[0]?.metadata.id;
 
       if (!keyringIdToDiscover) {
         throw new Error('No keyring id to discover accounts for');
