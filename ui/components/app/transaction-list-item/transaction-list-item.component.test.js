@@ -4,6 +4,7 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { createMemoryHistory } from 'history';
 import {
   TrustSignalDisplayState,
   useTrustSignals,
@@ -16,7 +17,7 @@ import {
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -177,6 +178,8 @@ describe('TransactionListItem', () => {
         label: null,
       })),
     );
+
+    mockUseLocation.mockReturnValue({ pathname: ''});
   });
 
   afterAll(() => {
@@ -327,7 +330,6 @@ describe('TransactionListItem', () => {
           },
         }}
       />,
-      mockStore(mockState),
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(

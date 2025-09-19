@@ -8,7 +8,7 @@ import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSe
 import * as AmountValidation from '../../../hooks/send/useAmountValidation';
 import * as SendActions from '../../../hooks/send/useSendActions';
 import * as SendContext from '../../../context/send';
-import * as RecipientValidation from '../../../hooks/send/validations/useRecipientValidation';
+import * as RecipientValidation from '../../../hooks/send/useRecipientValidation';
 import { AmountRecipient } from './amount-recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
@@ -47,13 +47,14 @@ describe('AmountRecipient', () => {
       >);
 
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      to: MOCK_ADDRESS,
+      toResolved: MOCK_ADDRESS,
       asset: undefined,
       chainId: '0x1',
       from: 'from-address',
       updateAsset: jest.fn(),
       updateCurrentPage: jest.fn(),
       updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
       updateValue: jest.fn(),
       value: '1',
     } as unknown as ReturnType<typeof SendContext.useSendContext>);

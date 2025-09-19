@@ -97,6 +97,7 @@ export const toTokenMinimalUnit = (
 export function formatToFixedDecimals(
   value: string | undefined,
   decimalsToShow: string | number = 5,
+  trimTrailingZerosEnabled = true,
 ) {
   if (!value) {
     return '0';
@@ -114,13 +115,22 @@ export function formatToFixedDecimals(
   }
 
   const strValueArr = val.toString().split('.');
-  if (!strValueArr[1]) {
-    return strValueArr[0];
+  const intPart = strValueArr[0];
+  let fracPart = strValueArr[1] ?? '';
+
+  if (fracPart.length > decimals) {
+    fracPart = fracPart.slice(0, decimals);
+  } else {
+    fracPart = fracPart.padEnd(decimals, '0');
   }
 
-  return trimTrailingZeros(
-    `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`,
-  );
+  if (!fracPart) {
+    return intPart;
+  }
+
+  return trimTrailingZerosEnabled
+    ? trimTrailingZeros(`${intPart}.${fracPart}`)
+    : `${intPart}.${fracPart}`;
 }
 
 export const prepareEVMTransaction = (

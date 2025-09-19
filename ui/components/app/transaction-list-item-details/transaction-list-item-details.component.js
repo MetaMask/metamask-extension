@@ -208,7 +208,7 @@ export default class TransactionListItemDetails extends PureComponent {
           </div>
           <div className="transaction-list-item-details__header">
             <div
-              className="transaction-list-item-details__tx-status"
+              className="transaction-list-item-details__tx-status gap-1 h-auto"
               data-testid="transaction-list-item-details-tx-status"
             >
               <div>{t('status')}</div>
@@ -216,33 +216,32 @@ export default class TransactionListItemDetails extends PureComponent {
                 <TransactionStatus />
               </div>
             </div>
-            <div className="transaction-list-item-details__tx-hash">
-              <div>
-                <Button
-                  type="link"
-                  onClick={this.handleBlockExplorerClick}
+            <div className="transaction-list-item-details__tx-hash gap-1">
+              <button
+                type="button"
+                className="text-primary-default"
+                onClick={this.handleBlockExplorerClick}
+                disabled={!hash}
+              >
+                {blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                  ? t('addBlockExplorer')
+                  : t('viewOnBlockExplorer')}
+              </button>
+
+              <Tooltip
+                wrapperClassName="transaction-list-item-details__header-button"
+                containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                title={justCopied ? t('copiedExclamation') : null}
+              >
+                <button
+                  type="button"
+                  className="text-primary-default"
+                  onClick={this.handleCopyTxId}
                   disabled={!hash}
                 >
-                  {blockExplorerLinkText.firstPart === 'addBlockExplorer'
-                    ? t('addBlockExplorer')
-                    : t('viewOnBlockExplorer')}
-                </Button>
-              </div>
-              <div>
-                <Tooltip
-                  wrapperClassName="transaction-list-item-details__header-button"
-                  containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                  title={justCopied ? t('copiedExclamation') : null}
-                >
-                  <Button
-                    type="link"
-                    onClick={this.handleCopyTxId}
-                    disabled={!hash}
-                  >
-                    {t('copyTransactionId')}
-                  </Button>
-                </Tooltip>
-              </div>
+                  {t('copyTransactionId')}
+                </button>
+              </Tooltip>
             </div>
           </div>
           <div className="transaction-list-item-details__body">

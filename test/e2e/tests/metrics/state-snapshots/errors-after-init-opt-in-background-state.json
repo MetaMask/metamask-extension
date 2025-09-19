@@ -149,7 +149,8 @@
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object"
+    "segmentApiCalls": "object",
+    "isSocialLoginFlowEnabledForMetrics": "boolean"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -317,6 +318,7 @@
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
+  "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
       "quotes": "object",
