@@ -131,7 +131,7 @@ exports[`ConnectPage should render correctly 1`] = `
                           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
                             <div
                               class="flex [&>div]:!rounded-none"
@@ -183,7 +183,7 @@ exports[`ConnectPage should render correctly 1`] = `
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -552,7 +552,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
                             <div
                               class="flex [&>div]:!rounded-none"
@@ -604,7 +604,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"

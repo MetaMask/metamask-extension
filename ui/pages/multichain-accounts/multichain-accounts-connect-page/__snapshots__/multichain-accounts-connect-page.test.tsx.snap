@@ -120,7 +120,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -358,7 +358,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -596,7 +596,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"

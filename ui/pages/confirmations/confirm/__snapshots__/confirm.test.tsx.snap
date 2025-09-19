@@ -20,7 +20,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -280,7 +280,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -768,7 +768,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -1203,7 +1203,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -1981,7 +1981,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -2455,7 +2455,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -3149,7 +3149,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -3263,7 +3263,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
