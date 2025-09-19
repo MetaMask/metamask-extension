@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
 import {
   formatChainIdToHex,
   isSolanaChainId,
 } from '@metamask/bridge-controller';
+import { Hex } from '@metamask/utils';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { isRelaySupported } from '../../../store/actions';
 import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
@@ -42,6 +43,9 @@ export function useGasIncluded7702({
 }: UseGasIncluded7702Params): boolean {
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
+  const smartTransactionsEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
 
   const smartAccountOptedIn = useSelector(getUseSmartAccount);
 
@@ -50,7 +54,7 @@ export function useGasIncluded7702({
 
     const checkGasIncluded7702Support = async () => {
       if (
-        isSendBundleSupportedForChain ||
+        (isSendBundleSupportedForChain && smartTransactionsEnabled) ||
         !smartAccountOptedIn ||
         !isSwap ||
         !selectedAccount?.address ||
@@ -111,6 +115,7 @@ export function useGasIncluded7702({
     selectedAccount?.address,
     fromChain?.chainId,
     isSendBundleSupportedForChain,
+    smartTransactionsEnabled,
   ]);
 
   return isGasIncluded7702Supported;
