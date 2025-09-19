@@ -849,6 +849,7 @@
         "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
+        "__import__": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -881,7 +882,6 @@
         "bn.js": true,
         "immer": true,
         "lodash": true,
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "reselect": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
