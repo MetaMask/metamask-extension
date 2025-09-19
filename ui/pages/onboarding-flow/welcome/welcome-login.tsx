@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
+import { useRive, Layout, Fit, Alignment } from 'rive-react';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
@@ -39,6 +40,32 @@ export default function WelcomeLogin({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const dispatch = useDispatch();
+
+  const { rive, RiveComponent } = useRive({
+    src: './images/riv_animations/fox_appear.riv',
+    stateMachines: 'FoxRaiseUp',
+    animations: ['Appear (Rise)'],
+    autoplay: true,
+    autoBind: true,
+    layout: new Layout({
+      fit: Fit.Contain,
+      alignment: Alignment.Center,
+    }),
+  });
+
+  console.log('Hi EVERYONE');
+
+  React.useEffect(() => {
+    if (rive) {
+      console.log('active artboard', rive);
+      // console.log('active animation', rive.animationNames);
+      // console.log('active state machine', rive.stateMachineNames);
+      // console.log(
+      //   'active playingStateMachineNames',
+      //   rive.playingStateMachineNames,
+      // );
+    }
+  }, [rive]);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -99,6 +126,10 @@ export default function WelcomeLogin({
           })}
         >
           {renderMascot()}
+        </Box>
+
+        <Box className="riv-container">
+          <RiveComponent className="riv-canvas" />
         </Box>
 
         <Text
