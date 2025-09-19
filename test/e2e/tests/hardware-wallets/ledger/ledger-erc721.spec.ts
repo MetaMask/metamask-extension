@@ -83,7 +83,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1208925.8195',
         );
 
         const contractAddress = contractRegistry.getContractAddress(erc721);
@@ -140,7 +140,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1208925.8195',
         );
 
         const contractAddress = contractRegistry.getContractAddress(erc721);
@@ -195,7 +195,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1208925.8195',
         );
 
         const contractAddress = contractRegistry.getContractAddress(erc721);
