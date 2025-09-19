@@ -84,7 +84,7 @@ exports[`Info renders info section for approve request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"
@@ -146,7 +146,7 @@ exports[`Info renders info section for approve request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -280,9 +280,9 @@ exports[`Info renders info section for approve request 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px;"
+            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
               class="mm-box"
@@ -540,7 +540,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -623,9 +623,9 @@ exports[`Info renders info section for contract interaction request 1`] = `
             $0.04
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px;"
+            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
               class="mm-box"
@@ -890,7 +890,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"
@@ -952,7 +952,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -1086,9 +1086,9 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px;"
+            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
               class="mm-box"
@@ -1249,7 +1249,7 @@ exports[`Info renders info section for typed sign request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -1459,7 +1459,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -1499,7 +1499,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -1539,7 +1539,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -1675,7 +1675,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
@@ -1715,7 +1715,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
@@ -1755,7 +1755,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"

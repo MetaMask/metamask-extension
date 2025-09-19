@@ -84,7 +84,7 @@ exports[`<ApproveStaticSimulation /> renders component when token is an NFT 1`] 
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"
@@ -201,7 +201,7 @@ exports[`<ApproveStaticSimulation /> renders component when token is not an NFT 
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"

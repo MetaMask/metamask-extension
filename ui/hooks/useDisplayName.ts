@@ -19,6 +19,7 @@ import { MultichainAccountsState } from '../selectors/multichain-accounts/accoun
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
+import { useWalletNames } from './useWalletNames';
 
 export type UseDisplayNameRequest = {
   preferContractSymbol?: boolean;
@@ -34,6 +35,7 @@ export type UseDisplayNameResponse = {
   image?: string;
   icon?: IconProps | null;
   displayState: TrustSignalDisplayState;
+  walletName?: string | null;
 };
 
 type UseAccountGroupNamesRequest = UseDisplayNameRequest;
@@ -49,6 +51,7 @@ export function useDisplayNames(
   const nfts = useNFTs(requests);
   const ens = useDomainResolutions(requests);
   const nameGroupEntries = useAccountGroupNames(requests, nameEntries);
+  const walletNames = useWalletNames(requests, nameEntries);
 
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
@@ -59,6 +62,7 @@ export function useDisplayNames(
     const nft = nfts[index];
     const ensName = ens[index];
     const groupName = nameGroupEntries[index];
+    const walletName = walletNames[index];
 
     let name =
       groupName ||
@@ -103,6 +107,7 @@ export function useDisplayNames(
       image,
       icon: trustSignalIcon,
       displayState,
+      walletName,
     };
   });
 }

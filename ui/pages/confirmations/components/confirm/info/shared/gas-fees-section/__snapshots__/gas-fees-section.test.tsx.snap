@@ -68,9 +68,9 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
             $0.04
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px;"
+            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
               class="mm-box"

@@ -1,14 +1,20 @@
 .name {
   border-radius: 36px;
-  padding: 1px 8px 1px 4px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
   font-size: 12px;
   max-width: 100%;
+  color: var(--color-text-default);
 
   &__clickable {
     cursor: pointer;
+
+    &:hover {
+      .name__name {
+        color: var(--color-info-default);
+      }
+    }
   }
 
   &__trust-signal-icon {
@@ -16,67 +22,21 @@
     height: 16px;
   }
 
-  &__missing {
-    background-color: var(--color-background-alternative);
-
-    .name__value {
-      color: var(--color-text-default);
-    }
-  }
-
-  &__saved {
-    background-color: var(--color-info-muted);
-
-    .name__name {
-      color: var(--color-info-default);
-    }
-  }
-
-  &__recognized_unsaved {
-    background-color: var(--color-background-alternative);
-
-    .name__name {
-      color: var(--color-text-default);
-    }
-  }
-
-  &__verified {
-    background-color: var(--color-info-muted);
-
-    .name__name,
-    .name__value {
-      color: var(--color-info-default);
-    }
-  }
-
   &__warning {
-    background-color: var(--color-warning-muted);
-
-    .name__name,
-    .name__value {
-      color: var(--color-text-default);
+    &:hover {
+      .name__name {
+        color: var(--color-warning-default) !important;
+      }
     }
   }
 
   &__malicious {
-    background-color: var(--color-error-muted);
-
-    .name__name,
-    .name__value {
-      color: var(--color-text-default);
+    &:hover {
+      .name__name {
+        color: var(--color-error-default) !important;
+      }
     }
   }
-
-  &__unknown {
-    background-color: var(--color-background-alternative);
-
-    .name__name,
-    .name__value {
-      color: var(--color-text-default);
-    }
-  }
-
-
 
   &__value,
   &__name {

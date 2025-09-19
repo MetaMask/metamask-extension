@@ -8,7 +8,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
-import { SizeNumber } from '../../../../components/component-library/box/box.types';
 import Tooltip from '../../../../components/ui/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getShouldShowFiat } from '../../../../selectors';
@@ -17,7 +16,6 @@ import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 const textStyle = {
   color: TextColor.textAlternative,
   variant: TextVariant.bodySm,
-  paddingRight: 2 as SizeNumber,
   textAlign: 'right' as TextAlign,
 } as const;
 
