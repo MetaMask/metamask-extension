@@ -21,7 +21,6 @@ export const useAccountGroupBalanceDisplay = (period: BalanceChangePeriod) => {
   const valueChange: number | undefined = [
     isValidAmount(amountChangeInUserCurrency) && amountChangeInUserCurrency,
     isValidAmount(percentChange) && percentChange,
-    percentChange,
   ].find((v): v is number => v !== false);
 
   const color = useMemo(

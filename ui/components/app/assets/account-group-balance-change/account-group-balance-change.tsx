@@ -22,7 +22,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
 > = ({ period }) => {
   const { privacyMode, color, amountChange, percentChange } =
     useAccountGroupBalanceDisplay(period);
-  const { formatCurrency, formatPercent } = useFormatters();
+  const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
   const currency = useSelector(getCurrentCurrency);
 
   return (
@@ -46,7 +46,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
         ellipsis
         length="10"
       >
-        {`(${formatPercent(percentChange, { signDisplay: 'always' })})`}
+        {`(${formatPercentWithMinThreshold(percentChange, { signDisplay: 'always' })})`}
       </SensitiveText>
     </Box>
   );
