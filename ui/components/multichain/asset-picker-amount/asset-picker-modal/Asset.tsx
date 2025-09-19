@@ -21,6 +21,7 @@ type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
     'isTitleNetworkName' | 'isTitleHidden' | 'nativeCurrencySymbol'
   >;
   name?: string;
+  isDestinationToken?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -35,6 +36,7 @@ export default function Asset({
   tokenFiatAmount,
   chainId,
   assetItemProps = {},
+  isDestinationToken = false,
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
 
@@ -80,6 +82,8 @@ export default function Asset({
       tooltipText={tooltipText}
       tokenChainImage={getImageForChainId(chainId)}
       isPrimaryTokenSymbolHidden
+      isDestinationToken={isDestinationToken}
+      address={address}
       {...assetItemProps}
     />
   );

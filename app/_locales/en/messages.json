@@ -948,6 +948,9 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
+  "bridgeNoMMFee": {
+    "message": "No MM fee"
+  },
   "bridgePriceImpact": {
     "message": "Price impact"
   },

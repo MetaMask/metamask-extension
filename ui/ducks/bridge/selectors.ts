@@ -853,3 +853,23 @@ export const getIsUnifiedUIEnabled = createSelector(
       : false;
   },
 );
+
+export const selectNoFeeAssets = createSelector(
+  [
+    getBridgeFeatureFlags,
+    (_state: BridgeAppState, chainId?: string) => chainId,
+  ],
+  (bridgeFeatureFlags, chainId): string[] => {
+    if (!chainId) {
+      return [];
+    }
+    const caipChainId = formatChainIdToCaip(chainId);
+    return (
+      (
+        bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
+          noFeeAssets?: string[];
+        }
+      )?.noFeeAssets ?? []
+    );
+  },
+);
