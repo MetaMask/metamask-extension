@@ -1,9 +1,6 @@
 import React from 'react';
 import { CaipAssetType } from '@metamask/utils';
-import {
-  Box,
-  Text,
-} from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import {
   AlignItems,
   Display,
@@ -36,7 +33,7 @@ export const PercentageChange = ({
   }
 
   const formattedValue = formatValue(value, false);
-  const balanceIsNegative = isValidAmount(value) && (value as number) < 0;
+
   return (
     <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
       <Text
