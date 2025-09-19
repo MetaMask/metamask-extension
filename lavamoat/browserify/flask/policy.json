@@ -2313,6 +2313,27 @@
         "webkitAudioContext": true
       }
     },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": true,
+        "ResizeObserver": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "devicePixelRatio": true,
+        "document.documentElement.clientHeight": true,
+        "document.documentElement.clientWidth": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "matchMedia": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "rive-react>@rive-app/canvas": true,
+        "react": true
+      }
+    },
     "@metamask/eth-sig-util>@scure/base": {
       "globals": {
         "TextDecoder": true,
@@ -4876,27 +4897,6 @@
         "browserify>buffer": true,
         "crypto-browserify>pbkdf2>ripemd160>hash-base": true,
         "pumpify>inherits": true
-      }
-    },
-    "rive-react": {
-      "globals": {
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "devicePixelRatio": true,
-        "document.documentElement.clientHeight": true,
-        "document.documentElement.clientWidth": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "matchMedia": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "rive-react>@rive-app/canvas": true,
-        "react": true
       }
     },
     "eth-lattice-keyring>rlp": {
