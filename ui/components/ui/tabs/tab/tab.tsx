@@ -1,13 +1,12 @@
 import React from 'react';
-import classnames from 'classnames';
 import {
-  BlockSize,
-  Display,
+  Box,
+  Text,
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Text, Box } from '../../../component-library';
+  twMerge,
+} from '@metamask/design-system-react';
 import { TabProps } from '../tabs.types';
 
 export const Tab = <TKey extends string = string>({
@@ -27,10 +26,10 @@ export const Tab = <TKey extends string = string>({
   children,
   textProps,
   disabled = false,
-  ...rest
+  ...props
 }: TabProps<TKey>) => {
-  const handleClick = (event: React.MouseEvent<HTMLLIElement>) => {
-    event.preventDefault();
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     if (!disabled && onClick) {
       onClick(tabIndex);
     }
@@ -38,31 +37,48 @@ export const Tab = <TKey extends string = string>({
 
   return (
     <Box
-      as="li"
       data-testid={dataTestId}
       onClick={handleClick}
       key={tabKey}
-      {...rest}
-      className={classnames('tab', className, {
-        'tab--single': isSingleTab,
-        'tab--active': isActive,
-        'tab--disabled': disabled,
-        ...(activeClassName && isActive && { [activeClassName]: true }),
-      })}
+      role="tab"
+      tabIndex={isActive ? 0 : -1}
+      aria-selected={isActive}
+      aria-disabled={disabled}
+      {...props}
+      className={twMerge(
+        // Original class names for compatibility (e2e tests, etc.)
+        'tab',
+        isActive && 'tab--active',
+        disabled && 'tab--disabled',
+        isSingleTab && 'tab--single',
+        // Tailwind classes for actual styling
+        'border-b-2 border-muted text-alternative font-medium transition-colors duration-200 ease-out',
+        // Single tab variant (no border)
+        isSingleTab && 'text-default border-b-0',
+        // Active state
+        isActive &&
+          'text-default border-b-text-default transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1)',
+        // Disabled state
+        disabled && 'text-text-muted',
+        // Custom active class if provided and active
+        isActive && activeClassName,
+        className,
+      )}
     >
       <Text
-        as="button"
-        padding={2}
         textAlign={TextAlign.Center}
-        display={Display.Block}
-        width={BlockSize.Full}
-        variant={TextVariant.bodyMd}
-        color={TextColor.inherit}
+        className={twMerge(
+          'block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out',
+          'disabled:text-inherit hover:enabled:text-default p-2',
+          buttonClassName,
+          textProps?.className,
+        )}
+        variant={TextVariant.BodyMd}
+        color={TextColor.Inherit}
         {...textProps}
-        className={classnames(buttonClassName, textProps?.className || '')}
-        disabled={disabled}
+        asChild
       >
-        {name}
+        <button disabled={disabled}>{name}</button>
       </Text>
     </Box>
   );

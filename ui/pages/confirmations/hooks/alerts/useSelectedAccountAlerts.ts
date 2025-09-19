@@ -33,7 +33,7 @@ export const useSelectedAccountAlerts = (): Alert[] => {
         key: 'selectedAccountWarning',
         reason: t('selectedAccountMismatch'),
         field: RowAlertKey.SigningInWith,
-        severity: Severity.Warning,
+        severity: Severity.Info,
         message: t('alertSelectedAccountWarning'),
       },
     ];

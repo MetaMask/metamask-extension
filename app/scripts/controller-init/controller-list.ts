@@ -69,12 +69,14 @@ import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
+import { AppStateController } from '../controllers/app-state-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
   | AccountTrackerController
+  | AppStateController
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
@@ -141,6 +143,7 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
+  AppStateController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &

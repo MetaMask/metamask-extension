@@ -4677,6 +4677,13 @@ describe('MetaMaskController', () => {
           cacheTimestamp: 0,
         });
 
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+
       await publishOnboardingState({
         completedOnboarding: false,
         firstTimeFlowType: FirstTimeFlowType.create,
@@ -4687,6 +4694,9 @@ describe('MetaMaskController', () => {
         firstTimeFlowType: FirstTimeFlowType.create,
       });
 
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).toHaveBeenCalledTimes(1);
       expect(
         metamaskController.discoverAndCreateAccounts,
       ).toHaveBeenCalledTimes(1);
