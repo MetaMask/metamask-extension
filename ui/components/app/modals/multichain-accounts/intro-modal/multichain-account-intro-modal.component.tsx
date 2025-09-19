@@ -34,7 +34,6 @@ export const MultichainAccountIntroModal: React.FC<
 > = ({ onViewAccounts, onLearnMore, onClose, isLoading = false }) => {
   const t = useI18nContext();
 
-
   return (
     <Box
       className="multichain-account-intro-modal"
@@ -148,8 +147,7 @@ export const MultichainAccountIntroModal: React.FC<
         >
           {isLoading
             ? t('multichainAccountIntroSettingUp')
-            : t('multichainAccountIntroViewAccounts')
-          }
+            : t('multichainAccountIntroViewAccounts')}
         </Button>
 
         <Button
