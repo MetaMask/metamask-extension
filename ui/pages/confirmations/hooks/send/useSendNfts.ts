@@ -38,6 +38,7 @@ export const useSendNfts = () => {
       chainNetworkNAmeAndImageMap,
     );
   }, [
+    // using accountGroupWithInternalAccounts as dependency is somehow causing repeated renders
     accountGroupWithInternalAccounts?.length,
     chainNetworkNAmeAndImageMap,
     nftsOwnedByAccounts,
