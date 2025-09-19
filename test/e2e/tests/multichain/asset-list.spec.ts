@@ -72,7 +72,7 @@ describe('Multichain Asset List', function (this: Suite) {
   // TODO: We got this working, but we should figure out why we are getting a JSON error
   // Are we just not mocking this in the tests correctly?
   // Also why does it matter?
-  it.only('allows clicking into the asset details page of native token on another network', async function () {
+  it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }) => {
