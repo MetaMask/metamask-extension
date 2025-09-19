@@ -2,6 +2,11 @@ import React from 'react';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import {
+  GATOR_PERMISSIONS,
+  PERMISSIONS,
+} from '../../../helpers/constants/routes';
+import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
 import { GlobalMenu } from '.';
 
 const render = (metamaskStateChanges = {}) => {
@@ -24,10 +29,15 @@ const render = (metamaskStateChanges = {}) => {
 jest.mock('react-router-dom-v5-compat', () => ({
   Link: ({
     children,
+    to,
     ...props
   }: React.PropsWithChildren<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>
-  >) => <a {...props}>{children}</a>,
+    React.AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }
+  >) => (
+    <a {...props} href={to}>
+      {children}
+    </a>
+  ),
 }));
 
 const mockLockMetaMask = jest.fn();
@@ -37,7 +47,14 @@ jest.mock('../../../store/actions', () => ({
   setAccountDetailsAddress: () => mockSetAccountDetailsAddress,
 }));
 
+jest.mock('../../../../shared/modules/environment');
+
 describe('Global Menu', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+  });
+
   it('locks MetaMask when item is clicked', async () => {
     render();
     fireEvent.click(
@@ -92,6 +109,28 @@ describe('Global Menu', () => {
     );
     await waitFor(() => {
       expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
+    });
+  });
+
+  it('connected sites has correct href to /gator-permissions route when Gator Permissions feature is enabled', async () => {
+    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+    const { getByTestId } = render({ transactions: [] });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toHaveAttribute(
+        'href',
+        GATOR_PERMISSIONS,
+      );
+    });
+  });
+
+  it('connected sites has correct href to /permissions route when Gator Permissions feature is disabled', async () => {
+    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    const { getByTestId } = render({ transactions: [] });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toHaveAttribute(
+        'href',
+        PERMISSIONS,
+      );
     });
   });
 });

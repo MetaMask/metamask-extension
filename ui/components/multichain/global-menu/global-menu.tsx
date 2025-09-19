@@ -13,6 +13,7 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
+  GATOR_PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -68,6 +69,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -253,7 +255,9 @@ export const GlobalMenu = ({
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
-        to={PERMISSIONS}
+        to={
+          isGatorPermissionsFeatureEnabled() ? GATOR_PERMISSIONS : PERMISSIONS
+        }
         iconName={IconName.SecurityTick}
         onClick={() => {
           trackEvent({
