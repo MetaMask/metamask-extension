@@ -16,8 +16,8 @@ describe('AccountGroupBalanceChange', () => {
   const createBalanceDisplayData = () => ({
     privacyMode: false,
     color: TextColor.successDefault,
-    displayAmountChange: '+$200.00',
-    displayPercentChange: '(+10.00%)',
+    amountChange: 200,
+    percentChange: 0.1,
   });
 
   const arrange = () => {
