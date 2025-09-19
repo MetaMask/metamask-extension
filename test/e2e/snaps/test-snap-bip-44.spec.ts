@@ -1,8 +1,9 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockBip44Snap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -23,9 +24,6 @@ describe('Test Snap bip-44', function () {
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         testSpecificMock: mockBip44Snap,
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: [
-          'UnexpectedAlertOpenError: unexpected alert open: {Alert text : Entropy source with ID "invalid" not found.}',
-        ],
       },
       async ({ driver }: { driver: Driver }) => {
         // We explicitly choose to await balances to prevent flakiness due to long login times.
@@ -89,10 +87,15 @@ describe('Test Snap bip-44', function () {
 
         await testSnaps.fillMessage('messageBip44Input', 'foo bar');
         await testSnaps.clickButton('signBip44MessageButton');
-        await driver.waitForAlert(
-          'Entropy source with ID "invalid" not found.',
-        );
-        await driver.closeAlertPopup();
+
+        const snapInstall = new SnapInstall(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await snapInstall.clickApproveButton();
+
+        await driver.waitForBrowserAlert({
+          text: 'Entropy source with ID "invalid" not found.',
+          windowTitle: WINDOW_TITLES.TestSnaps,
+        });
       },
     );
   });
