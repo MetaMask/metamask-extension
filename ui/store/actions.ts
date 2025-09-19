@@ -413,6 +413,10 @@ export function restoreSocialBackupAndGetSeedPhrase(
         [password],
       );
 
+      // sync marketing consent with metametrics
+      const marketingConsent = await getMarketingConsent();
+      dispatch(setDataCollectionForMarketing(marketingConsent));
+
       dispatch(hideWarning());
       await forceUpdateMetamaskState(dispatch);
       return mnemonic;
