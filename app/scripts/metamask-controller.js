@@ -1032,13 +1032,13 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       PreferencesController: PreferencesControllerInit,
+      KeyringController: KeyringControllerInit,
       PermissionController: PermissionControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
-      KeyringController: KeyringControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
@@ -1112,6 +1112,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.preferencesController = controllersByName.PreferencesController;
+    this.keyringController = controllersByName.KeyringController;
     this.permissionController = controllersByName.PermissionController;
     this.subjectMetadataController =
       controllersByName.SubjectMetadataController;
@@ -1120,7 +1121,6 @@ export default class MetamaskController extends EventEmitter {
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
     this.gasFeeController = controllersByName.GasFeeController;
-    this.keyringController = controllersByName.KeyringController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
     this.selectedNetworkController =
