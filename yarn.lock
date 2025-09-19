@@ -9838,6 +9838,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rive-app/react-canvas@npm:^4.23.3":
+  version: 4.23.3
+  resolution: "@rive-app/react-canvas@npm:4.23.3"
+  dependencies:
+    "@rive-app/canvas": "npm:2.31.5"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
+  checksum: 10/e33cc8773a69b8f243b75e545704b760dabdb71c373c7fe6465ffa2a84c5172a873bf88079cec73694b01addfcede1606cf542eb69594b1fc86376c4ca443dcd
+  languageName: node
+  linkType: hard
+
 "@rive-app/webgl2@npm:2.31.5":
   version: 2.31.5
   resolution: "@rive-app/webgl2@npm:2.31.5"
@@ -14798,13 +14809,6 @@ __metadata:
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
   checksum: 10/7fd6f9c25053e9b5bb6bc9f9f76c1d89e6c04f7707a7ba0e44cc01f17ef5284adb82f230f542c2d5557d69407c9a40f0f3515e8319afd14e1e16b5543ac6cdba
-  languageName: node
-  linkType: hard
-
-"@types/raf@npm:^3":
-  version: 3.4.3
-  resolution: "@types/raf@npm:3.4.3"
-  checksum: 10/70b0d8ce4ed1fdd60abbee8ff2a572bd2947bd764691f98ef948748375f5012db7ee39a037dd063cfbbb52c0b7479bec68111bbb95ce5de023ec581794c9b85f
   languageName: node
   linkType: hard
 
@@ -32242,6 +32246,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.1"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
+    "@rive-app/react-canvas": "npm:^4.23.3"
     "@segment/loosely-validate-event": "npm:^2.0.0"
     "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
     "@sentry/cli": "npm:^2.19.4"
@@ -32296,7 +32301,6 @@ __metadata:
     "@types/node": "npm:^20"
     "@types/path-browserify": "npm:^1.0.2"
     "@types/pify": "npm:^5.0.1"
-    "@types/raf": "npm:^3"
     "@types/react": "npm:^17.0.11"
     "@types/react-beautiful-dnd": "npm:^13"
     "@types/react-dom": "npm:^17.0.11"
