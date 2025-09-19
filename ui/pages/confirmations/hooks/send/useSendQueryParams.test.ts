@@ -158,7 +158,6 @@ describe('useSendQueryParams', () => {
       updateAsset: jest.fn(),
       updateValue: mockUpdateValue,
       updateCurrentPage: jest.fn(),
-      asset: {},
     } as unknown as SendContext.SendContextType);
     const mockUseSearchParams = jest.mocked(useSearchParams);
     mockUseSearchParams.mockReturnValue([
