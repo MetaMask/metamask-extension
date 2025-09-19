@@ -45,7 +45,7 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
     global.platform.openTab({ url });
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.NFTDiscoveryClicked,
+      event: MetaMetricsEventName.EmptyNFTTabButtonClicked,
       properties: {
         location: 'NFT_Empty_State',
       },
