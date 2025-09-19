@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -41,24 +41,18 @@ export const GatorPermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef<HTMLSpanElement>(null);
-  const [totalSitesConnections, setTotalSitesConnections] = useState(0);
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
   const totalGatorPermissions = useSelector((state: AppState) =>
     getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
   );
-  const [totalPermissions, setTotalPermissions] = useState(0);
+  const totalSitesConnections = Object.keys(sitesConnectionsList).filter(
+    (site) => !isSnapId(site),
+  ).length;
+  const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
   const { loading: gatorPermissionsLoading } = useGatorPermissions();
-
-  useEffect(() => {
-    const totalSites = Object.keys(sitesConnectionsList).filter(
-      (site) => !isSnapId(site),
-    ).length;
-    setTotalSitesConnections(totalSites);
-    setTotalPermissions(totalGatorPermissions + totalSitesConnections);
-  }, [sitesConnectionsList, totalSitesConnections, totalGatorPermissions]);
 
   const handleAssetClick = async (assetType: string) => {
     switch (assetType) {

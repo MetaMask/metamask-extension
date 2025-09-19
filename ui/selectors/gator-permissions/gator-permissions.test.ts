@@ -375,5 +375,204 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toBe(0);
       });
     });
+
+    describe('undefined values handling', () => {
+      it('should throw error when undefined values are present in native-token-stream permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [undefined, { permissionResponse: {} }],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+          },
+        };
+
+        expect(() => {
+          getAggregatedGatorPermissionsCountAcrossAllChains(
+            stateWithUndefined,
+            'token-transfer',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: native-token-stream',
+        );
+      });
+
+      it('should throw error when undefined values are present in erc20-token-stream permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+          },
+        };
+
+        expect(() => {
+          getAggregatedGatorPermissionsCountAcrossAllChains(
+            stateWithUndefined,
+            'token-transfer',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: erc20-token-stream',
+        );
+      });
+
+      it('should throw error when undefined values are present in native-token-periodic permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [undefined, { permissionResponse: {} }],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+          },
+        };
+
+        expect(() => {
+          getAggregatedGatorPermissionsCountAcrossAllChains(
+            stateWithUndefined,
+            'token-transfer',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: native-token-periodic',
+        );
+      });
+
+      it('should throw error when undefined values are present in erc20-token-periodic permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+          },
+        };
+
+        expect(() => {
+          getAggregatedGatorPermissionsCountAcrossAllChains(
+            stateWithUndefined,
+            'token-transfer',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: erc20-token-periodic',
+        );
+      });
+
+      it('should not throw error when no undefined values are present', () => {
+        // This test verifies the happy path where no undefined values exist
+        const result = getAggregatedGatorPermissionsCountAcrossAllChains(
+          mockState,
+          'token-transfer',
+        );
+        expect(result).toBe(6);
+      });
+    });
   });
 });

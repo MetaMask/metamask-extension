@@ -49,7 +49,19 @@ function getGatorPermissionsCountAcrossAllChainsByPermissionType(
   gatorPermissionsMap: GatorPermissionsMap,
   permissionType: SupportedGatorPermissionType,
 ): number {
-  return Object.values(gatorPermissionsMap[permissionType]).flat().length;
+  // check if any undefined values are present
+  const allPermissionsAcrossAllChains = Object.values(
+    gatorPermissionsMap[permissionType],
+  ).flat();
+  for (const gatorPermission of allPermissionsAcrossAllChains) {
+    if (!gatorPermission) {
+      throw new Error(
+        `Undefined values present in the gatorPermissionsMap for permission type: ${permissionType}`,
+      );
+    }
+  }
+
+  return allPermissionsAcrossAllChains.length;
 }
 
 /**
