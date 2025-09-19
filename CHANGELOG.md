@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,8 +7,301 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.5.0]
+
+### Uncategorized
+
+- to test new auto-changelog
+- chore: Collect metrics for unavailable/degraded custom RPC (#36081)
+- test: fix flaky test `Metamask onboarding (with social login) Creates a new wallet with Google login and completes the onboarding process ` (#36066)
+- fix: multichain account syncing improvements (#36060)
+- chore: Update `signature-controller` and `user-operation-controller` (#36043)
+- refactor: Refactor app state and preferences controller to modular init pattern (#35610)
+- fix(snaps): Ensure only numbers are allowed in Inputs type `number` (#36074)
+- chore: upgrade assets controllers to v75.2.0 (#36058)
+- fix: amount component related fixes in new send implementation (#36030)
+- test: fix flaky test `Segment User Traits sends identify event when user opts in both metrics and data collection during onboarding` (#36056)
+- test: add support for impersonate account and deploy smart contract options (fromPrivateKey and fromAddress) (#35728)
+- refactor: Refactor swaps-related controllers to use modular init (#36026)
+- test: fix flaky test ` Revoke Dapp Permissions There are pending confirmation in the old network rejects the pending confirmations as permissions are revoked for the network` (#36029)
+- feat: Add reusable TabEmptyState UI component (#36041)
+- fix: identicon in activity log cp-13.4.0 (#36000)
+- chore: Update `multichain-network-controller` to v0.12 (#36042)
+- chore: indicate swap in HW confirmation page and alert banners (#35776)
+- test: Migrate request queue e2e tests to Page object modal (#36032)
+- fix: restore swap quote parameters when re-opening popup (#35958)
+- feat: add new metadata to Wallet UX controllers (#35769)
+- chore: bump multichain accounts deps (#36033)
+- fix(fitness function): add more explicit name for the job (#36028)
+- chore: remove unnecessary react-router mocks (#36009)
+- chore: Update `eth-snap-keyring` and `keyring-api` (#36031)
+- test: more helpful error message if INFURA_PROJECT_ID unset (#36006)
+- feat: Display account group names in Snaps components (#35577)
+- chore: update SVG assets for iotex token and iotex (#35720)
+- chore: add Hyperliquid referral confirmation UI (#35966)
+- chore: Add new metadata to `AppStateController` (#35918)
+- chore: Add new metadata to remaining extension platform controllers (#35919)
+- chore: Add new metadata to `PreferencesController` (#35917)
+- feat: add new controller metadata to `SwapsController` (#35943)
+- test: fix flaky test `MetaMask onboarding should not prevent network requests to basic functionality...` (#36023)
+- feat: Add support for gasless 7702 swaps on Base (#35300)
+- fix: add wrapper for choose account (#35865)
+- refactor: Refactor remote feature flag controller to use modular init pattern (#35980)
+- chore: migrate Tabs component to TypeScript (#36005)
+- feat: email consent update settings page cp-13.4.0 (#35938)
+- feat: subscription payment options integration (#35929)
+- fix: cp-13.4.0 ens name resolution race condition (#35847)
+- feat: add storybook stories for AggregatedPercentageOverview (#35706)
+- feat: Shield: Enable Security Alerts Config for EIP-5792 (#35970)
+- fix: minor UI details in import SRP and global menu (#36004)
+- chore: remove unused nft-collection-image (#35997)
+- test: fix power user E2E test for BIP-44 (#35960)
+- chore(CODEOWNERS): replace wallet-ux team references with core-extension-ux (#35996)
+- fix: add `cross_origin_opener_policy` to chrome manifest (#35922)
+- refactor: use Link to simplify routing (#35925)
+- fix: fix BIP-44 account picker (#35932)
+- fix: cp-13.4.0 updated network icon in network manager button (#35946)
+- feat: Add custom hooks to enable revoking gator permissions (#35844)
+- feat: add xdc network (#35805)
+- feat: shield plan (#35350)
+- refactor: Refactor onboarding controller to use modular init pattern (#35954)
+- refactor: Refactor account tracker controller to use modular init pattern (#35952)
+- fix: language selector z-index update (#35950)
+- feat: added ui for error states (#35874)
+- feat: encourage users to update to a new version of the extension if a deeplink can be verified, but is not found (#35714)
+- fix: handle image load error (#35915)
+- chore: rename maskicons to polycons cp-13.4.0 (#35955)
+- chore(branches): rename Version-vx.y.z branches into release/x.y.z (#35945)
+- test: a way to tolerate and log failure in E2E tests (#35927)
+- feat: replace account syncing with multichain account syncing (#35299)
+- chore: Updated Carousel design for Wallet Homepage (#35858)
+- test: Migrate phishing detection e2e tests to Page object modal (#35802)
+- test: fix flakly test `Request Queuing for Multiple Dapps and Txs on different networks should put txs from different dapps on different networks adds extra tx after in same queue.` (#35944)
+- refactor: Refactor selected network controller to use messenger and init pattern (#35934)
+- refactor: Refactor gas fee controller to use messenger and init pattern (#35890)
+- feat(stable-sync): add write permissions to the stable sync workflow (#35896)
+- fix: fix network selector edge cases (#35841)
+- feat: revoke token refactor (#35762)
+- fix: balances in account connect (#35866)
+- feat: Create Password UI - Password Min Length Check Update (#35885)
+- feat: removed metametric screen (#35583)
+- fix: show swap alert banner when there are no quotes cp-13.4.0 (#35914)
+- chore: Add new metadata to `AccountTrackerController` (#35920)
+- feat: `MultichainAccountService` discovery integration (#35633)
+- feat: add networks subtitle (#35862)
+- refactor: Refactor name resolution controllers to use messenger and init pattern (#35881)
+- fix: multichain account icon address source (#35859)
+- fix: unset Solana txAlert when quote refreshes (#35777)
+- chore: cleanup unneeded migration (#35908)
+- chore: Alphabetize `PreferencesController` state (#35900)
+- chore: Alphabetize `AppStateController` state (#35898)
+- fix: migrate identicons cp-13.4.0 (#35892)
+- refactor: import 5792 middleware from monorepo package (#35700)
+- chore: Remove unused `PreferencesController` metadata property (#35891)
+- fix: update petnames use group name (#35835)
+- fix: multichain account tree selector (#35886)
+- fix: show checkbox in edit accounts (#35868)
+- chore: Align QA labels (#35843)
+- refactor: Refactor currency rate and rates controllers to use messenger and init pattern (#35849)
+- chore: Bump `axios` from `^1.8.2` to `^1.12.0` (#35883)
+- release: Stable sync v13.3.0 into main (#35870)
+- Merge origin/main into stable-sync
+- ci(INFRA-2911):Fix File access issue (#35857)
+- chore: Bump main version to 13.5.0 (#35854)
+- fix: add UI updates for multichain accounts features (#35839)
+- feat: add verified trust signal to dapp connection (#35760)
+- feat: hide recipient picker when there is no active bridge quote (#35821)
+- feat: add perps deeplink handler (#35817)
+- feat: move bridge destination account picker to a modal (#35819)
+- feat: Unified activity list for BIP-44 (#35740)
+- fix: point AccountGroup.metadata.name instead of internal account name (#35733)
+- feat: New account icon tour (#35670)
+- fix: multichain QR modal block explorer link (#35822)
+- ci: fix page load benchmark to open browser non-incognito to allow extension code injection (#35834)
+- fix: Update buy, swap and receive buttons to align with Mobile (#35770)
+- refactor: Refactor Token{Balances,Detection,List,s} controllers to use messenger and init pattern (#35830)
+- fix: network filter for bip44 tokens (#35836)
+- test: fix flaky test Request-queue UI changes handles three confirmations on three confirmations concurrently (#35833)
+- feat: Mask icon as default account avatar (#35502)
+- chore: update multichain transactions controller (#35689)
+- fix: displays token name in destination asset picker (#35810)
+- feat: Implement send hero and fix edge case for recipient button (#35826)
+- refactor: Refactor MetaMetrics controller to use messenger and init pattern (#35792)
+- feat: add Contentful version segmentation (#35820)
+- chore: Update `ppom-validator` package (#35709)
+- fix: migration frax native currency (#35784)
+- fix: Popover toggle (#35746)
+- feat: Gator permissions controller integration (#35627)
+- feat: optimize images used for metamask shield settings (#35829)
+- feat: update bridge quote card and CTA button (#35778)
+- fix: error in solana assets when toggling fiat mode (#35827)
+- feat: Integrate metrics into `asset` and `recipient` page (#35797)
+- fix: fixes in amount input about min decimals supported by the asset (#35808)
+- refactor: Migrate AvatarAccount (#35493)
+- fix: Temporary hide disabled menu items that are not implemented (#35812)
+- fix: Add some UI adjustments to the multichain account details page (#35818)
+- fix: dapp connect title overflow (#35715)
+- ci(INFRA-2911): Hardcoded parameters values for create release pull request (#35716)
+- fix: only show connected and active badge (#35803)
+- refactor: update push translation copy (#35809)
+- fix: padding for the account picker (#35807)
+- feat: Add controller metadata to encryption controllers (#35705)
+- test: allow test build that can reach real servers (#35501)
+- ci: skip E2E tests when no need for them (#35268)
+- fix: apply critical security patches for `sha.js`, `jsonpath-plus` (#35374)
+- fix: display custom networks (#35798)
+- feat: Add multichain rename account feature (#35741)
+- feat: Implement redesigned send flow feature flag (#35801)
+- chore: Bump @metamask/design-system-react to 0.4.0 (#35748)
+- ci: update page load benchmark to use localhost test dapp (#35785)
+- fix: multichain UI for search, details and wallet (#35793)
+- fix: Prevent lengthy spinner on load when selected network is slow (#35516)
+- feat: disable temporarily flaky ledger tests (#35791)
+- release: Stable sync v13.2.3 into main (#35786)
+- refactor: consolidate common functionality shared between benchmark modules (#35768)
+- Merge origin/main into stable-sync
+- feat: reveal private key (BIP-44) (#35719)
+- chore: Update `@metamask/utils` to latest version (#35773)
+- refactor: add navigation to BIP-44 views (#35724)
+- refactor: Migrate currency formatter (#35717)
+- feat: bip-44 network selector (#35579)
+- test: fix flaky test `Trezor Hardware can perform actions on...` (#35729)
+- feat: use assets selector from core (#34828)
+- feat: Implement recipient validation and resolutions for Solana and EVM (#35744)
+- refactor: handle asset detail fetch and errors (#35745)
+- chore: bump account-tree-controller (#35767)
+- release: Stable sync v13.2.2 into main (#35764)
+- test: Migrate request queuing watchAsset-switchChain-watchAsset test to Typescript and POM (#34349)
+- ci: page load benchmark - remove trailing whitespaces from short commit hash (#35766)
+- fix: simplify transaction value calculation in useInsufficientBalanceAlerts hook (#35754)
+- feat: add `wallet_requestExecutionPermissions` method (#35193)
+- Merge origin/main into stable-sync
+- refactor: Refactor OAuth service to use messenger and init pattern (#35643)
+- fix: notify the client when native balance goes to zero (#35739)
+- test: re-enable bridge metrics e2e tests (#35757)
+- chore: remove old nonce code from inpage.js injection (#35629)
+- chore: Align activity list text (#35713)
+- feat: MultichainAccountConnect (#35513)
+- fix: fiat mode toggling on amount page (#35725)
+- ci: remove stale flag from page load benchmark config file (#35737)
+- fix: cannot show all networks when open edit network (#35519)
+- test: ledger swap e2e test (#35051)
+- chore: Bump ENS Snap (#35736)
+- ci: page load benchmark PAT issue (#35663)
+- ci: Update crowdin-action.yml to include chore: prefix required by extension commits (#35721)
+- feat(assets): add aggregated balance selectors for account group and wallets (#35012)
+- build: commit hash parameter from `Compare and comment` step in Page Load Benchmark workflow (#35554)
+- feat: MultichainReviewPermissions (#35512)
+- ci: remove needs-triage label when issue has both team and severity (#35723)
+- feat: Removed Getting Started Page, TOU and Added footer for tou in login (#35555)
+- fix: Fix sending NFT tokens in new send implementation (#35702)
+- chore: Prevent unauthorized package install scripts (#35712)
+- fix: txHistory migration script should update txMetaId (#35668)
+- feat: Add multichain smart account page routing (#35665)
+- feat: Implement `recipient` page for send flow (#35688)
+- feat: show connected network icon (#35657)
+- chore: Memo formatter hook (#35672)
+- fix: origin truncation issue by displaying hostname (#35443)
+- feat: bump solana snap (#35695)
+- feat: Add search functionality to the Multichain Account List page (#35616)
+- test: fix flaky test `Multiple ERC20 Watch Asset...` (#35664)
+- fix: using new asset selectors for re-designed send flow (#35694)
+- test: Restore support for Jest inline snapshots (#35692)
+- refactor(5471): migrate Settings System Pages with react-router-v5-compat (#34948)
+- test: fix flaky test `Settings Redirects to ENS domains when user inputs ENS into address bar` (#35660)
+- feat: Implement asset page for send flow (#35650)
+- fix: new send implementation for native SOL token (#35644)
+- release: Stable sync v13.2.1 into main (#35673)
+- Merge origin/main into stable-sync
+- chore: Update `base-controller` to v8.3.0 (#35669)
+- feat: add qr modal to address page (#35454)
+- feat: add withAccountTreeController method to configure Account Tree state (#35600)
+- ci(INFRA-2849): Don't run auto create release pr on hotfix cp-13.2.1 (#35662)
+- chore: AddressQRCodeModal component initial UI (#35289)
+- fix: add allow list to skip multiple approval alert (#35606)
+- feat: Add Acala/Karura logo, update bufferMultiplier (#33547)
+- fix: display Solana Bridge transactions with correct details (#35539)
+- chore: Connection error modal (#35631)
+- chore: update modal header prop types to accept partial props (#35632)
+- refactor: migrate eip-5792 & capabilities middleware handlers into monorepo (#35541)
+- feat: improvements in how balance is fetched for various tokens in new send flow (#35640)
+- test: fix flaky test `Snap Account Signatures can sign...` (#35641)
+- test: fix flaky test `Request-queue UI changes...` (#35636)
+- test: fix flaky test `Multichain API Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession`, choose to edit accounts and deselect all should not be able to approve the create session request without at least one account selected'` (#35635)
+- test: fix flaky test `Phishing Detection should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue` (#35622)
+- refactor: Fiat currency formatting (#35417)
+- fix: support fallback to sequential batch (#34019)
+- feat: new asset selector (#35638)
+- feat: Use gasUsed from simulation for user facing network fee estimation (#35625)
+- fix: max mode implementation on extension new send flow (#35611)
+- test: Migrate request queuing dapp1-switch-dapp2-eth-request-accounts to Typescript and POM (#34720)
+- test: Migrate request queuing batch-txs-per-dapp-extra-tx to Typescript and POM (#34724)
+- feat: add tooltip for url trust signal badges (#35459)
+- fix: address list selector (#35592)
+- fix: Refine network selector border color and overall spacing (#35582)
+- feat: Integrate ShieldController (#35421)
+- ci: update flaky tests bot workflow (#35620)
+- feat: add perp push translations (#35621)
+- INFRA-2849:Added auto-create-release-pr workflow to automatically create release cp-13.3.0 (#35589)
+- chore: bump bridge controllers (#35596)
+- chore(master): remove master references (#35615)
+- test: fix Upload Artifacts step if the spec has a long name (#35612)
+- test: Migration spec Request queuing revoke permission (#35429)
+- feat: trigger alignWallets when basicFunctionality ON (#35190)
+- chore: bump SonarCloud action version (#35608)
+- feat: add Trezor e2e tests for legacy and EIP1559 transactions (#35524)
+- feat: Remove network is busy alert (#34827)
+- chore: migrate swap to bridge api toptokens (#35378)
+- test: fix flaky test `Preinstalled example Snap displays the Snap settings page` (#35603)
+- chore(master): rename master branch into stable cp-13.3.0 (#35576)
+- refactor(5557): migrate onboarding/ to react-router-v5-compat (#35005)
+- feat: Add feature flag for gator permissions page (#35307)
+- chore: Bump ENS Snap (#35430)
+- feat: Add entry points for Add Wallet modal from account list page (#35536)
+- refactor(5561): migrate network manager component to React Router v6 compatibility (#35039)
+- fix: do not change the GNS on wallet_add/switchEthereumChain when the dapp has permissions (#35559)
+- refactor: Typescript conversion of request-accounts.js (#23910)
+- feat(INFRA-2847): release candidate generation from release branch (#35549)
+- chore: remove solana code fences (#35566)
+- test: Migrate ppom e2e tests to Page object modal (part 2) (#35580)
+- feat: shield settings UI (#35352)
+- test: split Solana WebSocket Mock setup logic from Websocket Mocks (#35552)
+- feat: Ledger forget device e2e tests (#35463)
+- feat: add e2e tests for trezor ERC721 NFT deployment and management. (#35383)
+- feat: Add SRP backup to Multichain Account Details (#35518)
+- feat: Add initial multichain add wallet page for private key import (#35543)
+- feat: shield entry modal (#35347)
+- refactor: use `@metamask/eth-qr-keyring` (#33893)
+- chore: add selector to get account groups by addresses (#35547)
+- feat: add new multichain account version for sitecell (#35302)
+- chore: cp-13.3.0 update solana to 2.3.4 (#35563)
+- fix: remove non-existent round prop from IconButton (#35537)
+- feat(assets): bump assets-controllers (#35540)
+- release: Master sync v13.2.0 into main (#35548)
+- fix(action): remove useless condition (#35525)
+- test: use manifestFlag to disable over-ride of smartTx migration (#34958)
+- test: Migrate ppom e2e tests to Page object modal (part 1) (#35486)
+- Merge origin/main into master-sync
+- feat: useAccountGroupForPermissions 2 (#35402)
+- chore: Update Ocap kernel packages and patch @endo/env-options (#35526)
+- feat: adding MultichainAccountAddressListPage routes and entry points (#35490)
+- feat: Adding designs for amount input (#35510)
+- feat: bump solana snap (#35511)
+- feat: adding utility method for routing to send page (#35505)
+- feat(pr template): make changelog entry mandatory (#35339)
+- fix: multichain account name in the account picker (#35478)
+- fix: plan 966 enhance ledger not supported error (#35291)
+- feat: capture amount metrics events (#35503)
+- fix: skip `multipleApprovalsAlerts` when simulations is not supported (#34858)
+- feat: Add max button to amount page (#35474)
+- feat: Implementing send metrics context and hooks (#35461)
+- chore: Bump main version to 13.4.0 (#35504)
+- feat: add MultichainAccountAddressListPage component (#35191)
+
 ## [13.3.0]
+
 ### Added
+
 - feat: improve new send flow, by merging amount and recipient pages, and by adding the possibility to navigate back to the page when needed (#35416)
 - feat: improve new send flow, by adding Solana compatibility (#35361)
 - feat: improve new send flow, by adding amount fiat conversion and validation functions (#35346)
@@ -25,6 +319,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add checkbox for emitting error report to Sentry when restarting MetaMask from error page (#35619)
 
 ### Changed
+
 - update: display the number of account group instead of addresses for a connected dapp (#35427)
 - update: improve multichain address list by filtering out test networks and refining layout (#35380)
 - update: batch RPC requests for native and ERC20 tokens into a single request to reduce the total number of RPC calls and improve performance (#35283)
@@ -33,6 +328,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: deprecate carousel slides (#35109)
 
 ### Fixed
+
 - fix: solve some security vulnerabilities caused by out of date dependencies (#34364)
 - fix: resolve visual bug when very long URLs get displayed on the MetaMask warning page (#35179)
 - fix: avoid race condition where the password is being changed while the wallet is locked (#35022)
@@ -50,19 +346,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: fixes an issue with first-time interaction alerts displaying on verified contract addresses (#35331)
 
 ## [13.2.3]
+
 ### Fixed
+
 - fix: fixes bridging on https://portfolio.metamask.io (#35755)
 
 ## [13.2.2]
+
 ### Fixed
+
 - fix: fixes issue related to `Routes` component that was leading the app to occasionally crash and force reinstall for some users (#35587)
 
 ## [13.2.1]
+
 ### Fixed
+
 - fix: update the Solana snap to latest version (#35642)
 
 ## [13.2.0]
+
 ### Added
+
 - feat: enable Linea for Smart Transactions (#35117)
 - feat: add discover button for Solana network in the network list (#34498)
 - feat: add account switching functionality for the multichain accounts (#34989)
@@ -79,6 +383,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: unblock gas station for Base network and more accurate `alternateGasFee` capability (#34733)
 
 ### Changed
+
 - update: remove the Solana modal from the initial flow (#34988)
 - update: disable transaction resubmission (#35028)
 - update: update `SEI` network's name from `Sei Network` to `Sei Mainnet` (#34930)
@@ -86,6 +391,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: removed the `socialLoginEmail` from the state-logs export (settings -> advanced -> download state-logs), instead of masking the value (#35170)
 
 ### Fixed
+
 - fix: ensure text doesn't go beyond component boundaries when user is prompted to add a network (#34824)
 - fix: skip metametrics screen if user already chose an option (#35036)
 - fix: disable the hover state when SnapUISelector is disabled (#34964)
@@ -107,17 +413,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: ensure the dapp-connected network remains unchanged when the global network RPC endpoint is switched (#35487)
 
 ## [13.1.2]
+
 ### Fixed
+
 - fix: fixes a performance issue by closing all Solana WebSocket connections whenever the client becomes inactive (#35359)
 - fix: fixes a performance issue by only opening Solana WebSocket connections if client is active (#35392)
 
 ## [13.1.1]
+
 ### Fixed
+
 - fix: remove the Solana new feature modal from the onboarding flow (#34988)
 - fix: hide swap fee info line if quote does not include a MetaMask fee (#35278)
 
 ## [13.1.0]
+
 ### Added
+
 - feat: inform users using social login when their password got updated in another instance of the wallet (#34757)
 - feat: use websockets instead of polling to automatically update Solana transactions and token balances (#34620)
 - feat: enable notifications by default for users (#34693)
@@ -126,6 +438,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: Add buttons to test error capture (#34386)
 
 ### Changed
+
 - update: more seamless and user-friendly experience for users interacting with Trezor devices (#33834)
 - update: adopt fixed spacing between the account avatar and its details rows (#34689)
 - update: polish welcome page copywriting and styles (#34621)
@@ -147,6 +460,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: update `form-data` to address advisory (#34480)
 
 ### Fixed
+
 - fix: hide bridge button on testnet for unified ui (#34700)
 - fix: display multichain accounts in the right order on account list (#34756)
 - fix: stop showing all enabled networks when an additional network permission request is prompted by a dapp (#34651)
@@ -185,13 +499,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: ensures that user's email is removed from the state logs, which are downloadable from advanced settings page (#35119)
 
 ## [13.0.1]
+
 ### Fixed
+
 - fix: invalid refresh token error thrown when wallet was locked before some background requests completed (#34961)
 - fix: bridging to Solana without a Solana account failing on legacy extensions (#34943)
 - fix: polling rate being set to 1 minute instead of 10 minutes (#34883)
 
 ## [13.0.0]
+
 ### Added
+
 - feat: prefill token in unified swaps experience (#34038)
 - feat: 2.13 seedlessonboardingcontroller 2.2.0 update (#34240)
 - feat(INFRA-2772): add failure notifications for nightly build failures (#34345)
@@ -224,6 +542,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add loader for onboarding unlock (#34518)
 
 ### Changed
+
 - update: change homepage button colors and header styling (#34209)
 - update: remove unified swaps legacy and portfolio fallbacks (#34290)
 - update: change ui's background communications to use a single notification listener instead of two (#33211)
@@ -236,6 +555,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: add Cubist to the list of supported institutional wallet (#34761)
 
 ### Fixed
+
 - fix: align asset page buttons and fix homepage scrolling (#34342)
 - fix: password form terms social and srp (#34350)
 - fix: show contacts for all chains (#34307)
@@ -340,11 +660,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: add logic to revert state for smart contract account toggle if there is a blockchain state mismatch (#34745)
 
 ## [12.23.1]
+
 ### Fixed
+
 - fix: ensure "Update extension to the latest version" button in the update prompt work in browser-action popup (#34372)
 
 ## [12.23.0]
+
 ### Added
+
 - feat: gasIncluded swaps cp-12-23.0 (#33988)
 - feat: unskipeed send flow Solana tests (#34036)
 - feat: add e2e tests for Ledger personal sign functionality (#34002)
@@ -393,6 +717,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: validate same origin domain for signIn for Solana (#33982)
 
 ### Changed
+
 - Update: the button component to be monochromatic (#33847)
 - Update: design tokens v8: font family change CentraNo1 to Geist and new background colors (#33764)
 - Update: update message when there is no DeFi positions wording (#34229)
@@ -400,6 +725,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set confirm srp quiz word to readonly (#34225)
 
 ### Fixed
+
 - fix: solve when private key import field to always be in error state (#34050)
 - fix: regression of lanchdarkly flag key (#34045)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
@@ -444,20 +770,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: migrate BSC network RPC from bsc-dataseed.binance.org to bsc infura (#33997)
 
 ## [12.22.3]
+
 ### Fixed
+
 - fix: resolve infinite loading on spending cap when selected chain differs from dapp (#34355)
 - fix: prevent frequent writes while the wallet UI is closed (#34413, #34465, #34506, #34473, #34474)
 
 ## [12.22.2]
+
 ### Fixed
+
 - Fix crash on older browsers (#34255)
 
 ## [12.22.1]
+
 ### Fixed
+
 - Display sent amounts from the active swap quote when showing approval warnings to prevent parsing non-numerical inputs (#34156)
 
 ## [12.22.0]
+
 ### Added
+
 - New onboarding flow (#33704 and others)
 - Added basic functionality banner in the carousel (#33095)
 - New Multichain Accounts List Menu (#33657)
@@ -494,6 +828,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use the new afterAdd hook to update the transaction when remote mode is available (#33115)
 
 ### Changed
+
 - Updated OP logo (#33399)
 - Updated connection background and fixed design nits (#33100)
 - Adapt the styles of the price chart loading and empty states (#33139)
@@ -502,6 +837,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the NetworkController to enable Base network by default (#33448)
 
 ### Fixed
+
 - Update link to MetaMask CLA (#30940)
 - Fixed a case where non-unique words in confirm seed phrase would break the SRP quiz (#33781)
 - Display "Switch back" instead of "Switch" for smart accounts (#33724)
@@ -536,11 +872,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve useSnapAssetDisplay performance (#33138)
 
 ## [12.20.1]
+
 ### Changed
+
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...HEAD
+[13.5.0]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...v13.5.0
 [13.3.0]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...v13.3.0
 [13.2.3]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...v13.2.3
 [13.2.2]: https://github.com/MetaMask/metamask-extension/compare/v13.2.1...v13.2.2
