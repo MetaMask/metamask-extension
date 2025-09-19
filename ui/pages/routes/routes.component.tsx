@@ -467,7 +467,7 @@ export default function Routes() {
 
   // Track whether we've shown the multichain intro modal
   const hasShownMultichainIntroModal = useAppSelector(
-    (state) => state.appState.hasShownMultichainIntroModal,
+    (state) => state.metamask.hasShownMultichainIntroModal,
   );
 
   const prevPropsRef = useRef({
@@ -476,9 +476,9 @@ export default function Routes() {
   });
 
   // Separate ref for multichain intro modal logic
-  // Initialize as false to detect first-time enable after extension reload
+  // Initialize with current state to avoid false positives on fresh installs
   const prevMultichainRef = useRef({
-    isMultichainAccountsState2Enabled: false,
+    isMultichainAccountsState2Enabled,
   });
 
   useEffect(() => {

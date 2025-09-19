@@ -954,6 +954,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippage": 10,
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
+              "hasShownMultichainIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {
