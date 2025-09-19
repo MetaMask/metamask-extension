@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
-import { useRive, Layout, Fit, Alignment } from 'rive-react';
+import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
