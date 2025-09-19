@@ -45,7 +45,6 @@ export default function OnboardingFlowSwitch() {
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
-  const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
   if (completedOnboarding) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -55,7 +54,7 @@ export default function OnboardingFlowSwitch() {
     return (
       <Navigate
         to={
-          isParticipateInMetaMetricsSet || !isFirefox
+          isParticipateInMetaMetricsSet
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS
         }
