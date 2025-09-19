@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
   },
-  "noActivity": {
-    "message": "Δεν υπάρχει δραστηριότητα ακόμα"
-  },
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
   },
