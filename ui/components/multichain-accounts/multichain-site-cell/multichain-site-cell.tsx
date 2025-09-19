@@ -109,7 +109,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
                 address={
                   supportedAccountGroups.find(
                     (account) => account.id === selectedAccountGroupIds[0],
-                  )?.accounts[0].address || ''
+                  )?.id || ''
                 }
                 size={AvatarAccountSize.Xs}
               />
