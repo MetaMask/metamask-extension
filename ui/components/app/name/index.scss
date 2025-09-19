@@ -11,7 +11,7 @@
     cursor: pointer;
 
     &:hover {
-      .name__name{
+      .name__name {
         color: var(--color-info-default);
       }
     }
@@ -24,7 +24,7 @@
 
   &__warning {
     &:hover {
-      .name__name{
+      .name__name {
         color: var(--color-warning-default) !important;
       }
     }
@@ -32,7 +32,7 @@
 
   &__malicious {
     &:hover {
-      .name__name{
+      .name__name {
         color: var(--color-error-default) !important;
       }
     }
