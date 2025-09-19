@@ -166,7 +166,7 @@ export const MultichainAccountList = ({
               >
                 <MultichainAccountCell
                   accountId={groupId as AccountGroupId}
-                  accountName={(groupData as any)?.metadata?.name ?? groupId}
+                  accountName={groupData?.metadata?.name ?? groupId}
                   balance={balanceText ?? ''}
                   selected={selectedAccountGroupsSet.has(
                     groupId as AccountGroupId,
