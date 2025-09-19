@@ -139,11 +139,16 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
           '0x100000000000000000000',
         );
+        // mine block to ensure balance is updated in both browsers
+        await localNodes?.[0]?.mineBlock();
+        const balance = await localNodes?.[0]?.getBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+        );
         await loginWithBalanceValidation(
           driver,
           undefined,
           undefined,
-          '1208925.8195',
+          balance?.toString(),
         );
 
         const contractAddress =
@@ -190,11 +195,16 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
           '0x100000000000000000000',
         );
+        // mine block to ensure balance is updated in both browsers
+        await localNodes?.[0]?.mineBlock();
+        const balance = await localNodes?.[0]?.getBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+        );
         await loginWithBalanceValidation(
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          balance?.toString(),
         );
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
