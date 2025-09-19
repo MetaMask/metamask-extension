@@ -5673,16 +5673,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-controller@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/delegation-controller@npm:0.6.0"
+"@metamask/delegation-controller@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/delegation-controller@npm:0.7.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/base-controller": "npm:^8.1.0"
     "@metamask/utils": "npm:^11.4.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^32.0.0
-    "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/f90dea2affa7d13c227580b3193ac9c30b24f139d249115eb133d87654aa6046eb00263d596f9ca4c6aa4fd5583c140de5c8a70474324d603f76e4faf84d3263
+    "@metamask/accounts-controller": ^33.0.0
+    "@metamask/keyring-controller": ^23.0.0
+  checksum: 10/e02d9d3ebb773d363a6d970e64ee7b9b6cef4b6c8e949dddbc2ab671d172af2887dea69e3283af0d8714de8ba1bcadd2dbac436115dd1b3b1bb3d537490c86b6
   languageName: node
   linkType: hard
 
@@ -31798,7 +31798,7 @@ __metadata:
     "@metamask/chain-agnostic-permission": "npm:^1.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.12.0"
-    "@metamask/delegation-controller": "npm:^0.6.0"
+    "@metamask/delegation-controller": "npm:^0.7.0"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.11.0"
     "@metamask/design-system-react": "npm:^0.4.0"
