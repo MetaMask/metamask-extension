@@ -6966,18 +6966,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^13.1.0":
+"@metamask/phishing-controller@file:./../core/packages/phishing-controller::locator=metamask-crx%40workspace%3A.":
   version: 13.1.0
-  resolution: "@metamask/phishing-controller@npm:13.1.0"
+  resolution: "@metamask/phishing-controller@file:./../core/packages/phishing-controller#./../core/packages/phishing-controller::hash=5bb158&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.11.0"
-    "@noble/hashes": "npm:^1.4.0"
+    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/controller-utils": "npm:^11.12.0"
+    "@noble/hashes": "npm:^1.8.0"
     "@types/punycode": "npm:^2.1.0"
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/c62f71291736dfd635cc69b2d422687d8d610591a5e1cd9a6b4806cdc19221a72fe7699c0cabe0a2a108b49c3cc4dcb88a5b283fba374fe13e54d5813fb77902
+  checksum: 10/722b9e56e91b5a20fd234d72d011906a48f8892c45366862b2ea499320e3f3f17df878eb2ac12c2fbc93040b5eafbbbdee3220a1d7408dfe11bcb01968c0184d
   languageName: node
   linkType: hard
 
@@ -7585,9 +7585,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.2.0":
-  version: 60.2.0
-  resolution: "@metamask/transaction-controller@npm:60.2.0"
+"@metamask/transaction-controller@file:./../core/packages/transaction-controller::locator=metamask-crx%40workspace%3A.":
+  version: 60.3.0
+  resolution: "@metamask/transaction-controller@file:./../core/packages/transaction-controller#./../core/packages/transaction-controller::hash=868d27&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -7596,13 +7596,13 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@ethersproject/wallet": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^11.8.0"
     async-mutex: "npm:^0.5.0"
     bn.js: "npm:^5.2.1"
     eth-method-registry: "npm:^4.0.0"
@@ -7616,8 +7616,9 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
+    "@metamask/phishing-controller": ^13.1.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/e60cfeb3893951bee5947e3aaeae4542f79a623a59f10b10270dea2ec051a28db8b24be7dc9d2f00284c97ddbf4664432f8b61cc8e5601d1a08c7e7dd2d5f519
+  checksum: 10/f96a317f626f47e74a0823f7b764c3ca7e9b19118c2d460822afb51e5695af86c1ca7d942f9fce1d648e2fc98ccf51e29bca66dc62dcce4f0caf2c0c5b74a99d
   languageName: node
   linkType: hard
 
@@ -7648,6 +7649,25 @@ __metadata:
   linkType: hard
 
 "@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.0":
+  version: 11.8.0
+  resolution: "@metamask/utils@npm:11.8.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    "@types/lodash": "npm:^4.17.20"
+    debug: "npm:^4.3.4"
+    lodash: "npm:^4.17.21"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10/d5a9d8c04223fc62b0d4a078b505e062f5d1d47e752df36802189bec19a9e68aee7a9b0df9b15e7e6fa15fd9d65f61c7e4909604209dddc21f0943cd9a2fd5d1
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^11.8.0":
   version: 11.8.0
   resolution: "@metamask/utils@npm:11.8.0"
   dependencies:
