@@ -29,6 +29,9 @@ import { showError, showSuccess } from './utils/showResult';
  * Builder type for the Snap keyring.
  */
 export type SnapKeyringBuilder = {
+  name: 'SnapKeyringBuilder';
+  state: null;
+
   (): SnapKeyring;
   type: typeof SnapKeyring.type;
 };
@@ -108,7 +111,7 @@ export async function showAccountNameSuggestionDialog(
   }
 }
 
-export class SnapKeyringImpl implements SnapKeyringCallbacks {
+class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
 
   readonly #trackEvent: SnapKeyringHelpers['trackEvent'];
@@ -583,15 +586,28 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing Snap accounts.
  *
- * @param instance - An instance of the Snap keyring.
+ * @param messenger - The messenger instace.
+ * @param helpers - Helpers required by the Snap keyring implementation.
  * @returns A Snap keyring builder.
  */
-export function snapKeyringBuilder(instance: SnapKeyring) {
-  const builder = (() => {
-    return instance;
+export function snapKeyringBuilder(
+  messenger: SnapKeyringBuilderMessenger,
+  helpers: SnapKeyringHelpers,
+) {
+  const SnapKeyringBuilder = (() => {
+    return new SnapKeyring({
+      messenger,
+      callbacks: new SnapKeyringImpl(messenger, helpers),
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      // Enables generic account creation for new chain integration. It's
+      // Flask-only since production should use defined account types.
+      isAnyAccountTypeAllowed: true,
+      ///: END:ONLY_INCLUDE_IF
+    });
   }) as SnapKeyringBuilder;
 
-  builder.type = SnapKeyring.type;
+  SnapKeyringBuilder.state = null;
+  SnapKeyringBuilder.type = SnapKeyring.type;
 
-  return builder;
+  return SnapKeyringBuilder;
 }

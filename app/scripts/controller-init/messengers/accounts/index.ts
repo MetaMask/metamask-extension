@@ -19,10 +19,10 @@ export type {
 export type { InstitutionalSnapControllerMessenger } from './institutional-snap-controller-messenger';
 
 export type {
-  SnapKeyringMessenger,
-  SnapKeyringInitMessenger,
-} from './snap-keyring-messenger';
+  SnapKeyringBuilderMessenger,
+  SnapKeyringBuilderInitMessenger,
+} from './snap-keyring-builder-messenger';
 export {
-  getSnapKeyringMessenger,
-  getSnapKeyringInitMessenger,
-} from './snap-keyring-messenger';
+  getSnapKeyringBuilderMessenger,
+  getSnapKeyringBuilderInitMessenger,
+} from './snap-keyring-builder-messenger';

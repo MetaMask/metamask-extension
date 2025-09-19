@@ -1,13 +1,13 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 import {
-  getSnapKeyringInitMessenger,
-  getSnapKeyringMessenger,
-} from './snap-keyring-messenger';
+  getSnapKeyringBuilderInitMessenger,
+  getSnapKeyringBuilderMessenger,
+} from './snap-keyring-builder-messenger';
 
 describe('getSnapKeyringMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const SnapKeyringMessenger = getSnapKeyringMessenger(messenger);
+    const SnapKeyringMessenger = getSnapKeyringBuilderMessenger(messenger);
 
     expect(SnapKeyringMessenger).toBeInstanceOf(RestrictedMessenger);
   });
@@ -16,7 +16,8 @@ describe('getSnapKeyringMessenger', () => {
 describe('getSnapKeyringInitMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const SnapKeyringInitMessenger = getSnapKeyringInitMessenger(messenger);
+    const SnapKeyringInitMessenger =
+      getSnapKeyringBuilderInitMessenger(messenger);
 
     expect(SnapKeyringInitMessenger).toBeInstanceOf(RestrictedMessenger);
   });

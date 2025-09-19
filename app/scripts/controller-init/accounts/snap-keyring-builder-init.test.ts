@@ -3,25 +3,25 @@ import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
-  getSnapKeyringMessenger,
-  getSnapKeyringInitMessenger,
-  SnapKeyringMessenger,
-  SnapKeyringInitMessenger,
+  getSnapKeyringBuilderMessenger,
+  getSnapKeyringBuilderInitMessenger,
+  SnapKeyringBuilderMessenger,
+  SnapKeyringBuilderInitMessenger,
 } from '../messengers/accounts';
 import { SnapKeyringImpl } from '../../lib/snap-keyring/snap-keyring';
-import { SnapKeyringInit } from './snap-keyring-init';
+import { SnapKeyringBuilderInit } from './snap-keyring-builder-init';
 
 jest.mock('@metamask/eth-snap-keyring');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SnapKeyringMessenger, SnapKeyringInitMessenger>
+  ControllerInitRequest<SnapKeyringBuilderMessenger, SnapKeyringBuilderInitMessenger>
 > {
   const baseControllerMessenger = new Messenger();
 
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getSnapKeyringMessenger(baseControllerMessenger),
-    initMessenger: getSnapKeyringInitMessenger(baseControllerMessenger),
+    controllerMessenger: getSnapKeyringBuilderMessenger(baseControllerMessenger),
+    initMessenger: getSnapKeyringBuilderInitMessenger(baseControllerMessenger),
   };
 }
 
@@ -34,12 +34,12 @@ describe('SnapKeyringInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(SnapKeyringInit(requestMock).controller).toBeInstanceOf(SnapKeyring);
+    expect(SnapKeyringBuilderInit(requestMock).controller).toBeInstanceOf(SnapKeyring);
   });
 
   it('initializes with correct messenger and state', () => {
     const requestMock = buildInitRequestMock();
-    SnapKeyringInit(requestMock);
+    SnapKeyringBuilderInit(requestMock);
 
     expect(SnapKeyringClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,

@@ -4,7 +4,7 @@ import { AccountsControllerUpdateAccountsAction } from '@metamask/accounts-contr
 import { SnapKeyringBuilderAllowActions } from '../../../lib/snap-keyring/types';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 
-export type SnapKeyringMessenger = ReturnType<typeof getSnapKeyringMessenger>;
+export type SnapKeyringBuilderMessenger = ReturnType<typeof getSnapKeyringBuilderMessenger>;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -13,7 +13,7 @@ export type SnapKeyringMessenger = ReturnType<typeof getSnapKeyringMessenger>;
  * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
-export function getSnapKeyringMessenger(
+export function getSnapKeyringBuilderMessenger(
   messenger: Messenger<SnapKeyringBuilderAllowActions, never>,
 ) {
   return messenger.getRestricted({
@@ -47,8 +47,8 @@ type AllowedInitializationActions =
   | KeyringControllerPersistAllKeyringsAction
   | MetaMetricsControllerTrackEventAction;
 
-export type SnapKeyringInitMessenger = ReturnType<
-  typeof getSnapKeyringInitMessenger
+export type SnapKeyringBuilderInitMessenger = ReturnType<
+  typeof getSnapKeyringBuilderInitMessenger
 >;
 
 /**
@@ -58,7 +58,7 @@ export type SnapKeyringInitMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getSnapKeyringInitMessenger(
+export function getSnapKeyringBuilderInitMessenger(
   messenger: Messenger<AllowedInitializationActions, never>,
 ) {
   return messenger.getRestricted({

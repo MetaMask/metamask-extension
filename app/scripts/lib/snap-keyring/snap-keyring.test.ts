@@ -6,7 +6,6 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -18,7 +17,6 @@ import {
   showAccountCreationDialog,
   showAccountNameSuggestionDialog,
   snapKeyringBuilder,
-  SnapKeyringImpl,
 } from './snap-keyring';
 import {
   SnapKeyringBuilderAllowActions,
@@ -181,17 +179,11 @@ const createSnapKeyringBuilder = ({
   jest.mocked(isSnapPreinstalled).mockReturnValue(snapPreinstalled);
   jest.mocked(getSnapName).mockReturnValue(snapName);
 
-  const messenger = createControllerMessenger();
-  const mockKeyring = new SnapKeyring({
-    messenger,
-    callbacks: new SnapKeyringImpl(messenger, {
-      persistKeyringHelper: mockPersistKeyringHelper,
-      removeAccountHelper: mockRemoveAccountHelper,
-      trackEvent: mockTrackEvent,
-    }),
+  return snapKeyringBuilder(createControllerMessenger(), {
+    persistKeyringHelper: mockPersistKeyringHelper,
+    removeAccountHelper: mockRemoveAccountHelper,
+    trackEvent: mockTrackEvent,
   });
-
-  return snapKeyringBuilder(mockKeyring);
 };
 
 /**

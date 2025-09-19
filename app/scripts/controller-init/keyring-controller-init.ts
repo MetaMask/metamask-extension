@@ -21,9 +21,6 @@ import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { snapKeyringBuilder } from '../lib/snap-keyring';
-///: END:ONLY_INCLUDE_IF
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -106,10 +103,10 @@ export const KeyringControllerInit: ControllerInitFunction<
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  const snapKeyring = getController('SnapKeyring');
+  const snapKeyringBuilder = getController('SnapKeyringBuilder');
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
-  additionalKeyrings.push(snapKeyringBuilder(snapKeyring));
+  additionalKeyrings.push(snapKeyringBuilder);
   ///: END:ONLY_INCLUDE_IF
 
   // @ts-expect-error: The types for the encryptor are not correct.
