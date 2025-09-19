@@ -4700,7 +4700,6 @@ export default class MetamaskController extends EventEmitter {
         await this.importMnemonicToVault(mnemonicToRestore, {
           shouldCreateSocialBackup: false,
           shouldSelectAccount: false,
-          shouldImportSolanaAccount: true,
         });
       }
     }
