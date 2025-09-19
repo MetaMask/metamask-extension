@@ -2,7 +2,7 @@ import { createProjectLogger } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
 import ComposableObservableStore from './ComposableObservableStore';
-import { sanitizeUIState } from './state-utils';
+import { sanitizePatches, sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');
 
@@ -11,7 +11,7 @@ export class PatchStore {
 
   private observableStore: ComposableObservableStore;
 
-  private pendingPatches: Map<string, Patch> = new Map();
+  private pendingPatches: Patch[] = [];
 
   private listener: (request: {
     controllerKey: string;
@@ -30,9 +30,9 @@ export class PatchStore {
   }
 
   flushPendingPatches(): Patch[] {
-    const patches = [...this.pendingPatches.values()];
+    const patches = this.pendingPatches;
 
-    this.pendingPatches.clear();
+    this.pendingPatches = [];
 
     for (const patch of patches) {
       log('Flushed', patch.path.join('.'), this.id, patch);
@@ -47,15 +47,28 @@ export class PatchStore {
   }
 
   private _onStateChange({
-    oldState,
     newState,
+    oldState,
+    patches: eventPatches,
   }: {
     controllerKey: string;
     oldState: Record<string, unknown>;
     newState: Record<string, unknown>;
+    patches?: Patch[];
   }) {
-    const sanitizedNewState = sanitizeUIState(newState);
-    const patches = this._generatePatches(oldState, sanitizedNewState);
+    const sanitizedNewState = eventPatches
+      ? newState
+      : sanitizeUIState(newState);
+
+    const normalizedPatches = this._normalizeEventPatches(eventPatches);
+
+    const sanitizedPatches = normalizedPatches
+      ? sanitizePatches(normalizedPatches)
+      : undefined;
+
+    const patches =
+      sanitizedPatches ?? this._generatePatches(oldState, sanitizedNewState);
+
     const isInitialized = Boolean(newState.vault);
 
     if (isInitialized) {
@@ -73,9 +86,9 @@ export class PatchStore {
     for (const patch of patches) {
       const path = patch.path.join('.');
 
-      this.pendingPatches.set(path, patch);
+      this.pendingPatches.push(patch);
 
-      log('Updated', path, this.id, patch);
+      log('Added', path, this.id, patch);
     }
   }
 
@@ -99,5 +112,19 @@ export class PatchStore {
         };
       })
       .filter(Boolean) as Patch[];
+  }
+
+  private _normalizeEventPatches(eventPatches?: Patch[]): Patch[] | undefined {
+    return eventPatches?.flatMap((patch) => {
+      if (patch.path.length > 0) {
+        return [patch];
+      }
+
+      return Object.keys(patch.value).map((key) => ({
+        op: patch.op,
+        path: [key],
+        value: patch.value[key],
+      }));
+    });
   }
 }
