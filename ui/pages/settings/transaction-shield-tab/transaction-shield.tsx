@@ -39,7 +39,7 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useCancelSubscription,
-  useGetSubscriptionBillingPortalUrl,
+  useOpenGetSubscriptionBillingPortal,
   useUnCancelSubscription,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -47,7 +47,6 @@ import {
 import { getShortDateFormatterV2 } from '../../asset/util';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
-import { getTabsAPI } from '../../../../shared/lib/oauth';
 import Tooltip from '../../../components/ui/tooltip';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../helpers/formatters';
@@ -103,29 +102,15 @@ const TransactionShield = () => {
     });
 
   const [
-    executeGetSubscriptionBillingPortalUrl,
-    getSubscriptionBillingPortalUrlResult,
-  ] = useGetSubscriptionBillingPortalUrl();
-
-  useEffect(() => {
-    if (
-      !getSubscriptionBillingPortalUrlResult.pending &&
-      getSubscriptionBillingPortalUrlResult.value
-    ) {
-      // handle open new billing portal tab after result is ready
-      const { url } = getSubscriptionBillingPortalUrlResult.value;
-      const tabsAPI = getTabsAPI();
-      tabsAPI.create({ url });
-    }
-  }, [
-    getSubscriptionBillingPortalUrlResult.pending,
-    getSubscriptionBillingPortalUrlResult.value,
-  ]);
+    executeOpenGetSubscriptionBillingPortal,
+    openGetSubscriptionBillingPortalResult,
+  ] = useOpenGetSubscriptionBillingPortal();
 
   const loading =
     subscriptionsLoading ||
     cancelSubscriptionResult.pending ||
-    unCancelSubscriptionResult.pending;
+    unCancelSubscriptionResult.pending ||
+    openGetSubscriptionBillingPortalResult.pending;
 
   useEffect(() => {
     if (!loading && !shieldSubscription) {
@@ -546,9 +531,7 @@ const TransactionShield = () => {
         </Box>
         {buttonRow(
           t('shieldTxMembershipBillingDetailsViewBillingHistory'),
-          async () => {
-            await executeGetSubscriptionBillingPortalUrl();
-          },
+          executeOpenGetSubscriptionBillingPortal,
         )}
       </Box>
       {shieldSubscription && isCancelMembershipModalOpen && (

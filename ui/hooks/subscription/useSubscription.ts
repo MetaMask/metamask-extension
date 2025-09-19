@@ -70,9 +70,10 @@ export const useUnCancelSubscription = ({
   }, [dispatch, subscriptionId]);
 };
 
-export const useGetSubscriptionBillingPortalUrl = () => {
+export const useOpenGetSubscriptionBillingPortal = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   return useAsyncCallback(async () => {
-    return await dispatch(getSubscriptionBillingPortalUrl());
+    const { url } = await dispatch(getSubscriptionBillingPortalUrl());
+    return await platform.openTab({ url });
   }, [dispatch]);
 };
