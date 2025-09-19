@@ -26,7 +26,10 @@ import { exactExecution } from '../../../../../shared/lib/delegation/caveatBuild
 import { limitedCalls } from '../../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
 import { specificActionERC20TransferBatch } from '../../../../../shared/lib/delegation/caveatBuilder/specificActionERC20TransferBatchBuilder';
 import type { Delegation } from '../../../../../shared/lib/delegation/delegation';
-import { ANY_BENEFICIARY, encodeRedeemDelegations } from '../../../../../shared/lib/delegation/delegation';
+import {
+  ANY_BENEFICIARY,
+  encodeRedeemDelegations,
+} from '../../../../../shared/lib/delegation/delegation';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
