@@ -204,7 +204,6 @@ describe('Settings - general tab', function (this: Suite) {
     );
   });
 
-
   it('validate "العربية" language change on page indent', async function () {
     await withFixtures(
       {
