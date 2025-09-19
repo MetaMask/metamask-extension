@@ -152,7 +152,7 @@ describe('Trezor Hardware', function (this: Suite) {
         );
 
         const contractAddress =
-          contractRegistry?.getContractAddress(smartContract);
+          await contractRegistry?.getContractAddress(smartContract);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
           contractAddress,
