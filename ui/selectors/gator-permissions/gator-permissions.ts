@@ -49,7 +49,7 @@ function getGatorPermissionsCountAcrossAllChainsByPermissionType(
   gatorPermissionsMap: GatorPermissionsMap,
   permissionType: SupportedGatorPermissionType,
 ): number {
-  return Object.values(gatorPermissionsMap[permissionType]).flat().length || 0;
+  return Object.values(gatorPermissionsMap[permissionType]).flat().length;
 }
 
 /**

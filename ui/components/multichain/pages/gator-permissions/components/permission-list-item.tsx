@@ -21,7 +21,7 @@ import {
 
 type PermissionListItemProps = {
   /**
-   * The permission data to display
+   * The total number of permissions
    */
   total: number;
 
