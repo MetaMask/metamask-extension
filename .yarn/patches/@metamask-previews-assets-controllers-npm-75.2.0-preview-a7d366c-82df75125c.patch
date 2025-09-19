@@ -1,0 +1,13 @@
+diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
+index b3db76c39d78362273ff081d8c8efe30040ffc28..432a1af0037d01276f75b37a2349c0405aa46ae3 100644
+--- a/dist/assetsUtil.cjs
++++ b/dist/assetsUtil.cjs
+@@ -240,7 +240,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
+     const index = url.indexOf('/');
+     const cid = index !== -1 ? url.substring(0, index) : url;
+     const path = index !== -1 ? url.substring(index) : undefined;
+-    const { CID } = await import("multiformats");
++    const { CID } = _interopRequireWildcard(require("multiformats"));
+     // We want to ensure that the CID is v1 (https://docs.ipfs.io/concepts/content-addressing/#identifier-formats)
+     // because most cid v0s appear to be incompatible with IPFS subdomains
+     return {
