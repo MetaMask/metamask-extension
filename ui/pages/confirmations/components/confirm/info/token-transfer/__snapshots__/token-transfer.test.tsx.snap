@@ -59,7 +59,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
             >
               <div
                 class="name name__clickable name__missing"
@@ -107,7 +107,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
             >
               <div
                 class="name name__clickable name__missing"
@@ -344,7 +344,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"

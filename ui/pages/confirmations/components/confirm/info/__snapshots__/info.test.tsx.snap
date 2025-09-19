@@ -84,7 +84,7 @@ exports[`Info renders info section for approve request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"
@@ -146,7 +146,7 @@ exports[`Info renders info section for approve request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -540,7 +540,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -890,7 +890,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"
@@ -952,7 +952,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -1249,7 +1249,7 @@ exports[`Info renders info section for typed sign request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -1459,7 +1459,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -1499,7 +1499,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -1539,7 +1539,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -1675,7 +1675,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
@@ -1715,7 +1715,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
@@ -1755,7 +1755,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
