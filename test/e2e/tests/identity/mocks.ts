@@ -1,4 +1,8 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import {
@@ -52,21 +56,21 @@ export async function mockIdentityServices(
   }
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      'multichain_accounts_wallets',
+      USER_STORAGE_WALLETS_FEATURE_KEY,
     )
   ) {
     userStorageMockttpControllerInstance.setupPath(
-      'multichain_accounts_wallets',
+      USER_STORAGE_WALLETS_FEATURE_KEY,
       server,
     );
   }
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      'multichain_accounts_groups',
+      USER_STORAGE_GROUPS_FEATURE_KEY,
     )
   ) {
     userStorageMockttpControllerInstance.setupPath(
-      'multichain_accounts_groups',
+      USER_STORAGE_GROUPS_FEATURE_KEY,
       server,
     );
   }

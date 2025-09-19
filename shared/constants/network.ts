@@ -195,6 +195,7 @@ export const CHAIN_IDS = {
   EDUCHAIN: '0xa3c3',
   ABSTRACT: '0xab5',
   OMNI: '0xa6',
+  XDC: '0x32',
   XRPLEVM: '0x15f900',
   FRAX: '0xfc',
   ACALA: '0x313',
@@ -293,26 +294,26 @@ export const DEPRECATED_NETWORKS = [
  */
 export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 
-export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
+export const MAINNET_DISPLAY_NAME = 'Ethereum';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
 export const LINEA_GOERLI_DISPLAY_NAME = 'Linea Goerli';
 export const LINEA_SEPOLIA_DISPLAY_NAME = 'Linea Sepolia';
-export const LINEA_MAINNET_DISPLAY_NAME = 'Linea Mainnet';
+export const LINEA_MAINNET_DISPLAY_NAME = 'Linea';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
-export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
+export const BSC_DISPLAY_NAME = 'BNB Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
-export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
-export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
+export const AVALANCHE_DISPLAY_NAME = 'Avalanche';
+export const ARBITRUM_DISPLAY_NAME = 'Arbitrum';
 export const BNB_DISPLAY_NAME = 'BNB Chain';
-export const OPTIMISM_DISPLAY_NAME = 'OP Mainnet';
+export const OPTIMISM_DISPLAY_NAME = 'OP';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
-export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
-export const BASE_DISPLAY_NAME = 'Base Mainnet';
+export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era';
+export const BASE_DISPLAY_NAME = 'Base';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CRONOS_DISPLAY_NAME = 'Cronos';
 export const POLYGON_ZKEVM_DISPLAY_NAME = 'Polygon zkEVM';
@@ -339,7 +340,7 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
-export const SEI_DISPLAY_NAME = 'Sei Mainnet';
+export const SEI_DISPLAY_NAME = 'Sei';
 export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
@@ -349,6 +350,7 @@ export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
 export const ABSTRACT_DISPLAY_NAME = 'Abstract';
 export const OMNI_DISPLAY_NAME = 'Omni';
+export const XDC_DISPLAY_NAME = 'XDC Network';
 export const XRPLEVM_DISPLAY_NAME = 'XRPL EVM';
 export const FRAX_DISPLAY_NAME = 'Fraxtal';
 export const ACALA_DISPLAY_NAME = 'Acala';
@@ -428,6 +430,7 @@ export const CURRENCY_SYMBOLS = {
   APECHAIN: 'APE',
   ABSTRACT: 'ETH',
   OMNI: 'OMNI',
+  XDC: 'XDC',
   XRPLEVM: 'XRP',
   FRAX: 'FRAX',
   ACALA: 'ACA',
@@ -629,6 +632,8 @@ export const APECHAIN_NATIVE_TOKEN_IMAGE_URL = './images/apechain-native.svg';
 export const ABSTRACT_IMAGE_URL = './images/abstract.svg';
 export const OMNI_IMAGE_URL = './images/omni.png';
 export const OMNI_NATIVE_TOKEN_IMAGE_URL = './images/omni-native.png';
+export const XDC_IMAGE_URL = './images/xdc.svg';
+export const XDC_NATIVE_TOKEN_IMAGE_URL = './images/xdc.svg';
 export const XRPLEVM_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_NATIVE_TOKEN_IMAGE_URL = './images/xrplevm-native.svg';
 export const FRAX_IMAGE_URL = './images/frax.svg';
@@ -786,6 +791,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SEI]: SEI_DISPLAY_NAME,
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
   [CHAIN_IDS.OMNI]: OMNI_DISPLAY_NAME,
+  [CHAIN_IDS.XDC]: XDC_DISPLAY_NAME,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_DISPLAY_NAME,
   [CHAIN_IDS.FRAX]: FRAX_DISPLAY_NAME,
   [CHAIN_IDS.ACALA]: ACALA_DISPLAY_NAME,
@@ -936,6 +942,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.SEI]: CURRENCY_SYMBOLS.SEI,
   [CHAIN_IDS.ABSTRACT]: CURRENCY_SYMBOLS.ABSTRACT,
   [CHAIN_IDS.OMNI]: CURRENCY_SYMBOLS.OMNI,
+  [CHAIN_IDS.XDC]: CURRENCY_SYMBOLS.XDC,
   [CHAIN_IDS.XRPLEVM]: CURRENCY_SYMBOLS.XRPLEVM,
   [CHAIN_IDS.FRAX]: CURRENCY_SYMBOLS.FRAX,
   [CHAIN_IDS.ACALA]: CURRENCY_SYMBOLS.ACALA,
@@ -1095,6 +1102,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
+  [CHAIN_IDS.XDC]: XDC_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_IMAGE_URL,
   [CHAIN_IDS.FRAX]: FRAX_IMAGE_URL,
   [CHAIN_IDS.ACALA]: ACALA_IMAGE_URL,
@@ -1167,6 +1175,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.APECHAIN_TESTNET]: APECHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ABSTRACT]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OMNI]: OMNI_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.XDC]: XDC_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.XRPLEVM]: XRPLEVM_NATIVE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]:
@@ -1404,7 +1413,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
   },
   {
     chainId: CHAIN_IDS.POLYGON,
-    name: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
+    name: POLYGON_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.POL,
     rpcEndpoints: [
       {
@@ -1470,6 +1479,7 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 
 export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
   SolScope.Mainnet,
+  SolScope.Devnet,
   BtcScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),

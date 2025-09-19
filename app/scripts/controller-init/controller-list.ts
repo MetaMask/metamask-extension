@@ -6,6 +6,7 @@ import {
   CaveatSpecificationConstraint,
   PermissionController,
   PermissionSpecificationConstraint,
+  SubjectMetadataController,
 } from '@metamask/permission-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -54,9 +55,13 @@ import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-cont
 import { EncryptionKey } from '@metamask/browser-passworder';
 import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { ShieldController } from '@metamask/shield-controller';
+import { SubscriptionController } from '@metamask/subscription-controller';
 import { EnsController } from '@metamask/ens-controller';
 import { NameController } from '@metamask/name-controller';
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
+import { BridgeController } from '@metamask/bridge-controller';
+import { BridgeStatusController } from '@metamask/bridge-status-controller';
+import { ApprovalController } from '@metamask/approval-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -66,13 +71,18 @@ import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
+import { AppStateController } from '../controllers/app-state-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
   | AccountTrackerController
+  | ApprovalController
+  | AppStateController
   | AuthenticationController
+  | BridgeController
+  | BridgeStatusController
   | CronjobController
   | CurrencyRateController
   | DelegationController
@@ -104,6 +114,7 @@ export type Controller =
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
   | RatesController
+  | RemoteFeatureFlagController
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
   | ShieldController
@@ -111,7 +122,10 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | SubscriptionController
   | SnapsNameProvider
+  | SubjectMetadataController
+  | SwapsController
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -133,7 +147,11 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
+  ApprovalController['state'] &
+  AppStateController['state'] &
   AuthenticationController['state'] &
+  BridgeController['state'] &
+  BridgeStatusController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -160,6 +178,7 @@ export type ControllerFlatState = AccountsController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
+  RemoteFeatureFlagController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
@@ -167,14 +186,14 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
+  SubscriptionController['state'] &
+  SwapsController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   TransactionController['state'] &
-  SwapsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'] &
-  RemoteFeatureFlagController['state'];
+  NftDetectionController['state'];

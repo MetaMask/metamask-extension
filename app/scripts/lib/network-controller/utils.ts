@@ -89,33 +89,25 @@ export function getIsQuicknodeEndpointUrl(endpointUrl: string): boolean {
  * - The RPC endpoint is slow
  * - The user does not have local connectivity issues
  * - The user is in the MetaMetrics sample
- * - Capturing the endpoint URL in Segment would not violate the user's privacy
  *
  * @param args - The arguments.
- * @param args.endpointUrl - The URL of the endpoint.
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
- * @param args.infuraProjectId - Our Infura project ID.
  * @param args.metaMetricsId - The MetaMetrics ID of the user.
  * @returns True if Segment events should be created, false otherwise.
  */
 export function shouldCreateRpcServiceEvents({
-  endpointUrl,
   error,
-  infuraProjectId,
   metaMetricsId,
 }: {
-  endpointUrl: string;
   error?: unknown;
-  infuraProjectId: string;
   metaMetricsId: string | null | undefined;
 }) {
   return (
     (!error || !isConnectionError(error)) &&
     metaMetricsId !== undefined &&
     metaMetricsId !== null &&
-    isSamplingMetaMetricsUser(metaMetricsId) &&
-    isPublicEndpointUrl(endpointUrl, infuraProjectId)
+    isSamplingMetaMetricsUser(metaMetricsId)
   );
 }
 
@@ -151,7 +143,10 @@ function isSamplingMetaMetricsUser(metaMetricsId: string) {
  * @returns True if the endpoint URL is safe to share with external data
  * collection services, false otherwise.
  */
-function isPublicEndpointUrl(endpointUrl: string, infuraProjectId: string) {
+export function isPublicEndpointUrl(
+  endpointUrl: string,
+  infuraProjectId: string,
+) {
   const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
     endpointUrl,
     infuraProjectId,

@@ -18,6 +18,7 @@ import {
   BtcMethod,
   BtcScope,
   EthAccountType,
+  SolAccountType,
   SolScope,
 } from '@metamask/keyring-api';
 import { Messenger } from '@metamask/base-controller';
@@ -40,6 +41,7 @@ import {
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
+import log from 'loglevel';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -53,7 +55,6 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
-import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import * as NetworkConstantsModule from '../../shared/constants/network';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
@@ -3442,29 +3443,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('_getConfigForRemoteFeatureFlagRequest', () => {
-      it('returns config in mapping', async () => {
-        const result =
-          await metamaskController._getConfigForRemoteFeatureFlagRequest();
-        expect(result).toStrictEqual({
-          distribution: 'main',
-          environment: 'dev',
-        });
-      });
-
-      it('returna config when not matching default mapping', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'non-existent-distribution';
-        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-
-        const result =
-          await metamaskController._getConfigForRemoteFeatureFlagRequest();
-        expect(result).toStrictEqual({
-          distribution: 'main',
-          environment: 'rc',
-        });
-      });
-    });
-
     describe('generateNewMnemonicAndAddToVault', () => {
       it('generates a new hd keyring instance', async () => {
         const password = 'what-what-what';
@@ -3894,6 +3872,83 @@ describe('MetaMaskController', () => {
               .failoverUrls,
           ).toHaveLength(0);
         });
+      });
+
+      it('updates network names for new users (Linea and Base)', () => {
+        const initState = cloneDeep(firstTimeState);
+        delete initState.NetworkController;
+
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+        });
+
+        const networkState = metamaskController.networkController.state;
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.LINEA_MAINNET]
+            .name,
+        ).toBe('Linea');
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE].name,
+        ).toBe('Base');
+      });
+
+      it('does not update network names for existing users', () => {
+        const initState = cloneDeep(firstTimeState);
+        initState.NetworkController = mockNetworkState(
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            nickname: 'Ethereum Mainnet',
+          },
+          {
+            chainId: CHAIN_IDS.LINEA_MAINNET,
+            nickname: 'Linea Mainnet',
+          },
+          {
+            chainId: CHAIN_IDS.BASE,
+            nickname: 'Base Mainnet',
+          },
+        );
+
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+        });
+
+        const networkState = metamaskController.networkController.state;
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.LINEA_MAINNET]
+            .name,
+        ).toBe('Linea Mainnet');
+
+        expect(
+          networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE].name,
+        ).toBe('Base Mainnet');
       });
     });
 
@@ -4552,9 +4607,12 @@ describe('MetaMaskController', () => {
         metamaskController.keyringController.state.keyrings[0].metadata.id;
 
       const wallet = {
-        discoverAndCreateAccounts: jest
+        discoverAccounts: jest
           .fn()
-          .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
+          .mockResolvedValue([
+            { type: SolAccountType.DataAccount },
+            { type: EthAccountType.Eoa },
+          ]),
       };
 
       jest
@@ -4568,17 +4626,20 @@ describe('MetaMaskController', () => {
         { entropySource: primaryId },
       );
 
-      expect(wallet.discoverAndCreateAccounts).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
+      expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
     });
 
     it('passes provided keyring id to wallet getter', async () => {
       const providedId = 'test-keyring-id';
 
       const wallet = {
-        discoverAndCreateAccounts: jest
+        discoverAccounts: jest
           .fn()
-          .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
+          .mockResolvedValue([
+            { type: SolAccountType.DataAccount },
+            { type: EthAccountType.Eoa },
+          ]),
       };
 
       jest
@@ -4593,24 +4654,49 @@ describe('MetaMaskController', () => {
         { entropySource: providedId },
       );
 
-      expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
     });
 
-    it('returns zero counts on error', async () => {
+    it('returns zero counts and warns when no HD keyring can be derived (no keyring id provided or HD keyring found)', async () => {
+      const originalState = metamaskController.keyringController.state;
+      jest
+        .spyOn(metamaskController.keyringController, 'state', 'get')
+        .mockReturnValue({ ...originalState, keyrings: [] });
+
+      const warnSpy = jest.spyOn(log, 'warn');
+
+      const result = await metamaskController.discoverAndCreateAccounts();
+
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Failed to add accounts with balance. Error: No keyring id to discover accounts for',
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it('returns zero counts on discovery error', async () => {
       const wallet = {
-        discoverAndCreateAccounts: jest
-          .fn()
-          .mockRejectedValue(new Error('boom')),
+        discoverAccounts: jest.fn().mockRejectedValue(new Error('boom')),
       };
+
       metamaskController.messenger = {
         call: jest.fn().mockReturnValue(wallet),
       };
+
       jest
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue(wallet);
 
+      const warnSpy = jest.spyOn(log, 'warn');
+
       const result = await metamaskController.discoverAndCreateAccounts();
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Failed to add accounts with balance. Error: boom',
+      );
+
+      warnSpy.mockRestore();
     });
   });
 
@@ -4701,6 +4787,13 @@ describe('MetaMaskController', () => {
           cacheTimestamp: 0,
         });
 
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+
       await publishOnboardingState({
         completedOnboarding: false,
         firstTimeFlowType: FirstTimeFlowType.create,
@@ -4711,6 +4804,9 @@ describe('MetaMaskController', () => {
         firstTimeFlowType: FirstTimeFlowType.create,
       });
 
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).toHaveBeenCalledTimes(1);
       expect(
         metamaskController.discoverAndCreateAccounts,
       ).toHaveBeenCalledTimes(1);

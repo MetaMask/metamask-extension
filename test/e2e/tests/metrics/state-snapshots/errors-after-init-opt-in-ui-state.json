@@ -238,6 +238,8 @@
     "onboardingTabs": "object",
     "socialBackupsMetadata": "object",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
+    "subscriptions": "object",
+    "trialedProducts": "object",
     "subjects": "object",
     "permissionHistory": "object",
     "permissionActivityLog": "object",
