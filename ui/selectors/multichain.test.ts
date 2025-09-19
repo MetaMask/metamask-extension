@@ -90,9 +90,11 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       },
       nonEvmTransactions: {
         [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
-          transactions: [],
-          next: null,
-          lastUpdated: 0,
+          [BtcScope.Mainnet]: {
+            transactions: [],
+            next: null,
+            lastUpdated: 0,
+          },
         },
       },
       balances: {
@@ -122,8 +124,9 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       assetsMetadata: {},
       accountsAssets: {},
       isEvmSelected: false,
-      multichainNetworkConfigurationsByChainId:
-        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      multichainNetworkConfigurationsByChainId: {
+        ...AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      },
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       networksWithTransactionActivity: {},
     },

@@ -98,6 +98,10 @@ class Confirmation {
     );
   }
 
+  async clickFooterConfirmButtonAndWaitToDisappear() {
+    await this.driver.clickElementAndWaitToDisappear(this.footerConfirmButton);
+  }
+
   async clickFooterCancelButtonAndAndWaitForWindowToClose() {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.footerCancelButton,
@@ -137,6 +141,13 @@ class Confirmation {
       console.log('Timeout while waiting for navigation page numbers', e);
       throw e;
     }
+  }
+
+  async clickRejectAllButtonWithoutWaiting(): Promise<void> {
+    console.log(
+      'Clicking reject all button without waiting for window to close',
+    );
+    await this.driver.clickElement(this.rejectAllButton);
   }
 
   async clickRejectAll(): Promise<void> {

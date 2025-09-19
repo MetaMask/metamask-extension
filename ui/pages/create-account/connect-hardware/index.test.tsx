@@ -49,11 +49,11 @@ jest.mock('../../../ducks/history/history', () => ({
 }));
 
 // Mock React Router v5-compat hooks that withRouterHooks uses
-const mockNavigate = jest.fn();
+const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  useNavigate: () => mockNavigate,
+  useNavigate: () => mockUseNavigate,
   useLocation: () => ({ pathname: '/test' }),
   useParams: () => ({}),
 }));
@@ -143,7 +143,7 @@ describe('ConnectHardwareForm', () => {
     // Test that our mock is working
     const navigate = useNavigate();
     navigate('/test');
-    expect(mockNavigate).toHaveBeenCalledWith('/test');
+    expect(mockUseNavigate).toHaveBeenCalledWith('/test');
   });
 
   it('closes the form when close button is clicked', () => {
@@ -156,8 +156,8 @@ describe('ConnectHardwareForm', () => {
 
     fireEvent.click(closeButton);
 
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
   });
 
   describe('U2F Error', () => {

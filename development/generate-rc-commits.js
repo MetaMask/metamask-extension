@@ -15,7 +15,7 @@ const octokit = new Octokit({
  * Command to run the script: node development/generate-rc-commits.js origin/branchA origin/branchB
  *
  * @example <caption> Sample command to get all the commits from release v11.13.0 to v11.14.0 </caption>
- *        node development/generate-rc-commits.js origin/Version-v11.14.0 origin/Version-v11.13.0
+ *        node development/generate-rc-commits.js origin/release/11.14.0 origin/release/11.13.0
  * Output: the generated commits will be in a file named 'commits.csv'.
  */
 
@@ -121,13 +121,13 @@ async function filterCommitsByTeam(branchA, branchB, authorTeams) {
         ? `https://github.com/MetaMask/metamask-extension/pull/${prMatch[1]}`
         : '';
 
-      // Check if the commit message is unique and exclude 'Changelog' or 'Merge pull request' or 'master-sync' in the message
+      // Check if the commit message is unique and exclude 'Changelog' or 'Merge pull request' or 'stable-sync' in the message
       if (
         !seenMessages.has(message) &&
         prMatch &&
         !message.includes('changelog') &&
         !message.includes('Merge pull request') &&
-        !message.includes('master-sync')
+        !message.includes('stable-sync')
       ) {
         const labels = await getPRLabels(
           'MetaMask',

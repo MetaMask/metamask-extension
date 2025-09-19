@@ -74,7 +74,6 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         await driver.clickElement('#maliciousTradeOrder');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');
@@ -118,7 +117,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         await driver.clickElement({ tag: 'button', text: 'Approve' });
         await driver.clickElement({
           tag: 'h6',
-          text: 'Switch to Arbitrum One',
+          text: 'Switch to Arbitrum',
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -126,7 +125,6 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         await driver.clickElement('#maliciousRawEthButton');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         bannerAlertFoundByTitle = await driver.findElement({

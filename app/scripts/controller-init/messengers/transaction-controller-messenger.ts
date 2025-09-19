@@ -32,6 +32,7 @@ import {
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -47,6 +48,7 @@ type MessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
   | AppStateControllerGetStateAction
+  | AuthenticationController.AuthenticationControllerGetBearerToken
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
@@ -122,6 +124,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
+      'AuthenticationController:getBearerToken',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',

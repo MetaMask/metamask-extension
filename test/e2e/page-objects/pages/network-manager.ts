@@ -31,7 +31,7 @@ class NetworkManager {
   private readonly networkListItem = (networkName: string) =>
     `[data-testid="network-list-item-${networkName}"]`;
 
-  private readonly tabList = '.tabs__list.network-manager__tab-list';
+  private readonly tabList = '.network-manager__tab-list';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -66,6 +66,11 @@ class NetworkManager {
 
   async selectNetworkByChainId(chainId: string): Promise<void> {
     await this.driver.clickElementSafe(this.networkListItem(chainId));
+  }
+
+  async selectNetworkByName(networkName: string): Promise<void> {
+    console.log(`Selecting network by name: ${networkName} on network manager`);
+    await this.driver.clickElement(`[data-testid="${networkName}"]`);
   }
 
   async checkAllPopularNetworksIsSelected(): Promise<void> {
@@ -142,7 +147,7 @@ class NetworkManager {
     console.log(`Checking if ${tabName} tab is selected`);
     // Find the active tab and verify it contains "Custom" text
     await this.driver.waitForSelector({
-      css: `${this.tabList} li.tab--active button`,
+      css: `${this.tabList} button[aria-selected="true"]`,
       text: tabName,
     });
     console.log(`${tabName} tab is properly selected`);

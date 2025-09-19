@@ -31,7 +31,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   );
 
   const { state: trustSignalDisplayState } = useTrustSignal(
-    to || '',
+    recipient || '',
     NameType.ETHEREUM_ADDRESS,
   );
 
@@ -40,15 +40,20 @@ export function useFirstTimeInteractionAlert(): Alert[] {
 
   const isFirstPartyContract = Boolean(getExperience(recipient, chainId));
 
+  const isTrustSignalLoading =
+    trustSignalDisplayState === TrustSignalDisplayState.Loading;
+
   const showAlert =
     !isInternalAccount &&
     isFirstTimeInteraction &&
     !isVerifiedAddress &&
-    !isFirstPartyContract;
+    !isFirstPartyContract &&
+    !isTrustSignalLoading;
 
   return useMemo(() => {
     // If isFirstTimeInteraction is undefined that means it's either disabled or error in accounts API
     // If it's false that means account relationship found
+    // If trust signal is loading, we wait for it to complete before showing any alerts
     if (!showAlert) {
       return [];
     }

@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { type Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
+import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
   getEnabledNetworksByNamespace,
+  getIsMultichainAccountsState2Enabled,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
@@ -20,8 +22,12 @@ import useMultiChainAssets from '../hooks/useMultichainAssets';
 import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
+  getAllEnabledNetworksForAllNamespaces,
 } from '../../../../selectors/multichain/networks';
-import { getTokenBalancesEvm } from '../../../../selectors/assets';
+import {
+  getAssetsBySelectedAccountGroup,
+  getTokenBalancesEvm,
+} from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -29,6 +35,7 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -54,6 +61,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     chainIds: chainIdsToPoll as Hex[],
   });
 
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+
   const multichainAssets = useMultiChainAssets();
 
   // network filter to determine which tokens to show in list
@@ -61,24 +70,65 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const { networkFilter } = useNetworkFilter();
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
       ? enabledNetworksByNamespace
       : networkFilter;
   }, [enabledNetworksByNamespace, networkFilter]);
 
-  const sortedFilteredTokens = useMemo(() => {
-    const balances = isEvm ? evmBalances : multichainAssets;
-    const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
-      {
-        key: 'chainId',
-        opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
-        filterCallback: 'inclusive',
-      },
-    ]);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
 
-    // sort filtered tokens based on the tokenSortConfig in state
-    return sortAssets([...filteredAssets], tokenSortConfig);
+  const sortedFilteredTokens = useMemo(() => {
+    if (!isMultichainAccountsState2Enabled) {
+      const balances = isEvm ? evmBalances : multichainAssets;
+      const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
+        {
+          key: 'chainId',
+          opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
+          filterCallback: 'inclusive',
+        },
+      ]);
+
+      return sortAssets([...filteredAssets], tokenSortConfig);
+    }
+
+    const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
+      ([chainId, assets]) => {
+        if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
+          return [];
+        }
+
+        // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
+        return assets.map((asset) => {
+          const token: TokenWithFiatAmount = {
+            ...asset,
+            tokenFiatAmount: asset.fiat?.balance,
+            primary: '',
+            secondary: null,
+            title: asset.name,
+            address:
+              'address' in asset ? asset.address : (asset.assetId as Hex),
+            chainId: asset.chainId as Hex,
+          };
+
+          return token;
+        });
+      },
+    );
+
+    const accountAssets = sortAssets(
+      [...accountAssetsPreSort],
+      tokenSortConfig,
+    );
+
+    return accountAssets;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
@@ -87,8 +137,11 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     networksToShow,
     currentNetwork.chainId,
     tokenSortConfig,
+    isMultichainAccountsState2Enabled,
+    accountGroupIdAssets,
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
+    allEnabledNetworksForAllNamespaces,
   ]);
 
   useEffect(() => {
@@ -103,7 +156,11 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       return;
     }
 
-    onTokenClick(token.chainId, token.address);
+    // TODO BIP44 Refactor: The route requires evm native tokens to not pass the address
+    const tokenAddress =
+      isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
+
+    onTokenClick(token.chainId, tokenAddress);
 
     // Track event: token details
     trackEvent({
@@ -123,15 +180,21 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   return (
     <>
-      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
-        <TokenCell
-          key={`${token.chainId}-${token.symbol}-${token.address}`}
-          token={token}
-          privacyMode={privacyMode}
-          onClick={handleTokenClick(token)}
-          safeChains={safeChains}
-        />
-      ))}
+      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => {
+        const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
+          token.chainId as CaipChainId,
+        );
+
+        return (
+          <TokenCell
+            key={`${token.chainId}-${token.symbol}-${token.address}`}
+            token={token}
+            privacyMode={privacyMode}
+            onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
+            safeChains={safeChains}
+          />
+        );
+      })}
     </>
   );
 }

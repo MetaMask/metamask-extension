@@ -6,6 +6,106 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.3.0]
+### Added
+- feat: improve new send flow, by merging amount and recipient pages, and by adding the possibility to navigate back to the page when needed (#35416)
+- feat: improve new send flow, by adding Solana compatibility (#35361)
+- feat: improve new send flow, by adding amount fiat conversion and validation functions (#35346)
+- feat: improve new send flow, by adding header component on send page (#35326)
+- feat: improve new send flow, by displaying balance on amount page (#35246)
+- feat: improve new send flow, by making it possible to submit a transaction (#35188)
+- feat: improve new send flow, by making it possible to pass asset over to send page in url parameters (#35115)
+- feat: improve new send flow, by creating basic pages and navigation (#35106)
+- feat: improve new send flow, by setting up name resolution, including on non-evm networks (#35113)
+- feat: initialize the new send flow behind a feature flag (#35104)
+- feat: add a new page to display multichain account details (#35298)
+- feat: improve dapp connection UX when the wallet is locked (#35122)
+- feat: introduce address scanning for simple send transactions (#34978)
+- feat: add new multichain account popup menu (#35064)
+- feat: add checkbox for emitting error report to Sentry when restarting MetaMask from error page (#35619)
+
+### Changed
+- update: display the number of account group instead of addresses for a connected dapp (#35427)
+- update: improve multichain address list by filtering out test networks and refining layout (#35380)
+- update: batch RPC requests for native and ERC20 tokens into a single request to reduce the total number of RPC calls and improve performance (#35283)
+- update: replace portfolio.metamask.io links with app.metamask.io (#35221)
+- update: upgraded @metamask/design-system-react to v0.3.1 for improved security and React 17 compatibility (#35271)
+- update: deprecate carousel slides (#35109)
+
+### Fixed
+- fix: solve some security vulnerabilities caused by out of date dependencies (#34364)
+- fix: resolve visual bug when very long URLs get displayed on the MetaMask warning page (#35179)
+- fix: avoid race condition where the password is being changed while the wallet is locked (#35022)
+- fix: resolve issue where error is shown in the console although user successfully authenticated with Apple login (#35414)
+- fix: fix long account name rendering (#35343)
+- fix: properly clear all text boxes when user presses `clear` on the `import SRP` page (#33364)
+- fix: handle situation where transactions on some networks don't show up when more than one network is selected within the activity tab (#35231)
+- fix: fix issue when `too many metrics requests` error is shown in the console when a permit request is submitted (#35203)
+- fix: handle cases where incorrect nonce value is displayed in the transaction details from last confirmation page when a tx comes from a dapp and have a miss-matched network context (#35204)
+- fix: properly emit transaction lifecycle events even when smart transaction toggle is on (#35196)
+- fix: fix the flickering issue with the batch transaction alert that occurs when there are no simulations but the unused approval alert is triggered (#35019)
+- fix: automatically switch the chain, even when an approval is being displayed on page, and don't cancel pending confirmations while doing so (#35107)
+- fix: fall back to selected internalAccount if selected account group has no account matching specified scope (#35630)
+- fix: fixes issue in the send flow where sender's identicon is not a circle shape (#35711)
+- fix: fixes an issue with first-time interaction alerts displaying on verified contract addresses (#35331)
+
+## [13.2.3]
+### Fixed
+- fix: fixes bridging on https://portfolio.metamask.io (#35755)
+
+## [13.2.2]
+### Fixed
+- fix: fixes issue related to `Routes` component that was leading the app to occasionally crash and force reinstall for some users (#35587)
+
+## [13.2.1]
+### Fixed
+- fix: update the Solana snap to latest version (#35642)
+
+## [13.2.0]
+### Added
+- feat: enable Linea for Smart Transactions (#35117)
+- feat: add discover button for Solana network in the network list (#34498)
+- feat: add account switching functionality for the multichain accounts (#34989)
+- feat: allow offline unlock for social login users (#34996)
+- feat: add price impact information and alert when above a certain threshold (#34951)
+- feat: add new page for displaying multichain accounts (#34836)
+- feat: add message to loading screen when loading is taking an abnormally long time (#34530)
+- feat: add 'Scan QR code and download the Mobile app' page on onboarding flow (#34825)
+- feat: hide 'Remove imported account' button for social login, as it's not yet supported (#34895)
+- feat: add Frax network and token logos (#34986)
+- feat: add support for non-evm deep links (#35228)
+- feat: automatically switch to the last used solana account when opening swap/buy deep link with SOL token set as query parameter (#35390)
+- feat: update network selector to manage selecting a single network or all popular networks (#35264)
+- feat: unblock gas station for Base network and more accurate `alternateGasFee` capability (#34733)
+
+### Changed
+- update: remove the Solana modal from the initial flow (#34988)
+- update: disable transaction resubmission (#35028)
+- update: update `SEI` network's name from `Sei Network` to `Sei Mainnet` (#34930)
+- update: reduce bundle size to improve performance (#34690)
+- update: removed the `socialLoginEmail` from the state-logs export (settings -> advanced -> download state-logs), instead of masking the value (#35170)
+
+### Fixed
+- fix: ensure text doesn't go beyond component boundaries when user is prompted to add a network (#34824)
+- fix: skip metametrics screen if user already chose an option (#35036)
+- fix: disable the hover state when SnapUISelector is disabled (#34964)
+- fix: hide 'Estimated changes have changed' alert from wallet initiated transactions (#34782)
+- fix: remove console error displayed when wallet is locked before transaction is confirmed (#34406)
+- fix: remove misleading console warning (#34816)
+- fix: remove console error displayed when connecting wallet to a dapp (#34783)
+- fix: use a static list of words for blurred SRP to prevent any potential possibility of a 'blur reversal attack' (#34288)
+- fix: revert 'set default theme to dark' (#34274)
+- fix: fixes incorrect email value in onboarding and setting page UI (#35170)
+- fix: fixes incorrect balances displayed on swap page, due to race condition when balances are set before URL params are applied (#35008)
+- fix: fixes ui not loading in old browsers due to use `Promise.withResolvers` (#35175)
+- fix: ensure that changing the global network should doesn't affect the dapp connected active network (#35432)
+- fix: show error when background is unresponsive after update due to Chromium bug (#35332)
+- fix: remove automatic gas updates during swap and bridge transaction submission to preserve quoted gas parameters (#35455)
+- fix: add the ability to temporarily hide carrousel to ensure a smoother experience (#35447)
+- fix: fixes issue where the petnames system attempts to resolve EIP-155 names for Solana accounts (#35477)
+- fix: ensure the dapp-connected network switches to a permitted network when the current dapp-connected network permission is revoked via the dapp popover modal (#35487)
+- fix: ensure the dapp-connected network remains unchanged when the global network RPC endpoint is switched (#35487)
+
 ## [13.1.2]
 ### Fixed
 - fix: fixes a performance issue by closing all Solana WebSocket connections whenever the client becomes inactive (#35359)
@@ -440,7 +540,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...HEAD
+[13.3.0]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...v13.3.0
+[13.2.3]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...v13.2.3
+[13.2.2]: https://github.com/MetaMask/metamask-extension/compare/v13.2.1...v13.2.2
+[13.2.1]: https://github.com/MetaMask/metamask-extension/compare/v13.2.0...v13.2.1
+[13.2.0]: https://github.com/MetaMask/metamask-extension/compare/v13.1.2...v13.2.0
 [13.1.2]: https://github.com/MetaMask/metamask-extension/compare/v13.1.1...v13.1.2
 [13.1.1]: https://github.com/MetaMask/metamask-extension/compare/v13.1.0...v13.1.1
 [13.1.0]: https://github.com/MetaMask/metamask-extension/compare/v13.0.1...v13.1.0
