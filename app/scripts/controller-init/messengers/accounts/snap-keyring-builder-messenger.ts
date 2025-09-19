@@ -4,7 +4,9 @@ import { AccountsControllerUpdateAccountsAction } from '@metamask/accounts-contr
 import { SnapKeyringBuilderAllowActions } from '../../../lib/snap-keyring/types';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 
-export type SnapKeyringBuilderMessenger = ReturnType<typeof getSnapKeyringBuilderMessenger>;
+export type SnapKeyringBuilderMessenger = ReturnType<
+  typeof getSnapKeyringBuilderMessenger
+>;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
