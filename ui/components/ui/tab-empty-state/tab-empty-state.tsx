@@ -90,10 +90,10 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
           onClick={onAction}
           {...actionButtonProps}
         >
-          {actionButtonProps?.asChild ? children : actionButtonText}
+          {actionButtonText}
         </Button>
       )}
-      {!actionButtonProps?.asChild && children}
+      {children}
     </Box>
   );
 };
