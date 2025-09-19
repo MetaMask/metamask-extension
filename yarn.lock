@@ -5648,25 +5648,25 @@ __metadata:
 
 "@metamask/backend-platform@file:../backend-platform::locator=%40metamask%2Fassets-controllers%40file%3A..%2Fcore%2Fpackages%2Fassets-controllers%23..%2Fcore%2Fpackages%2Fassets-controllers%3A%3Ahash%3Dd17f6f%26locator%3Dmetamask-crx%2540workspace%253A.":
   version: 0.0.0
-  resolution: "@metamask/backend-platform@file:../backend-platform#../backend-platform::hash=59d3f6&locator=%40metamask%2Fassets-controllers%40file%3A..%2Fcore%2Fpackages%2Fassets-controllers%23..%2Fcore%2Fpackages%2Fassets-controllers%3A%3Ahash%3Dd17f6f%26locator%3Dmetamask-crx%2540workspace%253A."
+  resolution: "@metamask/backend-platform@file:../backend-platform#../backend-platform::hash=fc647c&locator=%40metamask%2Fassets-controllers%40file%3A..%2Fcore%2Fpackages%2Fassets-controllers%23..%2Fcore%2Fpackages%2Fassets-controllers%3A%3Ahash%3Dd17f6f%26locator%3Dmetamask-crx%2540workspace%253A."
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/utils": "npm:^11.4.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/20b7df04f9b25e731196eef6cc3078a021ce1421c5af8c19d85b2d0b5e5d97f5764677c5effa2670c9b04b42c3652cc15e0a97714f46fdc0429a81e06ed2bb34
+  checksum: 10/870488bea7a5ceccb5b77d45eb4b0b7a86f0bd03a8e1a936b2ced2c8dc4c5f3a9280485a8c9cc47e93ce5ac838e715d16f97dc5a4e108e6d3d0d7a3cabbde30e
   languageName: node
   linkType: hard
 
 "@metamask/backend-platform@file:../core/packages/backend-platform::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/backend-platform@file:../core/packages/backend-platform#../core/packages/backend-platform::hash=59d3f6&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/backend-platform@file:../core/packages/backend-platform#../core/packages/backend-platform::hash=fc647c&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/utils": "npm:^11.4.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/20b7df04f9b25e731196eef6cc3078a021ce1421c5af8c19d85b2d0b5e5d97f5764677c5effa2670c9b04b42c3652cc15e0a97714f46fdc0429a81e06ed2bb34
+  checksum: 10/870488bea7a5ceccb5b77d45eb4b0b7a86f0bd03a8e1a936b2ced2c8dc4c5f3a9280485a8c9cc47e93ce5ac838e715d16f97dc5a4e108e6d3d0d7a3cabbde30e
   languageName: node
   linkType: hard
 

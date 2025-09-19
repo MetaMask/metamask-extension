@@ -46,6 +46,11 @@ BLOCKAID_PUBLIC_KEY=
 ; Temporary mechanism to enable security alerts API prior to release
 ; SECURITY_ALERTS_API_ENABLED='true'
 
+; Backend WebSocket Connection Feature Flag (for local development)
+; Set to 'true' to enable WebSocket connection, 'false' to disable
+; Comment out or set to empty to use remote feature flags
+; BACKEND_WEBSOCKET_CONNECTION_ENABLED=true
+
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
 
