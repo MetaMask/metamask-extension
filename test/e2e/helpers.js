@@ -770,6 +770,10 @@ async function createWebSocketConnection(driver, hostname) {
 
 const logInWithBalanceValidation = async (driver, localNode) => {
   await unlockWallet(driver);
+  // Wait for skeleton to appear
+  await driver.waitForSelector('.mm-skeleton', { state: 'visible' });
+  // Wait for skeleton to disappear
+  await driver.waitForSelector('.mm-skeleton', { state: 'detached' });
   // Wait for balance to load
   await locateAccountBalanceDOM(driver, localNode);
 };

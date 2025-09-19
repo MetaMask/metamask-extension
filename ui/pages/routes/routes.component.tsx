@@ -19,7 +19,6 @@ import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
-import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
@@ -75,10 +74,7 @@ import {
   NONEVM_BALANCE_CHECK_ROUTE,
   SHIELD_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getProviderConfig,
-  isNetworkLoading as getIsNetworkLoading,
-} from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -381,7 +377,6 @@ export default function Routes() {
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
   const account = useAppSelector(getSelectedInternalAccount);
-  const isNetworkLoading = useAppSelector(getIsNetworkLoading);
 
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
@@ -730,10 +725,9 @@ export default function Routes() {
     return <AccountDetails address={accountDetailsAddress} />;
   };
 
-  const loadMessage =
-    loadingMessage || isNetworkLoading
-      ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
-      : null;
+  const loadMessage = loadingMessage
+    ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
+    : null;
 
   const windowType = getEnvironmentType();
 
@@ -775,6 +769,19 @@ export default function Routes() {
     // We don't want to show the loading screen on the deep link route, as it
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
+
+  console.log(
+    '[Routes] isLoading',
+    isLoading,
+    'completedOnboarding',
+    completedOnboarding,
+    'isCorrectApprovalType',
+    isCorrectApprovalType,
+    'isCorrectTransactionType',
+    isCorrectTransactionType,
+    'isShowingDeepLinkRoute',
+    isShowingDeepLinkRoute,
+  );
 
   const accountListMenu = isMultichainAccountsState1Enabled ? (
     <MultichainAccountListMenu
@@ -845,13 +852,6 @@ export default function Routes() {
       }
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {!isLoading &&
-        isUnlocked &&
-        isNetworkLoading &&
-        completedOnboarding &&
-        !isShowingDeepLinkRoute ? (
-          <LoadingNetwork />
-        ) : null}
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}

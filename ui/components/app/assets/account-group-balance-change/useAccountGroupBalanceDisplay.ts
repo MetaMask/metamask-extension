@@ -33,5 +33,6 @@ export const useAccountGroupBalanceDisplay = (period: BalanceChangePeriod) => {
     color,
     amountChange: amountChangeInUserCurrency ?? 0,
     percentChange: (percentChange ?? 0) / 100,
+    portfolioChange,
   };
 };

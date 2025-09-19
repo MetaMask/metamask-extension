@@ -215,6 +215,7 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import { selectAllEnabledNetworkClientIds } from '../../shared/modules/selectors/multichain';
 import {
   trace,
   endTrace,
@@ -1881,11 +1882,31 @@ export default class MetamaskController extends EventEmitter {
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.state;
 
-    this.networkController.lookupNetwork();
-
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
     }
+  }
+
+  /**
+   * Gathers metadata (primarily connectivity status) about the globally selected
+   * network as well as each enabled network and persists it to state.
+   */
+  async lookupSelectedNetworks() {
+    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
+      this._getMetaMaskState(),
+    );
+
+    await Promise.allSettled([
+      this.networkController.lookupNetwork(),
+      ...enabledNetworkClientIds.map(async (networkClientId) => {
+        return await this.networkController.lookupNetwork(networkClientId);
+      }),
+    ]);
+
+    console.log(
+      '[MetamaskController] Looked up networks, now networksMetadata:',
+      this.networkController.state.networksMetadata,
+    );
   }
 
   triggerNetworkrequests() {
@@ -3780,6 +3801,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
+      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
     };
   }
 
@@ -6867,14 +6889,16 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       },
-      setEnabledNetworks: (chainIds, namespace) => {
+      setEnabledNetworks: async (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
+        await this.lookupSelectedNetworks();
       },
-      setEnabledNetworksMultichain: (chainIds, namespace) => {
+      setEnabledNetworksMultichain: async (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworksMultichain(
           chainIds,
           namespace,
         );
+        await this.lookupSelectedNetworks();
       },
       getEnabledNetworks: (namespace) => {
         return (
@@ -8270,16 +8294,18 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setEnabledNetworks = (chainIds, networkId) => {
+  setEnabledNetworks = async (chainIds, networkId) => {
     try {
       this.networkOrderController.setEnabledNetworks(chainIds, networkId);
     } catch (err) {
       log.error(err.message);
       throw err;
     }
+
+    await this.lookupSelectedNetworks();
   };
 
-  setEnabledNetworksMultichain = (chainIds, namespace) => {
+  setEnabledNetworksMultichain = async (chainIds, namespace) => {
     try {
       this.networkOrderController.setEnabledNetworksMultichain(
         chainIds,
@@ -8289,6 +8315,8 @@ export default class MetamaskController extends EventEmitter {
       log.error(err.message);
       throw err;
     }
+
+    await this.lookupSelectedNetworks();
   };
 
   updateHiddenAccountsList = (hiddenAccountList) => {
