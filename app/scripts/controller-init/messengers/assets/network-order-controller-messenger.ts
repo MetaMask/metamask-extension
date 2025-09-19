@@ -2,6 +2,7 @@ import { Messenger } from '@metamask/base-controller';
 import {
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,
+  NetworkControllerNetworkAddedEvent,
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
@@ -11,7 +12,8 @@ type Actions =
   | NetworkControllerSetActiveNetworkAction;
 type Events =
   | NetworkControllerStateChangeEvent
-  | NetworkControllerNetworkRemovedEvent;
+  | NetworkControllerNetworkRemovedEvent
+  | NetworkControllerNetworkAddedEvent;
 
 export type NetworkOrderControllerMessenger = ReturnType<
   typeof getNetworkOrderControllerMessenger
@@ -25,6 +27,7 @@ export function getNetworkOrderControllerMessenger(
     allowedEvents: [
       'NetworkController:stateChange',
       'NetworkController:networkRemoved',
+      'NetworkController:networkAdded',
     ],
     allowedActions: [
       'NetworkController:getState',
