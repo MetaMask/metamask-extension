@@ -2012,6 +2012,9 @@
   "discover": {
     "message": "Discover"
   },
+  "discoverNFTs": {
+    "message": "Discover NFTs"
+  },
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -3881,6 +3884,9 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
+  "nftEmptyDescription": {
+    "message": "There's a world of NFTs out there. Start your collection today."
+  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -3933,12 +3939,6 @@
   },
   "noNFTs": {
     "message": "No NFTs yet"
-  },
-  "nftEmptyDescription": {
-    "message": "There's a world of NFTs out there. Start your collection today."
-  },
-  "discoverNFTs": {
-    "message": "Discover NFTs"
   },
   "noNetworksAvailable": {
     "message": "No networks available"

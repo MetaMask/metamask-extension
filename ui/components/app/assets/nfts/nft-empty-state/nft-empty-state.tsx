@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getTheme } from '../../../../../selectors';
-import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
+  getTheme,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
 } from '../../../../../selectors';
+import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -54,7 +54,7 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
 
   return (
     <TabEmptyState
-      icon={<img src={nftIcon} alt={t('nft')} width={72} height={72} />}
+      icon={<img src={nftIcon} alt={t('nfts')} width={72} height={72} />}
       description={t('nftEmptyDescription')}
       actionButtonText={t('discoverNFTs')}
       onAction={handleDiscoverNfts}

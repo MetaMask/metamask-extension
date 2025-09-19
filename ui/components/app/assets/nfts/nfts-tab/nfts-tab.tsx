@@ -5,10 +5,8 @@ import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
   Display,
-  FlexDirection,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getCurrentNetwork,
@@ -43,7 +41,6 @@ export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
-  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
