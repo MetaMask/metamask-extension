@@ -15,6 +15,7 @@ export const EVM_NATIVE_ASSET = {
   iconUrl: '',
   name: 'Ether',
   symbol: 'ETH',
+  isNative: true,
 };
 
 export const SOLANA_NATIVE_ASSET = {
