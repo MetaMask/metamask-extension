@@ -72,7 +72,7 @@ export const PermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            href={DEFAULT_ROUTE}
             size={ButtonIconSize.Sm}
           />
         }

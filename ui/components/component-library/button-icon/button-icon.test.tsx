@@ -1,10 +1,15 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { BrowserRouter } from 'react-router-dom-v5-compat';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { IconName } from '../icon';
 import { ButtonIconSize } from './button-icon.types';
 import { ButtonIcon } from './button-icon';
+
+const renderWithRouter = (component: ReactNode) => {
+  return render(<BrowserRouter>{component}</BrowserRouter>);
+};
 
 describe('ButtonIcon', () => {
   it('should render button element correctly', () => {
@@ -35,7 +40,7 @@ describe('ButtonIcon', () => {
   });
 
   it('should render anchor element correctly using href', () => {
-    const { getByTestId, getByRole } = render(
+    const { getByTestId, getByRole } = renderWithRouter(
       <ButtonIcon
         href="/metamask"
         data-testid="button-icon"

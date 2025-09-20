@@ -10,20 +10,7 @@ const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
 const errorColorSelector = '.mm-box--color-error-default';
 
-const mockHistoryPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
-
 describe('MultichainAccountMenu', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   const renderComponent = (
     props: MultichainAccountMenuProps = {
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
@@ -104,7 +91,8 @@ describe('MultichainAccountMenu', () => {
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
-    renderComponent();
+    const { history } = renderComponent();
+    const historyPushSpy = jest.spyOn(history, 'push');
 
     const menuButton = document.querySelector(menuButtonSelector);
 
@@ -131,7 +119,7 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(historyPushSpy).toHaveBeenCalledWith(
       '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
     );
   });
