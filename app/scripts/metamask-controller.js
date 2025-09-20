@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
+import browser from 'webextension-polyfill';
 import {
   createAsyncMiddleware,
   createScaffoldMiddleware,
@@ -51,7 +52,6 @@ import {
   PermissionsRequestNotFoundError,
   SubjectType,
 } from '@metamask/permission-controller';
-
 import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
@@ -181,6 +181,7 @@ import { RestrictedMethods } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
+  HYPERLIQUID_APPROVAL_TYPE,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
@@ -5871,6 +5872,168 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Handles Hyperliquid referral approval flow for eth_accounts requests.
+   * Shows approval confirmation screen if needed and manages referral URL redirection.
+   *
+   * @param {object} req - The JSON-RPC request object.
+   */
+  async handleHyperliquidReferral(req) {
+    const { origin, tabId } = req;
+    const HYPERLIQUID_ORIGIN = 'https://app.hyperliquid.xyz';
+
+    const isHyperliquidReferralEnabled =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUxDefiReferral;
+
+    if (origin !== HYPERLIQUID_ORIGIN || !isHyperliquidReferralEnabled) {
+      return;
+    }
+
+    const permittedAccounts = this.getPermittedAccounts(origin);
+
+    // Only show consent if Hyperliquid has permitted accounts
+    if (permittedAccounts.length === 0) {
+      return;
+    }
+
+    const permittedAccount = permittedAccounts[0];
+
+    // Check if there's already a pending approval request to prevent duplicates
+    // TODO: could be a problem if other approvals are shown on this url?
+    if (this.approvalController.has({ origin })) {
+      return;
+    }
+
+    const {
+      approvedAccounts = [],
+      passedAccounts = [],
+      declinedAccounts = [],
+    } = this.preferencesController.state.referrals.hyperliquid;
+
+    const hasApproved = approvedAccounts.includes(permittedAccount);
+    const hasBeenRedirected = passedAccounts.includes(permittedAccount);
+    const hasDeclined = declinedAccounts.includes(permittedAccount);
+
+    // We should show approval screen if the account is not in any of the tracked states
+    const shouldShowApproval =
+      !hasApproved && !hasBeenRedirected && !hasDeclined;
+
+    // We should redirect to the referral url immediately
+    // if the account is approved but not passed or declined
+    const shouldRedirect = hasApproved && !hasBeenRedirected && !hasDeclined;
+
+    // If we shouldn't show the approval screen and shouldn't redirect, return
+    if (!shouldShowApproval && !shouldRedirect) {
+      return;
+    }
+
+    if (shouldShowApproval) {
+      try {
+        const approvalResponse =
+          await this.approvalController.addAndShowApprovalRequest({
+            origin,
+            type: HYPERLIQUID_APPROVAL_TYPE,
+            requestData: { selectedAddress: permittedAccount },
+          });
+
+        if (approvalResponse?.approved) {
+          this._handleHyperliquidApprovedAccount(
+            permittedAccount,
+            permittedAccounts,
+            declinedAccounts,
+          );
+          await this._handleHyperliquidReferralRedirect(
+            tabId,
+            HYPERLIQUID_ORIGIN,
+            permittedAccount,
+          );
+        } else {
+          this.preferencesController.addReferralDeclinedAccount(
+            permittedAccount,
+          );
+        }
+      } catch (error) {
+        // We expect to get here if user switches account without approving
+      }
+    }
+
+    if (shouldRedirect) {
+      await this._handleHyperliquidReferralRedirect(
+        tabId,
+        HYPERLIQUID_ORIGIN,
+        permittedAccount,
+      );
+    }
+  }
+
+  /**
+   * Handles redirection to the Hyperliquid referral page.
+   *
+   * @param {number} tabId - The browser tab ID to update.
+   * @param {string} hyperliquidOrigin - The Hyperliquid origin URL.
+   * @param {string} permittedAccount - The permitted account.
+   */
+  async _handleHyperliquidReferralRedirect(
+    tabId,
+    hyperliquidOrigin,
+    permittedAccount,
+  ) {
+    await this._updateHyperliquidReferralUrl(tabId, hyperliquidOrigin);
+    // Mark this account as having been shown the Hyperliquid referral page
+    this.preferencesController.addReferralPassedAccount(permittedAccount);
+  }
+
+  /**
+   * Handles referral states for permitted accounts after user approval.
+   *
+   * @param {string} permittedAccount - The permitted account.
+   * @param {string[]} permittedAccounts - The permitted accounts.
+   * @param {string[]} declinedAccounts - The previously declined permitted accounts.
+   */
+  _handleHyperliquidApprovedAccount(
+    permittedAccount,
+    permittedAccounts,
+    declinedAccounts,
+  ) {
+    if (declinedAccounts.length === 0) {
+      // If there are no previously declined permitted accounts then
+      // we approve all permitted accounts so that the user is not
+      // shown the approval screen unnecessarily when switching
+      this.preferencesController.setAllAccountsReferralApproved(
+        permittedAccounts,
+      );
+    } else {
+      this.preferencesController.addReferralApprovedAccount(permittedAccount);
+      // If there are any previously declined accounts then
+      // we do not approve them, but instead remove them from the declined list
+      // so they have the option to participate again in future
+      permittedAccounts.slice(1).forEach((account) => {
+        if (declinedAccounts.includes(account)) {
+          this.preferencesController.removeReferralDeclinedAccount(account);
+        }
+      });
+    }
+  }
+
+  /**
+   * Updates the browser tab URL to the Hyperliquid referral page.
+   *
+   * @param {number} tabId - The browser tab ID to update.
+   * @param {string} hyperliquidOrigin - The Hyperliquid origin URL.
+   */
+  async _updateHyperliquidReferralUrl(tabId, hyperliquidOrigin) {
+    const METAMASK_REFERRAL_CODE = 'MMREFCSI';
+    try {
+      const { url } = await browser.tabs.get(tabId);
+      const { search } = new URL(url || '');
+      const newUrl = `${hyperliquidOrigin}/join/${METAMASK_REFERRAL_CODE}${search}`;
+      await browser.tabs.update(tabId, { url: newUrl });
+    } catch (error) {
+      log.error('Failed to update URL to Hyperliquid referral page: ', error);
+    }
+  }
+
+  /**
    * Stops exposing the specified scope to all third parties.
    *
    * @param {string} scopeString - The scope to stop exposing
@@ -7041,6 +7204,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createEthAccountsMethodMiddleware({
         getAccounts: this.getPermittedAccounts.bind(this, origin),
+        handleHyperliquidReferral: this.handleHyperliquidReferral.bind(this),
       }),
     );
 
@@ -7126,6 +7290,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.has({ origin }),
+        handleHyperliquidReferral: this.handleHyperliquidReferral.bind(this),
       }),
     );
 

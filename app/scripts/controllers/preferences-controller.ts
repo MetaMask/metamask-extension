@@ -146,6 +146,13 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
+  referrals: {
+    hyperliquid: {
+      approvedAccounts: string[];
+      passedAccounts: string[];
+      declinedAccounts: string[];
+    };
+  };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
@@ -255,6 +262,13 @@ export const getDefaultPreferencesControllerState =
     useTokenDetection: true,
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
+    referrals: {
+      hyperliquid: {
+        approvedAccounts: [],
+        passedAccounts: [],
+        declinedAccounts: [],
+      },
+    },
   });
 
 /**
@@ -489,6 +503,12 @@ const controllerMetadata = {
     usedInUi: true,
   },
   watchEthereumAccountEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: false,
+    usedInUi: true,
+  },
+  referrals: {
     includeInStateLogs: true,
     persist: true,
     anonymous: false,
@@ -1052,6 +1072,58 @@ export class PreferencesController extends BaseController<
       state.identities = updatedIdentities;
       state.lostIdentities = updatedLostIdentities;
       state.selectedAddress = selectedAccount?.address || ''; // it will be an empty string during onboarding
+    });
+  }
+
+  addReferralApprovedAccount(accountAddress: string) {
+    this.update((state) => {
+      if (
+        !state.referrals.hyperliquid.approvedAccounts.includes(accountAddress)
+      ) {
+        state.referrals.hyperliquid.approvedAccounts.push(accountAddress);
+      }
+    });
+  }
+
+  addReferralPassedAccount(accountAddress: string) {
+    this.update((state) => {
+      if (
+        !state.referrals.hyperliquid.passedAccounts.includes(accountAddress)
+      ) {
+        state.referrals.hyperliquid.passedAccounts.push(accountAddress);
+      }
+    });
+  }
+
+  addReferralDeclinedAccount(accountAddress: string) {
+    this.update((state) => {
+      if (
+        !state.referrals.hyperliquid.declinedAccounts.includes(accountAddress)
+      ) {
+        state.referrals.hyperliquid.declinedAccounts.push(accountAddress);
+      }
+    });
+  }
+
+  removeReferralDeclinedAccount(accountAddress: string) {
+    this.update((state) => {
+      state.referrals.hyperliquid.declinedAccounts =
+        state.referrals.hyperliquid.declinedAccounts.filter(
+          (account) => account !== accountAddress,
+        );
+    });
+  }
+
+  setAllAccountsReferralApproved(accountAddresses: string[]) {
+    this.update((state) => {
+      const existingAccounts = state.referrals.hyperliquid.approvedAccounts;
+      const newAccounts = accountAddresses.filter(
+        (account) => !existingAccounts.includes(account),
+      );
+      state.referrals.hyperliquid.approvedAccounts = [
+        ...existingAccounts,
+        ...newAccounts,
+      ];
     });
   }
 }

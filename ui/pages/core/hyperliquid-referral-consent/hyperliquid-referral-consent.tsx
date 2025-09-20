@@ -67,7 +67,7 @@ export const HyperliquidReferralConsent: React.FC<
   };
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column}>
+    <Box flexDirection={BoxFlexDirection.Column} className="h-full">
       <Box flexDirection={BoxFlexDirection.Column} gap={4} className="mb-6">
         <Text
           textAlign={TextAlign.Center}
@@ -84,8 +84,9 @@ export const HyperliquidReferralConsent: React.FC<
       <Box
         flexDirection={BoxFlexDirection.Column}
         justifyContent={BoxJustifyContent.Between}
+        className="h-full"
       >
-        <Box paddingBottom={6}>
+        <Box paddingBottom={6} paddingHorizontal={4}>
           <HyperliquidImage />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} gap={4}>
