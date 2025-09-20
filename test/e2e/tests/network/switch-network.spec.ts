@@ -45,18 +45,20 @@ describe('Switch network - ', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
 
-        // Validate the switch network functionality to Ethereum
+        // Test starts with a custom network localhost:8545
+
+        // In the send flow we use Ethereum token which changes the network to Ethereum on the home page becuase custom network was previously selected
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await homePage.checkLocalNodeBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
 
         // Add Arbitrum network
         await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
-        await homePage.checkLocalNodeBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
 
-        // Validate the switch network functionality back to Ethereum
+        // Switching network in send flow should not affect the home page network filter
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.checkPageIsLoaded();
-        await homePage.checkLocalNodeBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
       },
     );
   });
