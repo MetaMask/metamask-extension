@@ -1,0 +1,42 @@
+name: Playwright Smoketest
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *' # nightly at 06:00 UTC against main
+
+jobs:
+  smoketest-nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: smoke
+    env:
+      SMOKE_TEST_SRP: ${{ secrets.SMOKE_TEST_SRP }}
+    steps:
+      - name: Checkout and setup high risk environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Install Playwright Chromium
+        run: yarn playwright install chromium --with-deps
+
+      - name: Build extension dist
+        run: yarn dist
+
+      - name: Run smoketest (headless)
+        env:
+          CI: 'true'
+          SMOKE_TEST_SRP: ${{ secrets.SMOKE_TEST_SRP }}
+          HEADLESS: 'true'
+        run: |
+          yarn playwright test --project=smoketest
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-nightly
+          path: public/playwright/playwright-reports/html
