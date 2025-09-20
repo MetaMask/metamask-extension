@@ -981,7 +981,7 @@
     },
     "@metamask/chain-agnostic-permission": {
       "packages": {
-        "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
+        "@metamask/api-specs": true,
         "@metamask/controller-utils": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
@@ -1530,7 +1530,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/multichain-api-middleware>@metamask/api-specs": true,
+        "@metamask/api-specs": true,
         "@metamask/chain-agnostic-permission": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
