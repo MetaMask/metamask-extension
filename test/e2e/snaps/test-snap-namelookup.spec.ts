@@ -34,7 +34,7 @@ describe('Name lookup', function () {
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.startSendFlow();
         await sendTokenPage.checkPageIsLoaded();
-        await sendTokenPage.fillRecipient('metamask.domain');
+        await sendTokenPage.fillEnsRecipient('metamask.domain');
         await sendTokenPage.checkEnsAddressResolution(
           'metamask.domain',
           '0xc0ffe...54979',
