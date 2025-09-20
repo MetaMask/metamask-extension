@@ -32,7 +32,7 @@ import {
 
 export const NotificationsListTurnOnNotifications = () => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const { enableNotifications, error: errorEnableNotifications } =

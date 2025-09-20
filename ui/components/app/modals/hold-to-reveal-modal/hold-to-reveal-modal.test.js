@@ -29,7 +29,7 @@ describe('Hold to Reveal Modal', () => {
 
   function render(holdToRevealType = 'SRP') {
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <HoldToRevealModal
           isOpen
           onClose={onCloseStub}

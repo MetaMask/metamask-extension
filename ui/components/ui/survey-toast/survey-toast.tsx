@@ -30,7 +30,7 @@ type Survey = {
 export function SurveyToast() {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const basicFunctionality = useSelector(getUseExternalServices);

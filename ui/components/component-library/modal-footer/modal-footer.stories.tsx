@@ -146,7 +146,7 @@ export const Children: Story = {
   args: {
     children: 'Lorem ipsum dolor sit ',
   },
-  render: (args) => {
+  render: function Render(args) {
     const [checked, setChecked] = React.useState(false);
     const handleCheckboxChange = () => setChecked(!checked);
     return (

@@ -27,7 +27,6 @@ const QRHardwarePopover = () => {
   // we want to block the changing by sign request id;
   const _txData = useMemo(() => {
     return txData;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeScanRequest?.requestId]);
 
   const dispatch = useDispatch();

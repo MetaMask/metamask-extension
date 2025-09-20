@@ -20,7 +20,7 @@ const ASSET_TYPE = {
 };
 
 export const useAssetSelectionMetrics = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { tokens, nfts } = useSendAssets();
   const {
     accountType,

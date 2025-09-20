@@ -114,7 +114,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
   const renderAndUnlockMessage = async () => {
     const result = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ConfirmDecryptMessage />
       </MetaMetricsContext.Provider>,
       store,
@@ -160,7 +160,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
   it('decrypt button calls decrypt action and calls metric event', async () => {
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ConfirmDecryptMessage />
       </MetaMetricsContext.Provider>,
       store,
@@ -176,7 +176,7 @@ describe('ConfirmDecryptMessage Component', () => {
 
   it('cancel button calls cancel action and calls metric event', async () => {
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
         <ConfirmDecryptMessage />
       </MetaMetricsContext.Provider>,
       store,

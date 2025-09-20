@@ -138,7 +138,7 @@ export default function SmartTransactionStatusPage() {
         latestSmartTransaction?.destinationTokenDecimals,
     ).toPrecision(8);
   }
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isSmartTransactionPending =
     smartTransactionStatus === SmartTransactionStatus.pending;

@@ -50,7 +50,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   onClickReceive,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { openBuyCryptoInPdapp } = useRamps();
   const { address: accountAddress } = useSelector(getSelectedAccount);
   const { chainId } = useSelector(getMultichainCurrentNetwork);

@@ -37,7 +37,7 @@ import {
 export default function ClearMetaMetricsData() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const closeModal = () => {
     dispatch(hideDeleteMetaMetricsDataModal());

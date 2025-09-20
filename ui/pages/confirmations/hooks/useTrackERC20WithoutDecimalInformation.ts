@@ -25,7 +25,7 @@ const useTrackERC20WithoutDecimalInformation = (
   tokenDetails?: TokenDetailsERC20,
   metricLocation = MetaMetricsEventLocation.SignatureConfirmation,
 ) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hasTracked = useRef(false);
 
   useEffect(() => {

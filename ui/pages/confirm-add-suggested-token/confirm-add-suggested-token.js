@@ -98,7 +98,7 @@ const ConfirmAddSuggestedToken = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
   const tokens = useSelector(getTokens);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const approvalId = suggestedTokens[0]?.id;
 
   const knownTokenBannerAlert = useMemo(() => {
@@ -179,7 +179,6 @@ const ConfirmAddSuggestedToken = () => {
 
   useEffect(() => {
     goBackIfNoSuggestedTokensOnFirstRender();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

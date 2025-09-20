@@ -13,7 +13,7 @@ import { useSendContext } from '../../../context/send';
 import { useSendType } from '../useSendType';
 
 export const useRecipientSelectionMetrics = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { chainId } = useSendContext();
   const { isEvmSendType } = useSendType();
   const { accountType, recipientInputMethod, setRecipientInputMethod } =

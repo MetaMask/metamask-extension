@@ -44,7 +44,7 @@ import {
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
-  getIsEstimatedReturnLow,
+  useIsEstimatedReturnLow,
 } from '../../../ducks/swaps/swaps';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -190,7 +190,7 @@ export default function ReviewQuote({
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [submitClicked, setSubmitClicked] = useState(false);
@@ -1133,7 +1133,7 @@ export default function ReviewQuote({
     currentCurrency,
   ]);
 
-  const isEstimatedReturnLow = getIsEstimatedReturnLow({
+  const isEstimatedReturnLow = useIsEstimatedReturnLow({
     usedQuote,
     rawNetworkFees,
   });
