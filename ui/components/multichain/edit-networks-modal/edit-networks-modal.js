@@ -129,6 +129,7 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
+                  data-testid={`select-network-checkbox-${network?.caipChainId}`}
                   isChecked={selectedChainIds.includes(network.caipChainId)}
                 />
               }
