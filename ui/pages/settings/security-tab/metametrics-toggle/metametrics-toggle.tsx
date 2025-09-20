@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -23,7 +23,10 @@ import {
 import {
   getParticipateInMetaMetrics,
   getUseExternalServices,
+  getIsSocialLoginFlow,
+  getIsSocialLoginFlowEnabledForMetrics,
 } from '../../../../selectors';
+import { setIsSocialLoginFlowEnabledForMetrics } from '../../../../store/actions';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
@@ -33,6 +36,7 @@ const MetametricsToggle = ({
   setDataCollectionForMarketing: (value: boolean) => void;
 }) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const { enableMetametrics, error: enableMetametricsError } =
     useEnableMetametrics();
@@ -46,8 +50,39 @@ const MetametricsToggle = ({
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const useExternalServices = useSelector(getUseExternalServices);
+  const isSocialLoginFlowEnabled = useSelector(getIsSocialLoginFlow);
+  const isSocialLoginFlowEnabledForMetrics = useSelector(
+    getIsSocialLoginFlowEnabledForMetrics,
+  );
 
-  const handleUseParticipateInMetaMetrics = async () => {
+  const handleUseParticipateInMetaMetrics = async (toggleValue: boolean) => {
+    if (isSocialLoginFlowEnabled) {
+      dispatch(
+        setIsSocialLoginFlowEnabledForMetrics(
+          !isSocialLoginFlowEnabledForMetrics,
+        ),
+      );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: toggleValue
+          ? MetaMetricsEventName.TurnOnMetaMetrics
+          : MetaMetricsEventName.TurnOffMetaMetrics,
+      });
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: toggleValue,
+          location: 'Settings',
+        },
+      });
+      return;
+    }
+
     if (participateInMetaMetrics) {
       await disableMetametrics();
       trackEvent({
@@ -113,7 +148,7 @@ const MetametricsToggle = ({
           <ToggleButton
             value={participateInMetaMetrics}
             disabled={!useExternalServices}
-            onToggle={handleUseParticipateInMetaMetrics}
+            onToggle={(value) => handleUseParticipateInMetaMetrics(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />

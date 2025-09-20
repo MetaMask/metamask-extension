@@ -464,6 +464,14 @@ export default class SecurityTab extends PureComponent {
             hasEmailMarketingConsent: !value,
             hasEmailMarketingConsentError: false,
           });
+          this.context.trackEvent({
+            category: MetaMetricsEventCategory.Settings,
+            event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+            properties: {
+              has_marketing_consent: !value,
+              location: 'Settings',
+            },
+          });
         } catch (error) {
           this.setState({
             hasEmailMarketingConsent: value,
