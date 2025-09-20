@@ -374,7 +374,7 @@ describe('useBalanceChanges', () => {
     });
 
     it('handles unavailable native fiat rate', async () => {
-      mockSelectConversionRateByChainId.mockReturnValue(null);
+      mockSelectConversionRateByChainId.mockReturnValue(undefined);
       const { result, waitForNextUpdate } = setupHook({
         ...dummyBalanceChange,
         difference: DIFFERENCE_ETH_MOCK,
