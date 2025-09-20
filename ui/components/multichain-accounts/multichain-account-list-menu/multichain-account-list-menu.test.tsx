@@ -1,6 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
@@ -43,11 +42,6 @@ jest.mock('../../../store/actions', () => {
     detectNfts: () => mockDetectNfts,
   };
 });
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
 
 type TestState = {
   metamask: AccountsControllerState &
@@ -144,15 +138,6 @@ const render = (
 };
 
 describe('MultichainAccountListMenu', () => {
-  const historyPushMock = jest.fn();
-
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();

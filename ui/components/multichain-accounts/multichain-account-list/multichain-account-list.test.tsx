@@ -16,18 +16,6 @@ import {
   MultichainAccountListProps,
 } from './multichain-account-list';
 
-const mockHistoryPush = jest.fn();
-
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useHistory: () => ({
-      push: mockHistoryPush,
-    }),
-  };
-});
-
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
   return {
@@ -179,7 +167,8 @@ describe('MultichainAccountList', () => {
   });
 
   it('marks only the selected account with a check icon and dispatches action on click', () => {
-    renderComponent();
+    const { history } = renderComponent();
+    const mockHistoryPush = jest.spyOn(history, 'push');
 
     // With default props, checkboxes should not be shown (showAccountCheckbox defaults to false)
     // Check that no checkboxes are present
@@ -509,10 +498,11 @@ describe('MultichainAccountList', () => {
     });
 
     it('handles checkbox click to select unselected account', () => {
-      renderComponent({
+      const { history } = renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: true,
       });
+      const mockHistoryPush = jest.spyOn(history, 'push');
 
       const checkboxes = screen.getAllByRole('checkbox');
 
@@ -527,10 +517,11 @@ describe('MultichainAccountList', () => {
     });
 
     it('handles checkbox click to deselect selected account', () => {
-      renderComponent({
+      const { history } = renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: true,
       });
+      const mockHistoryPush = jest.spyOn(history, 'push');
 
       const checkboxes = screen.getAllByRole('checkbox');
 
