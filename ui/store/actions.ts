@@ -64,6 +64,7 @@ import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
+  BillingPortalResponse,
   PricingResponse,
   ProductPrice,
   ProductType,
@@ -397,6 +398,37 @@ export function startSubscriptionWithCard(params: {
     );
 
     return subscriptions;
+  };
+}
+
+export function cancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('cancelSubscription', [params]);
+  };
+}
+
+export function unCancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('unCancelSubscription', [params]);
+  };
+}
+
+export function getSubscriptionBillingPortalUrl(): ThunkAction<
+  BillingPortalResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const res = await submitRequestToBackground<BillingPortalResponse>(
+      'getSubscriptionBillingPortalUrl',
+      [],
+    );
+    return res;
   };
 }
 

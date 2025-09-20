@@ -41,4 +41,8 @@
       margin-bottom: 0;
     }
   }
+
+  .warning-button:hover {
+    color: var(--color-warning-default);
+  }
 }
