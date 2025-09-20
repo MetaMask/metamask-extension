@@ -17,14 +17,20 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllPermittedAccountsForCurrentTab,
   getPermissionsForActiveTab,
-  getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
+import {
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
+  const accountGroupInternalAccounts = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, selectedAccountGroupId),
+  );
 
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 
@@ -34,12 +40,15 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
-  const currentTabIsConnectedToSelectedAddress =
-    selectedAccount &&
-    isInternalAccountInPermittedAccountIds(selectedAccount, permittedAccounts);
+  const currentTabIsConnectedToAccountGroup =
+    selectedAccountGroupId &&
+    accountGroupInternalAccounts &&
+    accountGroupInternalAccounts.some((account) =>
+      isInternalAccountInPermittedAccountIds(account, permittedAccounts),
+    );
 
   let status;
-  if (currentTabIsConnectedToSelectedAddress) {
+  if (currentTabIsConnectedToAccountGroup) {
     status = STATUS_CONNECTED;
   } else if (permittedAccounts.length > 0) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
