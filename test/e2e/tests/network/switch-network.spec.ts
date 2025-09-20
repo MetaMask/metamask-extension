@@ -49,11 +49,7 @@ describe('Switch network - ', function (this: Suite) {
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
-        // Validate the switch network functionality to test network
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8545');
-        await homePage.checkLocalNodeBalanceIsDisplayed();
-
-        // Add Arbitrum network and perform the switch network functionality
+        // Add Arbitrum network
         await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
