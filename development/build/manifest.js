@@ -88,6 +88,8 @@ function createManifestTasks({
           applyOcapKernelChanges(result);
         }
 
+        applyLockdownContentScripts(result);
+
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
         await writeJson(result, path.join(dir, 'manifest.json'));
@@ -220,6 +222,15 @@ function createManifestTasks({
           "frame-ancestors 'self' devtools://*;",
         );
     }
+  }
+
+  function applyLockdownContentScripts(manifest) {
+    manifest.content_scripts[0].js.unshift(
+      'scripts/disable-console.js',
+      'scripts/lockdown-install.js',
+      'scripts/lockdown-run.js',
+      'scripts/lockdown-more.js',
+    );
   }
 }
 
