@@ -5,10 +5,15 @@
   z-index: design-system.$onboarding-app-header-z-index;
   flex-flow: column nowrap;
   flex: 0 0 auto;
+  height: auto;
 
 
   &--welcome {
     background-color: transparent;
+  }
+
+  @include design-system.screen-lg-max {
+    padding-right: 4rem;
   }
 
   @include design-system.screen-sm-max {
@@ -75,6 +80,9 @@
   &__contents {
     flex-flow: row nowrap;
     max-width: 1280px;
+    display: flex;
+    align-items: center;
+    align-self: center;
 
     @include design-system.screen-sm-max {
       height: 100%;

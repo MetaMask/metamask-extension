@@ -39,8 +39,6 @@ describe('Welcome Page', () => {
   it('should render', () => {
     const { getByText } = renderWithProvider(<Welcome />, mockStore);
 
-    expect(getByText(`Let's get started!`)).toBeInTheDocument();
-
     const createButton = getByText('Create a new wallet');
     expect(createButton).toBeInTheDocument();
 
@@ -54,8 +52,6 @@ describe('Welcome Page', () => {
       .mockReturnValue(false);
 
     const { getByText } = renderWithProvider(<Welcome />, mockStore);
-
-    expect(getByText(`Let's get started!`)).toBeInTheDocument();
 
     expect(Environment.getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
 

@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import { useLocation } from 'react-router-dom-v5-compat';
 import Dropdown from '../../../components/ui/dropdown';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { updateCurrentLocale } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { Box } from '../../../components/component-library';
 import {
   AlignItems,
@@ -19,6 +17,8 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
+import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { ThemeType } from '../../../../shared/constants/preferences';
 
 export default function OnboardingAppHeader({ isWelcomePage }) {
@@ -35,10 +35,15 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
   return (
     <Box
       display={Display.Flex}
-      alignItems={AlignItems.center}
+      alignItems={
+        pathname === ONBOARDING_WELCOME_ROUTE
+          ? AlignItems.center
+          : AlignItems.flexEnd
+      }
       backgroundColor={BackgroundColor.backgroundDefault}
       width={BlockSize.Full}
-      padding={4}
+      paddingTop={8}
+      paddingBottom={4}
       className={classnames('onboarding-app-header', {
         'onboarding-app-header--welcome': isWelcomePage,
       })}
@@ -46,16 +51,16 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       <Box
         display={Display.Flex}
         width={BlockSize.Full}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={
+          pathname === ONBOARDING_WELCOME_ROUTE
+            ? JustifyContent.flexEnd
+            : JustifyContent.spaceBetween
+        }
         className="onboarding-app-header__contents"
       >
-        <MetaFoxLogo
-          theme={
-            pathname === ONBOARDING_WELCOME_ROUTE ? ThemeType.light : undefined
-          }
-          unsetIconHeight
-          isOnboarding
-        />
+        {pathname !== ONBOARDING_WELCOME_ROUTE && (
+          <MetaFoxLogo theme={ThemeType.dark} unsetIconHeight isOnboarding />
+        )}
         <Dropdown
           data-testid="select-locale"
           className={classnames('onboarding-app-header__dropdown', {

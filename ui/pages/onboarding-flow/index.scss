@@ -17,7 +17,6 @@
   }
 
   &--welcome-login {
-    background: url('/images/welcome-page.png') no-repeat center top;
     background-color: var(--color-accent02-dark);
   }
 
@@ -28,6 +27,10 @@
     max-width: 446px;
     min-height: 627px;
     height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
     &--full {
       padding-inline: 0;
