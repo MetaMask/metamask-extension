@@ -7,6 +7,7 @@ import {
 // Use lottie_light to avoid unsafe-eval which breaks the CSP
 // https://github.com/airbnb/lottie-web/issues/289#issuecomment-1454909624
 import lottie from 'lottie-web/build/player/lottie_light';
+import './lottie-animation.scss';
 
 export type LottieAnimationProps = {
   data?: object;
@@ -16,6 +17,8 @@ export type LottieAnimationProps = {
   style?: React.CSSProperties;
   className?: string;
   onComplete?: () => void;
+  // New prop to enable theme-aware coloring
+  useThemeColors?: boolean;
 };
 
 export const LottieAnimation: React.FC<LottieAnimationProps> = ({
@@ -26,6 +29,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
   style = {},
   className = '',
   onComplete = () => null,
+  useThemeColors = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationInstance = useRef<AnimationItem | null>(null);
@@ -58,6 +62,16 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
       animationInstance.current.addEventListener('error', (error) => {
         console.error('LottieAnimation error:', error);
       });
+
+      // Apply theme-aware styling if enabled
+      if (useThemeColors) {
+        animationInstance.current.addEventListener('DOMLoaded', () => {
+          const svgElement = containerRef.current?.querySelector('svg');
+          if (svgElement) {
+            svgElement.classList.add('lottie-theme-aware');
+          }
+        });
+      }
     } catch (error) {
       console.error('Failed to load animation:', error);
     }
@@ -69,7 +83,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
         animationInstance.current = null;
       }
     };
-  }, [data, path, loop, autoplay, onComplete]);
+  }, [data, path, loop, autoplay, onComplete, useThemeColors]);
 
   return <div ref={containerRef} style={style} className={className}></div>;
 };
