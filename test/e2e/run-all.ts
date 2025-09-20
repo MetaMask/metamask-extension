@@ -65,7 +65,7 @@ function runningOnGitHubActions(fullTestList: string[]) {
   );
 
   console.log(
-    `Expected chunk run time: ${formatTime(chunks[matrixIndex].time)}`,
+    `Expected chunk run time: ${formatTime(chunks[matrixIndex]?.time)}`,
   );
 
   const myTestList = chunks[matrixIndex].paths || [];
