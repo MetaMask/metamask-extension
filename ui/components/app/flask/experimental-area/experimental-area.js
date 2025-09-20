@@ -1,8 +1,8 @@
 import React, { Fragment, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
-import Button from '../../../ui/button';
+import { Button, ButtonVariant } from '../../../component-library';
 
 function lineBreaksToBr(source) {
   return source.split('\n').map((value, index) => {
@@ -58,22 +58,22 @@ MMMMMMMMMMMMMMMMMm/....../mMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMmmmmmmmmMMMMMMMMMMMMMMMMMM`);
 
 /* eslint-disable no-irregular-whitespace */
-const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀  
-  █▄▄ █▀█ █▄█ ░█░ █ █▄█ █░▀█ ▄  
-  
-  █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░  
-  ██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░ █▀█ █▄▄  
-  
-  █▀ █▀█ █▀▀ ▀█▀ █░█░█ ▄▀█ █▀█ █▀▀
-  ▄█ █▄█ █▀░ ░█░ ▀▄▀▄▀ █▀█ █▀▄ ██▄`);
+const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀
+  █▄▄ █▀█ █▄█ ░█░ █ █▄█ █░▀█ ▄
+
+  █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░
+  ██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░ █▀█ █▄▄
+
+  █▀ █▀█ █▀▀ ▀█▀ █░█░█ ▄▀█ █▀█ █▀▀
+  ▄█ █▄█ █▀░ ░█░ ▀▄▀▄▀ █▀█ █▀▄ ██▄`);
 /* eslint-enable no-irregular-whitespace */
 
 export default function ExperimentalArea({ redirectTo }) {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onClick = () => {
-    history.push(redirectTo);
+    navigate(redirectTo);
   };
 
   return (
@@ -93,7 +93,7 @@ export default function ExperimentalArea({ redirectTo }) {
         <br />
         <p>{t('flaskWelcomeWarning4')}</p>
       </div>
-      <Button type="primary" onClick={onClick}>
+      <Button variant={ButtonVariant.Primary} onClick={onClick}>
         {t('flaskWelcomeWarningAcceptButton')}
       </Button>
     </div>

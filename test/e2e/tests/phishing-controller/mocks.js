@@ -114,7 +114,7 @@ async function setupPhishingDetectionMocks(
     });
 
   await mockServer
-    .forGet(`https://portfolio.metamask.io`)
+    .forGet(`https://app.metamask.io`)
     .always()
     .thenCallback(() => {
       return {

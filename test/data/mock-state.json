@@ -77,6 +77,8 @@
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
+    "subscriptions": [],
+    "trialedProducts": [],
     "gasFeeEstimatesByChainId": {
       "0x5": {
         "gasEstimateType": "fee-market",
@@ -109,7 +111,6 @@
         }
       }
     },
-    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
@@ -491,7 +492,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689643708,
-        "name": "Binance Smart Chain",
+        "name": "BNB Chain",
         "nativeCurrency": "BNB",
         "rpcEndpoints": [
           {
@@ -507,7 +508,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689655105,
-        "name": "Polygon Mainnet",
+        "name": "Polygon",
         "nativeCurrency": "POL",
         "rpcEndpoints": [
           {
@@ -523,7 +524,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689624782,
-        "name": "Arbitrum One",
+        "name": "Arbitrum",
         "nativeCurrency": "ETH",
         "rpcEndpoints": [
           {
@@ -549,7 +550,7 @@
                 "07c2cfec-36c9-46c4-8115-3836d3ac9047"
               ],
               "metadata": {
-                "name": "Default",
+                "name": "Account 1",
                 "entropy": {
                   "groupIndex": 0
                 },
@@ -574,7 +575,7 @@
               "type": "multichain-account",
               "accounts": ["784225f4-d30b-4e77-a900-c8bbce735b88"],
               "metadata": {
-                "name": "Default",
+                "name": "Account 2",
                 "hidden": false,
                 "pinned": false,
                 "entropy": {
@@ -599,7 +600,7 @@
               "type": "single-account",
               "accounts": ["15e69915-2a1a-4019-93b3-916e11fd432f"],
               "metadata": {
-                "name": "Default",
+                "name": "Ledger Account 1",
                 "hidden": false,
                 "pinned": false
               }
@@ -621,7 +622,7 @@
               "type": "single-account",
               "accounts": ["694225f4-d30b-4e77-a900-c8bbce735b42"],
               "metadata": {
-                "name": "Default",
+                "name": "Another Snap Account 1",
                 "hidden": false,
                 "pinned": false
               }
@@ -643,7 +644,7 @@
               "type": "single-account",
               "accounts": ["c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"],
               "metadata": {
-                "name": "Default",
+                "name": "Snap Account 1",
                 "hidden": false,
                 "pinned": false
               }
@@ -658,6 +659,8 @@
         }
       }
     },
+    "isAccountTreeSyncingInProgress": false,
+    "hasAccountTreeSyncingSyncedAtLeastOnce": false,
     "accountGroupsMetadata": {},
     "accountWalletsMetadata": {},
     "internalAccounts": {
@@ -2335,14 +2338,15 @@
     },
     "txHistory": {},
     "throttledOrigins": {},
-    "delegations": {}
+    "delegations": {},
+    "accountsAssets": {}
   },
   "ramps": {
     "buyableChains": [
       {
         "active": true,
         "chainId": 1,
-        "chainName": "Ethereum Mainnet",
+        "chainName": "Ethereum",
         "shortName": "Ethereum",
         "nativeTokenSupported": true
       },
@@ -2363,7 +2367,7 @@
       {
         "active": true,
         "chainId": 56,
-        "chainName": "BNB Chain Mainnet",
+        "chainName": "BNB Chain",
         "shortName": "BNB Chain",
         "nativeTokenSupported": true
       },
@@ -2377,7 +2381,7 @@
       {
         "active": true,
         "chainId": 137,
-        "chainName": "Polygon Mainnet",
+        "chainName": "Polygon",
         "shortName": "Polygon",
         "nativeTokenSupported": true
       },
@@ -2391,7 +2395,7 @@
       {
         "active": true,
         "chainId": 324,
-        "chainName": "zkSync Era Mainnet",
+        "chainName": "zkSync Era",
         "shortName": "zkSync Era",
         "nativeTokenSupported": true
       },
@@ -2419,7 +2423,7 @@
       {
         "active": true,
         "chainId": 8453,
-        "chainName": "Base Mainnet",
+        "chainName": "Base",
         "shortName": "Base",
         "nativeTokenSupported": true
       },

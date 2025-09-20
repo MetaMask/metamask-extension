@@ -1,4 +1,7 @@
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { setupLocale } from '../shared/lib/error-utils';
+import { getCleanAppState } from '.';
 
 const enMessages = {
   troubleStarting: {
@@ -35,6 +38,11 @@ jest.mock('../shared/modules/i18n', () => ({
 }));
 
 describe('Index Tests', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+  });
+
   it('should get locale messages by calling setupLocale', async () => {
     let result = await setupLocale('en');
     const { currentLocaleMessages: clm, enLocaleMessages: elm } = result;
@@ -66,5 +74,36 @@ describe('Index Tests', () => {
     );
 
     expect(clm2.sendBugReport).toStrictEqual(esMessages.sendBugReport);
+  });
+
+  it('should get clean app state with socialLoginEmail undefined', async () => {
+    const mockVersion = '1.0.0';
+    const mockUserAgent = 'test-user-agent';
+
+    jest.spyOn(global.platform, 'getVersion').mockReturnValue(mockVersion);
+    jest
+      .spyOn(window.navigator, 'userAgent', 'get')
+      .mockReturnValue(mockUserAgent);
+
+    const mockState = {
+      metamask: {
+        currentLocale: 'en',
+        completedOnboarding: true,
+        socialLoginEmail: 'test@test.com',
+      },
+    };
+    const store = configureMockStore([thunk])({
+      ...mockState,
+    });
+
+    const cleanAppState = await getCleanAppState(store);
+    expect(cleanAppState).toStrictEqual({
+      metamask: {
+        ...mockState.metamask,
+        socialLoginEmail: undefined,
+      },
+      version: mockVersion,
+      browser: mockUserAgent,
+    });
   });
 });

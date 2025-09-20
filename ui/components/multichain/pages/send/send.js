@@ -47,7 +47,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   INSUFFICIENT_FUNDS_ERROR,
   INVALID_HEX_DATA_ERROR,
-} from '../../../../pages/confirmations/send/send.constants';
+} from '../../../../pages/confirmations/send-legacy/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,

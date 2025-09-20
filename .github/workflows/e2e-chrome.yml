@@ -72,6 +72,8 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
 
   test-e2e-chrome-vault-decryption:
+    # This if statement is equivalent to IS_FORK
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-vault-decryption

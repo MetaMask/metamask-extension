@@ -36,7 +36,12 @@ const NonceDetails = () => {
       currentConfirmation &&
       !isSignatureTransactionType(currentConfirmation)
     ) {
-      dispatch(getNextNonce(currentConfirmation.txParams.from));
+      dispatch(
+        getNextNonce(
+          currentConfirmation.txParams.from,
+          currentConfirmation.networkClientId,
+        ),
+      );
     }
   }, [currentConfirmation, dispatch]);
 

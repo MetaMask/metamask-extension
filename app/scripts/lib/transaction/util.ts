@@ -22,12 +22,20 @@ import {
 import {
   SecurityAlertResponse,
   UpdateSecurityAlertResponse,
+  GetSecurityAlertsConfig,
 } from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
+import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
+import {
+  GetAddressSecurityAlertResponse,
+  AddAddressSecurityAlertResponse,
+} from '../trust-signals/types';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -44,6 +52,8 @@ type BaseAddTransactionRequest = {
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
+  getSecurityAlertResponse: GetAddressSecurityAlertResponse;
+  addSecurityAlertResponse: AddAddressSecurityAlertResponse;
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -52,6 +62,7 @@ type FinalAddTransactionRequest = BaseAddTransactionRequest & {
 
 export type AddTransactionRequest = FinalAddTransactionRequest & {
   waitForSubmit: boolean;
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig;
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
@@ -226,6 +237,42 @@ function getTransactionByHash(
   );
 }
 
+function scanAddressForTrustSignals(request: AddTransactionRequest) {
+  const {
+    getSecurityAlertResponse,
+    addSecurityAlertResponse,
+    securityAlertsEnabled,
+    transactionOptions,
+    transactionParams,
+    chainId,
+  } = request;
+  const { origin } = transactionOptions;
+  if (origin !== ORIGIN_METAMASK || !securityAlertsEnabled) {
+    return;
+  }
+  const { to } = transactionParams;
+  if (typeof to !== 'string') {
+    return;
+  }
+
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
+  if (!supportedEVMChain) {
+    return;
+  }
+
+  scanAddressAndAddToCache(
+    to,
+    getSecurityAlertResponse,
+    addSecurityAlertResponse,
+    supportedEVMChain,
+  ).catch((error) => {
+    console.error(
+      '[scanAddressForTrustSignals] error scanning address for trust signals:',
+      error,
+    );
+  });
+}
+
 async function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
@@ -235,8 +282,10 @@ async function validateSecurity(request: AddTransactionRequest) {
     transactionParams,
     updateSecurityAlertResponse,
     internalAccounts,
+    getSecurityAlertsConfig,
   } = request;
 
+  scanAddressForTrustSignals(request);
   const { type } = transactionOptions;
 
   const typeIsExcludedFromPPOM =
@@ -285,6 +334,7 @@ async function validateSecurity(request: AddTransactionRequest) {
       securityAlertId,
       chainId,
       updateSecurityAlertResponse,
+      getSecurityAlertsConfig,
     });
 
     const securityAlertResponseLoading: SecurityAlertResponse = {

@@ -9,9 +9,9 @@ import {
 } from './keyring-snaps-permissions';
 
 const PORTFOLIO_ORIGINS: string[] = [
-  'https://portfolio.metamask.io',
-  'https://dev.portfolio.metamask.io',
-  'https://ramps-dev.portfolio.metamask.io',
+  'https://app.metamask.io',
+  'https://dev.app.metamask.io',
+  'https://ramps-dev.app.metamask.io',
 ];
 
 describe('keyringSnapPermissionsBuilder', () => {

@@ -7,6 +7,7 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
+const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -25,6 +26,8 @@ const {
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
+const LocalWebSocketServer = require('./websocket-server').default;
+const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -88,6 +91,35 @@ function normalizeLocalNodeOptions(localNodeOptions) {
 }
 
 /**
+ * Normalizes the smartContract option into a consistent format to handle different data structures.
+ * Examples:
+ * // Case 1: Single string: SMART_CONTRACTS.HST
+ * // Case 2: Array of strings: [SMART_CONTRACTS.HST, SMART_CONTRACTS.NFTS]
+ * // Case 3: Object with deployer options: { name: SMART_CONTRACTS.HST, deployerOptions: { fromAddress: '0x...' } }
+ * // Case 4: Mixed array: [SMART_CONTRACTS.HST, { name: SMART_CONTRACTS.NFTS, deployerOptions: { fromPrivateKey: '0x...' } }]
+ *
+ * @param {string | {name: string, deployerOptions?: object} | Array<string | {name: string, deployerOptions?: object}>} smartContract
+ * @returns {{ name: string, deployerOptions?: object }[]}
+ */
+function normalizeSmartContracts(smartContract) {
+  const contractsInput = Array.isArray(smartContract)
+    ? smartContract
+    : [smartContract];
+
+  return contractsInput.map((entry) => {
+    if (typeof entry === 'string') {
+      return { name: entry };
+    }
+    if (entry && typeof entry === 'object' && typeof entry.name === 'string') {
+      return entry;
+    }
+    throw new Error(
+      `Invalid smartContract entry: ${JSON.stringify(entry)}. Expected string or { name, deployerOptions } object.`,
+    );
+  });
+}
+
+/**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
@@ -121,11 +153,16 @@ async function withFixtures(options, testSuite) {
     testSpecificMock = function () {
       // do nothing.
     },
+    useMockingPassThrough,
     useBundler,
     usePaymaster,
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
+    withSolanaWebSocket = {
+      server: false,
+      mocks: [],
+    },
   } = options;
 
   // Normalize localNodeOptions
@@ -151,6 +188,8 @@ async function withFixtures(options, testSuite) {
 
   let localNode;
   const localNodes = [];
+
+  let localWebSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -202,12 +241,15 @@ async function withFixtures(options, testSuite) {
             `Unsupported localNode: '${localNodeOptsNormalized[0].type}'. Cannot deploy smart contracts.`,
           );
       }
-      const contracts =
-        smartContract instanceof Array ? smartContract : [smartContract];
+      const contractsNormalized = normalizeSmartContracts(smartContract);
 
       const hardfork = localNodeOptsNormalized[0].options.hardfork || 'prague';
-      for (const contract of contracts) {
-        await seeder.deploySmartContract(contract, hardfork);
+      for (const contract of contractsNormalized) {
+        await seeder.deploySmartContract(
+          contract.name,
+          hardfork,
+          contract.deployerOptions,
+        );
       }
 
       contractRegistry = seeder.getContractRegistry();
@@ -255,7 +297,20 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
+
+    if (withSolanaWebSocket.server) {
+      localWebSocketServer = LocalWebSocketServer.getServerInstance();
+      localWebSocketServer.start();
+      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
+    }
+
+    // Decide between the regular setupMocking and the passThrough version
+    const mockingSetupFunction = useMockingPassThrough
+      ? setupMockingPassThrough
+      : setupMocking;
+
+    // Use the mockingSetupFunction we just chose
+    const { mockedEndpoint, getPrivacyReport } = await mockingSetupFunction(
       mockServer,
       testSpecificMock,
       {
@@ -263,7 +318,9 @@ async function withFixtures(options, testSuite) {
         ethConversionInUsd,
         monConversionInUsd,
       },
+      withSolanaWebSocket,
     );
+
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -439,6 +496,10 @@ async function withFixtures(options, testSuite) {
         })(),
       );
 
+      if (withSolanaWebSocket.server) {
+        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
+      }
+
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');
       for (const { reason } of failures) {
@@ -515,14 +576,6 @@ const openPopupWithActiveTabOrigin = async (driver, origin = DAPP_URL) => {
   await driver.driver.manage().window().setRect({ width: 400, height: 600 });
 };
 
-const openDappConnectionsPage = async (driver) => {
-  await driver.openNewPage(
-    `${driver.extensionUrl}/home.html#connections/${encodeURIComponent(
-      DAPP_URL,
-    )}`,
-  );
-};
-
 const createDappTransaction = async (driver, transaction) => {
   await openDapp(
     driver,
@@ -545,27 +598,6 @@ const switchToOrOpenDapp = async (
   if (!handle) {
     await openDapp(driver, contract, dappURL);
   }
-};
-
-/**
- *
- * @param {import('./webdriver/driver').Driver} driver
- */
-const connectToDapp = async (driver) => {
-  await openDapp(driver);
-  // Connect to dapp
-  await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
-  });
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.clickElementAndWaitForWindowToClose({
-    text: 'Connect',
-    tag: 'button',
-  });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 };
 
 const PRIVATE_KEY =
@@ -613,25 +645,6 @@ const clickNestedButton = async (driver, tabName) => {
       xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
     });
   }
-};
-
-const sendScreenToConfirmScreen = async (
-  driver,
-  recipientAddress,
-  quantity,
-) => {
-  await openActionMenuAndStartSendFlow(driver);
-  await driver.waitForSelector('[data-testid="ens-input"]');
-  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
-
-  // check if element exists and click it
-  await driver.clickElementSafe({
-    text: 'I understand',
-    tag: 'button',
-  });
-
-  await driver.clickElement({ text: 'Continue', tag: 'button' });
 };
 
 const sendTransaction = async (
@@ -773,40 +786,6 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
-  const initialBalance = roundToXDecimalPlaces(
-    generateRandNumBetween(minETHBal, maxETHBal),
-    decimalPlaces,
-  );
-
-  const initialBalanceInHex = convertETHToHexGwei(initialBalance);
-
-  return { initialBalance, initialBalanceInHex };
-}
-
-/**
- * This method handles clicking the sign button on signature confirmation
- * screen.
- *
- * @param {object} options - Options for the function.
- * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
- */
-async function clickSignOnRedesignedSignatureConfirmation({
-  driver,
-  snapSigInsights = false,
-}) {
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-
-  if (snapSigInsights) {
-    // there is no condition we can wait for to know the snap is ready,
-    // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(largeDelayMs);
-  }
-
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
-}
-
 /**
  * @deprecated since the background socket was added, and special handling is no longer necessary
  * Just call `await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)` instead.
@@ -932,16 +911,6 @@ async function initBundler(
   }
 }
 
-/**
- * Opens the account options menu safely
- *
- * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
- * @returns {Promise<void>} A promise that resolves when the menu is opened and any necessary waits are complete.
- */
-async function openMenuSafe(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-}
-
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 module.exports = {
@@ -965,13 +934,10 @@ module.exports = {
   createDownloadFolder,
   openDapp,
   openPopupWithActiveTabOrigin,
-  openDappConnectionsPage,
   createDappTransaction,
   switchToOrOpenDapp,
-  connectToDapp,
   multipleGanacheOptions,
   sendTransaction,
-  sendScreenToConfirmScreen,
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
@@ -980,16 +946,13 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  clickSignOnRedesignedSignatureConfirmation,
   switchToNotificationWindow,
   getEventPayloads,
   assertInAnyOrder,
-  genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,
 };

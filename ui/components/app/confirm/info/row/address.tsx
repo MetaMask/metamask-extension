@@ -1,5 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import React, { memo, useState } from 'react';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   AlignItems,
   Display,
@@ -10,7 +11,7 @@ import { Box, Text } from '../../../../component-library';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import Identicon from '../../../../ui/identicon';
+import { PreferredAvatar } from '../../../preferred-avatar';
 import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
@@ -44,7 +45,10 @@ export const ConfirmInfoRowAddress = memo(
                 alignItems={AlignItems.center}
                 onClick={isSnapUsingThis ? () => null : handleDisplayNameClick}
               >
-                <Identicon address={address} diameter={16} />
+                <PreferredAvatar
+                  address={address}
+                  size={AvatarAccountSize.Xs}
+                />
                 <Text
                   marginLeft={2}
                   color={TextColor.inherit}

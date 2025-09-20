@@ -67,6 +67,7 @@ const initialState = {
     },
   },
   throttledOrigins: {},
+  isSocialLoginFlowEnabledForMetrics: false,
 };
 
 /**
@@ -150,6 +151,11 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         dataCollectionForMarketing: action.value,
+      };
+    case actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS:
+      return {
+        ...metamaskState,
+        isSocialLoginFlowEnabledForMetrics: action.value,
       };
 
     case actionConstants.COMPLETE_ONBOARDING: {
@@ -624,6 +630,12 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
+/**
+ * Select the current fiat currency code (ISO 4217 like 'USD').
+ *
+ * @param {object} state - Redux state
+ * @returns {string} The current fiat currency code
+ */
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }
