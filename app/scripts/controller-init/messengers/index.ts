@@ -57,6 +57,8 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapKeyringBuilderMessenger,
+  getSnapKeyringBuilderInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -137,6 +139,10 @@ import {
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+import {
+  getKeyringControllerInitMessenger,
+  getKeyringControllerMessenger,
+} from './keyring-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -182,6 +188,14 @@ export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
+export type {
+  KeyringControllerMessenger,
+  KeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
+export {
+  getKeyringControllerMessenger,
+  getKeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
@@ -316,6 +330,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
+  KeyringController: {
+    getMessenger: getKeyringControllerMessenger,
+    getInitMessenger: getKeyringControllerInitMessenger,
+  },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,
     getInitMessenger: noop,
@@ -407,6 +425,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
+  },
+  SnapKeyringBuilder: {
+    getMessenger: getSnapKeyringBuilderMessenger,
+    getInitMessenger: getSnapKeyringBuilderInitMessenger,
   },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,

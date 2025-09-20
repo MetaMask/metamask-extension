@@ -72,6 +72,7 @@ import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
 import { AppStateController } from '../controllers/app-state-controller';
+import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -122,6 +123,7 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | SnapKeyringBuilder
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController
