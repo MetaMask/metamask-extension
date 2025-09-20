@@ -95,6 +95,7 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts/feature-flags';
 import {
   hideImportNftsModal,
   hideIpfsModal,
@@ -105,6 +106,7 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
+  showModal,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -459,7 +461,20 @@ export default function Routes() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const prevPropsRef = useRef({ isUnlocked, totalUnapprovedConfirmationCount });
+  const isMultichainAccountsState2Enabled = useAppSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  // Track whether we've shown the multichain intro modal
+  const hasShownMultichainIntroModal = useAppSelector(
+    (state) => state.metamask.hasShownMultichainIntroModal,
+  );
+
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+  });
+
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -477,11 +492,38 @@ export default function Routes() {
       dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
     }
 
-    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
+    prevPropsRef.current = {
+      isUnlocked,
+      totalUnapprovedConfirmationCount,
+    };
   }, [
     networkToAutomaticallySwitchTo,
     isUnlocked,
     totalUnapprovedConfirmationCount,
+    dispatch,
+  ]);
+
+  // Show multichain intro modal for State 2 users who haven't seen it
+  useEffect(() => {
+    // Only show modal on the main wallet/home route
+    const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
+
+    // Show modal if State 2 is enabled and user hasn't seen it yet
+    const shouldShowModal =
+      isUnlocked &&
+      isMultichainAccountsState2Enabled &&
+      !hasShownMultichainIntroModal &&
+      isMainWalletArea;
+
+    if (shouldShowModal) {
+      dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
+    }
+
+  }, [
+    isUnlocked,
+    isMultichainAccountsState2Enabled,
+    hasShownMultichainIntroModal,
+    location.pathname,
     dispatch,
   ]);
 

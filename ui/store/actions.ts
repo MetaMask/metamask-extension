@@ -7036,6 +7036,12 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
+export function setMultichainIntroModalShown(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setHasShownMultichainIntroModal', [value]);
+  };
+}
+
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {
@@ -7077,6 +7083,17 @@ export async function multichainUpdateTransactions(
   return await submitRequestToBackground<void>('multichainUpdateTransactions', [
     accountId,
   ]);
+}
+
+export async function alignMultichainWallets(): Promise<void> {
+  return await submitRequestToBackground<void>('alignMultichainWallets', []);
+}
+
+export async function getMultichainAlignmentStatus(): Promise<boolean> {
+  return await submitRequestToBackground<boolean>(
+    'getMultichainAlignmentStatus',
+    [],
+  );
 }
 ///: END:ONLY_INCLUDE_IF
 
