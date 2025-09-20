@@ -9,15 +9,15 @@ import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 function assertScuttling() {
   try {
     // eslint-disable-next-line guard-for-in
-    for (const i in window) {
-      // we only want to trigger a getter if any
+    for (const i in globalThis) {
+      // @ts-expect-error we only want to trigger a getter if any
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      window[i];
+      globalThis[i];
     }
   } catch (e) {
     if (
       (e as Error).message.includes(
-        'of window is inaccessible under scuttling mode',
+        'of globalThis is inaccessible under scuttling mode',
       )
     ) {
       return;
