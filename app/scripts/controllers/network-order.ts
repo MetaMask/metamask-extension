@@ -14,12 +14,17 @@ import {
   NetworkControllerStateChangeEvent,
   NetworkState,
   NetworkControllerNetworkRemovedEvent,
+  NetworkControllerNetworkAddedEvent,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  FEATURED_NETWORK_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -66,7 +71,8 @@ type AllowedActions =
 
 type AllowedEvents =
   | NetworkControllerStateChangeEvent
-  | NetworkControllerNetworkRemovedEvent;
+  | NetworkControllerNetworkRemovedEvent
+  | NetworkControllerNetworkAddedEvent;
 
 // Type for the messenger of NetworkOrderController
 export type NetworkOrderControllerMessenger = RestrictedMessenger<
@@ -156,6 +162,13 @@ export class NetworkOrderController extends BaseController<
         this.onNetworkRemoved(removedNetwork.chainId);
       },
     );
+
+    this.messagingSystem.subscribe(
+      'NetworkController:networkAdded',
+      (addedNetwork) => {
+        this.onNetworkAdded(addedNetwork.chainId);
+      },
+    );
   }
 
   /**
@@ -201,6 +214,39 @@ export class NetworkOrderController extends BaseController<
         // Append new networks to the end
         .concat(newNetworks);
     });
+  }
+
+  onNetworkAdded(networkId: Hex) {
+    const caipId: CaipChainId = isCaipChainId(networkId)
+      ? networkId
+      : toEvmCaipChainId(networkId);
+
+    const { namespace } = parseCaipChainId(caipId);
+
+    if (namespace === (KnownCaipNamespace.Eip155 as string)) {
+      // For EVM networks, check if it's a featured/additional network
+      const isFeaturedOrAdditionalNetwork =
+        FEATURED_NETWORK_CHAIN_IDS.includes(networkId);
+
+      if (isFeaturedOrAdditionalNetwork) {
+        this.update((state) => {
+          // For featured/additional networks, add to existing enabled networks
+          state.enabledNetworkMap[namespace][networkId] = true;
+        });
+      } else {
+        this.update((state) => {
+          // For custom networks, enable ONLY the custom network (disable all others)
+          state.enabledNetworkMap[namespace] = {
+            [networkId]: true,
+          };
+        });
+      }
+    } else {
+      this.update((state) => {
+        // For non-EVM networks, add to existing enabled networks
+        state.enabledNetworkMap[namespace][caipId] = true;
+      });
+    }
   }
 
   onNetworkRemoved(networkId: Hex) {

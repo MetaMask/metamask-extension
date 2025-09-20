@@ -4,8 +4,8 @@ import { getNetworkOrderControllerMessenger } from './network-order-controller-m
 describe('getNetworkOrderControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const nftControllerMessenger =
+    const networkOrderControllerMessenger =
       getNetworkOrderControllerMessenger(messenger);
-    expect(nftControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(networkOrderControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
 });
