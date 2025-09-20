@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
@@ -20,10 +19,17 @@ function assertScuttling() {
         'of globalThis is inaccessible under scuttling mode',
       )
     ) {
-      return;
+      return true;
     }
   }
-  throw Error('Scuttling is not in effect');
+  return false;
+}
+
+async function getIsScuttled(driver: Driver): Promise<boolean> {
+  return await driver.executeScript(
+    `${assertScuttling.toString()};
+    return assertScuttling();`,
+  );
 }
 
 // This is enough of a proof that lockdown is in effect and the shared prototypes are also hardened.
@@ -37,17 +43,17 @@ function assertLockdown() {
       Function.prototype.constructor !== window.Function // this is proof that repairIntrinsics part of lockdown worked
     )
   ) {
-    throw Error('Lockdown is not in effect');
+    return false;
   }
+  return true;
 }
 
-const testCode = `
-${assertLockdown.toString()};
-assertLockdown();
-${assertScuttling.toString()};
-assertScuttling();
-return true;
-`;
+async function getIsLockedDown(driver: Driver): Promise<boolean> {
+  return await driver.executeScript(
+    `${assertLockdown.toString()};
+    return assertLockdown();`,
+  );
+}
 
 describe('lockdown', function (this: Mocha.Suite) {
   it('the UI environment is locked down', async function () {
@@ -58,11 +64,14 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
-        await driver.delay(1000);
-        assert(
-          await driver.executeScript(testCode),
-          'Expected script execution to be complete. driver.executeScript might have failed silently.',
-        );
+        await driver.waitUntil(async () => await getIsLockedDown(driver), {
+          timeout: 10000,
+          interval: 200,
+        });
+        await driver.waitUntil(async () => await getIsScuttled(driver), {
+          timeout: 10000,
+          interval: 200,
+        });
       },
     );
   });
@@ -81,11 +90,14 @@ describe('lockdown', function (this: Mocha.Suite) {
         } else {
           await driver.navigate(PAGES.BACKGROUND);
         }
-        await driver.delay(1000);
-        assert(
-          await driver.executeScript(testCode),
-          'Expected script execution to be complete. driver.executeScript might have failed silently.',
-        );
+        await driver.waitUntil(async () => await getIsLockedDown(driver), {
+          timeout: 10000,
+          interval: 200,
+        });
+        await driver.waitUntil(async () => await getIsScuttled(driver), {
+          timeout: 10000,
+          interval: 200,
+        });
       },
     );
   });
