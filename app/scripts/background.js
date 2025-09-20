@@ -445,11 +445,14 @@ let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
 browser.runtime.onConnect.addListener(async (port) => {
-  if (
-    inTest &&
-    getManifestFlags().testing?.simulateUnresponsiveBackground === true
-  ) {
-    return;
+  if (inTest) {
+    const simulatedDelay =
+      getManifestFlags().testing?.simulateDelayedBackgroundResponse;
+    if (simulatedDelay === true) {
+      return;
+    } else if (typeof simulatedDelay === 'number') {
+      await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
+    }
   }
 
   port.postMessage({
