@@ -88,6 +88,7 @@ const defaultState: NetworkOrderControllerState = {
     },
     [KnownCaipNamespace.Solana]: {
       [SolScope.Mainnet]: true,
+      [SolScope.Devnet]: true,
     },
     [KnownCaipNamespace.Bip122]: {},
   },
