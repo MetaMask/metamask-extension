@@ -1,7 +1,4 @@
-import type {
-  NetworkConfiguration,
-  NetworkState,
-} from '@metamask/network-controller';
+import type { NetworkState } from '@metamask/network-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isSolanaChainId,
@@ -41,17 +38,12 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import {
-  MultichainNetworks,
-  MULTICHAIN_PROVIDER_CONFIGS,
-} from '../../../shared/constants/multichain/networks';
-import {
   getHardwareWalletType,
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
@@ -66,6 +58,7 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../shared/modules/selectors/networks';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -119,30 +112,17 @@ const hasSolanaAccounts = (state: BridgeAppState) => {
 };
 
 // only includes networks user has added
-export const getAllBridgeableNetworks = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
+export const getAllBridgeableNetworks = createSelector(
+  [getAllNetworkConfigurationsByCaipChainId],
   (networkConfigurationsByChainId) => {
-    return uniqBy(
-      [
-        ...Object.values(networkConfigurationsByChainId),
-        // TODO: get this from network controller, use placeholder values for now
-        {
-          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
-          blockExplorerUrls: [],
-          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname,
-          nativeCurrency:
-            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].ticker,
-          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
-          defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.SOLANA,
-        } as unknown as NetworkConfiguration,
-      ],
-      'chainId',
-    ).filter(({ chainId }) =>
-      ALLOWED_BRIDGE_CHAIN_IDS.includes(
-        chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-      ),
-    );
+    if (!networkConfigurationsByChainId) {
+      return [];
+    }
+    return Object.keys(networkConfigurationsByChainId)
+      .filter((caipChainId) =>
+        ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.includes(caipChainId as CaipChainId),
+      )
+      .map((caipChainId) => networkConfigurationsByChainId[caipChainId]);
   },
 );
 
@@ -162,9 +142,11 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
 );
 
 export const getFromChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
-  (state: BridgeAppState) => hasSolanaAccounts(state),
+  [
+    getAllBridgeableNetworks,
+    getBridgeFeatureFlags,
+    (state: BridgeAppState) => hasSolanaAccounts(state),
+  ],
   (allBridgeableNetworks, bridgeFeatureFlags, hasSolanaAccount) => {
     // First filter out Solana from source chains if no Solana account exists
     const filteredNetworks = hasSolanaAccount
@@ -190,8 +172,7 @@ export const getFromChain = createDeepEqualSelector(
 );
 
 export const getToChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
+  [getAllBridgeableNetworks, getBridgeFeatureFlags],
   (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
@@ -498,7 +479,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
     getAssetsRates, // non-evm conversion rates, multichain equivalent of getMarketData
     getToToken,
-    getNetworkConfigurationsByChainId,
+    getAllNetworkConfigurationsByCaipChainId,
     (state) => ({
       state,
       toTokenExchangeRate: state.bridge.toTokenExchangeRate,
@@ -519,7 +500,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     // The rate in the bridge state is used instead
     if (
       toChain?.chainId &&
-      !allNetworksByChainId[toChain.chainId] &&
+      !allNetworksByChainId[formatChainIdToCaip(toChain.chainId)] &&
       toTokenExchangeRate
     ) {
       return {
@@ -838,17 +819,10 @@ export const getIsUnifiedUIEnabled = createSelector(
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    // TODO remove this when bridge-controller's types are updated
     return bridgeFeatureFlags?.chains?.[caipChainId]
       ? Boolean(
-          'isSingleSwapBridgeButtonEnabled' in
-            bridgeFeatureFlags.chains[caipChainId]
-            ? (
-                bridgeFeatureFlags.chains[caipChainId] as unknown as {
-                  isSingleSwapBridgeButtonEnabled: boolean;
-                }
-              ).isSingleSwapBridgeButtonEnabled
-            : false,
+          bridgeFeatureFlags.chains[caipChainId]
+            .isSingleSwapBridgeButtonEnabled,
         )
       : false;
   },
