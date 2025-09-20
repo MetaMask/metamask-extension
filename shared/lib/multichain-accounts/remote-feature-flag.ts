@@ -16,6 +16,9 @@ const APP_VERSION = packageJson.version;
  * Shared helper to check whether a multichain accounts feature version is enabled
  * for a given application version. This keeps background and UI gating logic in sync.
  *
+ * The feature flag is a "kill switch". From version 13.5.0 onwards the flag should be
+ * ON by default in case there is a failure trying to fetch the remote values.
+ *
  * @param enableMultichainAccounts - The multichain accounts feature flag.
  * @param featureVersion - The feature version to check.
  * @returns boolean - True if the feature is enabled, false otherwise.
@@ -24,8 +27,8 @@ export const isMultichainAccountsFeatureEnabled = (
   enableMultichainAccounts: MultichainAccountsFeatureFlag | undefined | null,
   featureVersion: string,
 ) => {
-  if (!enableMultichainAccounts) {
-    return false;
+  if (!enableMultichainAccounts || !APP_VERSION) {
+    return true;
   }
 
   const {
@@ -39,10 +42,6 @@ export const isMultichainAccountsFeatureEnabled = (
   }
 
   if (currentFeatureVersion !== featureVersion) {
-    return false;
-  }
-
-  if (!APP_VERSION) {
     return false;
   }
 

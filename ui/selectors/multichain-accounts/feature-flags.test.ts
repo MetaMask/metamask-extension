@@ -1,6 +1,8 @@
 import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
 import {
   type MultichainAccountsFeatureFlag,
+  STATE_1_FLAG,
+  STATE_2_FLAG,
   getIsMultichainAccountsState1Enabled,
   getIsMultichainAccountsState2Enabled,
 } from './feature-flags';
@@ -36,12 +38,14 @@ const state2Mock: MultichainAccountsFeatureFlag = {
 };
 
 const getMockState = (
-  multichainAccountsFeatureFlagMock: MultichainAccountsFeatureFlag,
+  multichainAccountsState1Mock: MultichainAccountsFeatureFlag,
+  multichainAccountsState2Mock: MultichainAccountsFeatureFlag,
 ): TestState =>
   Object.freeze({
     metamask: {
       remoteFeatureFlags: {
-        enableMultichainAccounts: multichainAccountsFeatureFlagMock,
+        [STATE_1_FLAG]: multichainAccountsState1Mock,
+        [STATE_2_FLAG]: multichainAccountsState2Mock,
       },
     },
   });
@@ -52,21 +56,28 @@ describe('Multichain Accounts Feature Flags', () => {
   });
 
   describe('getIsMultichainAccountsState1Enabled', () => {
-    it('returns false for disabled state', () => {
+    it('returns false for disabled state 1', () => {
       expect(
-        getIsMultichainAccountsState1Enabled(getMockState(disabledStateMock)),
+        getIsMultichainAccountsState1Enabled(
+          getMockState(disabledStateMock, disabledStateMock),
+        ),
       ).toBe(false);
     });
 
-    it('returns true for state 1', () => {
+    it('returns true for state 1 when flag values are correct', () => {
       expect(
-        getIsMultichainAccountsState1Enabled(getMockState(state1Mock)),
+        getIsMultichainAccountsState1Enabled(
+          getMockState(state1Mock, disabledStateMock),
+        ),
       ).toBe(true);
     });
 
-    it('returns true for state 2', () => {
+    it('returns true as the default value', () => {
       expect(
-        getIsMultichainAccountsState1Enabled(getMockState(state2Mock)),
+        getIsMultichainAccountsState1Enabled(
+          // @ts-expect-error - overriding value in case of fetch failure
+          getMockState(undefined, disabledStateMock),
+        ),
       ).toBe(true);
     });
   });
@@ -74,19 +85,26 @@ describe('Multichain Accounts Feature Flags', () => {
   describe('getIsMultichainAccountsState2Enabled', () => {
     it('returns false for disabled state', () => {
       expect(
-        getIsMultichainAccountsState2Enabled(getMockState(disabledStateMock)),
-      ).toBe(false);
-    });
-
-    it('returns false for state 1', () => {
-      expect(
-        getIsMultichainAccountsState2Enabled(getMockState(state1Mock)),
+        getIsMultichainAccountsState2Enabled(
+          getMockState(disabledStateMock, disabledStateMock),
+        ),
       ).toBe(false);
     });
 
     it('returns true for state 2', () => {
       expect(
-        getIsMultichainAccountsState2Enabled(getMockState(state2Mock)),
+        getIsMultichainAccountsState2Enabled(
+          getMockState(disabledStateMock, state2Mock),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true as the default value', () => {
+      expect(
+        getIsMultichainAccountsState2Enabled(
+          // @ts-expect-error - overriding value in case of fetch failure
+          getMockState(disabledStateMock, undefined),
+        ),
       ).toBe(true);
     });
   });

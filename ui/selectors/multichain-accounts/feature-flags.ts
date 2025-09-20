@@ -16,6 +16,9 @@ import {
   isMultichainAccountsFeatureEnabled,
 } from '../../../shared/lib/multichain-accounts/remote-feature-flag';
 
+export const STATE_1_FLAG = 'enableMultichainAccounts';
+export const STATE_2_FLAG = 'enableMultichainAccountsState2';
+
 /**
  * Feature flag structure for multichain accounts features
  */
@@ -36,22 +39,19 @@ export type MultichainAccountsFeatureFlag = Infer<
  * Selector to get the multichain accounts remote feature flags.
  *
  * @param state - The MetaMask state object
+ * @param flagName - The name of the remote flag to use
  * @returns MultichainAccountsFeatureFlag - The feature flags for multichain accounts.
  */
 export const getMultichainAccountsRemoteFeatureFlags = (
   state: RemoteFeatureFlagsState,
+  flagName: string,
 ) => {
-  const multichainAccountsFeatureFlags =
-    getRemoteFeatureFlags(state).enableMultichainAccounts;
+  const multichainAccountsFeatureFlags = getRemoteFeatureFlags(state)[flagName];
 
   try {
     assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
   } catch (error) {
-    return {
-      enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
-    };
+    return undefined;
   }
 
   return multichainAccountsFeatureFlags;
@@ -66,11 +66,11 @@ export const getMultichainAccountsRemoteFeatureFlags = (
 export const getIsMultichainAccountsState1Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const flags = getMultichainAccountsRemoteFeatureFlags(state);
-  return (
-    isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2) ||
-    isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_1)
+  const remoteFlag = getMultichainAccountsRemoteFeatureFlags(
+    state,
+    STATE_1_FLAG,
   );
+  return isMultichainAccountsFeatureEnabled(remoteFlag, FEATURE_VERSION_1);
 };
 
 /**
@@ -82,6 +82,9 @@ export const getIsMultichainAccountsState1Enabled = (
 export const getIsMultichainAccountsState2Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const flags = getMultichainAccountsRemoteFeatureFlags(state);
-  return isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2);
+  const remoteFlag = getMultichainAccountsRemoteFeatureFlags(
+    state,
+    STATE_2_FLAG,
+  );
+  return isMultichainAccountsFeatureEnabled(remoteFlag, FEATURE_VERSION_2);
 };
