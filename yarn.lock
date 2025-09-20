@@ -30665,22 +30665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^8.0.4":
-  version: 8.0.8
-  resolution: "lavamoat-tofu@npm:8.0.8"
-  dependencies:
-    "@babel/parser": "npm:7.27.3"
-    "@babel/traverse": "npm:7.27.3"
-    "@babel/types": "npm:7.27.3"
-    "@types/babel__traverse": "npm:7.20.7"
-    type-fest: "npm:4.41.0"
-  peerDependencies:
-    lavamoat-core: ">15.4.0"
-  checksum: 10/f1d807ab5f11fa666e4c1b975270dcbc7592e4bc782ae6535fa318bd220d8fb7465d617cf9acd52f243e2b753f5dc8791ed3ef86eaed47645f6bb15a01c0a603
-  languageName: node
-  linkType: hard
-
-"lavamoat-tofu@npm:^8.0.9":
+"lavamoat-tofu@npm:^8.0.4, lavamoat-tofu@npm:^8.0.9":
   version: 8.0.9
   resolution: "lavamoat-tofu@npm:8.0.9"
   dependencies:
