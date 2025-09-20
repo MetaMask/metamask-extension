@@ -237,9 +237,6 @@ const BuildTypesStruct = refine(
     }
 
     const buildTypeIds = Object.values(value.buildTypes).map(
-      // Importing @lavamoat/webpack in development/webpack/utils/plugins/LavamoatPlugin/index.ts
-      // causes the type of value.buildTypes to be broken somehow.
-      // @ts-ignore
       (buildType) => buildType.id,
     );
     const uniqueBuildTypeIds = new Set(buildTypeIds);

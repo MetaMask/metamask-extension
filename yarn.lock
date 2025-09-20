@@ -4882,30 +4882,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/types@npm:^0.0.0":
-  version: 0.0.0
-  resolution: "@lavamoat/types@npm:0.0.0"
+"@lavamoat/types@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@lavamoat/types@npm:0.0.1"
   dependencies:
     "@babel/types": "npm:7.27.3"
-    type-fest: "npm:4.41.0"
-  checksum: 10/51e5bdb0827bd61063702e203de103ee442e146f1999f5cb7718ecab96f4abcf2a8cd29f538c39d78a03cd2b00c82a5c4c4d568b82ae923aeab24e8ec4680a8e
+  checksum: 10/93a8ca413d7d82b5940c618379285d4358a17d63d792233b5086446050bbac341f991f9ddd72b185cb4aea5e15d70de05fb673595e7cef79681ae5ee8289b203
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@lavamoat/webpack@npm:1.3.0"
+"@lavamoat/webpack@npm:1.3.1":
+  version: 1.3.1
+  resolution: "@lavamoat/webpack@npm:1.3.1"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^4.3.4"
-    "@lavamoat/types": "npm:^0.0.0"
+    "@lavamoat/types": "npm:^0.0.1"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^16.6.0"
+    lavamoat-core: "npm:^16.6.1"
     ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/b6aefce735a0acd456bd35e4171888dc7910b49a9b70ee07e5681ea8617e593dad6b70e6b40b790e5887246cd64e750e70cc763ba22e9f7e4ef5464c4c62318e
+  checksum: 10/de5517afe2b4501dc8dab76cfafd9ed1d56e89e0ee418b05e98c56242801cdfc16de9cbc4e0b16ad24fd9777fa3485154bfacce14ffc07a76623f20acc418edd
   languageName: node
   linkType: hard
 
@@ -30619,19 +30618,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.6.0":
-  version: 16.6.0
-  resolution: "lavamoat-core@npm:16.6.0"
+"lavamoat-core@npm:^16.6.1":
+  version: 16.6.1
+  resolution: "lavamoat-core@npm:16.6.1"
   dependencies:
     "@babel/types": "npm:7.27.3"
-    "@lavamoat/types": "npm:^0.0.0"
+    "@lavamoat/types": "npm:^0.0.1"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-tofu: "npm:^8.0.8"
+    lavamoat-tofu: "npm:^8.0.9"
     merge-deep: "npm:3.0.3"
     ses: "npm:1.14.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/9fc55528e6615693e96455eed832cb4bb4c84ca05c2d3dd9dd02904b0c74f471af1cfec2587eb45cf0485778f3d08201cde42d3ae728a7aac4de085820aa1fa8
+  checksum: 10/6f8455f840cc9bf9ea68cbd6f8404f54001c7dd660c4cdd20ccee27df7e50f122657db776e5042b76fe315a9b004b41eb1f4d88e917a24d75018970ef3c508d8
   languageName: node
   linkType: hard
 
@@ -30666,7 +30665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^8.0.4, lavamoat-tofu@npm:^8.0.8":
+"lavamoat-tofu@npm:^8.0.4":
   version: 8.0.8
   resolution: "lavamoat-tofu@npm:8.0.8"
   dependencies:
@@ -30678,6 +30677,22 @@ __metadata:
   peerDependencies:
     lavamoat-core: ">15.4.0"
   checksum: 10/f1d807ab5f11fa666e4c1b975270dcbc7592e4bc782ae6535fa318bd220d8fb7465d617cf9acd52f243e2b753f5dc8791ed3ef86eaed47645f6bb15a01c0a603
+  languageName: node
+  linkType: hard
+
+"lavamoat-tofu@npm:^8.0.9":
+  version: 8.0.9
+  resolution: "lavamoat-tofu@npm:8.0.9"
+  dependencies:
+    "@babel/parser": "npm:7.27.3"
+    "@babel/traverse": "npm:7.27.3"
+    "@babel/types": "npm:7.27.3"
+    "@lavamoat/types": "npm:^0.0.1"
+    "@types/babel__traverse": "npm:7.20.7"
+    type-fest: "npm:4.41.0"
+  peerDependencies:
+    lavamoat-core: ">15.4.0"
+  checksum: 10/3d44885c03c9afe6db31a5107891a6406b23da2a000d7f0d4e22324f4453edf126e4af32027f32e359b57f985e7e0cc929a642f0b0ed42ec05553673a8c2abb1
   languageName: node
   linkType: hard
 
@@ -31865,7 +31880,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.5"
     "@lavamoat/snow": "npm:^2.0.3"
-    "@lavamoat/webpack": "npm:1.3.0"
+    "@lavamoat/webpack": "npm:1.3.1"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
