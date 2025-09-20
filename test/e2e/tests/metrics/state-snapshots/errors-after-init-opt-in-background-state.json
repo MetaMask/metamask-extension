@@ -149,8 +149,7 @@
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "isSocialLoginFlowEnabledForMetrics": "boolean"
+    "segmentApiCalls": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
