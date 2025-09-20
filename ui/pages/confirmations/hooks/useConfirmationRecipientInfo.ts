@@ -8,6 +8,10 @@ import {
   selectInternalAccountNameByAddress,
 } from '../selectors/accounts';
 import { RootState } from '../selectors/preferences';
+import {
+  getWalletIdAndNameByAccountAddress,
+  getWalletsWithAccounts,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 function useConfirmationRecipientInfo() {
   const { currentConfirmation } = useConfirmContext();
@@ -26,13 +30,24 @@ function useConfirmationRecipientInfo() {
     selectInternalAccountNameByAddress(state, senderAddress),
   );
 
+  const walletInfo = useSelector((state: RootState) =>
+    getWalletIdAndNameByAccountAddress(state, senderAddress),
+  );
+
+  const walletsWithAccounts = useSelector(getWalletsWithAccounts);
+
   const senderName = isMultichainAccountsState2Enabled
     ? accountGroupName
     : internalAccountName;
 
+  const hasMoreThanOneWallet = Object.keys(walletsWithAccounts).length > 1;
+
   return {
+    hasMoreThanOneWallet,
+    isBIP44: isMultichainAccountsState2Enabled,
     senderAddress,
     senderName: senderName ?? '',
+    walletName: walletInfo?.name ?? '',
   };
 }
 

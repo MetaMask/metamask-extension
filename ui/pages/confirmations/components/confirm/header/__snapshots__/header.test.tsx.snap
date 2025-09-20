@@ -62,7 +62,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -269,7 +269,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
