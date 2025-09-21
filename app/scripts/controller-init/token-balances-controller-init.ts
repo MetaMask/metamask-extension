@@ -13,6 +13,12 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
   const { useMultiAccountBalanceChecker } = initMessenger.call(
     'PreferencesController:getState',
   );
+  const state = initMessenger.call('RemoteFeatureFlagController:getState');
+
+  const FEATURE_FLAG_NAME = 'assetsAccountApiBalances';
+
+  const featureFlagForAccountsApiBalances =
+    state?.remoteFeatureFlags?.[FEATURE_FLAG_NAME] ?? [];
 
   const controller = new TokenBalancesController({
     // @ts-expect-error: `TokenBalancesController` uses the wrong type for
@@ -22,6 +28,9 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
     useAccountsAPI: false,
     queryMultipleAccounts: useMultiAccountBalanceChecker,
     interval: 30_000,
+    allowExternalServices: () =>
+      initMessenger.call('PreferencesController:getState').useExternalServices,
+    useAccountsApiBalances: featureFlagForAccountsApiBalances,
   });
 
   return {

@@ -4,6 +4,7 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { createMemoryHistory } from 'history';
 import {
   TrustSignalDisplayState,
   useTrustSignals,
@@ -16,7 +17,7 @@ import {
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProviderAndHistory } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -72,10 +73,6 @@ jest.mock('react-redux', () => {
     useDispatch: jest.fn(),
   };
 });
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(),
-}));
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -124,7 +121,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
   } else if (selector === getCurrentNetwork) {
-    return { nickname: 'Ethereum Mainnet' };
+    return { nickname: 'Ethereum' };
   } else if (selector === getPreferences) {
     return opts.preferences ?? {};
   } else if (selector === getShouldShowFiat) {
@@ -160,6 +157,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
+  const history = createMemoryHistory();
+
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -176,6 +175,9 @@ describe('TransactionListItem', () => {
   afterAll(() => {
     useGasFeeEstimates.mockRestore();
   });
+
+  const renderWithProvider = (component, store) =>
+    renderWithProviderAndHistory(component, store, history);
 
   describe('ActivityListItem interactions', () => {
     it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
@@ -321,7 +323,6 @@ describe('TransactionListItem', () => {
           },
         }}
       />,
-      mockStore(mockState),
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(

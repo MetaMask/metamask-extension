@@ -87,6 +87,10 @@ export default function AccountNotFound() {
       navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
     if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AccountNotFoundPageViewed,
+      });
       bufferedTrace?.({
         name: TraceName.OnboardingExistingSocialAccountNotFound,
         op: TraceOperation.OnboardingUserJourney,
@@ -106,6 +110,7 @@ export default function AccountNotFound() {
     onboardingParentContext,
     bufferedTrace,
     bufferedEndTrace,
+    trackEvent,
   ]);
 
   return (

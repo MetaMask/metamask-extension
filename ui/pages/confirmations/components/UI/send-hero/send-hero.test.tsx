@@ -1,8 +1,18 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 
-import { AssetStandard } from '../../../types/send';
+import mockDefaultState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/jest';
+import configureStore from '../../../../../store/store';
+import { Asset, AssetStandard } from '../../../types/send';
 import { SendHero } from './send-hero';
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+}));
 
 jest.mock('../../../../../components/component-library', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,12 +80,17 @@ jest.mock('../../../../../components/component-library', () => ({
   ),
 }));
 
+const store = configureStore(mockDefaultState);
+const render = (asset: Asset) => {
+  return renderWithProvider(<SendHero asset={asset} />, store);
+};
+
 describe('SendHero', () => {
   const mockTokenAsset = {
     symbol: 'ETH',
     image: 'https://token-image.com/eth.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
     standard: AssetStandard.Native,
   };
@@ -85,7 +100,7 @@ describe('SendHero', () => {
     name: 'Cool NFT #123',
     image: 'https://nft-image.com/cool.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
     standard: AssetStandard.ERC721,
     collection: {
@@ -95,9 +110,7 @@ describe('SendHero', () => {
   };
 
   it('renders TokenHero for non-NFT assets', () => {
-    const { getByTestId, getAllByTestId } = render(
-      <SendHero asset={mockTokenAsset} />,
-    );
+    const { getByTestId, getAllByTestId } = render(mockTokenAsset);
 
     expect(getByTestId('box')).toBeInTheDocument();
     expect(getByTestId('badge-wrapper')).toBeInTheDocument();
@@ -107,9 +120,7 @@ describe('SendHero', () => {
   });
 
   it('renders NFTHero for ERC721 assets', () => {
-    const { getByTestId, getAllByTestId } = render(
-      <SendHero asset={mockNFTAsset} />,
-    );
+    const { getByTestId, getAllByTestId } = render(mockNFTAsset);
 
     expect(getByTestId('box')).toBeInTheDocument();
     expect(getByTestId('badge-wrapper')).toBeInTheDocument();
@@ -120,13 +131,13 @@ describe('SendHero', () => {
 
   it('renders NFTHero for ERC1155 assets', () => {
     const erc1155Asset = { ...mockNFTAsset, standard: AssetStandard.ERC1155 };
-    const { getByTestId } = render(<SendHero asset={erc1155Asset} />);
+    const { getByTestId } = render(erc1155Asset);
 
     expect(getByTestId('nft-image')).toBeInTheDocument();
   });
 
   it('renders wrapped component with correct styling', () => {
-    const { getByTestId } = render(<SendHero asset={mockTokenAsset} />);
+    const { getByTestId } = render(mockTokenAsset);
 
     const wrapper = getByTestId('box');
     expect(wrapper).toBeInTheDocument();
@@ -138,12 +149,12 @@ describe('TokenHero', () => {
     symbol: 'USDC',
     image: 'https://token-image.com/usdc.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
   };
 
   it('renders AvatarToken with correct props', () => {
-    const { getByTestId } = render(<SendHero asset={mockAsset} />);
+    const { getByTestId } = render(mockAsset);
 
     const avatarToken = getByTestId('avatar-token');
     expect(avatarToken).toHaveAttribute('data-src', mockAsset.image);
@@ -153,7 +164,7 @@ describe('TokenHero', () => {
   });
 
   it('renders network badge when chainId exists', () => {
-    const { getByTestId } = render(<SendHero asset={mockAsset} />);
+    const { getByTestId } = render(mockAsset);
 
     const avatarNetwork = getByTestId('avatar-network');
     expect(avatarNetwork).toBeInTheDocument();
@@ -162,8 +173,26 @@ describe('TokenHero', () => {
     expect(avatarNetwork).toHaveAttribute('data-src', mockAsset.networkImage);
   });
 
+  it('renders network image for native assets even if not available in asset details', () => {
+    const { getByTestId } = render({
+      assetId: '0x0000000000000000000000000000000000001010',
+      isNative: true,
+      address: '0x0000000000000000000000000000000000001010',
+      image: '',
+      name: 'POL',
+      symbol: 'POL',
+      chainId: '0x89',
+    });
+
+    const avatarNetwork = getByTestId('avatar-network');
+    expect(avatarNetwork).toBeInTheDocument();
+    expect(avatarNetwork).toHaveAttribute('data-size', 'xs');
+    expect(avatarNetwork).toHaveAttribute('data-name', 'Polygon');
+    expect(avatarNetwork).toHaveAttribute('data-src', './images/pol-token.svg');
+  });
+
   it('renders asset symbol', () => {
-    const { getByTestId } = render(<SendHero asset={mockAsset} />);
+    const { getByTestId } = render(mockAsset);
 
     const text = getByTestId('text');
     expect(text).toHaveTextContent(mockAsset.symbol);
@@ -171,7 +200,7 @@ describe('TokenHero', () => {
 
   it('does not render network badge when chainId is missing', () => {
     const assetWithoutChainId = { ...mockAsset, chainId: undefined };
-    const { queryByTestId } = render(<SendHero asset={assetWithoutChainId} />);
+    const { queryByTestId } = render(assetWithoutChainId);
 
     expect(queryByTestId('avatar-network')).not.toBeInTheDocument();
   });
@@ -183,7 +212,7 @@ describe('NFTHero', () => {
     name: 'Cool NFT #123',
     image: 'https://nft-image.com/cool.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
     standard: AssetStandard.ERC721,
     collection: {
@@ -193,7 +222,7 @@ describe('NFTHero', () => {
   };
 
   it('renders NFT image with asset image', () => {
-    const { getByTestId } = render(<SendHero asset={mockNFT} />);
+    const { getByTestId } = render(mockNFT);
 
     const image = getByTestId('nft-image');
     expect(image).toHaveAttribute('src', mockNFT.image);
@@ -202,14 +231,14 @@ describe('NFTHero', () => {
 
   it('renders collection image when asset image is missing', () => {
     const nftWithoutImage = { ...mockNFT, image: undefined };
-    const { getByTestId } = render(<SendHero asset={nftWithoutImage} />);
+    const { getByTestId } = render(nftWithoutImage);
 
     const image = getByTestId('nft-image');
     expect(image).toHaveAttribute('src', mockNFT.collection.imageUrl);
   });
 
   it('renders network badge when chainId exists', () => {
-    const { getByTestId } = render(<SendHero asset={mockNFT} />);
+    const { getByTestId } = render(mockNFT);
 
     const avatarNetwork = getByTestId('avatar-network');
     expect(avatarNetwork).toBeInTheDocument();
@@ -218,14 +247,14 @@ describe('NFTHero', () => {
   });
 
   it('renders asset name', () => {
-    const { getByTestId } = render(<SendHero asset={mockNFT} />);
+    const { getByTestId } = render(mockNFT);
 
     const text = getByTestId('text');
     expect(text).toHaveTextContent(mockNFT.name);
   });
 
   it('handles image error by hiding image', () => {
-    const { getByTestId } = render(<SendHero asset={mockNFT} />);
+    const { getByTestId } = render(mockNFT);
 
     const image = getByTestId('nft-image') as HTMLImageElement;
     const mockNextSibling = { classList: { remove: jest.fn() } };
@@ -242,7 +271,7 @@ describe('NFTHero', () => {
 
   it('does not render network badge when chainId is missing', () => {
     const nftWithoutChainId = { ...mockNFT, chainId: undefined };
-    const { queryByTestId } = render(<SendHero asset={nftWithoutChainId} />);
+    const { queryByTestId } = render(nftWithoutChainId);
 
     expect(queryByTestId('avatar-network')).not.toBeInTheDocument();
   });
@@ -253,7 +282,7 @@ describe('NFTHero', () => {
       image: undefined,
       collection: { name: 'Cool Collection' },
     };
-    const { queryByTestId } = render(<SendHero asset={nftWithoutImages} />);
+    const { queryByTestId } = render(nftWithoutImages);
 
     expect(queryByTestId('nft-image')).not.toBeInTheDocument();
   });

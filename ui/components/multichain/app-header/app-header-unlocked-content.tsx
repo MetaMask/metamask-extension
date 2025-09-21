@@ -243,17 +243,18 @@ export const AppHeaderUnlockedContent = ({
               });
             }}
             disabled={disableAccountPicker}
-            paddingLeft={0}
-            paddingRight={0}
+            paddingLeft={2}
+            paddingRight={2}
           />
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
         <Text
-          color={TextColor.primaryDefault}
-          variant={TextVariant.bodyXs}
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyXsMedium}
           onClick={handleNetworksClick}
           data-testid="networks-subtitle-test-id"
           className="networks-subtitle"
+          paddingInline={2}
         >
           {`${numberOfAccountsInGroup} ${networksLabel.toLowerCase()}`}
         </Text>

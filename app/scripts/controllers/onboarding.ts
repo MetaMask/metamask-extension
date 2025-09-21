@@ -43,20 +43,28 @@ const defaultTransientState = {
  */
 const controllerMetadata = {
   seedPhraseBackedUp: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   firstTimeFlowType: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   completedOnboarding: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   onboardingTabs: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: false,
+    usedInUi: true,
   },
 };
 

@@ -734,11 +734,11 @@ export default function TransactionList({
 
   return (
     <>
-      {showRampsCard ? (
-        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-      ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
+        {showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+        ) : null}
         {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
           <NoTransactions />
