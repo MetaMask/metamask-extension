@@ -189,7 +189,7 @@ async function mockSwapNetworkInfo(mockServer: MockttpServer) {
         active: true,
         networkId: 1,
         chainId: 1,
-        chainName: 'Ethereum Mainnet',
+        chainName: 'Ethereum',
         nativeCurrency: {
           name: 'Ether',
           symbol: 'ETH',

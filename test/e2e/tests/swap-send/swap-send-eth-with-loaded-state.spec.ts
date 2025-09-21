@@ -150,7 +150,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           active: true,
           networkId: 1,
           chainId: 1,
-          chainName: 'Ethereum Mainnet',
+          chainName: 'Ethereum',
           nativeCurrency: {
             name: 'Ether',
             symbol: 'ETH',
@@ -207,7 +207,7 @@ describe('Swap-Send ETH', function () {
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
               eip155: {
-                '0x1': true, // Ethereum Mainnet
+                '0x1': true, // Ethereum
               },
             })
             .withPreferencesControllerSmartTransactionsOptedOut()
