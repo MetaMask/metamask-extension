@@ -6831,6 +6831,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/network-enablement-controller@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/network-enablement-controller@npm:1.2.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.4.0"
+    "@metamask/controller-utils": "npm:^11.14.0"
+    "@metamask/utils": "npm:^11.8.0"
+    reselect: "npm:^5.1.1"
+  peerDependencies:
+    "@metamask/multichain-network-controller": ^0.11.0
+    "@metamask/network-controller": ^24.0.0
+    "@metamask/transaction-controller": ^60.0.0
+  checksum: 10/0c3a99a57cfb6da8258bacfd684bad26d627f5569d7575a9e8a480db857499b45968ab4da2604b1f91e1ccf5877d26a67221a74243fce857537d62d0a816735f
+  languageName: node
+  linkType: hard
+
 "@metamask/nonce-tracker@npm:^6.0.0":
   version: 6.0.0
   resolution: "@metamask/nonce-tracker@npm:6.0.0"
@@ -7450,9 +7466,9 @@ __metadata:
   linkType: hard
 
 "@metamask/solana-wallet-snap@npm:^2.3.8":
-  version: 2.3.8
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.8"
-  checksum: 10/e1fa80026a78ccf853c5bdf8493e47ea2edaba6d39e715f2f54030c605271ee238fd15a832b2d876365fdb62d66d35053c5952a39a66c6ae97d5e03ee0a22bf8
+  version: 2.3.10
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.10"
+  checksum: 10/06d00d86c2e87c430fd59fd8a28de9bcc50156650dcb2f202b6822beaba458d2fc30ba68c9425010829d4e7763884444cc7f01eb6da047add8d0a42408073ec0
   languageName: node
   linkType: hard
 
@@ -31856,6 +31872,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^5.0.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A24.1.0#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch"
+    "@metamask/network-enablement-controller": "npm:^1.2.0"
     "@metamask/notification-services-controller": "patch:@metamask/notification-services-controller@npm%3A16.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-16.0.0-7d7a016e6f.patch"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"

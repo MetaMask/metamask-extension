@@ -6,8 +6,11 @@ import { Hex } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { hideModal, requestUserApproval } from '../../../../store/actions';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
+import {
+  hideModal,
+  requestUserApproval,
+  setEnabledNetworks,
+} from '../../../../store/actions';
 
 export const useAdditionalNetworkHandlers = () => {
   const dispatch = useDispatch();
@@ -48,7 +51,7 @@ export const useAdditionalNetworkHandlers = () => {
 
       // Only switch chains if user confirms request to change network.
       if (requestResult) {
-        await dispatch(enableSingleNetwork(network.chainId));
+        await dispatch(setEnabledNetworks(network.chainId));
       }
     },
     [dispatch],

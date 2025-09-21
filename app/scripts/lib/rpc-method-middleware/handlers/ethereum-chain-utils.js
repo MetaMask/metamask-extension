@@ -177,6 +177,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
  * @param {Function} hooks.setEnabledNetworks - The callback to set the enabled networks.
+ * @param {Function} hooks.setEnabledNetworksByNamespace - The callback to set the enabled networks by namespace.
  * @param {Function} hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
  * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
  * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
@@ -200,6 +201,7 @@ export async function switchChain(
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
+    setEnabledNetworksByNamespace,
     getEnabledNetworks,
     rejectApprovalRequestsForOrigin,
     requestUserApproval,
@@ -271,14 +273,14 @@ export async function switchChain(
         );
         const existingChainIds = Object.keys(existingEnabledNetworks);
         if (!existingChainIds.includes(chainId)) {
-          setEnabledNetworks([chainId], KnownCaipNamespace.Eip155);
+          setEnabledNetworks(chainId);
         }
       } else {
         const { namespace } = parseCaipChainId(chainId);
         const existingEnabledNetworks = getEnabledNetworks(namespace);
         const existingChainIds = Object.keys(existingEnabledNetworks);
         if (!existingChainIds.includes(chainId)) {
-          setEnabledNetworks([chainId], namespace);
+          setEnabledNetworks(chainId);
         }
       }
     }

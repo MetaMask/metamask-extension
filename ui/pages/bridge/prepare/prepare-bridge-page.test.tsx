@@ -11,7 +11,7 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
 import * as SelectorsModule from '../../../selectors/multichain/networks';
-import * as NetworkOrderControllerActionsModule from '../../../store/controller-actions/network-order-controller';
+import * as ActionsModule from '../../../store/actions';
 import PrepareBridgePage, {
   useEnableMissingNetwork,
 } from './prepare-bridge-page';
@@ -294,8 +294,8 @@ describe('useEnableMissingNetwork', () => {
         '0xe708': true,
       });
     const mockEnableAllPopularNetworks = jest.spyOn(
-      NetworkOrderControllerActionsModule,
-      'enableAllPopularNetworks',
+      ActionsModule,
+      'setEnabledAllPopularNetworks',
     );
 
     return {

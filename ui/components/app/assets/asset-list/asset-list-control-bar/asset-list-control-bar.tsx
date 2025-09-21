@@ -371,16 +371,21 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
+    console.log(
+      'allEnabledNetworksForAllNamespaces +++++++++++ .......',
+      allEnabledNetworksForAllNamespaces,
+    );
+
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length > 1
+      allEnabledNetworksForAllNamespaces.length > 1
     ) {
       return t('allPopularNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length === 0
+      allEnabledNetworksForAllNamespaces.length === 0
     ) {
       return t('noNetworksSelected');
     }
@@ -409,7 +414,7 @@ const AssetListControlBar = ({
       return undefined;
     }
 
-    const chainIds = Object.keys(enabledNetworksByNamespace);
+    const chainIds = allEnabledNetworksForAllNamespaces;
 
     if (chainIds.length !== 1) {
       return undefined;
@@ -417,7 +422,7 @@ const AssetListControlBar = ({
 
     const singleEnabledChainId = chainIds[0];
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [enabledNetworksByNamespace]);
+  }, [allEnabledNetworksForAllNamespaces]);
 
   return (
     <Box
