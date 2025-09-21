@@ -30,6 +30,8 @@ jobs:
   test-e2e-firefox-webpack:
     uses: ./.github/workflows/run-e2e.yml
     if: ${{ github.event_name != 'merge_group' }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
