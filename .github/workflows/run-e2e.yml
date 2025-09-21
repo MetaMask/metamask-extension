@@ -37,6 +37,10 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
+      xml-output-path:
+        type: string
+        default: ''
+        description: Path for XML test output (used by API specs tests)
     secrets:
       INFURA_PROJECT_ID:
         required: false
@@ -129,6 +133,8 @@ jobs:
         env:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
+          # XML output path for API specs tests
+          XML_OUTPUT_PATH: ${{ inputs.xml-output-path }}
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}

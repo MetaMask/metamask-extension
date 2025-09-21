@@ -93,7 +93,10 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:api-specs
-      test-artifacts-path: html-report
+      xml-output-path: ./test-results/e2e/api-specs.xml
+      test-artifacts-path: |
+        html-report
+        test-results/e2e
 
   test-e2e-chrome-api-specs-alert-on-failure:
     needs:
@@ -134,7 +137,10 @@ jobs:
       build-artifact: build-test-flask-browserify
       build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
-      test-artifacts-path: html-report-multichain
+      xml-output-path: ./test-results/e2e/api-specs-multichain.xml
+      test-artifacts-path: |
+        html-report-multichain
+        test-results/e2e
 
   test-e2e-chrome-api-specs-multichain-alert-on-failure:
     needs:

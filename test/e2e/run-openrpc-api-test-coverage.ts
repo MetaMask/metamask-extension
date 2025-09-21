@@ -7,6 +7,7 @@ import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema
 import { OpenrpcDocument } from '@open-rpc/meta-schema';
 import { MetaMaskOpenRPCDocument } from '@metamask/api-specs';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
+import XmlReporter from './api-specs/XmlReporter';
 
 import { Driver, PAGES } from './webdriver/driver';
 
@@ -62,6 +63,9 @@ async function main() {
         reporters: [
           'console-streaming',
           new HtmlReporter({ autoOpen: !process.env.CI }),
+          new XmlReporter({
+            testSuiteName: 'API Specs Coverage',
+          }),
         ],
         skip: [
           'eth_coinbase',

@@ -13,6 +13,7 @@ import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Mockttp } from 'mockttp';
 import { Driver, PAGES } from './webdriver/driver';
+import XmlReporter from './api-specs/XmlReporter';
 
 import {
   createCaip27DriverTransport,
@@ -254,7 +255,12 @@ async function main() {
     destination: `${process.cwd()}/html-report-multichain`,
   });
 
+  const xmlReporter = new XmlReporter({
+    testSuiteName: 'API Specs Multichain Coverage',
+  });
+
   await htmlReporter.onEnd({} as IOptions, testCoverageResults);
+  await xmlReporter.onEnd({} as IOptions, testCoverageResults);
 
   // if any of the tests failed, exit with a non-zero code
   if (testCoverageResults.every((r) => r.valid)) {
