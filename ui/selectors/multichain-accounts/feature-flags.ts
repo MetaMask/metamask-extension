@@ -46,15 +46,16 @@ export const getMultichainAccountsRemoteFeatureFlags = (
   state: RemoteFeatureFlagsState,
   flagName: string,
 ) => {
-  const multichainAccountsFeatureFlags = getRemoteFeatureFlags(state)[flagName];
-
   try {
+    const multichainAccountsFeatureFlags =
+      getRemoteFeatureFlags(state)[flagName];
+
     assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
+
+    return multichainAccountsFeatureFlags;
   } catch (error) {
     return undefined;
   }
-
-  return multichainAccountsFeatureFlags;
 };
 
 /**
