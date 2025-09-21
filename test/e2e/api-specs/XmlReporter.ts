@@ -59,17 +59,38 @@ class XmlReporter implements Reporter {
         return acc;
       }, 0) / 1000; // Convert to seconds
 
+    const timestamp = new Date().toISOString();
+
+    // Get job properties from environment (same as regular e2e tests)
+    const jobName = process.env.JOB_NAME || '';
+    const runId = process.env.RUN_ID || '';
+    const prNumber = process.env.PR_NUMBER || '';
+
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += `<testsuites name="${this.testSuiteName}" tests="${totalTests}" failures="${failedTests}" time="${totalTime.toFixed(3)}">\n`;
-    xml += `  <testsuite name="${this.testSuiteName}" tests="${totalTests}" failures="${failedTests}" time="${totalTime.toFixed(3)}">\n`;
+    xml += `<testsuites name="Mocha Tests" time="${totalTime.toFixed(3)}" tests="${totalTests}" failures="${failedTests}">\n`;
+
+    // Add Root Suite (empty, like in Mocha format)
+    xml += `  <testsuite name="Root Suite" timestamp="${timestamp}" tests="0" time="0.000" failures="0">\n`;
+    xml += `    <properties>\n`;
+    xml += `      <property name="JOB_NAME" value="${this.escapeXml(jobName)}"/>\n`;
+    xml += `      <property name="RUN_ID" value="${this.escapeXml(runId)}"/>\n`;
+    xml += `      <property name="PR_NUMBER" value="${this.escapeXml(prNumber)}"/>\n`;
+    xml += `    </properties>\n`;
+    xml += `  </testsuite>\n`;
+
+    // Add the actual test suite
+    xml += `  <testsuite name="${this.escapeXml(this.testSuiteName)}" timestamp="${timestamp}" tests="${totalTests}" file="api-specs-coverage" time="${totalTime.toFixed(3)}" failures="${failedTests}">\n`;
+    xml += `    <properties>\n`;
+    xml += `      <property name="JOB_NAME" value="${this.escapeXml(jobName)}"/>\n`;
+    xml += `      <property name="RUN_ID" value="${this.escapeXml(runId)}"/>\n`;
+    xml += `      <property name="PR_NUMBER" value="${this.escapeXml(prNumber)}"/>\n`;
+    xml += `    </properties>\n`;
 
     for (const call of calls) {
       const testName = this.escapeXml(
         call.title || call.methodName || 'Unknown Test',
       );
-      const className = this.escapeXml(
-        `${this.testSuiteName}.${call.methodName || 'UnknownMethod'}`,
-      );
+      const className = this.escapeXml(call.methodName || 'UnknownMethod');
 
       // Calculate test time from timings if available
       const time =
@@ -77,7 +98,7 @@ class XmlReporter implements Reporter {
           ? (call.timings.endTime - call.timings.startTime) / 1000
           : 0;
 
-      xml += `    <testcase name="${testName}" classname="${className}" time="${time.toFixed(3)}"`;
+      xml += `    <testcase name="${testName}" time="${time.toFixed(3)}" classname="${className}"`;
 
       if (call.valid) {
         xml += '/>\n';
@@ -86,16 +107,18 @@ class XmlReporter implements Reporter {
         const errorMessage = this.escapeXml(
           call.error?.message || call.reason || 'Test failed',
         );
-        const errorType = 'AssertionError';
-        xml += `      <failure message="${errorMessage}" type="${errorType}">\n`;
-        xml += `        ${this.escapeXml(errorMessage)}\n`;
-        xml += `      </failure>\n`;
+        const errorType = call.error?.code
+          ? `Error${call.error.code}`
+          : 'AssertionError';
+
+        // Use CDATA format like Mocha does
+        xml += `      <failure message="${errorMessage}" type="${errorType}"><![CDATA[${errorMessage}]]></failure>\n`;
         xml += `    </testcase>\n`;
       }
     }
 
-    xml += '  </testsuite>\n';
-    xml += '</testsuites>\n';
+    xml += `  </testsuite>\n`;
+    xml += `</testsuites>\n`;
 
     return xml;
   }
