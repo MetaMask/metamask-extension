@@ -18,6 +18,7 @@ export type NameDisplayProps = {
   variation: string;
   handleClick?: () => void;
   showFullName?: boolean;
+  isIncomingToken?: boolean;
 };
 
 const NameDisplay = memo(
@@ -28,12 +29,14 @@ const NameDisplay = memo(
     variation,
     handleClick,
     showFullName = false,
+    isIncomingToken,
   }: NameDisplayProps) => {
     const { name, image, icon, displayState } = useDisplayName({
       value,
       type,
       preferContractSymbol,
       variation,
+      isIncomingToken,
     });
 
     const renderIcon = () => {

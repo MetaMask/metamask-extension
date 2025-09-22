@@ -14,6 +14,7 @@ import { getTokenScanCacheResult } from '../../../../selectors/selectors';
 
 type TokenScanCacheResult = {
   data: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type?: string;
   };
   timestamp?: number;
@@ -101,6 +102,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
           reason: t('alertReasonTokenTrustSignalMalicious'),
           field: RowAlertKey.IncomingTokens,
           severity: Severity.Danger,
+          isBlocking: false,
           message: t('alertMessageTokenTrustSignalMalicious'),
         });
       } else if (trustState === TrustSignalDisplayState.Warning) {
@@ -109,6 +111,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
           reason: t('alertReasonTokenTrustSignalWarning'),
           field: RowAlertKey.IncomingTokens,
           severity: Severity.Warning,
+          isBlocking: false,
           message: t('alertMessageTokenTrustSignalWarning'),
         });
       }

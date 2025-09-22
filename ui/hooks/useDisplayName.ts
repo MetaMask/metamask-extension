@@ -25,6 +25,7 @@ export type UseDisplayNameRequest = {
   type: NameType;
   value: string;
   variation: string;
+  isIncomingToken?: boolean;
 };
 
 export type UseDisplayNameResponse = {

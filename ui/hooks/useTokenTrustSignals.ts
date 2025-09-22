@@ -4,6 +4,7 @@ import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
 
 type TokenScanCacheResult = {
   data: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type?: string;
   };
   timestamp?: number;

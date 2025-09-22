@@ -6990,7 +6990,7 @@ __metadata:
 
 "@metamask/phishing-controller@file:./../core/packages/phishing-controller::locator=metamask-crx%40workspace%3A.":
   version: 13.1.0
-  resolution: "@metamask/phishing-controller@file:./../core/packages/phishing-controller#./../core/packages/phishing-controller::hash=3b779e&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/phishing-controller@file:./../core/packages/phishing-controller#./../core/packages/phishing-controller::hash=f71d44&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.12.0"
@@ -6999,7 +6999,9 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/e4a2e9fe0d4ac07f3035066f08f928bfe74c567a037cbf675ca966b0c88271f0a0937b4c29649b317d54c0fffd72ebdb6321712b49a24c755190fdbd88ff090d
+  peerDependencies:
+    "@metamask/transaction-controller": ^60.3.0
+  checksum: 10/aef3a5d658f0f1eb7840405d5a116aaeabd8b4a52e3d36bd9ba754f62b3acdf40dfd5b26bfb6ab675c2812e5598e21c67d64a2d235293bc9a4e8bacec36e3c1f
   languageName: node
   linkType: hard
 
@@ -7596,7 +7598,7 @@ __metadata:
 
 "@metamask/transaction-controller@file:./../core/packages/transaction-controller::locator=metamask-crx%40workspace%3A.":
   version: 60.3.0
-  resolution: "@metamask/transaction-controller@file:./../core/packages/transaction-controller#./../core/packages/transaction-controller::hash=868d27&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/transaction-controller@file:./../core/packages/transaction-controller#./../core/packages/transaction-controller::hash=798f9e&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -7625,9 +7627,8 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
-    "@metamask/phishing-controller": ^13.1.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/f96a317f626f47e74a0823f7b764c3ca7e9b19118c2d460822afb51e5695af86c1ca7d942f9fce1d648e2fc98ccf51e29bca66dc62dcce4f0caf2c0c5b74a99d
+  checksum: 10/8997b6578b0538ea9bc2be72f7b758a18e3a6355f49ab770ebdf9f7047fd96b79bb5237aed62681a3ae4e2c6e82812abc6ce4f75c8222aae3bfbda1826c30088
   languageName: node
   linkType: hard
 

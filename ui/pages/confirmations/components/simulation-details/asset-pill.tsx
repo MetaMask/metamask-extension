@@ -64,10 +64,12 @@ const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {
  *
  * @param props
  * @param props.asset
+ * @param props.isIncomingToken
  */
 export const AssetPill: React.FC<{
   asset: AssetIdentifier;
-}> = ({ asset }) => {
+  isIncomingToken?: boolean;
+}> = ({ asset, isIncomingToken }) => {
   const { chainId } = asset;
 
   return (
@@ -87,6 +89,7 @@ export const AssetPill: React.FC<{
           type={NameType.ETHEREUM_ADDRESS}
           value={asset.address}
           variation={chainId}
+          isIncomingToken={isIncomingToken}
         />
       )}
     </Box>

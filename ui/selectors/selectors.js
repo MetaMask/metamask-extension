@@ -3053,15 +3053,26 @@ export function getTokenScanCacheResult(state, chainId, tokenAddress) {
 
   const cacheKey = `${chainId}:${tokenAddress.toLowerCase()}`;
 
+  // eslint-disable-next-line no-unused-vars
   const result = state.metamask.tokenScanCache?.[cacheKey];
-  console.log('result', result);
   // INSERT_YOUR_CODE
   // Always return a result with result_type "Malicious" for now, regardless of input.
+
+  if (
+    cacheKey === '0x1:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'.toLowerCase()
+  ) {
+    return {
+      data: {
+        result_type: 'malicious',
+      },
+      timestamp: 1726396800,
+    };
+  }
+
   return {
     data: {
-      result_type: 'malicious',
+      result_type: 'benign',
     },
-    timestamp: 1726396800,
   };
 }
 

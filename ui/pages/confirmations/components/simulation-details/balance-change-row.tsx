@@ -81,7 +81,7 @@ export const BalanceChangeRow: React.FC<{
           isAllApproval={isAllApproval}
           isUnlimitedApproval={isUnlimitedApproval}
         />
-        <AssetPill asset={asset} />
+        <AssetPill asset={asset} isIncomingToken={!amount.isNegative()} />
       </Box>
       {showFiat && <IndividualFiatDisplay fiatAmount={fiatAmount} />}
     </Box>
