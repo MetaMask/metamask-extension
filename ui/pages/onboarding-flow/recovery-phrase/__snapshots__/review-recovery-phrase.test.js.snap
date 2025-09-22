@@ -12,20 +12,6 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       <div
         class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
       >
-        <button
-          aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-          data-testid="review-srp-back-button"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
-      </div>
-      <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
-      >
         <h2
           class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
         >
@@ -321,20 +307,6 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
     <div
       class="mm-box"
     >
-      <div
-        class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
-      >
-        <button
-          aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-          data-testid="review-srp-back-button"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
-      </div>
       <div
         class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
       >

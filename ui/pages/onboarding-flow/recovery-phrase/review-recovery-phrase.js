@@ -17,16 +17,12 @@ import {
   ButtonLink,
   ButtonLinkSize,
   ButtonSize,
-  ButtonIcon,
-  IconName,
-  ButtonIconSize,
 } from '../../../components/component-library';
 import {
   TextVariant,
   JustifyContent,
   BlockSize,
   TextColor,
-  IconColor,
   FontWeight,
   Display,
   FlexDirection,
@@ -157,20 +153,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         {showSrpDetailsModal && (
           <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
         )}
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
-            data-testid="review-srp-back-button"
-            onClick={() => navigate(-1)}
-            ariaLabel={t('back')}
-          />
-        </Box>
         <Box
           justifyContent={JustifyContent.flexStart}
           marginBottom={4}
