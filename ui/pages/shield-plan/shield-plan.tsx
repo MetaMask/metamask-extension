@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
   PaymentType,
+  PRODUCT_TYPES,
   ProductType,
   RECURRING_INTERVALS,
   RecurringInterval,
@@ -79,6 +80,7 @@ const ShieldPlan = () => {
 
   const {
     subscriptions,
+    trialedProducts,
     loading: subscriptionsLoading,
     error: subscriptionsError,
   } = useUserSubscriptions();
@@ -86,6 +88,7 @@ const ShieldPlan = () => {
     'shield' as ProductType,
     subscriptions,
   );
+  const isTrialed = trialedProducts.includes(PRODUCT_TYPES.SHIELD);
 
   useEffect(() => {
     if (shieldSubscription) {
@@ -140,7 +143,7 @@ const ShieldPlan = () => {
         await dispatch(
           startSubscriptionWithCard({
             products: ['shield' as ProductType],
-            isTrialRequested: true,
+            isTrialRequested: !isTrialed,
             recurringInterval: selectedPlan,
           }),
         );
@@ -150,7 +153,7 @@ const ShieldPlan = () => {
     } catch (err) {
       log.error('Error starting subscription', err);
     }
-  }, [selectedPlan, selectedPaymentMethod, dispatch]);
+  }, [selectedPlan, selectedPaymentMethod, dispatch, isTrialed]);
 
   const loading =
     subscriptionsLoading ||
