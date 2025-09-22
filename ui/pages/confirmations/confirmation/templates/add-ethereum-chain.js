@@ -172,7 +172,7 @@ async function getAlerts(pendingApproval, data) {
   }
 
   if (data.matchedChain) {
-    const requestData = pendingApproval.requestData;
+    const { requestData } = pendingApproval;
     const networkByPassingValidation =
       NETWORKS_BYPASSING_VALIDATION[requestData.chainId.toLowerCase()];
     if (
