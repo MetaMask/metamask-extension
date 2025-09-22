@@ -11,7 +11,6 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { Driver } from '../../webdriver/driver';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import { DEFAULT_SOLANA_WS_MOCKS } from '../solana/mocks/websocketDefaultMocks';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -85,10 +84,6 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        withSolanaWebSocket: {
-          server: true,
-          mocks: DEFAULT_SOLANA_WS_MOCKS,
-        },
         testSpecificMock: mockSegment,
       },
       async ({
