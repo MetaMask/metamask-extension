@@ -174,7 +174,7 @@ async function getAlerts(pendingApproval, data) {
   if (data.matchedChain) {
     const requestData = pendingApproval.requestData;
     const networkByPassingValidation =
-      NETWORKS_BYPASSING_VALIDATION[requestData.chainId];
+      NETWORKS_BYPASSING_VALIDATION[requestData.chainId.toLowerCase()];
     if (
       data.matchedChain.name?.toLowerCase() !==
         requestData.chainName.toLowerCase() &&
