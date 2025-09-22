@@ -17269,14 +17269,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.8.2, axios@npm:^1.8.3, axios@npm:^1.8.4":
-  version: 1.10.0
-  resolution: "axios@npm:1.10.0"
+"axios@npm:^1.12.0, axios@npm:^1.8.3, axios@npm:^1.8.4":
+  version: 1.12.0
+  resolution: "axios@npm:1.12.0"
   dependencies:
     follow-redirects: "npm:^1.15.6"
-    form-data: "npm:^4.0.0"
+    form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/d43c80316a45611fd395743e15d16ea69a95f2b7f7095f2bb12cb78f9ca0a905194a02e52a3bf4e0db9f85fd1186d6c690410644c10ecd8bb0a468e57c2040e4
+  checksum: 10/6c45e294b6ee72f832dbee94cb3fe7331bf2961874fa6b656d909a93b3574c59281f0c62eb92baf7b3e4f39be71936c9f1fcbbe494c90f7ff4d7cc2d7932f06d
   languageName: node
   linkType: hard
 
@@ -24932,7 +24932,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.0":
+"form-data@npm:^4.0.0, form-data@npm:^4.0.4":
   version: 4.0.4
   resolution: "form-data@npm:4.0.4"
   dependencies:
@@ -31903,7 +31903,7 @@ __metadata:
     addons-linter: "npm:^6.28.0"
     autoprefixer: "npm:^10.4.19"
     await-semaphore: "npm:^0.1.3"
-    axios: "npm:^1.8.2"
+    axios: "npm:^1.12.0"
     babelify: "npm:^10.0.0"
     base32-encode: "npm:^1.2.0"
     base64-js: "npm:^1.5.1"
