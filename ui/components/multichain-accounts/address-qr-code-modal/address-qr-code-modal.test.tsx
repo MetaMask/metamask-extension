@@ -36,18 +36,16 @@ describe('AddressQRCodeModal', () => {
         onClose={jest.fn()}
         address="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
 
-    expect(
-      screen.getByText('Test Account / Ethereum Mainnet'),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Ethereum Mainnet Address')).toBeInTheDocument();
+    expect(screen.getByText('Test Account / Ethereum')).toBeInTheDocument();
+    expect(screen.getByText('Ethereum Address')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Use this address to receive tokens and collectibles on Ethereum Mainnet',
+        'Use this address to receive tokens and collectibles on Ethereum',
       ),
     ).toBeInTheDocument();
   });
@@ -59,13 +57,13 @@ describe('AddressQRCodeModal', () => {
         onClose={jest.fn()}
         address="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
 
     expect(
-      screen.queryByText('Test Account / Ethereum Mainnet'),
+      screen.queryByText('Test Account / Ethereum'),
     ).not.toBeInTheDocument();
   });
 
@@ -76,7 +74,7 @@ describe('AddressQRCodeModal', () => {
         onClose={jest.fn()}
         address="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
@@ -98,7 +96,7 @@ describe('AddressQRCodeModal', () => {
         onClose={jest.fn()}
         address="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
@@ -116,7 +114,7 @@ describe('AddressQRCodeModal', () => {
         onClose={jest.fn()}
         address="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
@@ -140,7 +138,7 @@ describe('AddressQRCodeModal', () => {
         onClose={jest.fn()}
         address="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
@@ -159,7 +157,7 @@ describe('AddressQRCodeModal', () => {
         onClose={jest.fn()}
         address={address}
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
@@ -184,7 +182,7 @@ describe('AddressQRCodeModal', () => {
         onClose={onClose}
         address="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
         accountName="Test Account"
-        networkName="Ethereum Mainnet"
+        networkName="Ethereum"
         networkImageSrc="./images/eth_logo.svg"
       />,
     );
