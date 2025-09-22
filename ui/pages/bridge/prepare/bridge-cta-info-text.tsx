@@ -43,6 +43,7 @@ export const BridgeCTAInfoText = () => {
 
   const feeMessage = hasMMFee
     ? t('rateIncludesMMFee', [
+        // @ts-expect-error: controller types are not up to date yet.
         activeQuote.quote.feeData.metabridge.quoteBpsFee ?? BRIDGE_MM_FEE_RATE,
       ])
     : t('noMMFeeSwapping', [activeQuote.quote.destAsset.symbol]);
