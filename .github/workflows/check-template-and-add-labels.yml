@@ -5,10 +5,12 @@ on:
     types: [opened, edited, labeled, unlabeled, reopened]
   pull_request_target:
     types: [opened, edited, labeled, unlabeled, reopened]
+  merge_group:
 
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'merge_group' }} # Skip this step for merge_group events
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1

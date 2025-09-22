@@ -14,6 +14,10 @@ import {
 import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
+import {
+  KeyringControllerGetStateAction,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -111,6 +115,11 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
+export type AppStateControllerGetUnlockPromiseAction = {
+  type: 'AppStateController:getUnlockPromise';
+  handler: (shouldShowUnlockRequest: boolean) => Promise<void>;
+};
+
 export type AppStateControllerRequestQrCodeScanAction = {
   type: 'AppStateController:requestQrCodeScan';
   handler: (request: QrScanRequest) => Promise<SerializedUR>;
@@ -121,14 +130,16 @@ export type AppStateControllerRequestQrCodeScanAction = {
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
+  | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction;
 
 /**
  * Actions that this controller is allowed to call.
  */
-type AllowedActions =
+export type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
+  | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
 /**
@@ -154,7 +165,9 @@ export type AppStateControllerEvents =
 /**
  * Events that this controller is allowed to subscribe.
  */
-type AllowedEvents = PreferencesControllerStateChangeEvent;
+export type AllowedEvents =
+  | KeyringControllerUnlockEvent
+  | PreferencesControllerStateChangeEvent;
 
 export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
@@ -180,8 +193,6 @@ type AppStateControllerInitState = Partial<
 >;
 
 export type AppStateControllerOptions = {
-  addUnlockListener: (callback: () => void) => void;
-  isUnlocked: () => boolean;
   state?: AppStateControllerInitState;
   onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
@@ -527,8 +538,6 @@ export class AppStateController extends BaseController<
 
   #timer: NodeJS.Timeout | null;
 
-  isUnlocked: () => boolean;
-
   readonly waitingForUnlock: { resolve: () => void }[];
 
   #approvalRequestId: string | null;
@@ -538,8 +547,6 @@ export class AppStateController extends BaseController<
   constructor({
     state = {},
     messenger,
-    addUnlockListener,
-    isUnlocked,
     onInactiveTimeout,
     extension,
   }: AppStateControllerOptions) {
@@ -560,9 +567,12 @@ export class AppStateController extends BaseController<
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
-    this.isUnlocked = isUnlocked;
     this.waitingForUnlock = [];
-    addUnlockListener(this.#handleUnlock.bind(this));
+
+    messenger.subscribe(
+      'KeyringController:unlock',
+      this.#handleUnlock.bind(this),
+    );
 
     messenger.subscribe(
       'PreferencesController:stateChange',
@@ -583,6 +593,11 @@ export class AppStateController extends BaseController<
     }
 
     this.messagingSystem.registerActionHandler(
+      'AppStateController:getUnlockPromise',
+      this.getUnlockPromise.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
       'AppStateController:requestQrCodeScan',
       this.#requestQrCodeScan.bind(this),
     );
@@ -601,7 +616,11 @@ export class AppStateController extends BaseController<
    */
   getUnlockPromise(shouldShowUnlockRequest: boolean): Promise<void> {
     return new Promise((resolve) => {
-      if (this.isUnlocked()) {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+
+      if (isUnlocked) {
         resolve();
       } else {
         this.#waitForUnlock(resolve, shouldShowUnlockRequest);

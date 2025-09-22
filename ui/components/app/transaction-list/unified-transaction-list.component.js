@@ -727,11 +727,12 @@ export default function UnifiedTransactionList({
             networkConfig={multichainNetworkConfig}
           />
         ))}
-      {showRampsCard ? (
-        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-      ) : null}
+
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
+        {showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+        ) : null}
         {processedUnifiedActivityItems.length === 0 ? (
           <NoTransactions />
         ) : (
