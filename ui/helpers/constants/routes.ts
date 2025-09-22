@@ -665,7 +665,7 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:id/:permissionGroupName`,
+    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },

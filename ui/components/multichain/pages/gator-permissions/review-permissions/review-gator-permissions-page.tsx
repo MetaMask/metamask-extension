@@ -40,7 +40,7 @@ export const ReviewGatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(history.goBack())}
+            onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }

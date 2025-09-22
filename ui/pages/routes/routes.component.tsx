@@ -661,7 +661,7 @@ export default function Routes() {
             exact
           />
           <Authenticated
-            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:id/:permissionGroupName`}
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             component={ReviewGatorPermissionsPage}
             exact
           />
