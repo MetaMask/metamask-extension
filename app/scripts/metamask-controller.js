@@ -7685,6 +7685,7 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     };
+
     return {
       ...controllerActions,
       snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
@@ -7695,7 +7696,9 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:getSelectedAccount',
         ],
       }),
-      provider: this.provider,
+      provider: this.controllerMessenger.call(
+        'NetworkController:getSelectedNetworkClient',
+      )?.provider,
     };
   }
 
