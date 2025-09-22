@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   Modal,
   ModalOverlay,
@@ -16,9 +15,6 @@ import {
   TextFieldSize,
   HelpText,
   HelpTextSeverity,
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
 } from '../../../../../components/component-library';
 import {
@@ -29,10 +25,10 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
-import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
-import { getUseBlockie } from '../../../../../selectors';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { RecipientList } from '../recipient-list';
 
 export const Recipient = () => {
@@ -41,12 +37,13 @@ export const Recipient = () => {
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
+    toAddressValidated,
   } = useRecipientValidation();
   const hasConfusableCharacters =
     recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
-  const { to, updateTo } = useSendContext();
+  const { to, updateTo, updateToResolved } = useSendContext();
   const [localValue, setLocalValue] = useState(to || '');
   const {
     captureRecipientSelected,
@@ -55,7 +52,6 @@ export const Recipient = () => {
     setRecipientInputMethodSelectAccount,
   } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
-  const useBlockie = useSelector(getUseBlockie);
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);
@@ -116,10 +112,8 @@ export const Recipient = () => {
   );
 
   useEffect(() => {
-    if (recipientResolvedLookup) {
-      updateTo(recipientResolvedLookup);
-    }
-  }, [recipientResolvedLookup, updateTo]);
+    updateToResolved(recipientResolvedLookup);
+  }, [recipientResolvedLookup, updateToResolved]);
 
   const hasRecipients = recipients.length > 0;
 
@@ -167,14 +161,9 @@ export const Recipient = () => {
               display={Display.Flex}
               paddingLeft={2}
             >
-              <AvatarAccount
+              <PreferredAvatar
                 address={matchingRecipient.address}
                 size={AvatarAccountSize.Sm}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
               />
             </Box>
           ) : null
@@ -187,12 +176,12 @@ export const Recipient = () => {
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
       />
-      {recipientError && (
+      {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
           {recipientError}
         </HelpText>
       )}
-      {recipientWarning && (
+      {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
           {hasConfusableCharacters &&
@@ -201,7 +190,7 @@ export const Recipient = () => {
               .join(', ')})`}
         </HelpText>
       )}
-      {recipientResolvedLookup && (
+      {to === toAddressValidated && recipientResolvedLookup && (
         <HelpText severity={HelpTextSeverity.Info} marginTop={1}>
           {t('resolvedLookup', [recipientResolvedLookup])}
         </HelpText>

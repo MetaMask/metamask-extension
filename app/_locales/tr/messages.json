@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buyAndSell": {
-    "message": "Al/Sat"
+  "buy": {
+    "message": "Al"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -1835,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Eşleşen hesap bulunamadı"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Alım adresi:"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alıcı adres veya ENS"
@@ -2934,9 +2931,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Önceki bir işlemin imzalanması veya gönderilmesi devam ediyor"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons ve Blockies, bir bakışta bir hesabı tanımlamana yardımcı olan iki farklı benzersiz simge stilidir."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -4199,13 +4193,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Şifre en az 8 karakterden oluşmalıdır"
-  },
-  "passwordStrength": {
-    "message": "Şifre güvenlik düzeyi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
   },
   "passwordTermsWarning": {
     "message": "Bu şifreyi unutursam MetaMask bunu benim için sıfırlayamaz."
@@ -7139,9 +7126,6 @@
   "watchOutMessage": {
     "message": "Şuraya dikkat edin: $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Zayıf"
   },
   "web3": {
     "message": "Web3"

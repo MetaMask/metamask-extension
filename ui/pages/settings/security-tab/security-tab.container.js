@@ -21,6 +21,8 @@ import {
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
   setSkipDeepLinkInterstitial,
+  getMarketingConsent,
+  setMarketingConsent,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -29,6 +31,8 @@ import {
   getPreferences,
   getIsSocialLoginFlow,
   getSocialLoginType,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -39,8 +43,6 @@ const mapStateToProps = (state) => {
   const { metamask } = state;
 
   const {
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -61,8 +63,8 @@ const mapStateToProps = (state) => {
 
   return {
     networkConfigurations,
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
+    participateInMetaMetrics: getParticipateInMetaMetrics(state),
+    dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -125,6 +127,8 @@ const mapDispatchToProps = (dispatch) => {
       return updateDataDeletionTaskStatus();
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    getMarketingConsent: () => getMarketingConsent(),
+    setMarketingConsent: (value) => dispatch(setMarketingConsent(value)),
   };
 };
 

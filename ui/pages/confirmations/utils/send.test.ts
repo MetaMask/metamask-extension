@@ -70,6 +70,10 @@ describe('Send - utils', () => {
       expect(formatToFixedDecimals('1', 4)).toEqual('1');
       expect(formatToFixedDecimals('1.01010101', 4)).toEqual('1.0101');
     });
+    it('return trailing zeros if trimTrailingZerosEnabled is true', () => {
+      expect(formatToFixedDecimals('1', 4, false)).toEqual('1.0000');
+      expect(formatToFixedDecimals('1.01', 4, false)).toEqual('1.0100');
+    });
   });
 
   describe('prepareEVMTransaction', () => {

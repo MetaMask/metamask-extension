@@ -73,7 +73,9 @@ import {
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
-  SITES,
+  SHIELD_PLAN_ROUTE,
+  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -160,7 +162,6 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
@@ -296,11 +297,11 @@ const GatorPermissionsPage = mmLazy(
       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
     )) as unknown as DynamicImportType,
 );
-const SitesPage = mmLazy(
+const TokenTransferPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/sites-page/sites-page.js'
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
     )) as unknown as DynamicImportType,
 );
 const Connections = mmLazy(
@@ -339,17 +340,23 @@ const MultichainAccountDetailsPage = mmLazy(
       '../multichain-accounts/multichain-account-details-page/index.ts'
     )) as unknown as DynamicImportType,
 );
+
 const SmartAccountPage = mmLazy(
   (() =>
     import(
       '../multichain-accounts/smart-account-page/index.ts'
     )) as unknown as DynamicImportType,
 );
+
 const NonEvmBalanceCheck = mmLazy(
   (() =>
     import(
       '../nonevm-balance-check/index.tsx'
     )) as unknown as DynamicImportType,
+);
+
+const ShieldPlan = mmLazy(
+  (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 
@@ -634,16 +641,17 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
-            path={PERMISSIONS}
-            component={
-              isGatorPermissionsFeatureEnabled()
-                ? GatorPermissionsPage
-                : PermissionsPage
-            }
+            path={GATOR_PERMISSIONS}
+            component={GatorPermissionsPage}
             exact
           />
-          <Authenticated path={SITES} component={SitesPage} exact />
+          <Authenticated
+            path={TOKEN_TRANSFER_ROUTE}
+            component={TokenTransferPage}
+            exact
+          />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             component={MemoizedReviewPermissionsWrapper}
@@ -703,6 +711,7 @@ export default function Routes() {
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
           />
+          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>

@@ -65,8 +65,9 @@ export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
   '/remote/setup-daily-allowance';
 export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
+export const GATOR_PERMISSIONS = '/gator-permissions';
+export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
 export const REVIEW_PERMISSIONS = '/review-permissions';
-export const SITES = '/sites';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 export const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
@@ -135,6 +136,8 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const DEEP_LINK_ROUTE = '/link';
 export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
+
+export const SHIELD_PLAN_ROUTE = '/shield-plan';
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
@@ -645,6 +648,21 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   ///: END:ONLY_INCLUDE_IF
+  {
+    path: SHIELD_PLAN_ROUTE,
+    label: 'Shield Plan',
+    trackInAnalytics: false,
+  },
+  {
+    path: GATOR_PERMISSIONS,
+    label: 'Gator Permissions',
+    trackInAnalytics: false,
+  },
+  {
+    path: TOKEN_TRANSFER_ROUTE,
+    label: 'Gator Permissions Token Transfer',
+    trackInAnalytics: false,
+  },
 ] as const satisfies AppRoute[];
 
 export type AppRoutes = (typeof ROUTES)[number];

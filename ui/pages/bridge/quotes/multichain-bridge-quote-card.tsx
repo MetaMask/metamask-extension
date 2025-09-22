@@ -56,11 +56,12 @@ const getTimerColor = (timeInSeconds: number) => {
 
 export const MultichainBridgeQuoteCard = ({
   onOpenSlippageModal,
+  onOpenRecipientModal,
   selectedDestinationAccount,
 }: {
   onOpenSlippageModal: () => void;
   selectedDestinationAccount: DestinationAccount | null;
-  onOpenRecipientModal?: () => void;
+  onOpenRecipientModal: () => void;
 }) => {
   const t = useI18nContext();
   const { activeQuote, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
@@ -87,6 +88,8 @@ export const MultichainBridgeQuoteCard = ({
   // Calculate if price impact warning should show
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
+  const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
+  const isGasless = gasIncluded7702 || gasIncluded;
 
   const shouldRenderPriceImpactRow = useMemo(() => {
     const priceImpactThreshold = priceImpactThresholds;
@@ -100,7 +103,7 @@ export const MultichainBridgeQuoteCard = ({
     if (!shouldRenderPriceImpactRow) {
       return false;
     }
-    const threshold = gasIncluded
+    const threshold = isGasless
       ? priceImpactThresholds?.gasless
       : priceImpactThresholds?.normal;
     if (threshold === null || threshold === undefined) {
@@ -108,7 +111,7 @@ export const MultichainBridgeQuoteCard = ({
     }
     return Number(priceImpact) >= Number(threshold);
   }, [
-    gasIncluded,
+    isGasless,
     priceImpact,
     shouldRenderPriceImpactRow,
     priceImpactThresholds,
@@ -126,7 +129,7 @@ export const MultichainBridgeQuoteCard = ({
         isOpen={showAllQuotes}
         onClose={() => setShowAllQuotes(false)}
       />
-      <Column gap={2} style={{ marginTop: 'auto' }}>
+      <Column gap={2}>
         {/* Rate and timer */}
         <Row justifyContent={JustifyContent.spaceBetween}>
           <Row gap={2}>
@@ -201,6 +204,12 @@ export const MultichainBridgeQuoteCard = ({
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         gas_included: Boolean(activeQuote.quote?.gasIncluded),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // @ts-expect-error gas_included_7702 needs to be added to bridge-controller types
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        gas_included_7702: Boolean(
+                          activeQuote.quote?.gasIncluded7702,
+                        ),
                       },
                     ),
                   );
@@ -391,6 +400,14 @@ export const MultichainBridgeQuoteCard = ({
               >
                 {selectedDestinationAccount.displayName}
               </Text>
+              <ButtonIcon
+                iconName={IconName.Edit}
+                size={ButtonIconSize.Sm}
+                color={IconColor.iconAlternative}
+                onClick={onOpenRecipientModal}
+                ariaLabel={t('recipientEditAriaLabel')}
+                data-testid="recipient-edit-button"
+              />
             </Row>
           </Row>
         )}
