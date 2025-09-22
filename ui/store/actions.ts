@@ -7042,13 +7042,6 @@ export function setMultichainIntroModalShown(value: boolean) {
   };
 }
 
-export function setShouldShowMultichainIntroModal(value: boolean) {
-  return async () => {
-    await submitRequestToBackground('setShouldShowMultichainIntroModal', [
-      value,
-    ]);
-  };
-}
 
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,

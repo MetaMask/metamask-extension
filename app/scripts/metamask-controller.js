@@ -3181,11 +3181,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainIntroModal.bind(
           appStateController,
         ),
-      setShouldShowMultichainIntroModal:
-        appStateController.setShouldShowMultichainIntroModal.bind(
-          appStateController,
-        ),
-
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
