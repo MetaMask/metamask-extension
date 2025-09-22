@@ -20,7 +20,6 @@ import {
   generateERC721TransferData,
 } from '../send-legacy/send.utils';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
-import { isHex } from '../../../../shared/lib/delegation/utils';
 
 export const trimTrailingZeros = (numStr: string) => {
   return numStr.replace(/(\.\d*?[1-9])0+$/gu, '$1').replace(/\.0*$/u, '');
