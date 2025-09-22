@@ -121,7 +121,7 @@ const networkConfigsByChainId = {
     chainId: '0x1',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {
@@ -166,7 +166,7 @@ const networkConfigsByChainId = {
     chainId: '0xe708',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Linea Mainnet',
+    name: 'Linea',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {

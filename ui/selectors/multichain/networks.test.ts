@@ -35,6 +35,9 @@ jest.mock('../selectors', () => ({
   getIsSolanaTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.solanaTestnetsEnabled,
   ),
+  getIsBitcoinTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.bitcoinTestnetsEnabled,
+  ),
   getEnabledNetworks: jest.fn(() => ({ eip155: {} })),
 }));
 
@@ -61,18 +64,6 @@ const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
       chainId: BtcScope.Mainnet,
       name: 'Bitcoin',
       nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
-      isEvm: false,
-    },
-    [BtcScope.Testnet]: {
-      chainId: BtcScope.Testnet,
-      name: 'Bitcoin Testnet',
-      nativeCurrency: `${BtcScope.Testnet}/slip44:0`,
-      isEvm: false,
-    },
-    [BtcScope.Signet]: {
-      chainId: BtcScope.Signet,
-      name: 'Bitcoin Mutinynet',
-      nativeCurrency: `${BtcScope.Signet}/slip44:0`,
       isEvm: false,
     },
   };
@@ -138,6 +129,7 @@ const mockState: TestState = {
     remoteFeatureFlags: {
       addSolanaAccount: true,
       solanaTestnetsEnabled: true,
+      bitcoinTestnetsEnabled: false,
       addBitcoinAccount: true,
     },
     multichainNetworkConfigurationsByChainId: {
@@ -209,8 +201,6 @@ describe('Multichain network selectors', () => {
       ).toStrictEqual([
         {
           [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-          [BtcScope.Testnet]: mockNonEvmNetworks[BtcScope.Testnet],
-          [BtcScope.Signet]: mockNonEvmNetworks[BtcScope.Signet],
           ...mockEvmNetworksWithNewConfig,
         },
         mockEvmNetworksWithOldConfig,
@@ -291,6 +281,10 @@ describe('Multichain network selectors', () => {
               [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
             },
           },
+          multichainNetworkConfigurationsByChainId: {
+            [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+            ...mockEvmNetworksWithNewConfig,
+          },
         },
       };
 
@@ -302,8 +296,6 @@ describe('Multichain network selectors', () => {
         {
           ...mockEvmNetworksWithNewConfig,
           [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-          [BtcScope.Testnet]: mockNonEvmNetworks[BtcScope.Testnet],
-          [BtcScope.Signet]: mockNonEvmNetworks[BtcScope.Signet],
         },
         mockEvmNetworksWithOldConfig,
       ]);
@@ -330,6 +322,12 @@ describe('Multichain network selectors', () => {
         },
       };
 
+      const expectedNonEvmNetworks = {
+        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+        [SolScope.Devnet]: mockNonEvmNetworks[SolScope.Devnet],
+        [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+      };
+
       expect(
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
@@ -337,7 +335,7 @@ describe('Multichain network selectors', () => {
       ).toStrictEqual([
         {
           ...mockEvmNetworksWithNewConfig,
-          ...mockNonEvmNetworks,
+          ...expectedNonEvmNetworks,
         },
         mockEvmNetworksWithOldConfig,
       ]);
