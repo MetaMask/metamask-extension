@@ -98,6 +98,7 @@ const Name = memo(
             type={type}
             variation={variation}
             onClose={handleModalClose}
+            shouldShowWalletName={shouldShowWalletName}
           />
         )}
         <NameDisplay

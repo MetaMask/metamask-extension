@@ -48,10 +48,7 @@ import {
 import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
-import {
-  getIsMultichainAccountsState2Enabled,
-  getNameSources,
-} from '../../../../selectors';
+import { getNameSources } from '../../../../selectors';
 import {
   setName as saveName,
   updateProposedNames,
@@ -61,7 +58,6 @@ import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -69,7 +65,7 @@ const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
 export type NameDetailsProps = {
   onClose: () => void;
-  sourcePriority?: string[];
+  shouldShowWalletName?: boolean;
   type: NameType;
   value: string;
   variation: string;
@@ -219,6 +215,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NameDetails({
   onClose,
+  shouldShowWalletName = false,
   type,
   value,
   variation,
@@ -228,9 +225,6 @@ export default function NameDetails({
     type,
     variation,
   );
-  const isBIP44 = useSelector(getIsMultichainAccountsState2Enabled);
-  const walletsWithAccounts = useSelector(getWalletsWithAccounts);
-  const hasMoreThanOneWallet = Object.keys(walletsWithAccounts).length > 1;
 
   const {
     name: displayName,
@@ -404,7 +398,7 @@ export default function NameDetails({
                 variation={variation}
                 showFullName
               />
-              {walletName && isBIP44 && hasMoreThanOneWallet && (
+              {walletName && shouldShowWalletName && (
                 <Text
                   as="span"
                   variant={TextVariant.bodySm}
