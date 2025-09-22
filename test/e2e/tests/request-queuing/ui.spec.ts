@@ -245,10 +245,7 @@ describe.only('Request-queue UI changes', function () {
         });
         await rejectTransactionRedesign(driver);
 
-        // Wait for dialog to close and window state to stabilize
-        await driver.delay(2000);
-
-        // Go to the second dapp, ensure it uses Ethereum Mainnet
+        // Go to the second dapp, ensure it uses Ethereum
         await selectDappClickSend(driver, DAPP_ONE_URL);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
           chainId: '0x53a',
@@ -440,7 +437,7 @@ describe.only('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -465,12 +462,12 @@ describe.only('Request-queue UI changes', function () {
         );
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
-        // The current globally selected network, Ethereum Mainnet, should be used
+        // The current globally selected network, Ethereum, should be used
         await selectDappClickSend(driver, DAPP_URL);
         await driver.delay(veryLargeDelayMs);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
           chainId: '0x1',
-          networkText: 'Ethereum Mainnet',
+          networkText: 'Ethereum',
           originText: DAPP_URL,
         });
       },
@@ -503,7 +500,7 @@ describe.only('Request-queue UI changes', function () {
         // Switch to mainnet using per-dapp connected network flow
         await headerNavbar.openConnectionMenu();
         await headerNavbar.clickConnectedSitePopoverNetworkButton();
-        await headerNavbar.selectNetwork('Ethereum Mainnet');
+        await headerNavbar.selectNetwork('Ethereum');
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -561,12 +558,12 @@ describe.only('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Check if Ethereum Mainnet is selected
+        // Check if Ethereum is selected
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
@@ -644,12 +641,12 @@ describe.only('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Check if Ethereum Mainnet is selected
+        // Check if Ethereum is selected
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');

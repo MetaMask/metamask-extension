@@ -12,10 +12,10 @@ export const Tabs = <TKey extends string = string>({
   defaultActiveTabKey,
   onTabClick,
   children,
-  tabsClassName = '',
   subHeader = null,
   tabListProps = {},
   tabContentProps = {},
+  className = '',
   ...props
 }: TabsProps<TKey>) => {
   // Helper function to get valid children, filtering out null/undefined/false values
@@ -57,14 +57,12 @@ export const Tabs = <TKey extends string = string>({
 
     return validChildren.map((child, index) => {
       const { tabKey } = child.props;
-      const isSingleTab = numberOfTabs === 1;
 
       return React.cloneElement(child, {
         ...child.props,
         onClick: (idx: number) => handleTabClick(idx, tabKey),
         tabIndex: index,
         isActive: numberOfTabs > 1 && index === activeTabIndex,
-        isSingleTab,
         key: tabKey,
       });
     });
@@ -86,32 +84,19 @@ export const Tabs = <TKey extends string = string>({
   };
 
   return (
-    <Box
-      className={twMerge('tabs', 'transform-gpu', props.className)}
-      {...props}
-    >
+    <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
       <Box
         role="tablist"
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Start}
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
-        gap={0}
+        gap={4}
         {...tabListProps}
-        className={twMerge(
-          'tabs__list',
-          'top-0 z-[2]',
-          tabsClassName,
-          tabListProps?.className,
-        )}
       >
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box
-        role="tabpanel"
-        {...tabContentProps}
-        className={twMerge('tabs__content', tabContentProps?.className || '')}
-      >
+      <Box role="tabpanel" {...tabContentProps}>
         {renderActiveTabContent()}
       </Box>
     </Box>
