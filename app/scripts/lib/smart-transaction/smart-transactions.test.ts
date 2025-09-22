@@ -10,6 +10,12 @@ import {
   ClientId,
   type SmartTransaction,
 } from '@metamask/smart-transactions-controller';
+import type {
+  TransactionControllerConfirmExternalTransactionAction,
+  TransactionControllerGetNonceLockAction,
+  TransactionControllerGetTransactionsAction,
+  TransactionControllerUpdateTransactionAction,
+} from '@metamask/transaction-controller';
 import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
@@ -73,7 +79,11 @@ function withRequest<ReturnValue>(
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
   const { options } = rest;
   const messenger = new Messenger<
-    AllowedActions,
+    | TransactionControllerGetNonceLockAction
+    | TransactionControllerConfirmExternalTransactionAction
+    | TransactionControllerGetTransactionsAction
+    | TransactionControllerUpdateTransactionAction
+    | AllowedActions,
     NetworkControllerStateChangeEvent | AllowedEvents
   >();
 
@@ -103,21 +113,21 @@ function withRequest<ReturnValue>(
 
   const smartTransactionsControllerMessenger = messenger.getRestricted({
     name: 'SmartTransactionsController',
-    allowedActions: [],
+    allowedActions: [
+      'TransactionController:getNonceLock',
+      'TransactionController:confirmExternalTransaction',
+      'TransactionController:getTransactions',
+      'TransactionController:updateTransaction',
+    ],
     allowedEvents: ['NetworkController:stateChange'],
   });
 
   const smartTransactionsController = new SmartTransactionsController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: smartTransactionsControllerMessenger,
-    getNonceLock: jest.fn(),
-    confirmExternalTransaction: jest.fn(),
     trackMetaMetricsEvent: jest.fn(),
-    getTransactions: jest.fn(),
     getMetaMetricsProps: jest.fn(),
     clientId: ClientId.Extension,
     getFeatureFlags: jest.fn(),
-    updateTransaction: jest.fn(),
   });
 
   jest.spyOn(smartTransactionsController, 'getFees').mockResolvedValue({
