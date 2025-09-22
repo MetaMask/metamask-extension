@@ -1148,10 +1148,19 @@ export class AppStateController extends BaseController<
       return undefined;
     }
 
+    // Handle legacy cache entries without timestamp
+    if (!cached.timestamp) {
+      this.update((state) => {
+        delete state.addressSecurityAlertResponses[address.toLowerCase()];
+      });
+      return undefined;
+    }
+
     // Check if the cached response has expired (15 minute TTL)
     const now = Date.now();
     const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
     if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
+      // Remove expired entry
       this.update((state) => {
         delete state.addressSecurityAlertResponses[address.toLowerCase()];
       });
