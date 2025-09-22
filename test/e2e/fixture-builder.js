@@ -59,7 +59,8 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
-      NetworkOrderController: {
+      NetworkOrderController: {},
+      NetworkEnablementController: {
         enabledNetworkMap: {
           eip155: {
             [CHAIN_IDS.LOCALHOST]: true,
