@@ -67,11 +67,19 @@ export const getMultichainAccountsRemoteFeatureFlags = (
 export const getIsMultichainAccountsState1Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const remoteFlag = getMultichainAccountsRemoteFeatureFlags(
+  const remoteFlagState1 = getMultichainAccountsRemoteFeatureFlags(
     state,
     STATE_1_FLAG,
   );
-  return isMultichainAccountsFeatureEnabled(remoteFlag, FEATURE_VERSION_1);
+  const remoteFlagState2 = getMultichainAccountsRemoteFeatureFlags(
+    state,
+    STATE_2_FLAG,
+  );
+
+  return (
+    isMultichainAccountsFeatureEnabled(remoteFlagState1, FEATURE_VERSION_1) ||
+    isMultichainAccountsFeatureEnabled(remoteFlagState2, FEATURE_VERSION_2)
+  );
 };
 
 /**
