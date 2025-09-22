@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useHistory, useParams, Redirect } from 'react-router-dom';
+import { useParams, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Display,
@@ -53,8 +53,6 @@ const DeFiPage = () => {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
-
-  const history = useHistory();
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
 
@@ -100,7 +98,7 @@ const DeFiPage = () => {
           size={ButtonIconSize.Sm}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          href={DEFAULT_ROUTE}
         />
       </Box>
 
