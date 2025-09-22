@@ -22,6 +22,10 @@ export enum HyperliquidPermissionTriggerType {
   OnNavigateConnectedTab = 'on_navigate_connected_tab',
 }
 
+function isExtendedJSONRPCRequest(req: JsonRpcRequest): req is ExtendedJSONRPCRequest {
+  return Boolean((req as ExtendedJSONRPCRequest).origin) && Boolean((req as ExtendedJSONRPCRequest).tabId);
+}
+
 /**
  * Creates middleware that monitors permission requests for Hyperliquid.
  * When a permission is granted to Hyperliquid, it triggers the referral flow.
@@ -44,14 +48,17 @@ export function createHyperliquidReferralMiddleware(
       >,
       next: AsyncJsonRpcEngineNextCallback,
     ) => {
-      const extendedReq = req as ExtendedJSONRPCRequest;
+      if (!isExtendedJSONRPCRequest(req)) {
+        return
+      }
+
       // First, call next to process the request
       await next();
 
       // After the request is processed, check if it was a successful permission grant for Hyperliquid
       const isHyperliquidConnectionRequest =
-        extendedReq.method === 'wallet_requestPermissions' &&
-        extendedReq.origin === HYPERLIQUID_ORIGIN;
+        req.method === 'wallet_requestPermissions' &&
+        req.origin === HYPERLIQUID_ORIGIN;
       const arePermissionsGranted =
         Array.isArray(res.result) &&
         res.result.some(
@@ -62,7 +69,7 @@ export function createHyperliquidReferralMiddleware(
         try {
           handleHyperliquidReferral({
             origin: HYPERLIQUID_ORIGIN,
-            tabId: extendedReq.tabId,
+            tabId: req.tabId,
             triggerType: HyperliquidPermissionTriggerType.NewConnection,
           });
         } catch (error) {
