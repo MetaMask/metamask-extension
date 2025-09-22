@@ -18,8 +18,8 @@ export async function setupSolanaWebsocketMocks(
   const wsServer = localWebSocketServer.getServer();
 
   const mergedMocks: WebSocketMessageMock[] = [
-    ...DEFAULT_SOLANA_WS_MOCKS,
     ...mocks,
+    ...DEFAULT_SOLANA_WS_MOCKS,
   ];
 
   // Add Solana-specific message handlers to the existing server
