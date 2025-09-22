@@ -7,11 +7,7 @@ const STATE_MOCK_DEFAULT = {
   metamask: {
     preferences: {
       referrals: {
-        hyperliquid: {
-          approvedAccounts: [],
-          passedAccounts: [],
-          declinedAccounts: [],
-        },
+        hyperliquid: {},
       },
     },
   },

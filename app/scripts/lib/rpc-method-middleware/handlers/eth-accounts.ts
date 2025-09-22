@@ -37,7 +37,6 @@ const ethAccounts = {
 export default ethAccounts;
 
 /**
- * Handler for eth_accounts RPC method.
  *
  * @param _req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
