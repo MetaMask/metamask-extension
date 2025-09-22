@@ -1,4 +1,4 @@
-import { until, WebElement } from 'selenium-webdriver';
+import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
@@ -362,10 +362,13 @@ class HomePage {
       waitForElementState: (state: string, timeout: number) => Promise<void>;
     }
   > {
-    return await this.driver.waitForSelector('.mm-skeleton', {
+    return (await this.driver.waitForSelector('.mm-skeleton', {
       state: 'visible',
       timeout: 100,
-    });
+      // The `waitForSelector` method returns the wrong type.
+      // We supply that type in the return type, and we don't need to restate it here.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    })) as any;
   }
 
   async waitForSkeletonToDisappear(
@@ -373,10 +376,6 @@ class HomePage {
       waitForElementState: (state: string, timeout: number) => Promise<void>;
     },
   ): Promise<void> {
-    // await this.driver.driver.wait(
-    //   until.stalenessOf(skeleton),
-    //   this.driver.timeout,
-    // );
     await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
