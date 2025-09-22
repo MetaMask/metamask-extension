@@ -346,7 +346,7 @@
     "@metamask/selected-network-controller": "^24.0.0",
     "@metamask/shield-controller": "^0.1.1",
     "@metamask/signature-controller": "^33.0.0",
-    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A19.2.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-19.2.0-eb37c8ab17.patch",
+    "@metamask/smart-transactions-controller": "^19.2.1",
     "@metamask/snaps-controllers": "^14.2.2",
     "@metamask/snaps-execution-environments": "^10.2.1",
     "@metamask/snaps-rpc-methods": "^13.5.1",
