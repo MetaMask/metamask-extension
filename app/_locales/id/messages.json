@@ -1428,9 +1428,6 @@
   "connectingTo": {
     "message": "Menghubungkan ke $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' sedang dihentikan dan mungkin tidak dapat beroperasi. Coba jaringan lainnya."
-  },
   "connectingToGoerli": {
     "message": "Menghubungkan ke jaringan uji Goerli"
   },
@@ -1593,9 +1590,6 @@
   "currentNetwork": {
     "message": "Jaringan saat ini",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "URL RPC saat ini untuk jaringan ini tidak digunakan lagi."
   },
   "currentTitle": {
     "message": "Saat ini:"
@@ -3600,10 +3594,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Biaya gas relatif $1 dalam 72 jam terakhir.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Kami tidak dapat terhubung ke $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL Jaringan"
@@ -6559,9 +6549,6 @@
     "message": "Ganti mata uang input"
   },
   "switchNetwork": {
-    "message": "Beralih jaringan"
-  },
-  "switchNetworks": {
     "message": "Beralih jaringan"
   },
   "switchToNetwork": {

@@ -1428,9 +1428,6 @@
   "connectingTo": {
     "message": "正在连接 $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "“$1” 正在逐步淘汰，可能无法使用。请尝试其他网络。"
-  },
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
@@ -1593,9 +1590,6 @@
   "currentNetwork": {
     "message": "当前网络",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "此网络的当前 RPC URL 已被弃用。"
   },
   "currentTitle": {
     "message": "当前："
@@ -3600,10 +3594,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "相对过去72小时，燃料费用为 $1。",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "我们无法连接到 $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "网络 URL"
@@ -6559,9 +6549,6 @@
     "message": "切换输入货币"
   },
   "switchNetwork": {
-    "message": "切换网络"
-  },
-  "switchNetworks": {
     "message": "切换网络"
   },
   "switchToNetwork": {

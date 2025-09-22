@@ -8171,6 +8171,8 @@ export default class MetamaskController extends EventEmitter {
   };
 
   setEnabledNetworks = async (chainIds, networkId) => {
+    console.log('Setting enabled networks');
+
     try {
       this.networkOrderController.setEnabledNetworks(chainIds, networkId);
     } catch (err) {
@@ -8182,6 +8184,8 @@ export default class MetamaskController extends EventEmitter {
   };
 
   setEnabledNetworksMultichain = async (chainIds, namespace) => {
+    console.log('Setting enabled networks (multichain)');
+
     try {
       this.networkOrderController.setEnabledNetworksMultichain(
         chainIds,

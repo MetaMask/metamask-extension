@@ -1428,9 +1428,6 @@
   "connectingTo": {
     "message": "Verbindung mit $1 wird hergestellt"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "‚$1‘ wird eingestellt und funktioniert möglicherweise nicht mehr. Versuchen Sie ein anderes Netzwerk."
-  },
   "connectingToGoerli": {
     "message": "Verbindungsaufbau zum Goerli-Testnetzwerk"
   },
@@ -1593,9 +1590,6 @@
   "currentNetwork": {
     "message": "Aktuelles Netzwerk",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "Die aktuelle RPC-URL für dieses Netzwerk ist veraltet."
   },
   "currentTitle": {
     "message": "Aktuell:"
@@ -3600,10 +3594,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Die Gas-Gebühren betragen $1 bezogen auf die letzten 72 Stunden.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Wir können keine Verbindung zu $1 aufbauen.",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Netzwerk-URL"
@@ -6559,9 +6549,6 @@
     "message": "Eingangswährung wechseln"
   },
   "switchNetwork": {
-    "message": "Netzwerk wechseln"
-  },
-  "switchNetworks": {
     "message": "Netzwerk wechseln"
   },
   "switchToNetwork": {

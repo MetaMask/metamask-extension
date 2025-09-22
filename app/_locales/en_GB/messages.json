@@ -1491,9 +1491,6 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' is being phased out and may not work. Try another network."
-  },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
@@ -1670,9 +1667,6 @@
   "currentNetwork": {
     "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "The current rpc url for this network has been deprecated."
   },
   "currentTitle": {
     "message": "Current:"
@@ -3765,10 +3759,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Gas fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "We can't connect to $1",
-    "description": "$1 represents the network name"
   },
   "networkTabCustom": {
     "message": "Custom"
@@ -7036,9 +7026,6 @@
   },
   "switchNetwork": {
     "message": "Switch network"
-  },
-  "switchNetworks": {
-    "message": "Switch networks"
   },
   "switchToNetwork": {
     "message": "Switch to $1",

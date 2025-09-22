@@ -1428,9 +1428,6 @@
   "connectingTo": {
     "message": "Σύνδεση με $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "Το '$1' καταργείται σταδιακά και μπορεί να μην λειτουργεί. Δοκιμάστε ένα άλλο δίκτυο."
-  },
   "connectingToGoerli": {
     "message": "Σύνδεση στο δίκτυο δοκιμών Goerli"
   },
@@ -1593,9 +1590,6 @@
   "currentNetwork": {
     "message": "Τρέχον δίκτυο",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "Η τρέχουσα διεύθυνση rpc για αυτό το δίκτυο καταργήθηκε."
   },
   "currentTitle": {
     "message": "Τρέχουσα:"
@@ -3600,10 +3594,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Τα τέλη συναλλαγών είναι $1 σε σχέση με τις τελευταίες 72 ώρες.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Δεν μπορούμε να συνδεθούμε στο $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Διεύθυνση URL του δικτύου"
@@ -6560,9 +6550,6 @@
   },
   "switchNetwork": {
     "message": "Αλλαγή δικτύου"
-  },
-  "switchNetworks": {
-    "message": "Αλλαγή δικτύων"
   },
   "switchToNetwork": {
     "message": "Αλλαγή σε $1",
