@@ -77,7 +77,7 @@ class NetworkManager {
     });
   }
 
-  async selectNetworkByName(networkName: string): Promise<void> {
+  async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),

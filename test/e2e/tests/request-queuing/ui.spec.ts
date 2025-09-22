@@ -191,7 +191,7 @@ async function validateBalanceAndActivity(
   }
 }
 
-describe.only('Request-queue UI changes', function () {
+describe('Request-queue UI changes', function () {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
 
   it('should show network specific to domain', async function () {
@@ -234,7 +234,7 @@ describe.only('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await networkManager.selectNetworkByName('Localhost 8546');
+        await networkManager.selectNetworkByNameWithWait('Localhost 8546');
 
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
@@ -379,21 +379,21 @@ describe.only('Request-queue UI changes', function () {
           await networkManager.openNetworkManager();
           await networkManager.selectTab('Custom');
 
-          await networkManager.selectNetworkByName('Localhost 7777');
+          await networkManager.selectNetworkByNameWithWait('Localhost 7777');
           await validateBalanceAndActivity(driver, '24.9998');
         }
 
         // Validate second network, where transaction was rejected
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await networkManager.selectNetworkByName('Localhost 8546');
+        await networkManager.selectNetworkByNameWithWait('Localhost 8546');
 
         await validateBalanceAndActivity(driver, '25', 0);
 
         // Validate first network, where transaction was confirmed
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Custom');
-        await networkManager.selectNetworkByName('Localhost 8545');
+        await networkManager.selectNetworkByNameWithWait('Localhost 8545');
 
         await validateBalanceAndActivity(driver, '24.9998');
       },
