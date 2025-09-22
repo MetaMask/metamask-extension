@@ -6790,11 +6790,16 @@ export function deleteNotificationsById(
 }
 
 /**
- * Synchronizes account tree data with user storage between devices.
+ * Bi-directionally syncs the AccountTreeController state with user storage.
+ * Optionally discovers and creates accounts with balance for the given keyring id.
  *
- * This function sends a request to the background script to sync accounts data and update the state accordingly.
+ * This function sends a request to the background script.
  * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
+ * @param options - The options for syncing the account tree.
+ * @param options.ensureDoneAtLeastOnce - Whether to ensure the sync has been done at least once. If a full sync has already been done for this installation, this does nothing.
+ * @param options.alsoDiscoverAndCreateAccounts - Whether to also discover and create accounts with balance.
+ * @param options.keyringIdToDiscover - The keyring id to discover and create accounts for.
  * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
  */
 export function syncAccountTreeWithUserStorage(
