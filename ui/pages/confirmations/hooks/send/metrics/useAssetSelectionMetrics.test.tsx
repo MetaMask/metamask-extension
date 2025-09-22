@@ -263,7 +263,7 @@ describe('useAssetSelectionMetrics', () => {
     });
 
     it('tracks native asset selection with correct properties', () => {
-      const nativeAsset = { ...EVM_NATIVE_ASSET, isNative: true };
+      const nativeAsset = EVM_NATIVE_ASSET;
 
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
@@ -280,7 +280,7 @@ describe('useAssetSelectionMetrics', () => {
         properties: {
           account_type: 'MetaMask',
           asset_type: 'native',
-          asset_list_position: 0,
+          asset_list_position: 2,
           asset_list_size: '5',
           chain_id: 5,
           chain_id_caip: undefined,

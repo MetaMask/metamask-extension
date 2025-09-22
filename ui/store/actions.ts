@@ -54,6 +54,10 @@ import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
@@ -412,6 +416,10 @@ export function restoreSocialBackupAndGetSeedPhrase(
         'restoreSocialBackupAndGetSeedPhrase',
         [password],
       );
+
+      // sync marketing consent with metametrics
+      const marketingConsent = await getMarketingConsent();
+      dispatch(setDataCollectionForMarketing(marketingConsent));
 
       dispatch(hideWarning());
       await forceUpdateMetamaskState(dispatch);
@@ -4103,6 +4111,9 @@ export function resetOnboarding(): ThunkAction<
       if (isSocialLoginFlow) {
         await dispatch(resetOAuthLoginState());
       }
+
+      // reset metametrics optin status
+      dispatch(setParticipateInMetaMetrics(null));
     } catch (err) {
       console.error(err);
     }
@@ -4225,20 +4236,6 @@ export function setDataCollectionForMarketing(
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
-    });
-  };
-}
-
-export function setIsSocialLoginFlowEnabledForMetrics(
-  isSocialLoginFlowEnabledForMetrics: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setIsSocialLoginFlowEnabledForMetrics', [
-      isSocialLoginFlowEnabledForMetrics,
-    ]);
-    dispatch({
-      type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
-      value: isSocialLoginFlowEnabledForMetrics,
     });
   };
 }
@@ -6841,10 +6838,10 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
     try {
       await Promise.all([
         submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          'multichain_accounts_groups',
+          USER_STORAGE_GROUPS_FEATURE_KEY,
         ]),
         submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          'multichain_accounts_wallets',
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ]),
       ]);
     } catch (error) {

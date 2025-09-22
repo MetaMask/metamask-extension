@@ -17,6 +17,12 @@ const withState = {
 
 describe('Power user persona', function () {
   it('loads the requested number of accounts', async function () {
+    if (!process.env.INFURA_PROJECT_ID) {
+      throw new Error(
+        'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
+      );
+    }
+
     await withFixtures(
       {
         title: this.test?.fullTitle(),
