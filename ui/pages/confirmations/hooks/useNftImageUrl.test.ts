@@ -8,6 +8,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../hooks/useGetAssetImageUrl', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -65,7 +66,9 @@ describe('useNftImageUrl', () => {
   });
 
   it('returns processed imageUrl when imageUrl is undefined/null', () => {
-    const { result } = renderHook(() => useNftImageUrl(undefined as any));
+    const { result } = renderHook(() =>
+      useNftImageUrl(undefined as unknown as string),
+    );
 
     expect(result.current).toBe(mockProcessedImageUrl);
     expect(mockUseSelector).toHaveBeenCalledTimes(1);
