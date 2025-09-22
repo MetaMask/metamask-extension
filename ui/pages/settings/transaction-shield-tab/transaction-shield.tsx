@@ -463,6 +463,7 @@ const TransactionShield = () => {
         {buttonRow(t('shieldTxMembershipViewFullBenefits'), () => {
           // todo: link to benefits page
         })}
+        {/* TODO: implement logic to allow submitting case until after 21 days of last active subscription */}
         {!isCancelled &&
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
             // todo: link to submit claim page
@@ -517,7 +518,7 @@ const TransactionShield = () => {
                 billingDetails(
                   t('shieldTxMembershipBillingDetailsBillingAccount'),
                   isCryptoPaymentMethod(shieldSubscription.paymentMethod)
-                    ? shieldSubscription.paymentMethod.crypto.payerAddress // payer address for crypto payment method
+                    ? shieldSubscription.paymentMethod.crypto.payerAddress // TODO: will change to account name
                     : '',
                 )}
               {billingDetails(
