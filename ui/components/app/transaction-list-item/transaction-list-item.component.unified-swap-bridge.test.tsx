@@ -18,7 +18,7 @@ jest.mock('../../../store/background-connection', () => ({
 describe('TransactionListItem for Unified Swap and Bridge', () => {
   it('should render confirmed unified swap tx summary', () => {
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: jest.fn() }}>
+      <MetaMetricsContext.Provider value={jest.fn()}>
         <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
       </MetaMetricsContext.Provider>,
       configureStore()(createBridgeMockStore()),
