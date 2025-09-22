@@ -892,6 +892,14 @@ export default function Routes() {
         )
         ///: END:ONLY_INCLUDE_IF
       }
+
+      {showMultichainIntroModal ? (
+        <MultichainAccountIntroModalContainer
+          isOpen={showMultichainIntroModal}
+          onClose={() => setShowMultichainIntroModal(false)}
+        />
+      ) : null}
+
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
         {!isLoading &&
@@ -905,13 +913,6 @@ export default function Routes() {
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
       <ToastMaster />
-
-      {showMultichainIntroModal ? (
-        <MultichainAccountIntroModalContainer
-          isOpen={showMultichainIntroModal}
-          onClose={() => setShowMultichainIntroModal(false)}
-        />
-      ) : null}
     </div>
   );
 }
