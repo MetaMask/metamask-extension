@@ -166,7 +166,6 @@ export default function OnboardingMetametrics() {
             !isParticipateInMetaMetricsChecked,
           )
         }
-        data-testid="metametrics-participate-in-metrics-box"
       >
         <Checkbox
           id="metametrics-opt-in"
