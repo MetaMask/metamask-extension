@@ -3450,10 +3450,6 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
         ),
-      setIsSocialLoginFlowEnabledForMetrics:
-        metaMetricsController.setIsSocialLoginFlowEnabledForMetrics.bind(
-          metaMetricsController,
-        ),
       setMarketingCampaignCookieId:
         metaMetricsController.setMarketingCampaignCookieId.bind(
           metaMetricsController,

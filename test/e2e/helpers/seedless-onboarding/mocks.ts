@@ -363,6 +363,18 @@ export class OAuthMockttpService {
         return this.onPostRevokeToken();
       });
 
+    server
+      .forGet(AuthServer.GetMarketingOptInStatus)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            is_opt_in: true,
+          },
+        };
+      });
+
     // Intercept the TOPRF requests (Authentication, KeyGen, Eval, etc.) and mock the responses
     server
       .forPost(SSSBaseUrlRgx)
