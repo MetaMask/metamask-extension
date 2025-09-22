@@ -42,8 +42,8 @@ export const loginWithBalanceValidation = async (
   await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
 
-  await homePage.checkSkeletonIsDisplay();
-  await homePage.checkSkeletonIsNotDisplayed();
+  await homePage.checkSkeletonLoadersAreDisplayed();
+  await homePage.checkSkeletonLoadersAreNotDisplayed();
 
   // Verify the expected balance on the homepage
   if (localNode) {

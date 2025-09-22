@@ -356,11 +356,11 @@ class HomePage {
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
-  async checkSkeletonIsDisplay(): Promise<void> {
+  async checkSkeletonLoadersAreDisplayed(): Promise<void> {
     await this.driver.waitForSelector('.mm-skeleton', { state: 'visible' });
   }
 
-  async checkSkeletonIsNotDisplayed(): Promise<void> {
+  async checkSkeletonLoadersAreNotDisplayed(): Promise<void> {
     await this.driver.waitForSelector('.mm-skeleton', { state: 'detached' });
   }
 
