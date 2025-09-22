@@ -57,16 +57,25 @@ export const useAccountSyncing = () => {
 
   const shouldDispatchAccountSyncing = useShouldDispatchAccountSyncing();
 
-  const dispatchAccountSyncing = useCallback(() => {
-    try {
-      if (!shouldDispatchAccountSyncing) {
-        return;
+  const dispatchAccountSyncing = useCallback(
+    (
+      options: {
+        ensureDoneAtLeastOnce?: boolean;
+        alsoDiscoverAndCreateAccounts?: boolean;
+        keyringIdToDiscover?: string;
+      } = {},
+    ) => {
+      try {
+        if (!shouldDispatchAccountSyncing) {
+          return;
+        }
+        dispatch(syncAccountTreeWithUserStorage(options));
+      } catch (e) {
+        log.error(e);
       }
-      dispatch(syncAccountTreeWithUserStorage());
-    } catch (e) {
-      log.error(e);
-    }
-  }, [dispatch, shouldDispatchAccountSyncing]);
+    },
+    [dispatch, shouldDispatchAccountSyncing],
+  );
 
   return {
     dispatchAccountSyncing,

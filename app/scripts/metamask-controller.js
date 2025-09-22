@@ -1367,19 +1367,14 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
-          if (this.isMultichainAccountsFeatureState2Enabled()) {
-            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-            await this.getSnapKeyring();
-            ///: END:ONLY_INCLUDE_IF
-
-            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          }
-
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
           } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts();
+            await this.syncAccountTreeWithUserStorage({
+              ensureDoneAtLeastOnce: true,
+              alsoDiscoverAndCreateAccounts: true,
+            });
           } else {
             await this._addAccountsWithBalance();
           }
@@ -2899,6 +2894,8 @@ export default class MetamaskController extends EventEmitter {
           accountGroupName,
         );
       },
+      syncAccountTreeWithUserStorage:
+        this.syncAccountTreeWithUserStorage.bind(this),
 
       // MultichainAccountService
       createNextMultichainAccountGroup: async (walletId) => {
@@ -3540,12 +3537,6 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
-      // AccountTreeController backup and sync
-      syncAccountTreeWithUserStorage:
-        this.accountTreeController.syncWithUserStorage.bind(
-          this.accountTreeController,
-        ),
-
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
@@ -4488,6 +4479,42 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Bi-directionally syncs the AccountTreeController state with user storage.
+   * Optionally discovers and creates accounts with balance for the given keyring id.
+   *
+   * @param {object} options - The options for syncing the account tree.
+   * @param {boolean} options.ensureDoneAtLeastOnce - Whether to ensure the sync has been done at least once. If a full sync has already been done for this installation, this does nothing.
+   * @param {boolean} options.alsoDiscoverAndCreateAccounts - Whether to also discover and create accounts with balance.
+   * @param {string} options.keyringIdToDiscover - The keyring id to discover and create accounts for.
+   * @returns {Promise<void>}
+   */
+  async syncAccountTreeWithUserStorage(
+    options = {
+      ensureDoneAtLeastOnce: false,
+      alsoDiscoverAndCreateAccounts: false,
+      keyringIdToDiscover: undefined,
+    },
+  ) {
+    if (!this.isMultichainAccountsFeatureState2Enabled()) {
+      return;
+    }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    await this.getSnapKeyring();
+    ///: END:ONLY_INCLUDE_IF
+
+    if (options.ensureDoneAtLeastOnce) {
+      await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+    } else {
+      await this.accountTreeController.syncWithUserStorage();
+    }
+
+    if (options.alsoDiscoverAndCreateAccounts) {
+      await this.discoverAndCreateAccounts(options.keyringIdToDiscover);
+    }
+  }
+
+  /**
    * Discovers and creates accounts for the given keyring id.
    *
    * @param {string} id - The keyring id to discover and create accounts for.
@@ -4606,7 +4633,7 @@ export default class MetamaskController extends EventEmitter {
       if (this.isMultichainAccountsFeatureState2Enabled()) {
         // We want to trigger a full sync of the account tree after importing a new SRP
         // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-        await this.accountTreeController.syncWithUserStorage();
+        await this.syncAccountTreeWithUserStorage();
       }
 
       let discoveredAccounts;
@@ -4841,11 +4868,10 @@ export default class MetamaskController extends EventEmitter {
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts();
+          await this.syncAccountTreeWithUserStorage({
+            ensureDoneAtLeastOnce: true,
+            alsoDiscoverAndCreateAccounts: true,
+          });
         } else {
           await this._addAccountsWithBalance();
         }
@@ -5021,11 +5047,11 @@ export default class MetamaskController extends EventEmitter {
       );
       if (isHdKeyring) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts(metadata.id);
+          await this.syncAccountTreeWithUserStorage({
+            ensureDoneAtLeastOnce: true,
+            alsoDiscoverAndCreateAccounts: true,
+            keyringIdToDiscover: metadata.id,
+          });
         } else {
           await this._addAccountsWithBalance(
             metadata.id,

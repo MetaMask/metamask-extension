@@ -4736,9 +4736,23 @@ describe('MetaMaskController', () => {
       jest
         .spyOn(metamaskController, 'discoverAndCreateAccounts')
         .mockResolvedValue({});
+
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({});
+
       jest
         .spyOn(metamaskController, '_addAccountsWithBalance')
         .mockResolvedValue({});
+
+      // Mock accountTreeController methods for syncAccountTreeWithUserStorage
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+      jest
+        .spyOn(metamaskController.accountTreeController, 'syncWithUserStorage')
+        .mockResolvedValue(undefined);
       jest
         .spyOn(metamaskController, 'postOnboardingInitialization')
         .mockImplementation(noop);
@@ -4787,13 +4801,6 @@ describe('MetaMaskController', () => {
           cacheTimestamp: 0,
         });
 
-      jest
-        .spyOn(
-          metamaskController.accountTreeController,
-          'syncWithUserStorageAtLeastOnce',
-        )
-        .mockResolvedValue(undefined);
-
       await publishOnboardingState({
         completedOnboarding: false,
         firstTimeFlowType: FirstTimeFlowType.create,
@@ -4807,6 +4814,11 @@ describe('MetaMaskController', () => {
       expect(
         metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
       ).toHaveBeenCalledTimes(1);
+
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).not.toHaveBeenCalled();
+
       expect(
         metamaskController.discoverAndCreateAccounts,
       ).toHaveBeenCalledTimes(1);
@@ -4939,6 +4951,243 @@ describe('MetaMaskController', () => {
       });
       expect(
         metamaskController.discoverAndCreateAccounts,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('syncAccountTreeWithUserStorage', () => {
+    let metamaskController;
+    const password = 'test-password';
+
+    beforeEach(async () => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+      });
+
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+
+      // Mock dependencies
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({});
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'syncWithUserStorageAtLeastOnce',
+        )
+        .mockResolvedValue(undefined);
+      jest
+        .spyOn(metamaskController.accountTreeController, 'syncWithUserStorage')
+        .mockResolvedValue(undefined);
+      jest
+        .spyOn(metamaskController, 'discoverAndCreateAccounts')
+        .mockResolvedValue({ Bitcoin: 1, Solana: 2 });
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should return early if multichain accounts feature state2 is not enabled', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(false);
+
+      await metamaskController.syncAccountTreeWithUserStorage();
+
+      expect(metamaskController.getSnapKeyring).not.toHaveBeenCalled();
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should call getSnapKeyring and sync methods with default options', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      await metamaskController.syncAccountTreeWithUserStorage();
+
+      expect(metamaskController.getSnapKeyring).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should call syncWithUserStorageAtLeastOnce when ensureDoneAtLeastOnce is true', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      await metamaskController.syncAccountTreeWithUserStorage({
+        ensureDoneAtLeastOnce: true,
+      });
+
+      expect(metamaskController.getSnapKeyring).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should call discoverAndCreateAccounts when alsoDiscoverAndCreateAccounts is true', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      await metamaskController.syncAccountTreeWithUserStorage({
+        alsoDiscoverAndCreateAccounts: true,
+      });
+
+      expect(metamaskController.getSnapKeyring).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).toHaveBeenCalledTimes(1);
+      expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalledWith(
+        undefined,
+      );
+    });
+
+    it('should call discoverAndCreateAccounts with specific keyring id when provided', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      const testKeyringId = 'test-keyring-123';
+
+      await metamaskController.syncAccountTreeWithUserStorage({
+        alsoDiscoverAndCreateAccounts: true,
+        keyringIdToDiscover: testKeyringId,
+      });
+
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).toHaveBeenCalledTimes(1);
+      expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalledWith(
+        testKeyringId,
+      );
+    });
+
+    it('should handle all options together', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      const testKeyringId = 'test-keyring-456';
+
+      await metamaskController.syncAccountTreeWithUserStorage({
+        alsoDiscoverAndCreateAccounts: true,
+        keyringIdToDiscover: testKeyringId,
+      });
+
+      expect(metamaskController.getSnapKeyring).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorageAtLeastOnce,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).toHaveBeenCalledTimes(1);
+      expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalledWith(
+        testKeyringId,
+      );
+    });
+
+    it('should handle errors from accountTreeController methods gracefully', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      const syncError = new Error('Sync failed');
+      metamaskController.accountTreeController.syncWithUserStorage.mockRejectedValue(
+        syncError,
+      );
+
+      await expect(
+        metamaskController.syncAccountTreeWithUserStorage(),
+      ).rejects.toThrow('Sync failed');
+
+      expect(metamaskController.getSnapKeyring).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle errors from discoverAndCreateAccounts gracefully', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      const discoverError = new Error('Discovery failed');
+      metamaskController.discoverAndCreateAccounts.mockRejectedValue(
+        discoverError,
+      );
+
+      await expect(
+        metamaskController.syncAccountTreeWithUserStorage({
+          alsoDiscoverAndCreateAccounts: true,
+        }),
+      ).rejects.toThrow('Discovery failed');
+
+      expect(metamaskController.getSnapKeyring).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.discoverAndCreateAccounts,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle errors from getSnapKeyring gracefully', async () => {
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(true);
+
+      const snapKeyringError = new Error('Snap keyring failed');
+      metamaskController.getSnapKeyring.mockRejectedValue(snapKeyringError);
+
+      await expect(
+        metamaskController.syncAccountTreeWithUserStorage(),
+      ).rejects.toThrow('Snap keyring failed');
+
+      expect(metamaskController.getSnapKeyring).toHaveBeenCalledTimes(1);
+      expect(
+        metamaskController.accountTreeController.syncWithUserStorage,
       ).not.toHaveBeenCalled();
     });
   });

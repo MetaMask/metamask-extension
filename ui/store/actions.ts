@@ -6804,18 +6804,20 @@ export function deleteNotificationsById(
  *
  * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
  */
-export function syncAccountTreeWithUserStorage(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function syncAccountTreeWithUserStorage(
+  options: {
+    ensureDoneAtLeastOnce?: boolean;
+    alsoDiscoverAndCreateAccounts?: boolean;
+    keyringIdToDiscover?: string;
+  } = {},
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
       const response = await submitRequestToBackground(
         'syncAccountTreeWithUserStorage',
+        [options],
       );
       return response;
     } catch (error) {
