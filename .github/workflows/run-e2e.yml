@@ -37,6 +37,9 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
 
 jobs:
   run-e2e:
@@ -49,6 +52,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # This is to support tests that set manifestFlags.testing.infuraProjectId, such as power-user.spec.ts
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}

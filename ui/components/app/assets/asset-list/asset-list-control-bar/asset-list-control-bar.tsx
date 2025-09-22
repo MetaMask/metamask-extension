@@ -454,7 +454,7 @@ const AssetListControlBar = ({
               <AvatarNetwork
                 name={currentMultichainNetwork.nickname}
                 src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Sm}
+                size={AvatarNetworkSize.Xs}
                 borderWidth={0}
               />
             )}
