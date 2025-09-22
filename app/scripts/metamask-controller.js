@@ -1483,7 +1483,15 @@ export default class MetamaskController extends EventEmitter {
           firstTimeFlowType,
         } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          const { address } = this.accountsController.getSelectedAccount();
+          const account = this.accountsController.getSelectedAccount();
+          const {
+            address,
+            options: {
+              entropy: { id },
+            },
+          } = account;
+          // here we should get the entropy source Id from the wallet and pass it below to
+          // discoverAndCreateAccounts (the accounts controller automagically sets the created account as the selected account)
 
           if (this.isMultichainAccountsFeatureState2Enabled()) {
             ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -1497,7 +1505,7 @@ export default class MetamaskController extends EventEmitter {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
           } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts();
+            await this.discoverAndCreateAccounts(id);
           } else {
             await this._addAccountsWithBalance();
           }
@@ -4573,7 +4581,14 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      await this.keyringController.createNewVaultAndKeychain(password);
+      if (this.isMultichainAccountsFeatureState2Enabled()) {
+        await this.controllerMessenger.call(
+          'MultichainAccountService:createMultichainAccountWallet',
+          { password },
+        );
+      } else {
+        await this.keyringController.createNewVaultAndKeychain(password);
+      }
       return this.keyringController.state.keyrings[0];
     } finally {
       releaseLock();
@@ -4670,6 +4685,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
+      // START: put in an if block against multichain state 2
       const alreadyImportedSrp = this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
@@ -4698,6 +4714,9 @@ export default class MetamaskController extends EventEmitter {
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
+      // END: multichain state 2
+      // ELSE statement should cover calling to create the wallet, before this block the addNewSeedPhraseBackup should be called regardless of state 2 or not
+      // we will just conditionally call the removeAccount call with the state 2 flag if the seed phrase isn't backed up. Still throwing the error of course.
 
       if (this.onboardingController.getIsSocialLoginFlow()) {
         try {
@@ -4933,10 +4952,15 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       const seedPhraseAsUint8Array =
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-      await this.keyringController.createNewVaultAndRestore(
-        password,
-        seedPhraseAsUint8Array,
-      );
+
+      if (this.isMultichainAccountsFeatureState2Enabled()) {
+
+      } else {
+        await this.keyringController.createNewVaultAndRestore(
+          password,
+          seedPhraseAsUint8Array,
+        );
+      }
 
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
