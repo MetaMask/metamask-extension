@@ -177,7 +177,6 @@ export type ControllerStatePropertiesEnumerated = {
   metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
   participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
   segmentApiCalls: MetaMetricsControllerState['segmentApiCalls'];
-  isSocialLoginFlowEnabledForMetrics: MetaMetricsControllerState['isSocialLoginFlowEnabledForMetrics'];
   traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
