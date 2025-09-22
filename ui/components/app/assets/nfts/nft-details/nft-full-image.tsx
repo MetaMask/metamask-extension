@@ -85,8 +85,6 @@ export default function NftFullImage() {
     setVisible(true);
   }, []);
 
-  console.log('HERE', history);
-
   const onClose = useCallback(() => {
     if (history.action === 'PUSH') {
       // Previous action was a PUSH, so we can navigate back
