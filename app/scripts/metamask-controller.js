@@ -2612,7 +2612,9 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesController,
+      ///: END:ONLY_INCLUDE_IF
     } = this;
 
     return {
@@ -3424,6 +3426,7 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesStartPolling:
         multichainAssetsRatesController.startPolling.bind(
           multichainAssetsRatesController,
@@ -3432,6 +3435,7 @@ export default class MetamaskController extends EventEmitter {
         multichainAssetsRatesController.stopPollingByPollingToken.bind(
           multichainAssetsRatesController,
         ),
+      ///: END:ONLY_INCLUDE_IF
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),

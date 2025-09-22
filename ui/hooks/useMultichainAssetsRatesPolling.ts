@@ -23,7 +23,7 @@ const usePollingEnabled = () => {
 
 const useSelectedAccountId = () => {
   const account = useSelector(getSelectedInternalAccount);
-  return account.id;
+  return account?.id ?? '';
 };
 
 const useMultichainAssetsRatesPolling = () => {
