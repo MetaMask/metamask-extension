@@ -6769,14 +6769,12 @@ export default class MetamaskController extends EventEmitter {
       },
       setEnabledNetworks: async (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworks(chainIds, namespace);
-        await this.lookupSelectedNetworks();
       },
       setEnabledNetworksMultichain: async (chainIds, namespace) => {
         this.networkOrderController.setEnabledNetworksMultichain(
           chainIds,
           namespace,
         );
-        await this.lookupSelectedNetworks();
       },
       getEnabledNetworks: (namespace) => {
         return (
