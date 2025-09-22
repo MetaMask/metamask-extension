@@ -107,6 +107,7 @@ buildTypes:
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
+      - GATOR_PERMISSIONS_ENABLED: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
