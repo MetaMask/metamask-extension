@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 
 type VersionedData = {
   meta: { version: number };
@@ -36,7 +37,7 @@ function transformState(state: Record<string, unknown>) {
     | Record<string, unknown>
     | undefined;
 
-  if (preferences) {
+  if (preferences && !getManifestFlags().testing?.enableSmartAccountOptIn) {
     preferences.smartAccountOptIn = false;
   }
 }
