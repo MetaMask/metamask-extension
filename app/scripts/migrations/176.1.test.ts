@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
-import { migrate, version } from './179';
+import { migrate, version } from './176.1';
 
-const oldVersion = 178;
+const oldVersion = 176;
 
 describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
