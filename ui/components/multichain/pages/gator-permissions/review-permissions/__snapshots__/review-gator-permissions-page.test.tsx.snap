@@ -35,7 +35,7 @@ exports[`Review Gator Permissions Page render renders correctly 1`] = `
           >
             <span
               class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
-              data-testid="token-transfer-page-title"
+              data-testid="review-gator-permissions-page-title"
             >
               Private network
             </span>

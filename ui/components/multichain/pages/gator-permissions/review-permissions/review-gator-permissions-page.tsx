@@ -49,7 +49,7 @@ export const ReviewGatorPermissionsPage = () => {
           as="span"
           variant={TextVariant.headingMd}
           textAlign={TextAlign.Center}
-          data-testid="token-transfer-page-title"
+          data-testid="review-gator-permissions-page-title"
         >
           {getNetworkNameForChainId()}
         </Text>
