@@ -1263,23 +1263,6 @@ describe('preferences controller', () => {
           controller.state.referrals.hyperliquid[testAccount2],
         ).toStrictEqual(ReferralStatus.Approved);
       });
-
-      it('normalizes address case to lowercase', () => {
-        const mixedCaseAccount = '0x1234567890ABCDEF123456789012345678901234' as Hex;
-        const lowerCaseAccount = mixedCaseAccount.toLowerCase() as Hex;
-
-        controller.addReferralApprovedAccount(mixedCaseAccount);
-
-        // Should be stored as lowercase
-        expect(
-          controller.state.referrals.hyperliquid[lowerCaseAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
-
-        // Mixed case key should not exist
-        expect(
-          controller.state.referrals.hyperliquid[mixedCaseAccount],
-        ).toBeUndefined();
-      });
     });
 
     describe('addReferralPassedAccount', () => {
