@@ -163,8 +163,10 @@ export default class SecurityTab extends PureComponent {
     }
 
     if (this.props.socialLoginEnabled) {
-      const res = await this.props.getMarketingConsent();
-      this.props.setDataCollectionForMarketing(res);
+      // Fetch marketing consent from remote server for social login users
+      const marketingConsentFromRemote = await this.props.getMarketingConsent();
+      // Update marketing consent in the store
+      this.props.setDataCollectionForMarketing(marketingConsentFromRemote);
     }
   }
 
