@@ -104,6 +104,8 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainIntroModal: boolean;
+  shouldShowMultichainIntroModal: boolean;
+  lastSeenVersion: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -240,6 +242,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainIntroModal: false,
+  shouldShowMultichainIntroModal: false,
+  lastSeenVersion: null,
 
   ...getInitialStateOverrides(),
 });
@@ -531,6 +535,16 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
     usedInUi: true,
+  },
+  shouldShowMultichainIntroModal: {
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
+  lastSeenVersion: {
+    persist: true,
+    anonymous: true,
+    usedInUi: false,
   },
 };
 
@@ -1067,6 +1081,28 @@ export class AppStateController extends BaseController<
   setHasShownMultichainIntroModal(hasShown: boolean): void {
     this.update((state) => {
       state.hasShownMultichainIntroModal = hasShown;
+    });
+  }
+
+  /**
+   * Sets whether the multichain intro modal should be shown
+   *
+   * @param shouldShow - Whether the modal should be shown
+   */
+  setShouldShowMultichainIntroModal(shouldShow: boolean): void {
+    this.update((state) => {
+      state.shouldShowMultichainIntroModal = shouldShow;
+    });
+  }
+
+  /**
+   * Sets the last seen version
+   *
+   * @param version - Version string
+   */
+  setLastSeenVersion(version: string): void {
+    this.update((state) => {
+      state.lastSeenVersion = version;
     });
   }
 

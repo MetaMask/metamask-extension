@@ -470,6 +470,36 @@ export default class MetamaskController extends EventEmitter {
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
+    // Check version-based upgrade logic for multichain intro modal
+    this.initializeUpgradeDetection = () => {
+      const { lastSeenVersion } = this.appStateController.state;
+      const isState2Enabled = this.isMultichainAccountsFeatureState2Enabled();
+
+      // If this is an upgrade from a previous version AND State 2 is enabled, show modal
+      if (lastSeenVersion && lastSeenVersion !== version && isState2Enabled) {
+        this.appStateController.setShouldShowMultichainIntroModal(true);
+      } else if (
+        lastSeenVersion &&
+        lastSeenVersion !== version &&
+        !isState2Enabled
+      ) {
+        // If version upgraded but State 2 not enabled yet, retry after feature flags load
+        setTimeout(() => {
+          const retryState2Enabled =
+            this.isMultichainAccountsFeatureState2Enabled();
+          if (
+            retryState2Enabled &&
+            !this.appStateController.state.shouldShowMultichainIntroModal
+          ) {
+            this.appStateController.setShouldShowMultichainIntroModal(true);
+          }
+        }, 3000);
+      }
+
+      // Always update last seen version
+      this.appStateController.setLastSeenVersion(version);
+    };
+
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0;
@@ -1818,6 +1848,11 @@ export default class MetamaskController extends EventEmitter {
     } else {
       this._startUISync();
     }
+
+    // Initialize upgrade detection after everything is set up
+    setTimeout(() => {
+      this.initializeUpgradeDetection();
+    }, 2000);
 
     // Lazily update the store with the current extension environment
     this.extension.runtime.getPlatformInfo().then(({ os }) => {
@@ -3181,6 +3216,12 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainIntroModal.bind(
           appStateController,
         ),
+      setShouldShowMultichainIntroModal:
+        appStateController.setShouldShowMultichainIntroModal.bind(
+          appStateController,
+        ),
+      setLastSeenVersion:
+        appStateController.setLastSeenVersion.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:

@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import {
   hideModal,
   setMultichainIntroModalShown,
+  setShouldShowMultichainIntroModal,
   alignMultichainWallets,
 } from '../../../../../store/actions';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../../helpers/constants/routes';
@@ -46,6 +47,8 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
 
     // Mark modal as shown so it doesn't show again
     dispatch(setMultichainIntroModalShown(true));
+    // Disable the should-show flag
+    dispatch(setShouldShowMultichainIntroModal(false));
     dispatch(hideModal());
 
     // Navigate to account list
@@ -64,6 +67,8 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
   const handleClose = useCallback(() => {
     // Mark modal as shown so it doesn't show again
     dispatch(setMultichainIntroModalShown(true));
+    // Disable the should-show flag
+    dispatch(setShouldShowMultichainIntroModal(false));
     dispatch(hideModal());
   }, [dispatch]);
 
