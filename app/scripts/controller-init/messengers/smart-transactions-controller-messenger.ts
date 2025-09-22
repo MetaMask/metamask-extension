@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
-import {
+import type {
   TransactionControllerConfirmExternalTransactionAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetTransactionsAction,
