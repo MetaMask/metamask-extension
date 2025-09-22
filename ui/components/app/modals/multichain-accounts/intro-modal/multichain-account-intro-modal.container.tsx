@@ -27,13 +27,13 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const [error, setError] = useState<string | null>(null);
   const alignmentPromiseRef = useRef<Promise<void> | null>(null);
 
-  // Mobile pattern with useMemo to keep a ref to the on-going promise
+  // Use mobile pattern: useMemo to keep a ref to the on-going promise
   const alignmentPromise = useMemo(() => {
     if (!isLoading) return null;
 
     const promise = Promise.all([
       alignMultichainWallets(),
-      new Promise((resolve) => setTimeout(resolve, 2000)), // Minimum 2s UX feedback
+      new Promise<void>((resolve) => setTimeout(resolve, 2000)), // Minimum 2s UX feedback
     ]);
 
     alignmentPromiseRef.current = promise
@@ -80,7 +80,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   }, []);
 
   const handleClose = useCallback(async () => {
-    // Wait for alignment to complete if it's running
+    // Wait for alignment to complete if it's running (Charly's feedback)
     if (alignmentPromiseRef.current) {
       await alignmentPromiseRef.current;
     }
