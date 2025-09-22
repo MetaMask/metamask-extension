@@ -61,7 +61,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
 }) => {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   // Address segmentation for display
   const addressStart = address.substring(0, PREFIX_LEN);
@@ -166,7 +166,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
 
               <Box
                 // Background and border must remain white regardless of theme
-                className="absolute flex -translate-x-1/2 -translate-y-1/2 bg-white border-8 border-white top-1/2 left-1/2 rounded-xl"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-8 border-white bg-white rounded-xl flex"
                 justifyContent={BoxJustifyContent.Center}
                 alignItems={BoxAlignItems.Center}
               >
