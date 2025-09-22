@@ -18,6 +18,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   isSolanaChainId,
+  isBitcoinChainId,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
@@ -27,8 +28,23 @@ import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util'
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MultichainNetworks,
+} from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
+
+/**
+ * Checks if a chainId is for a non-EVM chain (Solana or Bitcoin)
+ *
+ * @param chainId - The chain ID to check
+ * @returns True if the chain is non-EVM (Solana or Bitcoin), false otherwise
+ */
+export const isNonEvmChain = (
+  chainId: string | number | Hex | CaipChainId,
+): boolean => {
+  return isSolanaChainId(chainId) || isBitcoinChainId(chainId);
+};
 
 /**
  * Safely gets the native token name for a given chainId.
@@ -226,6 +242,16 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   // If the token is native, return the SVG image asset
   if (isNativeAddress(address)) {
     if (isSolanaChainId(chainId)) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
+    }
+    // Check if it's Bitcoin chain ID
+    if (
+      [
+        MultichainNetworks.BITCOIN,
+        MultichainNetworks.BITCOIN_TESTNET,
+        MultichainNetworks.BITCOIN_SIGNET,
+      ].includes(chainId as MultichainNetworks)
+    ) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
     }
     return CHAIN_ID_TOKEN_IMAGE_MAP[

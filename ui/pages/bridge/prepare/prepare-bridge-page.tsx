@@ -13,6 +13,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
   isSolanaChainId,
+  isBitcoinChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
@@ -46,7 +47,7 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  getIsToOrFromSolana,
+  getIsToOrFromNonEvm,
   getHardwareWalletName,
   getIsQuoteExpired,
   getIsUnifiedUIEnabled,
@@ -144,7 +145,7 @@ export const useEnableMissingNetwork = () => {
           const isNetworkEnabled = enabledNetworkKeys.includes(chainId);
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
-            // This way users can see their full briding tx activity
+            // This way users can see their full bridging tx activity
             dispatch(enableAllPopularNetworks());
           }
         }
@@ -188,8 +189,12 @@ const PrepareBridgePage = ({
   const toChain = useSelector(getToChain);
 
   const isFromTokensLoading = useMemo(() => {
-    // This is an EVM token list. Solana tokens should not trigger loading state.
-    if (fromChain && isSolanaChainId(fromChain.chainId)) {
+    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
+    if (
+      fromChain &&
+      (isSolanaChainId(fromChain.chainId) ||
+        isBitcoinChainId(fromChain.chainId))
+    ) {
       return false;
     }
     return Object.keys(fromTokens).length === 0;
@@ -282,7 +287,10 @@ const PrepareBridgePage = ({
           let address = '';
           if (isNativeAddress(fromToken.address)) {
             address = '';
-          } else if (isSolanaChainId(fromChain.chainId)) {
+          } else if (
+            isSolanaChainId(fromChain.chainId) ||
+            isBitcoinChainId(fromChain.chainId)
+          ) {
             address = fromToken.address || '';
           } else {
             address = fromToken.address?.toLowerCase() || '';
@@ -357,7 +365,7 @@ const PrepareBridgePage = ({
     isUsingHardwareWallet,
   ]);
 
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
   const gasIncluded =
     (smartTransactionsEnabled && isSwap && isSendBundleSupportedForChain) ||
@@ -801,7 +809,7 @@ const PrepareBridgePage = ({
                   });
                 }}
                 needsDestinationAddress={
-                  isToOrFromSolana && !selectedDestinationAccount
+                  isToOrFromNonEvm && !selectedDestinationAccount
                 }
               />
             )}

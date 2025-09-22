@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   formatChainIdToHex,
   isSolanaChainId,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import {
   Icon,
@@ -94,7 +95,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   } else {
     const chainIdInHexOrCaip =
       toChain?.chainId &&
-      (isSolanaChainId(toChain?.chainId)
+      (isSolanaChainId(toChain?.chainId) || isBitcoinChainId(toChain?.chainId)
         ? toChain.chainId
         : formatChainIdToHex(toChain?.chainId));
     balanceToTranslate = chainIdInHexOrCaip
@@ -178,7 +179,9 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
           <AvatarNetwork
             src={
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                toChain?.chainId && !isSolanaChainId(toChain?.chainId)
+                toChain?.chainId &&
+                !isSolanaChainId(toChain?.chainId) &&
+                !isBitcoinChainId(toChain?.chainId)
                   ? formatChainIdToHex(toChain?.chainId)
                   : (toChain?.chainId ?? '')
               ]
