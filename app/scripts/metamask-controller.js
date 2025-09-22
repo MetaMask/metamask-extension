@@ -2123,24 +2123,15 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
       () => {
-        console.log('[MetamaskController] selectedAccountGroupChange');
         const [account] =
           this.accountTreeController.getAccountsFromSelectedAccountGroup({
             scopes: [SolScope.Mainnet],
           });
-        console.log('[MetamaskController] account', account);
-        console.log(
-          '[MetamaskController] lastSelectedSolanaAccountAddress',
-          lastSelectedSolanaAccountAddress,
-        );
         if (
           account &&
           account.type === SolAccountType.DataAccount &&
           account.address !== lastSelectedSolanaAccountAddress
         ) {
-          console.log(
-            '[MetamaskController] account is a Solana DataAccount and address has changed',
-          );
           lastSelectedSolanaAccountAddress = account.address;
 
           const originsWithSolanaAccountChangedNotifications =
@@ -2170,11 +2161,6 @@ export default class MetamaskController extends EventEmitter {
                 parsedSolanaAddresses.includes(account.address) &&
                 originsWithSolanaAccountChangedNotifications[origin]
               ) {
-                console.log(
-                  '[MetamaskController] notifying solana account change',
-                  origin,
-                  account.address,
-                );
                 this._notifySolanaAccountChange(origin, [account.address]);
               }
             }
