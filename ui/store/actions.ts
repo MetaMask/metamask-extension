@@ -6413,19 +6413,6 @@ export async function getNetworkConfigurationByNetworkClientId(
 }
 
 /**
- * Uses a request for the latest block to gather the following information on
- * the given or selected network, persisting it to state:
- *
- * - The connectivity status: whether it is available, geo-blocked (Infura
- * only), unavailable, or unknown
- * - The capabilities status: whether it supports EIP-1559, whether it does
- * not, or whether it is unknown
- *
- * @param networkClientId - The ID of the network client to inspect.
- * If no ID is provided, uses the currently selected network.
- */
-
-/**
  * Gathers metadata (primarily connectivity status) about the globally selected
  * network as well as each enabled network and persists it to state.
  */
