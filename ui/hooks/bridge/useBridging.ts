@@ -35,7 +35,7 @@ import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { getDefaultTokenPair } from '../../ducks/bridge/selectors';
-import { getDefaultToToken } from '../../ducks/bridge/utils';
+import { getDefaultToToken, toBridgeToken } from '../../ducks/bridge/utils';
 
 const useBridging = () => {
   const history = useHistory();
@@ -63,9 +63,6 @@ const useBridging = () => {
       },
       isSwap = false,
     ) => {
-      console.log('=====useBridging', defaultTokenPair);
-      // TODO if no network filter, default to ethereum
-      // TODO if no srcToken, get default
       const [defaultBip44SrcAssetId, defaultBip44DestAssetId] =
         defaultTokenPair ?? [];
       const srcAssetIdToUse =
@@ -76,12 +73,12 @@ const useBridging = () => {
             )
           : defaultBip44SrcAssetId) ??
         getNativeAssetForChainId(providerConfig.chainId)?.assetId;
-      // TODO use hardcoded dest token if srcToken is defined
-      const destAssetIdToUse = srcToken ? null : defaultBip44DestAssetId;
-
-      // TODO if srcToken is defined, use getDefaultToToken
-      // const defaultToken = srcToken? getDefaultToToken(srcToken.chainId, srcToken) : getDefaultToToken(providerConfig.chainId, fromToken);
-      // const defaultDestToken ? toBridgeToken(defaultToken) : null;
+      // If srcToken is present, use the default dest token for that chain
+      const destAssetIdToUse = srcToken?.chainId
+        ? toBridgeToken(
+            getDefaultToToken(formatChainIdToCaip(srcToken.chainId), srcToken),
+          )?.assetId
+        : defaultBip44DestAssetId;
 
       const isBridgeToken =
         srcToken?.chainId &&
