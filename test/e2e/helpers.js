@@ -159,10 +159,7 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
-    withSolanaWebSocket = {
-      server: false,
-      mocks: [],
-    },
+    solanaWebSocketSpecificMocks = [],
   } = options;
 
   // Normalize localNodeOptions
@@ -298,11 +295,10 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    if (withSolanaWebSocket.server) {
-      localWebSocketServer = LocalWebSocketServer.getServerInstance();
-      localWebSocketServer.start();
-      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
-    }
+    // Solana WebSocket server and apply mocks (defaults + overrides)
+    localWebSocketServer = LocalWebSocketServer.getServerInstance();
+    localWebSocketServer.start();
+    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -318,7 +314,6 @@ async function withFixtures(options, testSuite) {
         ethConversionInUsd,
         monConversionInUsd,
       },
-      withSolanaWebSocket,
     );
 
     if ((await detectPort(8000)) !== 8000) {
@@ -496,9 +491,8 @@ async function withFixtures(options, testSuite) {
         })(),
       );
 
-      if (withSolanaWebSocket.server) {
-        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
-      }
+      // Solana WebSocket server
+      shutdownTasks.push(localWebSocketServer.stopAndCleanup());
 
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');
