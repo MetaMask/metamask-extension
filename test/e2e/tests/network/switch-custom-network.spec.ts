@@ -58,7 +58,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPopularNetworks()
           .withPermissionControllerConnectedToTestDappWithChains([
-            '0x1', // Hex Chain ID for Ethereum Mainnet
+            '0x1', // Hex Chain ID for Ethereum
             '0x89', // Hex Chain ID for Polygon
           ])
           .build(),
@@ -73,7 +73,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x2105' }], // Hex Chain ID for Base Mainnet
+          params: [{ chainId: '0x2105' }], // Hex Chain ID for Base
         });
 
         await driver.executeScript(
@@ -83,12 +83,12 @@ describe('Switch ethereum chain', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.findVisibleElement({
-          text: 'Base Mainnet',
+          text: 'Base',
           tag: 'p',
         });
 
         await driver.assertElementNotPresent({
-          text: 'Ethereum Mainnet',
+          text: 'Ethereum',
           tag: 'p',
         });
 
@@ -118,7 +118,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x1' }], // Hex Chain ID for Ethereum Mainnet
+          params: [{ chainId: '0x1' }], // Hex Chain ID for Ethereum
         });
 
         await driver.executeScript(
@@ -135,7 +135,7 @@ describe('Switch ethereum chain', function (this: Suite) {
 
         const afterPermittedChains = await getPermittedChains(driver);
 
-        assert.deepEqual(afterPermittedChains, ['0x539', '0x1']); // Hex Chain IDs for Localhost and Ethereum Mainnet
+        assert.deepEqual(afterPermittedChains, ['0x539', '0x1']); // Hex Chain IDs for Localhost and Ethereum
       },
     );
   });
