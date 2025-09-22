@@ -1,12 +1,11 @@
-import SmartTransactionsController, {
-  SmartTransactionsControllerSmartTransactionEvent,
-} from '@metamask/smart-transactions-controller';
 import {
-  Fee,
-  Fees,
+  SmartTransactionsController,
+  SmartTransactionsControllerSmartTransactionEvent,
   SmartTransactionStatuses,
-  SmartTransaction,
-} from '@metamask/smart-transactions-controller/dist/types';
+  type Fee,
+  type Fees,
+  type SmartTransaction,
+} from '@metamask/smart-transactions-controller';
 import type { Hex } from '@metamask/utils';
 import {
   TransactionController,

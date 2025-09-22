@@ -7,8 +7,10 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransactionsController,
+  SmartTransactionStatuses,
+} from '@metamask/smart-transactions-controller';
 import { Hex } from '@metamask/utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {

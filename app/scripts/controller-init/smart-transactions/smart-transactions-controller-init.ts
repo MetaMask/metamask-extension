@@ -1,5 +1,7 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransactionsController,
+  ClientId,
+} from '@metamask/smart-transactions-controller';
 import type { Hex } from '@metamask/utils';
 import { TransactionController } from '@metamask/transaction-controller';
 import type { TraceCallback } from '@metamask/controller-utils';

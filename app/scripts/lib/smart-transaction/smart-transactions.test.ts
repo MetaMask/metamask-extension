@@ -4,12 +4,13 @@ import {
   TransactionController,
 } from '@metamask/transaction-controller';
 import { Messenger } from '@metamask/base-controller';
-import SmartTransactionsController, {
+import {
+  SmartTransactionsController,
   SmartTransactionsControllerMessenger,
+  ClientId,
+  type SmartTransaction,
 } from '@metamask/smart-transactions-controller';
 import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
-import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   submitSmartTransactionHook,

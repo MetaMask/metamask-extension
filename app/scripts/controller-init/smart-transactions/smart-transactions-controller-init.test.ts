@@ -1,5 +1,7 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransactionsController,
+  ClientId,
+} from '@metamask/smart-transactions-controller';
 import { Messenger } from '@metamask/base-controller';
 import type { AccountsController } from '@metamask/accounts-controller';
 import type { TransactionController } from '@metamask/transaction-controller';
