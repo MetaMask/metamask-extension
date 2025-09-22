@@ -5,13 +5,11 @@ import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { DisclosureVariant } from './disclosure.constants';
 
-/**
- * @param {string} variant
- * @param {string} title
- * @param {string} size
- * @returns {JSX.Element}
- */
-const renderSummaryByType = (variant, title, size) => {
+const renderSummaryByType = (
+  variant: DisclosureVariant,
+  title: string,
+  size?: string,
+) => {
   switch (variant) {
     case DisclosureVariant.Arrow: {
       const textVariant =
@@ -19,11 +17,13 @@ const renderSummaryByType = (variant, title, size) => {
 
       return (
         <summary className="disclosure__summary is-arrow">
+          {/** @ts-expect-error TODO: update prop type in design systems component */}
           <Text color={Color.primaryDefault} variant={textVariant}>
             {title}
           </Text>
           <Icon
             className="disclosure__summary--icon"
+            // @ts-expect-error TODO: update prop types in design systems component
             color={Color.primaryDefault}
             name={IconName.ArrowUp}
             size={IconSize.Sm}
@@ -50,11 +50,17 @@ const renderSummaryByType = (variant, title, size) => {
 const Disclosure = ({
   children,
   isScrollToBottomOnOpen,
-  title,
-  size,
-  variant,
+  title = null,
+  size = 'normal',
+  variant = DisclosureVariant.Default,
+}: {
+  children: JSX.Element[];
+  isScrollToBottomOnOpen: boolean;
+  size: string;
+  title: string | null;
+  variant: DisclosureVariant;
 }) => {
-  const disclosureFooterEl = useRef(null);
+  const disclosureFooterEl = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
 
   const scrollToBottom = () => {
