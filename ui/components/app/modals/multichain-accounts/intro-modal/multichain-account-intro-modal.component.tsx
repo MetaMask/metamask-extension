@@ -146,19 +146,11 @@ export const MultichainAccountIntroModal: React.FC<
       </ModalContent>
 
       <ModalFooter>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-          gap={3}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingBottom={4}
-        >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
-            width={BlockSize.Full}
+            block
             onClick={onViewAccounts}
             loading={isLoading}
             disabled={isLoading}
@@ -171,7 +163,7 @@ export const MultichainAccountIntroModal: React.FC<
           <Button
             variant={ButtonVariant.Link}
             size={ButtonSize.Lg}
-            width={BlockSize.Full}
+            block
             onClick={onLearnMore}
             disabled={isLoading}
           >
