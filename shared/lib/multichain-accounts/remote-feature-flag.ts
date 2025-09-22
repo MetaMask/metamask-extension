@@ -28,7 +28,7 @@ export const isMultichainAccountsFeatureEnabled = (
   featureVersion: string,
 ) => {
   if (!enableMultichainAccounts || !APP_VERSION) {
-    return true;
+    return false;
   }
 
   const {
