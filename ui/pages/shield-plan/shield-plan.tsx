@@ -88,7 +88,7 @@ const ShieldPlan = () => {
     'shield' as ProductType,
     subscriptions,
   );
-  const isTrialed = trialedProducts.includes(PRODUCT_TYPES.SHIELD);
+  const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
 
   useEffect(() => {
     if (shieldSubscription) {
