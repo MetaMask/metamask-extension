@@ -74,6 +74,7 @@ export const lavamoatPlugin = (args: Args) =>
         'removeEventListener',
         'ShadowRoot',
         'HTMLElement',
+        'HTMLFormElement',
         'Element',
         'pageXOffset',
         'pageYOffset',
@@ -86,12 +87,13 @@ export const lavamoatPlugin = (args: Args) =>
         'console',
         'WeakSet',
         'Event',
-        'Image', // Used by browser to generate notifications
-        'fetch', // Used by browser to generate notifications
+        'EventTarget',
+        // globals used by the browser to generate notifications
+        'Image',
+        'fetch',
         'AbortController',
-        'OffscreenCanvas', // Used by browser to generate notifications
-        // globals chromedriver needs to function
-        // @ts-expect-error - regex is missing from the types
+        'OffscreenCanvas',
+        // @ts-expect-error - globals chromedriver needs to function
         /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
         'name',
         'performance',
@@ -112,7 +114,6 @@ export const lavamoatPlugin = (args: Args) =>
         'Date',
         'setTimeout',
         'clearTimeout',
-        'ret_nodes',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
@@ -120,14 +121,16 @@ export const lavamoatPlugin = (args: Args) =>
         'stateHooks',
         'sentryHooks',
         'sentry',
-        // e2e
-        'HTMLFormElement',
+        'logEncryptedVault',
+        // globals used by react-dom
         'getSelection',
-        'EventTarget',
+        // globals opera needs to function
+        'opr',
+        // globals used by e2e
+        'ret_nodes',
         'browser',
         'chrome',
         'indexedDB',
-        'bundler',
       ],
     },
   });
