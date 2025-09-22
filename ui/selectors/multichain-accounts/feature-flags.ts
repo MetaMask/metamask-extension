@@ -44,7 +44,7 @@ export type MultichainAccountsFeatureFlag = Infer<
  */
 export const getMultichainAccountsRemoteFeatureFlags = (
   state: RemoteFeatureFlagsState,
-  flagName: string,
+  flagName: typeof STATE_1_FLAG | typeof STATE_2_FLAG,
 ) => {
   try {
     const multichainAccountsFeatureFlags =
