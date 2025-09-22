@@ -332,9 +332,11 @@ export default function OnboardingWelcome() {
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
-        // reset the participate in meta metrics in case it was set to true from previous login attempts
-        // to prevent the queued events from being sent
-        dispatch(setParticipateInMetaMetrics(null));
+        if (!isFireFox) {
+          // reset the participate in meta metrics in case it was set to true from previous login attempts
+          // to prevent the queued events from being sent
+          dispatch(setParticipateInMetaMetrics(null));
+        }
 
         if (loginType === LOGIN_TYPE.SRP) {
           if (loginOption === LOGIN_OPTION.NEW) {
