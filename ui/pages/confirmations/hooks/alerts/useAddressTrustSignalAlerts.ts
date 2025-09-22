@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
@@ -11,12 +12,14 @@ import {
 } from '../../../../hooks/useTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getInternalAccounts } from '../../../../selectors/accounts';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const t = useI18nContext();
+  const internalAccounts = useSelector(getInternalAccounts);
 
   const addressToCheck = useMemo(() => {
     if (!currentConfirmation) {
@@ -55,6 +58,16 @@ export function useAddressTrustSignalAlerts(): Alert[] {
       return [];
     }
 
+    // Skip trust signal checks for internal wallet accounts
+    const isInternalAccount = internalAccounts.some(
+      (account) =>
+        account.address.toLowerCase() === addressToCheck.toLowerCase(),
+    );
+
+    if (isInternalAccount) {
+      return [];
+    }
+
     const alerts: Alert[] = [];
 
     if (trustSignalDisplayState === TrustSignalDisplayState.Malicious) {
@@ -80,5 +93,5 @@ export function useAddressTrustSignalAlerts(): Alert[] {
     }
 
     return alerts;
-  }, [addressToCheck, trustSignalDisplayState, t]);
+  }, [addressToCheck, trustSignalDisplayState, t, internalAccounts]);
 }
