@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.3.1]
 ### Fixed
-- TBD
+- fix: fixes issues with balances not updating on Solana (#36129)
+- fix: improves Solana account synchronization and WebSocket subscriptions (#36129)
 
 ## [13.3.0]
 ### Added
