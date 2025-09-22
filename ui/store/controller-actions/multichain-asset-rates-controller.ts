@@ -5,9 +5,9 @@ import {
 import { submitRequestToBackground } from '../background-connection';
 
 /**
- * Informs the CurrencyRateController that the UI requires currency rate polling
+ * Informs the MultichainAssetsRatesController that the UI requires asset rate polling
  *
- * @param nativeCurrencies - An array of native currency symbols
+ * @param accountId - account Id to poll.
  * @returns polling token that can be used to stop polling
  */
 export async function multichainAssetsRatesStartPolling(
@@ -22,11 +22,9 @@ export async function multichainAssetsRatesStartPolling(
 }
 
 /**
- * Informs the CurrencyRateController that the UI no longer requires currency rate polling
- * for the given network client.
- * If all network clients unsubscribe, the controller stops polling.
+ * Informs the MultichainAssetsRatesController that the UI no longer requires asset rate polling
  *
- * @param pollingToken - Poll token received from calling currencyRateStartPolling
+ * @param pollingToken - Poll token received from calling MultichainAssetsRatesController
  */
 export async function multichainAssetsRatesStopPollingByPollingToken(
   pollingToken: string,
