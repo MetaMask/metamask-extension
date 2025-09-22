@@ -1148,7 +1148,6 @@ export class AppStateController extends BaseController<
       return undefined;
     }
 
-    // Handle legacy cache entries without timestamp
     if (!cached.timestamp) {
       this.update((state) => {
         delete state.addressSecurityAlertResponses[address.toLowerCase()];
