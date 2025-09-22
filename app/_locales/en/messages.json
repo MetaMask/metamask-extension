@@ -7157,6 +7157,14 @@
   "tokenMarketplace": {
     "message": "Token marketplace"
   },
+  "tokenPermissionCount": {
+    "message": "$1 token permission",
+    "description": "$1 is the count of token permissions (singular form)"
+  },
+  "tokenPermissionsCount": {
+    "message": "$1 token permissions",
+    "description": "$1 is the count of token permissions (plural form)"
+  },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
   },
