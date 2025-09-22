@@ -18,6 +18,7 @@ import {
   BtcMethod,
   BtcScope,
   EthAccountType,
+  SolAccountType,
   SolScope,
 } from '@metamask/keyring-api';
 import { Messenger } from '@metamask/base-controller';
@@ -40,6 +41,7 @@ import {
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
+import log from 'loglevel';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -4605,9 +4607,12 @@ describe('MetaMaskController', () => {
         metamaskController.keyringController.state.keyrings[0].metadata.id;
 
       const wallet = {
-        discoverAndCreateAccounts: jest
+        discoverAccounts: jest
           .fn()
-          .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
+          .mockResolvedValue([
+            { type: SolAccountType.DataAccount },
+            { type: EthAccountType.Eoa },
+          ]),
       };
 
       jest
@@ -4621,17 +4626,20 @@ describe('MetaMaskController', () => {
         { entropySource: primaryId },
       );
 
-      expect(wallet.discoverAndCreateAccounts).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
+      expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
     });
 
     it('passes provided keyring id to wallet getter', async () => {
       const providedId = 'test-keyring-id';
 
       const wallet = {
-        discoverAndCreateAccounts: jest
+        discoverAccounts: jest
           .fn()
-          .mockResolvedValue({ Bitcoin: 1, Solana: 2 }),
+          .mockResolvedValue([
+            { type: SolAccountType.DataAccount },
+            { type: EthAccountType.Eoa },
+          ]),
       };
 
       jest
@@ -4646,24 +4654,49 @@ describe('MetaMaskController', () => {
         { entropySource: providedId },
       );
 
-      expect(result).toStrictEqual({ Bitcoin: 1, Solana: 2 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
     });
 
-    it('returns zero counts on error', async () => {
+    it('returns zero counts and warns when no HD keyring can be derived (no keyring id provided or HD keyring found)', async () => {
+      const originalState = metamaskController.keyringController.state;
+      jest
+        .spyOn(metamaskController.keyringController, 'state', 'get')
+        .mockReturnValue({ ...originalState, keyrings: [] });
+
+      const warnSpy = jest.spyOn(log, 'warn');
+
+      const result = await metamaskController.discoverAndCreateAccounts();
+
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Failed to add accounts with balance. Error: No keyring id to discover accounts for',
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it('returns zero counts on discovery error', async () => {
       const wallet = {
-        discoverAndCreateAccounts: jest
-          .fn()
-          .mockRejectedValue(new Error('boom')),
+        discoverAccounts: jest.fn().mockRejectedValue(new Error('boom')),
       };
+
       metamaskController.messenger = {
         call: jest.fn().mockReturnValue(wallet),
       };
+
       jest
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue(wallet);
 
+      const warnSpy = jest.spyOn(log, 'warn');
+
       const result = await metamaskController.discoverAndCreateAccounts();
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Failed to add accounts with balance. Error: boom',
+      );
+
+      warnSpy.mockRestore();
     });
   });
 
