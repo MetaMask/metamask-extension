@@ -1,7 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import useMultichainAssetsRatesPolling from './useMultichainAssetsRatesPolling';
-import usePolling from './usePolling';
 import * as ControllerActionsModule from '../store/controller-actions/multichain-asset-rates-controller';
 import {
   getCompletedOnboarding,
@@ -12,6 +10,8 @@ import {
   getSelectedInternalAccount,
   getUseCurrencyRateCheck,
 } from '../selectors';
+import usePolling from './usePolling';
+import useMultichainAssetsRatesPolling from './useMultichainAssetsRatesPolling';
 
 // Mock Type for testing purposes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

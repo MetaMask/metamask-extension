@@ -7,11 +7,11 @@ import {
   getSelectedInternalAccount,
   getUseCurrencyRateCheck,
 } from '../selectors';
-import usePolling from './usePolling';
 import {
   multichainAssetsRatesStartPolling,
   multichainAssetsRatesStopPollingByPollingToken,
 } from '../store/controller-actions/multichain-asset-rates-controller';
+import usePolling from './usePolling';
 
 const usePollingEnabled = () => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
