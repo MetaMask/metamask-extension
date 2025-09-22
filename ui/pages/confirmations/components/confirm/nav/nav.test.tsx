@@ -16,14 +16,6 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockHistoryReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
-
 const render = () => {
   const store = configureStore(
     getMockConfirmState({
@@ -106,7 +98,8 @@ describe('ConfirmNav', () => {
   });
 
   it('invoke history replace method when next button is clicked', () => {
-    const { getByLabelText } = render();
+    const { getByLabelText, history } = render();
+    const mockHistoryReplace = jest.spyOn(history, 'replace');
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
     expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
