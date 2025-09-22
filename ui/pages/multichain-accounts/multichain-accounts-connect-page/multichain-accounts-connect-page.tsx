@@ -457,7 +457,6 @@ export const MultichainAccountsConnectPage: React.FC<
           <Tab
             name={t('accounts')}
             tabKey="accounts"
-            className="w-full"
             data-testid="accounts-tab"
           >
             <Box
@@ -527,7 +526,6 @@ export const MultichainAccountsConnectPage: React.FC<
           <Tab
             name={t('permissions')}
             tabKey="permissions"
-            className="w-full"
             data-testid="permissions-tab"
             disabled={selectedAccountGroupIds.length === 0}
           >

@@ -841,3 +841,33 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
     return accounts[0].address;
   },
 );
+
+/**
+ * Get the seed addresses for multiple account groups at once.
+ * This is more efficient than calling getIconSeedAddressByAccountGroupId multiple times.
+ *
+ * @param state - Redux state.
+ * @param accountGroups - Array of account groups to get seed addresses for.
+ * @returns Object mapping account group IDs to their seed addresses.
+ */
+export const getIconSeedAddressesByAccountGroups = (
+  state: MultichainAccountsState,
+  accountGroups: AccountGroupWithInternalAccounts[],
+): Record<AccountGroupId, string> => {
+  const seedAddresses: Record<AccountGroupId, string> = {};
+
+  accountGroups.forEach((accountGroup) => {
+    try {
+      const seedAddress = getIconSeedAddressByAccountGroupId(
+        state,
+        accountGroup.id,
+      );
+      seedAddresses[accountGroup.id] = seedAddress;
+    } catch (error) {
+      // don't throw and show empty string as seed address.
+      seedAddresses[accountGroup.id] = '';
+    }
+  });
+
+  return seedAddresses;
+};

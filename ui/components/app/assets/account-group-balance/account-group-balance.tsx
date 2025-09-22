@@ -19,9 +19,8 @@ import {
   IconName,
 } from '../../../component-library';
 import { getPreferences } from '../../../../selectors';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
 import Spinner from '../../../ui/spinner';
-import { formatWithThreshold } from '../util/formatWithThreshold';
+import { useFormatters } from '../../../../helpers/formatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -37,7 +36,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   handleSensitiveToggle,
 }) => {
   const { privacyMode } = useSelector(getPreferences);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrency } = useFormatters();
   const t = useI18nContext();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
@@ -53,11 +52,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   if (typeof total !== 'number' || !currency) {
     return <Spinner className="loading-overlay__spinner" />;
   }
-
-  const formattedFiatDisplay = formatWithThreshold(total, 0.0, locale, {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  });
 
   return (
     <>
@@ -76,14 +70,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
         >
-          {formattedFiatDisplay}
-        </SensitiveText>
-        <SensitiveText
-          marginInlineStart={privacyMode ? 0 : 1}
-          variant={TextVariant.inherit}
-          isHidden={privacyMode}
-        >
-          {currency.toUpperCase()}
+          {formatCurrency(total, currency)}
         </SensitiveText>
 
         <ButtonIcon

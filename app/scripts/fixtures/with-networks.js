@@ -1,3 +1,17 @@
+import {
+  ARBITRUM_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
+  BASE_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
+  CELO_DISPLAY_NAME,
+  GNOSIS_DISPLAY_NAME,
+  LOCALHOST_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
+} from '../../../shared/constants/network';
+
 export const FIXTURES_NETWORKS = {
   providerConfig: {
     chainId: '0xaa36a7',
@@ -10,7 +24,7 @@ export const FIXTURES_NETWORKS = {
   networkConfigurations: {
     networkConfigurationId: {
       chainId: '0xaa36a7',
-      nickname: 'Sepolia',
+      nickname: SEPOLIA_DISPLAY_NAME,
       rpcPrefs: {},
       rpcUrl: 'https://sepolia.infura.io/v3/',
       ticker: 'SepoliaETH',
@@ -19,7 +33,7 @@ export const FIXTURES_NETWORKS = {
     optimism: {
       chainId: '0xa',
       id: 'optimism',
-      nickname: 'OP Mainnet',
+      nickname: OPTIMISM_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://optimistic.etherscan.io/',
         imageUrl: './images/optimism.svg',
@@ -30,7 +44,7 @@ export const FIXTURES_NETWORKS = {
     base: {
       chainId: '0x2105',
       id: 'base',
-      nickname: 'Base Mainnet',
+      nickname: BASE_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://basescan.org',
         imageUrl: './images/base.svg',
@@ -41,7 +55,7 @@ export const FIXTURES_NETWORKS = {
     polygon: {
       chainId: '0x89',
       id: 'polygon',
-      nickname: 'Polygon Mainnet',
+      nickname: POLYGON_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://polygonscan.com/',
         imageUrl: './images/matic-token.svg',
@@ -52,7 +66,7 @@ export const FIXTURES_NETWORKS = {
     binance: {
       chainId: '0x38',
       id: 'binance',
-      nickname: 'BNB Chain',
+      nickname: BNB_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://bscscan.com/',
         imageUrl: './images/bnb.svg',
@@ -65,7 +79,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://rpc.gnosischain.com',
       chainId: '0x64',
       ticker: 'XDAI',
-      nickname: 'Gnosis',
+      nickname: GNOSIS_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://gnosisscan.io',
         imageUrl: './images/gnosis.svg',
@@ -76,7 +90,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/',
       chainId: '0xa4b1',
       ticker: 'ETH',
-      nickname: 'Arbitrum One',
+      nickname: ARBITRUM_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://explorer.arbitrum.io',
         imageUrl: './images/arbitrum.svg',
@@ -87,7 +101,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://avalanche-mainnet.infura.io/v3/',
       chainId: '0xa86a',
       ticker: 'AVAX',
-      nickname: 'Avalanche Network C-Chain',
+      nickname: AVALANCHE_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://snowtrace.io/',
         imageUrl: './images/avax-token.svg',
@@ -98,7 +112,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://celo-mainnet.infura.io/v3/',
       chainId: '0xa4ec',
       ticker: 'CELO',
-      nickname: 'Celo Mainnet',
+      nickname: CELO_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://celoscan.io',
         imageUrl: './images/celo.svg',
@@ -109,7 +123,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'https://mainnet.era.zksync.io',
       chainId: '0x144',
       ticker: 'ETH',
-      nickname: 'zkSync Era Mainnet',
+      nickname: ZK_SYNC_ERA_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: 'https://explorer.zksync.io/',
         imageUrl: './images/zk-sync.svg',
@@ -120,7 +134,7 @@ export const FIXTURES_NETWORKS = {
       rpcUrl: 'http://localhost:8545',
       chainId: '0x539',
       ticker: 'ETH',
-      nickname: 'Localhost 8545',
+      nickname: LOCALHOST_DISPLAY_NAME,
       rpcPrefs: {
         blockExplorerUrl: '',
         imageUrl: '',
