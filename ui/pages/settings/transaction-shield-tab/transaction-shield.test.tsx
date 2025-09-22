@@ -22,6 +22,8 @@ jest.mock('react-router-dom-v5-compat', () => {
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
     metamask: {
+      customerId: '1',
+      trialedProducts: [],
       subscriptions: [
         {
           id: '1',

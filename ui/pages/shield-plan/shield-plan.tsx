@@ -137,8 +137,8 @@ const ShieldPlan = () => {
     return availableTokenBalances[0];
   });
 
-  const [handleContinue, continueResult] = useAsyncCallback(async () => {
-    try {
+  const [handleSubscription, subscriptionResult] =
+    useAsyncCallback(async () => {
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
         await dispatch(
           startSubscriptionWithCard({
@@ -149,18 +149,16 @@ const ShieldPlan = () => {
         );
       } else {
         log.error('Crypto payment method is not supported at the moment');
+        throw new Error('Crypto payment method is not supported at the moment');
       }
-    } catch (err) {
-      log.error('Error starting subscription', err);
-    }
-  }, [selectedPlan, selectedPaymentMethod, dispatch, isTrialed]);
+    }, [selectedPlan, selectedPaymentMethod, dispatch, isTrialed]);
 
   const loading =
     subscriptionsLoading ||
     subscriptionPricingLoading ||
-    continueResult.pending;
+    subscriptionResult.pending;
   const error =
-    subscriptionsError || subscriptionPricingError || continueResult.error;
+    subscriptionsError || subscriptionPricingError || subscriptionResult.error;
 
   const plans: Plan[] = useMemo(
     () =>
@@ -389,7 +387,7 @@ const ShieldPlan = () => {
               size={ButtonSize.Lg}
               variant={ButtonVariant.Primary}
               block
-              onClick={handleContinue}
+              onClick={handleSubscription}
             >
               {t('continue')}
             </Button>
