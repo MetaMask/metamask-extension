@@ -50,11 +50,13 @@ describe(`migration #${version}`, () => {
       AppStateController: {
         addressSecurityAlertResponses: {
           '0x123abc': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Benign',
             label: 'Some label',
             // Note: no timestamp field (legacy format)
           },
           '0x456def': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Warning',
             label: 'Another label',
             // Note: no timestamp field (legacy format)
@@ -106,11 +108,13 @@ describe(`migration #${version}`, () => {
       AppStateController: {
         addressSecurityAlertResponses: {
           '0x123abc': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Benign',
             label: 'Some label',
             timestamp: 1642678800000, // Already has timestamp
           },
           '0x456def': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Warning',
             label: 'Another label',
             // Mixed: this one doesn't have timestamp
