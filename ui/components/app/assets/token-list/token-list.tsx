@@ -190,7 +190,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             key={`${token.chainId}-${token.symbol}-${token.address}`}
             token={token}
             privacyMode={privacyMode}
-            onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
+            onClick={handleTokenClick(token)}
             safeChains={safeChains}
           />
         );
