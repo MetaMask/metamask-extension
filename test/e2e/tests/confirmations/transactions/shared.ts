@@ -6,11 +6,7 @@ import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
 
-const {
-  logInWithBalanceValidation,
-  openDapp,
-  WINDOW_TITLES,
-} = require('../../../helpers');
+const { WINDOW_TITLES } = require('../../../helpers');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
@@ -19,20 +15,6 @@ export type TestSuiteArguments = {
   contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
-
-export async function openDAppWithContract(
-  driver: Driver,
-  contractRegistry: ContractAddressRegistry | undefined,
-  smartContract: string,
-) {
-  const contractAddress = await (
-    contractRegistry as ContractAddressRegistry
-  ).getContractAddress(smartContract);
-
-  await logInWithBalanceValidation(driver);
-
-  await openDapp(driver, contractAddress);
-}
 
 export async function createContractDeploymentTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

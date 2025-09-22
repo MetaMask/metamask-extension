@@ -5384,9 +5384,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "@metamask/account-tree-controller@npm:0.18.0"
+"@metamask/account-tree-controller@npm:^0.18.1":
+  version: 0.18.1
+  resolution: "@metamask/account-tree-controller@npm:0.18.1"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
@@ -5404,7 +5404,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/eeda84b3eae18441a79eec01f9a9df4848caeea9b29dbfc6aa0048cf298c39e718429a2e49eda1406e4e05bf0eb2e525c3b3516622660bb3e83f5baaaa5d0b29
+  checksum: 10/bbe6dc6d791e32c6f1849373947e5d86ce47e650fdecc088b6a38b8712bb1823ce9bada1afb0c8703e13643736e7b48cdc83e17ef5e727acdd571ec86976272f
   languageName: node
   linkType: hard
 
@@ -5607,17 +5607,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^2.1.0":
-  version: 2.6.1
-  resolution: "@metamask/auto-changelog@npm:2.6.1"
+"@metamask/auto-changelog@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/auto-changelog@npm:5.1.0"
   dependencies:
+    "@octokit/rest": "npm:^20.0.0"
     diff: "npm:^5.0.0"
     execa: "npm:^5.1.1"
     semver: "npm:^7.3.5"
     yargs: "npm:^17.0.1"
+  peerDependencies:
+    prettier: ">=3.0.0"
   bin:
-    auto-changelog: dist/cli.js
-  checksum: 10/a6705126d7c555e69ce9002e10fec3b878e73037a98bb632d7c0f6e3637031b39ffa8cb6ed67ae01089a3fc56ca35b84c76574fb2dcfc275585bbe5a6e3cd933
+    auto-changelog: dist/cli.mjs
+  checksum: 10/ee9f651c313a2377a21a304383f56f1872b4ce6411a0b61cf0b70b23bff9d3204332cd5a052cdfcaf363ce15424a7a1fdbde99a6b4352f2472fbe6b6d27c5791
   languageName: node
   linkType: hard
 
@@ -5744,7 +5747,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.9.0":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.9.0":
   version: 11.10.0
   resolution: "@metamask/controller-utils@npm:11.10.0"
   dependencies:
@@ -6246,9 +6249,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^17.0.0, @metamask/eth-snap-keyring@npm:^17.1.0":
-  version: 17.1.0
-  resolution: "@metamask/eth-snap-keyring@npm:17.1.0"
+"@metamask/eth-snap-keyring@npm:^17.0.0, @metamask/eth-snap-keyring@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@metamask/eth-snap-keyring@npm:17.2.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@metamask/base-controller": "npm:^8.3.0"
@@ -6263,7 +6266,7 @@ __metadata:
     uuid: "npm:^9.0.1"
   peerDependencies:
     "@metamask/keyring-api": ^21.0.0
-  checksum: 10/ec7f33cb5c84155b458e19cccedf9a12642ad85a90fc45fe36acc2fb734099202d6a3bd6a18637a2f7c14a8c18b79b44e83cbd7c74721239e562a74429dc396b
+  checksum: 10/5ef553d895fb1416fee5dafa8424d0d3770ab4271924902f50c3f03652b5e6104aa60cbdaf3a37fdb9cbba4fe86bc3b87ce589f5d14d1b2b8cd671b420a2c922
   languageName: node
   linkType: hard
 
@@ -6461,13 +6464,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/jazzicon@npm:^2.0.0":
+"@metamask/jazzicon@npm:2.0.0":
   version: 2.0.0
   resolution: "@metamask/jazzicon@npm:2.0.0"
   dependencies:
     color: "npm:^0.11.3"
     mersenne-twister: "npm:^1.1.0"
   checksum: 10/0b5add49e8d28270e4f8ca6159aa4ea0848f70cbb1cb217de2b0c13799a45fb27b8a6f0b3f72b6a76cbb55446764f79daf71e7d2a830a14b8e5e54d5e57bf7d1
+  languageName: node
+  linkType: hard
+
+"@metamask/jazzicon@patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch":
+  version: 2.0.0
+  resolution: "@metamask/jazzicon@patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch::version=2.0.0&hash=cb7501"
+  dependencies:
+    color: "npm:^0.11.3"
+    mersenne-twister: "npm:^1.1.0"
+  checksum: 10/e1286d6cfb0f2cb541c1e43a00f7e5c6b12a5483d31ed7035b6a36a69891ae8fa4327a83a2f4211e382e734fae197b7ce61c1d30f4fffdf7857160a326540560
   languageName: node
   linkType: hard
 
@@ -7223,15 +7236,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@metamask/preferences-controller@npm:17.0.0"
+"@metamask/preferences-controller@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@metamask/preferences-controller@npm:19.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/base-controller": "npm:^8.1.0"
+    "@metamask/controller-utils": "npm:^11.12.0"
   peerDependencies:
-    "@metamask/keyring-controller": ^21.0.0
-  checksum: 10/1afd6d3df1b667211009334d92fbad8b934fee7d86093c6c46b7b9e79c7193f988e92cb11e49a652b10ac882f8d04459dbba3a9da0ad47d9f2144be6c0382ada
+    "@metamask/keyring-controller": ^23.0.0
+  checksum: 10/f0d4e579714b28d7ebe033b38cf63229770015ed4d6afd016520d9357709a2ae798a3e0a2d347f8be2540a78ee42d41df3cfd338ee6906f3ef6e73d4eca2585e
   languageName: node
   linkType: hard
 
@@ -7604,10 +7617,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.3.8":
-  version: 2.3.8
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.8"
-  checksum: 10/e1fa80026a78ccf853c5bdf8493e47ea2edaba6d39e715f2f54030c605271ee238fd15a832b2d876365fdb62d66d35053c5952a39a66c6ae97d5e03ee0a22bf8
+"@metamask/solana-wallet-snap@npm:^2.3.10":
+  version: 2.3.10
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.10"
+  checksum: 10/06d00d86c2e87c430fd59fd8a28de9bcc50156650dcb2f202b6822beaba458d2fc30ba68c9425010829d4e7763884444cc7f01eb6da047add8d0a42408073ec0
   languageName: node
   linkType: hard
 
@@ -8219,6 +8232,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/auth-token@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@octokit/auth-token@npm:4.0.0"
+  checksum: 10/60e42701e341d700f73c518c7a35675d36d79fa9d5e838cc3ade96d147e49f5ba74db2e07b2337c2b95aaa540aa42088116df2122daa25633f9e70a2c8785c44
+  languageName: node
+  linkType: hard
+
 "@octokit/auth-token@npm:^5.0.0":
   version: 5.1.2
   resolution: "@octokit/auth-token@npm:5.1.2"
@@ -8248,6 +8268,21 @@ __metadata:
     before-after-hook: "npm:^2.2.0"
     universal-user-agent: "npm:^6.0.0"
   checksum: 10/71e153cf93694f84fe2e3e78d2ebc7cab175c12c1a96b76a0c65c8965e46df39e3547b6340e87dcf5473dc572dfaf3ecbe800358ad572e120509ba0744a1cb9c
+  languageName: node
+  linkType: hard
+
+"@octokit/core@npm:^5.0.2":
+  version: 5.2.2
+  resolution: "@octokit/core@npm:5.2.2"
+  dependencies:
+    "@octokit/auth-token": "npm:^4.0.0"
+    "@octokit/graphql": "npm:^7.1.0"
+    "@octokit/request": "npm:^8.4.1"
+    "@octokit/request-error": "npm:^5.1.1"
+    "@octokit/types": "npm:^13.0.0"
+    before-after-hook: "npm:^2.2.0"
+    universal-user-agent: "npm:^6.0.0"
+  checksum: 10/0c39b43e562a8acf8f1d563a85f3c0e55e6d678ae16a4b3d6341060b3d5315c021dfa1bd15dc818fa4cc5612eb5cd518b13cb7c194e3c92ca3da9c0dc6a854b5
   languageName: node
   linkType: hard
 
@@ -8287,6 +8322,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/endpoint@npm:^9.0.6":
+  version: 9.0.6
+  resolution: "@octokit/endpoint@npm:9.0.6"
+  dependencies:
+    "@octokit/types": "npm:^13.1.0"
+    universal-user-agent: "npm:^6.0.0"
+  checksum: 10/2bf776423365ee926bf3f722a664e52f1070758eff4a176279fb132103fd0c76e3541f83ace49bbad9a64f9c9b8de453be565ca8d6136989e9514dea65380ecf
+  languageName: node
+  linkType: hard
+
 "@octokit/graphql@npm:^4.5.8":
   version: 4.8.0
   resolution: "@octokit/graphql@npm:4.8.0"
@@ -8295,6 +8340,17 @@ __metadata:
     "@octokit/types": "npm:^6.0.3"
     universal-user-agent: "npm:^6.0.0"
   checksum: 10/e03a3a05b792eee833357a8ed514ebf9bdb7c9e6037c60dc42b13bef83d13b53b6bb5955d24a49321f78e0ef2cb1611ae5cf00eaaa6abd8415884d89f9df6b8b
+  languageName: node
+  linkType: hard
+
+"@octokit/graphql@npm:^7.1.0":
+  version: 7.1.1
+  resolution: "@octokit/graphql@npm:7.1.1"
+  dependencies:
+    "@octokit/request": "npm:^8.4.1"
+    "@octokit/types": "npm:^13.0.0"
+    universal-user-agent: "npm:^6.0.0"
+  checksum: 10/9a7a65fa84df795b0acb5315dae5a4a5a042a01dde0c88974df180a1c02b9b8e61cae013be32461b11ee1d507a8f778f3b7f37dfa3b371771332cb8efcd01f29
   languageName: node
   linkType: hard
 
@@ -8351,6 +8407,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/openapi-types@npm:^24.2.0":
+  version: 24.2.0
+  resolution: "@octokit/openapi-types@npm:24.2.0"
+  checksum: 10/000897ebc6e247c2591049d6081e95eb5636f73798dadd695ee6048496772b58065df88823e74a760201828545a7ac601dd3c1bcd2e00079a62a9ee9d389409c
+  languageName: node
+  linkType: hard
+
 "@octokit/openapi-types@npm:^25.0.0":
   version: 25.0.0
   resolution: "@octokit/openapi-types@npm:25.0.0"
@@ -8374,6 +8437,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/plugin-paginate-rest@npm:11.4.4-cjs.2":
+  version: 11.4.4-cjs.2
+  resolution: "@octokit/plugin-paginate-rest@npm:11.4.4-cjs.2"
+  dependencies:
+    "@octokit/types": "npm:^13.7.0"
+  peerDependencies:
+    "@octokit/core": 5
+  checksum: 10/e0f696b3b69febe4e7c736d909065871f38bb8346a07f19a9c83246a02972568ac672667db472f846baef20a9611adf26ce8f0f189a11004c4b6618765078e19
+  languageName: node
+  linkType: hard
+
 "@octokit/plugin-paginate-rest@npm:^12.0.0":
   version: 12.0.0
   resolution: "@octokit/plugin-paginate-rest@npm:12.0.0"
@@ -8393,6 +8467,26 @@ __metadata:
   peerDependencies:
     "@octokit/core": ">=2"
   checksum: 10/446d5776953ca7e4eddd4f0b9aa35b7bf6bb61991cacdabad321ae8742ccde573d4ecd4e4e6786a673a94fe82ca180bdc22fbb8e17d961c17d2afec67e59e36a
+  languageName: node
+  linkType: hard
+
+"@octokit/plugin-request-log@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "@octokit/plugin-request-log@npm:4.0.1"
+  peerDependencies:
+    "@octokit/core": 5
+  checksum: 10/fd8c0a201490cba00084689a0d1d54fc7b5ab5b6bdb7e447056b947b1754f78526e9685400eab10d3522bfa7b5bc49c555f41ec412c788610b96500b168f3789
+  languageName: node
+  linkType: hard
+
+"@octokit/plugin-rest-endpoint-methods@npm:13.3.2-cjs.1":
+  version: 13.3.2-cjs.1
+  resolution: "@octokit/plugin-rest-endpoint-methods@npm:13.3.2-cjs.1"
+  dependencies:
+    "@octokit/types": "npm:^13.8.0"
+  peerDependencies:
+    "@octokit/core": ^5
+  checksum: 10/479827e62466e55bc1a50129d51597807bddc6c909e56be9e8dd9c1a91efa0f466a2f56b7d80438649e21ab0a3a195f840b3fccf2ae7f11fb0a919db8e62bc62
   languageName: node
   linkType: hard
 
@@ -8455,6 +8549,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/request-error@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@octokit/request-error@npm:5.1.1"
+  dependencies:
+    "@octokit/types": "npm:^13.1.0"
+    deprecation: "npm:^2.0.0"
+    once: "npm:^1.4.0"
+  checksum: 10/6ad98626407ba57bb33fa197611be74bee1dd9abc8d5d845648d6a2a04aa6840c0eb7f4be341d55dfcab5bc19181ad5fd25194869a7aaac6245f74b3a14d9662
+  languageName: node
+  linkType: hard
+
 "@octokit/request-error@npm:^6.1.7, @octokit/request-error@npm:^6.1.8":
   version: 6.1.8
   resolution: "@octokit/request-error@npm:6.1.8"
@@ -8478,6 +8583,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/request@npm:^8.4.1":
+  version: 8.4.1
+  resolution: "@octokit/request@npm:8.4.1"
+  dependencies:
+    "@octokit/endpoint": "npm:^9.0.6"
+    "@octokit/request-error": "npm:^5.1.1"
+    "@octokit/types": "npm:^13.1.0"
+    universal-user-agent: "npm:^6.0.0"
+  checksum: 10/2b2c9131cc9b608baeeef8ce2943768cc9db5fbe36a665f734a099bd921561c760e4391fbdf39d5aefb725db26742db1488c65624940ef7cec522e10863caa5e
+  languageName: node
+  linkType: hard
+
 "@octokit/request@npm:^9.2.3":
   version: 9.2.3
   resolution: "@octokit/request@npm:9.2.3"
@@ -8488,6 +8605,27 @@ __metadata:
     fast-content-type-parse: "npm:^2.0.0"
     universal-user-agent: "npm:^7.0.2"
   checksum: 10/ecf86b4eeea2be4e4259d5c0baae23bb9acdfbcb7e1bd5c2b570c66773d9b86cfdc0e79a96e20833a0986d5ca982122382116db399fbaad3ec670bb356c37fef
+  languageName: node
+  linkType: hard
+
+"@octokit/rest@npm:^20.0.0":
+  version: 20.1.2
+  resolution: "@octokit/rest@npm:20.1.2"
+  dependencies:
+    "@octokit/core": "npm:^5.0.2"
+    "@octokit/plugin-paginate-rest": "npm:11.4.4-cjs.2"
+    "@octokit/plugin-request-log": "npm:^4.0.0"
+    "@octokit/plugin-rest-endpoint-methods": "npm:13.3.2-cjs.1"
+  checksum: 10/e0759fdbf18bc96f68299b4ca04d7102ce861e8508f01e9e580ed9c1e19d4cc20d150635161e360375f1c52c95e54bf6b56aaae16f943a93d6dcb38a51d8a23e
+  languageName: node
+  linkType: hard
+
+"@octokit/types@npm:^13.0.0, @octokit/types@npm:^13.1.0, @octokit/types@npm:^13.7.0, @octokit/types@npm:^13.8.0":
+  version: 13.10.0
+  resolution: "@octokit/types@npm:13.10.0"
+  dependencies:
+    "@octokit/openapi-types": "npm:^24.2.0"
+  checksum: 10/32f8f5010d7faae128b0cdd0c221f0ca8c3781fe44483ecd87162b3da507db667f7369acda81340f6e2c9c374d9a938803409c6085c2c01d98210b6c58efb99a
   languageName: node
   linkType: hard
 
@@ -32344,7 +32482,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.12.0"
-    "@metamask/account-tree-controller": "npm:^0.18.0"
+    "@metamask/account-tree-controller": "npm:^0.18.1"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^33.1.0"
     "@metamask/address-book-controller": "npm:^6.1.0"
@@ -32352,7 +32490,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A75.2.0#~/.yarn/patches/@metamask-assets-controllers-npm-75.2.0-26c7526112.patch"
-    "@metamask/auto-changelog": "npm:^2.1.0"
+    "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
     "@metamask/bridge-controller": "npm:^43.0.0"
@@ -32384,7 +32522,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/eth-snap-keyring": "npm:^17.1.0"
+    "@metamask/eth-snap-keyring": "npm:^17.2.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^9.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
@@ -32393,7 +32531,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^24.0.0"
     "@metamask/gator-permissions-controller": "npm:^0.1.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
-    "@metamask/jazzicon": "npm:^2.0.0"
+    "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/kernel-browser-runtime": "npm:^0.4.0"
@@ -32428,7 +32566,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^5.0.1"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.38.0"
-    "@metamask/preferences-controller": "npm:^17.0.0"
+    "@metamask/preferences-controller": "npm:^19.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.1"
     "@metamask/profile-sync-controller": "npm:^25.0.0"
     "@metamask/providers": "npm:^22.1.1"
@@ -32447,7 +32585,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.5.1"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.5.0"
-    "@metamask/solana-wallet-snap": "npm:^2.3.8"
+    "@metamask/solana-wallet-snap": "npm:^2.3.10"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
     "@metamask/subscription-controller": "npm:^0.1.0"
