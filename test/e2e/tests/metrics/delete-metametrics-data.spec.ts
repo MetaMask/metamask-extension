@@ -1,16 +1,16 @@
 import { strict as assert } from 'assert';
-import { MockedEndpoint, Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { Driver } from '../../webdriver/driver';
-import { TestSuiteArguments } from '../confirmations/transactions/shared';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import FixtureBuilder from '../../fixture-builder';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { Driver } from '../../webdriver/driver';
+import { TestSuiteArguments } from '../confirmations/transactions/shared';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to

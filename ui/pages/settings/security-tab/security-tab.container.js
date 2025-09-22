@@ -4,7 +4,6 @@ import withRouterHooks from '../../../helpers/higher-order-components/with-route
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
-  setParticipateInMetaMetrics,
   setDataCollectionForMarketing,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -23,6 +22,7 @@ import {
   setSkipDeepLinkInterstitial,
   getMarketingConsent,
   setMarketingConsent,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,

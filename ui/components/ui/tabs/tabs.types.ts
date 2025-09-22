@@ -2,21 +2,15 @@ import React from 'react';
 import { type BoxProps, type TextProps } from '@metamask/design-system-react';
 
 export type TabProps<TKey extends string = string> = Omit<
-  BoxProps,
+  TextProps,
   'children' | 'onClick' | 'ref'
 > & {
-  /** CSS class name for the active tab state */
-  activeClassName?: string;
-  /** CSS class name for the tab button */
-  buttonClassName?: string;
   /** CSS class name for the tab container */
   className?: string;
   /** Test id for the tab element */
   'data-testid'?: string;
   /** Whether the tab is currently active (set by parent Tabs component) */
   isActive?: boolean;
-  /** Whether this is the only tab (set by parent Tabs component) */
-  isSingleTab?: boolean;
   /** Display name for the tab */
   name: React.ReactNode;
   /** Unique key to identify the tab */
@@ -47,14 +41,14 @@ export type TabsProps<TKey extends string = string> = Omit<
   onTabClick?: (tabKey: TKey) => void;
   /** Tab components to render */
   children: React.ReactNode;
-  /** CSS class name for the tabs container */
-  tabsClassName?: string;
   /** Additional content to render between tabs and content */
   subHeader?: React.ReactNode;
   /** Props to pass to the tab list container */
   tabListProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab content container */
   tabContentProps?: Omit<BoxProps, 'children' | 'ref'>;
+  /** CSS class name for the tabs container */
+  className?: string;
 };
 
 export type TabsHandle<TKey extends string = string> = {
