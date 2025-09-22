@@ -172,39 +172,36 @@ async function getAlerts(pendingApproval, data) {
   }
 
   if (data.matchedChain) {
+    const requestData = pendingApproval.requestData;
+    const networkByPassingValidation =
+      NETWORKS_BYPASSING_VALIDATION[requestData.chainId];
     if (
       data.matchedChain.name?.toLowerCase() !==
-        pendingApproval.requestData.chainName.toLowerCase() &&
-      NETWORKS_BYPASSING_VALIDATION[
-        pendingApproval.requestData.chainId
-      ]?.name?.toLowerCase() !==
-        pendingApproval.requestData.chainName.toLowerCase()
+        requestData.chainName.toLowerCase() &&
+      networkByPassingValidation?.name?.toLowerCase() !==
+        requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
       data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
-        pendingApproval.requestData.ticker?.toLowerCase() &&
-      NETWORKS_BYPASSING_VALIDATION[
-        pendingApproval.requestData.chainId
-      ]?.symbol?.toLowerCase() !==
-        pendingApproval.requestData.ticker?.toLowerCase()
+        requestData.ticker?.toLowerCase() &&
+      networkByPassingValidation?.symbol?.toLowerCase() !==
+        requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
-    const { origin } = new URL(pendingApproval.requestData.rpcUrl);
+    const { origin } = new URL(requestData.rpcUrl);
     if (
       !data.matchedChain.rpc
         ?.map((rpc) => new URL(rpc).origin)
         .includes(origin) &&
-      !NETWORKS_BYPASSING_VALIDATION[
-        pendingApproval.requestData.chainId
-      ]?.rpcUrl?.includes(origin)
+      !networkByPassingValidation?.rpcUrl?.includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
-    if (DEPRECATED_NETWORKS.includes(pendingApproval.requestData.chainId)) {
+    if (DEPRECATED_NETWORKS.includes(requestData.chainId)) {
       alerts.push(DEPRECATED_CHAIN_ALERT);
     }
   }
