@@ -371,11 +371,6 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
-    console.log(
-      'allEnabledNetworksForAllNamespaces +++++++++++ .......',
-      allEnabledNetworksForAllNamespaces,
-    );
-
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&

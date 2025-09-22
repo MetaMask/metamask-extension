@@ -6,8 +6,6 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
   NetworkEnablementController,
   NetworkEnablementControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  console.log('NetworkEnablementControllerInit ..........', persistedState);
-
   const controller = new NetworkEnablementController({
     messenger: controllerMessenger,
     state: {
@@ -15,7 +13,6 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
     },
   });
 
-  console.log('NetworkEnablementControllerInit ..........', controller);
   return {
     controller,
   };

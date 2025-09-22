@@ -114,8 +114,6 @@ export const useNetworkManagerState = ({
       (networkChainId) => enabledNetworksByNamespace[networkChainId] === true,
     );
 
-    console.log('isCustomNetworkEnabled +++++++++++', isCustomNetworkEnabled);
-
     return isCustomNetworkEnabled ? 'networks' : 'custom-networks';
   }, []);
 

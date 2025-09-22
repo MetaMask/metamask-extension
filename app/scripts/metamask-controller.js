@@ -8283,10 +8283,8 @@ export default class MetamaskController extends EventEmitter {
 
   setEnabledNetworks = (chainId) => {
     try {
-      console.log('setEnabledNetworks +++++++++++', chainId);
       this.networkEnablementController.enableNetwork(chainId);
     } catch (err) {
-      console.log('setEnabledNetworks error +++++++++++', err);
       log.error(err.message);
       throw err;
     }
@@ -8294,10 +8292,8 @@ export default class MetamaskController extends EventEmitter {
 
   setEnabledAllPopularNetworks = () => {
     try {
-      console.log('setEnabledAllPopularNetworks +++++++++++');
       this.networkEnablementController.enableAllPopularNetworks();
     } catch (err) {
-      console.log('enableAllPopularNetworks error +++++++++++', err);
       log.error(err.message);
       throw err;
     }
