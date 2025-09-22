@@ -14,6 +14,7 @@ export function specificActionERC20TransferBatchBuilder(
   recipient: Hex,
   amount: Hex,
   firstTarget: string,
+  firstValue: Hex,
   firstCalldata: string | undefined,
 ): Caveat {
   if (!isAddress(tokenAddress, { strict: false })) {
@@ -37,19 +38,39 @@ export function specificActionERC20TransferBatchBuilder(
     throw new Error('Invalid firstTarget: must be a valid address');
   }
 
+  const firstValueAsNumber = Number(hexToDecimal(firstValue));
+  if (!Number.isInteger(firstValueAsNumber)) {
+    throw new Error('Invalid firstValue: must be an integer');
+  }
+
+  if (firstValueAsNumber < 0) {
+    throw new Error('Invalid firstValue: must be a positive integer or zero');
+  }
+
   const safeFirstCalldata =
     firstCalldata !== undefined && firstCalldata !== '0x'
       ? firstCalldata
-      : '0x0';
-  if (safeFirstCalldata && !isHex(safeFirstCalldata, { strict: true })) {
+      : '0x';
+  if (
+    safeFirstCalldata !== '0x' &&
+    !isHex(safeFirstCalldata, { strict: true })
+  ) {
     throw new Error('Invalid firstCalldata: must be an hexadecimal string');
   }
 
   const amountAsBigInt = BigInt(amount);
+  const firstValueAsBigInt = BigInt(firstValue);
   const terms = bytesToHex(
     encodePacked(
-      ['address', 'address', 'uint256', 'address', 'bytes'],
-      [tokenAddress, recipient, amountAsBigInt, firstTarget, safeFirstCalldata],
+      ['address', 'address', 'uint256', 'address', 'uint256', 'bytes'],
+      [
+        tokenAddress,
+        recipient,
+        amountAsBigInt,
+        firstTarget,
+        firstValueAsBigInt,
+        safeFirstCalldata,
+      ],
     ),
   );
 

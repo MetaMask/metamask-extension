@@ -226,7 +226,6 @@ export class Delegation7702PublishHook {
       [
         {
           ...unsignedDelegation,
-
           signature: delegationSignature,
         },
       ],
@@ -309,13 +308,13 @@ export class Delegation7702PublishHook {
 
       // contract deployments can't be delegated
       if (to !== undefined) {
-        // TODO: value to be passed here once that's supported by the caveat enforcer
         caveatBuilder.addCaveat(
           specificActionERC20TransferBatch,
           tokenAddress,
           recipient,
           amount,
           to,
+          value as Hex ?? '0x0',
           data,
         );
       }

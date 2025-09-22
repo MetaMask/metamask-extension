@@ -13,6 +13,8 @@ const mockEnvironment: DeleGatorEnvironment = {
   },
   caveatEnforcers: {
     LimitedCallsEnforcer: '0x1234567890123456789012345678901234567890',
+    SpecificActionERC20TransferBatchEnforcer:
+      '0x7890123456789012345678901234567890123456',
   },
 };
 
@@ -21,6 +23,7 @@ describe('specificActionERC20TransferBatchBuilder', () => {
   const testRecipient = `0x${'2'.repeat(40)}` as Hex;
   const testAmount = `0x${BigInt(10 * 10 ** 9).toString(16)}` as Hex;
   const testFirstTarget = `0x${'3'.repeat(40)}` as Hex;
+  const testFirstValue = `0x${BigInt(10 ** 9).toString(16)}` as Hex;
   const testFirstCalldata = `0x${'4'.repeat(40)}` as Hex;
 
   it('should create a caveat with a valid specific action ERC20 transfer batch', () => {
@@ -30,6 +33,7 @@ describe('specificActionERC20TransferBatchBuilder', () => {
       testRecipient,
       testAmount,
       testFirstTarget,
+      testFirstValue,
       testFirstCalldata,
     );
 
@@ -39,19 +43,22 @@ describe('specificActionERC20TransferBatchBuilder', () => {
     expect(caveat.args).toBe('0x');
     expect(caveat.terms).toBeDefined();
     const endOfTokenAddress = 42;
-    expect(caveat.terms.slice(0, endOfTokenAddress)).toStrictEqual(
-      testTokenAddress,
-    );
+    expect(caveat.terms.slice(0, endOfTokenAddress)).toStrictEqual(testTokenAddress);
     const endOfRecipient = endOfTokenAddress + 40; // excludes 2 leading 0x characters
-    expect(caveat.terms.slice(endOfTokenAddress, endOfRecipient)).toStrictEqual(
-      testRecipient.slice(2),
-    );
-    // the the zero-padded amount is encoded from endOfRecipient to endOfRecipient + 64
-    const endOfFirstTarget = endOfRecipient + 64 + 40; // excludes 2 leading 0x characters
     expect(
-      caveat.terms.slice(endOfRecipient + 64, endOfFirstTarget),
+      caveat.terms.slice(endOfTokenAddress, endOfRecipient),
+    ).toStrictEqual(testRecipient.slice(2));
+    // the the zero-padded amount is encoded from endOfRecipient to endOfRecipient + 64
+    const endOfAmount = endOfRecipient + 64;
+    const endOfFirstTarget = endOfAmount + 40; // excludes 2 leading 0x characters
+    expect(
+      caveat.terms.slice(endOfAmount, endOfFirstTarget),
     ).toStrictEqual(testFirstTarget.slice(2));
-    expect(caveat.terms.slice(endOfFirstTarget)).toStrictEqual(
+    const endOfFirstValue = endOfFirstTarget + 64;
+    expect(
+      caveat.terms.slice(endOfFirstTarget, endOfFirstValue),
+    ).toStrictEqual(testFirstValue.slice(2).padStart(64, '0'));
+    expect(caveat.terms.slice(endOfFirstValue)).toStrictEqual(
       testFirstCalldata.slice(2),
     ); // 0x removed from the appended data
   });
@@ -66,6 +73,7 @@ describe('specificActionERC20TransferBatchBuilder', () => {
         testRecipient,
         testAmount,
         testFirstTarget,
+        testFirstValue,
         testFirstCalldata,
       );
     }).toThrow('Invalid tokenAddress: must be a valid address');
@@ -81,6 +89,7 @@ describe('specificActionERC20TransferBatchBuilder', () => {
         testRecipientOverride,
         testAmount,
         testFirstTarget,
+        testFirstValue,
         testFirstCalldata,
       );
     }).toThrow('Invalid recipient: must be a valid address');
@@ -96,6 +105,7 @@ describe('specificActionERC20TransferBatchBuilder', () => {
         testRecipient,
         testAmountOverride,
         testFirstTarget,
+        testFirstValue,
         testFirstCalldata,
       );
     }).toThrow('Invalid amount: must be a positive integer or zero');
@@ -111,9 +121,41 @@ describe('specificActionERC20TransferBatchBuilder', () => {
         testRecipient,
         testAmount,
         testFirstTargetOverride,
+        testFirstValue,
         testFirstCalldata,
       );
     }).toThrow('Invalid firstTarget: must be a valid address');
+  });
+
+  it('should throw an error if first value is not positive', () => {
+    const testFirstValueOverride = '-0x012123' as Hex; // negative value
+
+    expect(() => {
+      specificActionERC20TransferBatchBuilder(
+        mockEnvironment,
+        testTokenAddress,
+        testRecipient,
+        testAmount,
+        testFirstTarget,
+        testFirstValueOverride,
+        testFirstCalldata,
+      );
+    }).toThrow('Invalid firstValue: must be a positive integer or zero');
+  });
+
+  it('should allow empty calldata', () => {
+    const caveat = specificActionERC20TransferBatchBuilder(
+      mockEnvironment,
+      testTokenAddress,
+      testRecipient,
+      testAmount,
+      testFirstTarget,
+      testFirstValue,
+      undefined,
+    );
+
+    const endOfFirstValue = 42 + 40 + 64 + 40 + 64;
+    expect(caveat.terms.slice(endOfFirstValue)).toBe('');
   });
 
   // remaining failure modes should be avoided by respecting the types
