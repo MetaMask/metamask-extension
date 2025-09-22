@@ -1274,25 +1274,6 @@
         "eslint>fast-deep-equal": true
       }
     },
-    "@metamask/preferences-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
     "@metamask/remote-feature-flag-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -1574,7 +1555,6 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "webpack>events": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -2103,7 +2083,7 @@
     "@metamask/preferences-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/preferences-controller>@metamask/controller-utils": true
+        "@metamask/controller-utils": true
       }
     },
     "@metamask/profile-sync-controller": {
