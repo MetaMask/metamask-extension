@@ -15,10 +15,10 @@ export type AppState = {
   metamask: GatorPermissionsControllerState;
 };
 
-export type PermissionsGroupDetailRecord = Record<string, number>; // chainId -> total
+export type PermissionsGroupDetailRecord = Record<Hex, number>; // chainId -> total
 
 export type PermissionsGroupDetail = {
-  chainId: string;
+  chainId: Hex;
   total: number;
 };
 
@@ -200,7 +200,7 @@ export const getPermissionGroupDetails = createSelector(
     getGatorPermissionsMap,
     (_state: AppState, permissionGroupName: string) => permissionGroupName,
   ],
-  (gatorPermissionsMap, permissionGroupName) => {
+  (gatorPermissionsMap, permissionGroupName): PermissionsGroupDetail[] => {
     switch (permissionGroupName) {
       case 'token-transfer': {
         const streamsPermissionsCountPerChainId =
@@ -231,7 +231,7 @@ export const getPermissionGroupDetails = createSelector(
 
         return Object.entries(totalPermissionsCountPerChainId).map(
           ([chainId, total]) => ({
-            chainId,
+            chainId: chainId as Hex,
             total,
           }),
         );

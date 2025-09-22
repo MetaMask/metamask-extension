@@ -42,6 +42,29 @@ exports[`Token Transfer Page render renders correctly 1`] = `
           </p>
         </div>
       </div>
+      <div
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        style="overflow: auto;"
+      >
+        <div
+          class="mm-box"
+        />
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--height-full"
+          data-testid="no-connections"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-default mm-box--background-color-background-default"
+          >
+            Nothing to see here
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative mm-box--background-color-background-default"
+          >
+            This is where you can see the permissions you've given to installed Snaps or connected sites.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

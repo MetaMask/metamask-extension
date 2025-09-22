@@ -1,4 +1,5 @@
 import React from 'react';
+import { Hex } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,17 +29,12 @@ type PermissionGroupListItemProps = {
   /**
    * The chain id to display
    */
-  chainId: string;
+  chainId: Hex;
 
   /**
-   * The count of permissions for the chain
+   * The text to display
    */
-  total: number;
-
-  /**
-   * The description of the permission
-   */
-  description: string;
+  text: string;
 
   /**
    * The function to call when the connection is clicked
@@ -47,14 +43,14 @@ type PermissionGroupListItemProps = {
 };
 export const PermissionGroupListItem = ({
   chainId,
-  total,
-  description,
+  text,
   onClick,
 }: PermissionGroupListItemProps) => {
   const t = useI18nContext();
   const networkImageUrl = getImageForChainId(chainId);
-  const getNetworkNameForChainId = (chainId: string) => {
-    const networkName = NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
+  const getNetworkNameForChainId = () => {
+    const networkName =
+      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
     return networkName ? t(networkName) : t('privateNetwork');
   };
 
@@ -82,6 +78,7 @@ export const PermissionGroupListItem = ({
           src={networkImageUrl}
           name={chainId}
           size={AvatarNetworkSize.Md}
+          style={{ borderRadius: '50%' }}
         />
       </Box>
 
@@ -92,7 +89,7 @@ export const PermissionGroupListItem = ({
         style={{ alignSelf: 'center', flexGrow: '1' }}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
-          {getNetworkNameForChainId(chainId)}
+          {getNetworkNameForChainId()}
         </Text>
 
         <Box
@@ -107,7 +104,7 @@ export const PermissionGroupListItem = ({
             color={TextColor.textAlternative}
             variant={TextVariant.bodyMd}
           >
-            {total} {description}
+            {text}
           </Text>
         </Box>
       </Box>

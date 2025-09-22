@@ -13,6 +13,7 @@ exports[`Permission List Item render renders correctly 1`] = `
       <div
         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
         data-testid="permission-group-list-item__avatar-network"
+        style="border-radius: 50%;"
       >
         <img
           alt="0x1 logo"
@@ -36,9 +37,7 @@ exports[`Permission List Item render renders correctly 1`] = `
         <span
           class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
         >
-          1
-           
-          token permissions
+          2 token permissions
         </span>
       </div>
     </div>

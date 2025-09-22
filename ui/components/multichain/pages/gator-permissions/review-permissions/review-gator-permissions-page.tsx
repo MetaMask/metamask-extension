@@ -20,8 +20,9 @@ export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const { chainId } = useParams();
-  const getNetworkNameForChainId = (chainId: string | undefined) => {
-    const networkName = NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
+  const getNetworkNameForChainId = () => {
+    const networkName =
+      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
     return networkName ? t(networkName) : t('privateNetwork');
   };
 
@@ -50,7 +51,7 @@ export const ReviewGatorPermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="token-transfer-page-title"
         >
-          {getNetworkNameForChainId(chainId)}
+          {getNetworkNameForChainId()}
         </Text>
       </Header>
     </Page>

@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { Content, Header, Page } from '../../page';
 import {
   Box,
@@ -25,7 +27,6 @@ import {
   REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { PermissionGroupListItem } from '../components';
-import { useSelector } from 'react-redux';
 import {
   AppState,
   getPermissionGroupDetails,
@@ -39,23 +40,22 @@ export const TokenTransferPage = () => {
     getPermissionGroupDetails(state, 'token-transfer'),
   );
 
-  const handlePermissionGroupItemClick = (chainId: string) => {
+  const handlePermissionGroupItemClick = (chainId: Hex) => {
     history.push(`${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/token-transfer`);
   };
 
   const renderPageContent = () =>
     permissionGroupDetails.map(({ chainId, total }) => {
-      const description =
-          total === 1
-            ? t('tokenPermissionCount', [total])
-            : t('tokenPermissionsCount', [total]);
+      const text =
+        total === 1
+          ? t('tokenPermissionCount', [total])
+          : t('tokenPermissionsCount', [total]);
       return (
         <PermissionGroupListItem
           data-testid="permission-group-list-item"
           key={chainId}
           chainId={chainId}
-          total={total}
-          description={description}
+          text={text}
           onClick={() => handlePermissionGroupItemClick(chainId)}
         />
       );

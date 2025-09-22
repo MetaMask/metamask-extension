@@ -24,7 +24,7 @@ describe('Token Transfer Page', () => {
     });
 
     it('renders Token Transfer page title', () => {
-      const { getByTestId } = renderWithProvider(<TokenTransferPage />);
+      const { getByTestId } = renderWithProvider(<TokenTransferPage />, store);
       expect(getByTestId('token-transfer-page-title')).toBeInTheDocument();
     });
   });
