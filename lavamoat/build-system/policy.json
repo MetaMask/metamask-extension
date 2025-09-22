@@ -167,8 +167,7 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process.exitCode": "write",
-        "process.versions.node": true
+        "process": true
       },
       "packages": {
         "@babel/core": true,
@@ -995,7 +994,7 @@
         "@lavamoat/lavapack>combine-source-map": true,
         "eslint>espree": true,
         "@lavamoat/lavapack>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
+        "@lavamoat/lavapack>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
         "through2": true,
         "@lavamoat/lavapack>umd": true
@@ -4253,7 +4252,7 @@
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
-    "lavamoat>lavamoat-core>json-stable-stringify": {
+    "@lavamoat/lavapack>lavamoat-core>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
@@ -4406,12 +4405,12 @@
         "browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "duplexify": true,
-        "lavamoat>lavamoat-core": true,
+        "@lavamoat/lavapack>lavamoat-core": true,
         "lavamoat-browserify>readable-stream": true,
         "through2": true
       }
     },
-    "lavamoat>lavamoat-core": {
+    "@lavamoat/lavapack>lavamoat-core": {
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
@@ -4426,17 +4425,17 @@
         "define": true
       },
       "packages": {
-        "lavamoat>lavamoat-core>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
+        "@lavamoat/lavapack>lavamoat-core>json-stable-stringify": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
     },
-    "lavamoat>lavamoat-tofu": {
+    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
