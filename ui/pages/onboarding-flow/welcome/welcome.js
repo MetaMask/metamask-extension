@@ -332,6 +332,10 @@ export default function OnboardingWelcome() {
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
+        // reset the participate in meta metrics in case it was set to true from previous login attempts
+        // to prevent the queued events from being sent
+        dispatch(setParticipateInMetaMetrics(null));
+
         if (loginType === LOGIN_TYPE.SRP) {
           if (loginOption === LOGIN_OPTION.NEW) {
             await onCreateClick();
@@ -353,7 +357,7 @@ export default function OnboardingWelcome() {
         }
 
         if (!isFireFox) {
-          // sent queued events
+          // automatically set participate in meta metrics to true for social login users in chrome
           dispatch(setParticipateInMetaMetrics(true));
         }
       } catch (error) {
