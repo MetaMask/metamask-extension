@@ -1,10 +1,8 @@
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../../helpers');
+import FixtureBuilder from '../../fixture-builder';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Request Queuing SwitchChain -> SendTx', function () {
   it('switching network should reject pending confirmations from same origin', async function () {
@@ -28,25 +26,18 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
             },
           },
         ],
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+        await testDapp.connectAccount({});
 
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.checkPageIsLoaded();
 
         // Switch Ethereum Chain
         const switchEthereumChainRequest = JSON.stringify({
@@ -61,17 +52,16 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
 
         // Navigate back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.checkPageIsLoaded();
 
         // Dapp Send Button
-        await driver.clickElement('#sendButton');
+        await testDapp.clickSimpleSendButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Persist Switch Ethereum Chain notifcation
-        await driver.findClickableElements({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
 
         // THIS IS BROKEN
         // Find the cancel pending txs on the Switch Ethereum Chain notification.
@@ -81,10 +71,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
         // });
 
         // Confirm Switch Network
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        // No confirmations, tx should be cleared
-        await driver.waitUntilXWindowHandles(2);
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
       },
     );
   });

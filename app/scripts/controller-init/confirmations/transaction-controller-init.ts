@@ -1,6 +1,7 @@
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
+  SavedGasFees,
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
@@ -47,7 +48,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     controllerMessenger,
     initMessenger,
     getFlatState,
-    getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
     updateAccountBalanceForTransactionNetwork,
@@ -78,10 +78,10 @@ export const TransactionControllerInit: ControllerInitFunction<
     getNetworkState: () => networkController().state,
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
-    // @ts-expect-error Preferences controller uses Record rather than specific type
-    getSavedGasFees: () => {
-      const globalChainId = getGlobalChainId();
-      return preferencesController().state.advancedGasFee[globalChainId];
+    getSavedGasFees: (chainId) => {
+      return preferencesController().state.advancedGasFee[
+        chainId
+      ] as unknown as SavedGasFees | undefined;
     },
     getSimulationConfig: async (url) => {
       const getToken = () =>

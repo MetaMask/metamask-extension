@@ -74,34 +74,36 @@ exports[`ConnectPage should render correctly 1`] = `
         style="overflow: auto;"
       >
         <div
-          class="mm-box tabs mm-box--justify-content-center mm-box--background-color-transparent"
+          class="justify-center bg-transparent tabs transform-gpu"
         >
-          <ul
-            class="mm-box tabs__list mm-box--display-flex mm-box--gap-0 mm-box--justify-content-flex-start mm-box--background-color-transparent"
-          >
-            <li
-              class="mm-box tab tab--active mm-box--width-full"
-              data-testid="accounts-tab"
-            >
-              <button
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
-              >
-                Accounts
-              </button>
-            </li>
-            <li
-              class="mm-box tab mm-box--width-full"
-              data-testid="permissions-tab"
-            >
-              <button
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
-              >
-                Permissions
-              </button>
-            </li>
-          </ul>
           <div
-            class="mm-box tabs__content"
+            class="flex flex-row gap-4 justify-start bg-transparent"
+            role="tablist"
+          >
+            <button
+              aria-disabled="false"
+              aria-selected="true"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
+              data-testid="accounts-tab"
+              role="tab"
+              tabindex="0"
+            >
+              Accounts
+            </button>
+            <button
+              aria-disabled="false"
+              aria-selected="false"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
+              data-testid="permissions-tab"
+              role="tab"
+              tabindex="-1"
+            >
+              Permissions
+            </button>
+          </div>
+          <div
+            class=""
+            role="tabpanel"
           >
             <div
               class="mm-box mm-box--margin-top-4"
@@ -309,7 +311,7 @@ exports[`ConnectPage should render correctly 1`] = `
                                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                       >
                                         <img
-                                          alt="Polygon Mainnet logo"
+                                          alt="Polygon logo"
                                           class="mm-avatar-network__network-image"
                                           src="./images/pol-token.svg"
                                         />
@@ -323,7 +325,7 @@ exports[`ConnectPage should render correctly 1`] = `
                                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                       >
                                         <img
-                                          alt="Binance Smart Chain logo"
+                                          alt="BNB Chain logo"
                                           class="mm-avatar-network__network-image"
                                           src="./images/bnb.svg"
                                         />
@@ -493,34 +495,36 @@ exports[`ConnectPage should render with defaults from the requested permissions 
         style="overflow: auto;"
       >
         <div
-          class="mm-box tabs mm-box--justify-content-center mm-box--background-color-transparent"
+          class="justify-center bg-transparent tabs transform-gpu"
         >
-          <ul
-            class="mm-box tabs__list mm-box--display-flex mm-box--gap-0 mm-box--justify-content-flex-start mm-box--background-color-transparent"
-          >
-            <li
-              class="mm-box tab tab--active mm-box--width-full"
-              data-testid="accounts-tab"
-            >
-              <button
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
-              >
-                Accounts
-              </button>
-            </li>
-            <li
-              class="mm-box tab mm-box--width-full"
-              data-testid="permissions-tab"
-            >
-              <button
-                class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
-              >
-                Permissions
-              </button>
-            </li>
-          </ul>
           <div
-            class="mm-box tabs__content"
+            class="flex flex-row gap-4 justify-start bg-transparent"
+            role="tablist"
+          >
+            <button
+              aria-disabled="false"
+              aria-selected="true"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
+              data-testid="accounts-tab"
+              role="tab"
+              tabindex="0"
+            >
+              Accounts
+            </button>
+            <button
+              aria-disabled="false"
+              aria-selected="false"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
+              data-testid="permissions-tab"
+              role="tab"
+              tabindex="-1"
+            >
+              Permissions
+            </button>
+          </div>
+          <div
+            class=""
+            role="tabpanel"
           >
             <div
               class="mm-box mm-box--margin-top-4"
@@ -728,7 +732,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                       >
                                         <img
-                                          alt="Polygon Mainnet logo"
+                                          alt="Polygon logo"
                                           class="mm-avatar-network__network-image"
                                           src="./images/pol-token.svg"
                                         />
@@ -742,7 +746,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                       >
                                         <img
-                                          alt="Binance Smart Chain logo"
+                                          alt="BNB Chain logo"
                                           class="mm-avatar-network__network-image"
                                           src="./images/bnb.svg"
                                         />
