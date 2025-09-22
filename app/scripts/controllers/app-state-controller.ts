@@ -1035,7 +1035,7 @@ export class AppStateController extends BaseController<
 
     // Check if the cached response has expired (15 minute TTL)
     const now = Date.now();
-    const ADDRESS_SECURITY_ALERT_TTL = Number(MINUTE);
+    const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
     if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
       // Remove expired entry
       this.update((state) => {
