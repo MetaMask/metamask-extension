@@ -3,11 +3,12 @@ import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   assertChangedSpendingCap,
   editSpendingCap,
   mocked4BytesApprove,
-  openDAppWithContract,
   TestSuiteArguments,
 } from './shared';
 
@@ -38,12 +39,12 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await openDAppWithContract(
-            driver,
-            contractRegistry,
-            smartContract,
-            localNodes?.[0],
-          );
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createERC20ApproveTransaction(driver);
 
@@ -78,12 +79,13 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await openDAppWithContract(
-            driver,
-            contractRegistry,
-            smartContract,
-            localNodes?.[0],
-          );
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createERC20ApproveTransaction(driver);
 

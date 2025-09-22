@@ -2,10 +2,11 @@
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   confirmApproveTransaction,
   mocked4BytesApprove,
-  openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
@@ -37,12 +38,12 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await openDAppWithContract(
-            driver,
-            contractRegistry,
-            smartContract,
-            localNodes?.[0],
-          );
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await importTST(driver);
 
@@ -71,12 +72,13 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await openDAppWithContract(
-            driver,
-            contractRegistry,
-            smartContract,
-            localNodes?.[0],
-          );
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await importTST(driver);
 

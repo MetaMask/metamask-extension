@@ -1,6 +1,8 @@
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
@@ -10,7 +12,6 @@ import {
   assertChangedSpendingCap,
   editSpendingCap,
   mocked4BytesIncreaseAllowance,
-  openDAppWithContract,
   TestSuiteArguments,
 } from './shared';
 
@@ -118,12 +119,13 @@ async function createAndAssertIncreaseAllowanceSubmission(
   contractRegistry?: ContractAddressRegistry,
   localNodes?: Anvil[],
 ) {
-  await openDAppWithContract(
-    driver,
-    contractRegistry,
+  const contractAddress = await contractRegistry?.getContractAddress(
     SMART_CONTRACTS.HST,
-    localNodes?.[0],
   );
+  await loginWithBalanceValidation(driver, localNodes?.[0]);
+  const testDapp = new TestDapp(driver);
+  await testDapp.openTestDappPage({ contractAddress });
+  await testDapp.checkPageIsLoaded();
 
   await createERC20IncreaseAllowanceTransaction(driver);
 

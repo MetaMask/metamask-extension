@@ -7,7 +7,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
-const { openDapp, WINDOW_TITLES } = require('../../../helpers');
+const { WINDOW_TITLES } = require('../../../helpers');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
@@ -16,21 +16,6 @@ export type TestSuiteArguments = {
   contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
-
-export async function openDAppWithContract(
-  driver: Driver,
-  contractRegistry: ContractAddressRegistry | undefined,
-  smartContract: string,
-  localNode: Anvil | undefined,
-) {
-  const contractAddress = await (
-    contractRegistry as ContractAddressRegistry
-  ).getContractAddress(smartContract);
-
-  await loginWithBalanceValidation(driver, localNode);
-
-  await openDapp(driver, contractAddress);
-}
 
 export async function createContractDeploymentTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

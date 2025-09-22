@@ -255,6 +255,7 @@ export const SnapUIAddressInput: FunctionComponent<
       value={value}
       onChange={handleChange}
       label={label}
+      labelProps={{ marginBottom: 0 }}
       disabled={disabled}
       error={Boolean(error)}
       size={FormTextFieldSize.Lg}
