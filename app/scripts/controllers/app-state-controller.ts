@@ -531,6 +531,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
     usedInUi: true,
+    includeInStateLogs: true,
   },
 };
 

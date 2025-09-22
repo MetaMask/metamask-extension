@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import {
-  hideModal,
   setMultichainIntroModalShown,
   alignMultichainWallets,
 } from '../../../../../store/actions';
@@ -13,7 +12,15 @@ import {
   MultichainAccountIntroModalProps,
 } from './multichain-account-intro-modal.component';
 
-export const MultichainAccountIntroModalContainer: React.FC = () => {
+type ContainerProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -34,11 +41,11 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
 
     // Mark modal as shown so it doesn't show again
     dispatch(setMultichainIntroModalShown(true));
-    dispatch(hideModal());
+    onClose();
 
     // Navigate to account list
     history.push(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [dispatch, history]);
+  }, [dispatch, history, onClose]);
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page
@@ -52,10 +59,11 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
   const handleClose = useCallback(() => {
     // Mark modal as shown so it doesn't show again
     dispatch(setMultichainIntroModalShown(true));
-    dispatch(hideModal());
-  }, [dispatch]);
+    onClose();
+  }, [dispatch, onClose]);
 
   const props: MultichainAccountIntroModalProps = {
+    isOpen,
     onViewAccounts: handleViewAccounts,
     onLearnMore: handleLearnMore,
     onClose: handleClose,

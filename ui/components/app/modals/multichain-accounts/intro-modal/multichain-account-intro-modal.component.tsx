@@ -18,11 +18,15 @@ import {
   Icon,
   IconName,
   IconSize,
+  Modal,
+  ModalContent,
+  ModalOverlay,
   Text,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type MultichainAccountIntroModalProps = {
+  isOpen: boolean;
   onViewAccounts: () => void;
   onLearnMore: () => void;
   onClose: () => void;
@@ -31,11 +35,19 @@ export type MultichainAccountIntroModalProps = {
 
 export const MultichainAccountIntroModal: React.FC<
   MultichainAccountIntroModalProps
-> = ({ onViewAccounts, onLearnMore, onClose, isLoading = false }) => {
+> = ({ isOpen, onViewAccounts, onLearnMore, onClose, isLoading = false }) => {
   const t = useI18nContext();
 
   return (
-    <Box
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isClosedOnOutsideClick
+      isClosedOnEscapeKey
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <Box
       className="multichain-account-intro-modal"
       padding={6}
       display={Display.Flex}
@@ -161,5 +173,7 @@ export const MultichainAccountIntroModal: React.FC<
         </Button>
       </Box>
     </Box>
+      </ModalContent>
+    </Modal>
   );
 };

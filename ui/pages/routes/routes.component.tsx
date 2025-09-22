@@ -2,7 +2,7 @@
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable import/extensions */
 import classnames from 'classnames';
-import React, { Suspense, useCallback, useEffect, useRef } from 'react';
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
@@ -106,7 +106,6 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
-  showModal,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -157,6 +156,7 @@ import { MultichainAccountDetails } from '../multichain-accounts/account-details
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
+import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
@@ -370,6 +370,9 @@ export default function Routes() {
   const history = useHistory();
   const location = useLocation();
 
+  // Local state for multichain intro modal
+  const [showMultichainIntroModal, setShowMultichainIntroModal] = useState(false);
+
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
   const isLoading = useAppSelector((state) => state.appState.isLoading);
@@ -521,9 +524,7 @@ export default function Routes() {
       lastUpdatedAt && // null = fresh install, timestamp = upgrade
       isMainWalletArea;
 
-    if (shouldShowModal) {
-      dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
-    }
+    setShowMultichainIntroModal(shouldShowModal);
   }, [
     isUnlocked,
     isMultichainAccountsState2Enabled,
@@ -904,6 +905,13 @@ export default function Routes() {
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
       <ToastMaster />
+
+      {showMultichainIntroModal ? (
+        <MultichainAccountIntroModalContainer
+          isOpen={showMultichainIntroModal}
+          onClose={() => setShowMultichainIntroModal(false)}
+        />
+      ) : null}
     </div>
   );
 }
