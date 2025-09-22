@@ -58,7 +58,6 @@ export function useAddressTrustSignalAlerts(): Alert[] {
       return [];
     }
 
-    // Skip trust signal checks for internal wallet accounts
     const isInternalAccount = internalAccounts.some(
       (account) =>
         account.address.toLowerCase() === addressToCheck.toLowerCase(),
