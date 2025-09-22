@@ -4987,7 +4987,7 @@ describe('MetaMaskController', () => {
           metamaskController.accountTreeController,
           'getAccountsFromSelectedAccountGroup',
         )
-        .mockReturnValue(account);
+        .mockReturnValue([account]);
 
       jest
         .mocked(getOriginsWithSessionProperty)
@@ -5057,7 +5057,7 @@ describe('MetaMaskController', () => {
       ).toHaveBeenCalledWith(mockOrigin, [mockSolanaAddress]);
     });
 
-    it('notifies when account is not a Solana DataAccount', async () => {
+    it('does not notify when account is not a Solana DataAccount', async () => {
       setupMocks({ account: mockEvmAccount });
       triggerSubscription();
 
@@ -5083,8 +5083,23 @@ describe('MetaMaskController', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('notifies when no origins have Solana account change notifications enabled', async () => {
+    it('does not notify when no origins have Solana account change notifications enabled', async () => {
       setupMocks({ hasNotifications: false, hasPermittedAccounts: false });
+      triggerSubscription();
+
+      expect(
+        metamaskController._notifySolanaAccountChange,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('does not notify when no account is returned from selected account group', async () => {
+      jest
+        .spyOn(
+          metamaskController.accountTreeController,
+          'getAccountsFromSelectedAccountGroup',
+        )
+        .mockReturnValue([]);
+
       triggerSubscription();
 
       expect(
