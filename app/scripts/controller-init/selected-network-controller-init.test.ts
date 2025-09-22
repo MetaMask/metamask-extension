@@ -39,8 +39,6 @@ describe('SelectedNetworkControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       domainProxyMap: expect.any(WeakRefObjectMap),
-      onPreferencesStateChange: expect.any(Function),
-      useRequestQueuePreference: true,
     });
   });
 });
