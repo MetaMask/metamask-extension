@@ -60,6 +60,11 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
     networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
       getFailoverUrlsForInfuraNetwork('base-mainnet');
 
+    // Update default popular network names.
+    networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
+    networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
+    networks[CHAIN_IDS.BASE].name = 'Base';
+
     let network: NetworkConfiguration;
     if (process.env.IN_TEST) {
       network = {
@@ -77,7 +82,6 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
           },
         ],
       };
-
       networks[CHAIN_IDS.LOCALHOST] = network;
     } else if (
       process.env.METAMASK_DEBUG ||
@@ -92,8 +96,7 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
       network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
   }
 
-  // Fix the network controller state (selectedNetworkClientId) if it is invalid
-  // and report the error.
+  // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
   if (
     initialNetworkControllerState.networkConfigurationsByChainId &&
     !Object.values(initialNetworkControllerState.networkConfigurationsByChainId)
