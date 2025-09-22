@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
+import { Json, Hex } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -21,6 +21,15 @@ import {
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+
+/**
+ * Referral status for an account (currently used for Hyperliquid referrals)
+ */
+export enum ReferralStatus {
+  Approved = 'approved',
+  Passed = 'passed',
+  Declined = 'declined',
+}
 
 type AccountIdentityEntry = {
   address: string;
@@ -147,11 +156,7 @@ export type PreferencesControllerState = Omit<
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: {
-    hyperliquid: {
-      approvedAccounts: string[];
-      passedAccounts: string[];
-      declinedAccounts: string[];
-    };
+    hyperliquid: Record<Hex, ReferralStatus>;
   };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -263,11 +268,7 @@ export const getDefaultPreferencesControllerState =
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
     referrals: {
-      hyperliquid: {
-        approvedAccounts: [],
-        passedAccounts: [],
-        declinedAccounts: [],
-      },
+      hyperliquid: {},
     },
   });
 
@@ -1075,55 +1076,35 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  addReferralApprovedAccount(accountAddress: string) {
+  addReferralApprovedAccount(accountAddress: Hex) {
     this.update((state) => {
-      if (
-        !state.referrals.hyperliquid.approvedAccounts.includes(accountAddress)
-      ) {
-        state.referrals.hyperliquid.approvedAccounts.push(accountAddress);
-      }
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Approved;
     });
   }
 
-  addReferralPassedAccount(accountAddress: string) {
+  addReferralPassedAccount(accountAddress: Hex) {
     this.update((state) => {
-      if (
-        !state.referrals.hyperliquid.passedAccounts.includes(accountAddress)
-      ) {
-        state.referrals.hyperliquid.passedAccounts.push(accountAddress);
-      }
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Passed;
     });
   }
 
-  addReferralDeclinedAccount(accountAddress: string) {
+  addReferralDeclinedAccount(accountAddress: Hex) {
     this.update((state) => {
-      if (
-        !state.referrals.hyperliquid.declinedAccounts.includes(accountAddress)
-      ) {
-        state.referrals.hyperliquid.declinedAccounts.push(accountAddress);
-      }
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Declined;
     });
   }
 
-  removeReferralDeclinedAccount(accountAddress: string) {
+  removeReferralDeclinedAccount(accountAddress: Hex) {
     this.update((state) => {
-      state.referrals.hyperliquid.declinedAccounts =
-        state.referrals.hyperliquid.declinedAccounts.filter(
-          (account) => account !== accountAddress,
-        );
+      delete state.referrals.hyperliquid[accountAddress];
     });
   }
 
-  setAllAccountsReferralApproved(accountAddresses: string[]) {
+  setAllAccountsReferralApproved(accountAddresses: Hex[]) {
     this.update((state) => {
-      const existingAccounts = state.referrals.hyperliquid.approvedAccounts;
-      const newAccounts = accountAddresses.filter(
-        (account) => !existingAccounts.includes(account),
-      );
-      state.referrals.hyperliquid.approvedAccounts = [
-        ...existingAccounts,
-        ...newAccounts,
-      ];
+      accountAddresses.forEach((address) => {
+        state.referrals.hyperliquid[address] = ReferralStatus.Approved;
+      });
     });
   }
 }

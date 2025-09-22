@@ -20,7 +20,8 @@ import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
-import { PreferencesController } from './preferences-controller';
+import { PreferencesController, ReferralStatus } from './preferences-controller';
+import type { Hex } from '@metamask/utils';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {
@@ -964,11 +965,7 @@ describe('preferences controller', () => {
             "useNativeCurrencyAsPrimaryCurrency": true,
           },
           "referrals": {
-            "hyperliquid": {
-              "approvedAccounts": [],
-              "declinedAccounts": [],
-              "passedAccounts": [],
-            },
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
@@ -1073,11 +1070,7 @@ describe('preferences controller', () => {
             "useNativeCurrencyAsPrimaryCurrency": true,
           },
           "referrals": {
-            "hyperliquid": {
-              "approvedAccounts": [],
-              "declinedAccounts": [],
-              "passedAccounts": [],
-            },
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
@@ -1182,11 +1175,7 @@ describe('preferences controller', () => {
             "useNativeCurrencyAsPrimaryCurrency": true,
           },
           "referrals": {
-            "hyperliquid": {
-              "approvedAccounts": [],
-              "declinedAccounts": [],
-              "passedAccounts": [],
-            },
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
@@ -1238,94 +1227,125 @@ describe('preferences controller', () => {
     describe('addReferralApprovedAccount', () => {
       const { controller } = setupController({});
 
-      it('adds an account to approved accounts list', () => {
+      it('adds an account with approved status', () => {
         const testAccount = '0x123';
 
         controller.addReferralApprovedAccount(testAccount);
         expect(
-          controller.state.referrals.hyperliquid.approvedAccounts,
-        ).toStrictEqual([testAccount]);
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
       });
 
-      it('should not add duplicate accounts', () => {
+      it('overwrites existing account status', () => {
         const testAccount = '0x123';
 
-        controller.addReferralApprovedAccount(testAccount);
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
+
         controller.addReferralApprovedAccount(testAccount);
         expect(
-          controller.state.referrals.hyperliquid.approvedAccounts,
-        ).toStrictEqual([testAccount]);
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
       });
 
-      it('should add multiple unique accounts', () => {
+      it('adds multiple unique accounts', () => {
         const testAccount1 = '0x123';
         const testAccount2 = '0x456';
 
         controller.addReferralApprovedAccount(testAccount1);
         controller.addReferralApprovedAccount(testAccount2);
         expect(
-          controller.state.referrals.hyperliquid.approvedAccounts,
-        ).toStrictEqual([testAccount1, testAccount2]);
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+
+      it('normalizes address case to lowercase', () => {
+        const mixedCaseAccount = '0x1234567890ABCDEF123456789012345678901234' as Hex;
+        const lowerCaseAccount = mixedCaseAccount.toLowerCase() as Hex;
+
+        controller.addReferralApprovedAccount(mixedCaseAccount);
+
+        // Should be stored as lowercase
+        expect(
+          controller.state.referrals.hyperliquid[lowerCaseAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+
+        // Mixed case key should not exist
+        expect(
+          controller.state.referrals.hyperliquid[mixedCaseAccount],
+        ).toBeUndefined();
       });
     });
 
     describe('addReferralPassedAccount', () => {
       const { controller } = setupController({});
 
-      it('should add account to passed accounts list', () => {
+      it('adds account with passed status', () => {
         const testAccount = '0x123';
 
         controller.addReferralPassedAccount(testAccount);
         expect(
-          controller.state.referrals.hyperliquid.passedAccounts,
-        ).toStrictEqual([testAccount]);
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
       });
 
-      it('should not add duplicate accounts', () => {
+      it('overwrites existing account status', () => {
         const testAccount = '0x123';
 
-        controller.addReferralPassedAccount(testAccount);
+        controller.addReferralApprovedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+
         controller.addReferralPassedAccount(testAccount);
         expect(
-          controller.state.referrals.hyperliquid.passedAccounts,
-        ).toStrictEqual([testAccount]);
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
       });
     });
 
     describe('addReferralDeclinedAccount', () => {
       const { controller } = setupController({});
 
-      it('should add account to declined accounts list', () => {
+      it('adds account with declined status', () => {
         const testAccount = '0x123';
 
         controller.addReferralDeclinedAccount(testAccount);
         expect(
-          controller.state.referrals.hyperliquid.declinedAccounts,
-        ).toStrictEqual([testAccount]);
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
       });
 
-      it('should not add duplicate accounts', () => {
+      it('overwrites existing account status', () => {
         const testAccount = '0x123';
 
-        controller.addReferralDeclinedAccount(testAccount);
+        controller.addReferralPassedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
+
         controller.addReferralDeclinedAccount(testAccount);
         expect(
-          controller.state.referrals.hyperliquid.declinedAccounts,
-        ).toStrictEqual([testAccount]);
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
       });
     });
 
     describe('removeReferralDeclinedAccount', () => {
-      it('should remove the specified account from the declined accounts list', () => {
+      it('removes the specified account from referrals completely', () => {
         const testAccount1 = '0x123';
         const testAccount2 = '0x456';
         const { controller } = setupController({
           state: {
             referrals: {
               hyperliquid: {
-                approvedAccounts: [],
-                passedAccounts: [],
-                declinedAccounts: [testAccount1, testAccount2],
+                [testAccount1]: ReferralStatus.Declined,
+                [testAccount2]: ReferralStatus.Declined,
               },
             },
           },
@@ -1333,20 +1353,21 @@ describe('preferences controller', () => {
 
         controller.removeReferralDeclinedAccount(testAccount1);
         expect(
-          controller.state.referrals.hyperliquid.declinedAccounts,
-        ).toStrictEqual([testAccount2]);
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toBeUndefined();
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toStrictEqual(ReferralStatus.Declined);
       });
 
-      it('should handle removing non-existent account gracefully', () => {
+      it('handles removing non-existent account gracefully', () => {
         const testAccount1 = '0x123';
         const testAccount2 = '0x456';
         const { controller } = setupController({
           state: {
             referrals: {
               hyperliquid: {
-                approvedAccounts: [],
-                passedAccounts: [],
-                declinedAccounts: [testAccount1],
+                [testAccount1]: ReferralStatus.Declined,
               },
             },
           },
@@ -1354,53 +1375,59 @@ describe('preferences controller', () => {
 
         controller.removeReferralDeclinedAccount(testAccount2);
         expect(
-          controller.state.referrals.hyperliquid.declinedAccounts,
-        ).toStrictEqual([testAccount1]);
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toStrictEqual(ReferralStatus.Declined);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toBeUndefined();
       });
     });
 
     describe('setAllAccountsReferralApproved', () => {
-      it('should add new accounts to approved accounts list', () => {
+      it('sets all accounts to approved status', () => {
         const { controller } = setupController({});
-        const testAccounts = ['0x123', '0x456'];
+        const testAccounts = ['0x123', '0x456'] as Hex[];
 
         controller.setAllAccountsReferralApproved(testAccounts);
         expect(
-          controller.state.referrals.hyperliquid.approvedAccounts,
-        ).toStrictEqual(testAccounts);
+          controller.state.referrals.hyperliquid['0x123'],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(
+          controller.state.referrals.hyperliquid['0x456'],
+        ).toStrictEqual(ReferralStatus.Approved);
       });
 
-      it('should merge with existing approved accounts without duplicates', () => {
-        const duplicateExistingAccount = '0x123';
-        const newAccounts = [duplicateExistingAccount, '0x456', '0x789'];
+      it('overwrites existing account statuses', () => {
+        const existingAccount = '0x123';
+        const newAccount = '0x456';
+        const accountsToApprove = [existingAccount, newAccount] as Hex[];
 
         const { controller } = setupController({
           state: {
             referrals: {
               hyperliquid: {
-                approvedAccounts: [duplicateExistingAccount],
-                passedAccounts: [],
-                declinedAccounts: [],
+                [existingAccount]: ReferralStatus.Declined,
               },
             },
           },
         });
 
-        controller.setAllAccountsReferralApproved(newAccounts);
+        controller.setAllAccountsReferralApproved(accountsToApprove);
         expect(
-          controller.state.referrals.hyperliquid.approvedAccounts,
-        ).toStrictEqual(newAccounts);
+          controller.state.referrals.hyperliquid[existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(
+          controller.state.referrals.hyperliquid[newAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
       });
 
-      it('should handle empty array input', () => {
+      it('handles empty array input gracefully', () => {
         const existingAccount = '0x123';
         const { controller } = setupController({
           state: {
             referrals: {
               hyperliquid: {
-                approvedAccounts: [existingAccount],
-                passedAccounts: [],
-                declinedAccounts: [],
+                [existingAccount]: ReferralStatus.Approved,
               },
             },
           },
@@ -1408,24 +1435,18 @@ describe('preferences controller', () => {
 
         controller.setAllAccountsReferralApproved([]);
         expect(
-          controller.state.referrals.hyperliquid.approvedAccounts,
-        ).toStrictEqual([existingAccount]);
+          controller.state.referrals.hyperliquid[existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
       });
     });
 
     describe('referral state defaults', () => {
-      it('should initialize with empty referral arrays', () => {
+      it('initializes with empty referral record', () => {
         const { controller } = setupController({});
 
         expect(
-          controller.state.referrals.hyperliquid.approvedAccounts,
-        ).toStrictEqual([]);
-        expect(
-          controller.state.referrals.hyperliquid.passedAccounts,
-        ).toStrictEqual([]);
-        expect(
-          controller.state.referrals.hyperliquid.declinedAccounts,
-        ).toStrictEqual([]);
+          controller.state.referrals.hyperliquid,
+        ).toStrictEqual({});
       });
     });
   });

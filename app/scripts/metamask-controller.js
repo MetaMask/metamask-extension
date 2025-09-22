@@ -282,7 +282,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
-import { PreferencesController } from './controllers/preferences-controller';
+import { PreferencesController, ReferralStatus } from './controllers/preferences-controller';
 import { AppStateController } from './controllers/app-state-controller';
 import { AlertController } from './controllers/alert-controller';
 import Backup from './lib/backup';
@@ -6356,23 +6356,17 @@ export default class MetamaskController extends EventEmitter {
 
     const permittedAccount = permittedAccounts[0];
 
-    const {
-      approvedAccounts = [],
-      passedAccounts = [],
-      declinedAccounts = [],
-    } = this.preferencesController.state.referrals.hyperliquid;
+    const referralStatusByAccount = this.preferencesController.state.referrals.hyperliquid;
+    const permittedAccountStatus = referralStatusByAccount[permittedAccount.toLowerCase()];
+    const declinedAccounts = Object.keys(referralStatusByAccount).filter(
+      (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
+    );
 
-    const hasApproved = approvedAccounts.includes(permittedAccount);
-    const hasBeenRedirected = passedAccounts.includes(permittedAccount);
-    const hasDeclined = declinedAccounts.includes(permittedAccount);
+    // We should show approval screen if the account does not have a status
+    const shouldShowApproval = permittedAccountStatus === undefined;
 
-    // We should show approval screen if the account is not in any of the tracked states
-    const shouldShowApproval =
-      !hasApproved && !hasBeenRedirected && !hasDeclined;
-
-    // We should redirect to the referral url immediately
-    // if the account is approved but not passed or declined
-    const shouldRedirect = hasApproved && !hasBeenRedirected && !hasDeclined;
+    // We should redirect to the referral url if the account is approved
+    const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
 
     // If we shouldn't show the approval screen and shouldn't redirect, return
     if (!shouldShowApproval && !shouldRedirect) {

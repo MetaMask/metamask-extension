@@ -39,6 +39,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
+import { ReferralStatus } from './controllers/preferences-controller';
 
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -4313,11 +4314,7 @@ describe('MetaMaskController', () => {
         // Initialize referral state
         metamaskController.preferencesController.update((state) => {
           state.referrals = {
-            hyperliquid: {
-              approvedAccounts: [],
-              passedAccounts: [],
-              declinedAccounts: [],
-            },
+            hyperliquid: {},
           };
         });
       });
@@ -4351,17 +4348,18 @@ describe('MetaMaskController', () => {
         ).not.toHaveBeenCalled();
       });
 
-      it('returns early if account has already been processed', async () => {
+      it('returns early if account has already interacted with the referral', async () => {
         jest
           .spyOn(metamaskController, 'getPermittedAccounts')
           .mockReturnValueOnce(mockPermittedAccounts);
         jest
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
-        // Set account as already approved and passed
+        // Set account as already passed
         metamaskController.preferencesController.update((state) => {
-          state.referrals.hyperliquid.approvedAccounts = [mockPermittedAccount];
-          state.referrals.hyperliquid.passedAccounts = [mockPermittedAccount];
+          state.referrals.hyperliquid = {
+            [mockPermittedAccount]: ReferralStatus.Passed,
+          };
         });
 
         await metamaskController.handleHyperliquidReferral(mockReq);
@@ -4449,16 +4447,18 @@ describe('MetaMaskController', () => {
         ).not.toHaveBeenCalled();
       });
 
-      it('redirects if account is approved but not passed', async () => {
+      it('redirects if account is approved only', async () => {
         jest
           .spyOn(metamaskController, 'getPermittedAccounts')
           .mockReturnValueOnce(mockPermittedAccounts);
         jest
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
-        // Set account as approved but not passed
+        // Set account as approved
         metamaskController.preferencesController.update((state) => {
-          state.referrals.hyperliquid.approvedAccounts = [mockPermittedAccount];
+          state.referrals.hyperliquid = {
+            [mockPermittedAccount]: ReferralStatus.Approved,
+          };
         });
 
         await metamaskController.handleHyperliquidReferral(mockReq);
