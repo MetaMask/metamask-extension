@@ -24,14 +24,12 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const dispatch = useDispatch();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const alignmentPromiseRef = useRef<Promise<unknown> | null>(null);
   const isClosingRef = useRef(false);
 
   const handleViewAccounts = useCallback(async () => {
     // Start loading when user clicks (not when modal opens)
     setIsLoading(true);
-    setError(null);
 
     try {
       // Create the alignment promise immediately when clicked
@@ -45,10 +43,8 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
 
       // Wait for alignment to complete
       await alignmentPromise;
-      setError(null);
     } catch (err) {
       console.error('Wallet alignment failed:', err);
-      setError(err instanceof Error ? err.message : 'Alignment failed');
       // Even if alignment fails, we continue
     } finally {
       setIsLoading(false); // Clear loading state before closing modal
