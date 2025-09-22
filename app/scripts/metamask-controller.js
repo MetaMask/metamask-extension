@@ -6357,7 +6357,7 @@ export default class MetamaskController extends EventEmitter {
     const permittedAccount = permittedAccounts[0];
 
     const referralStatusByAccount = this.preferencesController.state.referrals.hyperliquid;
-    const permittedAccountStatus = referralStatusByAccount[permittedAccount.toLowerCase()];
+    const permittedAccountStatus = referralStatusByAccount[permittedAccount];
     const declinedAccounts = Object.keys(referralStatusByAccount).filter(
       (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
     );
