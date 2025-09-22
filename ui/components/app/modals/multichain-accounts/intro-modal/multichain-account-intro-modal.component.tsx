@@ -145,24 +145,40 @@ export const MultichainAccountIntroModal: React.FC<
     </Box>
       </ModalContent>
 
-      <ModalFooter
-        onSubmit={onViewAccounts}
-        onCancel={onLearnMore}
-        submitButtonProps={{
-          children: isLoading
-            ? t('multichainAccountIntroSettingUp')
-            : t('multichainAccountIntroViewAccounts'),
-          loading: isLoading,
-          disabled: isLoading,
-          size: ButtonSize.Lg,
-        }}
-        cancelButtonProps={{
-          children: t('multichainAccountIntroLearnMore'),
-          variant: ButtonVariant.Link,
-          disabled: isLoading,
-          size: ButtonSize.Lg,
-        }}
-      />
+      <ModalFooter>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
+          gap={3}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={4}
+        >
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            width={BlockSize.Full}
+            onClick={onViewAccounts}
+            loading={isLoading}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? t('multichainAccountIntroSettingUp')
+              : t('multichainAccountIntroViewAccounts')}
+          </Button>
+
+          <Button
+            variant={ButtonVariant.Link}
+            size={ButtonSize.Lg}
+            width={BlockSize.Full}
+            onClick={onLearnMore}
+            disabled={isLoading}
+          >
+            {t('multichainAccountIntroLearnMore')}
+          </Button>
+        </Box>
+      </ModalFooter>
     </Modal>
   );
 };
