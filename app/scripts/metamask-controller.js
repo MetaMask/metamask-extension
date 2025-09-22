@@ -3135,9 +3135,6 @@ export default class MetamaskController extends EventEmitter {
         if (tabId === checkoutTab.id && changeInfo.url) {
           if (changeInfo.url.startsWith(redirectUrl)) {
             // Payment was successful!
-            console.log('Payment successful!');
-
-            // Perform actions for success
             checkoutSucceeded = true;
 
             // Clean up: close the tab
