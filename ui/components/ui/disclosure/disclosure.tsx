@@ -17,7 +17,7 @@ const renderSummaryByType = (
 
       return (
         <summary className="disclosure__summary is-arrow">
-          {/** @ts-expect-error TODO: update prop type in design systems component */}
+          {/* @ts-expect-error TODO: update prop type in design systems component */}
           <Text color={Color.primaryDefault} variant={textVariant}>
             {title}
           </Text>
