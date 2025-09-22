@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getIsMultichainAccountsState2Enabled } from '../selectors';
 import { NameOrigin, NameType } from '@metamask/name-controller';
 
+import { getIsMultichainAccountsState2Enabled } from '../selectors';
 import { MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { getWalletIdAndNameByAccountAddress } from '../selectors/multichain-accounts/account-tree';
 import { useNames } from './useName';
