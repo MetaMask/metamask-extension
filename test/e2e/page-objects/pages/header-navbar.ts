@@ -7,6 +7,8 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly accountListPage = '.account-list-page';
+
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
@@ -70,6 +72,11 @@ class HeaderNavbar {
     await this.driver.waitForSelector('.multichain-account-menu-popover__list');
   }
 
+  async openAccountsPage(): Promise<void> {
+    await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector(this.accountListPage);
+  }
+
   async openAccountDetailsModalDetailsTab(): Promise<void> {
     console.log('Open account details modal');
     await this.openThreeDotMenu();
@@ -99,6 +106,11 @@ class HeaderNavbar {
     } else {
       this.driver.clickElement(this.threeDotMenuButton);
     }
+  }
+
+  async mouseClickOnThreeDotMenu(): Promise<void> {
+    console.log('Clicking three dot menu using mouse move');
+    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
   }
 
   async openPermissionsPage(): Promise<void> {
@@ -133,12 +145,12 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.notificationsButton);
   }
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -137,7 +137,7 @@ export const filterNotifications = (
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -168,7 +168,7 @@ export default function Notifications() {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
             data-testid="back-button"
           />
@@ -179,7 +179,7 @@ export default function Notifications() {
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             onClick={() => {
-              history.push(NOTIFICATIONS_SETTINGS_ROUTE);
+              navigate(NOTIFICATIONS_SETTINGS_ROUTE);
             }}
             data-testid="notifications-settings-button"
           />
@@ -193,18 +193,14 @@ export default function Notifications() {
           <Tabs
             defaultActiveTabKey={activeTab}
             onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
-            tabsClassName="notifications__tabs"
+            tabListProps={{ className: 'px-4' }}
           >
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.ALL}
               name={t('all')}
               tabKey={TAB_KEYS.ALL}
             />
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.WALLET}
               name={
                 <Box
@@ -220,8 +216,6 @@ export default function Notifications() {
               tabKey={TAB_KEYS.WALLET}
             ></Tab>
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.WEB3}
               name={t('web3')}
               tabKey={TAB_KEYS.WEB3}

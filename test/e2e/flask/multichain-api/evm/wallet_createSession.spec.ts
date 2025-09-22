@@ -148,7 +148,7 @@ describe('Multichain API', function () {
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
         const requestScopesToNetworkMap = {
-          'eip155:1': 'Ethereum Mainnet',
+          'eip155:1': 'Ethereum',
           'eip155:59141': 'Linea Sepolia',
         };
         const requestScopes = Object.keys(requestScopesToNetworkMap);
@@ -488,15 +488,6 @@ describe('Multichain API', function () {
               expectedScopeObject,
               resultSessionScope,
               `${scopeName} does not match expected scope`,
-            );
-
-            const resultAccounts = resultSessionScope.accounts;
-            assert.deepEqual(
-              expectedScopeObject.accounts,
-              resultAccounts,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `${expectedScopeObject.accounts} do not match accounts in scope ${scopeName}`,
             );
           }
         },

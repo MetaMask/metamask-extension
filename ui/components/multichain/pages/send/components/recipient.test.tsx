@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../../../test/jest';
 import {
   CONFUSING_ENS_ERROR,
   ENS_UNKNOWN_ERROR,
-} from '../../../../../pages/confirmations/send/send.constants';
+} from '../../../../../pages/confirmations/send-legacy/send.constants';
 import { SendPageRecipient } from '.';
 
 const render = (stateChanges = {}) => {

@@ -9,7 +9,7 @@ import {
   getNetworkName,
 } from '../../../../ducks/alerts/invalid-custom-network';
 import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
+import { Button, ButtonVariant } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -34,7 +34,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
         <Button
           disabled={alertState === LOADING}
           onClick={onClose}
-          type="secondary"
+          variant={ButtonVariant.Secondary}
           className="invalid-custom-network-alert__footer-row-button"
         >
           {t('dismiss')}
@@ -45,7 +45,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
             await onClose();
             history.push(NETWORKS_ROUTE);
           }}
-          type="primary"
+          variant={ButtonVariant.Primary}
           className="invalid-custom-network-alert__footer-row-button"
         >
           {t('settings')}

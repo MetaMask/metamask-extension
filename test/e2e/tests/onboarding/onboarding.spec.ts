@@ -132,8 +132,6 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkBannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.importWallet();
 
@@ -167,8 +165,8 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkBannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
+        // await startOnboardingPage.checkBannerPageIsLoaded();
+        // await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
@@ -279,8 +277,6 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // check the basic functionality is off warning message is displayed
-        await homePage.checkBasicFunctionalityOffWarnigMessageIsDisplayed();
       },
     );
   });

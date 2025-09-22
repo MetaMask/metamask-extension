@@ -3,7 +3,6 @@ import {
   OFFSCREEN_LOAD_TIMEOUT,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 
 /**
  * Returns whether the offscreen document already exists or not.
@@ -54,6 +53,10 @@ export async function createOffscreen() {
         // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
         // start the SocketBackgroundToMocha.
         if (process.env.IN_TEST && msg.webdriverPresent) {
+          const { getSocketBackgroundToMocha } =
+            // Use `require` to make it easier to exclude this test code from the Browserify build.
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+            require('../../test/e2e/background-socket/socket-background-to-mocha');
           getSocketBackgroundToMocha();
         }
       }

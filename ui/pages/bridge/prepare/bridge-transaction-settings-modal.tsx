@@ -7,7 +7,6 @@ import {
   ButtonPrimarySize,
   ButtonSize,
   ButtonVariant,
-  IconName,
   Modal,
   ModalContent,
   ModalFooter,
@@ -34,8 +33,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Column, Row, Tooltip } from '../layout';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 2];
@@ -45,7 +42,6 @@ export const BridgeTransactionSettingsModal = ({
   isOpen,
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const dispatch = useDispatch();
   const isSolanaSwap = useSelector(getIsSolanaSwap);
@@ -116,11 +112,7 @@ export const BridgeTransactionSettingsModal = ({
         <Column gap={3} padding={4}>
           <Row gap={1} justifyContent={JustifyContent.flexStart}>
             <Text>{t('swapsMaxSlippage')}</Text>
-            <Tooltip
-              position={PopoverPosition.Top}
-              iconName={IconName.Info}
-              style={{ zIndex: 1051 }}
-            >
+            <Tooltip position={PopoverPosition.Top} style={{ zIndex: 1051 }}>
               {t('swapSlippageTooltip')}
             </Tooltip>
           </Row>
@@ -294,14 +286,6 @@ export const BridgeTransactionSettingsModal = ({
                 : (localSlippage ?? Number(customSlippage?.replace(',', '.')));
 
               if (newSlippage !== slippage) {
-                trackCrossChainSwapsEvent({
-                  event: MetaMetricsEventName.InputChanged,
-                  properties: {
-                    input: 'slippage',
-                    value: newSlippage?.toString() ?? 'auto',
-                  },
-                });
-
                 dispatch(setSlippage(newSlippage));
                 onClose();
               }

@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import OnboardingMetricsPage from './onboarding-metrics-page';
 
 class OnboardingCompletePage {
   private driver: Driver;
@@ -88,10 +89,31 @@ class OnboardingCompletePage {
   }
 
   async displayDownloadAppPageAndContinue(): Promise<void> {
-    await this.driver.waitForSelector(this.downloadAppTitle);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.downloadAppContinueButton,
-    );
+    try {
+      await this.driver.waitForSelector(this.downloadAppTitle);
+      await this.driver.clickElementAndWaitToDisappear(
+        this.downloadAppContinueButton,
+      );
+      await this.driver.waitForSelector(this.installCompleteMessage);
+      await this.driver.waitForSelector(this.pinExtensionMessage);
+    } catch (e) {
+      // Fallback: MetaMetrics screen may still appear intermittently on Chromium
+      // for social login flows. If present, accept it to proceed (Bug #36070)
+      try {
+        const onboardingMetricsPage = new OnboardingMetricsPage(this.driver);
+        await onboardingMetricsPage.checkPageIsLoaded();
+        await onboardingMetricsPage.clickIAgreeButton();
+        await this.clickCreateWalletDoneButton();
+        await this.driver.clickElementAndWaitToDisappear(
+          this.downloadAppContinueButton,
+        );
+        await this.driver.waitForSelector(this.installCompleteMessage);
+        await this.driver.waitForSelector(this.pinExtensionMessage);
+      } catch (_) {
+        // If MetaMetrics is also not present, rethrow the original error
+        throw e;
+      }
+    }
   }
 
   async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
@@ -102,8 +124,6 @@ class OnboardingCompletePage {
 
     await this.displayDownloadAppPageAndContinue();
 
-    await this.driver.waitForSelector(this.installCompleteMessage);
-    await this.driver.waitForSelector(this.pinExtensionMessage);
     await this.driver.clickElementAndWaitToDisappear(
       this.pinExtensionDoneButton,
     );

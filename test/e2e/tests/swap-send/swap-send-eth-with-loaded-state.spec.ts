@@ -3,9 +3,6 @@ import { MockttpServer } from 'mockttp';
 import { openActionMenuAndStartSendFlow, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
@@ -45,7 +42,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/token/1')
+      .forGet('https://bridge.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -107,7 +104,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/v2/networks/1/quotes')
+      .forGet('https://bridge.api.cx.metamask.io/v2/networks/1/quotes')
       .thenCallback(() => ({
         statusCode: 200,
         json: [
@@ -143,14 +140,14 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
           active: true,
           networkId: 1,
           chainId: 1,
-          chainName: 'Ethereum Mainnet',
+          chainName: 'Ethereum',
           nativeCurrency: {
             name: 'Ether',
             symbol: 'ETH',
@@ -207,9 +204,10 @@ describe('Swap-Send ETH', function () {
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
               eip155: {
-                '0x1': true, // Ethereum Mainnet
+                '0x1': true, // Ethereum
               },
             })
+            .withPreferencesControllerSmartTransactionsOptedOut()
             .withTokensController({
               allTokens: {
                 '0x1': {
@@ -226,6 +224,9 @@ describe('Swap-Send ETH', function () {
               },
             })
             .build(),
+          manifestFlags: {
+            testing: { disableSmartTransactionsOverride: true },
+          },
           title: this.test?.fullTitle(),
           testSpecificMock: mockSwapQuotes,
           localNodeOptions: [
@@ -248,19 +249,6 @@ describe('Swap-Send ETH', function () {
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
           await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
-
-          // disable smart transactions
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.checkPageIsLoaded();
-          await headerNavbar.openSettingsPage();
-
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.clickAdvancedTab();
-          const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.checkPageIsLoaded();
-          await advancedSettingsPage.toggleSmartTransactions();
-          await settingsPage.closeSettingsPage();
 
           // START SWAP AND SEND FLOW
           await openActionMenuAndStartSendFlow(driver);

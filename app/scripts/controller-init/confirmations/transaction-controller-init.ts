@@ -1,18 +1,16 @@
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
+  SavedGasFees,
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
-import {
-  getChainSupportsSmartTransactions,
-  getIsSmartTransaction,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   SmartTransactionHookMessenger,
   publishSmartTransactionHook,
@@ -39,6 +37,7 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
+import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -49,7 +48,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     controllerMessenger,
     initMessenger,
     getFlatState,
-    getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
     updateAccountBalanceForTransactionNetwork,
@@ -80,10 +78,15 @@ export const TransactionControllerInit: ControllerInitFunction<
     getNetworkState: () => networkController().state,
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
-    // @ts-expect-error Preferences controller uses Record rather than specific type
-    getSavedGasFees: () => {
-      const globalChainId = getGlobalChainId();
-      return preferencesController().state.advancedGasFee[globalChainId];
+    getSavedGasFees: (chainId) => {
+      return preferencesController().state.advancedGasFee[
+        chainId
+      ] as unknown as SavedGasFees | undefined;
+    },
+    getSimulationConfig: async (url) => {
+      const getToken = () =>
+        initMessenger.call('AuthenticationController:getBearerToken');
+      return getShieldGatewayConfig(getToken, url);
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
@@ -93,7 +96,18 @@ export const TransactionControllerInit: ControllerInitFunction<
         onboardingController().state.completedOnboarding,
       updateTransactions: true,
     },
-    isAutomaticGasFeeUpdateEnabled: () => true,
+    isAutomaticGasFeeUpdateEnabled: ({ type }) => {
+      // Disables automatic gas fee updates for swap and bridge transactions
+      // which provide their own gas parameters when they are submitted
+      const disabledTypes = [
+        TransactionType.swap,
+        TransactionType.swapApproval,
+        TransactionType.bridge,
+        TransactionType.bridgeApproval,
+      ];
+
+      return !type || !disabledTypes.includes(type);
+    },
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
       const { chainId } = transactionMeta;
       const uiState = getUIState(getFlatState());
@@ -107,13 +121,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       preferencesController().state.useTransactionSimulations,
     messenger: controllerMessenger,
     pendingTransactions: {
-      isResubmitEnabled: () => {
-        const uiState = getUIState(getFlatState());
-        return !(
-          getSmartTransactionsPreferenceEnabled(uiState) &&
-          getChainSupportsSmartTransactions(uiState)
-        );
-      },
+      isResubmitEnabled: () => false,
     },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),

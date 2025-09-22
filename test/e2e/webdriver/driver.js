@@ -16,6 +16,9 @@ const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
+const {
+  getServerMochaToBackground,
+} = require('../background-socket/server-mocha-to-background');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -44,6 +47,10 @@ function wrapElementWithAPI(element, driver) {
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
+
+    // Wait for DOM to update before checking if clearing worked
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
     if ((await element.getProperty('value')) !== '') {
       await driver.driver
@@ -53,6 +60,9 @@ function wrapElementWithAPI(element, driver) {
         .sendKeys('a')
         .keyUp(driver.Key.MODIFIER)
         .perform();
+
+      // Wait for second clearing method to complete
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
     await element.sendKeys(input);
   };
@@ -1190,32 +1200,6 @@ class Driver {
   }
 
   /**
-   * Switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
-   *
-   * @param {int} handleId - unique ID for the tab whose title is needed.
-   * @param {string} expectedTitle - the title we are expecting.
-   * @returns nothing on success.
-   * @throws {Error} Throws an error if the window title is incorrect.
-   */
-  async switchToHandleAndWaitForTitleToBe(handleId, expectedTitle) {
-    await this.driver.switchTo().window(handleId);
-
-    let currentTitle = await this.driver.getTitle();
-
-    // Wait 25 x 200ms = 5 seconds for the title to be set properly
-    for (let i = 0; i < 25 && currentTitle !== expectedTitle; i++) {
-      await this.driver.sleep(200);
-      currentTitle = await this.driver.getTitle();
-    }
-
-    if (currentTitle !== expectedTitle) {
-      throw new Error(
-        `switchToHandleAndWaitForTitleToBe got title ${currentTitle} instead of ${expectedTitle}`,
-      );
-    }
-  }
-
-  /**
    * Switches the context of the browser session to the window tab with the given title.
    * This functionality is especially valuable in complex testing scenarios involving multiple window tabs,
    * allowing for interaction with a particular window or tab based on its title
@@ -1255,6 +1239,81 @@ class Driver {
       await this.delay(delayTime);
       timeElapsed += delayTime;
       // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    throw new Error(`No window with title: ${title}`);
+  }
+
+  /**
+   * Waits until there is a window/tab with the given title, without changing the current window focus.
+   *
+   * @param {string} title - The title of the window or tab to wait for.
+   * @param {number} [timeout] - Optional timeout in milliseconds for the manual polling fallback. Defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once a window with the title exists.
+   * @throws {Error} Throws an error if no window with the specified title appears within the timeout.
+   */
+  async waitForWindowWithTitleToBePresent(title, timeout = this.timeout) {
+    const originalHandle = await this.driver.getWindowHandle();
+
+    // Feature gate: when background socket is enabled, `this.windowHandles` exists
+    if (this.windowHandles) {
+      await getServerMochaToBackground().waitUntilWindowWithProperty(
+        'title',
+        title,
+      );
+      return;
+    }
+
+    // Fallback to manual polling if socket is disabled
+    let windowHandles = await this.driver.getAllWindowHandles();
+    const start = Date.now();
+
+    while (Date.now() - start <= timeout) {
+      let found = false;
+      for (const handle of windowHandles) {
+        try {
+          const handleTitle = await retry(
+            {
+              retries: 25,
+              delay: 200,
+            },
+            async () => {
+              await this.driver.switchTo().window(handle);
+              return await this.driver.getTitle();
+            },
+          );
+
+          if (handleTitle === title) {
+            found = true;
+            break;
+          }
+        } catch (e) {
+          // Handle may have become stale/closed; continue to next handle
+        }
+      }
+
+      // Restore focus after checking this iteration (best-effort)
+      try {
+        await this.driver.switchTo().window(originalHandle);
+      } catch (_) {
+        // If the original handle no longer exists, fall back to any open handle
+        try {
+          const remaining = await this.driver.getAllWindowHandles();
+          if (remaining.length > 0) {
+            await this.driver.switchTo().window(remaining[0]);
+          }
+        } catch (__) {
+          // No valid handles to switch to; continue
+        }
+      }
+
+      if (found) {
+        return;
+      }
+
+      const delayTime = 1000;
+      await this.delay(delayTime);
       windowHandles = await this.driver.getAllWindowHandles();
     }
 
@@ -1386,27 +1445,6 @@ class Driver {
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
-  }
-
-  /**
-   * Closes all windows except those in the given list of exceptions
-   *
-   * @param {Array<string>} exceptions - The list of window handle exceptions
-   * @param {Array} [windowHandles] - The full list of window handles
-   * @returns {Promise<void>}
-   */
-  async closeAllWindowHandlesExcept(exceptions, windowHandles) {
-    // eslint-disable-next-line no-param-reassign
-    windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
-
-    for (const handle of windowHandles) {
-      if (!exceptions.includes(handle)) {
-        await this.driver.switchTo().window(handle);
-        await this.delay(1000);
-        await this.driver.close();
-        await this.delay(1000);
-      }
-    }
   }
 
   // Error handling
@@ -1650,7 +1688,10 @@ function collectMetrics() {
  * @param {string} testTitle - The title of the test
  */
 function sanitizeTestTitle(testTitle) {
-  return testTitle
+  // Maximum length for directory names (conservative limit to avoid filesystem issues)
+  const MAX_DIR_NAME_LENGTH = 200;
+
+  let sanitized = testTitle
     .toLowerCase()
     .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
     .trim()
@@ -1658,6 +1699,23 @@ function sanitizeTestTitle(testTitle) {
     .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
     .replace(/--+/gu, '-') // Collapse multiple dashes
     .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
+
+  // Truncate if too long, but try to break at word boundaries (dashes)
+  if (sanitized.length > MAX_DIR_NAME_LENGTH) {
+    let truncated = sanitized.substring(0, MAX_DIR_NAME_LENGTH);
+
+    // Try to find the last dash to break at a word boundary
+    // and only use dash if it's not too far back
+    const lastDashIndex = truncated.lastIndexOf('-');
+    if (lastDashIndex > MAX_DIR_NAME_LENGTH * 0.7) {
+      truncated = truncated.substring(0, lastDashIndex);
+    }
+
+    // Clean up any trailing dashes
+    sanitized = truncated.replace(/-+$/gu, '');
+  }
+
+  return sanitized;
 }
 
 module.exports = { Driver, PAGES, errorMessages };

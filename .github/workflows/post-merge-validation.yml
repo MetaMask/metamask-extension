@@ -1,22 +1,15 @@
 name: Post Merge Validation
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main
-
-permissions:
-  pull-requests: write
-  contents: read
+  schedule:
+    - cron: '0 7 * * *'
 
 jobs:
-  feature-validation:
-    if: github.event.pull_request.merged == true
+  post-merge-validation-tracker:
     uses: MetaMask/github-tools/.github/workflows/post-merge-validation.yml@main
     with:
-      repo-owner: ${{ github.repository_owner }}
-      repo-name: ${{ github.event.repository.name }}
-      pr-number: ${{ github.event.pull_request.number }}
-      pr-author: ${{ github.event.pull_request.user.login }}
-      pr-title: ${{ github.event.pull_request.title }}
+      repo: ${{ github.repository }}
+      start_hour_utc: 7
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}

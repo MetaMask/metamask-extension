@@ -1,12 +1,12 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { captureException } from '../shared/lib/sentry';
+import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
@@ -54,7 +54,7 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
  */
-const reduxStore = Promise.withResolvers();
+const reduxStore = withResolvers();
 
 /**
  * Method to update backgroundConnection object use by UI
@@ -275,6 +275,23 @@ async function runInitialActions(store) {
   }
 }
 
+export async function getCleanAppState(store) {
+  const state = { ...store.getState() };
+  // we use the manifest.json version from getVersion and not
+  // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
+  // for more info)
+  state.version = global.platform.getVersion();
+  state.browser = window.navigator.userAgent;
+
+  // when JSON.stringiy, `undefined` value will be left out.
+  state.metamask = {
+    ...state.metamask,
+    socialLoginEmail: undefined,
+  };
+
+  return state;
+}
+
 /**
  * Setup functions on `window.stateHooks`. Some of these support
  * application features, and some are just for debugging or testing.
@@ -335,13 +352,7 @@ function setupStateHooks(store) {
   }
 
   window.stateHooks.getCleanAppState = async function () {
-    const state = clone(store.getState());
-    // we use the manifest.json version from getVersion and not
-    // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
-    // for more info)
-    state.version = global.platform.getVersion();
-    state.browser = window.navigator.userAgent;
-    return state;
+    return getCleanAppState(store);
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();

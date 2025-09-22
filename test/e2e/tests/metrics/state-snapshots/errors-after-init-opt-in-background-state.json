@@ -4,7 +4,13 @@
     "hiddenAccountList": {}
   },
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
-  "AccountTreeController": { "accountTree": "object" },
+  "AccountTreeController": {
+    "accountTree": "object",
+    "isAccountTreeSyncingInProgress": "boolean",
+    "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+    "accountGroupsMetadata": "object",
+    "accountWalletsMetadata": "object"
+  },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -34,10 +40,10 @@
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
-    "showDownloadMobileAppSlide": "boolean",
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
+    "productTour": "accountIcon",
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
@@ -46,22 +52,23 @@
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
+    "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
-    "qrHardware": {},
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": "object",
+    "enforcedSimulationsSlippage": "number",
+    "enforcedSimulationsSlippageForTransactions": "object",
+    "activeQrCodeScanRequest": null,
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true,
-    "enableEnforcedSimulations": true,
-    "enableEnforcedSimulationsForTransactions": "object",
-    "enforcedSimulationsSlippage": "number",
-    "enforcedSimulationsSlippageForTransactions": "object"
+    "snapsInstallPrivacyWarningShown": true
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -123,6 +130,7 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean"
   },
+  "GatorPermissionsController": "object",
   "InstitutionalSnapController": "object",
   "KeyringController": {
     "isUnlocked": true,
@@ -141,7 +149,8 @@
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object"
+    "segmentApiCalls": "object",
+    "isSocialLoginFlowEnabledForMetrics": "boolean"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -179,10 +188,7 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": {
-      "eip155": "object",
-      "solana": "object"
-    }
+    "enabledNetworkMap": { "eip155": "object", "solana": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -282,6 +288,7 @@
   },
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
+  "ShieldController": "object",
   "SignatureController": {
     "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",
@@ -311,6 +318,7 @@
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
+  "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
       "quotes": "object",
@@ -364,9 +372,6 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
-    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean",
     "isContactSyncingEnabled": true,
     "isContactSyncingInProgress": "boolean"
   }

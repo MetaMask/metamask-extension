@@ -12,9 +12,9 @@ import {
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
@@ -36,6 +36,18 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );
+
+  // `gasUsed` is the gas limit actually used by the transaction in the
+  // simulation environment.
+  const optimizedGasLimit =
+    transactionMeta?.gasUsed ||
+    // While estimating gas for the transaction we add 50% gas limit buffer.
+    // With `gasLimitNoBuffer` that buffer is removed. see PR
+    // https://github.com/MetaMask/metamask-extension/pull/29502 for more
+    // details.
+    transactionMeta?.gasLimitNoBuffer ||
+    transactionMeta?.txParams?.gas ||
+    HEX_ZERO;
 
   const getFeesFromHex = useCallback(
     (hexFee: Hex) => {
@@ -112,19 +124,25 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   // Max fee
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const gasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
+  const gasPrice = transactionMeta?.txParams?.gasPrice ?? HEX_ZERO;
 
   const maxFee = useMemo(() => {
-    return multiplyHexes(
-      supportsEIP1559 ? (decimalToHex(maxFeePerGas) as Hex) : (gasPrice as Hex),
-      gasLimit as Hex,
-    );
-  }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
+    return addHexes(
+      layer1GasFee ?? HEX_ZERO,
+      multiplyHexes(
+        supportsEIP1559
+          ? (decimalToHex(maxFeePerGas) as Hex)
+          : (gasPrice as Hex),
+        optimizedGasLimit as Hex,
+      ),
+    ) as Hex;
+  }, [
+    gasPrice,
+    layer1GasFee,
+    maxFeePerGas,
+    optimizedGasLimit,
+    supportsEIP1559,
+  ]);
 
   const {
     currentCurrencyFee: maxFeeFiat,
@@ -161,12 +179,9 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       minimumFeePerGas = decimalToHex(maxFeePerGas);
     }
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const gasLimitNoBuffer = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
-      gasLimitNoBuffer as Hex,
+      optimizedGasLimit as Hex,
     );
 
     return getFeesFromHex(estimatedFee);

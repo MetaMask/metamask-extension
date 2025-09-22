@@ -9,6 +9,7 @@ import {
 import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
@@ -20,12 +21,15 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
+  setEVMSrcTokenBalance,
+  setEVMSrcNativeBalance,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
 import {
+  getFromAccount,
   getFromChain,
   getFromChains,
   getFromToken,
@@ -73,18 +77,13 @@ const fetchAssetMetadata = async (
  * This hook is used to set the bridge fromChain, fromToken, fromTokenInputValue,
  * toChainId, and toToken from the URL search params.
  * It also clear the search params after setting the values.
- *
- * @param selectedSolanaAccount - The selected Solana account
- * @param selectedEvmAccount - The selected EVM account
  */
-export const useBridgeQueryParams = (
-  selectedSolanaAccount?: InternalAccount,
-  selectedEvmAccount?: InternalAccount,
-) => {
+export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
   const fromChains = useSelector(getFromChains);
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
+  const selectedAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -169,8 +168,7 @@ export const useBridgeQueryParams = (
       fromAsset,
       network: NetworkConfiguration,
       networks: NetworkConfiguration[],
-      solanaAccount?: InternalAccount,
-      evmAccount?: InternalAccount,
+      account: InternalAccount | null,
     ) => {
       const { chainId: fromChainId } = fromAsset;
 
@@ -200,8 +198,7 @@ export const useBridgeQueryParams = (
             dispatch(
               setFromChain({
                 networkConfig: targetChain,
-                selectedSolanaAccount: solanaAccount,
-                selectedEvmAccount: evmAccount,
+                selectedAccount: account,
                 token,
               }),
             );
@@ -253,16 +250,14 @@ export const useBridgeQueryParams = (
       parsedFromAssetId,
       fromChain,
       fromChains,
-      selectedSolanaAccount,
-      selectedEvmAccount,
+      selectedAccount,
     );
   }, [
     assetMetadataByAssetId,
     parsedFromAssetId,
     fromChains,
     fromChain,
-    selectedSolanaAccount,
-    selectedEvmAccount,
+    selectedAccount,
   ]);
 
   // Set toChainId and toToken
@@ -302,4 +297,25 @@ export const useBridgeQueryParams = (
       }
     }
   }, [parsedAmount, parsedFromAssetId, fromToken]);
+
+  // Set src token balance after url params are applied
+  useEffect(() => {
+    if (
+      // Wait for url params to be applied
+      !parsedFromAssetId &&
+      !searchParams.get(BridgeQueryParams.FROM) &&
+      fromToken &&
+      // Wait for network to be changed if needed
+      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
+      selectedAccount
+    ) {
+      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
+      dispatch(
+        setEVMSrcNativeBalance({
+          selectedAddress: selectedAccount.address,
+          chainId: fromToken.chainId,
+        }),
+      );
+    }
+  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
 };

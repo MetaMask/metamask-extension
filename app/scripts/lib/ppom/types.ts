@@ -20,3 +20,15 @@ export type UpdateSecurityAlertResponse = (
   securityAlertId: string,
   securityAlertResponse: SecurityAlertResponse,
 ) => Promise<TransactionMeta | SignatureRequest>;
+
+/**
+ * Getter for the Security Alerts API configuration. This allows to modify the
+ * URL and authorization header.
+ *
+ * @param url - The URL of the Security Alerts API.
+ * @returns A promise that resolves to the new URL and authorization header.
+ */
+export type GetSecurityAlertsConfig = (url: string) => Promise<{
+  newUrl?: string;
+  authorization?: string;
+}>;

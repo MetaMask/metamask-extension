@@ -20,7 +20,7 @@ const PREFERENCES_STATE_MOCK = {
 async function mockBinanceRelatedRequests(mockServer) {
   return [
     mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/56/topAssets')
+      .forGet('https://bridge.api.cx.metamask.io/networks/56/topAssets')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -33,7 +33,9 @@ async function mockBinanceRelatedRequests(mockServer) {
         };
       }),
     mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/56/aggregatorMetadata')
+      .forGet(
+        'https://bridge.api.cx.metamask.io/networks/56/aggregatorMetadata',
+      )
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -56,7 +58,7 @@ async function mockBinanceRelatedRequests(mockServer) {
         };
       }),
     mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/56/tokens')
+      .forGet('https://bridge.api.cx.metamask.io/networks/56/tokens')
       .thenCallback(() => {
         return {
           statusCode: 200,
