@@ -832,8 +832,8 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
-      MetaMetricsController: MetaMetricsControllerInit,
       NetworkController: NetworkControllerInit,
+      MetaMetricsController: MetaMetricsControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
       ExecutionService: ExecutionServiceInit,
@@ -915,8 +915,8 @@ export default class MetamaskController extends EventEmitter {
     this.subjectMetadataController =
       controllersByName.SubjectMetadataController;
     this.appStateController = controllersByName.AppStateController;
-    this.metaMetricsController = controllersByName.MetaMetricsController;
     this.networkController = controllersByName.NetworkController;
+    this.metaMetricsController = controllersByName.MetaMetricsController;
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
     this.gasFeeController = controllersByName.GasFeeController;
