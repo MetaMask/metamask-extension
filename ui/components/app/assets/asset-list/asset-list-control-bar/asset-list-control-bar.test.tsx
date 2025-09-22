@@ -63,7 +63,7 @@ describe('AssetListControlBar', () => {
     const mockTrackEvent = jest.fn();
 
     const { findByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <AssetListControlBar showTokensLinks />
       </MetaMetricsContext.Provider>,
       store,

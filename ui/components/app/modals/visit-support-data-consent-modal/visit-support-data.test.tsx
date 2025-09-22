@@ -59,7 +59,7 @@ describe('VisitSupportDataConsentModal', () => {
     };
 
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <VisitSupportDataConsentModal {...defaultProps} />
       </MetaMetricsContext.Provider>,
       store,

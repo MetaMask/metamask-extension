@@ -42,7 +42,7 @@ const mockTrackEvent: UITrackEventMethod = (event, properties) => {
 
 const Wrapper = ({ children }) => (
   <Provider store={mockStore}>
-    <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+    <MetaMetricsContext.Provider value={mockTrackEvent}>
       {children}
     </MetaMetricsContext.Provider>
   </Provider>

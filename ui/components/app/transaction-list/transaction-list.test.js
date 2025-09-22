@@ -185,7 +185,7 @@ const mockTrackEvent = jest.fn();
 const render = (state = defaultState) => {
   const store = configureStore(state);
   return renderWithProvider(
-    <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+    <MetaMetricsContext.Provider value={mockTrackEvent}>
       <TransactionList />
     </MetaMetricsContext.Provider>,
     store,
@@ -205,7 +205,7 @@ describe('TransactionList', () => {
   it('renders TransactionList component with props hideNetworkFilter correctly', () => {
     const store = configureStore(defaultState);
     const { container } = renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList hideNetworkFilter />
       </MetaMetricsContext.Provider>,
       store,
@@ -223,7 +223,7 @@ describe('TransactionList', () => {
     };
     const store = configureStore(defaultState2);
     const { container } = renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList hideTokenTransactions />
       </MetaMetricsContext.Provider>,
       store,
@@ -275,7 +275,7 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState);
 
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList tokenChainId="0x89" />
       </MetaMetricsContext.Provider>,
       store,
@@ -326,7 +326,7 @@ describe('TransactionList', () => {
     const store = configureStore(defaultState2);
 
     const { queryByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList tokenChainId="0xe708" />
       </MetaMetricsContext.Provider>,
       store,

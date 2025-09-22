@@ -67,7 +67,7 @@ describe('QuoteCard', () => {
 
   it('renders quote card with correct data', () => {
     render(
-      <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
+      <MetaMetricsContext.Provider value={trackEventMock}>
         <QuoteCard scrollRef={scrollRef} />
       </MetaMetricsContext.Provider>,
     );
@@ -85,7 +85,7 @@ describe('QuoteCard', () => {
 
   it('do not fetch quote on render', () => {
     render(
-      <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
+      <MetaMetricsContext.Provider value={trackEventMock}>
         <QuoteCard scrollRef={scrollRef} />
       </MetaMetricsContext.Provider>,
     );
@@ -105,7 +105,7 @@ describe('QuoteCard', () => {
     });
 
     render(
-      <MetaMetricsContext.Provider value={{ trackEvent: trackEventMock }}>
+      <MetaMetricsContext.Provider value={trackEventMock}>
         <QuoteCard scrollRef={scrollRef} />
       </MetaMetricsContext.Provider>,
     );

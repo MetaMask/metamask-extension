@@ -153,7 +153,7 @@ describe('MultichainTransactionDetailsModal', () => {
   ) => {
     const store = configureStore(mockState.metamask);
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
       store,

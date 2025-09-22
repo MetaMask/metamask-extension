@@ -55,7 +55,7 @@ const createStore = (options = { metametricsEnabled: true }) =>
 
 const renderComponent = (options = { metametricsEnabled: true }) =>
   renderWithProvider(
-    <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+    <MetaMetricsContext.Provider value={mockTrackEvent}>
       <SurveyToast />
     </MetaMetricsContext.Provider>,
     createStore(options),

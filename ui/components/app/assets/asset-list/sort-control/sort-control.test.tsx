@@ -51,7 +51,7 @@ describe('SortControl', () => {
     });
 
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <SortControl handleClose={mockHandleClose} />
       </MetaMetricsContext.Provider>,
     );

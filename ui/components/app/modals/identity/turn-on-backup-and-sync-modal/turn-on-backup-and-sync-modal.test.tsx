@@ -87,7 +87,7 @@ describe('TurnOnBackupAndSyncModal', () => {
   it('sends a MetaMetrics event when the modal is dismissed', () => {
     const { getByLabelText } = render(
       <Redux.Provider store={mockStore(initialStore())}>
-        <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
           <MetamaskIdentityProvider>
             <TurnOnBackupAndSyncModal />
           </MetamaskIdentityProvider>
@@ -163,7 +163,7 @@ describe('TurnOnBackupAndSyncModal', () => {
   it('sends a MetaMetrics event when the button is clicked', async () => {
     const { getByTestId } = render(
       <Redux.Provider store={mockStore(initialStore())}>
-        <MetaMetricsContext.Provider value={{ trackEvent: mockTrackEvent }}>
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
           <MetamaskIdentityProvider>
             <TurnOnBackupAndSyncModal />
           </MetamaskIdentityProvider>

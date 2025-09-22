@@ -15,12 +15,13 @@ import {
 
 // Mock MetaMetrics context for tests
 const createMockTrackEvent = () => {
-  return {
-    trackEvent: jest.fn().mockResolvedValue(),
+  const mockTrackEvent = jest.fn().mockResolvedValue();
+  Object.assign(mockTrackEvent, {
     bufferedTrace: jest.fn().mockResolvedValue(),
     bufferedEndTrace: jest.fn().mockResolvedValue(),
     onboardingParentContext: { current: null },
-  };
+  });
+  return mockTrackEvent;
 };
 
 export const I18nProvider = (props) => {
