@@ -475,12 +475,10 @@ export default function Routes() {
     (state) => state.metamask.shouldShowMultichainIntroModal,
   );
 
-
   const prevPropsRef = useRef({
     isUnlocked,
     totalUnapprovedConfirmationCount,
   });
-
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -525,7 +523,6 @@ export default function Routes() {
     if (shouldShowModal) {
       dispatch(showModal({ name: 'MULTICHAIN_ACCOUNT_INTRO' }));
     }
-
   }, [
     isUnlocked,
     isMultichainAccountsState2Enabled,

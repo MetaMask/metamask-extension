@@ -7044,7 +7044,9 @@ export function setMultichainIntroModalShown(value: boolean) {
 
 export function setShouldShowMultichainIntroModal(value: boolean) {
   return async () => {
-    await submitRequestToBackground('setShouldShowMultichainIntroModal', [value]);
+    await submitRequestToBackground('setShouldShowMultichainIntroModal', [
+      value,
+    ]);
   };
 }
 
