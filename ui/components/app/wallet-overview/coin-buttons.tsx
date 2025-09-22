@@ -331,7 +331,6 @@ const CoinButtons = ({
       // Handle clicking from the wallet overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        // TODO sync this with token filter or selectedChainId
         getNativeAssetForChainId(
           location.pathname.split('/').filter(Boolean).at(-1) ??
             CHAIN_IDS.MAINNET,
