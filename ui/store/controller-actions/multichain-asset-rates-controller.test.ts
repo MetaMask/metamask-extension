@@ -1,9 +1,9 @@
+import * as ActionsModule from '../actions';
+import * as BackgroundConnectionModule from '../background-connection';
 import {
   multichainAssetsRatesStartPolling,
   multichainAssetsRatesStopPollingByPollingToken,
 } from './multichain-asset-rates-controller';
-import * as ActionsModule from '../actions';
-import * as BackgroundConnectionModule from '../background-connection';
 
 jest.mock('../background-connection');
 jest.mock('../actions');
