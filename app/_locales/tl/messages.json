@@ -4106,14 +4106,8 @@
   "onboardingSrpInputClearAll": {
     "message": "I-clear lahat"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Itago lahat"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Magdagdag ng espasyo sa bawat salita at tiyakin na walang nanonood."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Ipakita lahat"
   },
   "onekey": {
     "message": "OneKey"

@@ -4136,14 +4136,8 @@
   "onboardingSrpInputClearAll": {
     "message": "清除全部"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "隐藏全部"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "在每个单词之间添加一个空格，确保无人看到。"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "显示全部"
   },
   "onekey": {
     "message": "OneKey"

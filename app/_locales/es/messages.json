@@ -4136,14 +4136,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Borrar todo"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Ocultar todo"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Añade un espacio entre cada palabra y asegúrate de que nadie esté mirando."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Mostrar todo"
   },
   "onekey": {
     "message": "OneKey"

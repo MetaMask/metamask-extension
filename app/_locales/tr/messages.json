@@ -4106,14 +4106,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Tümünü temizle"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Tümünü gizle"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Her bir sözcüğün arasına boşluk ekleyin ve hiç kimsenin izlemediğinden emin olun."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tümünü göster"
   },
   "onekey": {
     "message": "OneKey"

@@ -4136,14 +4136,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Hapus semua"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Sembunyikan semua"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Tambahkan spasi di antara setiap kata dan pastikan tidak ada yang melihat."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tampilkan semua"
   },
   "onekey": {
     "message": "OneKey"

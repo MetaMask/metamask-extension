@@ -4136,14 +4136,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Εκκαθάριση όλων"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Απόκρυψη όλων"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Προσθέστε ένα κενό μεταξύ κάθε λέξης και βεβαιωθείτε ότι κανείς δεν παρακολουθεί."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Εμφάνιση όλων"
   },
   "onekey": {
     "message": "OneKey"

@@ -131,11 +131,6 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             ariaLabel={t('back')}
           />
         </Box>
-        <Box textAlign={TextAlign.Left}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [1, 2])}
-          </Text>
-        </Box>
         <Box textAlign={TextAlign.Left} marginBottom={2}>
           <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
         </Box>
