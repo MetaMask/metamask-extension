@@ -470,21 +470,6 @@ export default class MetamaskController extends EventEmitter {
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
-    // Listen for onboarding completion to disable multichain intro modal for fresh installs
-    this.messagingSystem.subscribe(
-      'OnboardingController:stateChange',
-      (previousValue, currentValue) => {
-        // If onboarding just completed (transition from false to true)
-        if (
-          !previousValue.completedOnboarding &&
-          currentValue.completedOnboarding
-        ) {
-          // This is a fresh install - disable the multichain intro modal
-          this.appStateController.setShouldShowMultichainIntroModal(false);
-        }
-      },
-    );
-
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0;

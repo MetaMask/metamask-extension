@@ -39,8 +39,6 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
-  // Multichain modal state - modal state varies between runs
-  'AppStateController.shouldShowMultichainIntroModal',
   // The value in these properties may change each run
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',

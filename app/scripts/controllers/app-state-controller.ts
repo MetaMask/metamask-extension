@@ -241,7 +241,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainIntroModal: false,
-  shouldShowMultichainIntroModal: true, // Default true for existing users, set false during fresh onboarding
+  shouldShowMultichainIntroModal: false,
 
   ...getInitialStateOverrides(),
 });

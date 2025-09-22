@@ -52,7 +52,6 @@
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainIntroModal": "boolean",
-    "shouldShowMultichainIntroModal": "boolean",
     "surveyLinkLastClickedOrClosed": "object",
     "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
