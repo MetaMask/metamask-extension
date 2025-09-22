@@ -3741,9 +3741,6 @@
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
   },
-  "noThanks": {
-    "message": "Salamat na lang"
-  },
   "noTransactions": {
     "message": "Wala kang transaksyon"
   },
@@ -4024,45 +4021,11 @@
   "onboardingImportWallet": {
     "message": "Mayroon na akong umiiral na wallet"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Sumasang-ayon ako"
-  },
   "onboardingMetametricsDescription": {
     "message": "Gusto naming mangalap ng datos sa pangunahing paggamit at diagnostics para pahusayin ang MetaMask. Iyon ay palaging:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Ipapaalam namin sa iyo kung plano naming gamitin ang data na ito para sa mga ibang layunin. Maaaari mong suriin ang aming $1 anumang oras (hindi namin kailanman ibebenta ang data na iyong ibibigay rito).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Patakaran sa Pagkapribado"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "Ini-store ang $1 na click at view sa app, ngunit hindi ang ibang detalye (tulad ng iyong address).",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Pribado:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Pansamantala naming ginamit ang iyong IP address upang malaman ang pangkalahatang lokasyon (tulad ng iyong bansa o rehiyon), ngunit hindi ito iniimbak.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Pangkalahatan:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Ikaw ang magpapasya kung nais mong ibahagi o tanggalin ang iyong data ng paggamit sa pamamagitan ng mga setting anumang oras.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Opsyonal:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Gagamitin namin ang data na ito upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari kaming magbahagi ng kaugnay na balita (tulad ng mga tampok ng produkto)."
   },
   "onboardingOptionIcon": {
     "message": "$1 icon",

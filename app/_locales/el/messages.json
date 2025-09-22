@@ -3771,9 +3771,6 @@
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
   },
-  "noThanks": {
-    "message": "Όχι, ευχαριστώ"
-  },
   "noTransactions": {
     "message": "Δεν έχετε συναλλαγές"
   },
@@ -4054,45 +4051,11 @@
   "onboardingImportWallet": {
     "message": "Έχω ήδη ένα πορτοφόλι"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Συμφωνώ"
-  },
   "onboardingMetametricsDescription": {
     "message": "Θα θέλαμε να συλλέξουμε βασικά δεδομένα χρήσης και διαγνωστικά στοιχεία για να βελτιώσουμε το MetaMask. Αυτά θα είναι πάντα:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Θα σας ενημερώσουμε εάν σκοπεύουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Μπορείτε να ελέγξετε την $1 ανά πάσα στιγμή (ποτέ δεν πουλάμε τα δεδομένα που παρέχετε εδώ).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Πολιτική Απορρήτου"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Κλικ και προβολές στην εφαρμογή αποθηκεύονται, αλλά άλλες λεπτομέρειες (όπως η δημόσια διεύθυνσή σας) δεν αποθηκεύονται.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Ιδιωτικές:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Χρησιμοποιούμε προσωρινά τη διεύθυνση IP σας για να εντοπίσουμε μια γενική τοποθεσία (όπως τη χώρα ή την περιοχή σας), αλλά δεν την αποθηκεύουμε ποτέ.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Γενικές:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Εσείς αποφασίζετε αν θέλετε να κοινοποιήσετε ή να διαγράψετε τα δεδομένα χρήσης σας μέσω των ρυθμίσεων, οποιαδήποτε στιγμή.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Προαιρετικές:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Θα χρησιμοποιήσουμε αυτά τα δεδομένα για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιήσουμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων)."
   },
   "onboardingOptionIcon": {
     "message": "εικονίδιο $1",

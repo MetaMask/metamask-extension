@@ -3741,9 +3741,6 @@
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
   },
-  "noThanks": {
-    "message": "Hayır, istemiyorum"
-  },
   "noTransactions": {
     "message": "Herhangi bir işleminiz yok"
   },
@@ -4024,45 +4021,11 @@
   "onboardingImportWallet": {
     "message": "Mevcut bir cüzdanım var"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Kabul ediyorum"
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMask'i iyileştirmek için temel kullanım ve tanılama verilerini toplamak istiyoruz. Her zaman şöyle olacaktır:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Bu verileri başka maksatlarla kullanmayı planlarsak sizi bilgilendireceğiz. Dilediğiniz zaman $1 bölümümüzü inceleyebilirsiniz (burada sunduğunuz verileri asla satmayız).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Gizlilik Politikası"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Uygulama üzerindeki tıklamalar ve görüntülemeler depolanır ancak diğer bilgiler (genel adresiniz gibi) depolanmaz.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Özel:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Genel bir konumu (ülkeniz veya bölgeniz gibi) algılamak için geçici olarak IP adresinizi kullanırız ancak bu bilgi asla saklanmaz.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Genel:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Kullanım verilerinizi paylaşmak veya silmek isteyip istemediğinize ayarlar kısmından dilediğiniz zaman siz karar verirsiniz.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "İsteğe bağlı:"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
   },
   "onboardingOptionIcon": {
     "message": "$1 simgesi",

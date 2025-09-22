@@ -3771,9 +3771,6 @@
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
   },
-  "noThanks": {
-    "message": "괜찮습니다"
-  },
   "noTransactions": {
     "message": "트랜잭션이 없습니다"
   },
@@ -4054,45 +4051,11 @@
   "onboardingImportWallet": {
     "message": "기존 지갑이 있습니다"
   },
-  "onboardingMetametricsAgree": {
-    "message": "동의함"
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMask 개선을 위해 기본 사용량과 진단 데이터를 수집하고자 합니다. 수집되는 정보는 항상 다음과 같습니다."
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "이 데이터를 다른 목적으로 사용할 계획이 있다면 알려드리겠습니다. 언제든 $1을 확인할 수 있습니다(여기에 제공된 데이터를 판매하지 않습니다).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "개인정보 처리방침"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 앱의 클릭 수와 조회수는 저장되지만, 공개 주소와 같은 기타 세부 정보는 저장되지 않습니다.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "개인 정보:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 MetaMask는 사용자의 국가나 지역과 같은 일반적인 위치를 찾기 위해 일시적으로 사용자의 IP 주소를 사용하지만, 이 정보는 저장되지 않습니다.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "일반:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 사용자는 언제든지 설정에서 사용 데이터를 공유할지 삭제할지 결정할 수 있습니다.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "선택 사항:"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "해당 데이터를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호 작용하는지 파악할 것입니다. 관련 뉴스(예: 제품 기능 및 기타 자료)를 공유할 수 있습니다."
   },
   "onboardingOptionIcon": {
     "message": "$1 아이콘",
