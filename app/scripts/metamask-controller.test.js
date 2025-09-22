@@ -38,6 +38,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   KnownSessionProperties,
+  getEthAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
@@ -254,6 +255,11 @@ jest.mock('@metamask/utils', () => ({
   parseCaipAccountId: jest.fn(),
 }));
 
+jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
+  getEthAccounts: jest.fn(),
+}));
+
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -434,6 +440,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
@@ -1051,6 +1058,8 @@ describe('MetaMaskController', () => {
             },
           });
 
+        jest.mocked(getEthAccounts).mockReturnValue(['0xdead', '0xbeef']);
+
         metamaskController.getPermittedAccounts('test.com');
 
         expect(
@@ -1104,6 +1113,7 @@ describe('MetaMaskController', () => {
                 },
               },
             });
+          jest.mocked(getEthAccounts).mockReturnValue(['0xdead', '0xbeef']);
           jest
             .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['not_empty']);
@@ -1132,6 +1142,7 @@ describe('MetaMaskController', () => {
                 },
               },
             });
+          jest.mocked(getEthAccounts).mockReturnValue(['0xdead', '0xbeef']);
           jest
             .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue([]);
@@ -1155,6 +1166,7 @@ describe('MetaMaskController', () => {
                 },
               },
             });
+          jest.mocked(getEthAccounts).mockReturnValue(['0xdead', '0xbeef']);
           jest
             .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['0xbeef', '0xdead']);
@@ -4394,6 +4406,7 @@ describe('MetaMaskController', () => {
       platform: {
         showTransactionNotification: () => undefined,
         getVersion: () => 'foo',
+        switchToAnotherURL: jest.fn(),
       },
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
@@ -4458,6 +4471,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
@@ -4484,6 +4498,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
@@ -4511,6 +4526,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
@@ -4603,6 +4619,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
@@ -4740,6 +4757,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
@@ -4876,6 +4894,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
@@ -5035,6 +5054,7 @@ describe('MetaMaskController', () => {
         platform: {
           showTransactionNotification: () => undefined,
           getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
         },
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
