@@ -5,7 +5,6 @@ import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { Mockttp } from '../../../mock-e2e';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const { WINDOW_TITLES } = require('../../../helpers');
 const { scrollAndConfirmAndAssertConfirm } = require('../helpers');

@@ -23,7 +23,7 @@ describe('Alert for insufficient funds', function () {
         smartContract: nftSmartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+      async ({ driver, contractRegistry }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
         const alertModal = new AlertModal(driver);
