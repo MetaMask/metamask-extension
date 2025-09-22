@@ -15,6 +15,7 @@ type TestState = RemoteFeatureFlagsState & {
   metamask: {
     remoteFeatureFlags: {
       enableMultichainAccounts: MultichainAccountsFeatureFlag;
+      enableMultichainAccountsState2: MultichainAccountsFeatureFlag;
     };
   };
 };

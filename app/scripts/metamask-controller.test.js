@@ -4511,7 +4511,9 @@ describe('MetaMaskController', () => {
       jest
         .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
         .mockReturnValue({
-          remoteFeatureFlags: { enableMultichainAccounts: flag },
+          remoteFeatureFlags: {
+            enableMultichainAccountsState2: flag,
+          },
           cacheTimestamp: 0,
         });
     }
