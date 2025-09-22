@@ -1148,13 +1148,6 @@ export class AppStateController extends BaseController<
       return undefined;
     }
 
-    if (!cached.timestamp) {
-      this.update((state) => {
-        delete state.addressSecurityAlertResponses[address.toLowerCase()];
-      });
-      return undefined;
-    }
-
     // Check if the cached response has expired (15 minute TTL)
     const now = Date.now();
     const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
