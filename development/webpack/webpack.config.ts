@@ -420,9 +420,8 @@ const config = {
     global: true,
   },
   optimization: {
-    // only enable sideEffects, providedExports, removeAvailableModules, and
-    // usedExports for production, as these options slow down the build
-    sideEffects: !isDevelopment,
+    // only enable providedExports, removeAvailableModules, andusedExports for production
+    // as these options slow down the build
     providedExports: !isDevelopment,
     removeAvailableModules: !isDevelopment,
     usedExports: !isDevelopment,
