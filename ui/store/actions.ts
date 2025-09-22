@@ -7042,7 +7042,6 @@ export function setMultichainIntroModalShown(value: boolean) {
   };
 }
 
-
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {

@@ -50,6 +50,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
       setError(err instanceof Error ? err.message : 'Alignment failed');
       // Even if alignment fails, we continue
     } finally {
+      setIsLoading(false); // Clear loading state before closing modal
       alignmentPromiseRef.current = null;
     }
 
@@ -59,7 +60,6 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
 
     // Navigate to account list
     history.push(ACCOUNT_LIST_PAGE_ROUTE);
-    setIsLoading(false);
   }, [dispatch, history, onClose]);
 
   const handleLearnMore = useCallback(() => {

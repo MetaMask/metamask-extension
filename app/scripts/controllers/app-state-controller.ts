@@ -1071,7 +1071,6 @@ export class AppStateController extends BaseController<
     });
   }
 
-
   /**
    * Sets the product tour to be shown to the user
    *

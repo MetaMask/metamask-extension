@@ -121,7 +121,10 @@ export const MultichainAccountIntroModal: React.FC<
               <Text variant={TextVariant.headingMd} marginBottom={2}>
                 {t('multichainAccountIntroWhatTitle')}
               </Text>
-              <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
                 {t('multichainAccountIntroWhatDescription')}
               </Text>
             </Box>
@@ -131,7 +134,10 @@ export const MultichainAccountIntroModal: React.FC<
               <Text variant={TextVariant.headingMd} marginBottom={2}>
                 {t('multichainAccountIntroSameAddressTitle')}
               </Text>
-              <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
                 {t('multichainAccountIntroSameAddressDescription')}
               </Text>
             </Box>
@@ -139,7 +145,11 @@ export const MultichainAccountIntroModal: React.FC<
         </ModalBody>
 
         <ModalFooter>
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
+          >
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
