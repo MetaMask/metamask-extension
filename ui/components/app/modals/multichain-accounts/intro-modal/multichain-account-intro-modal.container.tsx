@@ -26,6 +26,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const alignmentPromiseRef = useRef<Promise<unknown> | null>(null);
+  const isClosingRef = useRef(false);
 
   const handleViewAccounts = useCallback(async () => {
     // Start loading when user clicks (not when modal opens)
@@ -54,6 +55,10 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
       alignmentPromiseRef.current = null;
     }
 
+    // Prevent race condition if modal was closed while aligning
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+
     // Mark modal as shown so it doesn't show again
     dispatch(setMultichainIntroModalShown(true));
     onClose();
@@ -72,9 +77,18 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   }, []);
 
   const handleClose = useCallback(async () => {
+    // Prevent race condition if alignment is handling the close
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+
     // Wait for alignment to complete if it's running (Charly's feedback)
     if (alignmentPromiseRef.current) {
-      await alignmentPromiseRef.current;
+      try {
+        await alignmentPromiseRef.current;
+      } catch (err) {
+        // Silently handle alignment errors during close
+        console.error('Alignment failed during modal close:', err);
+      }
     }
 
     // Mark modal as shown so it doesn't show again

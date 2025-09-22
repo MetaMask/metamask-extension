@@ -2,7 +2,13 @@
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable import/extensions */
 import classnames from 'classnames';
-import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
@@ -371,7 +377,8 @@ export default function Routes() {
   const location = useLocation();
 
   // Local state for multichain intro modal
-  const [showMultichainIntroModal, setShowMultichainIntroModal] = useState(false);
+  const [showMultichainIntroModal, setShowMultichainIntroModal] =
+    useState(false);
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -474,10 +481,7 @@ export default function Routes() {
   );
 
   // Track last update time - null for fresh installs, timestamp for upgrades
-  const lastUpdatedAt = useAppSelector(
-    (state) => state.metamask.lastUpdatedAt,
-  );
-
+  const lastUpdatedAt = useAppSelector((state) => state.metamask.lastUpdatedAt);
 
   const prevPropsRef = useRef({
     isUnlocked,
