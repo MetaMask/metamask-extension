@@ -121,6 +121,7 @@ export const AccountList = () => {
           display={Display.Flex}
           height={BlockSize.Full}
           flexDirection={FlexDirection.Column}
+          className="multichain-account-menu-popover__list"
         >
           {hasFilteredWallets ? (
             <MultichainAccountList

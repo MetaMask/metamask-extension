@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import {
   withFixtures,
   unlockWallet,
@@ -15,10 +14,17 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
+import AccountListPage, {
+  MultichainAccountMenuItems,
+} from '../../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import { E2E_SRP } from '../../../default-fixture';
 import { arrangeTestUtils } from './helpers';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
+import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
@@ -32,16 +38,20 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
    * Phase 2: Login to a fresh app instance, verify the previously added account persists, rename the second account, and add a third account to test multi-operation syncing.
    * Phase 3: Complete onboarding flow from scratch to verify all account changes (additions and renames) are properly synced and persisted across app reinstallation.
    */
-  // TODO: Re-write this test when multichain account syncing has been merged
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should add a new account and sync it across multiple phases', async function () {
+
+  it('(state 2) - adds a new account and sync it across multiple phases', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
       userStorageMockttpController.setupPath(
-        USER_STORAGE_FEATURE_NAMES.accounts,
+        USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
+      userStorageMockttpController.setupPath(
+        USER_STORAGE_WALLETS_FEATURE_KEY,
+        server,
+      );
+      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
@@ -87,7 +97,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
 
         // Add a new account
         await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
+          accountType: ACCOUNT_TYPE.Multichain,
         });
 
         // Wait for sync operation to complete
@@ -95,8 +105,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await waitUntilEventsEmittedNumberEquals(1);
 
         // Reopen account menu to verify both accounts are visible
-        await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );
@@ -121,7 +129,9 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         // Wait for the initial account sync to complete before interacting with accounts
         await driver.wait(async () => {
           const uiState = await getCleanAppState(driver);
-          return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+          return (
+            uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
+          );
         }, 30000);
 
         const header = new HeaderNavbar(driver);
@@ -150,18 +160,15 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
           );
 
         // Rename the second account
-        await accountListPage.openAccountDetailsModal(ADDED_ACCOUNT_NAME);
-        const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.checkPageIsLoaded();
-        await accountDetailsModal.changeAccountLabel(NEW_ACCOUNT_NAME);
-
-        // Reopen account menu to add a third account
-        await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.openMultichainAccountMenu(ADDED_ACCOUNT_NAME);
+        await accountListPage.clickMultichainAccountMenuItem(
+          MultichainAccountMenuItems.Rename,
+        );
+        await accountListPage.changeMultichainAccountLabel(NEW_ACCOUNT_NAME);
 
         // Add a third account
         await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
+          accountType: ACCOUNT_TYPE.Multichain,
         });
 
         // Wait for both sync operations to complete (rename + add)
@@ -169,8 +176,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await waitUntilEventsEmittedNumberEquals(2);
 
         // Reopen account menu to verify all accounts are visible with correct names
-        await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           DEFAULT_ACCOUNT_NAME,
         );

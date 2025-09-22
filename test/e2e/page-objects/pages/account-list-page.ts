@@ -6,6 +6,12 @@ import PrivacySettings from './settings/privacy-settings';
 import HeaderNavbar from './header-navbar';
 import SettingsPage from './settings/settings-page';
 
+export enum MultichainAccountMenuItems {
+  AccountDetails = 'Account details',
+  Rename = 'Rename',
+  Addresses = 'Addresses',
+}
+
 class AccountListPage {
   private readonly driver: Driver;
 
@@ -36,7 +42,10 @@ class AccountListPage {
   private readonly accountNameInput = '#account-name';
 
   private readonly accountOptionsMenuButton =
-    '[data-testid="account-list-item-menu-button"]';
+    '[data-testid="multichain-account-cell-end-accessory"]';
+
+  private readonly multichainAccountOptionsMenuButton =
+    '[data-testid="multichain-account-cell-end-accessory"]';
 
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
@@ -76,10 +85,10 @@ class AccountListPage {
   };
 
   private readonly closeAccountModalButton =
-    'header button[aria-label="Close"]';
+    '.multichain-page-header button[aria-label="Back"]';
 
   private readonly createAccountButton =
-    '[data-testid="multichain-account-menu-popover-action-button"]';
+    '[data-testid="add-multichain-account-button"]';
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
@@ -329,6 +338,8 @@ class AccountListPage {
       await this.driver.clickElement(this.createAccountButton);
       let addAccountButton;
       switch (accountType) {
+        case ACCOUNT_TYPE.Multichain:
+          return;
         case ACCOUNT_TYPE.Ethereum:
           addAccountButton = this.addEthereumAccountButton;
           break;
@@ -432,6 +443,36 @@ class AccountListPage {
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.clickElementSafe(this.accountDetailsTab);
+  }
+
+  async openMultichainAccountMenu(accountLabel: string): Promise<void> {
+    console.log(
+      `Open multichain account menu in account list for account ${accountLabel}`,
+    );
+    await this.driver.clickElement(
+      `${this.multichainAccountOptionsMenuButton}[aria-label="${accountLabel} options"]`,
+    );
+  }
+
+  async clickMultichainAccountMenuItem(
+    item: MultichainAccountMenuItems,
+  ): Promise<void> {
+    console.log(`Click multichain account menu item ${item}`);
+    await this.driver.clickElement(
+      `.multichain-account-cell-menu-item[aria-label="${item}"]`,
+    );
+  }
+
+  async changeMultichainAccountLabel(newLabel: string): Promise<void> {
+    console.log(
+      `Account details modal opened, changing multichain account label to: ${newLabel}`,
+    );
+    await this.driver.clickElement('[data-testid="account-name-input"] input');
+    await this.driver.fill(
+      '[data-testid="account-name-input"] input',
+      newLabel,
+    );
+    await this.driver.clickElement('.mm-button-base[aria-label="Confirm"]');
   }
 
   /**

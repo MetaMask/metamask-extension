@@ -3659,10 +3659,10 @@ export default class MetamaskController extends EventEmitter {
           userStorageController,
         ),
       // AccountTreeController backup and sync
-      syncAccountTreeWithUserStorage:
-        this.accountTreeController.syncWithUserStorage.bind(
-          this.accountTreeController,
-        ),
+      syncAccountTreeWithUserStorage: async () => {
+        await this.getSnapKeyring();
+        await this.accountTreeController.syncWithUserStorage();
+      },
 
       // NotificationServicesController
       checkAccountsPresence:
