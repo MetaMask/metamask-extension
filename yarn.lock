@@ -164,18 +164,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:7.26.2":
-  version: 7.26.2
-  resolution: "@babel/code-frame@npm:7.26.2"
-  dependencies:
-    "@babel/helper-validator-identifier": "npm:^7.25.9"
-    js-tokens: "npm:^4.0.0"
-    picocolors: "npm:^1.0.0"
-  checksum: 10/db2c2122af79d31ca916755331bb4bac96feb2b334cdaca5097a6b467fdd41963b89b14b6836a14f083de7ff887fc78fa1b3c10b14e743d33e12dbfe5ee3d223
-  languageName: node
-  linkType: hard
-
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.23.5, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1":
+"@babel/code-frame@npm:7.27.1, @babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.23.5, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/code-frame@npm:7.27.1"
   dependencies:
@@ -20194,16 +20183,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"corepack@npm:0.29.4":
-  version: 0.29.4
-  resolution: "corepack@npm:0.29.4"
+"corepack@npm:0.33.0":
+  version: 0.33.0
+  resolution: "corepack@npm:0.33.0"
   bin:
     corepack: ./dist/corepack.js
     pnpm: ./dist/pnpm.js
     pnpx: ./dist/pnpx.js
     yarn: ./dist/yarn.js
     yarnpkg: ./dist/yarnpkg.js
-  checksum: 10/814fb0c1d77fdebc1d87770c88115bd5623c21d1a00a1bb94d8dc588017d3d5b7ffae92ac628b0796e32ceecf71db809b6d9dc9046d0a765157ddfefa6378b9c
+  checksum: 10/0cd590e26b84515974d67e44f3119e577f3118c137978354177659e94b985d7fee82d61412388964065ff3141d52fea29bcc13615e7170480edfcef12e457812
   languageName: node
   linkType: hard
 
@@ -27912,7 +27901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.12.1, is-core-module@npm:^2.13.0, is-core-module@npm:^2.16.0, is-core-module@npm:^2.4.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
+"is-core-module@npm:^2.12.1, is-core-module@npm:^2.16.0, is-core-module@npm:^2.4.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
   version: 2.16.1
   resolution: "is-core-module@npm:2.16.1"
   dependencies:
@@ -30698,25 +30687,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^9.0.5":
-  version: 9.0.5
-  resolution: "lavamoat@npm:9.0.5"
+"lavamoat@npm:^9.0.13":
+  version: 9.0.13
+  resolution: "lavamoat@npm:9.0.13"
   dependencies:
-    "@babel/code-frame": "npm:7.26.2"
+    "@babel/code-frame": "npm:7.27.1"
     "@babel/highlight": "npm:7.25.9"
-    "@lavamoat/aa": "npm:^4.3.1"
+    "@lavamoat/aa": "npm:^4.3.4"
     bindings: "npm:1.5.0"
-    corepack: "npm:0.29.4"
+    corepack: "npm:0.33.0"
     htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^16.2.2"
-    lavamoat-tofu: "npm:^8.0.4"
+    lavamoat-core: "npm:^16.6.1"
+    lavamoat-tofu: "npm:^8.0.9"
     node-gyp-build: "npm:4.8.4"
-    resolve: "npm:1.22.8"
+    resolve: "npm:1.22.10"
     yargs: "npm:17.7.2"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/9b97782d5f2d4a80eeba75f450399c256c1ab05a79c3ceded623d70b1c7e4eda055528d9ab1a578bc898c1e4a86a907d282661d0c974858c5321a3e40d17d7d3
+  checksum: 10/8e1b075484fc8bfe389214aa8e6d5d2161e884d69d0a606d40ac3f55ff749feaa5157edb85ac526697d10563169bdd906b340809cba9989fc00c2e60b0846daa
   languageName: node
   linkType: hard
 
@@ -32189,7 +32178,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "npm:^9.0.5"
+    lavamoat: "npm:^9.0.13"
     lavamoat-browserify: "npm:^18.1.2"
     lavamoat-viz: "npm:^7.0.5"
     level: "npm:^8.0.1"
@@ -37995,19 +37984,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:1.22.8":
-  version: 1.22.8
-  resolution: "resolve@npm:1.22.8"
-  dependencies:
-    is-core-module: "npm:^2.13.0"
-    path-parse: "npm:^1.0.7"
-    supports-preserve-symlinks-flag: "npm:^1.0.0"
-  bin:
-    resolve: bin/resolve
-  checksum: 10/c473506ee01eb45cbcfefb68652ae5759e092e6b0fb64547feadf9736a6394f258fbc6f88e00c5ca36d5477fbb65388b272432a3600fa223062e54333c156753
-  languageName: node
-  linkType: hard
-
 "resolve@npm:^2.0.0-next.3":
   version: 2.0.0-next.4
   resolution: "resolve@npm:2.0.0-next.4"
@@ -38032,19 +38008,6 @@ __metadata:
   bin:
     resolve: bin/resolve
   checksum: 10/d4d878bfe3702d215ea23e75e0e9caf99468e3db76f5ca100d27ebdc527366fee3877e54bce7d47cc72ca8952fc2782a070d238bfa79a550eeb0082384c3b81a
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>":
-  version: 1.22.8
-  resolution: "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>::version=1.22.8&hash=c3c19d"
-  dependencies:
-    is-core-module: "npm:^2.13.0"
-    path-parse: "npm:^1.0.7"
-    supports-preserve-symlinks-flag: "npm:^1.0.0"
-  bin:
-    resolve: bin/resolve
-  checksum: 10/f345cd37f56a2c0275e3fe062517c650bb673815d885e7507566df589375d165bbbf4bdb6aa95600a9bc55f4744b81f452b5a63f95b9f10a72787dba3c90890a
   languageName: node
   linkType: hard
 
