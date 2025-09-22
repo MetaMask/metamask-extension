@@ -647,6 +647,12 @@ export const ROUTES = [
     label: 'Onboarding Experimental Area',
     trackInAnalytics: false,
   },
+  ///: END:ONLY_INCLUDE_IF
+  {
+    path: SHIELD_PLAN_ROUTE,
+    label: 'Shield Plan',
+    trackInAnalytics: false,
+  },
   {
     path: GATOR_PERMISSIONS,
     label: 'Gator Permissions',
@@ -655,12 +661,6 @@ export const ROUTES = [
   {
     path: TOKEN_TRANSFER_ROUTE,
     label: 'Gator Permissions Token Transfer',
-    trackInAnalytics: false,
-  },
-  ///: END:ONLY_INCLUDE_IF
-  {
-    path: SHIELD_PLAN_ROUTE,
-    label: 'Shield Plan',
     trackInAnalytics: false,
   },
 ] as const satisfies AppRoute[];

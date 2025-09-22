@@ -26,9 +26,9 @@ type PermissionListItemProps = {
   total: number;
 
   /**
-   * The name of the asset
+   * The name of the permission group
    */
-  name: string;
+  permissionGroupName: string;
 
   /**
    * The function to call when the asset is clicked
@@ -38,7 +38,7 @@ type PermissionListItemProps = {
 
 export const PermissionListItem = ({
   total,
-  name,
+  permissionGroupName,
   onClick,
 }: PermissionListItemProps) => {
   return (
@@ -63,7 +63,7 @@ export const PermissionListItem = ({
         gap={2}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
-          {name}
+          {permissionGroupName}
         </Text>
       </Box>
 

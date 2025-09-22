@@ -55,8 +55,10 @@ export const GatorPermissionsPage = () => {
 
   const { loading: gatorPermissionsLoading } = useGatorPermissions();
 
-  const handleAssetClick = async (assetType: string) => {
-    switch (assetType) {
+  const handlePermissionGroupNameClick = async (
+    permissionGroupName: string,
+  ) => {
+    switch (permissionGroupName) {
       case 'sites':
         history.push(PERMISSIONS);
         break;
@@ -64,7 +66,7 @@ export const GatorPermissionsPage = () => {
         history.push(TOKEN_TRANSFER_ROUTE);
         break;
       default:
-        console.error('Invalid asset type:', assetType);
+        console.error('Invalid permission group name:', permissionGroupName);
         break;
     }
   };
@@ -108,8 +110,8 @@ export const GatorPermissionsPage = () => {
             {renderCategoryHeader(t('sites'))}
             <PermissionListItem
               total={totalSitesConnections}
-              name={t('sites')}
-              onClick={() => handleAssetClick('sites')}
+              permissionGroupName={t('sites')}
+              onClick={() => handlePermissionGroupNameClick('sites')}
             />
           </>
         )}
@@ -119,8 +121,8 @@ export const GatorPermissionsPage = () => {
             {renderCategoryHeader(t('assets'))}
             <PermissionListItem
               total={totalGatorPermissions}
-              name={t('tokenTransfer')}
-              onClick={() => handleAssetClick('token-transfer')}
+              permissionGroupName={t('tokenTransfer')}
+              onClick={() => handlePermissionGroupNameClick('token-transfer')}
             />
           </>
         )}

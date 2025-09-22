@@ -11,7 +11,7 @@ describe('Permission List Item', () => {
       const { container, getByTestId } = renderWithProvider(
         <PermissionListItem
           total={mockTotal}
-          name={mockName}
+          permissionGroupName={mockName}
           onClick={() => mockOnClick()}
         />,
       );
