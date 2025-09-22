@@ -270,15 +270,16 @@ describe('PatchStore', () => {
 
       triggerStateChange(
         composableStoreMock,
-        { test1: 'value1' },
-        { test1: 'value2' },
+        { test1: 'value1', test2: { test3: 'value2' }, test3: 'value3' },
+        { test1: 'value4', test2: { test3: 'value5', test4: 'value6' } },
         [
           {
             op: 'replace',
             path: [],
             value: {
-              test1: 'value1',
-              test2: { test3: 'value2' },
+              test1: 'value4',
+              test2: { test3: 'value5' },
+              test4: 'value6',
             },
           },
         ],
@@ -290,12 +291,21 @@ describe('PatchStore', () => {
         {
           op: 'replace',
           path: ['test1'],
-          value: 'value1',
+          value: 'value4',
         },
         {
           op: 'replace',
           path: ['test2'],
-          value: { test3: 'value2' },
+          value: { test3: 'value5' },
+        },
+        {
+          op: 'remove',
+          path: ['test3'],
+        },
+        {
+          op: 'replace',
+          path: ['test4'],
+          value: 'value6',
         },
       ]);
     });

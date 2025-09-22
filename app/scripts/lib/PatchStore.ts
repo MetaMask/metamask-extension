@@ -1,6 +1,7 @@
-import { createProjectLogger } from '@metamask/utils';
+import { Json, createProjectLogger } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
+import { uniq } from 'lodash';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizePatches, sanitizeUIState } from './state-utils';
 
@@ -15,8 +16,8 @@ export class PatchStore {
 
   private listener: (request: {
     controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    oldState: Record<string, Json>;
+    newState: Record<string, Json>;
   }) => void;
 
   constructor(observableStore: ComposableObservableStore) {
@@ -52,15 +53,18 @@ export class PatchStore {
     patches: eventPatches,
   }: {
     controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    oldState: Record<string, Json>;
+    newState: Record<string, Json>;
     patches?: Patch[];
   }) {
     const sanitizedNewState = eventPatches
       ? newState
       : sanitizeUIState(newState);
 
-    const normalizedPatches = this._normalizeEventPatches(eventPatches);
+    const normalizedPatches = this._normalizeEventPatches(
+      eventPatches,
+      oldState,
+    );
 
     const sanitizedPatches = normalizedPatches
       ? sanitizePatches(normalizedPatches)
@@ -93,8 +97,8 @@ export class PatchStore {
   }
 
   private _generatePatches(
-    oldState: Record<string, unknown>,
-    newState: Record<string, unknown>,
+    oldState: Record<string, Json>,
+    newState: Record<string, Json>,
   ): Patch[] {
     return Object.keys(newState)
       .map((key) => {
@@ -114,16 +118,24 @@ export class PatchStore {
       .filter(Boolean) as Patch[];
   }
 
-  private _normalizeEventPatches(eventPatches?: Patch[]): Patch[] | undefined {
+  private _normalizeEventPatches(
+    eventPatches: Patch[] | undefined,
+    oldState: Record<string, Json>,
+  ): Patch[] | undefined {
     return eventPatches?.flatMap((patch) => {
       if (patch.path.length > 0) {
         return [patch];
       }
 
-      return Object.keys(patch.value).map((key) => ({
-        op: patch.op,
+      const stateProperties = uniq([
+        ...Object.keys(oldState),
+        ...Object.keys(patch.value),
+      ]);
+
+      return stateProperties.map((key) => ({
+        op: key in patch.value ? 'replace' : 'remove',
         path: [key],
-        value: patch.value[key],
+        ...(key in patch.value ? { value: patch.value[key] } : {}),
       }));
     });
   }
