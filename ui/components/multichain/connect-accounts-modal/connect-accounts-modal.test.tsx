@@ -80,7 +80,6 @@ const render = (props = defaultProps) => {
 };
 
 describe('Connect More Accounts Modal', () => {
-  /*
   it('should render correctly', async () => {
     const { baseElement, getByText } = render();
     expect(getByText(messages.connectMoreAccounts.message)).toBeInTheDocument();
@@ -89,23 +88,6 @@ describe('Connect More Accounts Modal', () => {
     await waitFor(() => {
       expect(baseElement).toMatchSnapshot();
     });
-  });
-  */
-
-  it('should render with correct elements', async () => {
-    const { getByText, getByTestId, getByRole } = render();
-
-    // Test specific UI elements
-    expect(getByText(messages.connectMoreAccounts.message)).toBeInTheDocument();
-    expect(getByText(messages.selectAll.message)).toBeInTheDocument();
-    expect(getByText(messages.confirm.message)).toBeInTheDocument();
-
-    // Test modal structure
-    expect(getByTestId('connect-more-accounts')).toHaveClass('mm-modal');
-
-    // Test checkbox functionality if needed
-    const checkbox = getByRole('checkbox', { name: /select all/iu });
-    expect(checkbox).toBeInTheDocument();
   });
 
   it('should only render EVM accounts', () => {
