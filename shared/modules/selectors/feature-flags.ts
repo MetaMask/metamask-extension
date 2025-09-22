@@ -24,10 +24,25 @@ export type SwapsFeatureFlags = {
   smartTransactions: SmartTransactionsFeatureFlag;
 };
 
+type SmartTransactionNetwork = {
+  extensionActive?: boolean;
+  sentinelUrl?: string;
+  extensionReturnTxHashAsap?: boolean;
+};
+
+type SmartTransactionsNetworks = {
+  [chainId: string]: SmartTransactionNetwork | undefined;
+} & {
+  default?: SmartTransactionNetwork;
+};
+
 export type FeatureFlagsMetaMaskState = {
   metamask: {
     swapsState: {
       swapsFeatureFlags: SwapsFeatureFlags;
+    };
+    remoteFeatureFlags?: {
+      smartTransactionsNetworks?: SmartTransactionsNetworks;
     };
   };
 };
@@ -44,10 +59,17 @@ export function getFeatureFlagsByChainId(
   if (!featureFlags?.[networkName]) {
     return null;
   }
+  const smartTransactionsNetworks =
+    state.metamask.remoteFeatureFlags?.smartTransactionsNetworks;
+  const defaultConfig = smartTransactionsNetworks?.default;
+  const extensionReturnTxHashAsap =
+    defaultConfig?.extensionReturnTxHashAsap ?? false;
+
   return {
     smartTransactions: {
       ...featureFlags.smartTransactions,
       ...featureFlags[networkName].smartTransactions,
+      extensionReturnTxHashAsap,
     },
   };
 }
