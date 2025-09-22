@@ -11,6 +11,7 @@ import {
   SnapKeyringAccountBalancesUpdatedEvent,
   SnapKeyringAccountTransactionsUpdatedEvent,
 } from '@metamask/eth-snap-keyring';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -20,8 +21,10 @@ import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
-import { PreferencesController, ReferralStatus } from './preferences-controller';
-import type { Hex } from '@metamask/utils';
+import {
+  PreferencesController,
+  ReferralStatus,
+} from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {

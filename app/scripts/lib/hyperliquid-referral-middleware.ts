@@ -23,7 +23,10 @@ export enum HyperliquidPermissionTriggerType {
 }
 
 function isExtendedJSONRPCRequest(req: JsonRpcRequest): req is ExtendedJSONRPCRequest {
-  return Boolean((req as ExtendedJSONRPCRequest).origin) && Boolean((req as ExtendedJSONRPCRequest).tabId);
+  return (
+    Boolean((req as ExtendedJSONRPCRequest).origin) &&
+    Boolean((req as ExtendedJSONRPCRequest).tabId)
+  );
 }
 
 /**
@@ -49,7 +52,7 @@ export function createHyperliquidReferralMiddleware(
       next: AsyncJsonRpcEngineNextCallback,
     ) => {
       if (!isExtendedJSONRPCRequest(req)) {
-        return
+        return;
       }
 
       // First, call next to process the request
