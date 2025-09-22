@@ -4244,11 +4244,26 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
   },
+  "onboardingMetametricCheckboxDescriptionOne": {
+    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
+  },
+  "onboardingMetametricCheckboxDescriptionTwo": {
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "onboardingMetametricCheckboxTitleOne": {
+    "message": "Gather basic usage data"
+  },
+  "onboardingMetametricCheckboxTitleTwo": {
+    "message": "Product updates"
+  },
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
+  "onboardingMetametricsContinue": {
+    "message": "Continue"
+  },
   "onboardingMetametricsDescription": {
-    "message": "We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:"
+    "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
   },
   "onboardingMetametricsInfuraTerms": {
     "message": "We’ll let you know if we plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",

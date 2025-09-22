@@ -8,6 +8,12 @@
     align-items: start;
   }
 
+  &__user-control {
+    height: 200px;
+    width: 200px;
+    margin: 0 auto;
+  }
+
   p {
     align-self: baseline;
   }

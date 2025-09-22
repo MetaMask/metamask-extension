@@ -1,12 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
-  onboardingMetametricsAgree,
-  noThanks,
+  onboardingMetametricCheckboxTitleOne,
+  onboardingMetametricCheckboxDescriptionOne,
+  onboardingMetametricCheckboxTitleTwo,
+  onboardingMetametricCheckboxDescriptionTwo,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/_locales/en/messages.json';
@@ -81,15 +83,28 @@ describe('Onboarding Metametrics Component', () => {
     jest.useRealTimers();
   });
 
-  it('should set setParticipateInMetaMetrics to true when clicking agree', async () => {
-    const { queryByText } = renderWithProvider(
+  it('default value is checked for ParticiapteMetatmric so on continue is should be called with true', async () => {
+    const { queryByText, getByTestId, getAllByRole } = renderWithProvider(
       <OnboardingMetametrics />,
       mockStore,
     );
 
-    const confirmAgree = queryByText(onboardingMetametricsAgree.message);
+    const title = queryByText(onboardingMetametricCheckboxTitleOne.message);
+    const description = queryByText(
+      onboardingMetametricCheckboxDescriptionOne.message,
+    );
 
-    fireEvent.click(confirmAgree);
+    expect(title).toBeInTheDocument();
+    expect(description).toBeInTheDocument();
+
+    const checkbox = getAllByRole('checkbox')[0];
+
+    expect(checkbox).toBeChecked();
+    expect(checkbox).toBeInTheDocument();
+
+    const continueButton = getByTestId('metametrics-i-agree');
+
+    fireEvent.click(continueButton);
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
@@ -97,15 +112,36 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('should set setParticipateInMetaMetrics to false when clicking cancel', async () => {
-    const { queryByText } = renderWithProvider(
+  it('should set setParticipateInMetaMetrics to false when uncheck the checkbox', async () => {
+    const { queryByText, getByTestId, getAllByRole } = renderWithProvider(
       <OnboardingMetametrics />,
       mockStore,
     );
 
-    const confirmCancel = queryByText(noThanks.message);
+    const title = queryByText(onboardingMetametricCheckboxTitleOne.message);
+    const description = queryByText(
+      onboardingMetametricCheckboxDescriptionOne.message,
+    );
 
-    fireEvent.click(confirmCancel);
+    expect(title).toBeInTheDocument();
+    expect(description).toBeInTheDocument();
+
+    const checkbox = getAllByRole('checkbox')[0];
+
+    expect(checkbox).toBeChecked();
+    expect(checkbox).toBeInTheDocument();
+
+    await act(() => {
+      fireEvent.click(checkbox);
+    });
+
+    await waitFor(() => {
+      expect(checkbox).not.toBeChecked();
+    });
+
+    const continueButton = getByTestId('metametrics-i-agree');
+
+    fireEvent.click(continueButton);
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
@@ -114,14 +150,26 @@ describe('Onboarding Metametrics Component', () => {
   });
 
   it('should set setDataCollectionForMarketing to false when clicking cancel', async () => {
-    const { queryByText } = renderWithProvider(
+    const { queryByText, getAllByRole, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       mockStore,
     );
 
-    const confirmCancel = queryByText(noThanks.message);
+    const title = queryByText(onboardingMetametricCheckboxTitleTwo.message);
+    const description = queryByText(
+      onboardingMetametricCheckboxDescriptionTwo.message,
+    );
 
-    fireEvent.click(confirmCancel);
+    expect(title).toBeInTheDocument();
+    expect(description).toBeInTheDocument();
+
+    const checkbox = getAllByRole('checkbox')[1];
+
+    expect(checkbox).not.toBeChecked();
+    expect(checkbox).toBeInTheDocument();
+
+    const continueButton = getByTestId('metametrics-i-agree');
+    fireEvent.click(continueButton);
 
     await waitFor(() => {
       expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
