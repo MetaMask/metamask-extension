@@ -6,10 +6,14 @@ import { NameOrigin, NameType } from '@metamask/name-controller';
 import { useNames } from './useName';
 import { MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { getWalletIdAndNameByAccountAddress } from '../selectors/multichain-accounts/account-tree';
-import { UseDisplayNameRequest } from './useDisplayName';
+
+type UseWalletNamesRequest = {
+  type: NameType;
+  value: string;
+};
 
 export function useWalletNames(
-  requests: UseDisplayNameRequest[],
+  requests: UseWalletNamesRequest[],
   nameEntries: ReturnType<typeof useNames>,
 ): (string | null)[] {
   const isMultichainAccountsState2Enabled = useSelector(
