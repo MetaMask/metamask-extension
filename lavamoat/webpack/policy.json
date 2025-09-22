@@ -799,7 +799,7 @@
       "packages": {
         "@babel/runtime": true,
         "prop-types": true,
-         "react-redux>react-is": true
+        "react-redux>react-is": true
       }
     },
     "@metamask/abi-utils": {
@@ -1623,14 +1623,14 @@
       "globals": {
         "URL": true
       },
-       "packages": {
+      "packages": {
         "@metamask/base-controller": true,
         "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": true,
         "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
-       }
+      }
     },
     "@metamask/multichain-transactions-controller": {
       "globals": {
@@ -2610,16 +2610,16 @@
         "@solana/addresses>@solana/errors": true
       }
     },
-    "@solana/addresses>@solana/codecs-core": {
-      "packages": {
-        "@solana/addresses>@solana/errors": true
-      }
-    },
     "@solana/addresses>@solana/assertions": {
       "globals": {
         "crypto": true,
         "isSecureContext": true
       },
+      "packages": {
+        "@solana/addresses>@solana/errors": true
+      }
+    },
+    "@solana/addresses>@solana/codecs-core": {
       "packages": {
         "@solana/addresses>@solana/errors": true
       }
