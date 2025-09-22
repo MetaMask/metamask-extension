@@ -139,16 +139,7 @@ export const MultichainAccountIntroModal: React.FC<
         </ModalBody>
 
         <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              block
-              onClick={onLearnMore}
-              disabled={isLoading}
-            >
-              {t('multichainAccountIntroLearnMore')}
-            </Button>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
@@ -160,6 +151,15 @@ export const MultichainAccountIntroModal: React.FC<
               {isLoading
                 ? t('multichainAccountIntroSettingUp')
                 : t('multichainAccountIntroViewAccounts')}
+            </Button>
+            <Button
+              variant={ButtonVariant.Link}
+              size={ButtonSize.Lg}
+              block
+              onClick={onLearnMore}
+              disabled={isLoading}
+            >
+              {t('multichainAccountIntroLearnMore')}
             </Button>
           </Box>
         </ModalFooter>
