@@ -403,7 +403,7 @@ export default function ConfirmationPage({
 
           const isWhitelistedSymbol =
             NETWORKS_BYPASSING_VALIDATION[
-              _pendingConfirmation.requestData.chainId
+              _pendingConfirmation.requestData.chainId?.toLowerCase()
             ]?.symbol?.toLowerCase() ===
             _pendingConfirmation.requestData.ticker?.toLowerCase();
 
