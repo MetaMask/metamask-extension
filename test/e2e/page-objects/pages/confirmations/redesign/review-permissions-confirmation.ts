@@ -51,13 +51,13 @@ class ReviewPermissionsConfirmation {
     await this.driver.clickElement(this.confirmReviewPermissionsButton);
   }
 
-  // async clickConfirmReviewPermissionsButtonWithWaitForWindowToClose(): Promise<void> {
-  //   console.log('Click confirm review permissions button');
-  //   await this.driver.findClickableElement(this.confirmReviewPermissionsButton);
-  //   await this.driver.clickElementAndWaitForWindowToClose(
-  //     this.confirmReviewPermissionsButton,
-  //   );
-  // }
+  async clickConfirmReviewPermissionsButtonWithWaitForWindowToClose(): Promise<void> {
+    console.log('Click confirm review permissions button');
+    await this.driver.findClickableElement(this.confirmReviewPermissionsButton);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmReviewPermissionsButton,
+    );
+  }
 
   async confirmReviewPermissions(): Promise<void> {
     console.log('Confirm review permissions');
