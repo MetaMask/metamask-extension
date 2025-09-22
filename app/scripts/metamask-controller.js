@@ -3059,8 +3059,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
           appStateController,
         ),
-      setHasShownMultichainIntroModal:
-        appStateController.setHasShownMultichainIntroModal.bind(
+      setHasShownMultichainAccountsIntroModal:
+        appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
         ),
       // EnsController

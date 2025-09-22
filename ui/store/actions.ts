@@ -7036,9 +7036,9 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
-export function setMultichainIntroModalShown(value: boolean) {
+export function setMultichainAccountsIntroModalShown(value: boolean) {
   return async () => {
-    await submitRequestToBackground('setHasShownMultichainIntroModal', [value]);
+    await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [value]);
   };
 }
 

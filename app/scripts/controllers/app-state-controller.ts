@@ -103,7 +103,7 @@ export type AppStateControllerState = {
   timeoutMinutes: number;
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
-  hasShownMultichainIntroModal: boolean;
+  hasShownMultichainAccountsIntroModal: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -239,7 +239,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
   updateModalLastDismissedAt: null,
-  hasShownMultichainIntroModal: false,
+    hasShownMultichainAccountsIntroModal: false,
 
   ...getInitialStateOverrides(),
 });
@@ -527,12 +527,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
   },
-  hasShownMultichainIntroModal: {
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-    includeInStateLogs: true,
-  },
+    hasShownMultichainAccountsIntroModal: {
+      persist: true,
+      anonymous: true,
+      usedInUi: true,
+      includeInStateLogs: true,
+    },
 };
 
 export class AppStateController extends BaseController<
@@ -1065,9 +1065,9 @@ export class AppStateController extends BaseController<
    *
    * @param hasShown - Whether the modal has been shown
    */
-  setHasShownMultichainIntroModal(hasShown: boolean): void {
+  setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
     this.update((state) => {
-      state.hasShownMultichainIntroModal = hasShown;
+      state.hasShownMultichainAccountsIntroModal = hasShown;
     });
   }
 

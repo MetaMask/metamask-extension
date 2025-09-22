@@ -475,9 +475,9 @@ export default function Routes() {
     getIsMultichainAccountsState2Enabled,
   );
 
-  // Track whether we've shown the multichain intro modal
-  const hasShownMultichainIntroModal = useAppSelector(
-    (state) => state.metamask.hasShownMultichainIntroModal,
+  // Track whether we've shown the multichain accounts intro modal
+  const hasShownMultichainAccountsIntroModal = useAppSelector(
+    (state) => state.metamask.hasShownMultichainAccountsIntroModal,
   );
 
   // Track last update time - null for fresh installs, timestamp for upgrades
@@ -524,7 +524,7 @@ export default function Routes() {
     const shouldShowModal =
       isUnlocked &&
       isMultichainAccountsState2Enabled &&
-      !hasShownMultichainIntroModal &&
+      !hasShownMultichainAccountsIntroModal &&
       lastUpdatedAt && // null = fresh install, timestamp = upgrade
       isMainWalletArea;
 
@@ -532,7 +532,7 @@ export default function Routes() {
   }, [
     isUnlocked,
     isMultichainAccountsState2Enabled,
-    hasShownMultichainIntroModal,
+    hasShownMultichainAccountsIntroModal,
     lastUpdatedAt,
     location.pathname,
     dispatch,

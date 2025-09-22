@@ -69,7 +69,7 @@ export const MultichainAccountIntroModal: React.FC<
         </Box>
 
         <ModalBody paddingTop={0}>
-          {/* Hero graphics - placeholder for now until marketing provides animation */}
+          {/* Hero graphics - placeholder for now */}
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}

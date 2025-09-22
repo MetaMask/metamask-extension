@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import {
-  setMultichainIntroModalShown,
+  setMultichainAccountsIntroModalShown,
   alignMultichainWallets,
 } from '../../../../../store/actions';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../../helpers/constants/routes';
@@ -27,24 +27,34 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const alignmentPromiseRef = useRef<Promise<unknown> | null>(null);
   const isClosingRef = useRef(false);
 
+  const MINIMUM_LOADING_TIME_MS = 2000;
+  const SUPPORT_URL = 'https://support.metamask.io/multichain-accounts';
+
+  // Start alignment as soon as modal opens
+  useEffect(() => {
+    if (isOpen) {
+      alignmentPromiseRef.current = alignMultichainWallets().catch((err) => {
+        console.error('Wallet alignment failed:', err);
+        // TODO: Report to Sentry
+        // Even if alignment fails, we continue
+        return Promise.resolve();
+      });
+    }
+  }, [isOpen]);
+
   const handleViewAccounts = useCallback(async () => {
-    // Start loading when user clicks (not when modal opens)
+    // Start loading when user clicks
     setIsLoading(true);
 
     try {
-      // Create the alignment promise immediately when clicked
-      const alignmentPromise = Promise.all([
-        alignMultichainWallets(),
-        new Promise<void>((resolve) => setTimeout(resolve, 2000)), // Minimum 2s UX feedback
+      // Wait for existing alignment + minimum 2s UX delay
+      await Promise.all([
+        alignmentPromiseRef.current || Promise.resolve(),
+        new Promise<void>((resolve) => setTimeout(resolve, MINIMUM_LOADING_TIME_MS)),
       ]);
-
-      // Store reference for handleClose
-      alignmentPromiseRef.current = alignmentPromise;
-
-      // Wait for alignment to complete
-      await alignmentPromise;
     } catch (err) {
       console.error('Wallet alignment failed:', err);
+      // TODO: Report to Sentry
       // Even if alignment fails, we continue
     } finally {
       setIsLoading(false); // Clear loading state before closing modal
@@ -52,11 +62,13 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
     }
 
     // Prevent race condition if modal was closed while aligning
-    if (isClosingRef.current) return;
+    if (isClosingRef.current) {
+      return;
+    }
     isClosingRef.current = true;
 
     // Mark modal as shown so it doesn't show again
-    dispatch(setMultichainIntroModalShown(true));
+    dispatch(setMultichainAccountsIntroModalShown(true));
     onClose();
 
     // Navigate to account list
@@ -66,7 +78,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page
     window.open(
-      'https://support.metamask.io/multichain-accounts',
+      SUPPORT_URL,
       '_blank',
       'noopener,noreferrer',
     );
@@ -74,10 +86,12 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
 
   const handleClose = useCallback(async () => {
     // Prevent race condition if alignment is handling the close
-    if (isClosingRef.current) return;
+    if (isClosingRef.current) {
+      return;
+    }
     isClosingRef.current = true;
 
-    // Wait for alignment to complete if it's running (Charly's feedback)
+    // Wait for alignment to complete if it's running
     if (alignmentPromiseRef.current) {
       try {
         await alignmentPromiseRef.current;
@@ -88,7 +102,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
     }
 
     // Mark modal as shown so it doesn't show again
-    dispatch(setMultichainIntroModalShown(true));
+    dispatch(setMultichainAccountsIntroModalShown(true));
     onClose();
   }, [dispatch, onClose]);
 
