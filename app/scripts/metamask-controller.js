@@ -301,6 +301,11 @@ import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
+import {
+  createHyperliquidReferralMiddleware,
+  HyperliquidPermissionTriggerType,
+  HYPERLIQUID_ORIGIN,
+} from './lib/hyperliquid-referral-middleware';
 
 import {
   getCaveatSpecifications,
@@ -6326,37 +6331,30 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles Hyperliquid referral approval flow for eth_accounts requests.
+   * Handles Hyperliquid referral approval flow.
    * Shows approval confirmation screen if needed and manages referral URL redirection.
+   * This can be triggered by connection permission grants or existing connections.
    *
-   * @param {object} req - The JSON-RPC request object.
+   * @param {object} req - The request object containing origin, tabId, and optional triggerType.
    */
   async handleHyperliquidReferral(req) {
-    const { origin, tabId } = req;
-    const HYPERLIQUID_ORIGIN = 'https://app.hyperliquid.xyz';
+    const { origin, tabId, triggerType } = req;
 
     const isHyperliquidReferralEnabled =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.extensionUxDefiReferral;
 
-    if (origin !== HYPERLIQUID_ORIGIN || !isHyperliquidReferralEnabled) {
+    if (!isHyperliquidReferralEnabled) {
       return;
     }
 
-    const permittedAccounts = this.getPermittedAccounts(origin);
-
     // Only show consent if Hyperliquid has permitted accounts
+    const permittedAccounts = this.getPermittedAccounts(origin);
     if (permittedAccounts.length === 0) {
       return;
     }
 
     const permittedAccount = permittedAccounts[0];
-
-    // Check if there's already a pending approval request to prevent duplicates
-    // TODO: could be a problem if other approvals are shown on this url?
-    if (this.approvalController.has({ origin })) {
-      return;
-    }
 
     const {
       approvedAccounts = [],
@@ -6382,32 +6380,30 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldShowApproval) {
-      try {
-        const approvalResponse =
-          await this.approvalController.addAndShowApprovalRequest({
-            origin,
-            type: HYPERLIQUID_APPROVAL_TYPE,
-            requestData: { selectedAddress: permittedAccount },
-          });
+      // method will fail if there is an existing approval request
+      // or if the user rejects the request (e.g. by disconnecting)
+      const approvalResponse = await this.approvalController.add({
+        origin,
+        type: HYPERLIQUID_APPROVAL_TYPE,
+        requestData: { selectedAddress: permittedAccount },
+        shouldShowRequest:
+          triggerType !==
+          HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+      });
 
-        if (approvalResponse?.approved) {
-          this._handleHyperliquidApprovedAccount(
-            permittedAccount,
-            permittedAccounts,
-            declinedAccounts,
-          );
-          await this._handleHyperliquidReferralRedirect(
-            tabId,
-            HYPERLIQUID_ORIGIN,
-            permittedAccount,
-          );
-        } else {
-          this.preferencesController.addReferralDeclinedAccount(
-            permittedAccount,
-          );
-        }
-      } catch (error) {
-        // We expect to get here if user switches account without approving
+      if (approvalResponse?.approved) {
+        this._handleHyperliquidApprovedAccount(
+          permittedAccount,
+          permittedAccounts,
+          declinedAccounts,
+        );
+        await this._handleHyperliquidReferralRedirect(
+          tabId,
+          HYPERLIQUID_ORIGIN,
+          permittedAccount,
+        );
+      } else {
+        this.preferencesController.addReferralDeclinedAccount(permittedAccount);
       }
     }
 
@@ -7658,7 +7654,6 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createEthAccountsMethodMiddleware({
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        handleHyperliquidReferral: this.handleHyperliquidReferral.bind(this),
       }),
     );
 
@@ -7667,6 +7662,13 @@ export default class MetamaskController extends EventEmitter {
         this.permissionController.createPermissionMiddleware({
           origin,
         }),
+      );
+
+      // Add Hyperliquid permission monitoring middleware
+      engine.push(
+        createHyperliquidReferralMiddleware(
+          this.handleHyperliquidReferral.bind(this),
+        ),
       );
     }
 
@@ -7744,7 +7746,6 @@ export default class MetamaskController extends EventEmitter {
         ),
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.has({ origin }),
-        handleHyperliquidReferral: this.handleHyperliquidReferral.bind(this),
       }),
     );
 
