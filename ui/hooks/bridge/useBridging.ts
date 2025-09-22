@@ -32,6 +32,7 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { getDefaultTokenPair } from '../../ducks/bridge/selectors';
@@ -52,7 +53,6 @@ const useBridging = () => {
     getIsBridgeChain(state, providerConfig?.chainId),
   );
 
-  // TODO should set default toToken here too
   const defaultTokenPair = useSelector(getDefaultTokenPair);
 
   const openBridgeExperience = useCallback(
@@ -65,14 +65,21 @@ const useBridging = () => {
     ) => {
       const [defaultBip44SrcAssetId, defaultBip44DestAssetId] =
         defaultTokenPair ?? [];
+
       const srcAssetIdToUse =
+        // If srcToken is present, use the srcToken assetId
         (srcToken
           ? toAssetId(
               srcToken.address,
               formatChainIdToCaip(srcToken.chainId ?? providerConfig.chainId),
             )
-          : defaultBip44SrcAssetId) ??
-        getNativeAssetForChainId(providerConfig.chainId)?.assetId;
+          : // Otherwise, use the default bip44 src asset id
+            defaultBip44SrcAssetId) ??
+        // Otherwise, use the native asset for Ethereum mainnet
+        // This should only happen if the feature flags are unavailable and the
+        // user clicks on Swap from the home page
+        getNativeAssetForChainId(CHAIN_IDS.MAINNET)?.assetId;
+
       // If srcToken is present, use the default dest token for that chain
       const destAssetIdToUse = srcToken?.chainId
         ? toBridgeToken(
