@@ -85,7 +85,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0x1",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Ethereum Mainnet",
+            "name": "Ethereum",
             "nativeCurrency": "ETH",
             "rpcEndpoints": [
               {
@@ -121,7 +121,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0x2105",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Base Mainnet",
+            "name": "Base",
             "nativeCurrency": "ETH",
             "rpcEndpoints": [
               {
