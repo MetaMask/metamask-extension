@@ -770,19 +770,6 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  console.log(
-    '[Routes] isLoading',
-    isLoading,
-    'completedOnboarding',
-    completedOnboarding,
-    'isCorrectApprovalType',
-    isCorrectApprovalType,
-    'isCorrectTransactionType',
-    isCorrectTransactionType,
-    'isShowingDeepLinkRoute',
-    isShowingDeepLinkRoute,
-  );
-
   const accountListMenu = isMultichainAccountsState1Enabled ? (
     <MultichainAccountListMenu
       onClose={() => dispatch(toggleAccountMenu())}

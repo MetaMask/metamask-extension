@@ -164,8 +164,7 @@ export const LegacyAggregatedBalance = ({
     <Skeleton
       hideChildren
       showUntil={
-        balanceToDisplay !== undefined &&
-        (anyEnabledNetworksAreAvailable || !isZeroAmount(balanceToDisplay))
+        anyEnabledNetworksAreAvailable || !isZeroAmount(balanceToDisplay)
       }
     >
       <UserPreferencedCurrencyDisplay
