@@ -43,7 +43,11 @@ export const loginWithBalanceValidation = async (
   await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
 
-  let skeleton: WebElement | undefined;
+  let skeleton:
+    | (WebElement & {
+        waitForElementState: (state: string, timeout: number) => Promise<void>;
+      })
+    | undefined;
   try {
     skeleton = await homePage.getSkeleton();
   } catch (error) {
