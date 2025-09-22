@@ -604,7 +604,7 @@ export default function TransactionList({
     selectedAccount,
   );
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const bridgeHistoryItems = useSelector((state) =>
     selectBridgeHistoryForAccount(state, selectedAccount.address),

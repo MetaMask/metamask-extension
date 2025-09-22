@@ -19,7 +19,7 @@ import {
 function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName, requestData } = pendingApproval;
   const { snapSuggestedAccountName } = requestData;
-  const { trackEvent } = contexts;
+  const trackEvent = contexts;
 
   const trackSnapAccountEvent = (event) => {
     trackEvent({

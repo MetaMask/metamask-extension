@@ -35,7 +35,7 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const isCarouselEnabled = Boolean(remoteFeatureFlags?.carouselBanners);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
 
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
