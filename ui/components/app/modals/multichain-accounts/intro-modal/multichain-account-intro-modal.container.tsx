@@ -2,6 +2,8 @@ import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { captureException } from '../../../../../../shared/lib/sentry';
+
 import {
   setMultichainAccountsIntroModalShown,
   alignMultichainWallets,
@@ -35,7 +37,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
     if (isOpen) {
       alignmentPromiseRef.current = alignMultichainWallets().catch((err) => {
         console.error('Wallet alignment failed:', err);
-        // TODO: Report to Sentry
+        captureException(err);
         // Even if alignment fails, we continue
         return Promise.resolve();
       });
@@ -54,7 +56,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
       ]);
     } catch (err) {
       console.error('Wallet alignment failed:', err);
-      // TODO: Report to Sentry
+      captureException(err);
       // Even if alignment fails, we continue
     } finally {
       setIsLoading(false); // Clear loading state before closing modal

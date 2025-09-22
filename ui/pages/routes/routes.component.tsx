@@ -101,7 +101,6 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
-import { getIsMultichainAccountsState2Enabled } from '../../selectors/multichain-accounts/feature-flags';
 import {
   hideImportNftsModal,
   hideIpfsModal,
@@ -163,6 +162,7 @@ import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
@@ -376,9 +376,6 @@ export default function Routes() {
   const history = useHistory();
   const location = useLocation();
 
-  // Local state for multichain intro modal
-  const [showMultichainIntroModal, setShowMultichainIntroModal] =
-    useState(false);
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -471,17 +468,9 @@ export default function Routes() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const isMultichainAccountsState2Enabled = useAppSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
-  // Track whether we've shown the multichain accounts intro modal
-  const hasShownMultichainAccountsIntroModal = useAppSelector(
-    (state) => state.metamask.hasShownMultichainAccountsIntroModal,
-  );
-
-  // Track last update time - null for fresh installs, timestamp for upgrades
-  const lastUpdatedAt = useAppSelector((state) => state.metamask.lastUpdatedAt);
+  // Multichain intro modal logic (extracted to custom hook)
+  const { showMultichainIntroModal, setShowMultichainIntroModal } =
+    useMultichainAccountsIntroModal(isUnlocked, location);
 
   const prevPropsRef = useRef({
     isUnlocked,
@@ -515,28 +504,6 @@ export default function Routes() {
     dispatch,
   ]);
 
-  // Show multichain intro modal for State 2 users who haven't seen it
-  useEffect(() => {
-    // Only show modal on the main wallet/home route
-    const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
-
-    // Show modal for upgrades only (simple lastUpdatedAt pattern like update modal)
-    const shouldShowModal =
-      isUnlocked &&
-      isMultichainAccountsState2Enabled &&
-      !hasShownMultichainAccountsIntroModal &&
-      lastUpdatedAt && // null = fresh install, timestamp = upgrade
-      isMainWalletArea;
-
-    setShowMultichainIntroModal(shouldShowModal);
-  }, [
-    isUnlocked,
-    isMultichainAccountsState2Enabled,
-    hasShownMultichainAccountsIntroModal,
-    lastUpdatedAt,
-    location.pathname,
-    dispatch,
-  ]);
 
   useEffect(() => {
     // Terminate the popup when another popup is opened
