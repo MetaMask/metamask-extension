@@ -24,7 +24,12 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import {
+  parseCaipChainId,
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import type {
   CurrencyRateState,
   MultichainAssetsControllerState,
@@ -182,9 +187,13 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getMultichainProviderConfig,
+  getMultichainProviderConfig, // TODO remove this reference
+  // TODO should be based on fromToken
   getFromChains,
   (providerConfig, fromChains) => {
+    // TODO move this to bridge state?
+    // TODO return null initially, wait for token selection then set to token's chainId
+    // otherwise should use EVM
     return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
   },
 );
@@ -228,6 +237,60 @@ export const getToChain = createSelector(
       : fromChain,
 );
 
+export const getDefaultTokenPair = createDeepEqualSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) =>
+      // @ts-expect-error will be fixed when controller is updated
+      getBridgeFeatureFlags(state).bip44DefaultPairs,
+    // TODO remove fallback and update LD to this
+    // ({
+    //   bip122: {
+    //     other: {},
+    //     standard: {
+    //       'bip122:000000000019d6689c085ae165831e93/slip44:0':
+    //         'eip155:1/slip44:60',
+    //     },
+    //   },
+    //   eip155: {
+    //     other: {},
+    //     standard: {
+    //       'eip155:1/slip44:60':
+    //         // 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    //         'eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+    //     },
+    //   },
+    //   solana: {
+    //     other: {},
+    //     standard: {
+    //       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501':
+    //         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    //     },
+    //   },
+    // }),
+  ],
+  (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
+    console.log('=====getDefaultTokenPair', fromChainId);
+    if (!fromChainId) {
+      return null;
+    }
+    const { namespace } = parseCaipChainId(formatChainIdToCaip(fromChainId));
+    // console.log(
+    //   '=====getDefaultTokenPair namespace',
+    //   namespace,
+    //   bip44DefaultPairs,
+    // );
+    const defaultTokenPair = bip44DefaultPairs[namespace].standard;
+    if (defaultTokenPair) {
+      return Object.entries(defaultTokenPair).flat() as [
+        CaipAssetType,
+        CaipAssetType,
+      ];
+    }
+    return null;
+  },
+);
+
 export const getFromToken = createSelector(
   [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
   (fromToken, fromChain) => {
@@ -260,6 +323,8 @@ export const getToToken = createSelector(
     if (toToken) {
       return toToken;
     }
+    console.log('=====returning hardcoded toToken');
+    // TODO if fromToken is in bip44Defaults, return its mapped toToken
     // Otherwise, determine the default token to use based on fromToken and toChain
     const defaultToken = getDefaultToToken(toChain, fromToken);
     return defaultToken ? toBridgeToken(defaultToken) : null;

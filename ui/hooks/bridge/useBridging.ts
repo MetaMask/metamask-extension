@@ -34,6 +34,7 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
+import { getDefaultTokenPair } from '../../ducks/bridge/selectors';
 
 const useBridging = () => {
   const history = useHistory();
@@ -49,6 +50,10 @@ const useBridging = () => {
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, providerConfig?.chainId),
   );
+
+  // TODO should set default toToken here too
+  const defaultTokenPair = useSelector(getDefaultTokenPair);
+
   const openBridgeExperience = useCallback(
     (
       location: MetaMetricsSwapsEventSource | 'Carousel',
@@ -57,18 +62,29 @@ const useBridging = () => {
       },
       isSwap = false,
     ) => {
-      const token =
-        srcToken ?? getNativeAssetForChainId(providerConfig.chainId);
+      console.log('=====useBridging', defaultTokenPair);
+      // TODO if no network filter, default to ethereum
+      // TODO if no srcToken, get default
+      const token = srcToken;
+
       const isBridgeToken =
         token?.chainId &&
         ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.includes(
           formatChainIdToCaip(token.chainId),
         );
-      const isChainOrTokenSupported = isBridgeChain || isBridgeToken;
+
+      const isChainOrTokenSupported =
+        isBridgeChain || isBridgeToken || defaultTokenPair;
 
       if (!isChainOrTokenSupported || !providerConfig) {
         return;
       }
+
+      // TODO if srcToken is defined, use getDefaultToToken
+      // const defaultToken = getDefaultToToken(token.chainId, fromToken);
+      // const defaultDestToken ? toBridgeToken(defaultToken) : null;
+
+      const [defaultSrcAssetId, defaultDestAssetId] = defaultTokenPair ?? [];
 
       trace({
         name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
@@ -82,7 +98,7 @@ const useBridging = () => {
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: token.symbol,
+          token_symbol: token?.symbol ?? defaultSrcAssetId ?? '',
           location,
           text: isSwap ? 'Swap' : 'Bridge',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -95,19 +111,28 @@ const useBridging = () => {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: token.symbol,
+          token_symbol_source: token?.symbol ?? defaultSrcAssetId ?? '',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_destination: null,
+          token_symbol_destination: defaultDestAssetId ?? '',
         }),
       );
       dispatch(resetInputFields());
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-      const assetId = toAssetId(
-        token.address,
-        formatChainIdToCaip(token.chainId ?? providerConfig.chainId),
-      );
-      url += `?${BridgeQueryParams.FROM}=${assetId}`;
+      const assetId =
+        (token
+          ? toAssetId(
+              token.address,
+              formatChainIdToCaip(token.chainId ?? providerConfig.chainId),
+            )
+          : defaultSrcAssetId) ??
+        getNativeAssetForChainId(providerConfig.chainId)?.assetId;
+      if (assetId) {
+        url += `?${BridgeQueryParams.FROM}=${assetId}`;
+      }
+      if (defaultDestAssetId && !srcToken) {
+        url += `&${BridgeQueryParams.TO}=${defaultDestAssetId}`;
+      }
       if (isSwap) {
         url += `&${BridgeQueryParams.SWAPS}=true`;
       }
@@ -121,6 +146,7 @@ const useBridging = () => {
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,
+      defaultTokenPair,
     ],
   );
 

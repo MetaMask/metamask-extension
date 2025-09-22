@@ -150,6 +150,7 @@ export const useBridgeQueryParams = () => {
       if (searchParamsTo?.assetId || searchParamsFrom?.assetId) {
         abortController.current.abort();
         abortController.current = new AbortController();
+        console.log('=====fetching asset metadata');
         fetchAssetMetadata(
           abortController.current.signal,
           searchParamsFrom?.assetId,
@@ -173,6 +174,7 @@ export const useBridgeQueryParams = () => {
       const { chainId: fromChainId } = fromAsset;
 
       if (fromTokenMetadata) {
+        console.log('=====setting fromToken', fromTokenMetadata.symbol);
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
         );
@@ -214,6 +216,7 @@ export const useBridgeQueryParams = () => {
       const { chainId, assetReference } = parseCaipAssetType(
         toTokenMetadata.assetId,
       );
+      console.log('=====setting toToken', toTokenMetadata.symbol);
       dispatch(
         setToToken({
           ...toTokenMetadata,
