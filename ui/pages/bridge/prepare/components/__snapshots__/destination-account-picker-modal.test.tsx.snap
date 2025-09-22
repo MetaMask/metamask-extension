@@ -182,7 +182,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -280,7 +280,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -378,7 +378,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -487,7 +487,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -585,7 +585,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -694,7 +694,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -884,7 +884,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -982,7 +982,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1080,7 +1080,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1178,7 +1178,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1276,7 +1276,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1374,7 +1374,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />

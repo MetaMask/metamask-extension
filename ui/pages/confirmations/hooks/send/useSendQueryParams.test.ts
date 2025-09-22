@@ -141,17 +141,34 @@ describe('useSendQueryParams', () => {
   });
 
   it('update amount if it is present in the params', () => {
+    const token = {
+      ...EVM_ASSET,
+      chainId: '0x5',
+      assetId: EVM_ASSET.address,
+    };
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getAssetsBySelectedAccountGroup) {
+        return [token];
+      }
+      return undefined;
+    });
+
     const mockUpdateValue = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateAsset: jest.fn(),
       updateValue: mockUpdateValue,
       updateCurrentPage: jest.fn(),
-      asset: {},
     } as unknown as SendContext.SendContextType);
-
     const mockUseSearchParams = jest.mocked(useSearchParams);
     mockUseSearchParams.mockReturnValue([
       {
         get: (param: string) => {
+          if (param === 'asset') {
+            return token.address;
+          }
+          if (param === 'chainId') {
+            return token.chainId;
+          }
           if (param === 'amount') {
             return '10';
           }
