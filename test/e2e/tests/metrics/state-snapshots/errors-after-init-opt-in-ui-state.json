@@ -154,7 +154,6 @@
     "slides": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
-    "lastSeenVersion": "string",
     "lastUpdatedAt": null,
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": "object",

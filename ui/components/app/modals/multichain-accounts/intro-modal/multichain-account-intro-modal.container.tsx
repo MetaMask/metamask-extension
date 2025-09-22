@@ -17,32 +17,20 @@ import {
 export const MultichainAccountIntroModalContainer: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [isAligning, setIsAligning] = useState(false);
-
-  // Start alignment when modal opens (like mobile)
-  useEffect(() => {
-    const performAlignment = async () => {
-      setIsAligning(true);
-      try {
-        await Promise.all([
-          alignMultichainWallets(),
-          new Promise((resolve) => setTimeout(resolve, 2000)), // Minimum 2s UX feedback
-        ]);
-      } catch (error) {
-        console.error('Wallet alignment failed:', error);
-      } finally {
-        setIsAligning(false);
-      }
-    };
-
-    performAlignment();
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleViewAccounts = useCallback(async () => {
-    // If alignment is still in progress, wait for it
-    if (isAligning) {
-      // Wait for alignment to complete
-      return;
+    // Start loading when user clicks (not when modal opens)
+    setIsLoading(true);
+
+    try {
+      await Promise.all([
+        alignMultichainWallets(),
+        new Promise((resolve) => setTimeout(resolve, 2000)), // Minimum 2s UX feedback
+      ]);
+    } catch (error) {
+      console.error('Wallet alignment failed:', error);
+      // Even if alignment fails, continue to account list
     }
 
     // Mark modal as shown so it doesn't show again
@@ -53,7 +41,7 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
 
     // Navigate to account list
     history.push(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [dispatch, history, isAligning]);
+  }, [dispatch, history]);
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page
@@ -76,7 +64,7 @@ export const MultichainAccountIntroModalContainer: React.FC = () => {
     onViewAccounts: handleViewAccounts,
     onLearnMore: handleLearnMore,
     onClose: handleClose,
-    isLoading: isAligning,
+    isLoading,
   };
 
   return <MultichainAccountIntroModal {...props} />;

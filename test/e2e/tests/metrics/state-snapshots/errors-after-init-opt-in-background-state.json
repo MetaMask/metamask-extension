@@ -58,7 +58,6 @@
     "slides": "object",
     "throttledOrigins": "object",
     "isUpdateAvailable": false,
-    "lastSeenVersion": "string",
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
     "enableEnforcedSimulations": true,

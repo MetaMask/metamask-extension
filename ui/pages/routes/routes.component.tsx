@@ -470,10 +470,11 @@ export default function Routes() {
     (state) => state.metamask.hasShownMultichainIntroModal,
   );
 
-  // Track whether we should show the modal (defaults false, set true only on real upgrades)
+  // Track whether we should show the modal (true for existing users, false for fresh installs)
   const shouldShowMultichainIntroModal = useAppSelector(
     (state) => state.metamask.shouldShowMultichainIntroModal,
   );
+
 
   const prevPropsRef = useRef({
     isUnlocked,
@@ -512,12 +513,12 @@ export default function Routes() {
     // Only show modal on the main wallet/home route
     const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
-    // Show modal if State 2 is enabled, user hasn't seen it, and flag allows it
+    // Show modal if State 2 is enabled, user hasn't seen it, and flag allows it (simple boolean logic)
     const shouldShowModal =
       isUnlocked &&
       isMultichainAccountsState2Enabled &&
       !hasShownMultichainIntroModal &&
-      shouldShowMultichainIntroModal && // flag: false by default, true only on real upgrades
+      shouldShowMultichainIntroModal && // true for existing users, false for fresh installs
       isMainWalletArea;
 
     if (shouldShowModal) {

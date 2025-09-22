@@ -105,7 +105,6 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainIntroModal: boolean;
   shouldShowMultichainIntroModal: boolean;
-  lastSeenVersion: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -242,8 +241,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainIntroModal: false,
-  shouldShowMultichainIntroModal: false,
-  lastSeenVersion: null,
+  shouldShowMultichainIntroModal: true, // Default true for existing users, set false during fresh onboarding
 
   ...getInitialStateOverrides(),
 });
@@ -540,11 +538,6 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
     usedInUi: true,
-  },
-  lastSeenVersion: {
-    persist: true,
-    anonymous: true,
-    usedInUi: false,
   },
 };
 
@@ -1095,16 +1088,6 @@ export class AppStateController extends BaseController<
     });
   }
 
-  /**
-   * Sets the last seen version
-   *
-   * @param version - Version string
-   */
-  setLastSeenVersion(version: string): void {
-    this.update((state) => {
-      state.lastSeenVersion = version;
-    });
-  }
 
   /**
    * Sets the product tour to be shown to the user
