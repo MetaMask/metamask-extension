@@ -1,3 +1,4 @@
+import { WebElement, error as webDriverErrors } from 'selenium-webdriver';
 import LoginPage from '../pages/login-page';
 import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
@@ -42,8 +43,19 @@ export const loginWithBalanceValidation = async (
   await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
 
-  await homePage.checkSkeletonLoadersAreDisplayed();
-  await homePage.checkSkeletonLoadersAreNotDisplayed();
+  let skeleton: WebElement | undefined;
+  try {
+    skeleton = await homePage.getSkeleton();
+  } catch (error) {
+    if (error instanceof webDriverErrors.WebDriverError) {
+      // ignore
+    } else {
+      throw error;
+    }
+  }
+  if (skeleton) {
+    await homePage.waitForSkeletonToDisappear(skeleton);
+  }
 
   // Verify the expected balance on the homepage
   if (localNode) {

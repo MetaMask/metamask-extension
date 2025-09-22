@@ -1,3 +1,4 @@
+import { until, WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
@@ -356,12 +357,27 @@ class HomePage {
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
-  async checkSkeletonLoadersAreDisplayed(): Promise<void> {
-    await this.driver.waitForSelector('.mm-skeleton', { state: 'visible' });
+  async getSkeleton(): Promise<
+    WebElement & {
+      waitForElementState: (state: string, timeout: number) => Promise<void>;
+    }
+  > {
+    return await this.driver.waitForSelector('.mm-skeleton', {
+      state: 'visible',
+      timeout: 100,
+    });
   }
 
-  async checkSkeletonLoadersAreNotDisplayed(): Promise<void> {
-    await this.driver.waitForSelector('.mm-skeleton', { state: 'detached' });
+  async waitForSkeletonToDisappear(
+    skeleton: WebElement & {
+      waitForElementState: (state: string, timeout: number) => Promise<void>;
+    },
+  ): Promise<void> {
+    // await this.driver.driver.wait(
+    //   until.stalenessOf(skeleton),
+    //   this.driver.timeout,
+    // );
+    await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
