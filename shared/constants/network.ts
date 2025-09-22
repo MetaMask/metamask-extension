@@ -645,7 +645,7 @@ export const ACALA_IMAGE_URL = './images/acala.svg';
 export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
 export const KARURA_IMAGE_URL = './images/karura.svg';
 export const KARURA_TOKEN_IMAGE_URL = './images/karura-token.svg';
-export const HEMI_IMAGE_URL = './images/Hemi.svg';
+export const HEMI_IMAGE_URL = './images/hemi.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
