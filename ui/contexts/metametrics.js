@@ -62,8 +62,7 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  */
 
 /**
- * @typedef {{
- *   trackEvent: UITrackEventMethod,
+ * @typedef {UITrackEventMethod & {
  *   bufferedTrace?: UITraceMethod,
  *   bufferedEndTrace?: UIEndTraceMethod,
  *   onboardingParentContext?: React.MutableRefObject<Span | null>
@@ -205,12 +204,12 @@ export function MetaMetricsProvider({ children }) {
     previousMatch.current = match?.path;
   }, [location, context]);
 
-  const trackEventWithMethods = {
-    trackEvent,
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext,
-  };
+  // For backwards compatibility, attach the new methods as properties to trackEvent
+  const trackEventWithMethods = trackEvent;
+  // eslint-disable-next-line react-compiler/react-compiler
+  trackEventWithMethods.bufferedTrace = bufferedTrace;
+  trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
+  trackEventWithMethods.onboardingParentContext = onboardingParentContext;
 
   return (
     <MetaMetricsContext.Provider value={trackEventWithMethods}>
@@ -244,7 +243,7 @@ export class LegacyMetaMetricsProvider extends Component {
   getChildContext() {
     const trackEventWithMethods = this.context;
     return {
-      trackEvent: trackEventWithMethods.trackEvent,
+      trackEvent: trackEventWithMethods,
       bufferedTrace: trackEventWithMethods?.bufferedTrace,
       bufferedEndTrace: trackEventWithMethods?.bufferedEndTrace,
     };
@@ -268,7 +267,7 @@ export function withMetaMetrics(WrappedComponent) {
     return (
       <WrappedComponent
         {...props}
-        trackEvent={metaMetricsContext.trackEvent}
+        trackEvent={metaMetricsContext}
         bufferedTrace={metaMetricsContext?.bufferedTrace}
         bufferedEndTrace={metaMetricsContext?.bufferedEndTrace}
         onboardingParentContext={metaMetricsContext?.onboardingParentContext}
