@@ -21,6 +21,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { getImageForChainId } from '../../confirmations/utils/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkFilterPill } from './network-filter-pill';
+import { debounce } from 'lodash';
 
 interface BridgeAssetsModalProps {
   isOpen: boolean;
@@ -37,6 +38,25 @@ const NETWORK_PILLS = SUPPORTED_NETWORKS.map((network) => ({
 
 export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) => {
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(CHAIN_IDS.MAINNET);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const debouncedSearchCallback = useCallback(
+    debounce((value) => {
+      console.log('Debounced search query:', value);
+    }, 300),
+    [],
+  );
+
+  useEffect(() => {
+    debouncedSearchCallback(searchQuery);
+  }, [searchQuery, debouncedSearchCallback]);
+
+
+  useEffect(() => {
+    return () => {
+      debouncedSearchCallback.cancel();
+    };
+  }, [debouncedSearchCallback]);
 
   return (
     <Modal
@@ -65,12 +85,11 @@ export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) =
         </Column>
         <Box>
         <Search
-          searchQuery=""
-          onChange={(value) => {}}
+          searchQuery={searchQuery}
+          onChange={(value) => setSearchQuery(value)}
           autoFocus
         />
         </Box>
-
 
         <ModalFooter
           onSubmit={() => onClose(false)}
