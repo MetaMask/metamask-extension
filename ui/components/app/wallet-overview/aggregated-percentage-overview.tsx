@@ -123,9 +123,7 @@ export const AggregatedPercentageOverview = ({
 
   return (
     <Skeleton
-      isLoading={
-        !(anyEnabledNetworksAreAvailable || !isZeroAmount(amountChange))
-      }
+      isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
     >
       <Box display={Display.Flex} className="gap-1">
         <SensitiveText
