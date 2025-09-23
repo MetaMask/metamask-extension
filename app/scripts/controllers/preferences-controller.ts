@@ -120,6 +120,9 @@ export type PreferencesControllerState = Omit<
   | 'privacyMode'
   | 'tokenSortConfig'
   | 'useMultiRpcMigration'
+  | 'dismissSmartAccountSuggestionEnabled'
+  | 'smartAccountOptIn'
+  | 'smartAccountOptInForAccounts'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
@@ -210,6 +213,7 @@ export const getDefaultPreferencesControllerState =
     },
     securityAlertsEnabled: true,
     selectedAddress: '',
+    // TODO: Delete this state, it's currently unused
     showIncomingTransactions: {
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
@@ -231,6 +235,7 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEI]: true,
     },
     snapRegistryList: {},
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
