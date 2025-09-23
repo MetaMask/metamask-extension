@@ -41,7 +41,7 @@ describe('Deprecated networks', function (this: Suite) {
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.openNewPage(
-          `${driver.extensionUrl}/${DAPP_URL}.html?activeTabOrigin=${origin}`,
+          `${driver.extensionUrl}/popup.html?activeTabOrigin=${DAPP_URL}`,
         );
 
         // Resize the popup window after it's opened
