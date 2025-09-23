@@ -92,7 +92,7 @@ export const WalletDetailsPage = () => {
     <Page className="multichain-wallet-details-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon

@@ -105,7 +105,7 @@ export const MultichainAccountDetailsPage = () => {
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -124,7 +124,7 @@ export const MultichainAccountDetailsPage = () => {
         paddingTop={3}
         gap={4}
       >
-        <Box className="flex justify-center">
+        <Box className="flex justify-center" paddingBottom={6}>
           <PreferredAvatar
             address={seedAddressIcon}
             size={AvatarAccountSize.Xl}
