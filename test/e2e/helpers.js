@@ -20,7 +20,6 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
-  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -536,41 +535,10 @@ async function withFixtures(options, testSuite) {
   }
 }
 
-/**
- * @param {*} driver - Selenium driver
- * @param {*} handlesCount - total count of windows that should be loaded
- * @returns handles - an object with window handles, properties in object represent windows:
- *            1. extension: MetaMask extension window
- *            2. dapp: test-app window
- *            3. popup: MetaMask extension popup window
- */
-const getWindowHandles = async (driver, handlesCount) => {
-  await driver.waitUntilXWindowHandles(handlesCount);
-  const windowHandles = await driver.getAllWindowHandles();
-
-  const extension = windowHandles[0];
-  const dapp = await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.TestDApp,
-    windowHandles,
-  );
-  const popup = windowHandles.find(
-    (handle) => handle !== extension && handle !== dapp,
-  );
-  return { extension, dapp, popup };
-};
-
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
   return contract
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
-};
-const openPopupWithActiveTabOrigin = async (driver, origin = DAPP_URL) => {
-  await driver.openNewPage(
-    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
-  );
-
-  // Resize the popup window after it's opened
-  await driver.driver.manage().window().setRect({ width: 400, height: 600 });
 };
 
 const createDappTransaction = async (driver, transaction) => {
@@ -597,35 +565,6 @@ const switchToOrOpenDapp = async (
   }
 };
 
-
-const multipleGanacheOptions = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
-    },
-    {
-      secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
-    },
-  ],
-};
-
-// Edit priority gas fee form
-const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
-  const inputs = await driver.findElements('input[type="number"]');
-  const gasLimitInput = inputs[0];
-  const gasPriceInput = inputs[1];
-  await gasLimitInput.fill(gasLimit);
-  await gasPriceInput.fill(gasPrice);
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-};
-
-const openActionMenuAndStartSendFlow = async (driver) => {
-  console.log('Opening action menu and starting send flow');
-  await driver.clickElement('[data-testid="eth-overview-send"]');
-};
-
 const clickNestedButton = async (driver, tabName) => {
   try {
     await driver.clickElement({ text: tabName, tag: 'button' });
@@ -633,28 +572,6 @@ const clickNestedButton = async (driver, tabName) => {
     await driver.clickElement({
       xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
     });
-  }
-};
-
-/**
- * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
- * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
- * or after a transaction is made.
- *
- * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache | Anvil} [localNode] - The local server instance (optional).
- * @param {string} [address] - The address to check the balance for (optional).
- */
-const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
-  const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (localNode) {
-    const balance = await localNode.getBalance(address);
-    await driver.waitForSelector({
-      css: balanceSelector,
-      text: `${balance} ETH`,
-    });
-  } else {
-    await driver.findElement(balanceSelector);
   }
 };
 
@@ -862,7 +779,6 @@ module.exports = {
   PRIVATE_KEY_TWO,
   ACCOUNT_1,
   ACCOUNT_2,
-  getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
   regularDelayMs,
@@ -871,12 +787,9 @@ module.exports = {
   withFixtures,
   createDownloadFolder,
   openDapp,
-  openPopupWithActiveTabOrigin,
   createDappTransaction,
   switchToOrOpenDapp,
-  multipleGanacheOptions,
   unlockWallet,
-  locateAccountBalanceDOM,
   WALLET_PASSWORD,
   WINDOW_TITLES,
   convertETHToHexGwei,
@@ -884,9 +797,7 @@ module.exports = {
   generateRandNumBetween,
   getEventPayloads,
   assertInAnyOrder,
-  openActionMenuAndStartSendFlow,
   getCleanAppState,
-  editGasFeeForm,
   clickNestedButton,
   sentryRegEx,
   createWebSocketConnection,

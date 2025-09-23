@@ -280,7 +280,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.clickElement('#maliciousApprovalButton');
 
         // Wait for confirmation pop-up
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -295,7 +295,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.clickElement('#maliciousPermit');
 
         // Wait for confirmation pop-up
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });

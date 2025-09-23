@@ -112,7 +112,7 @@ async function setSnapConfig(
 }
 
 async function confirmTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Confirm' });
 }
 
@@ -265,7 +265,6 @@ describe('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-
         const homePage = new HomePage(driver);
         await homePage.startSendFlow();
 
