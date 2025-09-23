@@ -5,6 +5,10 @@ import {
   MultichainAccountServiceInitMessenger,
 } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
+import {
+  FEATURE_VERSION_2,
+  isMultichainAccountsFeatureEnabled,
+} from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 
 /**
  * Initialize the multichain account service.
@@ -31,16 +35,31 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       const { useExternalServices: prevUseExternalServices } = prevState;
       const { useExternalServices: currUseExternalServices } = currState;
       if (prevUseExternalServices !== currUseExternalServices) {
-        // Set basic functionality and trigger alignment when enabled
-        // This single call handles both provider disable/enable and alignment.
-        controller
-          .setBasicFunctionality(currUseExternalServices)
-          .catch((error) => {
-            console.error(
-              'Failed to set basic functionality on MultichainAccountService:',
-              error,
-            );
-          });
+        // Only call MultichainAccountService if State 2 (BIP-44 multichain accounts) is enabled
+        // to prevent unwanted account alignment from running
+        const remoteFeatureFlags = initMessenger.call(
+          'RemoteFeatureFlagController:getState',
+        ).remoteFeatureFlags;
+        const multichainAccountsFeatureFlag =
+          remoteFeatureFlags?.enableMultichainAccounts;
+        
+        if (
+          isMultichainAccountsFeatureEnabled(
+            multichainAccountsFeatureFlag,
+            FEATURE_VERSION_2,
+          )
+        ) {
+          // Set basic functionality and trigger alignment when enabled
+          // This single call handles both provider disable/enable and alignment.
+          controller
+            .setBasicFunctionality(currUseExternalServices)
+            .catch((error) => {
+              console.error(
+                'Failed to set basic functionality on MultichainAccountService:',
+                error,
+              );
+            });
+        }
       }
 
       return true;

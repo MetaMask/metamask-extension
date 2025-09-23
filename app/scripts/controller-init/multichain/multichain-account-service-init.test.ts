@@ -9,6 +9,7 @@ import {
   MultichainAccountServiceMessenger,
 } from '../messengers/accounts';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '../../controllers/remote-feature-flag-controller';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
 
 jest.mock('@metamask/multichain-account-service');
@@ -20,13 +21,26 @@ function buildInitRequestMock(): jest.Mocked<
   >
 > {
   const baseControllerMessenger = new Messenger<
-    PreferencesControllerGetStateAction | ActionConstraint,
+    PreferencesControllerGetStateAction | RemoteFeatureFlagControllerGetStateAction | ActionConstraint,
     never
   >();
 
   baseControllerMessenger.registerActionHandler(
     'PreferencesController:getState',
     jest.fn().mockReturnValue({}),
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    jest.fn().mockReturnValue({
+      remoteFeatureFlags: {
+        enableMultichainAccounts: {
+          enabled: false,
+          featureVersion: null,
+          minimumVersion: null,
+        },
+      },
+    }),
   );
 
   return {
