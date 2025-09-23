@@ -103,6 +103,9 @@ describe('Account syncing - Multiple SRPs', function () {
           },
         );
 
+        // Importing an SRP can be long, so we add a bit of extra time here
+        await driver.delay(10000);
+
         // Wait for the import to complete and sync
         await waitUntilSyncedAccountsNumberEquals(3);
 
@@ -169,6 +172,9 @@ describe('Account syncing - Multiple SRPs', function () {
             isMultichainAccountsState2Enabled: true,
           },
         );
+
+        // Importing an SRP can be long, so we add a bit of extra time here
+        await driver.delay(10000);
 
         // Verify all accounts from both SRPs are visible
         await header.openAccountMenu();
