@@ -116,6 +116,7 @@ export default class SecurityTab extends PureComponent {
     socialLoginEnabled: PropTypes.bool,
     socialLoginType: PropTypes.string,
     setMarketingConsent: PropTypes.func,
+    getMarketingConsent: PropTypes.func,
   };
 
   state = {
@@ -159,6 +160,13 @@ export default class SecurityTab extends PureComponent {
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
     if (this.props.metaMetricsDataDeletionId) {
       await updateDataDeletionTaskStatus();
+    }
+
+    if (this.props.socialLoginEnabled) {
+      // Fetch marketing consent from remote server for social login users
+      const marketingConsentFromRemote = await this.props.getMarketingConsent();
+      // Update marketing consent in the store
+      this.props.setDataCollectionForMarketing(marketingConsentFromRemote);
     }
   }
 
@@ -472,6 +480,7 @@ export default class SecurityTab extends PureComponent {
       dataCollectionForMarketing,
       useExternalServices,
       socialLoginEnabled,
+      participateInMetaMetrics,
     } = this.props;
 
     const handleToggle = this.toggleDataCollectionForMarketing.bind(this);
@@ -503,7 +512,7 @@ export default class SecurityTab extends PureComponent {
           >
             <ToggleButton
               value={dataCollectionForMarketing}
-              disabled={!useExternalServices}
+              disabled={!useExternalServices || !participateInMetaMetrics}
               onToggle={(prev) => handleToggle(!prev)}
               offLabel={t('off')}
               onLabel={t('on')}
