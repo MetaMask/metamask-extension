@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { CaipChainId } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -19,6 +19,28 @@ import {
 } from '../../../../component-library';
 import { Icon, IconName, IconSize } from '../../../../component-library/icon';
 import { PermissionsCellTooltip } from './permissions-cell-tooltip';
+import {
+  SizeNumber,
+  SizeNumberArray,
+} from '../../../../component-library/box/box.types';
+
+// Define types for networks permissions
+type Network = {
+  name: string;
+  chainId: string;
+  caipChainId: CaipChainId;
+};
+
+type PermissionsCellConnectionListItemProps = {
+  title: string;
+  iconName: IconName;
+  count: number;
+  networks: Network[];
+  countMessage: string;
+  paddingTopValue: SizeNumber | SizeNumberArray;
+  paddingBottomValue: SizeNumber | SizeNumberArray;
+  onClick: () => void;
+};
 
 export const PermissionsCellConnectionListItem = ({
   title,
@@ -29,7 +51,7 @@ export const PermissionsCellConnectionListItem = ({
   paddingTopValue,
   paddingBottomValue,
   onClick,
-}) => {
+}: PermissionsCellConnectionListItemProps) => {
   return (
     <Box
       data-testid="permissions-cell-connection-list-item"
@@ -87,15 +109,4 @@ export const PermissionsCellConnectionListItem = ({
       />
     </Box>
   );
-};
-
-PermissionsCellConnectionListItem.propTypes = {
-  title: PropTypes.string.isRequired,
-  iconName: PropTypes.string.isRequired,
-  count: PropTypes.number.isRequired,
-  networks: PropTypes.array.isRequired,
-  countMessage: PropTypes.string.isRequired,
-  paddingTopValue: PropTypes.number.isRequired,
-  paddingBottomValue: PropTypes.number.isRequired,
-  onClick: PropTypes.func.isRequired,
 };

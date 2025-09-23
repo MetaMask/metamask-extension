@@ -1,10 +1,12 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { CaipChainId } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { IconName } from '../../../../component-library/icon';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';
+import { SizeNumber } from '../../../../component-library/box/box.types';
 
 describe('PermissionsCellConnectionListItem', () => {
   const store = configureStore({
@@ -17,10 +19,12 @@ describe('PermissionsCellConnectionListItem', () => {
     {
       chainId: '0x1',
       name: 'Ethereum Mainnet',
+      caipChainId: 'eip155:1' as CaipChainId,
     },
     {
       chainId: '0x89',
       name: 'Polygon',
+      caipChainId: 'eip155:137' as CaipChainId,
     },
   ];
 
@@ -30,8 +34,8 @@ describe('PermissionsCellConnectionListItem', () => {
     count: 5,
     networks: mockNetworks,
     countMessage: 'streams',
-    paddingTopValue: 0,
-    paddingBottomValue: 2,
+    paddingTopValue: 0 as SizeNumber,
+    paddingBottomValue: 2 as SizeNumber,
     onClick: jest.fn(),
   };
 

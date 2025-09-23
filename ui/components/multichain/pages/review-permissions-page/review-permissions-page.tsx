@@ -238,9 +238,9 @@ export const ReviewPermissions = () => {
           ) : null}
           {gatorPermissionGroupDetails
             ? Object.entries(gatorPermissionGroupDetails).map(
-                ([id, details]) => (
+                ([permissionGroupName, details]) => (
                   <PermissionsCell
-                    key={id}
+                    key={permissionGroupName}
                     nonTestNetworks={nonTestNetworks}
                     testNetworks={testNetworks}
                     totalCount={details.count}

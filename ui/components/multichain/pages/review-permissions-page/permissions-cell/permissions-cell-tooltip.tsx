@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Tooltip } from 'react-tippy';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 import { AvatarGroup } from '../../../avatar-group';
@@ -9,6 +8,7 @@ import {
   BorderStyle,
   Display,
   FlexDirection,
+  BorderColor,
   TextAlign,
   TextColor,
   TextVariant,
@@ -22,7 +22,19 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-export const PermissionsCellTooltip = ({ networks }) => {
+// Define types for networks permissions
+type Network = {
+  name: string;
+  chainId: string;
+};
+
+type PermissionsCellTooltipProps = {
+  networks: Network[];
+};
+
+export const PermissionsCellTooltip = ({
+  networks,
+}: PermissionsCellTooltipProps) => {
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;
@@ -99,25 +111,15 @@ export const PermissionsCellTooltip = ({ networks }) => {
       delay={50}
       duration={0}
       size="small"
-      trigger="mouseenter focus"
+      trigger="mouseenter"
       theme="dark"
-      tag="div"
     >
       <AvatarGroup
         members={avatarNetworksData}
         limit={AVATAR_GROUP_LIMIT}
         avatarType={AvatarType.TOKEN}
-        borderColor={BackgroundColor.backgroundDefault}
+        borderColor={BackgroundColor.backgroundDefault as unknown as BorderColor}
       />
     </Tooltip>
   );
-};
-
-PermissionsCellTooltip.propTypes = {
-  networks: PropTypes.arrayOf(
-    PropTypes.shape({
-      chainId: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    }),
-  ),
 };

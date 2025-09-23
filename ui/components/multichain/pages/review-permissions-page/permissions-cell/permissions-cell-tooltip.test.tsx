@@ -69,15 +69,4 @@ describe('PermissionsCellTooltip', () => {
 
     expect(container.firstChild).toBeNull();
   });
-
-  it('handles undefined networks', () => {
-    const props = {};
-
-    const { container } = renderWithProvider(
-      <PermissionsCellTooltip {...props} />,
-      store,
-    );
-
-    expect(container.firstChild).toBeNull();
-  });
 });
