@@ -111,7 +111,7 @@ export const AggregatedBalance = ({
         !balances ||
         assets[selectedAccount.id] === undefined ||
         assets[selectedAccount.id].length === 0 ||
-        (!anyEnabledNetworksAreAvailable && 
+        (!anyEnabledNetworksAreAvailable &&
           isZeroAmount(multichainNativeTokenBalance.amount.toString()))
       }
     >
