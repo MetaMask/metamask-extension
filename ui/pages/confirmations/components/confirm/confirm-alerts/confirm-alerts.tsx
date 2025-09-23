@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { AlertActionHandlerProvider } from '../../../../../components/app/alert-system/contexts/alertActionHandler';
 import useConfirmationAlertActions from '../../../hooks/useConfirmationAlertActions';
-import useConfirmationAlerts from '../../../hooks/useConfirmationAlerts';
+import useSetConfirmationAlerts from '../../../hooks/setConfirmationAlerts';
 import { AlertMetricsProvider } from '../../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { useConfirmationAlertMetrics } from '../../../hooks/useConfirmationAlertMetrics';
 
@@ -10,7 +10,7 @@ const ConfirmAlerts = ({ children }: { children: ReactElement }) => {
     useConfirmationAlertMetrics();
 
   const processAction = useConfirmationAlertActions();
-  useConfirmationAlerts();
+  useSetConfirmationAlerts();
 
   return (
     <AlertMetricsProvider
