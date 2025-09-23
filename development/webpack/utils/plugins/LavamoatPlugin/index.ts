@@ -3,7 +3,6 @@ import type { WebpackPluginInstance, RuleSetRule, Chunk } from 'webpack';
 import {
   LavaMoatPlugin,
   exclude as LavamoatExcludeLoader,
-  // @ts-expect-error - types are broken due to git install
 } from '@lavamoat/webpack';
 import type { Args } from '../../cli';
 
@@ -94,6 +93,7 @@ export const lavamoatPlugin = (args: Args) =>
         'fetch',
         'AbortController',
         'OffscreenCanvas',
+        // @ts-expect-error - globals chromedriver needs to function
         /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
         'name',
         'performance',

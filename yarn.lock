@@ -4868,9 +4868,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@git+https://github.com/LavaMoat/LavaMoat.git#head=tmp/webpack-alltogether-202509&workspace=@lavamoat/webpack":
+"@lavamoat/webpack@npm:1.3.1":
   version: 1.3.1
-  resolution: "@lavamoat/webpack@https://github.com/LavaMoat/LavaMoat.git#workspace=%40lavamoat%2Fwebpack&commit=91c9d16323cf7ad177f263829d1251652cf956f6"
+  resolution: "@lavamoat/webpack@npm:1.3.1"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^4.3.4"
@@ -4881,7 +4881,7 @@ __metadata:
     ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/f9599b8221db6cfdb3949e7174d1523b5bc6ca3d586be62c833e1a98b8b88c1d683324991d9751e488cf46089499dbeddf839ef8f30805d1ed028fb9632eded9
+  checksum: 10/de5517afe2b4501dc8dab76cfafd9ed1d56e89e0ee418b05e98c56242801cdfc16de9cbc4e0b16ad24fd9777fa3485154bfacce14ffc07a76623f20acc418edd
   languageName: node
   linkType: hard
 
@@ -31949,7 +31949,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.13"
     "@lavamoat/snow": "npm:^2.0.3"
-    "@lavamoat/webpack": "git+https://github.com/LavaMoat/LavaMoat.git#head=tmp/webpack-alltogether-202509&workspace=@lavamoat/webpack"
+    "@lavamoat/webpack": "npm:1.3.1"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
