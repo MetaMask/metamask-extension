@@ -79,7 +79,7 @@ describe('FileUploader', () => {
     const { getByTestId } = renderWithUserEvent(
       <FileUploader
         data-testid="file-uploader"
-        maxFileSize={1} // 1MB limit
+        maxFileSize={1 * 1024 * 1024} // 1MB limit
         onChange={mockOnChange}
       />,
     );
