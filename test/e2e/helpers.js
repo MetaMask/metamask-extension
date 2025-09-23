@@ -541,16 +541,6 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
-const createDappTransaction = async (driver, transaction) => {
-  await openDapp(
-    driver,
-    null,
-    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
-      transaction,
-    ])}`,
-  );
-};
-
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
@@ -787,7 +777,6 @@ module.exports = {
   withFixtures,
   createDownloadFolder,
   openDapp,
-  createDappTransaction,
   switchToOrOpenDapp,
   unlockWallet,
   WALLET_PASSWORD,

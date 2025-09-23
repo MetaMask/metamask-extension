@@ -7,18 +7,17 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import {
   withFixtures,
-  openDapp,
-  WINDOW_TITLES,
   createWebSocketConnection,
   veryLargeDelayMs,
 } from '../../helpers';
-
+import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
@@ -65,7 +64,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
         await driver.delay(veryLargeDelayMs);
@@ -207,7 +207,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
