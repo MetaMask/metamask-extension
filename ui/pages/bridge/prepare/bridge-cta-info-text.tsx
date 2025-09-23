@@ -42,36 +42,24 @@ export const BridgeCTAInfoText = () => {
     return null;
   }
 
-  // Only show fee message when not expired
-  const shouldShowFeeMessage = !isQuoteExpired;
+  if (!hasMMFee && !hasApproval) {
+    return null;
+  }
+
+  if (isQuoteExpired) {
+    return null;
+  }
 
   // Get the fee percentage from the quote or fallback to default
   // @ts-expect-error: controller types are not up to date yet
   const quoteBpsFee = activeQuote.quote.feeData?.metabridge?.quoteBpsFee;
   const feePercentage = bpsToPercentage(quoteBpsFee) ?? BRIDGE_MM_FEE_RATE;
 
-  // Build fee message based on whether there's a fee or not
-  let feeMessage = null;
-  if (shouldShowFeeMessage) {
-    if (hasMMFee) {
-      feeMessage = t('rateIncludesMMFee', [feePercentage]);
-    } else {
-      const destSymbol = activeQuote.quote.destAsset?.symbol || 'token';
-      feeMessage = t('noMMFeeSwapping', [destSymbol]);
-    }
-  }
-
-  const shouldShowContent = feeMessage || hasApproval;
-
-  if (!shouldShowContent) {
-    return null;
-  }
-
-  return (
+  return hasMMFee || hasApproval ? (
     <Row gap={1} justifyContent={JustifyContent.center}>
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternativeSoft}>
         {[
-          feeMessage,
+          hasMMFee ? t('rateIncludesMMFee', [feePercentage]) : null,
           hasApproval &&
             (isCrossChain(
               activeQuote.quote.srcChainId,
@@ -103,5 +91,5 @@ export const BridgeCTAInfoText = () => {
         </Tooltip>
       ) : null}
     </Row>
-  );
+  ) : null;
 };
