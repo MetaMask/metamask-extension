@@ -212,9 +212,7 @@ export const AggregatedMultichainPercentageOverview = ({
   return (
     <Skeleton
       isLoading={
-        !(
-          anyEnabledNetworksAreAvailable || !isZeroAmount(singleDayAmountChange)
-        )
+        !anyEnabledNetworksAreAvailable && isZeroAmount(singleDayAmountChange)
       }
     >
       <Box display={Display.Flex}>
