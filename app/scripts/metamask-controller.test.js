@@ -40,7 +40,6 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
-import { ReferralStatus } from './controllers/preferences-controller';
 
 import log from 'loglevel';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -62,6 +61,8 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
+import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
 
@@ -4369,15 +4370,11 @@ describe('MetaMaskController', () => {
     });
 
     describe('handleHyperliquidReferral', () => {
-      const mockOrigin = 'https://app.hyperliquid.xyz';
       const mockTabId = 140;
+      const mockNewConnectionTriggerType = 'new_connection';
+      const mockOnNavigateTriggerType = 'on_navigate_connected_tab';
       const mockPermittedAccount = '0x123';
       const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
-      const mockReq = {
-        origin: mockOrigin,
-        tabId: mockTabId,
-        triggerType: 'new_connection',
-      };
 
       beforeEach(async () => {
         jest.spyOn(metamaskController, '_handleHyperliquidApprovedAccount');
@@ -4408,7 +4405,10 @@ describe('MetaMaskController', () => {
           });
         jest.spyOn(metamaskController, 'getPermittedAccounts');
 
-        await metamaskController.handleHyperliquidReferral(mockReq);
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
         expect(metamaskController.getPermittedAccounts).not.toHaveBeenCalled();
       });
 
@@ -4418,7 +4418,10 @@ describe('MetaMaskController', () => {
           .mockReturnValueOnce([]);
         jest.spyOn(metamaskController.approvalController, 'add');
 
-        await metamaskController.handleHyperliquidReferral(mockReq);
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
         expect(
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();
@@ -4441,7 +4444,10 @@ describe('MetaMaskController', () => {
           };
         });
 
-        await metamaskController.handleHyperliquidReferral(mockReq);
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
         expect(
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();
@@ -4458,9 +4464,12 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
 
-        await metamaskController.handleHyperliquidReferral(mockReq);
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
-          origin: mockOrigin,
+          origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
           requestData: { selectedAddress: mockPermittedAccount },
           shouldShowRequest: true, // pop-up = true because triggerType is new connection
@@ -4475,17 +4484,12 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
 
-        const mockReqOnNavigateConnectedTab = {
-          origin: mockOrigin,
-          tabId: mockTabId,
-          triggerType: 'on_navigate_connected_tab',
-        };
-
         await metamaskController.handleHyperliquidReferral(
-          mockReqOnNavigateConnectedTab,
+          mockTabId,
+          mockOnNavigateTriggerType,
         );
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
-          origin: mockOrigin,
+          origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
           requestData: { selectedAddress: mockPermittedAccount },
           shouldShowRequest: false, // false because triggerType is navigate to connected tab
@@ -4500,13 +4504,16 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({ approved: true });
 
-        await metamaskController.handleHyperliquidReferral(mockReq);
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
         expect(
           metamaskController._handleHyperliquidApprovedAccount,
         ).toHaveBeenCalledWith(mockPermittedAccount, mockPermittedAccounts, []);
         expect(
           metamaskController._handleHyperliquidReferralRedirect,
-        ).toHaveBeenCalledWith(mockTabId, mockOrigin, mockPermittedAccount);
+        ).toHaveBeenCalledWith(mockTabId, mockPermittedAccount);
       });
 
       it('handles user decline', async () => {
@@ -4517,7 +4524,10 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({ approved: false });
 
-        await metamaskController.handleHyperliquidReferral(mockReq);
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
         expect(
           metamaskController._handleHyperliquidApprovedAccount,
         ).not.toHaveBeenCalled();
@@ -4540,10 +4550,13 @@ describe('MetaMaskController', () => {
           };
         });
 
-        await metamaskController.handleHyperliquidReferral(mockReq);
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
         expect(
           metamaskController._handleHyperliquidReferralRedirect,
-        ).toHaveBeenCalledWith(mockTabId, mockOrigin, mockPermittedAccount);
+        ).toHaveBeenCalledWith(mockTabId, mockPermittedAccount);
         expect(
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();
@@ -4561,7 +4574,7 @@ describe('MetaMaskController', () => {
           );
           jest.spyOn(
             metamaskController.preferencesController,
-            'setAllAccountsReferralApproved',
+            'setAccountsReferralApproved',
           );
         });
 
@@ -4573,7 +4586,7 @@ describe('MetaMaskController', () => {
           );
           expect(
             metamaskController.preferencesController
-              .setAllAccountsReferralApproved,
+              .setAccountsReferralApproved,
           ).toHaveBeenCalledWith(mockPermittedAccounts);
         });
 
@@ -4605,12 +4618,11 @@ describe('MetaMaskController', () => {
 
           await metamaskController._handleHyperliquidReferralRedirect(
             mockTabId,
-            mockOrigin,
             mockPermittedAccount,
           );
           expect(
             metamaskController._updateHyperliquidReferralUrl,
-          ).toHaveBeenCalledWith(mockTabId, mockOrigin);
+          ).toHaveBeenCalledWith(mockTabId);
           expect(
             metamaskController.preferencesController.addReferralPassedAccount,
           ).toHaveBeenCalledWith(mockPermittedAccount);

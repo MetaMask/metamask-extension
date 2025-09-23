@@ -1369,18 +1369,18 @@ describe('preferences controller', () => {
       });
     });
 
-    describe('setAllAccountsReferralApproved', () => {
+    describe('setAccountsReferralApproved', () => {
       it('sets all accounts to approved status', () => {
         const { controller } = setupController({});
         const testAccounts = ['0x123', '0x456'] as Hex[];
 
-        controller.setAllAccountsReferralApproved(testAccounts);
-        expect(
-          controller.state.referrals.hyperliquid['0x123'],
-        ).toStrictEqual(ReferralStatus.Approved);
-        expect(
-          controller.state.referrals.hyperliquid['0x456'],
-        ).toStrictEqual(ReferralStatus.Approved);
+        controller.setAccountsReferralApproved(testAccounts);
+        expect(controller.state.referrals.hyperliquid['0x123']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+        expect(controller.state.referrals.hyperliquid['0x456']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('overwrites existing account statuses', () => {
@@ -1398,7 +1398,7 @@ describe('preferences controller', () => {
           },
         });
 
-        controller.setAllAccountsReferralApproved(accountsToApprove);
+        controller.setAccountsReferralApproved(accountsToApprove);
         expect(
           controller.state.referrals.hyperliquid[existingAccount],
         ).toStrictEqual(ReferralStatus.Approved);
@@ -1419,7 +1419,7 @@ describe('preferences controller', () => {
           },
         });
 
-        controller.setAllAccountsReferralApproved([]);
+        controller.setAccountsReferralApproved([]);
         expect(
           controller.state.referrals.hyperliquid[existingAccount],
         ).toStrictEqual(ReferralStatus.Approved);
@@ -1430,9 +1430,7 @@ describe('preferences controller', () => {
       it('initializes with empty referral record', () => {
         const { controller } = setupController({});
 
-        expect(
-          controller.state.referrals.hyperliquid,
-        ).toStrictEqual({});
+        expect(controller.state.referrals.hyperliquid).toStrictEqual({});
       });
     });
   });

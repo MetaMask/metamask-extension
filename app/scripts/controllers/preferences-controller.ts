@@ -1100,7 +1100,7 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  setAllAccountsReferralApproved(accountAddresses: Hex[]) {
+  setAccountsReferralApproved(accountAddresses: Hex[]) {
     this.update((state) => {
       accountAddresses.forEach((address) => {
         state.referrals.hyperliquid[address] = ReferralStatus.Approved;

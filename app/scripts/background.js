@@ -50,6 +50,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -91,10 +92,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import {
-  HYPERLIQUID_ORIGIN,
-  HyperliquidPermissionTriggerType,
-} from './lib/hyperliquid-referral-middleware';
+import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -1611,12 +1609,10 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          controller.handleHyperliquidReferral({
-            origin: currentTabOrigin,
+          controller.handleHyperliquidReferral(
             tabId,
-            triggerType:
-              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
-          });
+            HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+          );
         }
       }
     }

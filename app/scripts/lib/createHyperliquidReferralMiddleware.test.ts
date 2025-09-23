@@ -2,12 +2,12 @@ import { PendingJsonRpcResponse } from '@metamask/utils';
 import { ValidPermission, type Caveat } from '@metamask/permission-controller';
 import type { Json } from '@metamask/utils';
 import log from 'loglevel';
+import { HYPERLIQUID_ORIGIN } from '../../../shared/constants/referrals';
 import {
   createHyperliquidReferralMiddleware,
-  HYPERLIQUID_ORIGIN,
   HyperliquidPermissionTriggerType,
   type ExtendedJSONRPCRequest,
-} from './hyperliquid-referral-middleware';
+} from './createHyperliquidReferralMiddleware';
 
 jest.mock('loglevel', () => ({
   error: jest.fn(),
@@ -56,11 +56,10 @@ describe('createHyperliquidReferralMiddleware', () => {
 
     expect(mockNext).toHaveBeenCalledTimes(1);
     expect(mockHandleReferral).toHaveBeenCalledTimes(1);
-    expect(mockHandleReferral).toHaveBeenCalledWith({
-      origin: HYPERLIQUID_ORIGIN,
-      tabId: 123,
-      triggerType: HyperliquidPermissionTriggerType.NewConnection,
-    });
+    expect(mockHandleReferral).toHaveBeenCalledWith(
+      123,
+      HyperliquidPermissionTriggerType.NewConnection,
+    );
   });
 
   it('does not trigger referral if origin is not Hyperliquid', async () => {

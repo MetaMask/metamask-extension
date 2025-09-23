@@ -228,6 +228,10 @@ import {
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
+import {
+  HYPERLIQUID_ORIGIN,
+  METAMASK_REFERRAL_CODE,
+} from '../../shared/constants/referrals';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -275,8 +279,7 @@ import AppMetadataController from './controllers/app-metadata';
 import {
   createHyperliquidReferralMiddleware,
   HyperliquidPermissionTriggerType,
-  HYPERLIQUID_ORIGIN,
-} from './lib/hyperliquid-referral-middleware';
+} from './lib/createHyperliquidReferralMiddleware';
 
 import {
   diffMap,
@@ -5760,11 +5763,10 @@ export default class MetamaskController extends EventEmitter {
    * Shows approval confirmation screen if needed and manages referral URL redirection.
    * This can be triggered by connection permission grants or existing connections.
    *
-   * @param {object} req - The request object containing origin, tabId, and optional triggerType.
+   * @param {number} tabId - The browser tab ID to update.
+   * @param {HyperliquidPermissionTriggerType} triggerType - The trigger type.
    */
-  async handleHyperliquidReferral(req) {
-    const { origin, tabId, triggerType } = req;
-
+  async handleHyperliquidReferral(tabId, triggerType) {
     const isHyperliquidReferralEnabled =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.extensionUxDefiReferral;
@@ -5774,11 +5776,12 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Only show consent if Hyperliquid has permitted accounts
-    const permittedAccounts = this.getPermittedAccounts(origin);
+    const permittedAccounts = this.getPermittedAccounts(HYPERLIQUID_ORIGIN);
     if (permittedAccounts.length === 0) {
       return;
     }
 
+    // First account is the active Hyperliquid account
     const permittedAccount = permittedAccounts[0];
 
     const referralStatusByAccount =
@@ -5803,12 +5806,11 @@ export default class MetamaskController extends EventEmitter {
       // method will fail if there is an existing approval request
       // or if the user rejects the request (e.g. by disconnecting)
       const approvalResponse = await this.approvalController.add({
-        origin,
+        origin: HYPERLIQUID_ORIGIN,
         type: HYPERLIQUID_APPROVAL_TYPE,
         requestData: { selectedAddress: permittedAccount },
         shouldShowRequest:
-          triggerType !==
-          HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+          triggerType === HyperliquidPermissionTriggerType.NewConnection,
       });
 
       if (approvalResponse?.approved) {
@@ -5817,22 +5819,14 @@ export default class MetamaskController extends EventEmitter {
           permittedAccounts,
           declinedAccounts,
         );
-        await this._handleHyperliquidReferralRedirect(
-          tabId,
-          HYPERLIQUID_ORIGIN,
-          permittedAccount,
-        );
+        await this._handleHyperliquidReferralRedirect(tabId, permittedAccount);
       } else {
         this.preferencesController.addReferralDeclinedAccount(permittedAccount);
       }
     }
 
     if (shouldRedirect) {
-      await this._handleHyperliquidReferralRedirect(
-        tabId,
-        HYPERLIQUID_ORIGIN,
-        permittedAccount,
-      );
+      await this._handleHyperliquidReferralRedirect(tabId, permittedAccount);
     }
   }
 
@@ -5840,15 +5834,10 @@ export default class MetamaskController extends EventEmitter {
    * Handles redirection to the Hyperliquid referral page.
    *
    * @param {number} tabId - The browser tab ID to update.
-   * @param {string} hyperliquidOrigin - The Hyperliquid origin URL.
    * @param {string} permittedAccount - The permitted account.
    */
-  async _handleHyperliquidReferralRedirect(
-    tabId,
-    hyperliquidOrigin,
-    permittedAccount,
-  ) {
-    await this._updateHyperliquidReferralUrl(tabId, hyperliquidOrigin);
+  async _handleHyperliquidReferralRedirect(tabId, permittedAccount) {
+    await this._updateHyperliquidReferralUrl(tabId);
     // Mark this account as having been shown the Hyperliquid referral page
     this.preferencesController.addReferralPassedAccount(permittedAccount);
   }
@@ -5869,15 +5858,13 @@ export default class MetamaskController extends EventEmitter {
       // If there are no previously declined permitted accounts then
       // we approve all permitted accounts so that the user is not
       // shown the approval screen unnecessarily when switching
-      this.preferencesController.setAllAccountsReferralApproved(
-        permittedAccounts,
-      );
+      this.preferencesController.setAccountsReferralApproved(permittedAccounts);
     } else {
       this.preferencesController.addReferralApprovedAccount(permittedAccount);
       // If there are any previously declined accounts then
       // we do not approve them, but instead remove them from the declined list
       // so they have the option to participate again in future
-      permittedAccounts.slice(1).forEach((account) => {
+      permittedAccounts.forEach((account) => {
         if (declinedAccounts.includes(account)) {
           this.preferencesController.removeReferralDeclinedAccount(account);
         }
@@ -5889,14 +5876,12 @@ export default class MetamaskController extends EventEmitter {
    * Updates the browser tab URL to the Hyperliquid referral page.
    *
    * @param {number} tabId - The browser tab ID to update.
-   * @param {string} hyperliquidOrigin - The Hyperliquid origin URL.
    */
-  async _updateHyperliquidReferralUrl(tabId, hyperliquidOrigin) {
-    const METAMASK_REFERRAL_CODE = 'MMREFCSI';
+  async _updateHyperliquidReferralUrl(tabId) {
     try {
       const { url } = await browser.tabs.get(tabId);
       const { search } = new URL(url || '');
-      const newUrl = `${hyperliquidOrigin}/join/${METAMASK_REFERRAL_CODE}${search}`;
+      const newUrl = `${HYPERLIQUID_ORIGIN}/join/${METAMASK_REFERRAL_CODE}${search}`;
       await browser.tabs.update(tabId, { url: newUrl });
     } catch (error) {
       log.error('Failed to update URL to Hyperliquid referral page: ', error);

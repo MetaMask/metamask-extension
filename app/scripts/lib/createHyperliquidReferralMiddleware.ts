@@ -9,8 +9,7 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import log from 'loglevel';
-
-export const HYPERLIQUID_ORIGIN = 'https://app.hyperliquid.xyz';
+import { HYPERLIQUID_ORIGIN } from '../../../shared/constants/referrals';
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & {
   origin: string;
@@ -22,7 +21,9 @@ export enum HyperliquidPermissionTriggerType {
   OnNavigateConnectedTab = 'on_navigate_connected_tab',
 }
 
-function isExtendedJSONRPCRequest(req: JsonRpcRequest): req is ExtendedJSONRPCRequest {
+function isExtendedJSONRPCRequest(
+  req: JsonRpcRequest,
+): req is ExtendedJSONRPCRequest {
   return (
     Boolean((req as ExtendedJSONRPCRequest).origin) &&
     Boolean((req as ExtendedJSONRPCRequest).tabId)
@@ -37,11 +38,10 @@ function isExtendedJSONRPCRequest(req: JsonRpcRequest): req is ExtendedJSONRPCRe
  * @returns Middleware function
  */
 export function createHyperliquidReferralMiddleware(
-  handleHyperliquidReferral: (args: {
-    origin: string;
-    tabId: number;
-    triggerType: HyperliquidPermissionTriggerType;
-  }) => void,
+  handleHyperliquidReferral: (
+    tabId: number,
+    triggerType: HyperliquidPermissionTriggerType,
+  ) => void,
 ) {
   return createAsyncMiddleware(
     async (
@@ -51,12 +51,12 @@ export function createHyperliquidReferralMiddleware(
       >,
       next: AsyncJsonRpcEngineNextCallback,
     ) => {
+      // First, call next to process the request
+      await next();
+
       if (!isExtendedJSONRPCRequest(req)) {
         return;
       }
-
-      // First, call next to process the request
-      await next();
 
       // After the request is processed, check if it was a successful permission grant for Hyperliquid
       const isHyperliquidConnectionRequest =
@@ -70,11 +70,10 @@ export function createHyperliquidReferralMiddleware(
 
       if (isHyperliquidConnectionRequest && arePermissionsGranted) {
         try {
-          handleHyperliquidReferral({
-            origin: HYPERLIQUID_ORIGIN,
-            tabId: req.tabId,
-            triggerType: HyperliquidPermissionTriggerType.NewConnection,
-          });
+          handleHyperliquidReferral(
+            req.tabId,
+            HyperliquidPermissionTriggerType.NewConnection,
+          );
         } catch (error) {
           log.error(
             'Failed to handle Hyperliquid referral after wallet_requestPermissions grant: ',
