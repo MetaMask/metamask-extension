@@ -3159,16 +3159,14 @@ export default class MetamaskController extends EventEmitter {
       this.platform.addTabRemovedListener(onTabRemovedListener);
     });
 
-    if (currentTabId) {
-      // fetch latest user subscriptions after checkout
-      const subscriptions =
-        await this.subscriptionController.getSubscriptions();
-      return subscriptions;
+    if (!currentTabId) {
+      // open extension browser shield settings if open from pop up (no current tab)
+      this.platform.openExtensionInBrowser('/settings/transaction-shield');
     }
 
-    // open extension browser shield settings if open from pop up (no current tab)
-    this.platform.openExtensionInBrowser('/settings/transaction-shield');
-    return [];
+    // fetch latest user subscriptions after checkout
+    const subscriptions = await this.subscriptionController.getSubscriptions();
+    return subscriptions;
   }
 
   /**
