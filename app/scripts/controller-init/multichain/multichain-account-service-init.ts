@@ -37,9 +37,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       if (prevUseExternalServices !== currUseExternalServices) {
         // Only call MultichainAccountService if State 2 (BIP-44 multichain accounts) is enabled
         // to prevent unwanted account alignment from running
-        const remoteFeatureFlags = initMessenger.call(
+        const { remoteFeatureFlags } = initMessenger.call(
           'RemoteFeatureFlagController:getState',
-        ).remoteFeatureFlags;
+        );
         const multichainAccountsFeatureFlag =
           remoteFeatureFlags?.enableMultichainAccounts;
 
