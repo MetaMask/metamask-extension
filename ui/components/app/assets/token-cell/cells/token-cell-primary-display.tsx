@@ -28,7 +28,7 @@ export const TokenCellPrimaryDisplay = React.memo(
     return (
       <Skeleton
         isLoading={
-          !(anyEnabledNetworksAreAvailable || !isZeroAmount(token.primary))
+          !anyEnabledNetworksAreAvailable && isZeroAmount(token.primary)
         }
       >
         <SensitiveText
