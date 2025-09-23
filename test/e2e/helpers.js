@@ -171,10 +171,7 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
-    withSolanaWebSocket = {
-      server: false,
-      mocks: [],
-    },
+    solanaWebSocketSpecificMocks = [],
   } = options;
 
   // Normalize localNodeOptions
@@ -201,7 +198,7 @@ async function withFixtures(options, testSuite) {
   let localNode;
   const localNodes = [];
 
-  let localWebSocketServer;
+  let webSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -310,11 +307,10 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    if (withSolanaWebSocket.server) {
-      localWebSocketServer = LocalWebSocketServer.getServerInstance();
-      localWebSocketServer.start();
-      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
-    }
+    // Start WebSocket server and apply Solana mocks (defaults + overrides)
+    webSocketServer = LocalWebSocketServer.getServerInstance();
+    webSocketServer.start();
+    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -330,7 +326,6 @@ async function withFixtures(options, testSuite) {
         ethConversionInUsd,
         monConversionInUsd,
       },
-      withSolanaWebSocket,
     );
 
     if ((await detectPort(8000)) !== 8000) {
@@ -508,9 +503,20 @@ async function withFixtures(options, testSuite) {
         })(),
       );
 
-      if (withSolanaWebSocket.server) {
-        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
-      }
+      shutdownTasks.push(
+        (async () => {
+          try {
+            if (
+              webSocketServer &&
+              typeof webSocketServer.stopAndCleanup === 'function'
+            ) {
+              await webSocketServer.stopAndCleanup();
+            }
+          } catch (e) {
+            console.log('WebSocket server already stopped or not initialized');
+          }
+        })(),
+      );
 
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');
@@ -715,12 +721,6 @@ async function createWebSocketConnection(driver, hostname) {
   }
 }
 
-const logInWithBalanceValidation = async (driver, localNode) => {
-  await unlockWallet(driver);
-  // Wait for balance to load
-  await locateAccountBalanceDOM(driver, localNode);
-};
-
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
 }
@@ -876,7 +876,6 @@ module.exports = {
   switchToOrOpenDapp,
   multipleGanacheOptions,
   unlockWallet,
-  logInWithBalanceValidation,
   locateAccountBalanceDOM,
   WALLET_PASSWORD,
   WINDOW_TITLES,
