@@ -3750,9 +3750,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps und die meisten Hardware-Wallets funktionieren nicht mit Ihrer aktuellen Browserversion."
   },
-  "noNFTs": {
-    "message": "Noch keine NFTs"
-  },
   "noNetworksAvailable": {
     "message": "Keine Netzwerke verfügbar"
   },

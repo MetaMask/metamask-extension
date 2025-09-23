@@ -3720,9 +3720,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Les Snaps et la plupart des portefeuilles matériels ne fonctionneront pas avec la version actuelle de votre navigateur."
   },
-  "noNFTs": {
-    "message": "Aucun NFT pour le moment"
-  },
   "noNetworksAvailable": {
     "message": "Aucun réseau disponible"
   },

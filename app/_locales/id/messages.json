@@ -3750,9 +3750,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
   },
-  "noNFTs": {
-    "message": "Belum ada NFT"
-  },
   "noNetworksAvailable": {
     "message": "Jaringan tidak tersedia"
   },

@@ -3750,9 +3750,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
   },
-  "noNFTs": {
-    "message": "尚无 NFT"
-  },
   "noNetworksAvailable": {
     "message": "无可用网络"
   },

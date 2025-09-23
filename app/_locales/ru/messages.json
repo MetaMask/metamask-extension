@@ -3750,9 +3750,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps и большинство аппаратных кошельков не будут работать с вашей текущей версией браузера."
   },
-  "noNFTs": {
-    "message": "Пока нет NFT"
-  },
   "noNetworksAvailable": {
     "message": "Нет доступных сетей"
   },

@@ -3720,9 +3720,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
   },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
-  },
   "noNetworksAvailable": {
     "message": "Mevcut ağ yok"
   },
