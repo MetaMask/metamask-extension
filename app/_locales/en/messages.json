@@ -1887,6 +1887,9 @@
   "defi": {
     "message": "DeFi"
   },
+  "defiEmptyDescription": {
+    "message": "Lend, borrow, and trade, right in your wallet."
+  },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
   },
@@ -2463,6 +2466,9 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exploreDefi": {
+    "message": "Explore DeFi"
   },
   "exploreweb3": {
     "message": "Explore web3"
@@ -3959,9 +3965,6 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
-  "noDeFiPositions": {
-    "message": "Can't find what you're looking for?"
-  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
@@ -4869,9 +4872,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
-  },
-  "protocolNotSupported": {
-    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"
