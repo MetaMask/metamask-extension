@@ -6530,8 +6530,8 @@
   "symbol": {
     "message": "Sembol"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Sembol en fazla 11 karakter olmalıdır."
+  "symbolBetweenZeroSixtyFour": {
+    "message": "Sembol en fazla 64 karakter olmalıdır."
   },
   "tapToReveal": {
     "message": "Açığa çıkarmak için dokunun"

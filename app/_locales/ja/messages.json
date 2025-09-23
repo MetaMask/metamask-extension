@@ -6530,8 +6530,8 @@
   "symbol": {
     "message": "シンボル"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "シンボルは11文字以下にする必要があります。"
+  "symbolBetweenZeroSixtyFour": {
+    "message": "シンボルは64文字以下にする必要があります。"
   },
   "tapToReveal": {
     "message": "タップして確認"
