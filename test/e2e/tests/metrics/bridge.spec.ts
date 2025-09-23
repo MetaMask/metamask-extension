@@ -110,8 +110,8 @@ describe('Bridge tests', function (this: Suite) {
          */
 
         assert(
-          swapBridgeInputChanged.length === 20,
-          'Should have at least 20 input change events',
+          swapBridgeInputChanged.length === 18,
+          'Should have 18 input change events',
         );
 
         const swapBridgeInputChangedKeys = new Set(
@@ -321,10 +321,10 @@ describe('Bridge tests', function (this: Suite) {
               'ETH',
         );
 
-        const swapBridgeTokenFlippedEvents = findEventsByName(
+        const swapBridgeTokenSwitchedEvents = findEventsByName(
           EventTypes.SwapBridgeTokenSwitched,
         );
-        assert.ok(swapBridgeTokenFlippedEvents.length === 1);
+        assert.ok(swapBridgeTokenSwitchedEvents.length === 1);
       },
     );
   });

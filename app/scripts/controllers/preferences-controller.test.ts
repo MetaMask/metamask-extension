@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { Messenger } from '@metamask/base-controller';
+import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
@@ -43,7 +43,7 @@ const setupController = ({
   state,
 }: {
   state?: Partial<PreferencesControllerState>;
-}) => {
+} = {}) => {
   const messenger = new Messenger<
     AllowedActions,
     | AllowedEvents
@@ -816,6 +816,404 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setManageInstitutionalWallets(true);
       expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "isMultiAccountBalancesEnabled": true,
+          "ledgerTransportType": "u2f",
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+          },
+          "showIncomingTransactions": {
+            "0x1": true,
+            "0x13881": true,
+            "0x38": true,
+            "0x5": true,
+            "0x504": true,
+            "0x505": true,
+            "0x507": true,
+            "0x531": true,
+            "0x61": true,
+            "0x64": true,
+            "0x89": true,
+            "0xa": true,
+            "0xa869": true,
+            "0xa86a": true,
+            "0xaa36a7": true,
+            "0xaa37dc": true,
+            "0xe704": true,
+            "0xe705": true,
+            "0xe708": true,
+            "0xfa": true,
+            "0xfa2": true,
+          },
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+        }
+      `);
+    });
+
+    it('includes expected state in state logs', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "identities": {},
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "lostIdentities": {},
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+          },
+          "securityAlertsEnabled": true,
+          "selectedAddress": "",
+          "showIncomingTransactions": {
+            "0x1": true,
+            "0x13881": true,
+            "0x38": true,
+            "0x5": true,
+            "0x504": true,
+            "0x505": true,
+            "0x507": true,
+            "0x531": true,
+            "0x61": true,
+            "0x64": true,
+            "0x89": true,
+            "0xa": true,
+            "0xa869": true,
+            "0xa86a": true,
+            "0xaa36a7": true,
+            "0xaa37dc": true,
+            "0xe704": true,
+            "0xe705": true,
+            "0xe708": true,
+            "0xfa": true,
+            "0xfa2": true,
+          },
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "identities": {},
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "lostIdentities": {},
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+          },
+          "securityAlertsEnabled": true,
+          "selectedAddress": "",
+          "showIncomingTransactions": {
+            "0x1": true,
+            "0x13881": true,
+            "0x38": true,
+            "0x5": true,
+            "0x504": true,
+            "0x505": true,
+            "0x507": true,
+            "0x531": true,
+            "0x61": true,
+            "0x64": true,
+            "0x89": true,
+            "0xa": true,
+            "0xa869": true,
+            "0xa86a": true,
+            "0xaa36a7": true,
+            "0xaa37dc": true,
+            "0xe704": true,
+            "0xe705": true,
+            "0xe708": true,
+            "0xfa": true,
+            "0xfa2": true,
+          },
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "identities": {},
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "lostIdentities": {},
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+          },
+          "securityAlertsEnabled": true,
+          "selectedAddress": "",
+          "showIncomingTransactions": {
+            "0x1": true,
+            "0x13881": true,
+            "0x38": true,
+            "0x5": true,
+            "0x504": true,
+            "0x505": true,
+            "0x507": true,
+            "0x531": true,
+            "0x61": true,
+            "0x64": true,
+            "0x89": true,
+            "0xa": true,
+            "0xa869": true,
+            "0xa86a": true,
+            "0xaa36a7": true,
+            "0xaa37dc": true,
+            "0xe704": true,
+            "0xe705": true,
+            "0xe708": true,
+            "0xfa": true,
+            "0xfa2": true,
+          },
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
     });
   });
 });
