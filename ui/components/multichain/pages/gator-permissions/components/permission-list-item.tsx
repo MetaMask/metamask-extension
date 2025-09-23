@@ -50,7 +50,6 @@ export const PermissionListItem = ({
     >
       <Button
         onClick={onClick}
-        className="permission-list-item-button"
         style={{
           width: '100%',
           backgroundColor: 'transparent',
