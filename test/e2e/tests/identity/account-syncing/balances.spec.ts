@@ -3,7 +3,6 @@ import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockInfuraAndAccountSync } from '../mocks';
-import { ACCOUNT_TYPE } from '../../../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -54,7 +53,9 @@ describe('Account syncing - Accounts with Balances', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Should see default account
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
@@ -70,9 +71,7 @@ describe('Account syncing - Accounts with Balances', function () {
           );
 
         // Add another second account
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Multichain,
-        });
+        await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
         await waitUntilSyncedAccountsNumberEquals(2);
@@ -82,7 +81,7 @@ describe('Account syncing - Accounts with Balances', function () {
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Account 2');
 
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
       },
     );
 
@@ -113,7 +112,9 @@ describe('Account syncing - Accounts with Balances', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Verify synced accounts + discovered account with balance are present
         // 2 synced accounts + 1 discovered via balance = 3 total

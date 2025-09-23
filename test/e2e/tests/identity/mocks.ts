@@ -5,10 +5,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  UserStorageMockttpController,
-  UserStorageResponseData,
-} from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -180,8 +177,6 @@ export async function mockInfuraAndAccountSync(
   // Account Balances
   if (accounts.length > 0) {
     accounts.forEach((account) => {
-      console.log('OLA: ', account);
-
       mockServer
         .forPost(INFURA_URL)
         .always()

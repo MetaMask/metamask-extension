@@ -8,16 +8,12 @@ import {
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
-import { ACCOUNT_TYPE } from '../../../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AccountListPage, {
-  MultichainAccountMenuItems,
-} from '../../../page-objects/pages/account-list-page';
-import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { E2E_SRP } from '../../../default-fixture';
 import { arrangeTestUtils } from './helpers';
 import {
@@ -25,6 +21,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import HomePage from '../../../page-objects/pages/home/homepage';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
@@ -66,19 +63,17 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await unlockWallet(driver);
 
         // Wait for the initial account sync to complete before adding new accounts
-        await driver.wait(async () => {
-          const uiState = await getCleanAppState(driver);
-          return (
-            uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
-          );
-        }, 30000);
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -96,9 +91,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
           );
 
         // Add a new account
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Multichain,
-        });
+        await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
         await waitUntilSyncedAccountsNumberEquals(2);
@@ -112,7 +105,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
           ADDED_ACCOUNT_NAME,
         );
 
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
       },
     );
 
@@ -139,7 +132,9 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Verify both accounts from previous phase are still visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -163,15 +158,11 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await accountListPage.openMultichainAccountMenu({
           accountLabel: ADDED_ACCOUNT_NAME,
         });
-        await accountListPage.clickMultichainAccountMenuItem(
-          MultichainAccountMenuItems.Rename,
-        );
+        await accountListPage.clickMultichainAccountMenuItem('Rename');
         await accountListPage.changeMultichainAccountLabel(NEW_ACCOUNT_NAME);
 
         // Add a third account
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Multichain,
-        });
+        await accountListPage.addMultichainAccount();
 
         // Wait for both sync operations to complete (rename + add)
         await waitUntilSyncedAccountsNumberEquals(3);
@@ -188,7 +179,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
           LAST_ACCOUNT_NAME,
         );
 
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
       },
     );
 
@@ -208,14 +199,18 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         });
 
         // Wait for sync to complete during onboarding
-        await driver.delay(2000);
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+        // await driver.delay(2000);
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Verify all accounts and renames are properly synced
         await accountListPage.checkAccountDisplayedInAccountList(

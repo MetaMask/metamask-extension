@@ -6,12 +6,6 @@ import PrivacySettings from './settings/privacy-settings';
 import HeaderNavbar from './header-navbar';
 import SettingsPage from './settings/settings-page';
 
-export enum MultichainAccountMenuItems {
-  AccountDetails = 'Account details',
-  Rename = 'Rename',
-  Addresses = 'Addresses',
-}
-
 class AccountListPage {
   private readonly driver: Driver;
 
@@ -42,7 +36,7 @@ class AccountListPage {
   private readonly accountNameInput = '#account-name';
 
   private readonly accountOptionsMenuButton =
-    '[data-testid="multichain-account-cell-end-accessory"]';
+    '[data-testid="account-list-item-menu-button"]';
 
   private readonly multichainAccountOptionsMenuButton =
     '[data-testid="multichain-account-cell-end-accessory"]';
@@ -85,9 +79,33 @@ class AccountListPage {
   };
 
   private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
+
+  private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
 
+  private readonly addMultichainWalletButton =
+    '[data-testid="account-list-add-wallet-button"]';
+
+  private readonly importWalletFromMultichainWalletModalButton =
+    '[data-testid="add-wallet-modal-import-wallet"]';
+
+  private readonly importAccountFromMultichainWalletModalButton =
+    '[data-testid="add-wallet-modal-import-account"]';
+
+  private readonly multichainAccountMenuItem =
+    '.multichain-account-cell-menu-item';
+
+  private readonly multichainAccountNameInput =
+    '[data-testid="account-name-input"] input';
+
+  private readonly multichainAccountNameInputConfirmButton =
+    '.mm-button-base[aria-label="Confirm"]';
+
   private readonly createAccountButton =
+    '[data-testid="multichain-account-menu-popover-action-button"]';
+
+  private readonly createMultichainAccountButton =
     '[data-testid="add-multichain-account-button"]';
 
   private readonly currentSelectedAccount =
@@ -194,12 +212,17 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(options?: {
+    isMultichainAccountsState2Enabled?: boolean;
+  }): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.createAccountButton,
-        this.accountOptionsMenuButton,
-      ]);
+      const selectorsToWaitFor = options?.isMultichainAccountsState2Enabled
+        ? [
+            this.createMultichainAccountButton,
+            this.multichainAccountOptionsMenuButton,
+          ]
+        : [this.createAccountButton, this.accountOptionsMenuButton];
+      await this.driver.waitForMultipleSelectors(selectorsToWaitFor);
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
@@ -245,24 +268,24 @@ class AccountListPage {
    *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
+   * @param options - Additional options
+   * @param options.isMultichainAccountsState2Enabled - Whether the multichain accounts state 2 feature is enabled
    */
   async addNewImportedAccount(
     privateKey: string,
     expectedErrorMessage?: string,
-    state2?: boolean,
+    options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Adding new imported account`);
 
-    if (state2) {
+    if (options?.isMultichainAccountsState2Enabled) {
+      await this.driver.clickElement(this.addMultichainWalletButton);
       await this.driver.clickElement(
-        '[data-testid="account-list-add-wallet-button"]',
-      );
-      await this.driver.clickElement(
-        '[data-testid="add-wallet-modal-import-account"]',
+        this.importAccountFromMultichainWalletModalButton,
       );
       await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
       await this.driver.clickElementAndWaitToDisappear(
-        '[data-testid="import-account-confirm-button"]',
+        this.importAccountConfirmButton,
       );
       return;
     }
@@ -323,6 +346,19 @@ class AccountListPage {
   }
 
   /**
+   * Adds a new multichain account.
+   *
+   * @param options - Options for creating the multichain account
+   */
+  async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
+    console.log(`Adding new multichain account`);
+    const createMultichainAccountButtons = await this.driver.findElements(
+      this.createMultichainAccountButton,
+    );
+    await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
+  }
+
+  /**
    * Adds a new account of the specified type with an optional custom name.
    *
    * @param options - Options for adding a new account
@@ -353,8 +389,6 @@ class AccountListPage {
     if (!fromModal) {
       let addAccountButton;
       switch (accountType) {
-        case ACCOUNT_TYPE.Multichain:
-          break;
         case ACCOUNT_TYPE.Ethereum:
           addAccountButton = this.addEthereumAccountButton;
           break;
@@ -368,18 +402,8 @@ class AccountListPage {
           throw new Error('Account type not supported');
       }
 
-      if (accountType === ACCOUNT_TYPE.Multichain) {
-        const createAccountButtons = await this.driver.findElements(
-          this.createAccountButton,
-        );
-        await createAccountButtons[srpIndex ?? 0].click();
-
-        // We return here since we cannot rename multichain accounts at creation
-        return;
-      } else {
-        await this.driver.clickElement(this.createAccountButton);
-        addAccountButton && (await this.driver.clickElement(addAccountButton));
-      }
+      await this.driver.clickElement(this.createAccountButton);
+      addAccountButton && (await this.driver.clickElement(addAccountButton));
     }
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
@@ -413,6 +437,13 @@ class AccountListPage {
     console.log(`Close account modal in account list`);
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
+    );
+  }
+
+  async closeMultichainAccountsPage(): Promise<void> {
+    console.log(`Close multichain accounts page`);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeMultichainAccountsPageButton,
     );
   }
 
@@ -471,6 +502,13 @@ class AccountListPage {
     await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
+  /**
+   * Open the multichain account menu for the specified account.
+   *
+   * @param options - Options for opening the multichain account menu
+   * @param options.accountLabel - The label of the account to open the menu for
+   * @param options.srpIndex - Optional SRP index if there are multiple SRPs
+   */
   async openMultichainAccountMenu(options: {
     accountLabel: string;
     srpIndex?: number;
@@ -481,28 +519,38 @@ class AccountListPage {
     const multichainAccountMenuIcons = await this.driver.findElements(
       `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
     );
+
     await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
   }
 
+  /**
+   * Click a multichain account menu item.
+   *
+   * @param item - The menu item to click (e.g., 'Account details', 'Rename', 'Addresses')
+   */
   async clickMultichainAccountMenuItem(
-    item: MultichainAccountMenuItems,
+    item: 'Account details' | 'Rename' | 'Addresses',
   ): Promise<void> {
     console.log(`Click multichain account menu item ${item}`);
     await this.driver.clickElement(
-      `.multichain-account-cell-menu-item[aria-label="${item}"]`,
+      `${this.multichainAccountMenuItem}[aria-label="${item}"]`,
     );
   }
 
+  /**
+   * Change the label of a multichain account.
+   *
+   * @param newLabel - The new label for the multichain account
+   */
   async changeMultichainAccountLabel(newLabel: string): Promise<void> {
     console.log(
       `Account details modal opened, changing multichain account label to: ${newLabel}`,
     );
-    await this.driver.clickElement('[data-testid="account-name-input"] input');
-    await this.driver.fill(
-      '[data-testid="account-name-input"] input',
-      newLabel,
+    await this.driver.clickElement(this.multichainAccountNameInput);
+    await this.driver.fill(this.multichainAccountNameInput, newLabel);
+    await this.driver.clickElement(
+      this.multichainAccountNameInputConfirmButton,
     );
-    await this.driver.clickElement('.mm-button-base[aria-label="Confirm"]');
   }
 
   /**
@@ -929,15 +977,16 @@ class AccountListPage {
     console.log(`Account with label ${accountLabel} selected`);
   }
 
-  async startImportSecretPhrase(srp: string, state2?: boolean): Promise<void> {
+  async startImportSecretPhrase(
+    srp: string,
+    options?: { isMultichainAccountsState2Enabled?: boolean },
+  ): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 
-    if (state2) {
+    if (options?.isMultichainAccountsState2Enabled) {
+      await this.driver.clickElement(this.addMultichainWalletButton);
       await this.driver.clickElement(
-        '[data-testid="account-list-add-wallet-button"]',
-      );
-      await this.driver.clickElement(
-        '[data-testid="add-wallet-modal-import-wallet"]',
+        this.importWalletFromMultichainWalletModalButton,
       );
       await this.driver.pasteIntoField(this.importSrpInput, srp);
       await this.driver.clickElement(this.importSrpConfirmButton);

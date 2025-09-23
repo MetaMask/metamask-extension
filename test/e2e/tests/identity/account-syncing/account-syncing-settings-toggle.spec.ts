@@ -2,7 +2,6 @@ import { Mockttp } from 'mockttp';
 import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
-import { ACCOUNT_TYPE } from '../../../constants';
 import { PAGES } from '../../../webdriver/driver';
 import {
   UserStorageMockttpController,
@@ -61,7 +60,9 @@ describe('Account syncing - Settings Toggle', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Verify the default account exists
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -79,9 +80,7 @@ describe('Account syncing - Settings Toggle', function () {
           );
 
         // Create second account with sync enabled - this should sync to user storage
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Multichain,
-        });
+        await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
         await waitUntilSyncedAccountsNumberEquals(2);
@@ -90,7 +89,7 @@ describe('Account syncing - Settings Toggle', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
 
         // Phase 2: Disable account sync and create third account
         // Navigate to Settings to toggle account sync
@@ -108,19 +107,19 @@ describe('Account syncing - Settings Toggle', function () {
         await driver.navigate(PAGES.HOME);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Create third account with sync disabled - this should NOT sync to user storage
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Multichain,
-        });
+        await accountListPage.addMultichainAccount();
 
         // Reopen account menu to verify third account was created locally
         await accountListPage.checkAccountDisplayedInAccountList(
           THIRD_ACCOUNT_NAME,
         );
 
-        await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
       },
     );
 
@@ -140,7 +139,9 @@ describe('Account syncing - Settings Toggle', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
 
         // Verify only accounts created with sync enabled are restored
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];
@@ -155,10 +156,7 @@ describe('Account syncing - Settings Toggle', function () {
         );
 
         // Verify we only have 2 accounts (not 3)
-        await accountListPage.checkNumberOfAvailableAccounts(
-          2,
-          ACCOUNT_TYPE.Multichain,
-        );
+        await accountListPage.checkNumberOfAvailableAccounts(2);
       },
     );
   });
