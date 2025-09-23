@@ -2,7 +2,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
 
-export const version = 179;
+export const version = 176.1;
 
 /**
  * This migration clears the legacy addressSecurityAlertResponses cache entries
