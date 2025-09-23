@@ -30,7 +30,6 @@ export const TokenCellPrimaryDisplay = React.memo(
         isLoading={
           !anyEnabledNetworksAreAvailable && isZeroAmount(token.primary)
         }
-        scaleY={0.8}
       >
         <SensitiveText
           data-testid="multichain-token-list-item-value"

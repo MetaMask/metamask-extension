@@ -114,7 +114,6 @@ export const AggregatedBalance = ({
         (!anyEnabledNetworksAreAvailable &&
           isZeroAmount(multichainNativeTokenBalance.amount.toString()))
       }
-      scaleY={0.8}
     >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {

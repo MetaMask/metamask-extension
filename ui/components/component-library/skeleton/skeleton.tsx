@@ -19,7 +19,6 @@ export const Skeleton: SkeletonComponent = React.forwardRef(
       height,
       width,
       children,
-      scaleY,
       isLoading = true,
       ...props
     }: SkeletonProps<C>,
@@ -35,12 +34,7 @@ export const Skeleton: SkeletonComponent = React.forwardRef(
         borderRadius={BorderRadius.SM}
         ref={ref}
         {...(props as BoxProps<C>)}
-        style={{
-          ...props?.style,
-          height,
-          width,
-          ...(scaleY === undefined ? {} : { transform: `scaleY(${scaleY})` }),
-        }}
+        style={{ ...props?.style, height, width }}
       >
         {children}
       </Box>

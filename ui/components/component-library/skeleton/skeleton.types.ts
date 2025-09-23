@@ -31,11 +31,6 @@ export type SkeletonStyleUtilityProps = Omit<
    * When false, shows just the children content.
    */
   isLoading?: boolean;
-  /**
-   * How much to scale the skeleton in the vertical direction while it's
-   * visible.
-   */
-  scaleY?: number;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

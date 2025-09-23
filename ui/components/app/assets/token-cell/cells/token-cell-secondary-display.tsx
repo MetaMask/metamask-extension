@@ -91,7 +91,6 @@ export const TokenCellSecondaryDisplay = React.memo(
         isLoading={
           !anyEnabledNetworksAreAvailable && isZeroAmount(secondaryDisplayText)
         }
-        scaleY={0.8}
       >
         <SensitiveText
           fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
