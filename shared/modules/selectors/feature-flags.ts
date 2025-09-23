@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import { getNetworkNameByChainId } from '../feature-flags';
 import { ProviderConfigState, getCurrentChainId } from './networks';
 
@@ -24,15 +25,15 @@ export type SwapsFeatureFlags = {
   smartTransactions: SmartTransactionsFeatureFlag;
 };
 
-type SmartTransactionNetwork = {
+export type SmartTransactionNetwork = {
   extensionActive?: boolean;
   sentinelUrl?: string;
   extensionReturnTxHashAsap?: boolean;
+  batchStatusPollingInterval?: number;
 };
 
-type SmartTransactionsNetworks = {
-  [chainId: string]: SmartTransactionNetwork | undefined;
-} & {
+export type SmartTransactionsNetworks = {
+  [chainId: Hex]: SmartTransactionNetwork | undefined;
   default?: SmartTransactionNetwork;
 };
 
