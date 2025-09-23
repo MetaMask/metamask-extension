@@ -36,11 +36,13 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
       id,
       label,
       labelProps,
-      fileUploaderProps,
+      dropAreaProps,
       accept,
-      acceptInfo,
+      acceptText,
+      multiple,
       maxFileSize,
       filesProps,
+      fileInputProps,
       onChange,
       ...props
     }: FileUploaderProps<C>,
@@ -70,9 +72,12 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           return;
         }
 
-        // Check file size if maxFileSize is specified (in kilobytes)
-        if (maxFileSize && file.size > maxFileSize * 1024 * 1024) {
-          setError(t('fileUploaderMaxFileSizeError', [maxFileSize]));
+        // Check file size if maxFileSize(in bytes) is specified
+        if (maxFileSize && file.size > maxFileSize) {
+          const fileSizeInMB = parseFloat(
+            (maxFileSize / 1024 / 1024).toFixed(2),
+          );
+          setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
           return;
         }
 
@@ -133,9 +138,6 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
         )}
         <Label
           htmlFor="file-uploader-input"
-          className={classnames('file-uploader-label', {
-            'file-uploader-label--dragging': isDragging,
-          })}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
@@ -155,7 +157,10 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             setIsDragging(false);
           }}
           onDrop={onFileDrop}
-          {...fileUploaderProps}
+          {...dropAreaProps}
+          className={classnames('file-uploader-label', {
+            'file-uploader-label--dragging': isDragging,
+          })}
         >
           <Icon
             name={IconName.Upload}
@@ -169,12 +174,12 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             >
               {t('fileUploaderDescription')}
             </Text>
-            {acceptInfo && (
+            {acceptText && (
               <Text
                 variant={TextVariant.bodySmMedium}
                 color={TextColor.textAlternativeSoft}
               >
-                {acceptInfo}
+                {acceptText}
               </Text>
             )}
           </Box>
@@ -183,11 +188,12 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             id="file-uploader-input"
             data-testid="file-uploader-input"
             onChange={onFileChange}
-            className="hidden"
-            multiple
             // don't save the value to the input field to allow reuploading the same file
             value={''}
             accept={accept ?? undefined}
+            multiple={multiple ?? undefined}
+            {...fileInputProps}
+            className={classnames('hidden', fileInputProps?.className ?? '')}
           />
         </Label>
         {(error || helpText) && (

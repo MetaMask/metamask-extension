@@ -6,6 +6,7 @@ import {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../../box';
+import { FileInputProps } from 'react-simple-file-input';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -25,27 +26,35 @@ export interface FileUploaderStyleUtilityProps extends StyleUtilityProps {
   /*
    * props to be passed to the FileUploader box
    */
-  fileUploaderProps?: Partial<BoxProps<'button'>>;
+  dropAreaProps?: Partial<BoxProps<'button'>>;
   /*
    * accept to be passed to the FileUploader input
    */
-  accept?: string;
+  accept?: FileInputProps['accept'];
   /*
-   * acceptInfo to be rendered below the FileUploader description
+   * multiple to be passed to the FileUploader input
    */
-  acceptInfo?: string;
+  multiple?: FileInputProps['multiple'];
+  /*
+   * acceptText to be rendered below the FileUploader description
+   */
+  acceptText?: string;
   /*
    * error state to show danger severity in help text
    */
   error?: boolean;
   /*
-   * maxFileSize to be passed to the FileUploader input in MB
+   * maxFileSize to be passed to the FileUploader input in bytes
    */
   maxFileSize?: number;
   /*
    * props to be passed to the files container
    */
   filesProps?: Partial<BoxProps<'div'>>;
+  /*
+   * props to be passed to the FileInput component
+   */
+  fileInputProps?: Partial<FileInputProps>;
   /*
    * onChange to be passed to the FileUploader input
    */

@@ -4,7 +4,7 @@ declare module 'react-simple-file-input' {
   /**
    * Event object passed to onLoad callback when file is read
    */
-  type FileLoadEvent = {
+  export type FileLoadEvent = {
     target: {
       result: string | ArrayBuffer | null;
     };
@@ -13,7 +13,7 @@ declare module 'react-simple-file-input' {
   /**
    * Props for the react-simple-file-input FileInput component
    */
-  type FileInputProps = {
+  export type FileInputProps = {
     /**
      * Callback fired when files are selected
      *
