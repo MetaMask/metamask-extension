@@ -1672,11 +1672,6 @@ function onNavigateToTab() {
   });
 }
 
-browser.contextMenus.create({
-  id: 'openSidePanel',
-  title: 'MetaMask Sidepanel',
-  contexts: ['all'],
-});
 browser.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
