@@ -53,7 +53,6 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
-  const [showAll, setShowAll] = useState(false);
   const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
@@ -283,9 +282,9 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                 gap={2}
               >
                 {draftSrp.map((word, index) => {
-                  const displayAsText =
-                    showAll &&
-                    !(word.active || misSpelledWords.includes(word.word));
+                  const displayAsText = !(
+                    word.active || misSpelledWords.includes(word.word)
+                  );
 
                   return displayAsText ? (
                     <Box
@@ -328,9 +327,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                       error={misSpelledWords.includes(word.word)}
                       value={word.word}
                       type={
-                        word.active ||
-                        showAll ||
-                        misSpelledWords.includes(word.word)
+                        word.active || misSpelledWords.includes(word.word)
                           ? TextFieldType.Text
                           : TextFieldType.Password
                       }
@@ -404,7 +401,6 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
             <Button
               variant={ButtonVariant.Link}
               onClick={async () => {
-                setShowAll(false);
                 setDraftSrp([]);
               }}
             >
