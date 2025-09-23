@@ -38,7 +38,7 @@ export function useMultichainAccountsIntroModal(
       isUnlocked &&
       isMultichainAccountsState2Enabled &&
       !hasShownMultichainAccountsIntroModal &&
-      lastUpdatedAt && // null = fresh install, timestamp = upgrade
+      lastUpdatedAt !== null && // null = fresh install, timestamp = upgrade
       isMainWalletArea;
 
     setShowMultichainIntroModal(shouldShowModal);
