@@ -201,6 +201,7 @@ export const CHAIN_IDS = {
   ACALA: '0x313',
   ACALA_TESTNET: '0x253',
   KARURA: '0x2ae',
+  HEMI: '0xa867',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -356,6 +357,7 @@ export const FRAX_DISPLAY_NAME = 'Fraxtal';
 export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
+export const HEMI_DISPLAY_NAME = 'Hemi';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -435,6 +437,7 @@ export const CURRENCY_SYMBOLS = {
   FRAX: 'FRAX',
   ACALA: 'ACA',
   KARURA: 'KAR',
+  HEMI: 'HEMI',
 } as const;
 
 // Non-EVM currency symbols
@@ -642,6 +645,7 @@ export const ACALA_IMAGE_URL = './images/acala.svg';
 export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
 export const KARURA_IMAGE_URL = './images/karura.svg';
 export const KARURA_TOKEN_IMAGE_URL = './images/karura-token.svg';
+export const HEMI_IMAGE_URL = './images/hemi.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -797,6 +801,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ACALA]: ACALA_DISPLAY_NAME,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.KARURA]: KARURA_DISPLAY_NAME,
+  [CHAIN_IDS.HEMI]: HEMI_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -948,6 +953,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ACALA]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.ACALA_TESTNET]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.KARURA]: CURRENCY_SYMBOLS.KARURA,
+  [CHAIN_IDS.HEMI]: CURRENCY_SYMBOLS.HEMI,
 } as const;
 
 /**
@@ -1108,6 +1114,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ACALA]: ACALA_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_IMAGE_URL,
+  [CHAIN_IDS.HEMI]: HEMI_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1184,6 +1191,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ACALA]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.HEMI]: HEMI_IMAGE_URL,
 } as const;
 
 /**
