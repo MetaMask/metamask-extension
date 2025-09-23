@@ -3,7 +3,7 @@ import type { WebpackPluginInstance, RuleSetRule, Chunk } from 'webpack';
 import {
   LavaMoatPlugin,
   exclude as LavamoatExcludeLoader,
-} from '@lavamoat/webpack';
+} from '../../../../../../LavaMoat/packages/webpack/src/plugin.js';
 import type { Args } from '../../cli';
 
 // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
