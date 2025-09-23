@@ -155,6 +155,8 @@ import { MultichainAccountDetails } from '../multichain-accounts/account-details
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
+import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
@@ -459,7 +461,14 @@ export default function Routes() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const prevPropsRef = useRef({ isUnlocked, totalUnapprovedConfirmationCount });
+  // Multichain intro modal logic (extracted to custom hook)
+  const { showMultichainIntroModal, setShowMultichainIntroModal } =
+    useMultichainAccountsIntroModal(isUnlocked, location);
+
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+  });
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -477,7 +486,10 @@ export default function Routes() {
       dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
     }
 
-    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
+    prevPropsRef.current = {
+      isUnlocked,
+      totalUnapprovedConfirmationCount,
+    };
   }, [
     networkToAutomaticallySwitchTo,
     isUnlocked,
@@ -843,6 +855,13 @@ export default function Routes() {
         )
         ///: END:ONLY_INCLUDE_IF
       }
+
+      {showMultichainIntroModal ? (
+        <MultichainAccountIntroModalContainer
+          onClose={() => setShowMultichainIntroModal(false)}
+        />
+      ) : null}
+
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
         {!isLoading &&
