@@ -8,6 +8,7 @@ import { previousValueComparator } from '../../lib/util';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
+  MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 
 /**
@@ -41,7 +42,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
           'RemoteFeatureFlagController:getState',
         );
         const multichainAccountsFeatureFlag =
-          remoteFeatureFlags?.enableMultichainAccounts;
+          remoteFeatureFlags?.enableMultichainAccounts as
+            | MultichainAccountsFeatureFlag
+            | undefined;
 
         if (
           isMultichainAccountsFeatureEnabled(
