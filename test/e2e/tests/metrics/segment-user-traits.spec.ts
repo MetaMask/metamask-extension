@@ -164,6 +164,9 @@ describe('Segment User Traits', function () {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
+        // Toggle participate in meta metrics first, then toggle data collection for marketing
+        // Data Collection toggle is disabled if participate in meta metrics is off
+        await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
