@@ -89,10 +89,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     return (
       <Skeleton
         isLoading={
-          !(
-            anyEnabledNetworksAreAvailable ||
-            !isZeroAmount(secondaryDisplayText)
-          )
+          !anyEnabledNetworksAreAvailable && isZeroAmount(secondaryDisplayText)
         }
       >
         <SensitiveText
