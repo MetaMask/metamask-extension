@@ -60,6 +60,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
         !anyEnabledNetworksAreAvailable &&
         (isZeroAmount(total) || currency === undefined)
       }
+      marginBottom={1}
     >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {

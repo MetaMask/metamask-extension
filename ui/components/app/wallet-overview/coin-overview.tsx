@@ -165,6 +165,7 @@ export const LegacyAggregatedBalance = ({
       isLoading={
         !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
       }
+      marginBottom={1}
     >
       <UserPreferencedCurrencyDisplay
         style={{ display: 'contents' }}
