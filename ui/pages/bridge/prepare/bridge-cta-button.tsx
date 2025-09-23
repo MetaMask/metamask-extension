@@ -99,7 +99,7 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
-      return activeQuote && 'swap';
+      return 'swap';
     }
 
     return 'swapSelectToken';
