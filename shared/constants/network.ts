@@ -276,6 +276,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   XRPLEVM_TESTNET: '0x161c28',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
+  HYPE: '0x3e7',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -437,7 +438,7 @@ export const CURRENCY_SYMBOLS = {
   FRAX: 'FRAX',
   ACALA: 'ACA',
   KARURA: 'KAR',
-  HEMI: 'HEMI',
+  HEMI: 'ETH',
 } as const;
 
 // Non-EVM currency symbols
@@ -521,6 +522,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   WETHIO: 'ZYN',
   CHZ: 'CHZ',
+  HYPE: 'HYPE',
 };
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -971,6 +973,11 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION = {
       currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
     },
   ],
+  [CHAINLIST_CHAIN_IDS_MAP.HYPE]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.HYPE,
+    },
+  ],
 };
 
 export const CHAIN_ID_TO_TYPE_MAP = {
@@ -1191,7 +1198,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ACALA]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.HEMI]: HEMI_IMAGE_URL,
+  [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 /**
