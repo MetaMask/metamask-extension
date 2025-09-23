@@ -57,10 +57,8 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   return (
     <Skeleton
       isLoading={
-        !(
-          anyEnabledNetworksAreAvailable ||
-          (!isZeroAmount(total) && currency !== undefined)
-        )
+        !anyEnabledNetworksAreAvailable &&
+        (isZeroAmount(total) || currency === undefined)
       }
     >
       <Box
