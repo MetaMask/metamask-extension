@@ -100,13 +100,7 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
-      return activeQuote &&
-        isCrossChain(
-          activeQuote.quote.srcChainId,
-          activeQuote.quote.destChainId,
-        )
-        ? 'bridge'
-        : 'swap';
+      return activeQuote && 'swap';
     }
 
     return 'swapSelectToken';
