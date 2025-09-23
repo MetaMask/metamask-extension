@@ -20,8 +20,8 @@ import {
 } from './api-specs/helpers';
 
 import FixtureBuilder from './fixture-builder';
-import { withFixtures, unlockWallet, ACCOUNT_1 } from './helpers';
-import { DAPP_URL } from './constants';
+import { withFixtures, unlockWallet } from './helpers';
+import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
