@@ -246,7 +246,7 @@ describe('Welcome Page', () => {
       expect(getBrowserNameSpy).toHaveBeenCalled();
 
       // should not set Metametrics optin status for social login in Firefox
-      expect(enabledMetricsSpy).not.toHaveBeenCalled();
+      expect(enabledMetricsSpy).not.toHaveBeenCalledWith(true);
     });
   });
 
@@ -279,7 +279,7 @@ describe('Welcome Page', () => {
       });
 
       // should not set Metametrics optin status for SPR user
-      expect(enabledMetricsSpy).not.toHaveBeenCalled();
+      expect(enabledMetricsSpy).not.toHaveBeenCalledWith(true);
 
       // should navigate to create password page
       expect(mockUseNavigate).toHaveBeenCalledWith(

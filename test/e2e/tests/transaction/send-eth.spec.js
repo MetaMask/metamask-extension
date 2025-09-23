@@ -3,13 +3,7 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');
-const {
-  withFixtures,
-  openDapp,
-  openActionMenuAndStartSendFlow,
-  editGasFeeForm,
-  WINDOW_TITLES,
-} = require('../../helpers');
+const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 const PREFERENCES_STATE_MOCK = {
@@ -31,7 +25,7 @@ describe('Send ETH', function () {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
+          await driver.clickElement('[data-testid="eth-overview-send"]');
 
           await driver.fill(
             'input[placeholder="Enter public address (0x) or domain name"]',
@@ -104,7 +98,7 @@ describe('Send ETH', function () {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
+          await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
             'input[placeholder="Enter public address (0x) or domain name"]',
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -204,7 +198,7 @@ describe('Send ETH', function () {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
+          await driver.clickElement('[data-testid="eth-overview-send"]');
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
           await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
@@ -242,7 +236,7 @@ describe('Send ETH', function () {
             await loginWithBalanceValidation(driver);
 
             // initiates a send from the dapp
-            await openDapp(driver);
+            await driver.openNewPage(DAPP_URL);
             await driver.clickElement({ text: 'Send', tag: 'button' });
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -258,7 +252,14 @@ describe('Send ETH', function () {
               text: 'Edit priority',
               tag: 'header',
             });
-            await editGasFeeForm(driver, '21000', '100');
+
+            // Edit priority gas fee form
+            const inputs = await driver.findElements('input[type="number"]');
+            const gasLimitInput = inputs[0];
+            const gasPriceInput = inputs[1];
+            await gasLimitInput.fill('21000');
+            await gasPriceInput.fill('100');
+            await driver.clickElement({ text: 'Save', tag: 'button' });
             await driver.findElement({
               css: '[data-testid="first-gas-field"]',
               text: '0.0021',
@@ -315,7 +316,7 @@ describe('Send ETH', function () {
             await loginWithBalanceValidation(driver);
 
             // initiates a transaction from the dapp
-            await openDapp(driver);
+            await driver.openNewPage(DAPP_URL);
             await driver.clickElement({
               text: 'Create Token',
               tag: 'button',
@@ -418,7 +419,7 @@ describe('Send ETH', function () {
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
 
-            await openActionMenuAndStartSendFlow(driver);
+            await driver.clickElement('[data-testid="eth-overview-send"]');
 
             await driver.fill(
               'input[placeholder="Enter public address (0x) or domain name"]',

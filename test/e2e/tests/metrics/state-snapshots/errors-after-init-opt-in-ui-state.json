@@ -383,6 +383,7 @@
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+    "hasShownMultichainAccountsIntroModal": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
     "isGatorPermissionsEnabled": "boolean",
