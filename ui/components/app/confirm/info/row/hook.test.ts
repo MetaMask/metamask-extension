@@ -1,11 +1,15 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { useSelector } from 'react-redux';
 
-import { useRowContext, useFallbackDisplayName } from './hook';
-import { ConfirmInfoRowContext, ConfirmInfoRowVariant } from './row';
-import type { AccountGroupWithInternalAccounts } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { shortenAddress } from '../../../../../helpers/utils/util';
+import {
+  getAccountName,
+  getInternalAccounts,
+  getIsMultichainAccountsState2Enabled,
+} from '../../../../../selectors';
+import { useFallbackDisplayName } from './hook';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -25,66 +29,15 @@ jest.mock('../../../../../selectors/multichain-accounts/account-tree', () => ({
   getAccountGroupsByAddress: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/modules/hexstring-utils', () => ({
-  toChecksumHexAddress: jest.fn(),
-  stripHexPrefix: jest.fn((value) => value?.replace?.(/^0x/i, '') || ''),
-}));
-
-jest.mock('../../../../../helpers/utils/util', () => ({
-  shortenAddress: jest.fn(),
-}));
-
-import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
-import { shortenAddress } from '../../../../../helpers/utils/util';
-import {
-  getAccountName,
-  getAddressBookEntry,
-  getEnsResolutionByAddress,
-  getInternalAccounts,
-  getIsMultichainAccountsState2Enabled,
-  getMetadataContractName,
-} from '../../../../../selectors';
-import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
-
 type MockSelector = <TSelected = unknown>(
   selector: (state: unknown) => TSelected,
 ) => TSelected;
 
 const mockUseSelector = useSelector as jest.MockedFunction<MockSelector>;
-const mockToChecksumHexAddress = toChecksumHexAddress as jest.MockedFunction<
-  typeof toChecksumHexAddress
->;
-const mockShortenAddress = shortenAddress as jest.MockedFunction<
-  typeof shortenAddress
->;
 
-// Mock selector functions
 const mockGetAccountName = getAccountName as jest.MockedFunction<
   typeof getAccountName
 >;
-const mockGetAddressBookEntry = getAddressBookEntry as jest.MockedFunction<
-  typeof getAddressBookEntry
->;
-const mockGetEnsResolutionByAddress =
-  getEnsResolutionByAddress as jest.MockedFunction<
-    typeof getEnsResolutionByAddress
-  >;
-const mockGetInternalAccounts = getInternalAccounts as jest.MockedFunction<
-  typeof getInternalAccounts
->;
-const mockGetIsMultichainAccountsState2Enabled =
-  getIsMultichainAccountsState2Enabled as jest.MockedFunction<
-    typeof getIsMultichainAccountsState2Enabled
-  >;
-const mockGetMetadataContractName =
-  getMetadataContractName as jest.MockedFunction<
-    typeof getMetadataContractName
-  >;
-const mockGetAccountGroupsByAddress =
-  getAccountGroupsByAddress as jest.MockedFunction<
-    typeof getAccountGroupsByAddress
-  >;
 
 describe('hook.ts', () => {
   beforeEach(() => {
@@ -93,8 +46,8 @@ describe('hook.ts', () => {
 
   describe('useFallbackDisplayName', () => {
     const mockAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
-    const mockChecksumAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
-    const mockShortenedAddress = '0xd8dA...6045';
+    const expectedChecksumAddress = toChecksumHexAddress(mockAddress);
+    const expectedShortenedAddress = shortenAddress(expectedChecksumAddress);
 
     const setupMocks = (overrides: Record<string, unknown> = {}) => {
       // Setup useSelector mock
@@ -129,8 +82,6 @@ describe('hook.ts', () => {
     };
 
     beforeEach(() => {
-      mockToChecksumHexAddress.mockReturnValue(mockChecksumAddress);
-      mockShortenAddress.mockReturnValue(mockShortenedAddress);
       setupMocks();
     });
 
@@ -138,7 +89,7 @@ describe('hook.ts', () => {
       const mockAccountName = 'My Account';
       const mockInternalAccount = createMockInternalAccount({
         name: mockAccountName,
-        address: mockChecksumAddress,
+        address: expectedChecksumAddress,
       });
 
       setupMocks({
@@ -151,9 +102,8 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockAccountName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
-      expect(mockToChecksumHexAddress).toHaveBeenCalledWith(mockAddress);
     });
 
     it('returns account name when available (multichain accounts)', () => {
@@ -168,7 +118,7 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockAccountName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -186,7 +136,7 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockContactName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -204,7 +154,7 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockMetadataName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -222,7 +172,7 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockEnsName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -236,10 +186,9 @@ describe('hook.ts', () => {
       const { result } = renderHook(() => useFallbackDisplayName(mockAddress));
 
       expect(result.current).toEqual({
-        displayName: mockShortenedAddress,
-        hexAddress: mockChecksumAddress,
+        displayName: expectedShortenedAddress,
+        hexAddress: expectedChecksumAddress,
       });
-      expect(mockShortenAddress).toHaveBeenCalledWith(mockChecksumAddress);
     });
 
     it('should prioritize account name over other names', () => {
@@ -258,7 +207,7 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockAccountName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -278,7 +227,7 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockContactName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -297,7 +246,7 @@ describe('hook.ts', () => {
 
       expect(result.current).toEqual({
         displayName: mockMetadataName,
-        hexAddress: mockChecksumAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -325,8 +274,8 @@ describe('hook.ts', () => {
       const { result } = renderHook(() => useFallbackDisplayName(mockAddress));
 
       expect(result.current).toEqual({
-        displayName: mockShortenedAddress,
-        hexAddress: mockChecksumAddress,
+        displayName: expectedShortenedAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -340,8 +289,8 @@ describe('hook.ts', () => {
       const { result } = renderHook(() => useFallbackDisplayName(mockAddress));
 
       expect(result.current).toEqual({
-        displayName: mockShortenedAddress,
-        hexAddress: mockChecksumAddress,
+        displayName: expectedShortenedAddress,
+        hexAddress: expectedChecksumAddress,
       });
     });
 
@@ -352,10 +301,10 @@ describe('hook.ts', () => {
         accountName: '',
       });
 
-      renderHook(() => useFallbackDisplayName(mockAddress));
+      const { result } = renderHook(() => useFallbackDisplayName(mockAddress));
 
-      expect(mockToChecksumHexAddress).toHaveBeenCalledWith(mockAddress);
-      expect(mockShortenAddress).toHaveBeenCalledWith(mockChecksumAddress);
+      expect(result.current.displayName).toBe(expectedShortenedAddress);
+      expect(result.current.hexAddress).toBe(expectedChecksumAddress);
     });
   });
 });
