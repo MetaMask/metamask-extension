@@ -84,7 +84,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                           <rect
                             fill="#2362E1"
                             height="32"
-                            transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                            transform="translate(3.58933018479252 -5.33431062323352) rotate(458.4 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -92,7 +92,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                           <rect
                             fill="#F94301"
                             height="32"
-                            transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                            transform="translate(-15.36345928965021 7.99235163548663) rotate(268.8 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -100,7 +100,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                           <rect
                             fill="#FA7900"
                             height="32"
-                            transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                            transform="translate(-9.07625407930142 29.48001588068337) rotate(117.3 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -175,39 +175,31 @@ exports[`SendPage render and initialization should render correctly even when a 
               class="tabs transform-gpu"
             >
               <div
-                class="flex flex-row gap-0 justify-start bg-default tabs__list top-0 z-[2]"
+                class="flex flex-row gap-4 justify-start bg-default"
                 role="tablist"
               >
-                <div
+                <button
                   aria-disabled="false"
                   aria-selected="true"
-                  class="tab tab--active border-b-2 border-muted font-medium ease-out text-default border-b-text-default transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1)"
+                  class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
                   role="tab"
                   tabindex="0"
                 >
-                  <button
-                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-                  >
-                    Your accounts
-                  </button>
-                </div>
-                <div
+                  Your accounts
+                </button>
+                <button
                   aria-disabled="false"
                   aria-selected="false"
-                  class="tab border-b-2 border-muted text-alternative font-medium transition-colors duration-200 ease-out"
+                  class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
                   data-testid="send-contacts-tab"
                   role="tab"
                   tabindex="-1"
                 >
-                  <button
-                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-                  >
-                    Contacts
-                  </button>
-                </div>
+                  Contacts
+                </button>
               </div>
               <div
-                class="tabs__content"
+                class=""
                 role="tabpanel"
               >
                 <div
@@ -262,7 +254,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                         <rect
                                           fill="#2362E1"
                                           height="32"
-                                          transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                                          transform="translate(3.58933018479252 -5.33431062323352) rotate(458.4 16.00000000000000 16.00000000000000)"
                                           width="32"
                                           x="0"
                                           y="0"
@@ -270,7 +262,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                         <rect
                                           fill="#F94301"
                                           height="32"
-                                          transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                                          transform="translate(-15.36345928965021 7.99235163548663) rotate(268.8 16.00000000000000 16.00000000000000)"
                                           width="32"
                                           x="0"
                                           y="0"
@@ -278,7 +270,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                         <rect
                                           fill="#FA7900"
                                           height="32"
-                                          transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                                          transform="translate(-9.07625407930142 29.48001588068337) rotate(117.3 16.00000000000000 16.00000000000000)"
                                           width="32"
                                           x="0"
                                           y="0"
@@ -321,7 +313,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 <rect
                                   fill="#2362E1"
                                   height="32"
-                                  transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                                  transform="translate(3.58933018479252 -5.33431062323352) rotate(458.4 16.00000000000000 16.00000000000000)"
                                   width="32"
                                   x="0"
                                   y="0"
@@ -329,7 +321,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 <rect
                                   fill="#F94301"
                                   height="32"
-                                  transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                                  transform="translate(-15.36345928965021 7.99235163548663) rotate(268.8 16.00000000000000 16.00000000000000)"
                                   width="32"
                                   x="0"
                                   y="0"
@@ -337,7 +329,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 <rect
                                   fill="#FA7900"
                                   height="32"
-                                  transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                                  transform="translate(-9.07625407930142 29.48001588068337) rotate(117.3 16.00000000000000 16.00000000000000)"
                                   width="32"
                                   x="0"
                                   y="0"
