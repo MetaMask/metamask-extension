@@ -20,6 +20,7 @@ import {
   isPermitSignatureRequest,
 } from '../../../../utils';
 import { useConfirmContext } from '../../../../context/confirm';
+import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { NetworkRow } from '../shared/network-row/network-row';
@@ -28,6 +29,9 @@ import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
 const useTokenContract = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
+  const isBIP44 = useIsBIP44();
+
   if (!currentConfirmation?.msgParams) {
     return {};
   }
@@ -75,7 +79,7 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowDivider />
           </>
         )}
-        <NetworkRow isShownWithAlertsOnly />
+        <NetworkRow isShownWithAlertsOnly={!isBIP44} />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
