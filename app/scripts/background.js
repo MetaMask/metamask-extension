@@ -1147,9 +1147,7 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
-        // was "endOfStream", changed to "finished"
-        // eslint-disable-next-line no-undef
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           sidePanelIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
