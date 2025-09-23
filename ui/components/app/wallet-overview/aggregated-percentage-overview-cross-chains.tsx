@@ -160,8 +160,10 @@ export const AggregatedPercentageOverviewCrossChains = ({
   return (
     <Skeleton
       isLoading={
-        !(anyEnabledNetworksAreAvailable ||
-        !isZeroAmount(formattedAmountChangeCrossChains))
+        !(
+          anyEnabledNetworksAreAvailable ||
+          !isZeroAmount(formattedAmountChangeCrossChains)
+        )
       }
     >
       <Box display={Display.Flex} className="gap-1">
