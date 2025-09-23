@@ -219,15 +219,17 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         >
           {t('continue')}
         </Button>
-        <Button
-          width={BlockSize.Full}
-          variant={ButtonVariant.Link}
-          size={ButtonSize.Lg}
-          onClick={handleRemindLater}
-          type="button"
-        >
-          {t('secureWalletRemindLaterButton')}
-        </Button>
+        {!isFromReminder && (
+          <Button
+            width={BlockSize.Full}
+            variant={ButtonVariant.Link}
+            size={ButtonSize.Lg}
+            onClick={handleRemindLater}
+            type="button"
+          >
+            {t('secureWalletRemindLaterButton')}
+          </Button>
+        )}
       </Box>
     </Box>
   );
