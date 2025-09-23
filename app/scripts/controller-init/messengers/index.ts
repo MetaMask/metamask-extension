@@ -57,6 +57,8 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapKeyringBuilderMessenger,
+  getSnapKeyringBuilderInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -132,6 +134,16 @@ import {
 import { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 import { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 import { getAppStateControllerMessenger } from './app-state-controller-messenger';
+import {
+  getPermissionControllerMessenger,
+  getPermissionControllerInitMessenger,
+} from './permission-controller-messenger';
+import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+import {
+  getKeyringControllerInitMessenger,
+  getKeyringControllerMessenger,
+} from './keyring-controller-messenger';
+import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -177,6 +189,14 @@ export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
+export type {
+  KeyringControllerMessenger,
+  KeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
+export {
+  getKeyringControllerMessenger,
+  getKeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
@@ -194,6 +214,16 @@ export { getOnboardingControllerMessenger } from './onboarding-controller-messen
 export type { PreferencesControllerMessenger } from './preferences-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
+  PermissionControllerMessenger,
+  PermissionControllerInitMessenger,
+} from './permission-controller-messenger';
+export {
+  getPermissionControllerMessenger,
+  getPermissionControllerInitMessenger,
+} from './permission-controller-messenger';
+export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export type {
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
 } from './remote-feature-flag-controller-messenger';
@@ -203,6 +233,8 @@ export {
 } from './remote-feature-flag-controller-messenger';
 export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export type {
   SwapsControllerMessenger,
   SwapsControllerInitMessenger,
@@ -301,6 +333,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
+  KeyringController: {
+    getMessenger: getKeyringControllerMessenger,
+    getInitMessenger: getKeyringControllerInitMessenger,
+  },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,
     getInitMessenger: noop,
@@ -343,6 +379,14 @@ export const CONTROLLER_MESSENGERS = {
   },
   OnboardingController: {
     getMessenger: getOnboardingControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PermissionController: {
+    getMessenger: getPermissionControllerMessenger,
+    getInitMessenger: getPermissionControllerInitMessenger,
+  },
+  PermissionLogController: {
+    getMessenger: getPermissionLogControllerMessenger,
     getInitMessenger: noop,
   },
   RateLimitController: {
@@ -389,13 +433,21 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
   },
-  SwapsController: {
-    getMessenger: getSwapsControllerMessenger,
-    getInitMessenger: getSwapsControllerInitMessenger,
+  SnapKeyringBuilder: {
+    getMessenger: getSnapKeyringBuilderMessenger,
+    getInitMessenger: getSnapKeyringBuilderInitMessenger,
+  },
+  SubjectMetadataController: {
+    getMessenger: getSubjectMetadataControllerMessenger,
+    getInitMessenger: noop,
   },
   SubscriptionController: {
     getMessenger: getSubscriptionControllerMessenger,
     getInitMessenger: getSubscriptionControllerInitMessenger,
+  },
+  SwapsController: {
+    getMessenger: getSwapsControllerMessenger,
+    getInitMessenger: getSwapsControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

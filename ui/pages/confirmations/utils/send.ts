@@ -5,7 +5,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
-import { isNativeAddress } from '@metamask/bridge-controller';
 import { useHistory } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
@@ -145,7 +144,7 @@ export const prepareEVMTransaction = (
     : fromTokenMinimalUnits(value ?? '0', asset.decimals);
 
   // Native token
-  if (isNativeAddress(asset.address)) {
+  if (asset.isNative) {
     trxnParams.data = '0x';
     trxnParams.to = to;
     trxnParams.value = tokenValue;
@@ -205,7 +204,7 @@ export const submitEvmTransaction = async ({
   const networkClientId = await findNetworkClientIdByChainId(chainId);
 
   let transactionType;
-  if (isNativeAddress(asset.address ?? asset.assetId)) {
+  if (asset.isNative) {
     transactionType = TransactionType.simpleSend;
   } else if (asset.standard === ERC20) {
     transactionType = TransactionType.tokenMethodTransfer;

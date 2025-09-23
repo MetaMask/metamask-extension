@@ -6,7 +6,6 @@ const {
   unlockWallet,
   withFixtures,
   getEventPayloads,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 const { MOCK_META_METRICS_ID } = require('./constants');
@@ -281,7 +280,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.clickElement('#maliciousApprovalButton');
 
         // Wait for confirmation pop-up
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -296,7 +295,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.clickElement('#maliciousPermit');
 
         // Wait for confirmation pop-up
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
