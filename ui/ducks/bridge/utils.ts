@@ -6,6 +6,7 @@ import {
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   AddNetworkFields,
   NetworkConfiguration,
@@ -209,12 +210,15 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 
 export const isNetworkAdded = (
   v:
+    | MultichainNetworkConfiguration
     | NetworkConfiguration
     | AddNetworkFields
     | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
     | undefined,
 ): v is NetworkConfiguration =>
   v !== undefined &&
+  'rpcEndpoints' in v &&
+  'defaultRpcEndpointIndex' in v &&
   'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
 
 const getTokenImage = (payload: TokenPayload['payload']) => {
@@ -266,7 +270,7 @@ const createBridgeTokenPayload = (
     name?: string;
     assetId?: string;
   },
-  chainId: ChainId | Hex,
+  chainId: ChainId | Hex | CaipChainId,
 ): TokenPayload['payload'] | null => {
   const { assetId, ...rest } = tokenData;
   return toBridgeToken({
@@ -276,7 +280,9 @@ const createBridgeTokenPayload = (
 };
 
 export const getDefaultToToken = (
-  { chainId: targetChainId }: NetworkConfiguration | AddNetworkFields,
+  {
+    chainId: targetChainId,
+  }: NetworkConfiguration | AddNetworkFields | MultichainNetworkConfiguration,
   fromToken: NonNullable<TokenPayload['payload']>,
 ) => {
   const commonPair =
