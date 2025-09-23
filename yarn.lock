@@ -5560,9 +5560,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^43.0.0":
-  version: 43.1.0
-  resolution: "@metamask/bridge-controller@npm:43.1.0"
+"@metamask/bridge-controller@npm:^43.1.0":
+  version: 43.2.1
+  resolution: "@metamask/bridge-controller@npm:43.2.1"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5587,11 +5587,11 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/7d6b28735ea2c523db143bdc06280e3fe601af4b65e260af9d1c62d029c37a04c627baf487e27a2b9850a6bd665cf65700888c637148d168b53a96940d761262
+  checksum: 10/1e7faba83e99e40f5067d72114043bf3aaabbfbb7d58b03d1087ce59bb3b78a51f3f34742c86c52e45a0920c069eb5a7920656ef207f9a0202466adf76c83667
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^43.0.0":
+"@metamask/bridge-status-controller@npm:^43.1.0":
   version: 43.1.0
   resolution: "@metamask/bridge-status-controller@npm:43.1.0"
   dependencies:
@@ -31930,8 +31930,8 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
-    "@metamask/bridge-controller": "npm:^43.0.0"
-    "@metamask/bridge-status-controller": "npm:^43.0.0"
+    "@metamask/bridge-controller": "npm:^43.1.0"
+    "@metamask/bridge-status-controller": "npm:^43.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.1.0"
