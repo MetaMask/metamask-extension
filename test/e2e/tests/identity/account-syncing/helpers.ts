@@ -1,10 +1,10 @@
+import { USER_STORAGE_GROUPS_FEATURE_KEY } from '@metamask/account-tree-controller';
 import { Driver } from '../../../webdriver/driver';
 import {
   AsEnum,
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { USER_STORAGE_GROUPS_FEATURE_KEY } from '@metamask/account-tree-controller';
 
 export const arrangeTestUtils = (
   driver: Driver,

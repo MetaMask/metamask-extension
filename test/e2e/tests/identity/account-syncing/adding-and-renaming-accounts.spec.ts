@@ -1,5 +1,9 @@
 import { Mockttp } from 'mockttp';
 
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { E2E_SRP } from '../../../default-fixture';
 import FixtureBuilder from '../../../fixture-builder';
 import {
@@ -17,13 +21,8 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
-import { arrangeTestUtils } from './helpers';
 import { mockIdentityServices } from '../mocks';
-
-import {
-  USER_STORAGE_GROUPS_FEATURE_KEY,
-  USER_STORAGE_WALLETS_FEATURE_KEY,
-} from '@metamask/account-tree-controller';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
   const DEFAULT_ACCOUNT_NAME = 'Account 1';

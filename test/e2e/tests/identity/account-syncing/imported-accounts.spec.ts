@@ -12,8 +12,8 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { arrangeTestUtils } from './helpers';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Unsupported Account types', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout

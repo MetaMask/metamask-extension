@@ -15,8 +15,8 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
-import { arrangeTestUtils } from './helpers';
 import { mockIdentityServices } from '../mocks';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
