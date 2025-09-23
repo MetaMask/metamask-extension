@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -44,53 +45,69 @@ export const PermissionListItem = ({
   return (
     <Box
       data-testid="permission-list-item"
-      as="button"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.baseline}
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.backgroundDefault}
-      onClick={onClick}
-      padding={4}
-      gap={4}
-      className="multichain-permission-list-item"
     >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        style={{ flex: '1', alignSelf: 'center' }}
-        gap={2}
+      <Button
+        onClick={onClick}
+        className="permission-list-item-button"
+        style={{
+          width: '100%',
+          backgroundColor: 'transparent',
+          border: 'none',
+          padding: 0,
+        }}
       >
-        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
-          {permissionGroupName}
-        </Text>
-      </Box>
-
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexEnd}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        style={{ flex: '1', alignSelf: 'center' }}
-        gap={2}
-      >
-        <Text
-          as="span"
-          width={BlockSize.Max}
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodyMd}
-        >
-          {total}
-        </Text>
-        <Icon
+        <Box
           display={Display.Flex}
-          name={IconName.ArrowRight}
-          color={IconColor.iconDefault}
-          size={IconSize.Sm}
-          backgroundColor={BackgroundColor.backgroundDefault}
-        />
-      </Box>
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.baseline}
+          width={BlockSize.Full}
+          padding={4}
+          gap={4}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            style={{ flex: '1', alignSelf: 'center' }}
+            gap={2}
+          >
+            <Text
+              variant={TextVariant.bodyMd}
+              textAlign={TextAlign.Left}
+              ellipsis
+            >
+              {permissionGroupName}
+            </Text>
+          </Box>
+
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.flexEnd}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            style={{ flex: '1', alignSelf: 'center' }}
+            gap={2}
+          >
+            <Text
+              as="span"
+              width={BlockSize.Max}
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMd}
+            >
+              {total}
+            </Text>
+            <Icon
+              display={Display.Flex}
+              name={IconName.ArrowRight}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+              backgroundColor={BackgroundColor.backgroundDefault}
+            />
+          </Box>
+        </Box>
+      </Button>
     </Box>
   );
 };
