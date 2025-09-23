@@ -484,6 +484,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           heading={t('simulationDetailsIncomingHeading')}
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
+          alertKey={RowAlertKey.IncomingTokens}
+          ownerId={transactionId}
         />
       </Box>
     </SimulationDetailsLayout>
