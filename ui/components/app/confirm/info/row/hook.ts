@@ -7,8 +7,11 @@ import {
   getAddressBookEntry,
   getEnsResolutionByAddress,
   getInternalAccounts,
+  getIsMultichainAccountsState2Enabled,
   getMetadataContractName,
 } from '../../../../../selectors';
+import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { ConfirmInfoRowContext } from './row';
 
 export const useRowContext = () => useContext(ConfirmInfoRowContext);
@@ -18,8 +21,17 @@ export const useFallbackDisplayName = function (address: string): {
   hexAddress: string;
 } {
   const hexAddress = toChecksumHexAddress(address);
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const [accountGroup] = useSelector((state) =>
+    getAccountGroupsByAddress(state as MultichainAccountsState, [hexAddress]),
+  );
+
   const internalAccounts = useSelector(getInternalAccounts);
-  const accountName = getAccountName(internalAccounts, hexAddress);
+  const accountName = isMultichainAccountsState2Enabled
+    ? accountGroup?.metadata.name
+    : getAccountName(internalAccounts, hexAddress);
   const addressBookContact = useSelector((state) =>
     getAddressBookEntry(state, hexAddress),
   );
