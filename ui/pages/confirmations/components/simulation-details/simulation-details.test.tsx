@@ -56,7 +56,9 @@ const renderSimulationDetails = (
   simulationData?: Partial<SimulationData>,
   metricsOnly?: boolean,
   staticRows?: StaticRow[],
-  transactionMetadata?: Partial<TransactionMeta & { smartTransactionStatus?: string }>,
+  transactionMetadata?: Partial<
+    TransactionMeta & { smartTransactionStatus?: string }
+  >,
 ) => {
   const trackAlertActionClicked = jest.fn();
   const trackAlertRender = jest.fn();
