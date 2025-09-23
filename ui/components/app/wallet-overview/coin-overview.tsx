@@ -163,7 +163,7 @@ export const LegacyAggregatedBalance = ({
   return (
     <Skeleton
       isLoading={
-        !(anyEnabledNetworksAreAvailable || !isZeroAmount(balanceToDisplay))
+        !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
       }
     >
       <UserPreferencedCurrencyDisplay
