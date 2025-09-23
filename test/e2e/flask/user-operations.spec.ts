@@ -257,7 +257,7 @@ describe('User Operations', function () {
         maxPriorityFeePerGas: '0x0',
       };
       await driver.openNewPage(
-        `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}}`,
+        `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
       );
 
       await confirmTransaction(driver);
