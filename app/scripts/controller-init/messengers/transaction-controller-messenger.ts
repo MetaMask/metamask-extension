@@ -42,7 +42,6 @@ import {
   InstitutionalSnapControllerPublishHookAction,
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
 } from './accounts/institutional-snap-controller-messenger';
-import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
 
 type MessengerActions =
   | ApprovalControllerActions
@@ -62,8 +61,7 @@ type MessengerActions =
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction
   | TransactionControllerEstimateGasAction
-  | TransactionControllerGetStateAction
-  | PhishingControllerBulkScanTokensAction;
+  | TransactionControllerGetStateAction;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -96,7 +94,6 @@ export function getTransactionControllerMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
-      'PhishingController:bulkScanTokens',
     ],
     allowedEvents: [`NetworkController:stateChange`],
   });
@@ -139,7 +136,6 @@ export function getTransactionControllerInitMessenger(
       'SwapsController:setTradeTxId',
       'TransactionController:estimateGas',
       'TransactionController:getState',
-      'PhishingController:bulkScanTokens',
     ],
   });
 }

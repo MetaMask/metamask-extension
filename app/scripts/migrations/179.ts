@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 177;
+export const version = 179;
 
 /**
  * This migration clears the urlScanCache from PhishingController
