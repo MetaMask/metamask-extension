@@ -11,7 +11,6 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { DEFAULT_SOLANA_WS_MOCKS } from './mocks/websocketDefaultMocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1612,10 +1611,6 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
-      withSolanaWebSocket: {
-        server: true,
-        mocks: DEFAULT_SOLANA_WS_MOCKS,
-      },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.

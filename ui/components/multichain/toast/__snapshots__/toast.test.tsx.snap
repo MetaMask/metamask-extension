@@ -30,7 +30,7 @@ exports[`Toast should render Toast component 1`] = `
                 <rect
                   fill="#018E8C"
                   height="32"
-                  transform="translate(6.427263444332595 -1.7203295797723996) rotate(470.8 16 16)"
+                  transform="translate(6.42726344433259 -1.72032957977240) rotate(470.8 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -38,7 +38,7 @@ exports[`Toast should render Toast component 1`] = `
                 <rect
                   fill="#F93301"
                   height="32"
-                  transform="translate(1.1564119766476293 16.128853746500315) rotate(198.5 16 16)"
+                  transform="translate(1.15641197664763 16.12885374650032) rotate(198.5 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -46,7 +46,7 @@ exports[`Toast should render Toast component 1`] = `
                 <rect
                   fill="#FA6800"
                   height="32"
-                  transform="translate(22.348080171264016 5.115369684577057) rotate(148.9 16 16)"
+                  transform="translate(22.34808017126402 5.11536968457706) rotate(148.9 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"

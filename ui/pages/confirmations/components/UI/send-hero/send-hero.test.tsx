@@ -90,7 +90,7 @@ describe('SendHero', () => {
     symbol: 'ETH',
     image: 'https://token-image.com/eth.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
     standard: AssetStandard.Native,
   };
@@ -100,7 +100,7 @@ describe('SendHero', () => {
     name: 'Cool NFT #123',
     image: 'https://nft-image.com/cool.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
     standard: AssetStandard.ERC721,
     collection: {
@@ -149,7 +149,7 @@ describe('TokenHero', () => {
     symbol: 'USDC',
     image: 'https://token-image.com/usdc.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
   };
 
@@ -187,7 +187,7 @@ describe('TokenHero', () => {
     const avatarNetwork = getByTestId('avatar-network');
     expect(avatarNetwork).toBeInTheDocument();
     expect(avatarNetwork).toHaveAttribute('data-size', 'xs');
-    expect(avatarNetwork).toHaveAttribute('data-name', 'Polygon Mainnet');
+    expect(avatarNetwork).toHaveAttribute('data-name', 'Polygon');
     expect(avatarNetwork).toHaveAttribute('data-src', './images/pol-token.svg');
   });
 
@@ -212,7 +212,7 @@ describe('NFTHero', () => {
     name: 'Cool NFT #123',
     image: 'https://nft-image.com/cool.png',
     chainId: '1',
-    networkName: 'Ethereum Mainnet',
+    networkName: 'Ethereum',
     networkImage: 'https://network-image.com/ethereum.png',
     standard: AssetStandard.ERC721,
     collection: {

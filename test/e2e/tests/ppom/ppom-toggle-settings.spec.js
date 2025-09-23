@@ -3,7 +3,7 @@ const {
   withFixtures,
   unlockWallet,
   openDapp,
-  getWindowHandles,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -35,8 +35,7 @@ describe('PPOM Settings', function () {
 
         await openDapp(driver);
         await driver.clickElement('#maliciousPermit');
-        const windowHandles = await getWindowHandles(driver, 3);
-        await driver.switchToWindow(windowHandles.popup);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const blockaidResponseTitle =
           '[data-testid="security-provider-banner-alert"]';
@@ -62,8 +61,7 @@ describe('PPOM Settings', function () {
 
         await openDapp(driver);
         await driver.clickElement('#maliciousPermit');
-        const windowHandles = await getWindowHandles(driver, 3);
-        await driver.switchToWindow(windowHandles.popup);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const blockaidResponseTitle =
           '[data-testid="security-provider-banner-alert"]';
