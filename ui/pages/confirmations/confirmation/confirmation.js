@@ -13,7 +13,10 @@ import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  NETWORKS_BYPASSING_VALIDATION,
+} from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
@@ -397,9 +400,17 @@ export default function ConfirmationPage({
           setMatchedChain(_matchedChain);
           setChainFetchComplete(true);
           setProviderError(null);
+
+          const isWhitelistedSymbol =
+            NETWORKS_BYPASSING_VALIDATION[
+              _pendingConfirmation.requestData.chainId?.toLowerCase()
+            ]?.symbol?.toLowerCase() ===
+            _pendingConfirmation.requestData.ticker?.toLowerCase();
+
           if (
             _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
-            _pendingConfirmation.requestData.ticker?.toLowerCase()
+              _pendingConfirmation.requestData.ticker?.toLowerCase() ||
+            isWhitelistedSymbol
           ) {
             setCurrencySymbolWarning(null);
           } else {
