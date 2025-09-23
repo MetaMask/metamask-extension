@@ -43,21 +43,23 @@ describe('specificActionERC20TransferBatchBuilder', () => {
     expect(caveat.args).toBe('0x');
     expect(caveat.terms).toBeDefined();
     const endOfTokenAddress = 42;
-    expect(caveat.terms.slice(0, endOfTokenAddress)).toStrictEqual(testTokenAddress);
+    expect(caveat.terms.slice(0, endOfTokenAddress)).toStrictEqual(
+      testTokenAddress,
+    );
     const endOfRecipient = endOfTokenAddress + 40; // excludes 2 leading 0x characters
-    expect(
-      caveat.terms.slice(endOfTokenAddress, endOfRecipient),
-    ).toStrictEqual(testRecipient.slice(2));
+    expect(caveat.terms.slice(endOfTokenAddress, endOfRecipient)).toStrictEqual(
+      testRecipient.slice(2),
+    );
     // the the zero-padded amount is encoded from endOfRecipient to endOfRecipient + 64
     const endOfAmount = endOfRecipient + 64;
     const endOfFirstTarget = endOfAmount + 40; // excludes 2 leading 0x characters
-    expect(
-      caveat.terms.slice(endOfAmount, endOfFirstTarget),
-    ).toStrictEqual(testFirstTarget.slice(2));
+    expect(caveat.terms.slice(endOfAmount, endOfFirstTarget)).toStrictEqual(
+      testFirstTarget.slice(2),
+    );
     const endOfFirstValue = endOfFirstTarget + 64;
-    expect(
-      caveat.terms.slice(endOfFirstTarget, endOfFirstValue),
-    ).toStrictEqual(testFirstValue.slice(2).padStart(64, '0'));
+    expect(caveat.terms.slice(endOfFirstTarget, endOfFirstValue)).toStrictEqual(
+      testFirstValue.slice(2).padStart(64, '0'),
+    );
     expect(caveat.terms.slice(endOfFirstValue)).toStrictEqual(
       testFirstCalldata.slice(2),
     ); // 0x removed from the appended data

@@ -314,7 +314,7 @@ export class Delegation7702PublishHook {
           recipient,
           amount,
           to,
-          value as Hex ?? '0x0',
+          (value as Hex) ?? '0x0',
           data,
         );
       }
