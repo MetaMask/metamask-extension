@@ -160,7 +160,9 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
           );
 
         // Rename the second account
-        await accountListPage.openMultichainAccountMenu(ADDED_ACCOUNT_NAME);
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: ADDED_ACCOUNT_NAME,
+        });
         await accountListPage.clickMultichainAccountMenuItem(
           MultichainAccountMenuItems.Rename,
         );

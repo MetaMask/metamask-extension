@@ -249,8 +249,24 @@ class AccountListPage {
   async addNewImportedAccount(
     privateKey: string,
     expectedErrorMessage?: string,
+    state2?: boolean,
   ): Promise<void> {
     console.log(`Adding new imported account`);
+
+    if (state2) {
+      await this.driver.clickElement(
+        '[data-testid="account-list-add-wallet-button"]',
+      );
+      await this.driver.clickElement(
+        '[data-testid="add-wallet-modal-import-account"]',
+      );
+      await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
+      await this.driver.clickElementAndWaitToDisappear(
+        '[data-testid="import-account-confirm-button"]',
+      );
+      return;
+    }
+
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addImportedAccountButton);
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
@@ -335,11 +351,10 @@ class AccountListPage {
   }) {
     console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
     if (!fromModal) {
-      await this.driver.clickElement(this.createAccountButton);
       let addAccountButton;
       switch (accountType) {
         case ACCOUNT_TYPE.Multichain:
-          return;
+          break;
         case ACCOUNT_TYPE.Ethereum:
           addAccountButton = this.addEthereumAccountButton;
           break;
@@ -353,7 +368,18 @@ class AccountListPage {
           throw new Error('Account type not supported');
       }
 
-      await this.driver.clickElement(addAccountButton);
+      if (accountType === ACCOUNT_TYPE.Multichain) {
+        const createAccountButtons = await this.driver.findElements(
+          this.createAccountButton,
+        );
+        await createAccountButtons[srpIndex ?? 0].click();
+
+        // We return here since we cannot rename multichain accounts at creation
+        return;
+      } else {
+        await this.driver.clickElement(this.createAccountButton);
+        addAccountButton && (await this.driver.clickElement(addAccountButton));
+      }
     }
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
@@ -445,13 +471,17 @@ class AccountListPage {
     await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
-  async openMultichainAccountMenu(accountLabel: string): Promise<void> {
+  async openMultichainAccountMenu(options: {
+    accountLabel: string;
+    srpIndex?: number;
+  }): Promise<void> {
     console.log(
-      `Open multichain account menu in account list for account ${accountLabel}`,
+      `Open multichain account menu in account list for account ${options.accountLabel}`,
     );
-    await this.driver.clickElement(
-      `${this.multichainAccountOptionsMenuButton}[aria-label="${accountLabel} options"]`,
+    const multichainAccountMenuIcons = await this.driver.findElements(
+      `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
     );
+    await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
   }
 
   async clickMultichainAccountMenuItem(
@@ -899,8 +929,21 @@ class AccountListPage {
     console.log(`Account with label ${accountLabel} selected`);
   }
 
-  async startImportSecretPhrase(srp: string): Promise<void> {
+  async startImportSecretPhrase(srp: string, state2?: boolean): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
+
+    if (state2) {
+      await this.driver.clickElement(
+        '[data-testid="account-list-add-wallet-button"]',
+      );
+      await this.driver.clickElement(
+        '[data-testid="add-wallet-modal-import-wallet"]',
+      );
+      await this.driver.pasteIntoField(this.importSrpInput, srp);
+      await this.driver.clickElement(this.importSrpConfirmButton);
+      return;
+    }
+
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.importSrpButton);
     await this.driver.waitForSelector(this.importSrpModalTitle);

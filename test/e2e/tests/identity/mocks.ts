@@ -146,7 +146,6 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
 
 type MockInfuraAndAccountSyncOptions = {
   accountsToMockBalances?: string[];
-  accountsSyncResponse?: UserStorageResponseData[];
 };
 
 const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
@@ -169,25 +168,25 @@ export async function mockInfuraAndAccountSync(
 
   // Set up User Storage / Account Sync mock
   userStorageMockttpController.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
+    USER_STORAGE_WALLETS_FEATURE_KEY,
     mockServer,
   );
 
   userStorageMockttpController.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
+    USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
-    {
-      getResponse: options.accountsSyncResponse ?? undefined,
-    },
   );
 
   // Account Balances
   if (accounts.length > 0) {
     accounts.forEach((account) => {
+      console.log('OLA: ', account);
+
       mockServer
         .forPost(INFURA_URL)
+        .always()
         .withJsonBodyIncluding({
-          method: 'eth_getBalance',
+          method: 'eth_getTransactionCount',
           params: [account.toLowerCase()],
         })
         .thenCallback(() => ({

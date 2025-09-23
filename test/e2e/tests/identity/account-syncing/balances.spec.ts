@@ -12,6 +12,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { E2E_SRP } from '../../../default-fixture';
 import { arrangeTestUtils } from './helpers';
+import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -20,7 +21,7 @@ describe('Account syncing - Accounts with Balances', function () {
   const balancesAccounts = [
     '0x5cfe73b6021e818b776b421b1c4db2474086a7e1', // Account 1 (synced)
     '0x09781764c08de8ca82e156bbf156a3ca217c7950', // Account 2 (synced)
-    '0x08C215b461932f44Fab0D15E5d1FF4C5aF591AF0', // Account 3 (discovered via balance)
+    '0x7de4768c33db8785f75075a054aeeed7e01c4497', // Account 3 (discovered via balance)
   ];
 
   /**
@@ -28,12 +29,11 @@ describe('Account syncing - Accounts with Balances', function () {
    * Phase 1: Add accounts that sync to user storage (2 accounts)
    * Phase 2: Complete onboarding flow with balance mocking - should discover additional accounts with balances (3 total: 2 synced + 1 discovered)
    */
-  // TODO: Re-write this test when multichain account syncing has been merged
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should gracefully handle adding accounts with balances and synced accounts', async function () {
+  it('(state 2) - gracefully handles adding accounts with balances and synced accounts', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
@@ -71,7 +71,7 @@ describe('Account syncing - Accounts with Balances', function () {
 
         // Add another second account
         await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
+          accountType: ACCOUNT_TYPE.Multichain,
         });
 
         // Wait for sync operation to complete
@@ -79,8 +79,6 @@ describe('Account syncing - Accounts with Balances', function () {
         await waitUntilEventsEmittedNumberEquals(1);
 
         // Reopen account menu to verify both accounts are visible
-        await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList('Account 2');
 
@@ -90,6 +88,7 @@ describe('Account syncing - Accounts with Balances', function () {
 
     // Phase 2: Fresh onboarding with balance mocking to discover additional accounts
     const phase2MockSetup = (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
