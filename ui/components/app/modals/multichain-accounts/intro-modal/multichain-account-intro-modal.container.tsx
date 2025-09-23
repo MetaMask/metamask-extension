@@ -52,7 +52,9 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
       // Wait for existing alignment + minimum 2s UX delay
       await Promise.all([
         alignmentPromiseRef.current || Promise.resolve(),
-        new Promise<void>((resolve) => setTimeout(resolve, MINIMUM_LOADING_TIME_MS)),
+        new Promise<void>((resolve) =>
+          setTimeout(resolve, MINIMUM_LOADING_TIME_MS),
+        ),
       ]);
     } catch (err) {
       console.error('Wallet alignment failed:', err);
@@ -79,11 +81,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page
-    window.open(
-      SUPPORT_URL,
-      '_blank',
-      'noopener,noreferrer',
-    );
+    window.open(SUPPORT_URL, '_blank', 'noopener,noreferrer');
   }, []);
 
   const handleClose = useCallback(async () => {
