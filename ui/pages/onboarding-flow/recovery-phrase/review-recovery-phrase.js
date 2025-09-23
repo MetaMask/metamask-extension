@@ -226,6 +226,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             size={ButtonSize.Lg}
             onClick={handleRemindLater}
             type="button"
+            data-testid="recovery-phrase-remind-later"
           >
             {t('secureWalletRemindLaterButton')}
           </Button>

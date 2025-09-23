@@ -28,6 +28,9 @@ class SecureWalletPage {
   private readonly secureWalletButton =
     '[data-testid="secure-wallet-recommended"]';
 
+  private readonly secureWalletRecommendedButton =
+    '[data-testid="recovery-phrase-remind-later"]';
+
   private readonly secureWalletLaterButton =
     '[data-testid="secure-wallet-later"]';
 
@@ -67,9 +70,7 @@ class SecureWalletPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.secureWalletMessage,
-        this.secureWalletButton,
-        this.secureWalletLaterButton,
+        this.secureWalletRecommendedButton,
       ]);
     } catch (e) {
       console.log(
@@ -78,7 +79,7 @@ class SecureWalletPage {
       );
       throw e;
     }
-    console.log('Secure wallet page is loaded');
+    console.log('Reveal SRP page is loaded');
   }
 
   /**
@@ -90,8 +91,6 @@ class SecureWalletPage {
     console.log(
       'Reveal and confirm SRP on secure wallet page during onboarding',
     );
-    // click secure my wallet button to reveal SRP
-    await this.driver.clickElement(this.secureWalletButton);
     if (needEnterPassword) {
       await this.driver.fill(this.passwordInput, needEnterPassword);
       await this.driver.clickElement(this.confirmPasswordButton);
@@ -154,8 +153,6 @@ class SecureWalletPage {
 
   async revealAndDoNotConfirmSRP(): Promise<void> {
     console.log('Do not confirm SRP on secure wallet page during onboarding');
-    // click secure my wallet button to reveal SRP
-    await this.driver.clickElement(this.secureWalletButton);
     await this.driver.waitForMultipleSelectors([
       this.writeDownSecretRecoveryPhraseMessage,
       this.revealSecretRecoveryPhraseButton,
@@ -185,13 +182,8 @@ class SecureWalletPage {
   }
 
   async skipSRPBackup(): Promise<void> {
-    console.log('Skip SRP backup on secure wallet page during onboarding');
-    await this.driver.clickElement(this.secureWalletLaterButton);
-    await this.driver.waitForSelector(this.skipAccountSecurityMessage);
-    await this.driver.clickElement(this.skipSRPBackupCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.skipSRPBackupConfirmButton,
-    );
+    console.log('Skip SRP backup on Reveal SRP Onboarding page');
+    await this.driver.clickElement(this.secureWalletRecommendedButton);
   }
 }
 
