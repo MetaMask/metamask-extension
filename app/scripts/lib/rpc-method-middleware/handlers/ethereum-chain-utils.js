@@ -177,7 +177,6 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
  * @param {Function} hooks.setEnabledNetworks - The callback to set the enabled networks.
- * @param {Function} hooks.setEnabledNetworksByNamespace - The callback to set the enabled networks by namespace.
  * @param {Function} hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
  * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
  * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
