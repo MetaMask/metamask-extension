@@ -2888,12 +2888,17 @@ export default class MetamaskController extends EventEmitter {
       setSelectedMultichainAccount: (accountGroupId) => {
         this.accountTreeController.setSelectedAccountGroup(accountGroupId);
       },
-
       setAccountGroupName: (accountGroupId, accountGroupName) => {
         this.accountTreeController.setAccountGroupName(
           accountGroupId,
           accountGroupName,
         );
+      },
+      syncAccountTreeWithUserStorage: async () => {
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorage();
       },
 
       // MultichainAccountService
@@ -3536,12 +3541,6 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
-      // AccountTreeController backup and sync
-      syncAccountTreeWithUserStorage:
-        this.accountTreeController.syncWithUserStorage.bind(
-          this.accountTreeController,
-        ),
-
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
