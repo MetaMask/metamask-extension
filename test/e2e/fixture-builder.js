@@ -47,7 +47,7 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
-        hasShownMultichainIntroModal: true,
+        hasShownMultichainAccountsIntroModal: true,
       },
       NetworkController: {
         ...mockNetworkStateOld({

@@ -240,7 +240,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
   updateModalLastDismissedAt: null,
-    hasShownMultichainAccountsIntroModal: false,
+  hasShownMultichainAccountsIntroModal: false,
 
   ...getInitialStateOverrides(),
 });
@@ -528,12 +528,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
   },
-    hasShownMultichainAccountsIntroModal: {
-      persist: true,
-      anonymous: true,
-      usedInUi: true,
-      includeInStateLogs: true,
-    },
+  hasShownMultichainAccountsIntroModal: {
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
 };
 
 export class AppStateController extends BaseController<

@@ -2,13 +2,7 @@
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable import/extensions */
 import classnames from 'classnames';
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
@@ -376,7 +370,6 @@ export default function Routes() {
   const history = useHistory();
   const location = useLocation();
 
-
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
   const isLoading = useAppSelector((state) => state.appState.isLoading);
@@ -503,7 +496,6 @@ export default function Routes() {
     totalUnapprovedConfirmationCount,
     dispatch,
   ]);
-
 
   useEffect(() => {
     // Terminate the popup when another popup is opened

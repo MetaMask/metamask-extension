@@ -7031,7 +7031,9 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
 
 export function setMultichainAccountsIntroModalShown(value: boolean) {
   return async () => {
-    await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [value]);
+    await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
+      value,
+    ]);
   };
 }
 

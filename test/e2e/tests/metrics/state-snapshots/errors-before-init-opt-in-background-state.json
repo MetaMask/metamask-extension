@@ -46,7 +46,7 @@
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true,
-      "hasShownMultichainIntroModal": "boolean"
+      "hasShownMultichainAccountsIntroModal": "boolean"
     },
     "BridgeController": {},
     "CurrencyController": {
