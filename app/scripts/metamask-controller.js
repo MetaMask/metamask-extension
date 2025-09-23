@@ -5782,11 +5782,12 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // First account is the active Hyperliquid account
-    const permittedAccount = permittedAccounts[0];
+    const activePermittedAccount = permittedAccounts[0];
 
     const referralStatusByAccount =
       this.preferencesController.state.referrals.hyperliquid;
-    const permittedAccountStatus = referralStatusByAccount[permittedAccount];
+    const permittedAccountStatus =
+      referralStatusByAccount[activePermittedAccount];
     const declinedAccounts = Object.keys(referralStatusByAccount).filter(
       (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
     );
@@ -5808,25 +5809,33 @@ export default class MetamaskController extends EventEmitter {
       const approvalResponse = await this.approvalController.add({
         origin: HYPERLIQUID_ORIGIN,
         type: HYPERLIQUID_APPROVAL_TYPE,
-        requestData: { selectedAddress: permittedAccount },
+        requestData: { selectedAddress: activePermittedAccount },
         shouldShowRequest:
           triggerType === HyperliquidPermissionTriggerType.NewConnection,
       });
 
       if (approvalResponse?.approved) {
         this._handleHyperliquidApprovedAccount(
-          permittedAccount,
+          activePermittedAccount,
           permittedAccounts,
           declinedAccounts,
         );
-        await this._handleHyperliquidReferralRedirect(tabId, permittedAccount);
+        await this._handleHyperliquidReferralRedirect(
+          tabId,
+          activePermittedAccount,
+        );
       } else {
-        this.preferencesController.addReferralDeclinedAccount(permittedAccount);
+        this.preferencesController.addReferralDeclinedAccount(
+          activePermittedAccount,
+        );
       }
     }
 
     if (shouldRedirect) {
-      await this._handleHyperliquidReferralRedirect(tabId, permittedAccount);
+      await this._handleHyperliquidReferralRedirect(
+        tabId,
+        activePermittedAccount,
+      );
     }
   }
 
@@ -5845,12 +5854,12 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Handles referral states for permitted accounts after user approval.
    *
-   * @param {string} permittedAccount - The permitted account.
+   * @param {string} activePermittedAccount - The active permitted account.
    * @param {string[]} permittedAccounts - The permitted accounts.
    * @param {string[]} declinedAccounts - The previously declined permitted accounts.
    */
   _handleHyperliquidApprovedAccount(
-    permittedAccount,
+    activePermittedAccount,
     permittedAccounts,
     declinedAccounts,
   ) {
@@ -5860,7 +5869,9 @@ export default class MetamaskController extends EventEmitter {
       // shown the approval screen unnecessarily when switching
       this.preferencesController.setAccountsReferralApproved(permittedAccounts);
     } else {
-      this.preferencesController.addReferralApprovedAccount(permittedAccount);
+      this.preferencesController.addReferralApprovedAccount(
+        activePermittedAccount,
+      );
       // If there are any previously declined accounts then
       // we do not approve them, but instead remove them from the declined list
       // so they have the option to participate again in future
