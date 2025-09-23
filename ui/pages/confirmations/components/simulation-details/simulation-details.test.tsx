@@ -190,7 +190,9 @@ describe('SimulationDetails', () => {
     });
 
     // Test confirmed status
-    renderSimulationDetails({}, false, [], { status: TransactionStatus.confirmed });
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.confirmed,
+    });
     expect(BalanceChangeList).toHaveBeenCalledWith(
       expect.objectContaining({
         heading: 'You sent',
@@ -200,7 +202,9 @@ describe('SimulationDetails', () => {
     );
 
     // Test submitted status
-    renderSimulationDetails({}, false, [], { status: TransactionStatus.submitted });
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+    });
     expect(BalanceChangeList).toHaveBeenCalledWith(
       expect.objectContaining({
         heading: "You're sending",
@@ -210,7 +214,9 @@ describe('SimulationDetails', () => {
     );
 
     // Test default (unapproved status)
-    renderSimulationDetails({}, false, [], { status: TransactionStatus.unapproved });
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+    });
     expect(BalanceChangeList).toHaveBeenCalledWith(
       expect.objectContaining({
         heading: 'You send',
