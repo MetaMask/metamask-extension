@@ -122,7 +122,7 @@ describe('useBridging', () => {
       ],
       [
         '/asset/0xa/',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/slip44:60&swaps=true',
         ETH_SWAPS_TOKEN_OBJECT,
         MetaMetricsSwapsEventSource.TokenView,
         true,
@@ -157,7 +157,7 @@ describe('useBridging', () => {
         const { result, history } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
             metaMetricsId: MOCK_METAMETRICS_ID,
             remoteFeatureFlags: {
               bridgeConfig: {

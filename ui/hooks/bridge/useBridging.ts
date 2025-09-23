@@ -67,15 +67,14 @@ const useBridging = () => {
         defaultTokenPair ?? [];
 
       const srcAssetIdToUse =
-        // If srcToken is present, use the srcToken assetId
         (srcToken
           ? toAssetId(
               srcToken.address,
               formatChainIdToCaip(srcToken.chainId ?? providerConfig.chainId),
             )
-          : // Otherwise, use the default bip44 src asset id
-            defaultBip44SrcAssetId) ??
-        // Otherwise, use the native asset for Ethereum mainnet
+          : defaultBip44SrcAssetId) ??
+        // If neither the srcAsset or default BIP44 default pair are present
+        // use the native asset for Ethereum mainnet
         // This should only happen if the feature flags are unavailable and the
         // user clicks on Swap from the home page
         getNativeAssetForChainId(CHAIN_IDS.MAINNET)?.assetId;

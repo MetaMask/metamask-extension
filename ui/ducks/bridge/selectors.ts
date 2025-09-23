@@ -289,7 +289,6 @@ export const getToToken = createSelector(
     if (toToken) {
       return toToken;
     }
-    // TODO if fromToken is in bip44Defaults, return its mapped toToken
     // Otherwise, determine the default token to use based on fromToken and toChain
     const defaultToken = getDefaultToToken(
       formatChainIdToCaip(toChain.chainId),
