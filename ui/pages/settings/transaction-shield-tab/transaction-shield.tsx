@@ -30,7 +30,6 @@ import {
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../../components/ui/tooltip';
-import { FileUploader } from '../../../components/component-library/components-temp/file-uploader';
 import CancelMembershipModal from './cancel-membership-modal';
 
 const MEMBERSHIP_ERROR_STATES = {
@@ -283,28 +282,6 @@ const TransactionShield = () => {
       flexDirection={FlexDirection.Column}
       padding={4}
     >
-      <Box>
-        <FileUploader
-          id="upload-images-file-uploader"
-          label="Upload images"
-          acceptInfo="PDF, PNG, JPG (MAX. 5MB)"
-          helpText="If you have any additional evidence, please upload it here"
-          maxFileSize={5}
-          filesProps={{
-            width: BlockSize.Half,
-          }}
-          accept={[
-            'application/pdf',
-            'image/png',
-            'image/jpg',
-            'image/jpeg',
-          ].join(',')}
-          onChange={(files) => {
-            console.log('check: onChange', files);
-          }}
-          marginBottom={8}
-        />
-      </Box>
       {membershipErrorState !== null && (
         <BannerAlert
           severity={membershipErrorDetails[membershipErrorState].severity}
