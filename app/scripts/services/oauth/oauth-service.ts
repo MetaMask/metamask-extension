@@ -1,20 +1,42 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
+import log from 'loglevel';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
-import type {
+import {
   OAuthConfig,
   OAuthLoginEnv,
   OAuthLoginResult,
   OAuthRefreshTokenResult,
+  OAuthServiceAction,
+  OAuthServiceEvent,
   OAuthServiceOptions,
+  SERVICE_NAME,
+  ServiceName,
   WebAuthenticator,
 } from './types';
 import { loadOAuthConfig } from './config';
 
+const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
+  '/api/v1/oauth/marketing_opt_in_status';
+
 export default class OAuthService {
+  // Required for modular initialisation.
+  name: ServiceName = SERVICE_NAME;
+
+  state = null;
+
+  #messenger: RestrictedMessenger<
+    typeof SERVICE_NAME,
+    OAuthServiceAction,
+    OAuthServiceEvent,
+    OAuthServiceAction['type'],
+    OAuthServiceEvent['type']
+  >;
+
   #env: OAuthConfig & OAuthLoginEnv;
 
   #webAuthenticator: WebAuthenticator;
@@ -24,11 +46,14 @@ export default class OAuthService {
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
 
   constructor({
+    messenger,
     env,
     webAuthenticator,
     bufferedTrace,
     bufferedEndTrace,
   }: OAuthServiceOptions) {
+    this.#messenger = messenger;
+
     const oauthConfig = loadOAuthConfig();
     this.#env = {
       ...env,
@@ -37,6 +62,26 @@ export default class OAuthService {
     this.#webAuthenticator = webAuthenticator;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:startOAuthLogin`,
+      this.startOAuthLogin.bind(this),
+    );
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:getNewRefreshToken`,
+      this.getNewRefreshToken.bind(this),
+    );
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:revokeRefreshToken`,
+      this.revokeRefreshToken.bind(this),
+    );
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:renewRefreshToken`,
+      this.renewRefreshToken.bind(this),
+    );
   }
 
   /**
@@ -89,14 +134,14 @@ export default class OAuthService {
   }
 
   /**
-   * Revoke the current refresh token and get a new refresh token.
+   * Renew the refresh token - get a new refresh token and revoke token.
    *
    * @param options - The options for the revoke and get new refresh token.
    * @param options.connection - The social login type to login with.
-   * @param options.revokeToken - The revoke token to authenticate the revoke request.
+   * @param options.revokeToken - The revoke token to authenticate the request.
    * @returns The new refresh token and revoke token.
    */
-  async revokeAndGetNewRefreshToken(options: {
+  async renewRefreshToken(options: {
     connection: AuthConnection;
     revokeToken: string;
   }): Promise<{ newRevokeToken: string; newRefreshToken: string }> {
@@ -107,11 +152,25 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    const res = await loginHandler.revokeRefreshToken(revokeToken);
+    const res = await loginHandler.renewRefreshToken(revokeToken);
     return {
       newRefreshToken: res.refresh_token,
       newRevokeToken: res.revoke_token,
     };
+  }
+
+  async revokeRefreshToken(options: {
+    connection: AuthConnection;
+    revokeToken: string;
+  }): Promise<void> {
+    const { connection, revokeToken } = options;
+    const loginHandler = createLoginHandler(
+      connection,
+      this.#env,
+      this.#webAuthenticator,
+    );
+
+    await loginHandler.revokeRefreshToken(revokeToken);
   }
 
   /**
@@ -309,5 +368,73 @@ export default class OAuthService {
   #isUserCancelledLoginError(): boolean {
     const error = checkForLastError();
     return error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
+  }
+
+  async setMarketingConsent(
+    hasEmailMarketingConsent: boolean,
+  ): Promise<boolean> {
+    const state = this.#messenger.call('SeedlessOnboardingController:getState');
+    const { accessToken } = state;
+    if (!accessToken) {
+      throw new Error('No access token found');
+    }
+
+    const requestData = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      opt_in_status: hasEmailMarketingConsent,
+    };
+
+    const res = await fetch(
+      `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(requestData),
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error('Failed to post marketing opt in status');
+    }
+
+    return res.ok;
+  }
+
+  async getMarketingConsent(): Promise<boolean> {
+    try {
+      const state = this.#messenger.call(
+        'SeedlessOnboardingController:getState',
+      );
+      const { accessToken } = state;
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
+
+      const res = await fetch(
+        `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error('Failed to get marketing opt in status');
+      }
+
+      const data = await res.json();
+
+      return Boolean(data?.is_opt_in ?? false);
+    } catch (error) {
+      log.error('Failed to get marketing opt in status', error);
+      return false;
+    }
   }
 }

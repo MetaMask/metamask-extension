@@ -3,9 +3,12 @@ import { render, fireEvent } from '@testing-library/react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getImageForChainId } from '../../../utils/network';
+import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
+import { AssetFilterMethod } from '../../../context/send-metrics';
 import { NetworkFilter } from './network-filter';
 
 jest.mock('../../../../../hooks/useI18nContext');
+jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 jest.mock('../../../../../../shared/constants/bridge', () => ({
   NETWORK_TO_SHORT_NETWORK_NAME_MAP: {
     '1': 'Ethereum',
@@ -19,8 +22,7 @@ jest.mock('../../../../../components/component-library', () => ({
     ...props
   }: {
     children: React.ReactNode;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
+    [key: string]: unknown;
   }) => (
     <div data-testid="box" {...props}>
       {children}
@@ -33,8 +35,7 @@ jest.mock('../../../../../components/component-library', () => ({
   }: {
     children: React.ReactNode;
     onClick: () => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
+    [key: string]: unknown;
   }) => (
     <button
       data-testid="send-network-filter-toggle"
@@ -42,6 +43,26 @@ jest.mock('../../../../../components/component-library', () => ({
       {...props}
     >
       {children}
+    </button>
+  ),
+  ButtonIcon: ({
+    onClick,
+    iconName,
+    ariaLabel,
+    ...props
+  }: {
+    onClick: () => void;
+    iconName: string;
+    ariaLabel: string;
+    [key: string]: unknown;
+  }) => (
+    <button
+      data-testid="close-recipient-modal-btn"
+      onClick={onClick}
+      aria-label={ariaLabel}
+      {...props}
+    >
+      <div data-testid={`icon-${iconName}`} />
     </button>
   ),
   Modal: ({
@@ -69,8 +90,9 @@ jest.mock('../../../../../components/component-library', () => ({
     <div data-testid="avatar-network" data-name={name} data-src={src} />
   ),
   ButtonBaseSize: { Md: 'md' },
+  ButtonIconSize: { Sm: 'sm' },
   ModalContentSize: { Md: 'md' },
-  IconName: { ArrowDown: 'arrow-down', Global: 'global' },
+  IconName: { ArrowDown: 'arrow-down', Global: 'global', Close: 'close' },
   IconSize: { Sm: 'sm', Xl: 'xl' },
   AvatarNetworkSize: { Sm: 'sm' },
 }));
@@ -103,6 +125,9 @@ describe('NetworkFilter', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockGetImageForChainId = jest.mocked(getImageForChainId);
   const mockOnChainIdChange = jest.fn();
+  const mockUseAssetSelectionMetrics = jest.mocked(useAssetSelectionMetrics);
+  const mockAddAssetFilterMethod = jest.fn();
+  const mockRemoveAssetFilterMethod = jest.fn();
 
   const mockTokens = [
     { chainId: '1', fiat: { balance: 100 } },
@@ -115,6 +140,10 @@ describe('NetworkFilter', () => {
   beforeEach(() => {
     mockUseI18nContext.mockReturnValue((key: string) => key);
     mockGetImageForChainId.mockReturnValue('mock-image-url');
+    mockUseAssetSelectionMetrics.mockReturnValue({
+      addAssetFilterMethod: mockAddAssetFilterMethod,
+      removeAssetFilterMethod: mockRemoveAssetFilterMethod,
+    } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
   });
 
   afterEach(() => {
@@ -237,5 +266,27 @@ describe('NetworkFilter', () => {
     expect(networkItems[1]).toHaveAttribute('data-name', 'Ethereum');
     expect(networkItems[2]).toHaveAttribute('data-name', 'Arbitrum');
     expect(networkItems[3]).toHaveAttribute('data-name', 'Polygon');
+  });
+
+  describe('metrics', () => {
+    it('calls addAssetFilterMethod when network is changed', () => {
+      const { getByTestId, getAllByTestId } = render(
+        <NetworkFilter
+          tokens={mockTokens}
+          nfts={mockNfts}
+          selectedChainId="1"
+          onChainIdChange={mockOnChainIdChange}
+        />,
+      );
+
+      fireEvent.click(getByTestId('send-network-filter-toggle'));
+      const networkItems = getAllByTestId('network-list-item');
+
+      fireEvent.click(networkItems[0]);
+
+      expect(mockRemoveAssetFilterMethod).toHaveBeenCalledWith(
+        AssetFilterMethod.Network,
+      );
+    });
   });
 });

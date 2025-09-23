@@ -9,7 +9,16 @@ const {
 } = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 
-const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  ARBITRUM_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
+  CHAIN_IDS,
+  LOCALHOST_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
+} = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
@@ -38,12 +47,13 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        hasShownMultichainAccountsIntroModal: true,
       },
       NetworkController: {
         ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           blockExplorerUrl: undefined,
@@ -92,6 +102,7 @@ function onboardingFixture() {
           },
           tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
+          avatarType: 'maskicon',
         },
         useExternalServices: true,
         theme: 'light',
@@ -316,7 +327,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.BSC,
-          nickname: 'Binance Chain',
+          nickname: BNB_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
@@ -331,6 +342,12 @@ class FixtureBuilder {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
+  withNetworkControllerOnArbitrumGoerli() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'arbitrum-goerli',
+    });
+  }
+
   withNetworkControllerOnLinea() {
     return this.withNetworkController({
       selectedNetworkClientId: 'linea-mainnet',
@@ -342,7 +359,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.LINEA_MAINNET,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
@@ -358,7 +375,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -374,7 +391,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: POLYGON_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -1935,7 +1952,7 @@ class FixtureBuilder {
       networkConfigurations: {
         'op-mainnet': {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'OP Mainnet',
+          nickname: OPTIMISM_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.optimism.io',
           ticker: 'ETH',
@@ -1943,7 +1960,7 @@ class FixtureBuilder {
         },
         'polygon-mainnet': {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: POLYGON_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://polygon-rpc.com',
           ticker: 'MATIC',
@@ -1951,7 +1968,7 @@ class FixtureBuilder {
         },
         'arbitrum-one': {
           chainId: CHAIN_IDS.ARBITRUM,
-          nickname: 'Arbitrum One',
+          nickname: ARBITRUM_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://arb1.arbitrum.io/rpc',
           ticker: 'ETH',
@@ -1959,7 +1976,7 @@ class FixtureBuilder {
         },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
-          nickname: 'Avalanche Network C-Chain',
+          nickname: AVALANCHE_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
@@ -1967,7 +1984,7 @@ class FixtureBuilder {
         },
         'bnb-mainnet': {
           chainId: CHAIN_IDS.BSC,
-          nickname: 'BNB Chain',
+          nickname: BNB_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
@@ -1975,7 +1992,7 @@ class FixtureBuilder {
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
-          nickname: 'zkSync Era',
+          nickname: ZK_SYNC_ERA_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.era.zksync.io',
           ticker: 'ETH',
@@ -2076,7 +2093,6 @@ class FixtureBuilder {
       isAccountSyncingEnabled = true,
       isProfileSyncingUpdateLoading = false,
       isAccountSyncingUpdateLoading = false,
-      hasAccountSyncingSyncedAtLeastOnce = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
@@ -2084,7 +2100,6 @@ class FixtureBuilder {
       isAccountSyncingEnabled,
       isProfileSyncingUpdateLoading,
       isAccountSyncingUpdateLoading,
-      hasAccountSyncingSyncedAtLeastOnce,
     });
     return this;
   }

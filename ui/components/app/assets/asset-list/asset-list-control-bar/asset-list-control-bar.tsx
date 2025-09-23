@@ -8,16 +8,26 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import {
+  Hex,
+  isStrictHexString,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
+  getIsMultichainAccountsState2Enabled,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
-import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   AvatarNetwork,
@@ -46,6 +56,7 @@ import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_CHAINS,
 } from '../../../../../../shared/constants/network';
@@ -106,7 +117,14 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -114,6 +132,11 @@ const AssetListControlBar = ({
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -151,10 +174,13 @@ const AssetListControlBar = ({
     );
   }, [currentMultichainNetwork.network.chainId]);
 
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chainId) => {
-    allOpts[chainId] = true;
-  });
+  const allOpts: Record<string, boolean> = useMemo(() => {
+    const opts: Record<string, boolean> = {};
+    Object.keys(allNetworks || {}).forEach((chainId) => {
+      opts[chainId] = true;
+    });
+    return opts;
+  }, [allNetworks]);
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -178,7 +204,12 @@ const AssetListControlBar = ({
         }),
       );
     }
-  }, []);
+  }, [
+    allOpts,
+    currentMultichainNetwork.network.chainId,
+    dispatch,
+    networksToDisplay,
+  ]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
@@ -286,6 +317,14 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      namespace !== KnownCaipNamespace.Eip155 &&
+      Object.keys(enabledNetworksByNamespace).length > 1
+    ) {
+      return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
+    }
+
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
@@ -293,6 +332,7 @@ const AssetListControlBar = ({
     ) {
       return t('allNetworks');
     }
+
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length === 0
@@ -317,6 +357,51 @@ const AssetListControlBar = ({
     currentMultichainNetwork?.nickname,
     t,
     allNetworks,
+    namespace,
+  ]);
+
+  const networkButtonTextEnabledAccountState2 = useMemo(() => {
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworksForAllNamespaces).length === 1
+    ) {
+      const chainId = allEnabledNetworksForAllNamespaces[0];
+      return isStrictHexString(chainId)
+        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
+        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+    }
+
+    // > 1 network selected, show "all networks"
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworksForAllNamespaces).length > 1
+    ) {
+      return t('allPopularNetworks');
+    }
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(allEnabledNetworksForAllNamespaces).length === 0
+    ) {
+      return t('noNetworksSelected');
+    }
+    if (
+      (!isGlobalNetworkSelectorRemoved &&
+        isTokenNetworkFilterEqualCurrentNetwork) ||
+      (!isGlobalNetworkSelectorRemoved &&
+        !currentMultichainNetwork.isEvmNetwork)
+    ) {
+      return currentMultichainNetwork?.nickname ?? t('currentNetwork');
+    }
+
+    return t('popularNetworks');
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    currentMultichainNetwork.isEvmNetwork,
+    currentMultichainNetwork.network.nickname,
+    currentMultichainNetwork?.nickname,
+    t,
+    allNetworks,
+    allEnabledNetworksForAllNamespaces,
   ]);
 
   const singleNetworkIconUrl = useMemo(() => {
@@ -330,11 +415,9 @@ const AssetListControlBar = ({
       return undefined;
     }
 
-    return currentMultichainNetwork?.network?.rpcPrefs?.imageUrl;
-  }, [
-    currentMultichainNetwork?.network?.rpcPrefs?.imageUrl,
-    enabledNetworksByNamespace,
-  ]);
+    const singleEnabledChainId = chainIds[0];
+    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
+  }, [enabledNetworksByNamespace]);
 
   return (
     <Box
@@ -371,12 +454,14 @@ const AssetListControlBar = ({
               <AvatarNetwork
                 name={currentMultichainNetwork.nickname}
                 src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Sm}
+                size={AvatarNetworkSize.Xs}
                 borderWidth={0}
               />
             )}
             <Text variant={TextVariant.bodySmMedium} ellipsis>
-              {networkButtonText}
+              {isMultichainAccountsState2Enabled
+                ? networkButtonTextEnabledAccountState2
+                : networkButtonText}
             </Text>
           </Box>
         </ButtonBase>

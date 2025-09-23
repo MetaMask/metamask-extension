@@ -1358,6 +1358,17 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+/**
+ * privacy mode preference
+ *
+ * @param state
+ * @returns {boolean}
+ */
+export function getPrivacyMode(state) {
+  const { privacyMode } = getPreferences(state);
+  return Boolean(privacyMode);
+}
+
 export function getUseExternalNameSources(state) {
   return state.metamask.useExternalNameSources;
 }
@@ -3048,6 +3059,17 @@ export function getIsAddSnapAccountEnabled(state) {
 export function getIsSolanaTestnetSupportEnabled(state) {
   const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
   return Boolean(solanaTestnetsEnabled);
+}
+
+/**
+ * Get the state of the `bitcoinTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinTestnetsEnabled` remote feature flag.
+ */
+export function getIsBitcoinTestnetSupportEnabled(state) {
+  const { bitcoinTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(bitcoinTestnetsEnabled);
 }
 
 export function getIsWatchEthereumAccountEnabled(state) {

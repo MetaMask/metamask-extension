@@ -75,7 +75,9 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
             variant={TextVariant.bodyMdMedium}
             color={TextColor.textAlternative}
           >
-            {t('accountDetailsSrpBackUpMessage')}
+            {shouldShowBackupReminder
+              ? t('accountDetailsSrpBackUpMessage')
+              : t('srpListStateBackedUp')}
           </Text>
           <Icon
             name={IconName.ArrowRight}

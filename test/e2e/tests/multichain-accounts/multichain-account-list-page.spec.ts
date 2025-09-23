@@ -27,9 +27,11 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
 
         // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$ n/a');
+        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
+        // FIXME: Account index are scoped per wallet now, so we have now easy way
+        // to check for "Wallet 2" accounts.
+        // await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
       },
     );
   });
@@ -50,9 +52,10 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
 
         // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$ n/a');
+        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
+        // FIXME: Wallets temporarily uses "Account N" name pattern.
+        // await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
       },
     );
   });
@@ -87,11 +90,12 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         );
 
         // Ensure that an SSK account within the wallet is displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$ n/a');
+        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        await accountListPage.checkMultichainAccountNameDisplayed(
-          'Snap Account 1',
-        );
+        // FIXME: Wallets temporarily uses "Account N" account name pattern.
+        // await accountListPage.checkMultichainAccountNameDisplayed(
+        //   'Snap Account 1',
+        // );
       },
     );
   });

@@ -277,14 +277,12 @@ export class TestSnaps {
    * @param dropDownName - The name of the dropdown locator to select the entropy source from.
    * @param name - The name of the entropy source to select.
    */
-  async scrollAndSelectEntropySource(
+  async selectEntropySource(
     dropDownName: keyof typeof dropDownLocator,
     name: string,
   ) {
     const locator = dropDownLocator[dropDownName];
     console.log(`Select ${dropDownName} entropy source`);
-    const selector = await this.driver.findElement(locator);
-    await this.driver.scrollToElement(selector);
     await this.driver.clickElement(locator);
     await this.driver.clickElement({
       text: name,

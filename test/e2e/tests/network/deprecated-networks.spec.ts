@@ -2,7 +2,6 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import {
   openDapp,
-  openPopupWithActiveTabOrigin,
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
@@ -41,7 +40,16 @@ describe('Deprecated networks', function (this: Suite) {
           tag: 'button',
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await openPopupWithActiveTabOrigin(driver, DAPP_URL);
+        await driver.openNewPage(
+          `${driver.extensionUrl}/popup.html?activeTabOrigin=${DAPP_URL}`,
+        );
+
+        // Resize the popup window after it's opened
+        await driver.driver
+          .manage()
+          .window()
+          .setRect({ width: 400, height: 600 });
+
         await driver.clickElement('.multichain-connected-site-menu ');
         await driver.clickElement({
           text: 'Localhost 8545',
@@ -81,6 +89,12 @@ describe('Deprecated networks', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
@@ -210,6 +224,12 @@ describe('Deprecated networks', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,

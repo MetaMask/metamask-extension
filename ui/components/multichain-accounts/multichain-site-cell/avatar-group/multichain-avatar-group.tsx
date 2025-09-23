@@ -1,27 +1,43 @@
 import React from 'react';
 import classnames from 'classnames';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
+  TextColor,
+  TextVariant,
   AlignItems,
   BorderRadius,
   Display,
 } from '../../../../helpers/constants/design-system';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
+  Text,
 } from '../../../component-library';
+import { PreferredAvatar } from '../../../app/preferred-avatar';
 
-type MultichainAccountAvatarGroupProps = {
+export enum MultichainAvatarGroupType {
+  ACCOUNT = 'ACCOUNT',
+  NETWORK = 'NETWORK',
+}
+
+type MultichainAvatarGroupProps = {
+  type: MultichainAvatarGroupType;
   className?: string;
   limit?: number;
   members: { avatarValue: string; symbol?: string }[];
 };
 
-export const MultichainAccountAvatarGroup: React.FC<
-  MultichainAccountAvatarGroupProps
-> = ({ className = '', limit = 4, members = [] }): JSX.Element => {
-  const visibleMembers = members.slice(0, limit).reverse();
+export const MultichainAvatarGroup: React.FC<MultichainAvatarGroupProps> = ({
+  type,
+  className = '',
+  limit = 4,
+  members = [],
+}): JSX.Element => {
+  const visibleMembers = members.slice(0, limit);
+
+  const showTag = members.length > limit;
+  const tagValue = `+${(members.length - limit).toLocaleString()}`;
 
   return (
     <Box
@@ -35,17 +51,36 @@ export const MultichainAccountAvatarGroup: React.FC<
         {visibleMembers.map((member, i) => {
           return (
             <Box borderRadius={BorderRadius.full} key={i}>
-              <AvatarAccount
-                data-testid={`avatar-account-${i}`}
-                size={AvatarAccountSize.Xs}
-                address={member.avatarValue}
-                // TODO: Switch to maskicon once it is available
-                variant={AvatarAccountVariant.Blockies}
-              />
+              {type === MultichainAvatarGroupType.ACCOUNT && (
+                <PreferredAvatar
+                  data-testid={`avatar-${i}`}
+                  size={AvatarAccountSize.Xs}
+                  address={member.avatarValue}
+                />
+              )}
+              {type === MultichainAvatarGroupType.NETWORK && (
+                <AvatarNetwork
+                  data-testid={`network-avatar-${i}`}
+                  src={member.avatarValue}
+                  name={member.symbol ?? ''}
+                  size={AvatarNetworkSize.Xs}
+                />
+              )}
             </Box>
           );
         })}
       </Box>
+      {showTag && (
+        <Box
+          paddingLeft={1}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+        >
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {tagValue}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 };

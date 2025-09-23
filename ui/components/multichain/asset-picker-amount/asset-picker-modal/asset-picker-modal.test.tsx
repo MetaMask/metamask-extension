@@ -103,6 +103,13 @@ jest.mock('lodash', () => ({
   }),
 }));
 
+jest.mock(
+  '../../../../pages/confirmations/hooks/useRedesignedSendFlow',
+  () => ({
+    useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+  }),
+);
+
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
@@ -385,7 +392,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum Mainnet');
+    const modalContent = getByText('Ethereum');
     expect(modalContent).toBeInTheDocument();
   });
 

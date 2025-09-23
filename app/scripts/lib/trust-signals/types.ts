@@ -42,6 +42,7 @@ export enum ResultType {
   Benign = 'Benign',
   Trusted = 'Trusted',
   ErrorResult = 'Error',
+  Loading = 'loading',
 }
 
 export type ScanAddressRequest = {
@@ -54,6 +55,10 @@ export type ScanAddressResponse = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: ResultType;
   label: string;
+};
+
+export type CachedScanAddressResponse = ScanAddressResponse & {
+  timestamp: number;
 };
 
 export type GetAddressSecurityAlertResponse = (
