@@ -29,6 +29,7 @@ import {
   getNetworkAddressCount,
   getWallet,
   getInternalAccountsFromGroupById,
+  getIconSeedAddressByAccountGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
@@ -61,6 +62,9 @@ export const MultichainAccountDetailsPage = () => {
   );
   const accountsWithAddresses = useSelector((state) =>
     getInternalAccountsFromGroupById(state, accountGroupId),
+  );
+  const seedAddressIcon = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(state, accountGroupId),
   );
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
@@ -101,7 +105,7 @@ export const MultichainAccountDetailsPage = () => {
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
-          variant: TextVariant.headingSm,
+          variant: TextVariant.headingMd,
         }}
         startAccessory={
           <ButtonIcon
@@ -122,7 +126,7 @@ export const MultichainAccountDetailsPage = () => {
       >
         <Box className="flex justify-center">
           <PreferredAvatar
-            address={accountGroupId}
+            address={seedAddressIcon}
             size={AvatarAccountSize.Xl}
             data-testid="avatar"
           />

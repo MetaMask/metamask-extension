@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buyAndSell": {
-    "message": "Beli/Jual"
+  "buy": {
+    "message": "Beli"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Tidak ditemukan akun yang cocok"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Terima di"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alamat penerima atau ENS"
@@ -2965,9 +2962,6 @@
   "isSigningOrSubmitting": {
     "message": "Transaksi sebelumnya sedang ditandatangani atau dikirim"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons dan Blockies merupakan dua gaya ikon unik yang berbeda untuk membantu Anda mengidentifikasi akun dengan cepat."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },
@@ -3738,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noActivity": {
-    "message": "Belum ada aktivitas"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask tidak terhubung ke situs ini"
   },
@@ -3758,9 +3749,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
-  },
-  "noNFTs": {
-    "message": "Belum ada NFT"
   },
   "noNetworksAvailable": {
     "message": "Jaringan tidak tersedia"
@@ -4229,13 +4217,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Kata sandi harus memiliki minimal 8 karakter"
-  },
-  "passwordStrength": {
-    "message": "Kekuatan kata sandi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Kata sandi yang kuat dapat meningkatkan keamanan dompet jika perangkat Anda dicuri atau disusupi."
   },
   "passwordTermsWarning": {
     "message": "Jika saya lupa kata sandi ini, MetaMask tidak dapat meresetnya untuk saya."
@@ -7186,9 +7167,6 @@
   "watchOutMessage": {
     "message": "Waspadalah terhadap $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Lemah"
   },
   "web3": {
     "message": "Web3"

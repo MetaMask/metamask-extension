@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buyAndSell": {
-    "message": "Comprar/vender"
+  "buy": {
+    "message": "Comprar"
   },
   "buyMoreAsset": {
     "message": "Comprar mais $1",
@@ -1835,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Nenhuma conta correspondentes encontrada"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Receber em"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Endereço de recebimento ou ENS"
@@ -2935,9 +2932,6 @@
   "isSigningOrSubmitting": {
     "message": "Uma transação anterior ainda está sendo assinada ou enviada"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons e Blockies são dois estilos diferentes de ícones únicos que ajudam você a identificar uma conta num relance."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },
@@ -3708,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noActivity": {
-    "message": "Nenhuma atividade ainda"
-  },
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },
@@ -3728,9 +3719,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
-  },
-  "noNFTs": {
-    "message": "Nenhum NFT até agora"
   },
   "noNetworksAvailable": {
     "message": "Nenhuma rede disponível"
@@ -4199,13 +4187,6 @@
   },
   "passwordNotLongEnough": {
     "message": "A senha deve ter pelo menos 8 caracteres"
-  },
-  "passwordStrength": {
-    "message": "Segurança da senha: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Uma senha forte pode aumentar a segurança da sua carteira caso seu dispositivo seja roubado ou comprometido."
   },
   "passwordTermsWarning": {
     "message": "Se eu esquecer essa senha, a MetaMask não conseguirá redefini-la para mim."
@@ -7139,9 +7120,6 @@
   "watchOutMessage": {
     "message": "Tome cuidado com $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Fraca"
   },
   "web3": {
     "message": "Web3"

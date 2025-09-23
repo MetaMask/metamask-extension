@@ -1050,7 +1050,7 @@
   "busy": {
     "message": "忙碌中"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "出入金"
   },
   "buyMoreAsset": {
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "未找到匹配的账户"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "接收至"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "接收地址或 ENS（Ethereum 域名服务）"
@@ -2965,9 +2962,6 @@
   "isSigningOrSubmitting": {
     "message": "先前的交易仍在签署或提交中"
   },
-  "jazzAndBlockies": {
-    "message": "哈希头像是帮助您一眼识别账户的独特图标，有 Jazzicons 和 Blockies 两种不同风格。"
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },
@@ -3738,9 +3732,6 @@
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
   },
-  "noActivity": {
-    "message": "暂无活动"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
   },
@@ -3758,9 +3749,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
-  },
-  "noNFTs": {
-    "message": "尚无 NFT"
   },
   "noNetworksAvailable": {
     "message": "无可用网络"
@@ -4229,13 +4217,6 @@
   },
   "passwordNotLongEnough": {
     "message": "密码必须至少包含 8 个字符"
-  },
-  "passwordStrength": {
-    "message": "密码强度：$1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "强密码可以提高钱包的安全性，以防设备被盗或被入侵。"
   },
   "passwordTermsWarning": {
     "message": "如果我忘记该密码，MetaMask 将无法为我重设。"
@@ -7186,9 +7167,6 @@
   "watchOutMessage": {
     "message": "小心 $1。",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "弱"
   },
   "web3": {
     "message": "Web3"

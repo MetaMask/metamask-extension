@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "Занят"
   },
-  "buyAndSell": {
-    "message": "Купить/продать"
+  "buy": {
+    "message": "Купить"
   },
   "buyMoreAsset": {
     "message": "Купить еще $1",
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Подходящие счета не найдены"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Получить в"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Адрес получения или ENS"
@@ -2965,9 +2962,6 @@
   "isSigningOrSubmitting": {
     "message": "Предыдущая транзакция все еще подписывается или отправляется"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons и Blockies — это два разных стиля уникальных значков, которые помогут вам с первого взгляда идентифицировать свой счет."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },
@@ -3738,9 +3732,6 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noActivity": {
-    "message": "Пока нет активности"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },
@@ -3758,9 +3749,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps и большинство аппаратных кошельков не будут работать с вашей текущей версией браузера."
-  },
-  "noNFTs": {
-    "message": "Пока нет NFT"
   },
   "noNetworksAvailable": {
     "message": "Нет доступных сетей"
@@ -4229,13 +4217,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Пароль должен содержать не менее 8 символов"
-  },
-  "passwordStrength": {
-    "message": "Надежность пароля: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
   },
   "passwordTermsWarning": {
     "message": "Если я забуду этот пароль, MetaMask не сможет восстановить его для меня."
@@ -7186,9 +7167,6 @@
   "watchOutMessage": {
     "message": "Остерегайтесь $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Слабый"
   },
   "web3": {
     "message": "Web3"

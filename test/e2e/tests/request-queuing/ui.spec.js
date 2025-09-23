@@ -12,7 +12,6 @@ const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
-  openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
@@ -34,7 +33,7 @@ const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   // Open the dapp
-  await openDapp(driver, undefined, dappUrl);
+  await driver.openNewPage(dappUrl);
 
   // Connect to the dapp
   await driver.clickElement({ text: 'Connect', tag: 'button' });
@@ -228,7 +227,7 @@ describe('Request-queue UI changes', function () {
         });
         await rejectTransactionRedesign(driver);
 
-        // Go to the second dapp, ensure it uses Ethereum Mainnet
+        // Go to the second dapp, ensure it uses Ethereum
         await selectDappClickSend(driver, DAPP_ONE_URL);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
           chainId: '0x53a',
@@ -430,7 +429,7 @@ describe('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -469,12 +468,12 @@ describe('Request-queue UI changes', function () {
         await driver.clickElement({ tag: 'button', text: 'Delete' });
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
-        // The current globally selected network, Ethereum Mainnet, should be used
+        // The current globally selected network, Ethereum, should be used
         await selectDappClickSend(driver, DAPP_URL);
         await driver.delay(veryLargeDelayMs);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
           chainId: '0x1',
-          networkText: 'Ethereum Mainnet',
+          networkText: 'Ethereum',
           originText: DAPP_URL,
         });
       },
@@ -510,7 +509,7 @@ describe('Request-queue UI changes', function () {
         await driver.clickElement(
           '[data-testid="connected-site-popover-network-button"]',
         );
-        await driver.clickElement('[data-testid="Ethereum Mainnet"]');
+        await driver.clickElement('[data-testid="Ethereum"]');
 
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -565,12 +564,12 @@ describe('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Check if Ethereum Mainnet is selected
+        // Check if Ethereum is selected
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
@@ -648,12 +647,12 @@ describe('Request-queue UI changes', function () {
         // Open the second dapp and switch chains
         await openDappAndSwitchChain(driver, DAPP_ONE_URL, '0x1');
 
-        // Go to wallet fullscreen, ensure that the global network changed to Ethereum Mainnet
+        // Go to wallet fullscreen, ensure that the global network changed to Ethereum
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Check if Ethereum Mainnet is selected
+        // Check if Ethereum is selected
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');

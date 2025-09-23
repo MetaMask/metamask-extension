@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -20,7 +21,6 @@ import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
-  getUseBlockie,
 } from '../../../selectors';
 import {
   clearAccountDetails,
@@ -29,9 +29,6 @@ import {
 } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   Modal,
   ModalOverlay,
@@ -41,7 +38,7 @@ import {
   ModalBody,
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
-
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import SRPQuiz from '../../app/srp-quiz-modal';
 import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
@@ -58,7 +55,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
@@ -109,12 +105,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   }, [dispatch]);
 
   const avatar = (
-    <AvatarAccount
-      variant={
-        useBlockie
-          ? AvatarAccountVariant.Blockies
-          : AvatarAccountVariant.Jazzicon
-      }
+    <PreferredAvatar
       address={address}
       size={AvatarAccountSize.Lg}
       style={{ margin: '0 auto' }}

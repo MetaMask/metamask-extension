@@ -1050,8 +1050,8 @@
   "busy": {
     "message": "Ausgelastet"
   },
-  "buyAndSell": {
-    "message": "Kaufen/Verkaufen"
+  "buy": {
+    "message": "Kaufen"
   },
   "buyMoreAsset": {
     "message": "Mehr $1 kaufen",
@@ -1859,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Keine übereinstimmenden Konten gefunden"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Empfangen am"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Empfangsadresse oder ENS"
@@ -2965,9 +2962,6 @@
   "isSigningOrSubmitting": {
     "message": "Eine frühere Transaktion wird noch signiert oder eingereicht"
   },
-  "jazzAndBlockies": {
-    "message": "Jazzicons und Blockies sind zwei verschiedene Arten von einzigartigen Symbolen, mit denen Sie ein Konto auf einen Blick erkennen können."
-  },
   "jazzicons": {
     "message": "Jazzicons"
   },
@@ -3738,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
   },
-  "noActivity": {
-    "message": "Noch keine Aktivität"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
   },
@@ -3758,9 +3749,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps und die meisten Hardware-Wallets funktionieren nicht mit Ihrer aktuellen Browserversion."
-  },
-  "noNFTs": {
-    "message": "Noch keine NFTs"
   },
   "noNetworksAvailable": {
     "message": "Keine Netzwerke verfügbar"
@@ -4229,13 +4217,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Passwort muss mindestens 8 Zeichen lang sein"
-  },
-  "passwordStrength": {
-    "message": "Passwortstärke: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Ein starkes Passwort kann die Sicherheit Ihrer Wallet erhöhen, falls Ihr Gerät gestohlen oder kompromittiert wird."
   },
   "passwordTermsWarning": {
     "message": "Wenn ich dieses Passwort vergesse, kann MetaMask es nicht für mich zurücksetzen."
@@ -7186,9 +7167,6 @@
   "watchOutMessage": {
     "message": "Vorsicht vor $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Schwach"
   },
   "web3": {
     "message": "Web3"
