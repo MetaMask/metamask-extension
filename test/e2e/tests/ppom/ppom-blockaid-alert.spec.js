@@ -6,7 +6,6 @@ const {
   openDapp,
   unlockWallet,
   withFixtures,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -206,7 +205,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up
           await driver.delay(500);
-          await switchToNotificationWindow(driver, 3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const isPresent = await driver.isElementPresent(bannerAlertSelector);
           assert.equal(
@@ -258,7 +257,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up
           await driver.delay(500);
-          await switchToNotificationWindow(driver, 3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await driver.assertElementNotPresent('.loading-indicator');
 
@@ -312,7 +311,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
         // Wait for confirmation pop-up
         await driver.delay(500);
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const expectedTitle = 'Request may not be safe';
 
