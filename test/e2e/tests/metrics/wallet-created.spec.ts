@@ -127,7 +127,7 @@ describe('Wallet Created Events', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 8);
+        assert.equal(events.length, 7);
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           assert.deepStrictEqual(events[0].properties, {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -165,9 +165,6 @@ describe('Wallet Created Events', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
         });
         assert.ok(
           events[3].properties.category === 'Onboarding' &&
@@ -196,9 +193,6 @@ describe('Wallet Created Events', function () {
         assert.deepStrictEqual(events[6].properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'metamask',
           category: 'Onboarding',
           locale: 'en',
@@ -208,25 +202,12 @@ describe('Wallet Created Events', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
-        });
-        assert.deepStrictEqual(events[7].properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: 'new',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           new_wallet: true,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'metamask',
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
+          wallet_setup_type: 'new',
         });
       },
     );
