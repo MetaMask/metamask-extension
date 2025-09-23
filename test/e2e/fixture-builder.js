@@ -2090,17 +2090,15 @@ class FixtureBuilder {
 
   withBackupAndSyncSettings(options = {}) {
     const {
-      isProfileSyncingEnabled = true,
+      isBackupAndSyncEnabled = true,
       isAccountSyncingEnabled = true,
-      isProfileSyncingUpdateLoading = false,
-      isAccountSyncingUpdateLoading = false,
+      isBackupAndSyncUpdateLoading = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
-      isProfileSyncingEnabled,
+      isBackupAndSyncEnabled,
       isAccountSyncingEnabled,
-      isProfileSyncingUpdateLoading,
-      isAccountSyncingUpdateLoading,
+      isBackupAndSyncUpdateLoading,
     });
     return this;
   }

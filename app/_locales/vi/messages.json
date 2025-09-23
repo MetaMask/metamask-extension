@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noActivity": {
-    "message": "Chưa có hoạt động nào"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
@@ -3752,9 +3749,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noNetworksAvailable": {
     "message": "Không có mạng nào khả dụng"

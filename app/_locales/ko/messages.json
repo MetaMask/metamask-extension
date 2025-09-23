@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noActivity": {
-    "message": "아직 활동 내역이 없습니다"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
@@ -3752,9 +3749,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap 및 대부분의 하드웨어 지갑은 현재 사용 중인 브라우저 버전에서 작동하지 않습니다."
-  },
-  "noNFTs": {
-    "message": "아직 NFT가 없음"
   },
   "noNetworksAvailable": {
     "message": "사용 가능한 네트워크 없음"

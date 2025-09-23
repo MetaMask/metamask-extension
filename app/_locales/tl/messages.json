@@ -3702,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noActivity": {
-    "message": "Wala pang aktibidad"
-  },
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },
@@ -3722,9 +3719,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
-  },
-  "noNFTs": {
-    "message": "Wala pang mga NFT"
   },
   "noNetworksAvailable": {
     "message": "Walang available na mga network"
