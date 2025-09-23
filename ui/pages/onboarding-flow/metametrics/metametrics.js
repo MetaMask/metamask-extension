@@ -143,7 +143,7 @@ export default function OnboardingMetametrics() {
         justifyContent={JustifyContent.center}
         className="onboarding-metametrics__user-control"
       >
-        <img src="images/user-control.svg" alt="User control" />
+        <img src="images/user-control.png" alt="User control" />
       </Box>
 
       <Text
