@@ -878,6 +878,7 @@ export default class MetamaskController extends EventEmitter {
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
+      allowedEvents: ['TransactionController:stateChange'],
     });
 
     this.phishingController = new PhishingController({
