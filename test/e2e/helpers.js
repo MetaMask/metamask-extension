@@ -26,7 +26,7 @@ const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
 const LocalWebSocketServer = require('./websocket-server').default;
-const { setSolanaWebsocketMocks } = require('./websocket-solana-mocks');
+const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -128,7 +128,10 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
-    withSolanaWebSocket = false,
+    withSolanaWebSocket = {
+      server: false,
+      mocks: [],
+    },
   } = options;
 
   // Normalize localNodeOptions
@@ -261,12 +264,10 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    if (withSolanaWebSocket) {
+    if (withSolanaWebSocket.server) {
       localWebSocketServer = LocalWebSocketServer.getServerInstance();
       localWebSocketServer.start();
-      // All specs use the same ws mocks.
-      // If we need custom ws mocks we can expand logic for supporting custom ws mocks like with http
-      await setSolanaWebsocketMocks();
+      await setupSolanaWebsocketMocks(withSolanaWebSocket.mocks);
     }
 
     const { mockedEndpoint, getPrivacyReport } = await setupMocking(
@@ -454,7 +455,7 @@ async function withFixtures(options, testSuite) {
         })(),
       );
 
-      if (withSolanaWebSocket) {
+      if (withSolanaWebSocket.server) {
         shutdownTasks.push(localWebSocketServer.stopAndCleanup());
       }
 
