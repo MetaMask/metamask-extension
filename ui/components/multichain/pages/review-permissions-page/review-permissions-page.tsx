@@ -8,12 +8,6 @@ import {
   parseCaipAccountId,
   KnownCaipNamespace,
 } from '@metamask/utils';
-import type {
-  GatorPermissionsMap,
-  StoredGatorPermissionSanitized,
-  SignerParam,
-  PermissionTypes,
-} from '@metamask/gator-permissions-controller';
 import { uniq } from 'lodash';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
@@ -65,105 +59,12 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
+import {
+  AppState,
+  getPermissionGroupDetailsByOrigin,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { SiteCell } from './site-cell/site-cell';
 import { PermissionsCell } from './permissions-cell/permissions-cell';
-
-/**
- * Filters and groups gator permissions by type and site origin, returning counts and chain lists.
- *
- * This function takes the full gator permissions map and filters it to return
- * only permissions that match the specified site origin.
- * It groups the results into two main categories:
- * - streams: Combined count of native-token-stream and erc20-token-stream permissions
- * - subscriptions: Combined count of native-token-periodic and erc20-token-periodic permissions
- * Each category includes a list of all chains on which these permissions occur.
- *
- * @param gatorPermissions - The gator permissions map to filter
- * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
- * @returns Object with counts and chain lists for streams and subscriptions
- */
-const getFilteredGatorPermissionsByType = (
-  gatorPermissions: GatorPermissionsMap,
-  siteOrigin: string,
-) => {
-  const result = {
-    streams: {
-      count: 0,
-      chains: new Set<string>(),
-    },
-    subscriptions: {
-      count: 0,
-      chains: new Set<string>(),
-    },
-  };
-
-  // Process stream permissions (native-token-stream + erc20-token-stream)
-  const streamTypes: (keyof GatorPermissionsMap)[] = [
-    'native-token-stream',
-    'erc20-token-stream',
-  ];
-  streamTypes.forEach((permissionType) => {
-    const permissionsForType = gatorPermissions[permissionType];
-    if (permissionsForType) {
-      Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
-        // Filter permissions by site origin
-        const filteredPermissions = permissions.filter(
-          (
-            permission: StoredGatorPermissionSanitized<
-              SignerParam,
-              PermissionTypes
-            >,
-          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
-        );
-
-        if (filteredPermissions.length > 0) {
-          result.streams.count += filteredPermissions.length;
-          result.streams.chains.add(chainId);
-        }
-      });
-    }
-  });
-
-  // Process subscription permissions (native-token-periodic + erc20-token-periodic)
-  const subscriptionTypes: (keyof GatorPermissionsMap)[] = [
-    'native-token-periodic',
-    'erc20-token-periodic',
-  ];
-  subscriptionTypes.forEach((permissionType) => {
-    const permissionsForType = gatorPermissions[permissionType];
-    if (permissionsForType) {
-      Object.entries(permissionsForType).forEach(([chainId, permissions]) => {
-        // Filter permissions by site origin
-        const filteredPermissions = permissions.filter(
-          (
-            permission: StoredGatorPermissionSanitized<
-              SignerParam,
-              PermissionTypes
-            >,
-          ) => permission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
-        );
-
-        if (filteredPermissions.length > 0) {
-          result.subscriptions.count += filteredPermissions.length;
-          result.subscriptions.chains.add(chainId);
-        }
-      });
-    }
-  });
-
-  // Convert Sets to arrays for the final result
-  return {
-    streams: {
-      count: result.streams.count,
-      chains: Array.from(result.streams.chains),
-    },
-    subscriptions: {
-      count: result.subscriptions.count,
-      chains: Array.from(result.subscriptions.chains),
-    },
-  };
-};
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -253,12 +154,9 @@ export const ReviewPermissions = () => {
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
 
-  const gatorPermissions = useSelector(getGatorPermissionsMap);
-
-  // Get filtered gator permissions grouped by type
-  const filteredGatorPermissions = useMemo(() => {
-    return getFilteredGatorPermissionsByType(gatorPermissions, activeTabOrigin);
-  }, [gatorPermissions, activeTabOrigin]);
+  const gatorPermissionGroupDetails = useSelector((state: AppState) =>
+    getPermissionGroupDetailsByOrigin(state, activeTabOrigin),
+  );
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -338,22 +236,24 @@ export const ReviewPermissions = () => {
               hideAllToasts={hideAllToasts}
             />
           ) : null}
-          {filteredGatorPermissions.streams.count > 0 ||
-          filteredGatorPermissions.subscriptions.count > 0 ? (
-            <PermissionsCell
-              nonTestNetworks={nonTestNetworks}
-              testNetworks={testNetworks}
-              streamsCount={filteredGatorPermissions.streams.count}
-              subscriptionsCount={filteredGatorPermissions.subscriptions.count}
-              streamsChainIds={filteredGatorPermissions.streams.chains}
-              subscriptionsChainIds={
-                filteredGatorPermissions.subscriptions.chains
-              }
-            />
-          ) : null}
+          {gatorPermissionGroupDetails
+            ? Object.entries(gatorPermissionGroupDetails).map(
+                ([id, details]) => (
+                  <PermissionsCell
+                    key={id}
+                    nonTestNetworks={nonTestNetworks}
+                    testNetworks={testNetworks}
+                    totalCount={details.count}
+                    chainIds={details.chains}
+                    paddingTop={connectedAccountAddresses.length === 0 ? 4 : 0}
+                  />
+                ),
+              )
+            : null}
           {connectedAccountAddresses.length === 0 &&
-          filteredGatorPermissions.streams.count === 0 &&
-          filteredGatorPermissions.subscriptions.count === 0 ? (
+          Object.values(gatorPermissionGroupDetails).every(
+            (details) => details.count === 0,
+          ) ? (
             <NoConnectionContent />
           ) : null}
           {showDisconnectAllModal ? (

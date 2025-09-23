@@ -7136,6 +7136,10 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenCount": {
+    "message": "token",
+    "description": "is number of tokens used for token transfers (singular form)"
+  },
   "tokenDecimal": {
     "message": "Token decimal"
   },
@@ -7171,6 +7175,10 @@
   },
   "tokens": {
     "message": "Tokens"
+  },
+  "tokensCount": {
+    "message": "tokens",
+    "description": "is the count of tokens used for token transfers (plural form)"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",

@@ -31,7 +31,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
           class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--width-max mm-box--color-text-alternative"
         >
           5
-
+           
           streams
         </span>
         <div

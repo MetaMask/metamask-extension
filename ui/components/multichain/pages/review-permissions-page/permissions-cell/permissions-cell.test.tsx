@@ -1,11 +1,12 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/jest';
+import { IconName } from '../../../../component-library/icon';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { PermissionsCell } from './permissions-cell';
+import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';
 
-describe('PermissionsCell', () => {
+describe('PermissionsCellConnectionListItem', () => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -14,117 +15,70 @@ describe('PermissionsCell', () => {
 
   const mockNetworks = [
     {
-      chainId: '0x1' as const,
-      caipChainId: 'eip155:1' as const,
+      chainId: '0x1',
       name: 'Ethereum Mainnet',
-      isEvm: true,
-      nativeCurrency: 'ETH',
-      rpcEndpoints: [],
-      blockExplorerUrls: ['https://etherscan.io'],
-      defaultRpcEndpointIndex: 0,
-      defaultBlockExplorerUrlIndex: 0,
     },
     {
-      chainId: '0x89' as const,
-      caipChainId: 'eip155:137' as const,
+      chainId: '0x89',
       name: 'Polygon',
-      isEvm: true,
-      nativeCurrency: 'MATIC',
-      rpcEndpoints: [],
-      blockExplorerUrls: ['https://polygonscan.com'],
-      defaultRpcEndpointIndex: 0,
-      defaultBlockExplorerUrlIndex: 0,
     },
   ];
 
   const defaultProps = {
-    nonTestNetworks: mockNetworks,
-    testNetworks: [],
-    streamsCount: 5,
-    subscriptionsCount: 3,
-    streamsChainIds: ['0x1', '0x89'],
-    subscriptionsChainIds: ['0x1'],
+    title: 'Token Streams',
+    iconName: IconName.Coin,
+    count: 5,
+    networks: mockNetworks,
+    countMessage: 'streams',
+    paddingTopValue: 0,
+    paddingBottomValue: 2,
+    onClick: jest.fn(),
   };
 
-  it('renders correctly with both streams and subscriptions', () => {
-    const { container } = renderWithProvider(
-      <PermissionsCell {...defaultProps} />,
+  it('renders correctly with required props', () => {
+    const { container, getByTestId } = renderWithProvider(
+      <PermissionsCellConnectionListItem {...defaultProps} />,
       store,
     );
 
     expect(container).toMatchSnapshot();
+    const item = getByTestId('permissions-cell-connection-list-item');
+    expect(item).toBeDefined();
   });
 
-  it('handles streams and subscriptions correctly', () => {
+  it('displays title and count correctly', () => {
     const { getByText } = renderWithProvider(
-      <PermissionsCell {...defaultProps} />,
+      <PermissionsCellConnectionListItem {...defaultProps} />,
       store,
     );
 
     expect(getByText('Token Streams')).toBeInTheDocument();
-    expect(getByText('Token Subscriptions')).toBeInTheDocument();
     expect(getByText('5 streams')).toBeInTheDocument();
-    expect(getByText('3 subscriptions')).toBeInTheDocument();
   });
 
-  it('routes correctly on click', () => {
-    const { getAllByTestId } = renderWithProvider(
-      <PermissionsCell {...defaultProps} />,
+  it('calls onClick when clicked', () => {
+    const mockOnClick = jest.fn();
+    const props = { ...defaultProps, onClick: mockOnClick };
+
+    const { getByTestId } = renderWithProvider(
+      <PermissionsCellConnectionListItem {...props} />,
       store,
     );
 
-    const items = getAllByTestId('permissions-cell-connection-list-item');
-    expect(items).toHaveLength(2);
+    const listItem = getByTestId('permissions-cell-connection-list-item');
+    fireEvent.click(listItem);
 
-    // Test streams routing
-    fireEvent.click(items[0]);
-
-    // Test subscriptions routing
-    fireEvent.click(items[1]);
+    expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render when no data', () => {
-    const props = {
-      ...defaultProps,
-      streamsCount: 0,
-      subscriptionsCount: 0,
-    };
+  it('renders with different countMessage', () => {
+    const props = { ...defaultProps, countMessage: 'subscriptions' };
 
-    const { container } = renderWithProvider(
-      <PermissionsCell {...props} />,
+    const { getByText } = renderWithProvider(
+      <PermissionsCellConnectionListItem {...props} />,
       store,
     );
 
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('renders only streams when subscriptions count is 0', () => {
-    const props = {
-      ...defaultProps,
-      subscriptionsCount: 0,
-    };
-
-    const { getByText, queryByText } = renderWithProvider(
-      <PermissionsCell {...props} />,
-      store,
-    );
-
-    expect(getByText('Token Streams')).toBeInTheDocument();
-    expect(queryByText('Token Subscriptions')).not.toBeInTheDocument();
-  });
-
-  it('renders only subscriptions when streams count is 0', () => {
-    const props = {
-      ...defaultProps,
-      streamsCount: 0,
-    };
-
-    const { getByText, queryByText } = renderWithProvider(
-      <PermissionsCell {...props} />,
-      store,
-    );
-
-    expect(getByText('Token Subscriptions')).toBeInTheDocument();
-    expect(queryByText('Token Streams')).not.toBeInTheDocument();
+    expect(getByText('5 subscriptions')).toBeInTheDocument();
   });
 });
