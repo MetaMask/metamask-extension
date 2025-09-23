@@ -3,6 +3,7 @@ import {
   SimulationErrorCode,
   TransactionContainerType,
   TransactionMeta,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
 import { screen } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
@@ -177,6 +178,43 @@ describe('SimulationDetails', () => {
       expect.objectContaining({
         heading: 'You receive',
         balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+  });
+
+  it('uses correct heading text based on transaction status', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    // Test confirmed status
+    renderSimulationDetails({}, false, [], { status: TransactionStatus.confirmed });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You sent',
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+
+    // Test submitted status
+    renderSimulationDetails({}, false, [], { status: TransactionStatus.submitted });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're sending",
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+
+    // Test default (unapproved status)
+    renderSimulationDetails({}, false, [], { status: TransactionStatus.unapproved });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You send',
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
       {},
     );

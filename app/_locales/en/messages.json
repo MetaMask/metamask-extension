@@ -5858,6 +5858,12 @@
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
   },
+  "simulationDetailsOutgoingHeadingSending": {
+    "message": "You're sending"
+  },
+  "simulationDetailsOutgoingHeadingSent": {
+    "message": "You sent"
+  },
   "simulationDetailsRevokeSetApprovalForAllDesc": {
     "message": "You're removing someone else's permission to withdraw NFTs from your account."
   },

@@ -3,6 +3,7 @@ import {
   SimulationErrorCode,
   TransactionContainerType,
   TransactionMeta,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -458,6 +459,23 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
 
+  // Determine the appropriate heading text based on transaction status
+  const getOutgoingHeadingText = () => {
+    const { status } = transaction;
+
+    if (status === TransactionStatus.confirmed) {
+      return t('simulationDetailsOutgoingHeadingSent');
+    } else if (
+      status === TransactionStatus.submitted ||
+      status === TransactionStatus.signed ||
+      status === TransactionStatus.approved
+    ) {
+      return t('simulationDetailsOutgoingHeadingSending');
+    }
+    // Default for confirmation flows and other statuses (unapproved, failed, etc.)
+    return t('simulationDetailsOutgoingHeading');
+  };
+
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
@@ -476,7 +494,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           </>
         ))}
         <BalanceChangeList
-          heading={t('simulationDetailsOutgoingHeading')}
+          heading={getOutgoingHeadingText()}
           balanceChanges={outgoing}
           testId="simulation-rows-outgoing"
         />
