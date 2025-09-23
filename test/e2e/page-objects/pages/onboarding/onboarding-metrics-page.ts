@@ -8,7 +8,13 @@ class OnboardingMetricsPage {
   private readonly dataCollectionForMarketingCheckbox =
     '[data-testid="metametrics-data-collection-checkbox"]';
 
+  private readonly dataParticipateInMetaMetricsCheckbox =
+    '[data-testid="metametrics-checkbox"]';
+
   private readonly dataCollectionForMarketingCheckedState =
+    '.mm-checkbox__input--checked#metametrics-datacollection-opt-in';
+
+  private readonly dataParticipateInMetaMetricsCheckedState =
     '.mm-checkbox__input--checked#metametrics-opt-in';
 
   private readonly metametricsMessage = {
@@ -16,7 +22,7 @@ class OnboardingMetricsPage {
     tag: 'h2',
   };
 
-  private readonly noThanksButton = '[data-testid="metametrics-no-thanks"]';
+  private readonly noThanksButton = '[data-testid="metametrics-i-agree"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -50,9 +56,19 @@ class OnboardingMetricsPage {
     await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
   }
 
+  async clickParticipateInMetaMetricsCheckbox(): Promise<void> {
+    await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
+  }
+
   async validateDataCollectionForMarketingIsChecked(): Promise<void> {
     await this.driver.waitForSelector(
       this.dataCollectionForMarketingCheckedState,
+    );
+  }
+
+  async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
+    await this.driver.waitForSelector(
+      this.dataParticipateInMetaMetricsCheckedState,
     );
   }
 }

@@ -271,10 +271,10 @@ export async function onboardingMetricsFlow(
     await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
   if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
-  } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+    await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
   }
+  await onboardingMetricsPage.clickIAgreeButton();
 }
 
 /**
