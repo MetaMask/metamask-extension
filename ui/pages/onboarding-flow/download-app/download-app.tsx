@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextVariant,
@@ -14,6 +14,7 @@ import {
 import {
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   Box,
@@ -29,12 +30,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { setCompletedOnboarding } from '../../../store/actions';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingDownloadApp() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currentKeyring = useSelector(getCurrentKeyring);
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -51,7 +54,12 @@ export default function OnboardingDownloadApp() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
-    navigate(ONBOARDING_COMPLETION_ROUTE);
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      await dispatch(setCompletedOnboarding());
+      navigate(DEFAULT_ROUTE);
+    } else {
+      navigate(ONBOARDING_COMPLETION_ROUTE);
+    }
   };
 
   useEffect(() => {
