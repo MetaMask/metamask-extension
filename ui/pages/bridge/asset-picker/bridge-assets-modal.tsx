@@ -21,8 +21,9 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { getImageForChainId } from '../../confirmations/utils/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkFilterPill } from './network-filter-pill';
-import { debounce } from 'lodash';
+import { debounce, set } from 'lodash';
 import { getPopularAssets, searchAssets } from '../utils/assets-service';
+import { BridgeAssetList } from './bridge-asset-list';
 
 interface BridgeAssetsModalProps {
   isOpen: boolean;
@@ -40,16 +41,19 @@ const NETWORK_PILLS = SUPPORTED_NETWORKS.map((network) => ({
 
 export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAssetsModalProps) => {
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(CHAIN_IDS.MAINNET);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const debouncedSearchCallback = useCallback(
     debounce(async (value, selectedNetwork) => {
-      const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
-      if (value.length === 0) {
-        const assets = await getPopularAssets(value, networks);
-      } else {
-        const assets = await searchAssets(value, networks);
-      }
+      setIsLoading(true);
+      // const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
+      // if (value.length === 0) {
+      //   const assets = await getPopularAssets(value, networks);
+      // } else {
+      //   const assets = await searchAssets(value, networks);
+      // }
+      // setIsLoading(false);
       console.log('Debounced search query:', value);
     }, 300),
     [],
@@ -105,11 +109,14 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
           </Row>
         </Column>
         <Box>
-        <Search
-          searchQuery={searchQuery}
-          onChange={(value) => setSearchQuery(value)}
-          autoFocus
-        />
+          <Search
+            searchQuery={searchQuery}
+            onChange={(value) => setSearchQuery(value)}
+            autoFocus
+          />
+        </Box>
+        <Box padding={4} style={{ overflowY: 'auto' }}>
+          <BridgeAssetList isLoading={isLoading} assets={[]} />
         </Box>
       </ModalContent>
     </Modal>

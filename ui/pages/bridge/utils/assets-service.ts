@@ -7,7 +7,7 @@ function stringifyChainIds(chainIds: string[]) {
 
 export async function getPopularAssets(value: string, chainIds: string[]) {
   try {
-    const response = await fetch(`https://token.api.cx.metamask.io/v3/tokens/popular?chainIds=${stringifyChainIds(chainIds)}`);
+    const response = await fetch(`https://token.api.cx.metamask.io/v3/tokens/popular?chainIds=${stringifyChainIds(chainIds)}&minLiquidity=0&minVolume24hUsd=0`);
     const data = await response.json();
     return data;
   } catch (error) {
