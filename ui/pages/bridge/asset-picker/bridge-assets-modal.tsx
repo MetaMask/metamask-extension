@@ -22,8 +22,7 @@ import { getImageForChainId } from '../../confirmations/utils/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkFilterPill } from './network-filter-pill';
 import { debounce } from 'lodash';
-import { getPopularAssets } from '../utils/assets-service';
-import { Hex } from '@metamask/utils';
+import { getPopularAssets, searchAssets } from '../utils/assets-service';
 
 interface BridgeAssetsModalProps {
   isOpen: boolean;
@@ -45,7 +44,12 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
 
   const debouncedSearchCallback = useCallback(
     debounce(async (value, selectedNetwork) => {
-      const assets = await getPopularAssets(value, selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS);
+      const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
+      if (value.length === 0) {
+        const assets = await getPopularAssets(value, networks);
+      } else {
+        const assets = await searchAssets(value, networks);
+      }
       console.log('Debounced search query:', value);
     }, 300),
     [],
