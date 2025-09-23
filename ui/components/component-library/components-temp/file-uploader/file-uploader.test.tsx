@@ -11,7 +11,9 @@ import { FileUploader } from './file-uploader';
 // Mock DataTransfer for testing
 class MockDataTransfer {
   items = {
-    add: jest.fn(),
+    add: jest.fn((file: File) => {
+      this.files.push(file);
+    }),
   };
 
   files = [] as File[];
@@ -60,8 +62,16 @@ describe('FileUploader', () => {
     // The input value should be empty
     expect(input.value).toBe('');
 
-    // onChange should have been called
-    expect(mockOnChange).toHaveBeenCalled();
+    // onChange should have been called with the uploaded file (check the last call)
+    expect(mockOnChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        0: expect.objectContaining({
+          name: 'foo.svg',
+          type: 'image/svg+xml',
+        }),
+        length: 1,
+      }),
+    );
   });
 
   it('should show error when file exceeds maxFileSize', async () => {
@@ -74,15 +84,30 @@ describe('FileUploader', () => {
       />,
     );
 
+    const input = getByTestId('file-uploader-input') as HTMLInputElement;
+
     // Create a file larger than 1MB (1MB = 1024 * 1024 bytes)
     const largeFile = new File(['x'.repeat(2 * 1024 * 1024)], 'large.pdf', {
       type: 'application/pdf',
     });
-    const input = getByTestId('file-uploader-input') as HTMLInputElement;
 
     await userEvent.upload(input, largeFile);
 
-    // onChange should have been called with null
-    expect(mockOnChange).toHaveBeenCalledWith(null);
+    // add a small file
+    const smallFile = new File(['x'], 'small.pdf', {
+      type: 'application/pdf',
+    });
+    await userEvent.upload(input, smallFile);
+
+    // onChange should have been called with the small file
+    expect(mockOnChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        0: expect.objectContaining({
+          name: 'small.pdf',
+          type: 'application/pdf',
+        }),
+        length: 1,
+      }),
+    );
   });
 });
