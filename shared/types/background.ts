@@ -126,6 +126,7 @@ export type ControllerStatePropertiesEnumerated = {
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
+  hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
