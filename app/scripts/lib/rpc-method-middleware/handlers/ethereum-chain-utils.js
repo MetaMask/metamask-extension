@@ -201,7 +201,6 @@ export async function switchChain(
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
     setEnabledNetworks,
-    setEnabledNetworksByNamespace,
     getEnabledNetworks,
     rejectApprovalRequestsForOrigin,
     requestUserApproval,
