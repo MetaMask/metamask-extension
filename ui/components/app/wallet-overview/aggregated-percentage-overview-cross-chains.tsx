@@ -159,10 +159,9 @@ export const AggregatedPercentageOverviewCrossChains = ({
 
   return (
     <Skeleton
-      hideChildren
-      showUntil={
-        anyEnabledNetworksAreAvailable ||
-        !isZeroAmount(formattedAmountChangeCrossChains)
+      isLoading={
+        !(anyEnabledNetworksAreAvailable ||
+        !isZeroAmount(formattedAmountChangeCrossChains))
       }
     >
       <Box display={Display.Flex} className="gap-1">

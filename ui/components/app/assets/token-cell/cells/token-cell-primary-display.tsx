@@ -27,9 +27,8 @@ export const TokenCellPrimaryDisplay = React.memo(
 
     return (
       <Skeleton
-        hideChildren
-        showUntil={
-          anyEnabledNetworksAreAvailable || !isZeroAmount(token.primary)
+        isLoading={
+          !(anyEnabledNetworksAreAvailable || !isZeroAmount(token.primary))
         }
       >
         <SensitiveText

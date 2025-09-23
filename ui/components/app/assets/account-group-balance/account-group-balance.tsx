@@ -56,10 +56,11 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 
   return (
     <Skeleton
-      hideChildren
-      showUntil={
-        anyEnabledNetworksAreAvailable ||
-        (!isZeroAmount(total) && currency !== undefined)
+      isLoading={
+        !(
+          anyEnabledNetworksAreAvailable ||
+          (!isZeroAmount(total) && currency !== undefined)
+        )
       }
     >
       <Box
