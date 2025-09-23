@@ -14,7 +14,6 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderColor,
@@ -282,38 +281,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                 gap={2}
               >
                 {draftSrp.map((word, index) => {
-                  const displayAsText = !(
-                    word.active || misSpelledWords.includes(word.word)
-                  );
-
-                  return displayAsText ? (
-                    <Box
-                      data-testid={`import-srp__srp-word-${index}`}
-                      className="srp-input-import__text"
-                      as="button"
-                      display={Display.Flex}
-                      alignItems={AlignItems.center}
-                      backgroundColor={BackgroundColor.backgroundDefault}
-                      borderColor={BorderColor.borderMuted}
-                      borderRadius={BorderRadius.LG}
-                      paddingInline={2}
-                      paddingTop={1}
-                      paddingBottom={1}
-                      gap={1}
-                      onClick={() => {
-                        onWordFocus(word.id);
-                      }}
-                    >
-                      <Text
-                        color={TextColor.textAlternative}
-                        textAlign={TextAlign.Left}
-                        className="srp-input-import__word-index"
-                      >
-                        {index + 1}.
-                      </Text>
-                      <Text>{word.word}</Text>
-                    </Box>
-                  ) : (
+                  return (
                     <TextField
                       inputProps={{
                         ref: (el) => {
