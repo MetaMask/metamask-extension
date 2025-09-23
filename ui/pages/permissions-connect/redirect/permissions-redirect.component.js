@@ -119,7 +119,6 @@ export default function PermissionsRedirect({ subjectMetadata }) {
               width={BlockSize.Full}
               marginLeft={2}
               disabled
-              loading
             >
               <Icon
                 name={IconName.Loading}

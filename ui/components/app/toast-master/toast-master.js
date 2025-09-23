@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
+import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -25,8 +26,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
+  getIsMultichainAccountsState2Enabled,
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
+  getPermissions,
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
@@ -47,6 +50,12 @@ import { SurveyToast } from '../../ui/survey-toast';
 import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
+  getAccountGroupWithInternalAccounts,
+  getSelectedAccountGroup,
+} from '../../../selectors/multichain-accounts/account-tree';
+import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
+import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
@@ -54,6 +63,7 @@ import {
   selectNewSrpAdded,
   selectPasswordChangeToast,
   selectShowCopyAddressToast,
+  selectShowConnectAccountGroupToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -67,6 +77,9 @@ import {
 
 export function ToastMaster() {
   const location = useLocation();
+  const isMultichainAccountsFeatureState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
   const onHomeScreen = location.pathname === DEFAULT_ROUTE;
   const onSettingsScreen = location.pathname.startsWith(SETTINGS_ROUTE);
@@ -75,7 +88,11 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <SurveyToast />
-        <ConnectAccountToast />
+        {isMultichainAccountsFeatureState2Enabled ? (
+          <ConnectAccountGroupToast />
+        ) : (
+          <ConnectAccountToast />
+        )}
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <NftEnablementToast />
@@ -132,6 +149,99 @@ function ConnectAccountToast() {
         onActionClick={() => {
           // Connect this account
           dispatch(addPermittedAccount(activeTabOrigin, account.address));
+          // Use setTimeout to prevent React re-render from
+          // hiding the tooltip
+          setTimeout(() => {
+            // Trigger a mouseenter on the header's connection icon
+            // to display the informative connection tooltip
+            document
+              .querySelector(
+                '[data-testid="connection-menu"] [data-tooltipped]',
+              )
+              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
+          }, 250 * MILLISECOND);
+        }}
+        onClose={() => setHideConnectAccountToast(true)}
+      />
+    )
+  );
+}
+
+function ConnectAccountGroupToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const selectedAccountGroupInternalAccounts = useSelector((state) =>
+    getAccountGroupWithInternalAccounts(state, selectedAccountGroup),
+  )?.find((accountGroup) => accountGroup.id === selectedAccountGroup);
+
+  // If the account has changed, allow the connect account toast again
+  const prevAccountGroup = usePrevious(selectedAccountGroup);
+  if (selectedAccountGroup !== prevAccountGroup && hideConnectAccountToast) {
+    setHideConnectAccountToast(false);
+  }
+
+  const showConnectAccountToast = useSelector((state) =>
+    selectedAccountGroupInternalAccounts
+      ? selectShowConnectAccountGroupToast(
+          state,
+          selectedAccountGroupInternalAccounts,
+        )
+      : false,
+  );
+
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const existingPermissions = useSelector((state) =>
+    getPermissions(state, activeTabOrigin),
+  );
+  const existingCaip25CaveatValue = existingPermissions
+    ? getCaip25CaveatValueFromPermissions(existingPermissions)
+    : null;
+  const existingChainIds = useMemo(
+    () =>
+      existingCaip25CaveatValue
+        ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
+        : [],
+    [existingCaip25CaveatValue],
+  );
+
+  const addressesToPermit = useMemo(() => {
+    if (!selectedAccountGroupInternalAccounts?.accounts) {
+      return [];
+    }
+    return selectedAccountGroupInternalAccounts.accounts
+      .filter((account) => hasChainIdSupport(account.scopes, existingChainIds))
+      .map((account) => account.address);
+  }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
+
+  // Early return if selectedAccountGroupInternalAccounts is undefined
+  if (!selectedAccountGroupInternalAccounts) {
+    return null;
+  }
+
+  return (
+    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
+      <Toast
+        dataTestId="connect-account-toast"
+        key="connect-account-toast"
+        startAdornment={
+          <PreferredAvatar
+            address={selectedAccountGroupInternalAccounts.id}
+            className="self-center"
+          />
+        }
+        text={t('accountIsntConnectedToastText', [
+          selectedAccountGroupInternalAccounts.metadata?.name,
+          getURLHost(activeTabOrigin),
+        ])}
+        actionText={t('connectAccount')}
+        onActionClick={() => {
+          // Connect this account
+          addressesToPermit.forEach((address) => {
+            dispatch(addPermittedAccount(activeTabOrigin, address));
+          });
           // Use setTimeout to prevent React re-render from
           // hiding the tooltip
           setTimeout(() => {
