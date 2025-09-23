@@ -121,10 +121,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           overflowWrap: OverflowWrap.Anywhere,
           minHeight: '24px',
           position: 'relative',
-          ...(onClick && { cursor: 'pointer' }),
           ...style,
         }}
-        onClick={onClick}
       >
         {copyEnabled && (
           <CopyIcon
@@ -155,6 +153,10 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           alignItems={AlignItems.flexStart}
           color={color}
           paddingRight={contentPaddingRight || null}
+          onClick={onClick}
+          style={{
+            ...(onClick && { cursor: 'pointer' }),
+          }}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
