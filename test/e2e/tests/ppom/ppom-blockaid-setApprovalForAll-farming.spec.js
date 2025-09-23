@@ -265,7 +265,7 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =

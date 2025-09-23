@@ -3,11 +3,11 @@ import {
   unlockWallet,
   WINDOW_TITLES,
   convertETHToHexGwei,
-  createDappTransaction,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
   BUNDLER_URL,
+  DAPP_URL,
   ENTRYPOINT,
   ERC_4337_ACCOUNT,
   ERC_4337_ACCOUNT_SALT,
@@ -249,13 +249,16 @@ async function withAccountSnap(
 describe('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
-      await createDappTransaction(driver, {
+      const transaction = {
         from: ERC_4337_ACCOUNT,
         to: LOCAL_NODE_ACCOUNT,
         value: convertETHToHexGwei(1),
         maxFeePerGas: '0x0',
         maxPriorityFeePerGas: '0x0',
-      });
+      };
+      await driver.openNewPage(
+        `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}}`,
+      );
 
       await confirmTransaction(driver);
     });
@@ -309,13 +312,16 @@ describe('User Operations', function () {
         ],
       },
       async (driver, bundlerServer) => {
-        await createDappTransaction(driver, {
+        const transaction = {
           from: ERC_4337_ACCOUNT,
           to: LOCAL_NODE_ACCOUNT,
           value: convertETHToHexGwei(1),
           maxFeePerGas: '0x0',
           maxPriorityFeePerGas: '0x0',
-        });
+        };
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}}`,
+        );
 
         await confirmTransaction(driver);
         await openConfirmedTransaction(driver);
