@@ -52,7 +52,7 @@ const useAlerts = (ownerId: string) => {
 
   const isAlertConfirmed = useCallback(
     (alertKey: string) => {
-      return confirmedAlertKeys?.includes(alertKey) ?? false;
+      return confirmedAlertKeys.includes(alertKey);
     },
     [confirmedAlertKeys],
   );

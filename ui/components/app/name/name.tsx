@@ -35,22 +35,10 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
-
-  /**
-   * Whether this name represents an incoming token.
-   * Used to enable token scanning only for incoming tokens.
-   */
-  isIncomingToken?: boolean;
 };
 
 const Name = memo(
-  ({
-    value,
-    type,
-    preferContractSymbol = false,
-    variation,
-    isIncomingToken,
-  }: NameProps) => {
+  ({ value, type, preferContractSymbol = false, variation }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
@@ -59,7 +47,6 @@ const Name = memo(
       type,
       preferContractSymbol,
       variation,
-      isIncomingToken,
     });
 
     useEffect(() => {
@@ -103,7 +90,6 @@ const Name = memo(
           preferContractSymbol={preferContractSymbol}
           variation={variation}
           handleClick={handleClick}
-          isIncomingToken={isIncomingToken}
         />
       </Box>
     );
