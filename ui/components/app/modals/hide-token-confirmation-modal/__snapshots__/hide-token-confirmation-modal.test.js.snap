@@ -29,7 +29,7 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
             <rect
               fill="#2362E1"
               height="45"
-              transform="translate(5.047495572364477 -7.501374313922141) rotate(458.4 22.5 22.5)"
+              transform="translate(5.04749557236448 -7.50137431392214) rotate(458.4 22.50000000000000 22.50000000000000)"
               width="45"
               x="0"
               y="0"
@@ -37,7 +37,7 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
             <rect
               fill="#F94301"
               height="45"
-              transform="translate(-21.604864626070608 11.239244487403075) rotate(268.8 22.5 22.5)"
+              transform="translate(-21.60486462607061 11.23924448740308) rotate(268.8 22.50000000000000 22.50000000000000)"
               width="45"
               x="0"
               y="0"
@@ -45,7 +45,7 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
             <rect
               fill="#FA7900"
               height="45"
-              transform="translate(-12.763482299017626 41.456272332211) rotate(117.3 22.5 22.5)"
+              transform="translate(-12.76348229901763 41.45627233221100) rotate(117.3 22.50000000000000 22.50000000000000)"
               width="45"
               x="0"
               y="0"
