@@ -145,7 +145,7 @@ export const MultichainAccountsConnectPage: React.FC<
             requiredScopes: {},
             optionalScopes: {},
             sessionProperties: {},
-            isMultichainOrigin: false,
+            isMultichainOrigin: true,
           },
     [existingPermissions],
   );
@@ -235,10 +235,10 @@ export const MultichainAccountsConnectPage: React.FC<
     selectedAndRequestedAccountGroups,
   } = useAccountGroupsForPermissions(
     existingCaip25CaveatValue,
-      requestedCaipAccountIds,
-      requestedCaipChainIdsOrDefault,
-      requestedNamespacesWithoutWallet,
-    );
+    requestedCaipAccountIds,
+    requestedCaipChainIdsOrDefault,
+    requestedNamespacesWithoutWallet,
+  );
 
   const [userHasModifiedSelection, setUserHasModifiedSelection] =
     useState(false);
@@ -302,10 +302,9 @@ export const MultichainAccountsConnectPage: React.FC<
     requestedCaipChainIdsOrDefault,
   ]);
 
-
   const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(
     suggestedAccountGroups.map((group) => group.id),
-    );
+  );
 
   const [selectedCaipAccountIds, setSelectedCaipAccountIds] = useState<
     CaipAccountId[]
@@ -333,11 +332,6 @@ export const MultichainAccountsConnectPage: React.FC<
       const caip25AccountIds = getCaip25AccountFromAccountGroupAndScope(
         selectedAccountGroups,
         updatedSelectedChains,
-      );
-
-      console.log(
-        '[multichain-accounts-connect-page] handleAccountGroupIdsSelected caip25AccountIds',
-        caip25AccountIds,
       );
 
       handleChainIdsSelected(updatedSelectedChains, { isUserModified });
@@ -392,7 +386,7 @@ export const MultichainAccountsConnectPage: React.FC<
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
-          selectedCaipAccountAddresses,
+          selectedCaipAccountIds,
           selectedChainIds,
         ),
       },
@@ -401,7 +395,7 @@ export const MultichainAccountsConnectPage: React.FC<
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
-    selectedCaipAccountAddresses,
+    selectedCaipAccountIds,
     selectedChainIds,
     approveConnection,
   ]);
