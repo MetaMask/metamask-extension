@@ -938,7 +938,11 @@ function emitDappViewedMetricEvent(origin) {
  * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort) {
-  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+  if (
+    !remotePort.sender?.tab ||
+    !remotePort.sender?.url ||
+    !remotePort.sender?.tab?.url
+  ) {
     return;
   }
   const tabId = remotePort.sender.tab.id;
@@ -952,7 +956,7 @@ function trackDappView(remotePort) {
     senderOriginMapping[tabId] = origin;
   }
   // do the same for tab origin, which can be different to sender origin
-  if (!Object.keys(tabOriginMapping).includes(tabId)) {
+  if (!(tabId in tabOriginMapping)) {
     tabOriginMapping[tabId] = tabOrigin;
   }
 
