@@ -7,6 +7,8 @@ export const AuthServer = {
   // Revoke current JWT Token from Auth Server
   RevokeToken:
     'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/revoke',
+  GetMarketingOptInStatus:
+    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/marketing_opt_in_status',
 };
 
 export const SSSBaseUrlRgx =

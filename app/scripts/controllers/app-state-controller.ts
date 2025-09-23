@@ -39,6 +39,7 @@ import type {
 } from '../../../shared/types/origin-throttling';
 import {
   ScanAddressResponse,
+  CachedScanAddressResponse,
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../lib/trust-signals/types';
@@ -50,6 +51,7 @@ import type {
 
 export type AppStateControllerState = {
   timeoutMinutes: number;
+  addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   connectedStatusPopoverHasBeenShown: boolean;
   defaultHomeActiveTabName: AccountOverviewTabKey | null;
   browserEnvironment: Record<string, string>;
@@ -84,7 +86,6 @@ export type AppStateControllerState = {
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
-  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
   currentExtensionPopupId: number;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
@@ -1025,7 +1026,27 @@ export class AppStateController extends BaseController<
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
     address: string,
   ): ScanAddressResponse | undefined => {
-    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+    const cached =
+      this.state.addressSecurityAlertResponses[address.toLowerCase()];
+
+    if (!cached) {
+      return undefined;
+    }
+
+    // Check if the cached response has expired (15 minute TTL)
+    const now = Date.now();
+    const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
+    if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
+      // Remove expired entry
+      this.update((state) => {
+        delete state.addressSecurityAlertResponses[address.toLowerCase()];
+      });
+      return undefined;
+    }
+
+    // Return the response without the timestamp
+    const { timestamp, ...response } = cached;
+    return response;
   };
 
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
@@ -1033,8 +1054,10 @@ export class AppStateController extends BaseController<
     addressSecurityAlertResponse: ScanAddressResponse,
   ): void => {
     this.update((state) => {
-      state.addressSecurityAlertResponses[address.toLowerCase()] =
-        addressSecurityAlertResponse;
+      state.addressSecurityAlertResponses[address.toLowerCase()] = {
+        ...addressSecurityAlertResponse,
+        timestamp: Date.now(),
+      };
     });
   };
 
