@@ -25,9 +25,13 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import { useSubmitClaimFormState } from './submit-claim-form-state';
+import { FileUploader } from '../../../../components/component-library/components-temp/file-uploader';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const {
     firstName,
@@ -293,6 +297,24 @@ const SubmitClaimForm = () => {
           borderRadius={BorderRadius.LG}
         />
       </Box>
+      <FileUploader
+        id="upload-images-file-uploader"
+        label={t('shieldClaimFileUploader')}
+        acceptInfo={t('shieldClaimFileUploaderMaxFileSize')}
+        helpText={t('shieldClaimFileUploaderHelpText')}
+        helpTextProps={{
+          'data-testid': 'shield-claim-file-uploader-help-text',
+          color: TextColor.textAlternativeSoft,
+        }}
+        maxFileSize={5}
+        filesProps={{
+          className: 'settings-page__content-item-col',
+        }}
+        accept={['application/pdf', 'image/png', 'image/jpg'].join(',')}
+        onChange={(files) => {
+          console.log('check: onChange', files);
+        }}
+      />
       <Box className="settings-page__content-item-col">
         <Button
           data-testid="shield-claim-submit-button"

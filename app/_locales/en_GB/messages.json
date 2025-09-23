@@ -5603,6 +5603,15 @@
   "shieldClaimEmailHelpText": {
     "message": "We'll use this email to keep you informed with updates."
   },
+  "shieldClaimFileUploader": {
+    "message": "Upload images"
+  },
+  "shieldClaimFileUploaderHelpText": {
+    "message": "If you have any additional evidence, please upload it here"
+  },
+  "shieldClaimFileUploaderMaxFileSize": {
+    "message": "PDF, PNG, JPG (MAX. 5MB)"
+  },
   "shieldClaimFirstName": {
     "message": "First Name"
   },
