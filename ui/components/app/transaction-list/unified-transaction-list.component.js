@@ -108,7 +108,7 @@ import {
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
-import NoTransactions from './no-transactions';
+import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_DAYS_INCREMENT = 10;
 
@@ -734,7 +734,7 @@ export default function UnifiedTransactionList({
           <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
         ) : null}
         {processedUnifiedActivityItems.length === 0 ? (
-          <NoTransactions />
+          <TransactionActivityEmptyState className="mx-auto mt-4" />
         ) : (
           <Box className="transaction-list__transactions">
             {processedUnifiedActivityItems
