@@ -289,6 +289,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       </button>
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="recovery-phrase-remind-later"
         type="button"
       >
         Remind me later
@@ -560,6 +561,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       </button>
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="recovery-phrase-remind-later"
         type="button"
       >
         Remind me later

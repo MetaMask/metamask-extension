@@ -88,9 +88,7 @@ class SecureWalletPage {
    * @param needEnterPassword - Whether to enter the password
    */
   async revealAndConfirmSRP(needEnterPassword: string = ''): Promise<void> {
-    console.log(
-      'Reveal and confirm SRP on secure wallet page during onboarding',
-    );
+    console.log('Reveal and confirm SRP on Reveal SRP Onboarding page');
     if (needEnterPassword) {
       await this.driver.fill(this.passwordInput, needEnterPassword);
       await this.driver.clickElement(this.confirmPasswordButton);
