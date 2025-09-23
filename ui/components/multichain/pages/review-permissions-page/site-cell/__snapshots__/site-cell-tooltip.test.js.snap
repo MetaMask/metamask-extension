@@ -38,7 +38,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#018E7E"
                     height="16"
-                    transform="translate(1.2744369446245154 -0.7053655586725533) rotate(363.1 8 8)"
+                    transform="translate(1.27443694462452 -0.70536555867255) rotate(363.1 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -46,7 +46,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#F91A01"
                     height="16"
-                    transform="translate(4.77517448786361 4.320459175535714) rotate(54.5 8 8)"
+                    transform="translate(4.77517448786361 4.32045917553571) rotate(54.5 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -54,7 +54,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#FB1882"
                     height="16"
-                    transform="translate(-12.741493192782233 -7.733296510164053) rotate(360.4 8 8)"
+                    transform="translate(-12.74149319278223 -7.73329651016405) rotate(360.4 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -86,7 +86,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#C81459"
                     height="16"
-                    transform="translate(0.10864265332766807 3.0706102866109184) rotate(138.0 8 8)"
+                    transform="translate(0.10864265332767 3.07061028661092) rotate(138.0 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -94,7 +94,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#018E89"
                     height="16"
-                    transform="translate(6.382605835258964 0.38215457860863067) rotate(152.6 8 8)"
+                    transform="translate(6.38260583525896 0.38215457860863) rotate(152.6 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -102,7 +102,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#2372E1"
                     height="16"
-                    transform="translate(-12.49164843832654 -7.756211576864221) rotate(374.4 8 8)"
+                    transform="translate(-12.49164843832654 -7.75621157686422) rotate(374.4 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -134,7 +134,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#1885F2"
                     height="16"
-                    transform="translate(0.05978858756790129 -0.031134724604508498) rotate(387.3 8 8)"
+                    transform="translate(0.05978858756790 -0.03113472460451) rotate(387.3 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -142,7 +142,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#FB1849"
                     height="16"
-                    transform="translate(-9.720573090114765 2.147084032854713) rotate(199.5 8 8)"
+                    transform="translate(-9.72057309011477 2.14708403285471) rotate(199.5 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"
@@ -150,7 +150,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
                   <rect
                     fill="#C8143B"
                     height="16"
-                    transform="translate(-13.051635417362899 8.223931749994133) rotate(284.9 8 8)"
+                    transform="translate(-13.05163541736290 8.22393174999413) rotate(284.9 8.00000000000000 8.00000000000000)"
                     width="16"
                     x="0"
                     y="0"

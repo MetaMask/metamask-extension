@@ -1,5 +1,11 @@
-export { getTokenRatesControllerMessenger } from './token-rates-controller-messenger';
-export type { TokenRatesControllerMessenger } from './token-rates-controller-messenger';
+export {
+  getTokenRatesControllerMessenger,
+  getTokenRatesControllerInitMessenger,
+} from './token-rates-controller-messenger';
+export type {
+  TokenRatesControllerMessenger,
+  TokenRatesControllerInitMessenger,
+} from './token-rates-controller-messenger';
 
 export {
   getNftControllerMessenger,
