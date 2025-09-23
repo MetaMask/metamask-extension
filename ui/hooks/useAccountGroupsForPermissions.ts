@@ -96,6 +96,25 @@ export const hasRequestedAccountIds = (
 };
 
 /**
+ * Removes duplicate account groups from an array based on their IDs
+ *
+ * @param accountGroups - Array of account groups that may contain duplicates
+ * @returns Array with unique account groups based on their IDs
+ */
+const deduplicateAccountGroups = (
+  accountGroups: AccountGroupWithInternalAccounts[],
+): AccountGroupWithInternalAccounts[] => {
+  const seen = new Set<string>();
+  return accountGroups.filter((group) => {
+    if (seen.has(group.id)) {
+      return false;
+    }
+    seen.add(group.id);
+    return true;
+  });
+};
+
+/**
  * Hook that manages account groups for CAIP-25 permissions, providing both connected
  * and supported account groups based on existing permissions, requested chains/namespaces,
  * and specific account IDs with prioritization support.
@@ -172,12 +191,16 @@ export const useAccountGroupsForPermissions = (
         } else {
           connectedAccountGroups.push(accountGroup);
         }
+      }
+
+      // Add to connectedAccountGroupWithRequested if either connected or fulfills requested accounts
+      if (isConnected || fulfillsRequestedAccounts) {
         connectedAccountGroupWithRequested.push(accountGroup);
       }
+
       if (isSupported || fulfillsRequestedAccounts) {
         if (fulfillsRequestedAccounts) {
           prioritySupportedGroups.push(accountGroup);
-          connectedAccountGroupWithRequested.push(accountGroup);
         } else if (isSupported) {
           supportedAccountGroups.push(accountGroup);
         }
@@ -195,17 +218,25 @@ export const useAccountGroupsForPermissions = (
       ]),
     );
 
-    // If there are no supported account groups, then return an empty array because the selected account group is not supported
-    const selectedOrFirstSupportedAccountGroup =
-      supportedAccountGroups.length > 0
-        ? [selectedAccountGroup || supportedAccountGroups[0]]
-        : [];
-    const selectedAndRequestedAccountGroups = Array.from(
-      new Set([
-        ...prioritySupportedGroups,
-        ...selectedOrFirstSupportedAccountGroup,
-      ]),
-    );
+    // Determine which account groups to include based on priority and availability
+    const hasPriorityGroups = prioritySupportedGroups.length > 0;
+    const hasSupportedGroups = supportedAccountGroups.length > 0;
+
+    let fallbackAccountGroups: AccountGroupWithInternalAccounts[] = [];
+
+    if (!hasPriorityGroups && hasSupportedGroups) {
+      // Only include fallback groups when there are no priority groups
+      const fallbackGroup = selectedAccountGroup || supportedAccountGroups[0];
+      if (fallbackGroup) {
+        fallbackAccountGroups = [fallbackGroup];
+      }
+    }
+
+    // Combine priority groups with fallback groups (if any) and remove duplicates
+    const selectedAndRequestedAccountGroups = deduplicateAccountGroups([
+      ...prioritySupportedGroups,
+      ...fallbackAccountGroups,
+    ]);
 
     return {
       selectedAndRequestedAccountGroups,
@@ -218,7 +249,9 @@ export const useAccountGroupsForPermissions = (
         ...connectedAccountGroups,
       ],
       connectedCaipAccountIds: connectedAccountIds,
-      connectedAccountGroupWithRequested,
+      connectedAccountGroupWithRequested: deduplicateAccountGroups(
+        connectedAccountGroupWithRequested,
+      ),
       caipAccountIdsOfConnectedAccountGroupWithRequested,
     };
   }, [
