@@ -172,6 +172,9 @@
   "activity": {
     "message": "Activity"
   },
+  "activityEmptyDescription": {
+    "message": "Nothing to see yet. Check the explorer for more recent activity."
+  },
   "activityLog": {
     "message": "Activity log"
   },
@@ -2011,6 +2014,9 @@
   },
   "discover": {
     "message": "Discover"
+  },
+  "discoverNFTs": {
+    "message": "Discover NFTs"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -3909,6 +3915,9 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
+  "nftEmptyDescription": {
+    "message": "There's a world of NFTs out there. Start your collection today."
+  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -3938,9 +3947,6 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noActivity": {
-    "message": "No activity yet"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
@@ -3958,9 +3964,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
-  },
-  "noNFTs": {
-    "message": "No NFTs yet"
   },
   "noNetworksAvailable": {
     "message": "No networks available"
