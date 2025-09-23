@@ -15,8 +15,8 @@
   }
 }
 
-// Add hover effect to underline only the label text (key) when hovering over a row with an alert
-// Target the label text - it's in the first flex container, not in the expanded children section
-.confirm-info-row--has-alert:hover .confirm-info-row > *:first-child .mm-text:first-of-type {
+// Add hover effect to underline only the label text (key), not petname/address text
+// Target text that uses bodyMdMedium variant (which is used for labels) and exclude name components
+.confirm-info-row--has-alert .confirm-info-row .mm-text--body-md-medium:hover:not(.name__name):not(.name__value) {
   text-decoration: underline;
 }
