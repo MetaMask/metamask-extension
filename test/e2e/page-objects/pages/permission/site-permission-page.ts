@@ -87,6 +87,27 @@ class SitePermissionPage {
   }
 
   /**
+   * Disconnect a specific network from the site permissions
+   *
+   * @param caipChainId - The CAIP-2 chain ID of the network to disconnect
+   */
+  async uncheckNetwork(caipChainId: string): Promise<void> {
+    console.log(`Disconnect network: ${caipChainId}`);
+    await this.driver.clickElement(
+      `[data-testid="select-network-checkbox-${caipChainId}"]`,
+    );
+  }
+
+  /**
+   * Click the confirm button to save network permission changes
+   */
+  async clickConfirmEditNetworksButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmEditNetworksButton,
+    );
+  }
+
+  /**
    * Open the account edit permissions modal
    */
   async openAccountPermissionsModal(): Promise<void> {
