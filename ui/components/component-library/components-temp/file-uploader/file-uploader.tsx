@@ -97,6 +97,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
 
     const onFileDrop = (e: React.DragEvent<HTMLButtonElement>) => {
       e.preventDefault();
+      setIsDragging(false);
       const { files: dtFiles } = e.dataTransfer;
       addFiles(dtFiles);
     };
