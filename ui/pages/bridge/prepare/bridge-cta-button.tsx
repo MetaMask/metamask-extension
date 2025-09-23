@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isCrossChain } from '@metamask/bridge-controller';
 import {
   Button,
   ButtonLink,
