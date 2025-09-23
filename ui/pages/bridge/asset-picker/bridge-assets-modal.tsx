@@ -26,6 +26,7 @@ import { debounce } from 'lodash';
 interface BridgeAssetsModalProps {
   isOpen: boolean;
   onClose: (value: boolean) => void;
+  onSelectAsset: (asset: Asset) => void;
 }
 
 const SUPPORTED_NETWORKS = [CHAIN_IDS.MAINNET, CHAIN_IDS.BSC, CHAIN_IDS.POLYGON, CHAIN_IDS.OPTIMISM, CHAIN_IDS.BASE, CHAIN_IDS.LINEA_MAINNET, CHAIN_IDS.ARBITRUM, CHAIN_IDS.AVALANCHE, CHAIN_IDS.ZKSYNC_ERA, CHAIN_IDS.SEI, MultichainNetworks.SOLANA];
@@ -36,7 +37,7 @@ const NETWORK_PILLS = SUPPORTED_NETWORKS.map((network) => ({
   image: getImageForChainId(network),
 }));
 
-export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) => {
+export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAssetsModalProps) => {
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(CHAIN_IDS.MAINNET);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -47,9 +48,19 @@ export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) =
     [],
   );
 
+  const closeModal = () => {
+    onClose(false);
+    setSearchQuery('');
+  }
+
+  const selectAsset = (asset: Asset) => {
+    onSelectAsset(asset);
+    closeModal();
+  }
+
   useEffect(() => {
     debouncedSearchCallback(searchQuery);
-  }, [searchQuery, debouncedSearchCallback]);
+  }, [searchQuery, selectedNetwork, debouncedSearchCallback]);
 
 
   useEffect(() => {
@@ -61,11 +72,11 @@ export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) =
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => onClose(false)}
+      onClose={closeModal}
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={() => onClose(false)}>
+        <ModalHeader onClose={closeModal}>
           Select Token
         </ModalHeader>
 
@@ -90,11 +101,6 @@ export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) =
           autoFocus
         />
         </Box>
-
-        <ModalFooter
-          onSubmit={() => onClose(false)}
-          submitButtonProps={{ children: 'Close' }}
-        />
       </ModalContent>
     </Modal>
   )
