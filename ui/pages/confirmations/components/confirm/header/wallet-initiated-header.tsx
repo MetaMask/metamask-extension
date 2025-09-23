@@ -58,7 +58,10 @@ export const WalletInitiatedHeader = () => {
       isSendRedesignEnabled &&
       (isNativeSend || isERC20TokenSend || isNFTTokenSend)
     ) {
-      onCancel({ location: MetaMetricsEventLocation.Confirmation });
+      onCancel({
+        location: MetaMetricsEventLocation.Confirmation,
+        navigateBackForSend: true,
+      });
       return;
     }
 
