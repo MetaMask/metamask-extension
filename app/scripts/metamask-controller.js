@@ -1658,7 +1658,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // if this is the first time, clear the state of by calling these methods
-    const resetMethods = [
+    this.resetMethods = [
       this.accountTrackerController.resetState.bind(
         this.accountTrackerController,
       ),
@@ -1673,19 +1673,22 @@ export default class MetamaskController extends EventEmitter {
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
+      this.seedlessOnboardingController.clearState.bind(
+        this.seedlessOnboardingController,
+      ),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
     if (isManifestV3) {
       if (isFirstMetaMaskControllerSetup === true) {
-        this.resetStates(resetMethods);
+        this.resetStates();
         this.extension.storage.session.set({
           isFirstMetaMaskControllerSetup: false,
         });
       }
     } else {
       // it's always the first time in MV2
-      this.resetStates(resetMethods);
+      this.resetStates();
     }
 
     // Automatic login via config password
@@ -1788,8 +1791,10 @@ export default class MetamaskController extends EventEmitter {
     this.multichainRatesController.stop();
   }
 
-  resetStates(resetMethods) {
-    resetMethods.forEach((resetMethod) => {
+  resetStates() {
+    console.log('resetStates');
+    console.log('this.resetMethods', this.resetMethods);
+    this.resetMethods.forEach((resetMethod) => {
       try {
         resetMethod();
       } catch (err) {
@@ -2621,7 +2626,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
-      resetState: this.resetState.bind(this),
+      resetState: this.resetStates.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
@@ -3665,6 +3670,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
+      resetStates: this.resetStates.bind(this),
     };
   }
 

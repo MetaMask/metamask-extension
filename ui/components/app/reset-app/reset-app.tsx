@@ -4,7 +4,7 @@ import { useSignOut } from '../../../hooks/identity/useAuthentication';
 import { Button, ButtonVariant } from '../../component-library';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 // import { getIsSocialLoginFlow } from '../../../selectors';
-import { resetApp } from '../../../store/actions';
+import { resetApp, resetWallet } from '../../../store/actions';
 import { useHistory } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
@@ -19,6 +19,7 @@ export default function ResetAppButton() {
 
   const handleReset = async () => {
     await signOut();
+    await dispatch(resetWallet());
     await dispatch(resetApp());
     history.replace(DEFAULT_ROUTE);
   }

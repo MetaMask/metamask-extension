@@ -6633,6 +6633,28 @@ export function performSignOut(): ThunkAction<
 }
 
 /**
+ * Resets the background controllers' state
+ *
+ * @returns A thunk action that, when dispatched, attempts to reset the background controllers' state.
+ */
+export function resetWallet(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      console.log('[resetWallet] resetting wallet');
+      await submitRequestToBackground('resetStates');
+    } catch (error) {
+      console.log('[resetWallet] error', error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Enables or disables a backup and sync feature.
  *
  * This function sends a request to the background script to enable or disable a specific

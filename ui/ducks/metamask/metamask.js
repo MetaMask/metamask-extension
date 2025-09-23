@@ -67,6 +67,7 @@ const initialState = {
     },
   },
   throttledOrigins: {},
+  isSeedlessOnboardingUserAuthenticated: false,
 };
 
 /**
@@ -197,6 +198,7 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         ...initialState,
+        isSeedlessOnboardingUserAuthenticated: false,
       };
     }
 
