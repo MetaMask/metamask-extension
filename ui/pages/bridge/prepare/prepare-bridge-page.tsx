@@ -54,8 +54,6 @@ import {
   BridgeAppState,
   getTxAlerts,
   getFromAccount,
-  getIsStxEnabled,
-  getIsGasIncluded,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -67,6 +65,7 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
+import { BridgeAssetsModal } from '../modals';
 import {
   BackgroundColor,
   BlockSize,
@@ -93,6 +92,7 @@ import {
   getEnabledNetworksByNamespace,
   getTokenList,
 } from '../../../selectors';
+import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -110,13 +110,14 @@ import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
-import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -177,10 +178,6 @@ const PrepareBridgePage = ({
 
   // Use the appropriate value based on unified UI setting
   const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
-  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
-  const gasIncluded = useSelector((state) =>
-    getIsGasIncluded(state, isSendBundleSupportedForChain),
-  );
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -202,7 +199,11 @@ const PrepareBridgePage = ({
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const smartTransactionsEnabled = useSelector((state) =>
+    getIsSmartTransaction(state as never, fromChain?.chainId),
+  );
+
+  const smartAccountOptedIn = useSelector(getUseSmartAccount);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -236,17 +237,15 @@ const PrepareBridgePage = ({
 
   const selectedAccount = useSelector(getFromAccount);
 
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
+
   const gasIncluded7702 = useGasIncluded7702({
+    smartAccountOptedIn,
     isSwap,
-    isSendBundleSupportedForChain,
     selectedAccount,
     fromChain,
+    isSendBundleSupportedForChain,
   });
-
-  const shouldShowMaxButton =
-    fromToken && isNativeAddress(fromToken.address)
-      ? gasIncluded || gasIncluded7702
-      : true;
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -360,6 +359,10 @@ const PrepareBridgePage = ({
   ]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+
+  const gasIncluded =
+    (smartTransactionsEnabled && isSwap && isSendBundleSupportedForChain) ||
+    gasIncluded7702;
 
   const quoteParams: Partial<GenericQuoteRequest> = useMemo(
     () => ({
@@ -499,7 +502,7 @@ const PrepareBridgePage = ({
         selectedAccount={selectedDestinationAccount}
         onClose={() => setIsDestinationAccountPickerOpen(false)}
       />
-
+<BridgeAssetsModal isOpen={true} onClose={() => {}} />
       <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
           header={getFromInputHeader()}
@@ -543,11 +546,11 @@ const PrepareBridgePage = ({
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            shouldShowMaxButton
-              ? (value: string) => {
+            isNativeAddress(fromToken?.address ?? '')
+              ? undefined
+              : (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
-              : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
