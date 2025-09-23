@@ -18,11 +18,11 @@ import {
   Text,
 } from '../../../../component-library';
 import { Icon, IconName, IconSize } from '../../../../component-library/icon';
-import { PermissionsCellTooltip } from './permissions-cell-tooltip';
 import {
   SizeNumber,
   SizeNumberArray,
 } from '../../../../component-library/box/box.types';
+import { PermissionsCellTooltip } from './permissions-cell-tooltip';
 
 // Define types for networks permissions
 type Network = {

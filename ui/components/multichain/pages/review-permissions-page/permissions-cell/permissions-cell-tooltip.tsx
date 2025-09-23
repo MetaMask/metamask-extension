@@ -4,7 +4,6 @@ import { AvatarType } from '../../../avatar-group/avatar-group.types';
 import { AvatarGroup } from '../../../avatar-group';
 import {
   AlignItems,
-  BackgroundColor,
   BorderStyle,
   Display,
   FlexDirection,
@@ -118,7 +117,7 @@ export const PermissionsCellTooltip = ({
         members={avatarNetworksData}
         limit={AVATAR_GROUP_LIMIT}
         avatarType={AvatarType.TOKEN}
-        borderColor={BackgroundColor.backgroundDefault as unknown as BorderColor}
+        borderColor={BorderColor.borderDefault}
       />
     </Tooltip>
   );

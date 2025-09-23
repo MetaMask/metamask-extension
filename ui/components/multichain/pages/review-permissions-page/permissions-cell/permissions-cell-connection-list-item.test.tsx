@@ -5,8 +5,8 @@ import { renderWithProvider } from '../../../../../../test/jest';
 import { IconName } from '../../../../component-library/icon';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';
 import { SizeNumber } from '../../../../component-library/box/box.types';
+import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';
 
 describe('PermissionsCellConnectionListItem', () => {
   const store = configureStore({
