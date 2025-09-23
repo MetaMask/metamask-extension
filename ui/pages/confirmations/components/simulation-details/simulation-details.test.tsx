@@ -56,7 +56,7 @@ const renderSimulationDetails = (
   simulationData?: Partial<SimulationData>,
   metricsOnly?: boolean,
   staticRows?: StaticRow[],
-  transactionMetadata?: Partial<TransactionMeta>,
+  transactionMetadata?: Partial<TransactionMeta & { smartTransactionStatus?: string }>,
 ) => {
   const trackAlertActionClicked = jest.fn();
   const trackAlertRender = jest.fn();
@@ -64,11 +64,14 @@ const renderSimulationDetails = (
 
   const state = cloneDeep(mockState);
 
-  if (transactionMetadata) {
+  // Extract smartTransactionStatus from transactionMetadata
+  const { smartTransactionStatus, ...txMetadata } = transactionMetadata || {};
+
+  if (txMetadata && Object.keys(txMetadata).length > 0) {
     state.metamask.transactions.push({
       id: TRANSACTION_ID_MOCK,
       simulationData,
-      ...transactionMetadata,
+      ...txMetadata,
     } as never);
   }
 
@@ -85,12 +88,13 @@ const renderSimulationDetails = (
           {
             id: TRANSACTION_ID_MOCK,
             simulationData,
-            ...transactionMetadata,
+            ...txMetadata,
           } as TransactionMeta
         }
         metricsOnly={metricsOnly}
         staticRows={staticRows}
         isTransactionsRedesign
+        smartTransactionStatus={smartTransactionStatus}
       />
     </AlertMetricsProvider>,
     configureStore()(state),
@@ -220,6 +224,39 @@ describe('SimulationDetails', () => {
     expect(BalanceChangeList).toHaveBeenCalledWith(
       expect.objectContaining({
         heading: 'You send',
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+  });
+
+  it('prioritizes Smart Transaction status over regular transaction status', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    // Test: Smart Transaction success should override submitted transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+      smartTransactionStatus: 'success',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You sent', // Should show "You sent" due to Smart Transaction success
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+
+    // Test: Smart Transaction pending should override unapproved transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+      smartTransactionStatus: 'pending',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're sending", // Should show "You're sending" due to Smart Transaction pending
         balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
       {},
