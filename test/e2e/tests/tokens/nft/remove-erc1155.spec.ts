@@ -32,8 +32,10 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withNftControllerERC1155()
           .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.LOCALHOST]: true,
+            enabledNetworkMap: {
+              eip155: {
+                [CHAIN_IDS.LOCALHOST]: true,
+              },
             },
           })
           .build(),
@@ -67,8 +69,10 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
+            enabledNetworkMap: {
+              eip155: {
+                [CHAIN_IDS.MAINNET]: true,
+              },
             },
           })
           .build(),

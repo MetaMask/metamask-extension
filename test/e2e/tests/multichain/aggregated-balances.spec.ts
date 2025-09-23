@@ -32,8 +32,10 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
             preferences: { showTestNetworks: true },
           })
           .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.MAINNET]: true,
+            enabledNetworkMap: {
+              eip155: {
+                [CHAIN_IDS.MAINNET]: true,
+              },
             },
           })
           .build(),

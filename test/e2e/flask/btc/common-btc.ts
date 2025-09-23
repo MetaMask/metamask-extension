@@ -23,11 +23,13 @@ export async function withBtcAccountSnap(
     {
       fixtures: new FixtureBuilder()
         .withEnabledNetworks({
-          eip155: {
-            '0x539': true,
-          },
-          bip122: {
-            [MultichainNetworks.BITCOIN]: true,
+          enabledNetworkMap: {
+            eip155: {
+              '0x539': true,
+            },
+            bip122: {
+              [MultichainNetworks.BITCOIN]: true,
+            },
           },
         })
         .build(),

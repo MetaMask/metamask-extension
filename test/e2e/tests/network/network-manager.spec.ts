@@ -16,7 +16,9 @@ describe('Network Manager', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -35,7 +37,9 @@ describe('Network Manager', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ eip155: { '0x1': true, '0xe708': true } })
+          .withEnabledNetworks({
+            enabledNetworkMap: { eip155: { '0x1': true, '0xe708': true } },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -55,7 +59,9 @@ describe('Network Manager', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -106,7 +112,9 @@ describe('Network Manager', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -124,7 +132,9 @@ describe('Network Manager', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -156,8 +166,10 @@ describe('Network Manager', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+              },
             },
           })
           .build(),
@@ -241,8 +253,10 @@ describe('Network Manager', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true, // Start with only Ethereum
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true, // Start with only Ethereum
+              },
             },
           })
           .build(),

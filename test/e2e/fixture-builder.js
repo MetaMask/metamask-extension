@@ -212,11 +212,7 @@ class FixtureBuilder {
   }
 
   withEnabledNetworks(data) {
-    merge(this.fixture.data.NetworkOrderController, {
-      networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
-    });
-    // Replace instead of merge for enabledNetworkMap
-    this.fixture.data.NetworkEnablementController.enabledNetworkMap = data;
+    merge(this.fixture.data.NetworkEnablementController, data);
     return this;
   }
 

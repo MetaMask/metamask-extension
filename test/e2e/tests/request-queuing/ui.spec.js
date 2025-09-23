@@ -252,8 +252,10 @@ describe('Request-queue UI changes', function () {
             preferences: { showTestNetworks: true },
           })
           .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x539': true,
+              },
             },
           })
           .build(),
@@ -533,8 +535,10 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x539': true,
+              },
             },
           })
           .build(),
@@ -609,10 +613,12 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleNode()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-              '0x2105': true,
-              '0xe708': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+                '0x2105': true,
+                '0xe708': true,
+              },
             },
           })
           .build(),

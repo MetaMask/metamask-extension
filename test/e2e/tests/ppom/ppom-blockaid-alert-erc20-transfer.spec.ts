@@ -93,8 +93,10 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function (this: Suite
             securityAlertsEnabled: true,
           })
           .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x539': true,
+              },
             },
           })
           .build(),

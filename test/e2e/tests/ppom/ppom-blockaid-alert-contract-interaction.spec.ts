@@ -232,8 +232,10 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x539': true,
+              },
             },
           })
           .withPermissionControllerConnectedToTestDapp({

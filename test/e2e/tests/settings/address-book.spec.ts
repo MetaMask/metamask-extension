@@ -90,9 +90,11 @@ describe('Address Book', function (this: Suite) {
             },
           })
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-              '0xe708': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+                '0xe708': true,
+              },
             },
           })
           .build(),

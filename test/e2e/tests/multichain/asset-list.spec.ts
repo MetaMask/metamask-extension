@@ -42,8 +42,10 @@ function buildFixtures(title: string, chainId: number = 137) {
       .withNetworkControllerOnPolygon()
       .withTokensControllerERC20({ chainId })
       .withEnabledNetworks({
-        eip155: {
-          [CHAIN_IDS.POLYGON]: true,
+        enabledNetworkMap: {
+          eip155: {
+            [CHAIN_IDS.POLYGON]: true,
+          },
         },
       })
       .build(),

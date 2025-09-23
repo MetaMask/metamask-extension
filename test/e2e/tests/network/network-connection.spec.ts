@@ -67,8 +67,10 @@ networkConfigs.forEach((config) => {
             .fixtureMethod(new FixtureBuilder())
             .withPermissionControllerConnectedToTestDapp()
             .withEnabledNetworks({
-              eip155: {
-                [config.chainId]: true,
+              enabledNetworkMap: {
+                eip155: {
+                  [config.chainId]: true,
+                },
               },
             })
             .build(),

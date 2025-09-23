@@ -82,8 +82,10 @@ describe('ENS', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+              },
             },
           })
           .build(),

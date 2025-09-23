@@ -32,8 +32,10 @@ async function withFixturesForSmartTransactions(
         .withPermissionControllerConnectedToTestDapp()
         .withNetworkControllerOnMainnet()
         .withEnabledNetworks({
-          eip155: {
-            '0x1': true,
+          enabledNetworkMap: {
+            eip155: {
+              '0x1': true,
+            },
           },
         })
         .build(),

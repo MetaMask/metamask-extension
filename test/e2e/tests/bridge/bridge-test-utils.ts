@@ -698,10 +698,12 @@ export const getBridgeFixtures = (
       },
     })
     .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-        '0xe708': true,
-        '0xa4b1': true,
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0xe708': true,
+          '0xa4b1': true,
+        },
       },
     });
 
@@ -804,10 +806,12 @@ export const getQuoteNegativeCasesFixtures = (
     .withTokensControllerERC20({ chainId: 1 })
     .withPreferencesControllerSmartTransactionsOptedOut()
     .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-        '0xe708': true,
-        '0xa4b1': true,
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0xe708': true,
+          '0xa4b1': true,
+        },
       },
     });
 
@@ -852,9 +856,11 @@ export const getBridgeNegativeCasesFixtures = (
     .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-        '0xe708': true,
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0xe708': true,
+        },
       },
     });
 
@@ -898,9 +904,11 @@ export const getInsufficientFundsFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-        '0xe708': true,
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0xe708': true,
+        },
       },
     });
 
@@ -974,10 +982,12 @@ export const getBridgeL2Fixtures = (
       },
     })
     .withEnabledNetworks({
-      eip155: {
-        '0x1': true, // Mainnet
-        '0xe708': true, // Linea (source chain for test)
-        '0xa4b1': true, // Arbitrum One (destination chain for test)
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true, // Mainnet
+          '0xe708': true, // Linea (source chain for test)
+          '0xa4b1': true, // Arbitrum One (destination chain for test)
+        },
       },
     });
 

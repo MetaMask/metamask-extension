@@ -19,8 +19,10 @@ describe('NFT detection', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+              },
             },
           })
           .build(),

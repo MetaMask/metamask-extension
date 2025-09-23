@@ -16,7 +16,9 @@ describe('Send Flow - Network Change', function (this: Suite) {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -66,7 +68,9 @@ describe('Send Flow - Network Change', function (this: Suite) {
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withEnabledNetworks({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
