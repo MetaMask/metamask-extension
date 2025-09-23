@@ -1,12 +1,11 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  WINDOW_TITLES,
-  openDapp,
   unlockWallet,
   withFixtures,
   getEventPayloads,
 } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 const { MOCK_META_METRICS_ID } = require('./constants');
 
@@ -274,7 +273,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button for transaction
         await driver.clickElement('#maliciousApprovalButton');
