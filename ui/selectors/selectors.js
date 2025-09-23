@@ -3038,6 +3038,63 @@ export function getUrlScanCacheResult(state, hostname) {
   return state.metamask.urlScanCache?.[hostname];
 }
 
+/**
+ * Gets the cached token scan result for a given token
+ *
+ * @param {*} state
+ * @param {string | undefined} chainId - The chain ID of the token
+ * @param {string | undefined} tokenAddress - The address of the token
+ * @returns the cached token scan result for the given token or undefined if the chainId or tokenAddress is not provided
+ */
+export function getTokenScanCacheResult(state, chainId, tokenAddress) {
+  if (!chainId || !tokenAddress) {
+    return undefined;
+  }
+
+  const cacheKey = `${chainId}:${tokenAddress.toLowerCase()}`;
+
+  const result = state.metamask.tokenScanCache?.[cacheKey];
+  return result;
+}
+
+// Memoized function to prevent reference instability
+const memoizedTokenScanResults = memoize(
+  (tokenScanCache, chainId, tokenAddresses) => {
+    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+      return [];
+    }
+
+    return tokenAddresses.map((tokenAddress) => {
+      if (!tokenAddress) {
+        return undefined;
+      }
+      const cacheKey = `${chainId}:${tokenAddress.toLowerCase()}`;
+      return tokenScanCache?.[cacheKey];
+    });
+  },
+  // Custom resolver to create cache key from all arguments
+  (tokenScanCache, chainId, tokenAddresses) => {
+    const addressesKey = tokenAddresses?.join(',') || '';
+    return `${chainId}:${addressesKey}:${JSON.stringify(tokenScanCache)}`;
+  },
+);
+
+/**
+ * Gets the cached token scan results for multiple tokens
+ *
+ * @param {*} state
+ * @param {string | undefined} chainId - The chain ID of the tokens
+ * @param {string[] | undefined} tokenAddresses - Array of token addresses
+ * @returns Array of cached token scan results, with undefined for invalid addresses
+ */
+export function getTokenScanCacheResults(state, chainId, tokenAddresses) {
+  return memoizedTokenScanResults(
+    state.metamask.tokenScanCache,
+    chainId,
+    tokenAddresses,
+  );
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
