@@ -29,8 +29,6 @@ import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
 const useTokenContract = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
-  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
-  const isBIP44 = useIsBIP44();
 
   if (!currentConfirmation?.msgParams) {
     return {};
@@ -51,6 +49,7 @@ const useTokenContract = () => {
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
   const isSimulationSupported = useTypesSignSimulationEnabledInfo();
+  const isBIP44 = useIsBIP44();
   const { tokenContract, verifyingContract, spender, isPermit } =
     useTokenContract();
   const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
