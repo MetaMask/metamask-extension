@@ -6,6 +6,7 @@ import {
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { bpsToPercentage } from '../../../ducks/bridge/utils';
 import {
   Text,
   PopoverPosition,
@@ -154,12 +155,16 @@ export const MultichainBridgeQuoteCard = ({
               position={PopoverPosition.TopStart}
               offset={[-16, 16]}
             >
-              {t('multichainQuoteCardRateExplanation', [
-                new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                  ? (activeQuote.quote.feeData.metabridge.quoteBpsFee ?? // TODO: add to typing in bridge-controller
-                    BRIDGE_MM_FEE_RATE)
-                  : '0',
-              ])}
+              {new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
+                ? t('multichainQuoteCardRateExplanation', [
+                    bpsToPercentage(
+                      // @ts-expect-error: controller types are not up to date yet
+                      activeQuote.quote.feeData.metabridge.quoteBpsFee,
+                    ) ?? BRIDGE_MM_FEE_RATE,
+                  ])
+                : t('noMMFeeSwapping', [
+                    activeQuote?.quote?.destAsset?.symbol || 'token',
+                  ])}
             </Tooltip>
           </Row>
           <Row gap={1}>

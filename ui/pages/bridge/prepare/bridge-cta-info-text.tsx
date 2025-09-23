@@ -18,6 +18,7 @@ import {
 import { Row, Tooltip } from '../layout';
 import { getCurrentKeyring } from '../../../selectors/selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import { bpsToPercentage } from '../../../ducks/bridge/utils';
 
 export const BridgeCTAInfoText = () => {
   const t = useI18nContext();
@@ -41,15 +42,26 @@ export const BridgeCTAInfoText = () => {
     return null;
   }
 
-  const feeMessage = hasMMFee
-    ? t('rateIncludesMMFee', [
-        // @ts-expect-error: controller types are not up to date yet.
-        activeQuote.quote.feeData.metabridge.quoteBpsFee ?? BRIDGE_MM_FEE_RATE,
-      ])
-    : t('noMMFeeSwapping', [activeQuote.quote.destAsset.symbol]);
+  // Only show fee message when not expired
+  const shouldShowFeeMessage = !isQuoteExpired;
 
-  const shouldShowFeeMessage = activeQuote && !isQuoteExpired;
-  const shouldShowContent = shouldShowFeeMessage || hasApproval;
+  // Get the fee percentage from the quote or fallback to default
+  // @ts-expect-error: controller types are not up to date yet
+  const quoteBpsFee = activeQuote.quote.feeData?.metabridge?.quoteBpsFee;
+  const feePercentage = bpsToPercentage(quoteBpsFee) ?? BRIDGE_MM_FEE_RATE;
+
+  // Build fee message based on whether there's a fee or not
+  let feeMessage = null;
+  if (shouldShowFeeMessage) {
+    if (hasMMFee) {
+      feeMessage = t('rateIncludesMMFee', [feePercentage]);
+    } else {
+      const destSymbol = activeQuote.quote.destAsset?.symbol || 'token';
+      feeMessage = t('noMMFeeSwapping', [destSymbol]);
+    }
+  }
+
+  const shouldShowContent = feeMessage || hasApproval;
 
   if (!shouldShowContent) {
     return null;
@@ -59,7 +71,7 @@ export const BridgeCTAInfoText = () => {
     <Row gap={1} justifyContent={JustifyContent.center}>
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternativeSoft}>
         {[
-          shouldShowFeeMessage ? feeMessage : null,
+          feeMessage,
           hasApproval &&
             (isCrossChain(
               activeQuote.quote.srcChainId,
