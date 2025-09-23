@@ -16,8 +16,12 @@ export function getBackendWebSocketServiceMessenger(
 ): BackendPlatformWebSocketServiceMessenger {
   return messenger.getRestricted({
     name: 'BackendWebSocketService',
-    allowedActions: [],
-    allowedEvents: [],
+    allowedActions: [
+      'AuthenticationController:getBearerToken', // Get auth token (includes wallet unlock check)
+    ],
+    allowedEvents: [
+      'AuthenticationController:stateChange', // Listen for authentication state (includes wallet lock/unlock)
+    ],
   });
 }
 
@@ -31,6 +35,9 @@ export function getBackendWebSocketServiceInitMessenger(
   return messenger.getRestricted({
     name: 'BackendWebSocketServiceInit',
     allowedEvents: [],
-    allowedActions: ['RemoteFeatureFlagController:getState'],
+    allowedActions: [
+      'RemoteFeatureFlagController:getState',
+      'AuthenticationController:getBearerToken',
+    ],
   });
 }

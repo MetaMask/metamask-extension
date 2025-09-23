@@ -6,12 +6,19 @@ import {
 } from '../messengers/backend-platform';
 
 /**
- * Initialize the Backend Platform WebSocket service.
+ * Initialize the Backend Platform WebSocket service with authentication support.
  * This provides WebSocket connectivity for backend platform services
  * like AccountActivityService and other platform-level integrations.
  *
+ * Authentication Flow (simplified with AuthenticationController):
+ * 1. Core WebSocketService: Controls WHETHER connections are allowed (AuthenticationController.isSignedIn = yes)
+ * 2. Browser/Extension lifecycle: Controls WHEN to connect/disconnect (close = disconnect, open = connect)
+ * 3. AuthenticationController.isSignedIn includes BOTH wallet unlock + identity provider authentication
+ * 4. Fresh bearer tokens retrieved on each connection attempt (getBearerToken checks wallet unlock internally)
+ *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the service.
+ * @param request.initMessenger - The messenger for accessing other controllers.
  * @returns The initialized service.
  */
 export const BackendWebSocketServiceInit: ControllerInitFunction<
@@ -47,13 +54,13 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
         return false;
       }
     },
+    // Enable authentication - core service will handle the authentication logic
+    // Note: This will show a linting error until @metamask/backend-platform is published with the new enableAuthentication option
+    enableAuthentication: true,
   });
 
-  // Start connection attempt (service will check enabledCallback internally)
-  controller.connect().catch((error) => {
-    console.warn('[BackendWebSocketService] Failed to connect during initialization:', error);
-    // Don't throw here - let the service handle reconnection logic
-  });
+  // Authentication and lock/unlock handling is now managed by the core WebSocket service
+  // Core service will automatically connect when wallet is unlocked (no manual connect() needed)
 
   return {
     memStateKey: null,
