@@ -129,6 +129,8 @@ export const MultichainAccountCell = ({
           display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.flexEnd}
+          data-testid="multichain-account-cell-end-accessory"
+          aria-label={`${accountName} options`}
         >
           {endAccessory}
         </Box>
