@@ -22,6 +22,7 @@ import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../../controllers/preferences-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
@@ -76,7 +77,7 @@ export function getMultichainAccountServiceMessenger(
   });
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions = PreferencesControllerGetStateAction | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
 
@@ -99,7 +100,7 @@ export function getMultichainAccountServiceInitMessenger(
 ) {
   return messenger.getRestricted({
     name: 'MultichainAccountServiceInit',
-    allowedActions: ['PreferencesController:getState'],
+    allowedActions: ['PreferencesController:getState', 'RemoteFeatureFlagController:getState'],
     allowedEvents: ['PreferencesController:stateChange'],
   });
 }

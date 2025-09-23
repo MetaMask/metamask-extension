@@ -9,7 +9,7 @@ import {
   MultichainAccountServiceMessenger,
 } from '../messengers/accounts';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { RemoteFeatureFlagControllerGetStateAction } from '../../controllers/remote-feature-flag-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
 
 jest.mock('@metamask/multichain-account-service');
