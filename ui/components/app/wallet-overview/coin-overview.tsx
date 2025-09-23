@@ -284,7 +284,7 @@ export const CoinOverview = ({
           ?.pricePercentChange1d;
       return (
         <Skeleton
-          isLoading={!(anyEnabledNetworksAreAvailable || !isZeroAmount(value))}
+          isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(value)}
         >
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange value={value} />
