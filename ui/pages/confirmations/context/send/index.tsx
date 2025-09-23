@@ -33,7 +33,7 @@ export type SendContextType = {
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
   updateTo: (to: string) => void;
-  updateToResolved: (to: string) => void;
+  updateToResolved: (to: string | undefined) => void;
   updateValue: (value: string, maxValueMode?: boolean) => void;
   value?: string;
 };
@@ -81,10 +81,15 @@ export const SendContextProvider: React.FC<{
 
   const updateAsset = useCallback(
     (newAsset: Asset) => {
-      updateValue('', false);
+      // if user is switching asset we cleanup recipient and amount
+      if (asset) {
+        updateValue('', false);
+        updateTo('');
+        updateToResolved('');
+      }
       setAsset(newAsset);
     },
-    [setAsset, updateValue],
+    [asset, setAsset, updateTo, updateToResolved, updateValue],
   );
 
   const chainId =

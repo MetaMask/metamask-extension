@@ -16,6 +16,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   selectDefaultSlippagePercentage,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -67,6 +68,7 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { getIsSmartTransaction } from '../../../shared/modules/selectors';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -879,4 +881,32 @@ const getSmartSlippage = createSelector(
 export const getSlippage = createSelector(
   [getSmartSlippage, (state) => state.bridge.slippage],
   (smartSlippage, slippage) => slippage ?? smartSlippage,
+);
+
+const getIsGasIncludedSwapSupported = createSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) => getToChain(state)?.chainId,
+    (_, isSendBundleSupportedForChain: boolean) =>
+      isSendBundleSupportedForChain,
+  ],
+  (fromChainId, toChainId, isSendBundleSupportedForChain) => {
+    if (!fromChainId) {
+      return false;
+    }
+    const isSwap = !isCrossChain(fromChainId, toChainId);
+    return isSwap && isSendBundleSupportedForChain;
+  },
+);
+
+export const getIsStxEnabled = createSelector(
+  [(state) => getFromChain(state)?.chainId, (state) => state],
+  (fromChainId, state) => getIsSmartTransaction(state, fromChainId),
+);
+
+export const getIsGasIncluded = createSelector(
+  [getIsStxEnabled, getIsGasIncludedSwapSupported],
+  (isStxEnabled, isGasIncludedSwapSupported) => {
+    return isStxEnabled && isGasIncludedSwapSupported;
+  },
 );

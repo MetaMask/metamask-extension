@@ -3702,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noActivity": {
-    "message": "Nenhuma atividade ainda"
-  },
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },
@@ -3722,9 +3719,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
-  },
-  "noNFTs": {
-    "message": "Nenhum NFT até agora"
   },
   "noNetworksAvailable": {
     "message": "Nenhuma rede disponível"
