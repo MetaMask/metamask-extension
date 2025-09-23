@@ -12,7 +12,6 @@ const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
-  openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
@@ -34,7 +33,7 @@ const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   // Open the dapp
-  await openDapp(driver, undefined, dappUrl);
+  await driver.openNewPage(dappUrl);
 
   // Connect to the dapp
   await driver.clickElement({ text: 'Connect', tag: 'button' });
