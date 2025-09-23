@@ -149,10 +149,8 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
             securityAlertsEnabled: true,
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -201,10 +199,8 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
             securityAlertsEnabled: true,
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -245,10 +241,8 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
             securityAlertsEnabled: true,
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),

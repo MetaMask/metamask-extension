@@ -13,7 +13,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            enabledNetworkMap: { eip155: { '0x1': true } },
+            eip155: { '0x1': true },
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -66,7 +66,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
-            enabledNetworkMap: { eip155: { [CHAIN_IDS.LINEA_MAINNET]: true } },
+            eip155: { [CHAIN_IDS.LINEA_MAINNET]: true },
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -115,7 +115,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnPolygon()
           .withEnabledNetworks({
-            enabledNetworkMap: { eip155: { [CHAIN_IDS.POLYGON]: true } },
+            eip155: { [CHAIN_IDS.POLYGON]: true },
           })
           .build(),
         title: this.test?.fullTitle(),

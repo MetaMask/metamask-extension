@@ -30,10 +30,8 @@ describe('Send ERC20', function () {
             },
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),

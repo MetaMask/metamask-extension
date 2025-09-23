@@ -33,10 +33,8 @@ describe('Slow network', function (this: Suite) {
             },
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x9999': true,
-              },
+            eip155: {
+              '0x9999': true,
             },
           })
           .build(),

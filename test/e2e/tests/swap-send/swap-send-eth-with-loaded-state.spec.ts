@@ -203,10 +203,8 @@ describe('Swap-Send ETH', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true, // Ethereum
-                },
+              eip155: {
+                '0x1': true, // Ethereum
               },
             })
             .withPreferencesControllerSmartTransactionsOptedOut()

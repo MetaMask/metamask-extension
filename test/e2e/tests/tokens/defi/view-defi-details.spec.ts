@@ -18,12 +18,10 @@ describe('View DeFi details', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                [CHAIN_IDS.MAINNET]: true,
-                [CHAIN_IDS.LINEA_MAINNET]: true,
-                [CHAIN_IDS.LOCALHOST]: true,
-              },
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.LOCALHOST]: true,
             },
           })
           .build(),

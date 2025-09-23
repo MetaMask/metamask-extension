@@ -698,12 +698,10 @@ export const getBridgeFixtures = (
       },
     })
     .withEnabledNetworks({
-      enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-          '0xe708': true,
-          '0xa4b1': true,
-        },
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
       },
     });
 
@@ -806,12 +804,10 @@ export const getQuoteNegativeCasesFixtures = (
     .withTokensControllerERC20({ chainId: 1 })
     .withPreferencesControllerSmartTransactionsOptedOut()
     .withEnabledNetworks({
-      enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-          '0xe708': true,
-          '0xa4b1': true,
-        },
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
       },
     });
 
@@ -856,11 +852,9 @@ export const getBridgeNegativeCasesFixtures = (
     .withPreferencesControllerSmartTransactionsOptedOut()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-          '0xe708': true,
-        },
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
       },
     });
 
@@ -904,11 +898,9 @@ export const getInsufficientFundsFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-          '0xe708': true,
-        },
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
       },
     });
 
@@ -982,12 +974,10 @@ export const getBridgeL2Fixtures = (
       },
     })
     .withEnabledNetworks({
-      enabledNetworkMap: {
-        eip155: {
-          '0x1': true, // Mainnet
-          '0xe708': true, // Linea (source chain for test)
-          '0xa4b1': true, // Arbitrum One (destination chain for test)
-        },
+      eip155: {
+        '0x1': true, // Mainnet
+        '0xe708': true, // Linea (source chain for test)
+        '0xa4b1': true, // Arbitrum One (destination chain for test)
       },
     });
 

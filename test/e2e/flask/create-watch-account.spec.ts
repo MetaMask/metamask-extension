@@ -28,10 +28,8 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true,
-                },
+              eip155: {
+                '0x1': true,
               },
             })
             .build(),
@@ -59,10 +57,8 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true,
-                },
+              eip155: {
+                '0x1': true,
               },
             })
             .build(),
@@ -124,10 +120,8 @@ describe('Account-watcher snap', function (this: Suite) {
               })
               .withNetworkControllerOnMainnet()
               .withEnabledNetworks({
-                enabledNetworkMap: {
-                  eip155: {
-                    '0x1': true,
-                  },
+                eip155: {
+                  '0x1': true,
                 },
               })
               .build(),
@@ -164,10 +158,8 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true,
-                },
+              eip155: {
+                '0x1': true,
               },
             })
             .build(),
@@ -201,10 +193,8 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true,
-                },
+              eip155: {
+                '0x1': true,
               },
             })
             .build(),
@@ -237,10 +227,8 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true,
-                },
+              eip155: {
+                '0x1': true,
               },
             })
             .build(),

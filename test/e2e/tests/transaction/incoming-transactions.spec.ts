@@ -95,10 +95,8 @@ describe('Incoming Transactions', function () {
           .withUseBasicFunctionalityEnabled()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -136,10 +134,8 @@ describe('Incoming Transactions', function () {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -165,10 +161,8 @@ describe('Incoming Transactions', function () {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -198,10 +192,8 @@ describe('Incoming Transactions', function () {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityDisabled()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -229,10 +221,8 @@ describe('Incoming Transactions', function () {
             },
           ])
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),

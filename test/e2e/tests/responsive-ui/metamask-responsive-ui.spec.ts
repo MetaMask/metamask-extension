@@ -68,10 +68,8 @@ describe('MetaMask Responsive UI', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                [CHAIN_IDS.LOCALHOST]: true,
-              },
+            eip155: {
+              [CHAIN_IDS.LOCALHOST]: true,
             },
           })
           .build(),

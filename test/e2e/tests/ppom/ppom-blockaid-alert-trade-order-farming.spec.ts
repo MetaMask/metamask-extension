@@ -126,10 +126,8 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x539': true,
-              },
+            eip155: {
+              '0x539': true,
             },
           })
           .withPreferencesController({

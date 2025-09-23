@@ -228,10 +228,8 @@ describe.skip('Swap', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true,
-                },
+              eip155: {
+                '0x1': true,
               },
             })
             .withPreferencesControllerSmartTransactionsOptedOut()

@@ -22,10 +22,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         dapp: true,
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x53a': true,
-              },
+            eip155: {
+              '0x53a': true,
             },
           })
           .withNetworkControllerDoubleNode()

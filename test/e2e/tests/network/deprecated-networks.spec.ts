@@ -91,10 +91,8 @@ describe('Deprecated networks', function (this: Suite) {
           .withPreferencesController({ useSafeChainsListValidation: false })
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -228,10 +226,8 @@ describe('Deprecated networks', function (this: Suite) {
           .withPreferencesController({ useSafeChainsListValidation: false })
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),

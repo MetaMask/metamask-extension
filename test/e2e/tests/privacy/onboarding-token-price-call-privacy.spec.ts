@@ -31,10 +31,8 @@ describe('MetaMask onboarding', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -93,10 +91,8 @@ describe('MetaMask onboarding', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-              },
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),

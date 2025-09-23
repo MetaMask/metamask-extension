@@ -25,10 +25,8 @@ describe('Switch network - ', function (this: Suite) {
             preferences: { showTestNetworks: true },
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x539': true,
-              },
+            eip155: {
+              '0x539': true,
             },
           })
           .build(),

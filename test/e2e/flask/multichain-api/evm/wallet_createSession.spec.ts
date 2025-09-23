@@ -31,10 +31,8 @@ describe('Multichain API', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
-              enabledNetworkMap: {
-                eip155: {
-                  '0x1': true,
-                },
+              eip155: {
+                '0x1': true,
               },
             })
             .build(),
@@ -307,10 +305,8 @@ describe('Multichain API', function () {
             fixtures: new FixtureBuilder()
               .withNetworkControllerTripleNode()
               .withEnabledNetworks({
-                enabledNetworkMap: {
-                  eip155: {
-                    '0x539': true,
-                  },
+                eip155: {
+                  '0x539': true,
                 },
               })
               .withPreferencesControllerAdditionalAccountIdentities()
@@ -365,10 +361,8 @@ describe('Multichain API', function () {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
               .withEnabledNetworks({
-                enabledNetworkMap: {
-                  eip155: {
-                    '0x539': true,
-                  },
+                eip155: {
+                  '0x539': true,
                 },
               })
               .build(),

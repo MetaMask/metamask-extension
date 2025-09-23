@@ -1597,13 +1597,11 @@ export async function withSolanaAccountSnap(
 
   if (withFixtureBuilder) {
     fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
-      enabledNetworkMap: {
-        eip155: {
-          '0x539': true,
-        },
-        solana: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-        },
+      eip155: {
+        '0x539': true,
+      },
+      solana: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
       },
     });
   }

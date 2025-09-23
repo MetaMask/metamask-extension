@@ -282,11 +282,9 @@ describe('Account Tracker API polling', function () {
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                '0x1': true,
-                '0xe708': true,
-              },
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
             },
           })
           .build(),

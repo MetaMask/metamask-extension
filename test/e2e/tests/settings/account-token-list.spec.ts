@@ -66,10 +66,8 @@ describe('Settings', function () {
             preferences: { showTestNetworks: true },
           })
           .withEnabledNetworks({
-            enabledNetworkMap: {
-              eip155: {
-                [CHAIN_IDS.LOCALHOST]: true,
-              },
+            eip155: {
+              [CHAIN_IDS.LOCALHOST]: true,
             },
           })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
