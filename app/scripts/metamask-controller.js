@@ -2909,7 +2909,6 @@ export default class MetamaskController extends EventEmitter {
         }
       },
 
-
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
