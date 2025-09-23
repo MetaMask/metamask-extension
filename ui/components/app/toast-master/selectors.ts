@@ -1,6 +1,9 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import {
+  getAllScopesFromCaip25CaveatValue,
+  isInternalAccountInPermittedAccountIds,
+} from '@metamask/chain-agnostic-permission';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -10,10 +13,15 @@ import {
 } from '../../../helpers/constants/survey';
 import {
   getAllPermittedAccountsForCurrentTab,
+  getOriginOfCurrentTab,
+  getPermissions,
   isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
+import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
@@ -113,6 +121,40 @@ export function selectShowConnectAccountToast(
     isConnectableAccount &&
     connectedAccounts.length > 0 &&
     !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
+
+  return showConnectAccountToast;
+}
+
+// If there is more than one connected account to activeTabOrigin,
+// *BUT* the current account is not one of them, show the banner
+export function selectShowConnectAccountGroupToast(
+  state: State & Pick<MetaMaskReduxState, 'activeTab'>,
+  accountGroup: AccountGroupWithInternalAccounts,
+): boolean {
+  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
+  const activeTabOrigin = getOriginOfCurrentTab(state);
+  const existingPermissions = getPermissions(state, activeTabOrigin);
+  const existingCaip25CaveatValue = existingPermissions
+    ? getCaip25CaveatValueFromPermissions(existingPermissions)
+    : null;
+  const existingChainIds = existingCaip25CaveatValue
+    ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
+    : [];
+
+  const isAccountSupported = supportsChainIds(accountGroup, existingChainIds);
+
+  const isConnected = accountGroup.accounts.some((account) => {
+    return isInternalAccountInPermittedAccountIds(account, connectedAccounts);
+  });
+
+  const showConnectAccountToast =
+    allowShowAccountSetting &&
+    accountGroup &&
+    isAccountSupported &&
+    state.activeTab.origin &&
+    connectedAccounts.length > 0 &&
+    !isConnected;
 
   return showConnectAccountToast;
 }
