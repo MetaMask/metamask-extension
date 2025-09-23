@@ -47,7 +47,7 @@ exports[`Inline Alert renders alert with warning severity 1`] = `
     >
       <span
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/danger.svg');"
+        style="mask-image: url('./images/icons/info.svg');"
       />
     </div>
   </div>
