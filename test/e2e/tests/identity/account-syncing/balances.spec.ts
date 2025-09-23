@@ -1,17 +1,18 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
-import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
+
+import { E2E_SRP } from '../../../default-fixture';
 import FixtureBuilder from '../../../fixture-builder';
-import { mockInfuraAndAccountSync } from '../mocks';
+import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { E2E_SRP } from '../../../default-fixture';
-import { arrangeTestUtils } from './helpers';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { arrangeTestUtils } from './helpers';
+import { mockInfuraAndAccountSync } from '../mocks';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -28,7 +29,7 @@ describe('Account syncing - Accounts with Balances', function () {
    * Phase 1: Add accounts that sync to user storage (2 accounts)
    * Phase 2: Complete onboarding flow with balance mocking - should discover additional accounts with balances (3 total: 2 synced + 1 discovered)
    */
-  it('(state 2) - gracefully handles adding accounts with balances and synced accounts', async function () {
+  it('gracefully handles adding accounts with balances and synced accounts', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = (server: Mockttp) => {

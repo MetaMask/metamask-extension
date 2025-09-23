@@ -349,6 +349,7 @@ class AccountListPage {
    * Adds a new multichain account.
    *
    * @param options - Options for creating the multichain account
+   * @param options.srpIndex - Optional SRP index for the new account
    */
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);

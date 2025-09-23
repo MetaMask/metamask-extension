@@ -1,4 +1,8 @@
 import { Mockttp } from 'mockttp';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
@@ -10,10 +14,6 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { arrangeTestUtils } from './helpers';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
-import {
-  USER_STORAGE_GROUPS_FEATURE_KEY,
-  USER_STORAGE_WALLETS_FEATURE_KEY,
-} from '@metamask/account-tree-controller';
 
 describe('Account syncing - Unsupported Account types', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -31,7 +31,7 @@ describe('Account syncing - Unsupported Account types', function () {
    * Phase 1: Create regular accounts, import a private key account, and verify the imported account is visible in the current session
    * Phase 2: Login to a fresh app instance and verify only regular accounts persist (imported accounts are excluded)
    */
-  it('(state 2) - does not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
+  it('does not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {

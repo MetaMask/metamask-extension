@@ -182,7 +182,9 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       data-testid="balance-display"
                     />
                     <div
+                      aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
+                      data-testid="multichain-account-cell-end-accessory"
                     />
                   </div>
                 </div>
@@ -420,7 +422,9 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       data-testid="balance-display"
                     />
                     <div
+                      aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
+                      data-testid="multichain-account-cell-end-accessory"
                     />
                   </div>
                 </div>
@@ -658,7 +662,9 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       data-testid="balance-display"
                     />
                     <div
+                      aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
+                      data-testid="multichain-account-cell-end-accessory"
                     />
                   </div>
                 </div>

@@ -1,4 +1,8 @@
 import { Mockttp } from 'mockttp';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
@@ -8,14 +12,10 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { arrangeTestUtils } from './helpers';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
-import {
-  USER_STORAGE_GROUPS_FEATURE_KEY,
-  USER_STORAGE_WALLETS_FEATURE_KEY,
-} from '@metamask/account-tree-controller';
-import HomePage from '../../../page-objects/pages/home/homepage';
 
 describe('Account syncing - Multiple SRPs', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout

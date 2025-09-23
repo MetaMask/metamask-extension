@@ -1,22 +1,22 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
-import { mockIdentityServices } from '../mocks';
-import { PAGES } from '../../../webdriver/driver';
-import {
-  UserStorageMockttpController,
-  UserStorageMockttpControllerEvents,
-} from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
-import { arrangeTestUtils } from './helpers';
 import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
+import { PAGES } from '../../../webdriver/driver';
+import { withFixtures, unlockWallet } from '../../../helpers';
+import FixtureBuilder from '../../../fixture-builder';
+import {
+  UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
+} from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { arrangeTestUtils } from './helpers';
+import { mockIdentityServices } from '../mocks';
 
 describe('Account syncing - Settings Toggle', function () {
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
@@ -29,7 +29,7 @@ describe('Account syncing - Settings Toggle', function () {
    * Phase 2: Disable account sync, add another account, and verify it doesn't sync
    * Phase 3: Login to a fresh app instance and verify only synced accounts persist
    */
-  it('(state 2) - syncs new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
+  it('syncs new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
