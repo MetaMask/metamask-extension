@@ -134,7 +134,7 @@ describe('MultichainBridgeQuoteCard', () => {
               metabridge: {
                 ...quote.quote.feeData.metabridge,
                 amount: '1000000000000000000',
-                quoteBpsFee: '0.875',
+                quoteBpsFee: 87.5,
               },
             },
           },
