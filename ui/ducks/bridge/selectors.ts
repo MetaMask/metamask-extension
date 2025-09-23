@@ -246,7 +246,7 @@ export const getDefaultTokenPair = createDeepEqualSelector(
       return null;
     }
     const { namespace } = parseCaipChainId(formatChainIdToCaip(fromChainId));
-    const defaultTokenPair = bip44DefaultPairs[namespace].standard;
+    const defaultTokenPair = bip44DefaultPairs?.[namespace]?.standard;
     if (defaultTokenPair) {
       return Object.entries(defaultTokenPair).flat() as [
         CaipAssetType,
