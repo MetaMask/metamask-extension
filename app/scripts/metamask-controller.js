@@ -1670,6 +1670,9 @@ export default class MetamaskController extends EventEmitter {
       this.seedlessOnboardingController.clearState.bind(
         this.seedlessOnboardingController,
       ),
+      this.tokenListController.clearingTokenListData.bind(
+        this.tokenListController,
+      ),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 

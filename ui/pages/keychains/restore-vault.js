@@ -19,7 +19,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getIsSocialLoginFlow } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import ResetAppButton from '../../components/app/reset-app/reset-app';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -170,8 +169,6 @@ class RestoreVaultPage extends Component {
               onSubmit={this.handleImport}
               submitText={t('restore')}
             />
-            {/** TODO: Remove this button once we have a proper way to reset the app */}
-            <ResetAppButton />
           </Box>
         </Box>
       </Box>

@@ -42,7 +42,6 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
-import ResetAppButton from '../../components/app/reset-app/reset-app';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -439,15 +438,12 @@ class UnlockPage extends Component {
         width={BlockSize.Full}
         paddingBottom={12} // offset header to center content
       >
-        {showResetPasswordModal &&
-          (isSocialLoginFlow ? (
-            <ResetAppButton />
-          ) : (
-            <ResetPasswordModal
-              onClose={() => this.setState({ showResetPasswordModal: false })}
-              onRestore={this.onRestoreWallet}
-            />
-          ))}
+        {showResetPasswordModal && (
+          <ResetPasswordModal
+            onClose={() => this.setState({ showResetPasswordModal: false })}
+            onRestore={this.onRestoreWallet}
+          />
+        )}
         <Box
           as="form"
           display={Display.Flex}

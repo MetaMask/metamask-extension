@@ -4133,11 +4133,12 @@ export function resetOnboardingAction() {
  *
  * @returns void
  */
-export function resetApp() {
-  return (dispatch: MetaMaskReduxDispatch) => {
+export async function resetApp() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       dispatch(resetOnboarding());
       dispatch(resetAppAction());
+      await submitRequestToBackground('resetStates');
     } catch (error) {
       console.error(error);
       throw error;
@@ -6627,28 +6628,6 @@ export function performSignOut(): ThunkAction<
       await submitRequestToBackground('performSignOut');
     } catch (error) {
       logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
- * Resets the background controllers' state
- *
- * @returns A thunk action that, when dispatched, attempts to reset the background controllers' state.
- */
-export function resetWallet(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      console.log('[resetWallet] resetting wallet');
-      await submitRequestToBackground('resetStates');
-    } catch (error) {
-      console.log('[resetWallet] error', error);
       throw error;
     }
   };
