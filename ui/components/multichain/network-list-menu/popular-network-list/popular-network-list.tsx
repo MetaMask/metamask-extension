@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch } from 'react-redux';
 import { AddNetworkFields } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -42,6 +43,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -190,7 +192,7 @@ const PopularNetworkList = ({
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
-                  await dispatch(
+                  const requestResult = (await dispatch(
                     requestUserApproval({
                       origin: ORIGIN_METAMASK,
                       type: ApprovalType.AddEthereumChain,
@@ -220,7 +222,12 @@ const PopularNetworkList = ({
                         source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
                       },
                     }),
-                  );
+                  )) as unknown as { chainId: Hex } | null;
+
+                  // Only switch chains if user confirms request to change network.
+                  if (requestResult) {
+                    await dispatch(enableSingleNetwork(requestResult.chainId));
+                  }
                 }}
               >
                 {t('add')}

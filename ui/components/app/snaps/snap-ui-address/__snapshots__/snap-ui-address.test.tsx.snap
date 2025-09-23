@@ -21,7 +21,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
           <rect
             fill="#03475E"
             height="32"
-            transform="translate(2.9305136451897345 1.2261469525972557) rotate(127.9 16 16)"
+            transform="translate(2.93051364518973 1.22614695259726) rotate(127.9 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -29,7 +29,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
           <rect
             fill="#F95801"
             height="32"
-            transform="translate(7.1718321011849575 11.079805523008025) rotate(153.0 16 16)"
+            transform="translate(7.17183210118496 11.07980552300802) rotate(153.0 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -37,7 +37,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
           <rect
             fill="#017B8E"
             height="32"
-            transform="translate(8.451434427080768 22.468601749359266) rotate(146.6 16 16)"
+            transform="translate(8.45143442708077 22.46860174935927) rotate(146.6 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -99,7 +99,7 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
           <rect
             fill="#2339E1"
             height="32"
-            transform="translate(-10.577095368503558 1.2778853266411496) rotate(258.6 16 16)"
+            transform="translate(-10.57709536850356 1.27788532664115) rotate(258.6 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -107,7 +107,7 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
           <rect
             fill="#FB182B"
             height="32"
-            transform="translate(5.677337270662435 9.943687420321362) rotate(189.4 16 16)"
+            transform="translate(5.67733727066244 9.94368742032136) rotate(189.4 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -115,7 +115,7 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
           <rect
             fill="#EDF500"
             height="32"
-            transform="translate(-25.62998642818306 -17.790405786491355) rotate(296.0 16 16)"
+            transform="translate(-25.62998642818306 -17.79040578649136) rotate(296.0 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -177,7 +177,7 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
           <rect
             fill="#F29602"
             height="32"
-            transform="translate(-2.81750896228304 4.951916544006229) rotate(230.4 16 16)"
+            transform="translate(-2.81750896228304 4.95191654400623) rotate(230.4 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -185,7 +185,7 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
           <rect
             fill="#236CE1"
             height="32"
-            transform="translate(-13.498650292632812 -9.441918676693094) rotate(245.3 16 16)"
+            transform="translate(-13.49865029263281 -9.44191867669309) rotate(245.3 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -193,7 +193,7 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
           <rect
             fill="#018E8E"
             height="32"
-            transform="translate(18.42469405222943 23.248777206278085) rotate(173.9 16 16)"
+            transform="translate(18.42469405222943 23.24877720627808) rotate(173.9 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -255,7 +255,7 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
           <rect
             fill="#C81441"
             height="32"
-            transform="translate(7.8929303986963575 3.81505315001625) rotate(81.4 16 16)"
+            transform="translate(7.89293039869636 3.81505315001625) rotate(81.4 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -263,7 +263,7 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
           <rect
             fill="#F95001"
             height="32"
-            transform="translate(-15.115532254104156 5.65823114066517) rotate(249.8 16 16)"
+            transform="translate(-15.11553225410416 5.65823114066517) rotate(249.8 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -271,7 +271,7 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
           <rect
             fill="#034A5E"
             height="32"
-            transform="translate(18.782116410097146 -20.966441380827995) rotate(321.3 16 16)"
+            transform="translate(18.78211641009715 -20.96644138082799) rotate(321.3 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -333,7 +333,7 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
           <rect
             fill="#238CE1"
             height="32"
-            transform="translate(-0.9326359780580042 -0.7760979217397975) rotate(228.7 16 16)"
+            transform="translate(-0.93263597805800 -0.77609792173980) rotate(228.7 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -341,7 +341,7 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
           <rect
             fill="#018E77"
             height="32"
-            transform="translate(14.633859127624504 0.17102681763595054) rotate(175.0 16 16)"
+            transform="translate(14.63385912762450 0.17102681763595) rotate(175.0 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -349,7 +349,7 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
           <rect
             fill="#F26E02"
             height="32"
-            transform="translate(22.334011165851894 0.6446527074820322) rotate(17.6 16 16)"
+            transform="translate(22.33401116585189 0.64465270748203) rotate(17.6 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -411,7 +411,7 @@ exports[`SnapUIAddress renders Starknet address 1`] = `
           <rect
             fill="#2388E1"
             height="32"
-            transform="translate(1.8289963783692056 -3.4661888536397423) rotate(409.8 16 16)"
+            transform="translate(1.82899637836921 -3.46618885363974) rotate(409.8 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -419,7 +419,7 @@ exports[`SnapUIAddress renders Starknet address 1`] = `
           <rect
             fill="#F59700"
             height="32"
-            transform="translate(-16.75527888625542 -8.229921036962272) rotate(352.3 16 16)"
+            transform="translate(-16.75527888625542 -8.22992103696227) rotate(352.3 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -427,7 +427,7 @@ exports[`SnapUIAddress renders Starknet address 1`] = `
           <rect
             fill="#18C2F2"
             height="32"
-            transform="translate(-23.454898584180004 2.8519196153955564) rotate(217.2 16 16)"
+            transform="translate(-23.45489858418000 2.85191961539556) rotate(217.2 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -489,7 +489,7 @@ exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
           <rect
             fill="#F29602"
             height="32"
-            transform="translate(-2.81750896228304 4.951916544006229) rotate(230.4 16 16)"
+            transform="translate(-2.81750896228304 4.95191654400623) rotate(230.4 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -497,7 +497,7 @@ exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
           <rect
             fill="#236CE1"
             height="32"
-            transform="translate(-13.498650292632812 -9.441918676693094) rotate(245.3 16 16)"
+            transform="translate(-13.49865029263281 -9.44191867669309) rotate(245.3 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -505,7 +505,7 @@ exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
           <rect
             fill="#018E8E"
             height="32"
-            transform="translate(18.42469405222943 23.248777206278085) rotate(173.9 16 16)"
+            transform="translate(18.42469405222943 23.24877720627808) rotate(173.9 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
