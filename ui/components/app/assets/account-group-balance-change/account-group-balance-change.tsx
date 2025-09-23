@@ -36,8 +36,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
 
   return (
     <Skeleton
-      hideChildren
-      showUntil={anyEnabledNetworksAreAvailable || !isZeroAmount(amountChange)}
+      isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
     >
       <Box display={Display.Flex} gap={1}>
         <SensitiveText

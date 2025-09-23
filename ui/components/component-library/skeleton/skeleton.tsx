@@ -19,25 +19,17 @@ export const Skeleton: SkeletonComponent = React.forwardRef(
       height,
       width,
       children,
-      hideChildren = false,
-      showUntil = false,
+      isLoading = true,
       ...props
     }: SkeletonProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    if (showUntil === true) {
+    if (!isLoading) {
       return <>{children}</>;
     }
-
     return (
       <Box
-        className={classnames(
-          'mm-skeleton',
-          {
-            'mm-skeleton--hide-children': hideChildren,
-          },
-          className,
-        )}
+        className={classnames('mm-skeleton', className)}
         backgroundColor={BackgroundColor.iconAlternative}
         borderRadius={BorderRadius.SM}
         ref={ref}

@@ -107,12 +107,12 @@ export const AggregatedBalance = ({
 
   return (
     <Skeleton
-      hideChildren
-      showUntil={
-        balances &&
-        assets[selectedAccount.id]?.length > 0 &&
-        (anyEnabledNetworksAreAvailable ||
-          !isZeroAmount(multichainNativeTokenBalance.amount.toString()))
+      isLoading={
+        !balances ||
+        assets[selectedAccount.id] === undefined ||
+        assets[selectedAccount.id].length === 0 ||
+        (!anyEnabledNetworksAreAvailable &&
+          isZeroAmount(multichainNativeTokenBalance.amount.toString()))
       }
     >
       <Box

@@ -123,8 +123,7 @@ export const AggregatedPercentageOverview = ({
 
   return (
     <Skeleton
-      hideChildren
-      showUntil={anyEnabledNetworksAreAvailable || !isZeroAmount(amountChange)}
+      isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
     >
       <Box display={Display.Flex} className="gap-1">
         <SensitiveText
@@ -212,9 +211,8 @@ export const AggregatedMultichainPercentageOverview = ({
 
   return (
     <Skeleton
-      hideChildren
-      showUntil={
-        anyEnabledNetworksAreAvailable || !isZeroAmount(singleDayAmountChange)
+      isLoading={
+        !anyEnabledNetworksAreAvailable && isZeroAmount(singleDayAmountChange)
       }
     >
       <Box display={Display.Flex}>

@@ -162,9 +162,8 @@ export const LegacyAggregatedBalance = ({
 
   return (
     <Skeleton
-      hideChildren
-      showUntil={
-        anyEnabledNetworksAreAvailable || !isZeroAmount(balanceToDisplay)
+      isLoading={
+        !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
       }
     >
       <UserPreferencedCurrencyDisplay
@@ -285,8 +284,7 @@ export const CoinOverview = ({
           ?.pricePercentChange1d;
       return (
         <Skeleton
-          hideChildren
-          showUntil={anyEnabledNetworksAreAvailable || !isZeroAmount(value)}
+          isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(value)}
         >
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange value={value} />
