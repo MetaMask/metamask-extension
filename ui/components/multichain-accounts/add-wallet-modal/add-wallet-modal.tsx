@@ -128,7 +128,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
               <Icon
                 name={option.iconName}
                 size={IconSize.Md}
-                color={IconColor.IconMuted}
+                color={IconColor.IconAlternative}
               />
               <Text
                 variant={TextVariant.BodyMd}
