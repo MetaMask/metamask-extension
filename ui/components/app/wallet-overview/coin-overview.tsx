@@ -165,6 +165,7 @@ export const LegacyAggregatedBalance = ({
       isLoading={
         !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
       }
+      scaleY={0.8}
     >
       <UserPreferencedCurrencyDisplay
         style={{ display: 'contents' }}
@@ -285,6 +286,7 @@ export const CoinOverview = ({
       return (
         <Skeleton
           isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(value)}
+          scaleY={0.8}
         >
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange value={value} />

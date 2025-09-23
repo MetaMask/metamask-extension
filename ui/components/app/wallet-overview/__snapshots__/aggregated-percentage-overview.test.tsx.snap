@@ -58,6 +58,7 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with ze
 <div>
   <div
     class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+    scale="0.8"
   >
     <div
       class="mm-box mm-box--display-flex"
@@ -89,6 +90,7 @@ exports[`AggregatedPercentageOverview render renders correctly 1`] = `
 <div>
   <div
     class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+    style="transform: scaleY(0.8);"
   >
     <div
       class="mm-box gap-1 mm-box--display-flex"

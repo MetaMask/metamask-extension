@@ -163,6 +163,7 @@ export const AggregatedPercentageOverviewCrossChains = ({
         !anyEnabledNetworksAreAvailable &&
         isZeroAmount(formattedAmountChangeCrossChains)
       }
+      scaleY={0.8}
     >
       <Box display={Display.Flex} className="gap-1">
         <SensitiveText

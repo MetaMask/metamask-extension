@@ -1,14 +1,12 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
   BorderRadius,
   TextVariant,
   AlignItems,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
 import README from './README.mdx';
@@ -144,4 +142,27 @@ export const TokenListSkeleton: Story = {
       </Box>
     </Box>
   ),
+};
+
+export const VerticalScaling: Story = {
+  args: {
+    width: 'max-content',
+  },
+  render: function VerticalScalingStory(args) {
+    const [isLoading, setIsLoading] = React.useState(true);
+    return (
+      <Box>
+        <Button
+          onClick={() => setIsLoading(!isLoading)}
+          variant={ButtonVariant.Secondary}
+          marginBottom={4}
+        >
+          Toggle isLoading
+        </Button>
+        <Skeleton {...args} isLoading={isLoading} scaleY={0.8}>
+          <Text variant={TextVariant.headingMd}>Content that loads</Text>
+        </Skeleton>
+      </Box>
+    );
+  },
 };

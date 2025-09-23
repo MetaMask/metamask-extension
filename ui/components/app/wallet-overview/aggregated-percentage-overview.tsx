@@ -124,6 +124,7 @@ export const AggregatedPercentageOverview = ({
   return (
     <Skeleton
       isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
+      scaleY={0.8}
     >
       <Box display={Display.Flex} className="gap-1">
         <SensitiveText
@@ -214,6 +215,7 @@ export const AggregatedMultichainPercentageOverview = ({
       isLoading={
         !anyEnabledNetworksAreAvailable && isZeroAmount(singleDayAmountChange)
       }
+      scale={0.8}
     >
       <Box display={Display.Flex}>
         <SensitiveText

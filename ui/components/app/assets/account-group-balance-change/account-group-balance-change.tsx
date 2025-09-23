@@ -37,6 +37,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
   return (
     <Skeleton
       isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
+      scaleY={0.8}
     >
       <Box display={Display.Flex} gap={1}>
         <SensitiveText

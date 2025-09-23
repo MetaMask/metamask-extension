@@ -56,6 +56,7 @@ exports[`Token Cell should match snapshot 1`] = `
           </div>
           <div
             class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="transform: scaleY(0.8);"
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--text-align-end mm-box--color-text-default"

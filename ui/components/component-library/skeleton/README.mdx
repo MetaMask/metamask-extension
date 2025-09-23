@@ -57,3 +57,17 @@ import { Skeleton } from '../../component-library';
 <Skeleton borderRadius={BorderRadius.SM} height={32} width="100%" />
 <Skeleton borderRadius={BorderRadius.XS} height={32} width="100%" />
 ```
+
+### Vertical Scaling
+
+Use the `scaleY` prop to shrink the `Skeleton` component in the vertical direction when it is being shown.
+
+<Canvas of={SkeletonStories.VerticalScaling} />
+
+```jsx
+import { Skeleton, Text, TextVariant } from '../../component-library';
+
+<Skeleton width="max-content" scaleY={0.8}>
+  <Text variant={TextVariant.headingMd}>Content that loads</Text>
+</Skeleton>;
+```
