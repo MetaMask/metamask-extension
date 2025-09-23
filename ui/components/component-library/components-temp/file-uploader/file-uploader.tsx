@@ -14,19 +14,13 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Box, PolymorphicRef } from '../../component-library/box';
-import type { BoxProps } from '../../component-library/box';
-import { Label } from '../../component-library/label';
-import { HelpText, HelpTextSeverity } from '../../component-library/help-text';
-import {
-  ButtonIcon,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+} from '../../../../helpers/constants/design-system';
+import { Box, PolymorphicRef } from '../../box';
+import type { BoxProps } from '../../box';
+import { Label } from '../../label';
+import { HelpText, HelpTextSeverity } from '../../help-text';
+import { ButtonIcon, Icon, IconName, IconSize, Text } from '../..';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   FileUploaderProps,
   FileUploaderComponent,
@@ -230,7 +224,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
               >
                 <Icon
                   name={
-                    file.type.includes('pdf') ? IconName.File : IconName.Image
+                    file.type.includes('image') ? IconName.Image : IconName.File
                   }
                   size={IconSize.Md}
                   color={IconColor.iconAlternative}

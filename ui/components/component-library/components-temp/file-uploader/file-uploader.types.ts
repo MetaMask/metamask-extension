@@ -1,11 +1,11 @@
 import React from 'react';
-import { HelpTextProps } from '../../component-library/help-text';
-import { LabelProps } from '../../component-library/label';
+import { HelpTextProps } from '../../help-text';
+import { LabelProps } from '../../label';
 import {
   BoxProps,
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../../component-library/box';
+} from '../../box';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

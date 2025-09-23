@@ -5,7 +5,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
+import { renderWithUserEvent } from '../../../../../test/lib/render-helpers';
 import { FileUploader } from './file-uploader';
 
 // Mock DataTransfer for testing
