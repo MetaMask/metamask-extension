@@ -7364,7 +7364,10 @@
     "message": "Gas fees on the previous screen are split between these two transactions."
   },
   "swapGasFeesSponsored": {
-    "message": "Sponsored"
+    "message": "Gas sponsored"
+  },
+  "swapGasFeesSponsoredExplanation": {
+    "message": "The network fee for this swap is sponsored by MetaMask. This allows you to transact without needing native token on your account. Learn more"
   },
   "swapGasFeesSummary": {
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
