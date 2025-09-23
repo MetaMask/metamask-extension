@@ -87,7 +87,7 @@ export const MultichainBridgeQuoteCard = ({
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
   const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
-  const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
+  const gasSponsored = activeQuote?.quote?.gasSponsored ?? true;
   const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
 
   const shouldRenderPriceImpactRow = useMemo(() => {
@@ -244,6 +244,13 @@ export const MultichainBridgeQuoteCard = ({
               >
                 {t('swapGasFeesSponsored')}
               </Text>
+              <Tooltip
+              title={t('swapGasFeesSponsored')}
+              position={PopoverPosition.TopStart}
+              offset={[-16, 16]}
+              >
+                {t('swapGasFeesSponsoredExplanation')}
+            </Tooltip>
             </Row>
           )}
           {!gasSponsored && activeQuote.quote.gasIncluded && (
