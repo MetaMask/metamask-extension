@@ -26,6 +26,7 @@ import {
 } from '../../../../../shared/constants/app';
 import {
   requestUserApproval,
+  setEnabledNetworks,
   toggleNetworkMenu,
 } from '../../../../store/actions';
 // TODO: Remove restricted import
@@ -43,7 +44,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -226,7 +226,7 @@ const PopularNetworkList = ({
 
                   // Only switch chains if user confirms request to change network.
                   if (requestResult) {
-                    await dispatch(enableSingleNetwork(requestResult.chainId));
+                    await dispatch(setEnabledNetworks(requestResult.chainId));
                   }
                 }}
               >
