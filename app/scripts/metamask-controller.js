@@ -1716,32 +1716,34 @@ export default class MetamaskController extends EventEmitter {
       }, this.preferencesController.state),
     );
 
+    // NOTE: This code has diverged on main, and it should have been feature flag. For now we
+    // just comment it, since it MUST NOT be executed at all until BIP-44 (state 2) is out.
     // MultichainAccountService has subscription for preferences changes
-    this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        const { useExternalServices: prevUseExternalServices } = prevState;
-        const { useExternalServices: currUseExternalServices } = currState;
-        if (prevUseExternalServices !== currUseExternalServices) {
-          // Set basic functionality and trigger alignment when enabled
-          // This single call handles both provider disable/enable and alignment
-          // Only call if MultichainAccountService is available (multichain builds)
-          if (this.multichainAccountService) {
-            this.controllerMessenger
-              .call(
-                'MultichainAccountService:setBasicFunctionality',
-                currUseExternalServices,
-              )
-              .catch((error) => {
-                console.error(
-                  'Failed to set basic functionality on MultichainAccountService:',
-                  error,
-                );
-              });
-          }
-        }
-      }, this.preferencesController.state),
-    );
+    // this.controllerMessenger.subscribe(
+    //   'PreferencesController:stateChange',
+    //   previousValueComparator((prevState, currState) => {
+    //     const { useExternalServices: prevUseExternalServices } = prevState;
+    //     const { useExternalServices: currUseExternalServices } = currState;
+    //     if (prevUseExternalServices !== currUseExternalServices) {
+    //       // Set basic functionality and trigger alignment when enabled
+    //       // This single call handles both provider disable/enable and alignment
+    //       // Only call if MultichainAccountService is available (multichain builds)
+    //       if (this.multichainAccountService) {
+    //         this.controllerMessenger
+    //           .call(
+    //             'MultichainAccountService:setBasicFunctionality',
+    //             currUseExternalServices,
+    //           )
+    //           .catch((error) => {
+    //             console.error(
+    //               'Failed to set basic functionality on MultichainAccountService:',
+    //               error,
+    //             );
+    //           });
+    //       }
+    //     }
+    //   }, this.preferencesController.state),
+    // );
 
     // Initialize RemoteFeatureFlagController
     const remoteFeatureFlagControllerMessenger =
