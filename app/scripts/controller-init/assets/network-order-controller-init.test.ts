@@ -132,6 +132,7 @@ describe('NetworkOrderControllerInit', () => {
           },
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
+            [SolScope.Devnet]: true,
           },
         },
       }),
@@ -152,6 +153,7 @@ describe('NetworkOrderControllerInit', () => {
           },
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
+            [SolScope.Devnet]: true,
           },
         },
       }),

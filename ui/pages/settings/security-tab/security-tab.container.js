@@ -4,7 +4,6 @@ import withRouterHooks from '../../../helpers/higher-order-components/with-route
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
-  setParticipateInMetaMetrics,
   setDataCollectionForMarketing,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -21,6 +20,9 @@ import {
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
   setSkipDeepLinkInterstitial,
+  getMarketingConsent,
+  setMarketingConsent,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -125,6 +127,8 @@ const mapDispatchToProps = (dispatch) => {
       return updateDataDeletionTaskStatus();
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    getMarketingConsent: () => getMarketingConsent(),
+    setMarketingConsent: (value) => dispatch(setMarketingConsent(value)),
   };
 };
 

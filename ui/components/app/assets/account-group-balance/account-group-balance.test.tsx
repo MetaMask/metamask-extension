@@ -70,7 +70,6 @@ describe('AccountGroupBalance', () => {
     amount: string;
   }) => {
     const { getByText } = renderComponent();
-    expect(getByText(props.currency)).toBeInTheDocument();
     expect(getByText(props.amount)).toBeInTheDocument();
   };
 

@@ -3,7 +3,7 @@ import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerGetAccountAction,
-  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetSelectedMultichainAccountAction,
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerSelectedAccountChangeEvent,
   AccountsControllerSetSelectedAccountAction,
@@ -22,7 +22,7 @@ import { MetaMetricsControllerTrackEventAction } from '../../../controllers/meta
 
 type Actions =
   | AccountsControllerGetAccountAction
-  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerListMultichainAccountsAction
   | SnapControllerGet
@@ -69,7 +69,7 @@ export function getAccountTreeControllerMessenger(
     allowedActions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccount',
-      'AccountsController:getSelectedAccount',
+      'AccountsController:getSelectedMultichainAccount',
       'AccountsController:setSelectedAccount',
       'UserStorageController:getState',
       'UserStorageController:performGetStorage',

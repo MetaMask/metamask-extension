@@ -1395,11 +1395,11 @@
   "confusableZeroWidthUnicode": {
     "message": "Zero-width character found."
   },
+  "confusingDomain": {
+    "message": "We have detected a confusable character in the name. Check the name to avoid a potential scam."
+  },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
-  },
-  "confusingSolanaDomain": {
-    "message": "We have detected a confusable character in the Solana name. Check the Solana name to avoid a potential scam."
   },
   "connect": {
     "message": "Connect"
@@ -1501,7 +1501,7 @@
     "message": "Connecting to Linea Goerli test network"
   },
   "connectingToLineaMainnet": {
-    "message": "Connecting to Linea Mainnet"
+    "message": "Connecting to Linea"
   },
   "connectingToLineaSepolia": {
     "message": "Connecting to Linea Sepolia test network"
@@ -1756,7 +1756,10 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "dataCollectionForMarketingDescriptionSocialLogin": {
+    "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Okay"
@@ -2805,6 +2808,18 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
+    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Save up to 4% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralTitle": {
+    "message": "MetaMask x Hyperliquid",
+    "description": "The title of the Hyperliquid referral confirmation screen"
+  },
   "id": {
     "message": "ID"
   },
@@ -3249,7 +3264,7 @@
     "message": "Linea Goerli test network"
   },
   "lineaMainnet": {
-    "message": "Linea Mainnet"
+    "message": "Linea"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia test network"
@@ -3714,7 +3729,7 @@
     "message": "Linea"
   },
   "networkNameOpMainnet": {
-    "message": "OP Mainnet"
+    "message": "OP"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -5584,6 +5599,67 @@
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
   },
+  "shieldPlanAnnual": {
+    "message": "Annual"
+  },
+  "shieldPlanAnnualPrice": {
+    "message": "$1/year",
+    "description": "The $1 is the price of the annual plan"
+  },
+  "shieldPlanAutoRenew": {
+    "message": "Auto renews for $1/month until canceled",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanCard": {
+    "message": "Card"
+  },
+  "shieldPlanDetails": {
+    "message": "Plan details"
+  },
+  "shieldPlanDetails1": {
+    "message": "No charge now, try free for 14 days"
+  },
+  "shieldPlanDetails2": {
+    "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
+  },
+  "shieldPlanDetails2Card": {
+    "message": "Plan auto-renews at the end of the term"
+  },
+  "shieldPlanDetails3": {
+    "message": "Secures your assets from risky transactions"
+  },
+  "shieldPlanMonthly": {
+    "message": "Monthly"
+  },
+  "shieldPlanMonthlyPrice": {
+    "message": "$1/month",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanNoFunds": {
+    "message": "No available funds"
+  },
+  "shieldPlanPayWith": {
+    "message": "Pay with"
+  },
+  "shieldPlanPayWithCard": {
+    "message": "Pay with card"
+  },
+  "shieldPlanPayWithToken": {
+    "message": "Pay with $1",
+    "description": "The $1 is token"
+  },
+  "shieldPlanPaymentTitle": {
+    "message": "Change payment method"
+  },
+  "shieldPlanSave": {
+    "message": "Save 16%"
+  },
+  "shieldPlanSelectToken": {
+    "message": "Select a token"
+  },
+  "shieldPlanTitle": {
+    "message": "Choose your plan"
+  },
   "shieldTx": {
     "message": "MetaMask Shield"
   },
@@ -5626,6 +5702,41 @@
   },
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
+  },
+  "shieldTxMembershipErrorDeclinedCard": {
+    "message": "Membership is paused due to declined card. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorDeclinedCardTooltip": {
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  },
+  "shieldTxMembershipErrorInsufficientFunds": {
+    "message": "Insufficient funds for your $1 renewal. $2 to keep your access.",
+    "description": "The $1 is date and $2 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientToken": {
+    "message": "Insufficient $1",
+    "description": "The $1 is the token symbol"
+  },
+  "shieldTxMembershipErrorInsufficientTokenBalance": {
+    "message": "Membership is paused due to insufficient token balance. $1 to resume coverage.",
+    "description": "The $1 is the action text 'Update payment'"
+  },
+  "shieldTxMembershipErrorInsufficientTokenTooltip": {
+    "message": "Insufficient token balance in your wallet. Top up or select an alternative payment method to resume coverage."
+  },
+  "shieldTxMembershipErrorMembershipEnding": {
+    "message": "Your membership is ending on $1. $2 to maintain uninterrupted access",
+    "description": "The $1 is date and $2 is the action text 'Renew now'"
+  },
+  "shieldTxMembershipErrorRenewNow": {
+    "message": "Renew now"
+  },
+  "shieldTxMembershipErrorUpdateCardDetails": {
+    "message": "Update card details"
+  },
+  "shieldTxMembershipErrorUpdatePayment": {
+    "message": "Update payment"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
@@ -6107,9 +6218,6 @@
   },
   "solanaAccountRequired": {
     "message": "A Solana account is required to connect to this site."
-  },
-  "solanaUnknownError": {
-    "message": "Solana lookup failed."
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -6895,6 +7003,9 @@
   "swapUnknown": {
     "message": "Unknown"
   },
+  "swapValidationInsufficientGasMessage": {
+    "message": "You don't have enough $1 to pay the gas fee for this swap. Enter a smaller amount or buy more $1."
+  },
   "swapZeroSlippage": {
     "message": "0% Slippage"
   },
@@ -7268,6 +7379,13 @@
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
+  },
+  "unifiedSwapAllowSwappingOf": {
+    "message": "Allow exact access to $1 $2 on $3 for swapping"
+  },
+  "unifiedSwapFromTo": {
+    "message": "Swap $1 $2 to $3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "units": {
     "message": "units"

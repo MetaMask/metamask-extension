@@ -112,7 +112,6 @@
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
-    "isSocialLoginFlowEnabledForMetrics": "boolean",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
@@ -238,6 +237,8 @@
     "onboardingTabs": "object",
     "socialBackupsMetadata": "object",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
+    "subscriptions": "object",
+    "trialedProducts": "object",
     "subjects": "object",
     "permissionHistory": "object",
     "permissionActivityLog": "object",

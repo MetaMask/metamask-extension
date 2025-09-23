@@ -835,6 +835,8 @@ export enum MetaMetricsEventName {
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
   SocialLoginCompleted = 'Social Login Completed',
+  AccountAlreadyExistsPageViewed = 'Account Already Exists Page Viewed',
+  AccountNotFoundPageViewed = 'Account Not Found Page Viewed',
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
@@ -950,7 +952,6 @@ export enum MetaMetricsEventAccountType {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Snap = 'snap',
   ///: END:ONLY_INCLUDE_IF
-  Social = 'social',
 }
 
 export enum QueueType {
