@@ -67,7 +67,6 @@ const initialState = {
     },
   },
   throttledOrigins: {},
-  isSocialLoginFlowEnabledForMetrics: false,
 };
 
 /**
@@ -152,11 +151,6 @@ export default function reduceMetamask(state = initialState, action) {
         ...metamaskState,
         dataCollectionForMarketing: action.value,
       };
-    case actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS:
-      return {
-        ...metamaskState,
-        isSocialLoginFlowEnabledForMetrics: action.value,
-      };
 
     case actionConstants.COMPLETE_ONBOARDING: {
       return {
@@ -174,6 +168,9 @@ export default function reduceMetamask(state = initialState, action) {
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
+        // reset metametrics optin status
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
       };
     }
 
