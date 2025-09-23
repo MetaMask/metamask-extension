@@ -61,11 +61,12 @@ import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
+  Button,
   ButtonIcon,
   IconName,
   Text,
 } from '../../../components/component-library';
-import { BridgeAssetsModal } from '../modals';
+import { BridgeAssetsModal } from '../asset-picker';
 import {
   BackgroundColor,
   BlockSize,
@@ -171,6 +172,8 @@ const PrepareBridgePage = ({
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
     getIsUnifiedUIEnabled(state, fromChain?.chainId),
   );
+
+  const [isBridgeAssetsModalOpen, setIsBridgeAssetsModalOpen] = useState(false);
 
   // Check the two types of swaps
   const isSwapFromQuote = useSelector(getIsSwap);
@@ -502,7 +505,6 @@ const PrepareBridgePage = ({
         selectedAccount={selectedDestinationAccount}
         onClose={() => setIsDestinationAccountPickerOpen(false)}
       />
-<BridgeAssetsModal isOpen={true} onClose={() => {}} />
       <Column className="prepare-bridge-page" gap={4}>
         <BridgeInputGroup
           header={getFromInputHeader()}
@@ -746,6 +748,10 @@ const PrepareBridgePage = ({
               setToastTriggerCounter((prev) => prev + 1);
             }}
           />
+          <Column gap={4}>
+            <Button onClick={() => setIsBridgeAssetsModalOpen(true)}>Open</Button>
+            <BridgeAssetsModal isOpen={isBridgeAssetsModalOpen} onClose={() => setIsBridgeAssetsModalOpen(false)} />
+          </Column>
 
           <Column
             justifyContent={
@@ -809,7 +815,6 @@ const PrepareBridgePage = ({
           </Column>
         </Column>
       </Column>
-
       {/** Alert banners */}
       <Column
         paddingInline={4}
