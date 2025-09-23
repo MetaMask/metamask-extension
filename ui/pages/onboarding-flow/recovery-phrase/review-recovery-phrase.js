@@ -17,12 +17,16 @@ import {
   ButtonLink,
   ButtonLinkSize,
   ButtonSize,
+  ButtonIcon,
+  IconName,
+  ButtonIconSize,
 } from '../../../components/component-library';
 import {
   TextVariant,
   JustifyContent,
   BlockSize,
   TextColor,
+  IconColor,
   FontWeight,
   Display,
   FlexDirection,
@@ -138,6 +142,20 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     trackEvent,
   ]);
 
+  const handleBack = useCallback(() => {
+    if (isFromSettingsSecurity && isFromReminder) {
+      console.log('isFromSettingsSecurity');
+      navigate(
+        `${ONBOARDING_REVEAL_SRP_ROUTE}${
+          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+        }`,
+        { replace: true },
+      );
+    } else {
+      navigate(-1);
+    }
+  }, [isFromSettingsSecurity, navigate, nextRouteQueryString, isFromReminder]);
+
   return (
     <Box
       display={Display.Flex}
@@ -152,6 +170,18 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       <Box>
         {showSrpDetailsModal && (
           <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
+        )}
+        {isFromReminder && isFromSettingsSecurity && (
+          <Box display={Display.Flex} marginBottom={4} width={BlockSize.Full}>
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="review-srp-back-button"
+              onClick={handleBack}
+              ariaLabel={t('back')}
+            />
+          </Box>
         )}
         <Box
           justifyContent={JustifyContent.flexStart}
