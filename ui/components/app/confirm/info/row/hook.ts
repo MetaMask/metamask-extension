@@ -24,13 +24,16 @@ export const useFallbackDisplayName = function (address: string): {
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
-  const [accountGroup] = useSelector((state) =>
+  const accountGroups = useSelector((state) =>
     getAccountGroupsByAddress(state as MultichainAccountsState, [hexAddress]),
   );
+  const accountGroup = Array.isArray(accountGroups)
+    ? accountGroups[0]
+    : undefined;
 
   const internalAccounts = useSelector(getInternalAccounts);
   const accountName = isMultichainAccountsState2Enabled
-    ? accountGroup?.metadata.name
+    ? accountGroup?.metadata?.name
     : getAccountName(internalAccounts, hexAddress);
   const addressBookContact = useSelector((state) =>
     getAddressBookEntry(state, hexAddress),
