@@ -6,6 +6,7 @@ import {
   CaveatSpecificationConstraint,
   PermissionController,
   PermissionSpecificationConstraint,
+  SubjectMetadataController,
 } from '@metamask/permission-controller';
 import { PPOMController } from '@metamask/ppom-validator';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -60,6 +61,8 @@ import { NameController } from '@metamask/name-controller';
 import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import { BridgeController } from '@metamask/bridge-controller';
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
+import { ApprovalController } from '@metamask/approval-controller';
+import { PermissionLogController } from '@metamask/permission-log-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -70,12 +73,14 @@ import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
 import { AppStateController } from '../controllers/app-state-controller';
+import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
   | AccountTrackerController
+  | ApprovalController
   | AppStateController
   | AuthenticationController
   | BridgeController
@@ -107,6 +112,7 @@ export type Controller =
       PermissionSpecificationConstraint,
       CaveatSpecificationConstraint
     >
+  | PermissionLogController
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
@@ -119,8 +125,10 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
+  | SnapKeyringBuilder
   | SubscriptionController
   | SnapsNameProvider
+  | SubjectMetadataController
   | SwapsController
   | TokenBalancesController
   | TokenDetectionController
@@ -143,6 +151,7 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
+  ApprovalController['state'] &
   AppStateController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
@@ -170,6 +179,7 @@ export type ControllerFlatState = AccountsController['state'] &
     PermissionSpecificationConstraint,
     CaveatSpecificationConstraint
   >['state'] &
+  PermissionLogController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &

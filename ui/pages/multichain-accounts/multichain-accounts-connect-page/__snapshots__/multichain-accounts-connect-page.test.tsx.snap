@@ -72,40 +72,32 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           class="justify-center bg-transparent tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-0 justify-start bg-transparent tabs__list top-0 z-[2]"
+            class="flex flex-row gap-4 justify-start bg-transparent"
             role="tablist"
           >
-            <div
+            <button
               aria-disabled="false"
               aria-selected="true"
-              class="tab tab--active border-b-2 border-muted font-medium ease-out text-default border-b-text-default transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) w-full"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
             >
-              <button
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-              >
-                Accounts
-              </button>
-            </div>
-            <div
+              Accounts
+            </button>
+            <button
               aria-disabled="false"
               aria-selected="false"
-              class="tab border-b-2 border-muted text-alternative font-medium transition-colors duration-200 ease-out w-full"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
             >
-              <button
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-              >
-                Permissions
-              </button>
-            </div>
+              Permissions
+            </button>
           </div>
           <div
-            class="tabs__content"
+            class=""
             role="tabpanel"
           >
             <div
@@ -122,13 +114,13 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
-                    style="min-width: 0; flex: 1; overflow: hidden;"
+                    style="min-width: 0; flex: 1;"
                   >
                     <div
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -145,7 +137,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                               <rect
                                 fill="#FB188D"
                                 height="32"
-                                transform="translate(-1.104254133951512 -2.2862708533878) rotate(359.4 16 16)"
+                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -153,7 +145,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                               <rect
                                 fill="#018E77"
                                 height="32"
-                                transform="translate(-14.912843860816645 10.855110856776372) rotate(246.0 16 16)"
+                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -161,7 +153,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                               <rect
                                 fill="#C81471"
                                 height="32"
-                                transform="translate(-30.373404418783903 -6.946818612317597) rotate(324.3 16 16)"
+                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -173,6 +165,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     </div>
                     <div
                       class="mm-box"
+                      style="overflow: hidden;"
                     >
                       <p
                         class="mm-box mm-text multichain-account-cell__account-name mm-text--body-md-medium mm-text--ellipsis mm-box--margin-left-3 mm-box--color-text-default"
@@ -190,7 +183,9 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       data-testid="balance-display"
                     />
                     <div
+                      aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
+                      data-testid="multichain-account-cell-end-accessory"
                     />
                   </div>
                 </div>
@@ -318,40 +313,32 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           class="justify-center bg-transparent tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-0 justify-start bg-transparent tabs__list top-0 z-[2]"
+            class="flex flex-row gap-4 justify-start bg-transparent"
             role="tablist"
           >
-            <div
+            <button
               aria-disabled="false"
               aria-selected="true"
-              class="tab tab--active border-b-2 border-muted font-medium ease-out text-default border-b-text-default transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) w-full"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
             >
-              <button
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-              >
-                Accounts
-              </button>
-            </div>
-            <div
+              Accounts
+            </button>
+            <button
               aria-disabled="false"
               aria-selected="false"
-              class="tab border-b-2 border-muted text-alternative font-medium transition-colors duration-200 ease-out w-full"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
             >
-              <button
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-              >
-                Permissions
-              </button>
-            </div>
+              Permissions
+            </button>
           </div>
           <div
-            class="tabs__content"
+            class=""
             role="tabpanel"
           >
             <div
@@ -368,13 +355,13 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
-                    style="min-width: 0; flex: 1; overflow: hidden;"
+                    style="min-width: 0; flex: 1;"
                   >
                     <div
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -391,7 +378,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                               <rect
                                 fill="#FB188D"
                                 height="32"
-                                transform="translate(-1.104254133951512 -2.2862708533878) rotate(359.4 16 16)"
+                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -399,7 +386,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                               <rect
                                 fill="#018E77"
                                 height="32"
-                                transform="translate(-14.912843860816645 10.855110856776372) rotate(246.0 16 16)"
+                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -407,7 +394,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                               <rect
                                 fill="#C81471"
                                 height="32"
-                                transform="translate(-30.373404418783903 -6.946818612317597) rotate(324.3 16 16)"
+                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -419,6 +406,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     </div>
                     <div
                       class="mm-box"
+                      style="overflow: hidden;"
                     >
                       <p
                         class="mm-box mm-text multichain-account-cell__account-name mm-text--body-md-medium mm-text--ellipsis mm-box--margin-left-3 mm-box--color-text-default"
@@ -436,7 +424,9 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       data-testid="balance-display"
                     />
                     <div
+                      aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
+                      data-testid="multichain-account-cell-end-accessory"
                     />
                   </div>
                 </div>
@@ -564,40 +554,32 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           class="justify-center bg-transparent tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-0 justify-start bg-transparent tabs__list top-0 z-[2]"
+            class="flex flex-row gap-4 justify-start bg-transparent"
             role="tablist"
           >
-            <div
+            <button
               aria-disabled="false"
               aria-selected="true"
-              class="tab tab--active border-b-2 border-muted font-medium ease-out text-default border-b-text-default transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) w-full"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
             >
-              <button
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-              >
-                Accounts
-              </button>
-            </div>
-            <div
+              Accounts
+            </button>
+            <button
               aria-disabled="false"
               aria-selected="false"
-              class="tab border-b-2 border-muted text-alternative font-medium transition-colors duration-200 ease-out w-full"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
             >
-              <button
-                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-default text-center block w-full min-w-[50px] bg-transparent font-medium transition-colors duration-[50ms] ease-out disabled:text-inherit hover:enabled:text-default p-2"
-              >
-                Permissions
-              </button>
-            </div>
+              Permissions
+            </button>
           </div>
           <div
-            class="tabs__content"
+            class=""
             role="tabpanel"
           >
             <div
@@ -614,13 +596,13 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
-                    style="min-width: 0; flex: 1; overflow: hidden;"
+                    style="min-width: 0; flex: 1;"
                   >
                     <div
                       class="mm-box multichain-account-cell__account-avatar mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-xl mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -637,7 +619,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                               <rect
                                 fill="#FB188D"
                                 height="32"
-                                transform="translate(-1.104254133951512 -2.2862708533878) rotate(359.4 16 16)"
+                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -645,7 +627,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                               <rect
                                 fill="#018E77"
                                 height="32"
-                                transform="translate(-14.912843860816645 10.855110856776372) rotate(246.0 16 16)"
+                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -653,7 +635,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                               <rect
                                 fill="#C81471"
                                 height="32"
-                                transform="translate(-30.373404418783903 -6.946818612317597) rotate(324.3 16 16)"
+                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
                                 width="32"
                                 x="0"
                                 y="0"
@@ -665,6 +647,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     </div>
                     <div
                       class="mm-box"
+                      style="overflow: hidden;"
                     >
                       <p
                         class="mm-box mm-text multichain-account-cell__account-name mm-text--body-md-medium mm-text--ellipsis mm-box--margin-left-3 mm-box--color-text-default"
@@ -682,7 +665,9 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       data-testid="balance-display"
                     />
                     <div
+                      aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
+                      data-testid="multichain-account-cell-end-accessory"
                     />
                   </div>
                 </div>

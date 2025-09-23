@@ -821,6 +821,7 @@ export enum MetaMetricsEventName {
   TokenSortPreference = 'Token Sort Preference',
   TokenListRefreshed = 'Token List Refreshed',
   NFTRemoved = 'NFT Removed',
+  EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
@@ -952,7 +953,6 @@ export enum MetaMetricsEventAccountType {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Snap = 'snap',
   ///: END:ONLY_INCLUDE_IF
-  Social = 'social',
 }
 
 export enum QueueType {

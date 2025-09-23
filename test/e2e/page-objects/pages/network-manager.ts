@@ -31,7 +31,7 @@ class NetworkManager {
   private readonly networkListItem = (networkName: string) =>
     `[data-testid="network-list-item-${networkName}"]`;
 
-  private readonly tabList = '.tabs__list.network-manager__tab-list';
+  private readonly tabList = '.network-manager__tab-list';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -147,7 +147,7 @@ class NetworkManager {
     console.log(`Checking if ${tabName} tab is selected`);
     // Find the active tab and verify it contains "Custom" text
     await this.driver.waitForSelector({
-      css: `${this.tabList} div.tab--active button`,
+      css: `${this.tabList} button[aria-selected="true"]`,
       text: tabName,
     });
     console.log(`${tabName} tab is properly selected`);
