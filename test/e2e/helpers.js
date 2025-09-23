@@ -22,6 +22,18 @@ const { setManifestFlags } = require('./set-manifest-flags');
 const {
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
+  DAPP_HOST_ADDRESS,
+  DAPP_URL,
+  DAPP_ONE_URL,
+  DAPP_TWO_URL,
+  TEST_SEED_PHRASE,
+  TEST_SEED_PHRASE_TWO,
+  PRIVATE_KEY,
+  PRIVATE_KEY_TWO,
+  ACCOUNT_1,
+  ACCOUNT_2,
+  WALLET_PASSWORD,
+  WINDOW_TITLES,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -518,22 +530,6 @@ async function withFixtures(options, testSuite) {
   }
 }
 
-const WINDOW_TITLES = Object.freeze({
-  ExtensionInFullScreenView: 'MetaMask',
-  ExtensionUpdating: 'MetaMask Updating',
-  InstalledExtensions: 'Extensions',
-  Dialog: 'MetaMask Dialog',
-  Phishing: 'MetaMask Phishing Detection',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
-  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
-  TestDApp: 'E2E Test Dapp',
-  TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
-  MultichainTestDApp: 'Multichain Test Dapp',
-  SolanaTestDApp: 'Solana Test Dapp',
-  TestSnaps: 'Test Snaps',
-  ERC4337Snap: 'Account Abstraction Snap',
-});
-
 /**
  * @param {*} driver - Selenium driver
  * @param {*} handlesCount - total count of windows that should be loaded
@@ -556,11 +552,6 @@ const getWindowHandles = async (driver, handlesCount) => {
   );
   return { extension, dapp, popup };
 };
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
-const DAPP_ONE_URL = 'http://127.0.0.1:8081';
-const DAPP_TWO_URL = 'http://127.0.0.1:8082';
 
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
   return contract
@@ -600,14 +591,6 @@ const switchToOrOpenDapp = async (
   }
 };
 
-const PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
-
-const PRIVATE_KEY_TWO =
-  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
-
-const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
 const multipleGanacheOptions = {
   accounts: [
@@ -647,40 +630,6 @@ const clickNestedButton = async (driver, tabName) => {
   }
 };
 
-const sendTransaction = async (
-  driver,
-  recipientAddress,
-  quantity,
-  isAsyncFlow = false,
-) => {
-  await openActionMenuAndStartSendFlow(driver);
-  await driver.waitForSelector('[data-testid="ens-input"]');
-  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
-
-  await driver.clickElement({
-    text: 'Continue',
-    tag: 'button',
-  });
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-  });
-
-  // the default is to do this block, but if we're testing an async flow, it would get stuck here
-  if (!isAsyncFlow) {
-    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
-    await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
-    await driver.findElement('.transaction-list-item');
-  }
-};
-
-const TEST_SEED_PHRASE =
-  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
-
-const TEST_SEED_PHRASE_TWO =
-  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
-
 /**
  * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
  * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
@@ -702,8 +651,6 @@ const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
     await driver.findElement(balanceSelector);
   }
 };
-
-const WALLET_PASSWORD = 'correct horse battery staple';
 
 /**
  * Unlocks the wallet using the provided password.
@@ -784,15 +731,6 @@ function generateRandNumBetween(x, y) {
   const randomNumber = Math.random() * (max - min) + min;
 
   return randomNumber;
-}
-
-/**
- * @deprecated since the background socket was added, and special handling is no longer necessary
- * Just call `await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)` instead.
- * @param {WebDriver} driver
- */
-async function switchToNotificationWindow(driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
 /**
@@ -937,7 +875,6 @@ module.exports = {
   createDappTransaction,
   switchToOrOpenDapp,
   multipleGanacheOptions,
-  sendTransaction,
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
@@ -946,7 +883,6 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  switchToNotificationWindow,
   getEventPayloads,
   assertInAnyOrder,
   openActionMenuAndStartSendFlow,

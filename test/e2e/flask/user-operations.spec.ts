@@ -1,9 +1,7 @@
 import {
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
-  sendTransaction,
   convertETHToHexGwei,
   createDappTransaction,
 } from '../helpers';
@@ -25,6 +23,8 @@ import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import SendTokenPage from '../page-objects/pages/send/send-token-page';
+import HomePage from '../page-objects/pages/home/homepage';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -112,7 +112,7 @@ async function setSnapConfig(
 }
 
 async function confirmTransaction(driver: Driver) {
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)
   await driver.clickElement({ text: 'Confirm' });
 }
 
@@ -265,7 +265,16 @@ describe('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        await sendTransaction(driver, LOCAL_NODE_ACCOUNT, 1, true);
+
+        const homePage = new HomePage(driver);
+        await homePage.startSendFlow();
+
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.checkPageIsLoaded();
+        await sendToPage.fillRecipient(LOCAL_NODE_ACCOUNT);
+        await sendToPage.fillAmount('1');
+        await sendToPage.goToNextScreen();
+        await sendToPage.clickConfirmButton();
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
