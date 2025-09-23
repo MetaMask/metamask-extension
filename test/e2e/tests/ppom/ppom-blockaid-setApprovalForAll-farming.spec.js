@@ -1,12 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-
-const {
-  WINDOW_TITLES,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { unlockWallet, withFixtures } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';

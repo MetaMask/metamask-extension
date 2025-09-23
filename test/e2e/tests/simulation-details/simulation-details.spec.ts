@@ -119,7 +119,7 @@ describe('Simulation Details', function () {
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -137,7 +137,7 @@ describe('Simulation Details', function () {
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC20_TRANSACTION])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC20_TRANSACTION])}`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -156,7 +156,7 @@ describe('Simulation Details', function () {
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC721_TRANSACTION_MOCK])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC721_TRANSACTION_MOCK])}`,
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectBalanceChange(driver, true, 0, '- 0.014', 'ETH');
@@ -186,7 +186,7 @@ describe('Simulation Details', function () {
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC1155_TRANSACTION_MOCK])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC1155_TRANSACTION_MOCK])}`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -210,7 +210,7 @@ describe('Simulation Details', function () {
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([NO_CHANGES_TRANSACTION_MOCK])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([NO_CHANGES_TRANSACTION_MOCK])}`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -230,7 +230,7 @@ describe('Simulation Details', function () {
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([INSUFFICIENT_GAS_TRANSACTION_MOCK])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([INSUFFICIENT_GAS_TRANSACTION_MOCK])}`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -254,7 +254,7 @@ describe('Simulation Details', function () {
       },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -277,7 +277,7 @@ describe('Simulation Details', function () {
       },
       async ({ driver }) => {
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([MALFORMED_TRANSACTION_MOCK])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([MALFORMED_TRANSACTION_MOCK])}`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

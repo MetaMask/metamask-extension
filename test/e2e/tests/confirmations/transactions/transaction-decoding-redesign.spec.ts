@@ -145,7 +145,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           from: publicAddress,
         };
         await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}}`,
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
         );
 
         await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
