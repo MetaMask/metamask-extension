@@ -53,7 +53,6 @@ class ReviewPermissionsConfirmation {
 
   async clickConfirmReviewPermissionsButtonWithWaitForWindowToClose(): Promise<void> {
     console.log('Click confirm review permissions button');
-    await this.driver.findClickableElement(this.confirmReviewPermissionsButton);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmReviewPermissionsButton,
     );

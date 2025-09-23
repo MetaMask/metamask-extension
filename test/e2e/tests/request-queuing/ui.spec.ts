@@ -456,10 +456,7 @@ describe('Request-queue UI changes', function () {
         await networkManager.selectTab('Custom');
 
         // Delete network
-        await networkManager.deleteNetworkByName(
-          'Localhost 8545',
-          CHAIN_IDS.LOCALHOST,
-        );
+        await networkManager.deleteNetworkByChainId(CHAIN_IDS.LOCALHOST);
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum, should be used

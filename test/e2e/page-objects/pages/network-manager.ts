@@ -84,29 +84,19 @@ class NetworkManager {
     );
   }
 
-  async deleteNetworkByName(
-    networkName: string,
-    chainId: `0x${string}`,
-  ): Promise<void> {
-    console.log(`Deleting network: ${networkName} (${chainId})`);
-
-    const networkRow = await this.driver.findElement(
-      this.multichainNetworkListItemByName(networkName),
-    );
+  async deleteNetworkByChainId(chainId: `0x${string}`): Promise<void> {
+    console.log(`Deleting network: ${chainId}`);
 
     // Convert chain ID to CAIP format for the data-testid
     const caipChainId = toEvmCaipChainId(chainId);
 
-    const networkMenu = await this.driver.findNestedElement(
-      networkRow,
+    await this.driver.clickElement(
       this.networkItemMenuButtonByChainId(caipChainId),
     );
-
-    await networkMenu.click();
     await this.driver.clickElement(this.networkItemDeleteOption);
     await this.driver.clickElement(this.networkPopupDeleteButton);
 
-    console.log(`Successfully deleted network: ${networkName}`);
+    console.log(`Successfully deleted network: ${chainId}`);
   }
 
   async selectAllNetworks(): Promise<void> {
