@@ -10,25 +10,28 @@ import { Column, Row } from "../layout"
 import { Box, AvatarNetwork, AvatarNetworkSize, Text } from "../../../components/component-library"
 
 interface NetworkFilterPillProps {
+  selected: boolean;
   network: {
     id: string;
     name: string;
     image?: string;
   };
+  onSelect: (id: string) => void;
 }
 
-export const NetworkFilterPill = ({ network }: NetworkFilterPillProps) => {
+export const NetworkFilterPill = ({ selected, network, onSelect }: NetworkFilterPillProps) => {
   return (
     <Box
       key={network.id}
       borderColor={BorderColor.primaryMuted}
       borderWidth={1}
       borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.backgroundSubsection}
+      backgroundColor={selected ? BackgroundColor.primaryMuted : BackgroundColor.backgroundSubsection}
       paddingTop={1}
       paddingBottom={1}
       paddingLeft={3}
       paddingRight={3}
+      onClick={() => onSelect(network.id)}
       style={{
         flex: '1 1 0',
         minWidth: 'fit-content',

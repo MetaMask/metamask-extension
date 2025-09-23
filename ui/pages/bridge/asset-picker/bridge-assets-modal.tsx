@@ -36,6 +36,8 @@ const NETWORK_PILLS = SUPPORTED_NETWORKS.map((network) => ({
 }));
 
 export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) => {
+  const [selectedNetwork, setSelectedNetwork] = useState<string | null>(CHAIN_IDS.MAINNET);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -51,7 +53,12 @@ export const BridgeAssetsModal = ({ isOpen, onClose }: BridgeAssetsModalProps) =
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2} style={{overflow: 'auto'}}>
               {NETWORK_PILLS.map((network) => (
-                <NetworkFilterPill key={network.id} network={network} />
+                <NetworkFilterPill
+                  key={network.id}
+                  selected={selectedNetwork === network.id}
+                  network={network}
+                  onSelect={setSelectedNetwork}
+                />
               ))}
             </Row>
           </Row>
