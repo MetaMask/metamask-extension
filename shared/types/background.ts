@@ -341,6 +341,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   NameControllerState &
   NetworkState &
   NetworkOrderControllerState &
+  NetworkEnablementControllerState &
   NftControllerState &
   NotificationServicesController.NotificationServicesControllerState &
   NotificationServicesPushController.NotificationServicesPushControllerState &
