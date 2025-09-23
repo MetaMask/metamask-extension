@@ -7084,12 +7084,6 @@ export async function alignMultichainWallets(): Promise<void> {
   return await submitRequestToBackground<void>('alignMultichainWallets', []);
 }
 
-export async function getMultichainAlignmentStatus(): Promise<boolean> {
-  return await submitRequestToBackground<boolean>(
-    'getMultichainAlignmentStatus',
-    [],
-  );
-}
 ///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<

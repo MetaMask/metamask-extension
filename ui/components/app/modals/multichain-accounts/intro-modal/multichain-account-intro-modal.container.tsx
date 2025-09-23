@@ -15,12 +15,10 @@ import {
 } from './multichain-account-intro-modal.component';
 
 type ContainerProps = {
-  isOpen: boolean;
   onClose: () => void;
 };
 
 export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
-  isOpen,
   onClose,
 }) => {
   const dispatch = useDispatch();
@@ -32,17 +30,15 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const MINIMUM_LOADING_TIME_MS = 2000;
   const SUPPORT_URL = 'https://support.metamask.io/multichain-accounts';
 
-  // Start alignment as soon as modal opens
+  // Start alignment as soon as component mounts (modal is shown)
   useEffect(() => {
-    if (isOpen) {
-      alignmentPromiseRef.current = alignMultichainWallets().catch((err) => {
-        console.error('Wallet alignment failed:', err);
-        captureException(err);
-        // Even if alignment fails, we continue
-        return Promise.resolve();
-      });
-    }
-  }, [isOpen]);
+    alignmentPromiseRef.current = alignMultichainWallets().catch((err) => {
+      console.error('Wallet alignment failed:', err);
+      captureException(err);
+      // Even if alignment fails, we continue
+      return Promise.resolve();
+    });
+  }, []);
 
   const handleViewAccounts = useCallback(async () => {
     // Start loading when user clicks
@@ -57,9 +53,8 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
         ),
       ]);
     } catch (err) {
-      console.error('Wallet alignment failed:', err);
-      captureException(err);
-      // Even if alignment fails, we continue
+      // Error already captured in useEffect when alignment promise was created
+      // Don't capture again to avoid duplicate Sentry reports
     } finally {
       setIsLoading(false); // Clear loading state before closing modal
       alignmentPromiseRef.current = null;
@@ -120,7 +115,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   }, []);
 
   const props: MultichainAccountIntroModalProps = {
-    isOpen,
+    isOpen: true, // Always open when component is rendered
     onViewAccounts: handleViewAccounts,
     onLearnMore: handleLearnMore,
     onClose: handleClose,

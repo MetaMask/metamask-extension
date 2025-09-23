@@ -2909,12 +2909,6 @@ export default class MetamaskController extends EventEmitter {
         }
       },
 
-      getMultichainAlignmentStatus: () => {
-        if (this.multichainAccountService) {
-          return this.multichainAccountService.getIsAlignmentInProgress();
-        }
-        return false;
-      },
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),

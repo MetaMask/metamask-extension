@@ -858,7 +858,6 @@ export default function Routes() {
 
       {showMultichainIntroModal ? (
         <MultichainAccountIntroModalContainer
-          isOpen={showMultichainIntroModal}
           onClose={() => setShowMultichainIntroModal(false)}
         />
       ) : null}
