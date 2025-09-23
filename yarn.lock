@@ -5560,9 +5560,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^44.0.0":
-  version: 44.0.0
-  resolution: "@metamask/bridge-controller@npm:44.0.0"
+"@metamask/bridge-controller@npm:^44.0.1":
+  version: 44.0.1
+  resolution: "@metamask/bridge-controller@npm:44.0.1"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5587,13 +5587,13 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/80abc171e0386c32af92db55ba829621bd1c743d9e9957812fc5fca08f6c526ba80dc7e4456127af9ebdd19a197fa362792ae03a5c800191f0fa106f3e0c3bb4
+  checksum: 10/df26b093ebcd4e34e80f6750fc05da310ca8a48e8553b454579816e8cb621373135a2cdb49072ed88d2931e716a3129faf0a393b08fee036ceffaa45c66211b5
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^44.0.0":
-  version: 44.0.0
-  resolution: "@metamask/bridge-status-controller@npm:44.0.0"
+"@metamask/bridge-status-controller@npm:^44.1.0":
+  version: 44.1.0
+  resolution: "@metamask/bridge-status-controller@npm:44.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.0"
     "@metamask/controller-utils": "npm:^11.14.0"
@@ -5610,7 +5610,7 @@ __metadata:
     "@metamask/network-controller": ^24.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/15923981477e41be240f589b6147ffe56ff68f386435be826a81c909f9eef08e32cb5001cef2cd82258222b8e13ad41689fa03b74eada387633d766effa9429d
+  checksum: 10/d02687fe67bdc811bb031c275f1f13df3d986d4c3fb4ee59c1b9a43ebca7ba93db618dbf9fccc2e25755c987a7308b303e4a03c27bd684379ef38af0ae29fab5
   languageName: node
   linkType: hard
 
@@ -31889,8 +31889,8 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
-    "@metamask/bridge-controller": "npm:^44.0.0"
-    "@metamask/bridge-status-controller": "npm:^44.0.0"
+    "@metamask/bridge-controller": "npm:^44.0.1"
+    "@metamask/bridge-status-controller": "npm:^44.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.1.0"
