@@ -4,10 +4,22 @@ import {
   GatorPermissionsMap,
   deserializeGatorPermissionsMap,
   GatorPermissionsControllerState,
+  StoredGatorPermissionSanitized,
+  GatorPermissionsMapByPermissionType,
+  PermissionTypesWithCustom,
+  Signer,
 } from '@metamask/gator-permissions-controller';
+import { Hex } from '@metamask/utils';
 
 export type AppState = {
   metamask: GatorPermissionsControllerState;
+};
+
+export type PermissionsGroupDetailRecord = Record<Hex, number>; // chainId -> total
+
+export type PermissionsGroupDetail = {
+  chainId: Hex;
+  total: number;
 };
 
 const getMetamask = (state: AppState) => state.metamask;
@@ -114,6 +126,118 @@ export const getAggregatedGatorPermissionsCountAcrossAllChains = createSelector(
       default: {
         return 0;
       }
+    }
+  },
+);
+
+/**
+ * Merge two records of chainId to total count of gator permissions.
+ *
+ * @param record1 - The first record to merge
+ * @param record2 - The second record to merge
+ * @returns A merged record of chainId to total count of gator permissions
+ */
+function mergePermissionsGroupDetailRecords(
+  record1: PermissionsGroupDetailRecord,
+  record2: PermissionsGroupDetailRecord,
+): PermissionsGroupDetailRecord {
+  const mergedRecord = { ...record1 };
+
+  for (const [key, value] of Object.entries(record2)) {
+    mergedRecord[key as Hex] = (mergedRecord[key as Hex] || 0) + value;
+  }
+
+  return mergedRecord;
+}
+
+/**
+ * Get the total count of gator permissions of a specific permission type across chains.
+ *
+ * @param permissionsMapByPermissionType - The map of gator permissions by permission type
+ * @returns A record of chainId to total count of gator permissions
+ */
+function getTotalCountOfGatorPermissionsPerChainId(
+  permissionsMapByPermissionType: GatorPermissionsMapByPermissionType<SupportedGatorPermissionType>,
+): PermissionsGroupDetailRecord {
+  const flattenedGatorPermissionsAcrossAllChains: StoredGatorPermissionSanitized<
+    Signer,
+    PermissionTypesWithCustom
+  >[] = Object.values(permissionsMapByPermissionType).flat();
+
+  const permissionsGroupDetailRecord: PermissionsGroupDetailRecord = {};
+  return flattenedGatorPermissionsAcrossAllChains.reduce(
+    (acc, gatorPermission) => {
+      const { permissionResponse } = gatorPermission;
+      acc[permissionResponse.chainId] =
+        (acc[permissionResponse.chainId] || 0) + 1;
+      return acc;
+    },
+    permissionsGroupDetailRecord,
+  );
+}
+
+/**
+ * Get gator permissions group details.
+ *
+ * @param _state - The current state
+ * @param permissionGroupName - The type of list to get (token-transfer, spending-cap, nft, custom, etc.)
+ * @returns A list of gator permissions group details.
+ * @example
+ * const permissionGroupDetails = getPermissionsGroupDetails(state, 'token-transfer');
+ *
+ * // [{
+ * //   chainId: '0x1',
+ * //   total: 2,
+ * // },
+ * // {
+ * //   chainId: '0x89',
+ * //   total: 2,
+ * // }
+ * ]
+ */
+export const getPermissionGroupDetails = createSelector(
+  [
+    getGatorPermissionsMap,
+    (_state: AppState, permissionGroupName: string) => permissionGroupName,
+  ],
+  (gatorPermissionsMap, permissionGroupName): PermissionsGroupDetail[] => {
+    switch (permissionGroupName) {
+      case 'token-transfer': {
+        const streamsPermissionsCountPerChainId =
+          mergePermissionsGroupDetailRecords(
+            getTotalCountOfGatorPermissionsPerChainId(
+              gatorPermissionsMap['native-token-stream'],
+            ),
+            getTotalCountOfGatorPermissionsPerChainId(
+              gatorPermissionsMap['erc20-token-stream'],
+            ),
+          );
+
+        const periodicPermissionsCountPerChainId =
+          mergePermissionsGroupDetailRecords(
+            getTotalCountOfGatorPermissionsPerChainId(
+              gatorPermissionsMap['native-token-periodic'],
+            ),
+            getTotalCountOfGatorPermissionsPerChainId(
+              gatorPermissionsMap['erc20-token-periodic'],
+            ),
+          );
+
+        const totalPermissionsCountPerChainId =
+          mergePermissionsGroupDetailRecords(
+            streamsPermissionsCountPerChainId,
+            periodicPermissionsCountPerChainId,
+          );
+
+        return Object.entries(totalPermissionsCountPerChainId).map(
+          ([chainId, total]) => ({
+            chainId: chainId as Hex,
+            total,
+          }),
+        );
+      }
+      default:
+        return [];
     }
   },
 );
