@@ -4,6 +4,8 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import {
   BridgeAppState,
   UnifiedSwapBridgeEventName,
+  // TODO: update this with all non-EVM chains when bitcoin added.
+  isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
@@ -40,6 +42,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import {
+  getFromChain,
   getBridgeQuotes,
   getIsUnifiedUIEnabled,
 } from '../../ducks/bridge/selectors';
@@ -72,6 +75,13 @@ const CrossChainSwap = () => {
   );
   const { activeQuote } = useSelector(getBridgeQuotes);
 
+  // Get chain information to determine if we need gas estimates
+  const fromChain = useSelector(getFromChain);
+  // Only fetch gas estimates if the source chain is EVM (not Solana)
+  const shouldFetchGasEstimates =
+    // TODO: update this with all non-EVM chains when bitcoin added.
+    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
+
   useEffect(() => {
     dispatch(
       trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
@@ -93,8 +103,8 @@ const CrossChainSwap = () => {
     };
   }, []);
 
-  // Needed for refreshing gas estimates
-  useGasFeeEstimates(selectedNetworkClientId);
+  // Needed for refreshing gas estimates (only for EVM chains)
+  useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);
   // Needed for fetching exchange rates for tokens that have not been imported
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
