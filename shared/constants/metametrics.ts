@@ -739,6 +739,8 @@ export enum MetaMetricsEventName {
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
+  NetworkConnectionBannerShown = 'Network Connection Banner Shown',
+  NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
   ViewPermissionedNetworks = 'View Permissioned Networks',

@@ -4032,3 +4032,11 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
 );
+
+/**
+ * @param {object} state - The Redux state
+ * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
+ */
+export function getNetworkConnectionBanner(state) {
+  return state.metamask.networkConnectionBanner;
+}

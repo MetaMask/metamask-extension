@@ -7,7 +7,7 @@ import {
 import { BlockExplorerUrl, ChainId } from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
 import { SECOND } from '../../../shared/constants/time';
-import { getIsQuicknodeEndpointUrl } from '../lib/network-controller/utils';
+import { getIsQuicknodeEndpointUrl } from '../../../shared/lib/network-utils';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
