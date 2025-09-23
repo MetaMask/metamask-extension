@@ -97,6 +97,12 @@ export const useSendQueryParams = () => {
   }, [to, paramRecipient, updateTo]);
 
   useEffect(() => {
+    if (value === undefined && paramAmount) {
+      updateValue(paramAmount, paramMaxValueMode === 'true');
+    }
+  }, [paramAmount, paramMaxValueMode, updateValue, value]);
+
+  useEffect(() => {
     if (asset || !paramChainId) {
       return;
     }
@@ -115,20 +121,5 @@ export const useSendQueryParams = () => {
     if (newAsset) {
       updateAsset(newAsset);
     }
-
-    if (value === undefined && paramAmount) {
-      updateValue(paramAmount, paramMaxValueMode === 'true');
-    }
-  }, [
-    asset,
-    flatAssets,
-    paramAmount,
-    paramAsset,
-    paramChainId,
-    paramMaxValueMode,
-    nfts,
-    updateAsset,
-    updateValue,
-    value,
-  ]);
+  }, [asset, flatAssets, paramAsset, paramChainId, nfts, updateAsset]);
 };
