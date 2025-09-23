@@ -98,11 +98,11 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
   >
 > = {
   [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: {
-    // ETH -> USDC on mainnet
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    symbol: 'USDC',
-    decimals: 6,
-    name: 'USD Coin',
+    // ETH -> mUSD on mainnet
+    address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+    symbol: 'mUSD',
+    decimals: 18,
+    name: 'MetaMask USD',
   },
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: {
     // ETH -> USDC on Optimism
@@ -154,11 +154,11 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     name: 'Tether USD',
   },
   [toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET)]: {
-    // ETH -> USDC on Linea
-    address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
-    symbol: 'USDC',
-    decimals: 6,
-    name: 'USD Coin',
+    // ETH -> mUSD on Linea
+    address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+    symbol: 'mUSD',
+    decimals: 18,
+    name: 'MetaMask USD',
   },
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: {
     // SEI -> USDC on Sei
