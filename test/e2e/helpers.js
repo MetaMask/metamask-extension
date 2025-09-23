@@ -26,7 +26,7 @@ const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
 const LocalWebSocketServer = require('./websocket-server').default;
-const { setSolanaWebsocketMocks } = require('./websocket-solana-mocks');
+const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -128,7 +128,7 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
-    withSolanaWebSocket = false,
+    solanaWebSocketSpecificMocks = [],
   } = options;
 
   // Normalize localNodeOptions
@@ -155,7 +155,7 @@ async function withFixtures(options, testSuite) {
   let localNode;
   const localNodes = [];
 
-  let localWebSocketServer;
+  let webSocketServer;
 
   try {
     // Start servers based on the localNodes array
@@ -261,13 +261,10 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    if (withSolanaWebSocket) {
-      localWebSocketServer = LocalWebSocketServer.getServerInstance();
-      localWebSocketServer.start();
-      // All specs use the same ws mocks.
-      // If we need custom ws mocks we can expand logic for supporting custom ws mocks like with http
-      await setSolanaWebsocketMocks();
-    }
+    // Start WebSocket server and apply Solana mocks (defaults + overrides)
+    webSocketServer = LocalWebSocketServer.getServerInstance();
+    webSocketServer.start();
+    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
     const { mockedEndpoint, getPrivacyReport } = await setupMocking(
       mockServer,
@@ -277,7 +274,6 @@ async function withFixtures(options, testSuite) {
         ethConversionInUsd,
         monConversionInUsd,
       },
-      withSolanaWebSocket,
     );
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
@@ -454,9 +450,20 @@ async function withFixtures(options, testSuite) {
         })(),
       );
 
-      if (withSolanaWebSocket) {
-        shutdownTasks.push(localWebSocketServer.stopAndCleanup());
-      }
+      shutdownTasks.push(
+        (async () => {
+          try {
+            if (
+              webSocketServer &&
+              typeof webSocketServer.stopAndCleanup === 'function'
+            ) {
+              await webSocketServer.stopAndCleanup();
+            }
+          } catch (e) {
+            console.log('WebSocket server already stopped or not initialized');
+          }
+        })(),
+      );
 
       const results = await Promise.allSettled(shutdownTasks);
       const failures = results.filter((result) => result.status === 'rejected');
