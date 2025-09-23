@@ -177,7 +177,7 @@ export const MultichainAddressRow = ({
           {subText} {/* Dynamically updating subText */}
         </Text>
       </Box>
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={4}>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
         <ButtonIcon
           iconName={copyIcon}
           size={ButtonIconSize.Md}
