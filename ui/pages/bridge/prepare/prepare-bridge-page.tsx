@@ -750,7 +750,7 @@ const PrepareBridgePage = ({
           />
           <Column gap={4}>
             <Button onClick={() => setIsBridgeAssetsModalOpen(true)}>Open</Button>
-            <BridgeAssetsModal isOpen={isBridgeAssetsModalOpen} onClose={() => setIsBridgeAssetsModalOpen(false)} />
+            <BridgeAssetsModal isOpen={isBridgeAssetsModalOpen} onClose={() => setIsBridgeAssetsModalOpen(false)} onSelectAsset={() => {}}/>
           </Column>
 
           <Column

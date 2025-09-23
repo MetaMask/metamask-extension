@@ -22,6 +22,8 @@ import { getImageForChainId } from '../../confirmations/utils/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkFilterPill } from './network-filter-pill';
 import { debounce } from 'lodash';
+import { getPopularAssets } from '../utils/assets-service';
+import { Hex } from '@metamask/utils';
 
 interface BridgeAssetsModalProps {
   isOpen: boolean;
@@ -42,7 +44,8 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const debouncedSearchCallback = useCallback(
-    debounce((value) => {
+    debounce(async (value, selectedNetwork) => {
+      const assets = await getPopularAssets(value, selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS);
       console.log('Debounced search query:', value);
     }, 300),
     [],
@@ -53,15 +56,18 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
     setSearchQuery('');
   }
 
+  const selectNetwork = (networkId: string) => {
+    setSelectedNetwork(networkId !== selectedNetwork ? networkId : null);
+  }
+
   const selectAsset = (asset: Asset) => {
     onSelectAsset(asset);
     closeModal();
   }
 
   useEffect(() => {
-    debouncedSearchCallback(searchQuery);
-  }, [searchQuery, selectedNetwork, debouncedSearchCallback]);
-
+    debouncedSearchCallback(searchQuery, selectedNetwork);
+  }, [selectedNetwork, searchQuery, debouncedSearchCallback]);
 
   useEffect(() => {
     return () => {
@@ -88,7 +94,7 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
                   key={network.id}
                   selected={selectedNetwork === network.id}
                   network={network}
-                  onSelect={setSelectedNetwork}
+                  onSelect={selectNetwork}
                 />
               ))}
             </Row>
