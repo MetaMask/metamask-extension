@@ -42,7 +42,7 @@ export default function InlineAlert({
         onClick={onClick}
       >
         <Icon
-          name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+          name={severity === Severity.Danger ? IconName.Danger : IconName.Info}
           size={IconSize.Sm}
         />
       </Box>

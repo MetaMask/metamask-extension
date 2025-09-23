@@ -14,3 +14,9 @@
     color: var(--color-warning-default);
   }
 }
+
+// Add hover effect to underline only the label text (key) when hovering over a row with an alert
+// Target the label text - it's in the first flex container, not in the expanded children section
+.confirm-info-row--has-alert:hover .confirm-info-row > *:first-child .mm-text:first-of-type {
+  text-decoration: underline;
+}
