@@ -35,6 +35,7 @@ export type MultichainAddressRowsListProps = {
   onQrClick: (
     address: string,
     networkName: string,
+    chainId: CaipChainId,
     networkImageSrc?: string,
   ) => void;
 };
