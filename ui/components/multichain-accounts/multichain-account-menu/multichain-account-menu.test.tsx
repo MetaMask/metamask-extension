@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { fireEvent, act, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MultichainAccountMenu } from './multichain-account-menu';
@@ -11,12 +11,30 @@ const menuItemSelector = '.multichain-account-cell-menu-item';
 const errorColorSelector = '.mm-box--color-error-default';
 
 describe('MultichainAccountMenu', () => {
+  // Test wrapper component that manages state like the parent component does
+  const TestWrapper = (props: Omit<MultichainAccountMenuProps, 'isOpen' | 'onToggle'>) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const handleToggle = () => setIsOpen(!isOpen);
+
+    return (
+      <MultichainAccountMenu
+        {...props}
+        isOpen={isOpen}
+        onToggle={handleToggle}
+      />
+    );
+  };
+
   const renderComponent = (
-    props: MultichainAccountMenuProps = {
+    props: Omit<MultichainAccountMenuProps, 'isOpen' | 'onToggle'> = {
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
     },
   ) => {
+    return renderWithProvider(<TestWrapper {...props} />);
+  };
+
+  const renderComponentWithProps = (props: MultichainAccountMenuProps) => {
     return renderWithProvider(<MultichainAccountMenu {...props} />);
   };
 
@@ -31,6 +49,51 @@ describe('MultichainAccountMenu', () => {
 
     expect(menuIcon).toBeInTheDocument();
     expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
+  });
+
+  it('renders with controlled props - closed state', () => {
+    renderComponentWithProps({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: false,
+      isOpen: false,
+      onToggle: jest.fn(),
+    });
+
+    expect(document.querySelector(menuButtonSelector)).toBeInTheDocument();
+    expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
+  });
+
+  it('renders with controlled props - open state', () => {
+    renderComponentWithProps({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: false,
+      isOpen: true,
+      onToggle: jest.fn(),
+    });
+
+    expect(document.querySelector(menuButtonSelector)).toBeInTheDocument();
+    expect(document.querySelector(popoverOpenSelector)).toBeInTheDocument();
+  });
+
+  it('calls onToggle when menu button is clicked with controlled props', async () => {
+    const mockOnToggle = jest.fn();
+    renderComponentWithProps({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: false,
+      isOpen: false,
+      onToggle: mockOnToggle,
+    });
+
+    const menuButton = document.querySelector(menuButtonSelector);
+    expect(menuButton).not.toBeNull();
+
+    if (menuButton) {
+      await act(async () => {
+        fireEvent.click(menuButton);
+      });
+    }
+
+    expect(mockOnToggle).toHaveBeenCalledTimes(1);
   });
 
   it('opens the popover menu when clicking the menu button', async () => {
@@ -204,5 +267,35 @@ describe('MultichainAccountMenu', () => {
     expect(mockHandleAccountRenameAction).toHaveBeenCalledWith(accountGroupId);
     // Verify the popover is closed after clicking rename
     expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
+  });
+
+  it('calls onToggle when rename action is performed with controlled props', async () => {
+    const mockHandleAccountRenameAction = jest.fn();
+    const mockOnToggle = jest.fn();
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    renderComponentWithProps({
+      accountGroupId,
+      isRemovable: false,
+      isOpen: true,
+      onToggle: mockOnToggle,
+      handleAccountRenameAction: mockHandleAccountRenameAction,
+    });
+
+    // Rename option should be the second menu item
+    const menuItems = document.querySelectorAll(menuItemSelector);
+    expect(menuItems.length).toBe(3);
+
+    const renameOption = menuItems[1];
+    expect(renameOption).not.toBeNull();
+
+    if (renameOption) {
+      await act(async () => {
+        fireEvent.click(renameOption);
+      });
+    }
+
+    expect(mockHandleAccountRenameAction).toHaveBeenCalledWith(accountGroupId);
+    expect(mockOnToggle).toHaveBeenCalledTimes(1);
   });
 });
