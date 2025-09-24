@@ -7,7 +7,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box multichain-page__inner-container main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
       data-testid="connect-page"
     >
       <div
@@ -69,16 +69,16 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         style="overflow: auto;"
       >
         <div
-          class="justify-center bg-transparent tabs transform-gpu"
+          class="bg-transparent tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-4 justify-start bg-transparent"
+            class="flex flex-row gap-4 justify-center bg-transparent"
             role="tablist"
           >
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -88,7 +88,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -102,7 +102,6 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           >
             <div
               class="mm-box mm-box--margin-top-4"
-              style="overflow: auto; max-height: 268px;"
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
@@ -248,7 +247,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box multichain-page__inner-container main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
       data-testid="connect-page"
     >
       <div
@@ -310,16 +309,16 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         style="overflow: auto;"
       >
         <div
-          class="justify-center bg-transparent tabs transform-gpu"
+          class="bg-transparent tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-4 justify-start bg-transparent"
+            class="flex flex-row gap-4 justify-center bg-transparent"
             role="tablist"
           >
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -329,7 +328,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -343,7 +342,6 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           >
             <div
               class="mm-box mm-box--margin-top-4"
-              style="overflow: auto; max-height: 268px;"
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
@@ -489,7 +487,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box multichain-page__inner-container main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
       data-testid="connect-page"
     >
       <div
@@ -551,16 +549,16 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         style="overflow: auto;"
       >
         <div
-          class="justify-center bg-transparent tabs transform-gpu"
+          class="bg-transparent tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-4 justify-start bg-transparent"
+            class="flex flex-row gap-4 justify-center bg-transparent"
             role="tablist"
           >
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -570,7 +568,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -584,7 +582,6 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           >
             <div
               class="mm-box mm-box--margin-top-4"
-              style="overflow: auto; max-height: 268px;"
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
