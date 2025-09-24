@@ -259,7 +259,7 @@ export const AppHeaderUnlockedContent = ({
           className="networks-subtitle"
           paddingInline={2}
         >
-          {`${numberOfAccountsInGroup} ${networksLabel}`}
+          {networksLabel}
         </Text>
       </Box>
     );
