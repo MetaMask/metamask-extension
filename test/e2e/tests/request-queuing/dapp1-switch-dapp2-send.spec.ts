@@ -286,8 +286,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
-        await driver.delay(100000);
-
         // Check for transaction
         await new ActivityListPage(
           driver,

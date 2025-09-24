@@ -272,16 +272,6 @@ export const AssetPickerAmount = ({
                     dispatch(setToChainId(networkConfig.chainId));
                     dispatch(detectNfts(allChainIds));
 
-                    const caipChainId = formatChainIdToCaip(
-                      networkConfig.chainId,
-                    );
-
-                    const { namespace } = parseCaipChainId(caipChainId);
-
-                    if (namespace) {
-                      dispatch(setEnabledNetworks(networkConfig.chainId));
-                    }
-
                     dispatch(
                       setActiveNetworkWithError(
                         'networkClientId' in rpcEndpoint
