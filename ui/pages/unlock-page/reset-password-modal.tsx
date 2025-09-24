@@ -125,11 +125,11 @@ export default function ResetPasswordModal({
           variant={ButtonVariant.Primary}
           onClick={handleResetWallet}
           size={ButtonSize.Lg}
-          margin={2}
+          margin={[2, 2, 0, 0]}
           block
           danger
         >
-          Reset Wallet
+          Login with a different account
         </Button>
       </Box>
     );

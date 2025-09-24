@@ -16,6 +16,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
+  getIsResettingWalletInProgress,
   getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -47,6 +48,9 @@ export default function OnboardingWelcome() {
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isResettingWalletInProgress = useSelector(
+    getIsResettingWalletInProgress,
+  );
   const isUserAuthenticatedWithSocialLogin = useSelector(
     getIsSocialLoginUserAuthenticated,
   );
@@ -63,7 +67,11 @@ export default function OnboardingWelcome() {
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
-    if (currentKeyring && !newAccountCreationInProgress) {
+    if (
+      currentKeyring &&
+      !newAccountCreationInProgress &&
+      !isResettingWalletInProgress
+    ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport ||
@@ -99,6 +107,7 @@ export default function OnboardingWelcome() {
     isParticipateInMetaMetricsSet,
     isUserAuthenticatedWithSocialLogin,
     isFireFox,
+    isResettingWalletInProgress,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);

@@ -2562,7 +2562,9 @@ export default class MetamaskController extends EventEmitter {
    */
   getState() {
     const { vault } = this.keyringController.state;
-    const isInitialized = Boolean(vault);
+    const isResettingWalletInProgress =
+      this.appStateController.getIsResettingWalletInProgress();
+    const isInitialized = Boolean(vault) && !isResettingWalletInProgress;
     const flatState = this.memStore.getFlatState();
 
     return {
@@ -3689,6 +3691,10 @@ export default class MetamaskController extends EventEmitter {
           ),
         }),
       resetStates: this.resetStates.bind(this),
+      setIsResettingWalletInProgress:
+        this.appStateController.setIsResettingWalletInProgress.bind(
+          this.appStateController,
+        ),
     };
   }
 
@@ -4483,6 +4489,10 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       await this.keyringController.createNewVaultAndKeychain(password);
+
+      // set is resetting wallet in progress to false, in case of createNewVaultAndKeychain being called from resetWallet
+      this.appStateController.setIsResettingWalletInProgress(false);
+
       return this.keyringController.state.keyrings[0];
     } finally {
       releaseLock();
@@ -4894,6 +4904,9 @@ export default class MetamaskController extends EventEmitter {
           await this.syncKeyringEncryptionKey();
         }
       }
+
+      // set is resetting wallet in progress to false, in case of createNewVaultAndRestore being called from resetWallet
+      this.appStateController.setIsResettingWalletInProgress(false);
     } finally {
       releaseLock();
     }

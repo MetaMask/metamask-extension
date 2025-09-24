@@ -320,6 +320,16 @@ export function getCurrentKeyring(state) {
 }
 
 /**
+ * This function checks if the wallet is currently being reset.
+ *
+ * @param {object} state
+ * @returns {boolean}
+ */
+export function getIsResettingWalletInProgress(state) {
+  return state.appState.isResettingWalletInProgress;
+}
+
+/**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
  *

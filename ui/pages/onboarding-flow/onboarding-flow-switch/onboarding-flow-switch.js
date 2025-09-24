@@ -47,16 +47,6 @@ export default function OnboardingFlowSwitch() {
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
-  console.log('isSocialLoginFlow', isSocialLoginFlow);
-  console.log('isUnlocked', isUnlocked);
-  console.log('isParticipateInMetaMetricsSet', isParticipateInMetaMetricsSet);
-  console.log('completedOnboarding', completedOnboarding);
-  console.log('seedPhraseBackedUp', seedPhraseBackedUp);
-  console.log('firstTimeFlowType', firstTimeFlowType);
-  console.log(
-    'isUserAuthenticatedWithSocialLogin',
-    isUserAuthenticatedWithSocialLogin,
-  );
 
   if (completedOnboarding) {
     return <Navigate to={DEFAULT_ROUTE} replace />;

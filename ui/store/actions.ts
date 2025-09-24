@@ -4129,16 +4129,21 @@ export function resetOnboardingAction() {
 }
 
 /**
- * Reset the app state
+ * Reset the wallet
  *
  * @returns void
  */
-export async function resetApp() {
+export function resetApp() {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      dispatch(resetOnboarding());
-      dispatch(resetAppAction());
+      // reset onboarding
+      await dispatch(resetOnboarding());
+      // reset redux state
+      await dispatch(resetAppAction());
+      // reset background controller state
       await submitRequestToBackground('resetStates');
+      // set `isResettingWalletInProgress` to true
+      await submitRequestToBackground('setIsResettingWalletInProgress', [true]);
     } catch (error) {
       console.error(error);
       throw error;
