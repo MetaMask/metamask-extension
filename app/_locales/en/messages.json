@@ -5651,9 +5651,6 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
-  "shieldPlanYearly": {
-    "message": "Yearly"
-  },
   "shieldTx": {
     "message": "Transaction Shield"
   },

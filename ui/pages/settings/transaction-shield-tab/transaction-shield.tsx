@@ -505,14 +505,14 @@ const TransactionShield = () => {
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
                 isCryptoPayment
-                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanYearly') : t('shieldPlanMonthly')})`
+                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),
                       {
                         maximumFractionDigits: 0,
                       },
-                    )} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanYearly') : t('shieldPlanMonthly')})`,
+                    )} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
               )}
               {isCryptoPayment &&
                 billingDetails(
