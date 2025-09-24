@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   AlignItems,
   BlockSize,
@@ -136,7 +137,7 @@ export const MultichainAddressRow = ({
     qrActionParams?.callback(
       address,
       networkName,
-      chainId as CaipChainId,
+      formatChainIdToCaip(chainId),
       networkImageSrc,
     );
   };
