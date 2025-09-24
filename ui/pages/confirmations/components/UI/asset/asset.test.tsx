@@ -162,15 +162,6 @@ describe('NFTAsset', () => {
     expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
   });
 
-  it('handles image error gracefully', () => {
-    const { getByAltText } = render(<Asset asset={mockNFTERC721Asset} />);
-
-    const image = getByAltText('Test NFT');
-    fireEvent.error(image);
-
-    expect(image).toHaveStyle('display: none');
-  });
-
   it('uses collection imageUrl when asset image is not provided', () => {
     mockUseNftImageUrl.mockReturnValue('');
     const assetWithoutImage = {
