@@ -56,6 +56,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
+  setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
@@ -251,6 +252,7 @@ export default function CreatePassword({
     if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       if (termsChecked) {
         await dispatch(setMarketingConsent(true));
+        dispatch(setDataCollectionForMarketing(true));
       }
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {

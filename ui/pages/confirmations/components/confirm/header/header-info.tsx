@@ -52,8 +52,13 @@ const HeaderInfo = () => {
 
   const { currentConfirmation } = useConfirmContext();
 
-  const { senderAddress: fromAddress, senderName: fromName } =
-    useConfirmationRecipientInfo();
+  const {
+    senderAddress: fromAddress,
+    senderName: fromName,
+    walletName,
+    isBIP44,
+    hasMoreThanOneWallet,
+  } = useConfirmationRecipientInfo();
 
   const t = useI18nContext();
 
@@ -160,6 +165,15 @@ const HeaderInfo = () => {
                 >
                   {fromName}
                 </Text>
+                {isBIP44 && hasMoreThanOneWallet && (
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                    marginTop={1}
+                  >
+                    {walletName}
+                  </Text>
+                )}
               </Box>
               <Box style={{ position: 'absolute', right: 0 }}>
                 <ButtonIcon
