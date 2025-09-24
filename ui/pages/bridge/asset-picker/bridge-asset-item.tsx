@@ -44,14 +44,13 @@ export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
           <Box
             style={{
               position: 'absolute',
-              bottom: '-2px',
-              right: '-2px',
+              bottom: '-8px',
+              right: '-6px',
               borderRadius: '50%',
-              border: '2px solid white'
             }}
           >
             <AvatarNetwork
-              src={""}
+              src={networkImage}
               name={asset.chainId}
               size={AvatarNetworkSize.Xs}
             />
