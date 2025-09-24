@@ -258,6 +258,7 @@ export const MultichainAccountDetailsPage = () => {
               label={t('removeAccount')}
               labelColor={TextColor.errorDefault}
               value={''}
+              onClick={() => setIsAccountRemoveModalOpen(true)}
               endAccessory={
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
@@ -266,7 +267,6 @@ export const MultichainAccountDetailsPage = () => {
                   ariaLabel={t('removeAccount')}
                   marginLeft={2}
                   data-testid="account-remove-action"
-                  onClick={() => setIsAccountRemoveModalOpen(true)}
                 />
               }
             />

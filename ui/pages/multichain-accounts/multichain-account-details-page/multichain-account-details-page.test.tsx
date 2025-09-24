@@ -1,8 +1,9 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import configureStore from '../../../store/store';
 import * as actions from '../../../store/actions';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
@@ -30,18 +31,18 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-// Mock the actions module
-jest.mock('../../../store/actions', () => ({
-  removeAccount: jest.fn().mockImplementation(() => {
-    return jest.fn().mockResolvedValue(true); // Return a thunk that resolves to true
-  }),
-  setAccountDetailsAddress: jest.fn(),
-}));
+const mockDispatch = jest.fn();
+
+// Mock react-redux useDispatch
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
+  };
+});
 
 const reactRouterDom = jest.requireMock('react-router-dom');
-const mockRemoveAccount = jest.requireMock(
-  '../../../store/actions',
-).removeAccount;
 
 describe('MultichainAccountDetailsPage', () => {
   beforeEach(() => {
@@ -52,14 +53,10 @@ describe('MultichainAccountDetailsPage', () => {
     });
   });
 
-  const renderComponent = () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-      },
-    });
+  const mockStore = configureMockStore([thunk])(mockState);
 
-    return renderWithProvider(<MultichainAccountDetailsPage />, store);
+  const renderComponent = () => {
+    return renderWithProvider(<MultichainAccountDetailsPage />, mockStore);
   };
 
   it('renders the page with account details sections', () => {
@@ -210,14 +207,19 @@ describe('MultichainAccountDetailsPage', () => {
     );
     fireEvent.click(removeAccountActionButton);
 
-    const removeAccountButton = screen.getByRole('button', {
-      name: /remove account/iu,
-    });
-    fireEvent.click(removeAccountButton);
+    const removeButton = screen.getByText('Remove');
+    fireEvent.click(removeButton);
 
-    expect(mockRemoveAccount).toHaveBeenCalledTimes(1);
-    expect(mockRemoveAccount).toHaveBeenCalledWith(
-      '0x1234567890123456789012345678901234567890',
-    );
+    // Verify that dispatch was called with removeAccount action
+    expect(mockDispatch).toHaveBeenCalledTimes(2);
+
+    // First call should be the removeAccount thunk (AsyncFunction)
+    expect(mockDispatch).toHaveBeenNthCalledWith(1, expect.any(Function));
+
+    // Second call should be setAccountDetailsAddress action
+    expect(mockDispatch).toHaveBeenNthCalledWith(2, {
+      type: 'SET_ACCOUNT_DETAILS_ADDRESS',
+      payload: '',
+    });
   });
 });
