@@ -87,7 +87,8 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
 const TokenHero = ({ asset }: { asset: Asset }) => {
   const chainNetworkNameAndImageMap = useChainNetworkNameAndImageMap();
 
-  const { chainId, image, symbol, isNative, networkImage, networkName } = asset;
+  const { chainId, image, symbol, isNative, networkImage, networkName } =
+    asset ?? {};
 
   const nativeTokenImage = isNative
     ? (CHAIN_ID_TOKEN_IMAGE_MAP[
