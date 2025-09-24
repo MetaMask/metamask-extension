@@ -3714,10 +3714,11 @@
     "message": "Network"
   },
   "networkAddress": {
-    "message": "network address"
+    "message": "1 network address"
   },
   "networkAddresses": {
-    "message": "network addresses"
+    "message": "$1 network addresses",
+    "description": "$1 is the number of accounts"
   },
   "networkChanged": {
     "message": "Network changed"

@@ -219,7 +219,7 @@ export const AppHeaderUnlockedContent = ({
     const networksLabel =
       numberOfAccountsInGroup === 1
         ? t('networkAddress')
-        : t('networkAddresses');
+        : t('networkAddresses', [numberOfAccountsInGroup]);
 
     return (
       <Box style={{ overflow: 'hidden' }}>
