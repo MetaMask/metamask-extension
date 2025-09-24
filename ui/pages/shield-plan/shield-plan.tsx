@@ -67,7 +67,10 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
-import { TRANSACTION_SHIELD_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+} from '../../helpers/constants/routes';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -196,7 +199,7 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const handleBack = () => {
-    navigate(-1);
+    navigate(DEFAULT_ROUTE);
   };
 
   const rowsStyleProps: BoxProps<'div'> = {
