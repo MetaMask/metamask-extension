@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import LoadingScreen from '../../../../../components/ui/loading-screen';
 import {
   Box,
   Button,
@@ -37,6 +38,10 @@ export const AmountRecipient = () => {
     handleSubmit();
     captureAmountSelected();
   }, [captureAmountSelected, handleSubmit]);
+
+  if (!asset) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Box
