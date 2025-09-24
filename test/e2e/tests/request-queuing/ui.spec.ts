@@ -15,7 +15,6 @@ import {
   WINDOW_TITLES,
   veryLargeDelayMs,
   DAPP_TWO_URL,
-  openDapp,
 } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
