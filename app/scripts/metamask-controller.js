@@ -7304,6 +7304,10 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        updateCaveat: this.permissionController.updateCaveat.bind(
+          this.permissionController,
+          origin,
+        ),
         getSelectedNetworkClientId: () =>
           this.networkController.state.selectedNetworkClientId,
         revokePermissionForOrigin:
