@@ -1,6 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { WINDOW_TITLES } from '../constants';
 import {
   mockBip32Snap,
   mockJsonRpcSnap,

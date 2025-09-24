@@ -11,7 +11,6 @@ import {
   veryLargeDelayMs,
 } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';

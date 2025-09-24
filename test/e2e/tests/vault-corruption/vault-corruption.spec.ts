@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,

@@ -1,6 +1,4 @@
 import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';

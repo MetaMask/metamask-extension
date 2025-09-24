@@ -1,5 +1,6 @@
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { regularDelayMs } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;

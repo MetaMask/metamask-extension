@@ -1,8 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';

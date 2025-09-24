@@ -1,8 +1,7 @@
 import { strict as assert } from 'assert';
 import { MockttpServer } from 'mockttp';
-import { withFixtures, getEventPayloads } from '../../../helpers';
+import { getEventPayloads } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { MOCK_META_METRICS_ID } from '../../../constants';

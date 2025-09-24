@@ -1,10 +1,8 @@
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { withFixtures } from '../../helpers';
 
 describe('Settings', function () {
   it('checks jazzicon and blockies icons', async function () {

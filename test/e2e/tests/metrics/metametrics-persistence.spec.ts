@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
-import { getCleanAppState, withFixtures } from '../../helpers';
+import { getCleanAppState } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';

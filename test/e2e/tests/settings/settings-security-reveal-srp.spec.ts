@@ -1,5 +1,3 @@
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { E2E_SRP } from '../../default-fixture';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';

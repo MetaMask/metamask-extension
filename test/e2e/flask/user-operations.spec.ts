@@ -1,10 +1,4 @@
-import {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-} from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { unlockWallet, convertETHToHexGwei } from '../helpers';
 import {
   BUNDLER_URL,
   DAPP_URL,
@@ -16,6 +10,7 @@ import {
   LOCAL_NODE_PRIVATE_KEY,
   SIMPLE_ACCOUNT_FACTORY,
   VERIFYING_PAYMASTER,
+  WINDOW_TITLES,
 } from '../constants';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';

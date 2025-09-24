@@ -2,8 +2,6 @@ import { Mockttp } from 'mockttp';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import {
   enableNotificationsThroughGlobalMenu,
   clickNotificationItemAndDetailsPage,

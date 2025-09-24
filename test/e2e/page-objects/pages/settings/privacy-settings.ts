@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { clickNestedButton } from '../../../helpers';
 import { tEn } from '../../../../lib/i18n-helpers';
 
 class PrivacySettings {
@@ -89,6 +88,11 @@ class PrivacySettings {
   };
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
+
+  private readonly revealSrpQrCodeButton = {
+    text: 'QR',
+    tag: 'button',
+  };
 
   private readonly revealSrpQrCodeImage = '[data-testid="qr-srp"]';
 
@@ -333,7 +337,7 @@ class PrivacySettings {
 
   async checkSrpQrCodeIsDisplayed(): Promise<void> {
     console.log('Check SRP QR code is displayed on privacy settings page');
-    await clickNestedButton(this.driver, 'QR');
+    await this.driver.clickElement(this.revealSrpQrCodeButton);
     await this.driver.waitForSelector(this.revealSrpQrCodeImage);
   }
 

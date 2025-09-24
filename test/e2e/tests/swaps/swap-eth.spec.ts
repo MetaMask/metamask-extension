@@ -1,5 +1,4 @@
-import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { unlockWallet } from '../../helpers';
 import {
   buildQuote,
   reviewQuote,

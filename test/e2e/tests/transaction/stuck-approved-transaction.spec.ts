@@ -1,6 +1,4 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
