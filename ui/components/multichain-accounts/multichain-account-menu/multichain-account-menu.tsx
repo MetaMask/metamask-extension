@@ -52,7 +52,6 @@ export const MultichainAccountMenu = ({
       mouseEvent.preventDefault();
       if (handleAccountRenameAction) {
         handleAccountRenameAction(accountGroupId);
-        onToggle?.();
       }
     };
 
