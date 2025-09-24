@@ -13,7 +13,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 import { useTokenTrustSignalsForAddresses } from '../../../../hooks/useTokenTrustSignals';
 
-// Stable references to prevent infinite re-renders
 const EMPTY_ALERTS: Alert[] = [];
 const EMPTY_ACTIONS: Alert['actions'] = [];
 
@@ -25,7 +24,6 @@ export function useTokenTrustSignalAlerts(): Alert[] {
   const chainId = txMeta?.chainId;
   const tokenBalanceChanges = txMeta?.simulationData?.tokenBalanceChanges;
 
-  // Stable, deduped list of incoming ERC-20 token addresses (lowercased)
   const incomingTokenAddresses = useMemo<string[] | undefined>(() => {
     if (!tokenBalanceChanges?.length) {
       return undefined;
@@ -43,7 +41,6 @@ export function useTokenTrustSignalAlerts(): Alert[] {
     return dedup.size ? Array.from(dedup) : undefined;
   }, [tokenBalanceChanges]);
 
-  // Hooks must remain unconditional; this hook should handle undefined args internally.
   const tokenTrustSignals = useTokenTrustSignalsForAddresses(
     chainId,
     incomingTokenAddresses,
@@ -51,7 +48,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
 
   return useMemo(() => {
     if (!isSecurityAlertsAPIEnabled() || !incomingTokenAddresses?.length) {
-      return EMPTY_ALERTS; // Use stable reference instead of []
+      return EMPTY_ALERTS;
     }
 
     const hasMaliciousToken = tokenTrustSignals?.some(
@@ -65,7 +62,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
       return [
         {
           actions: EMPTY_ACTIONS,
-          field: RowAlertKey.EstimatedChangesStatic,
+          field: RowAlertKey.IncomingTokens,
           isBlocking: false,
           key: 'tokenTrustSignalMalicious',
           message: t('alertMessageTokenTrustSignalMalicious'),
@@ -77,7 +74,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
       return [
         {
           actions: EMPTY_ACTIONS,
-          field: RowAlertKey.EstimatedChangesStatic,
+          field: RowAlertKey.IncomingTokens,
           isBlocking: false,
           key: 'tokenTrustSignalWarning',
           message: t('alertMessageTokenTrustSignalWarning'),
@@ -87,6 +84,6 @@ export function useTokenTrustSignalAlerts(): Alert[] {
       ];
     }
 
-    return EMPTY_ALERTS; // Use stable reference instead of []
+    return EMPTY_ALERTS;
   }, [incomingTokenAddresses, tokenTrustSignals, t]);
 }

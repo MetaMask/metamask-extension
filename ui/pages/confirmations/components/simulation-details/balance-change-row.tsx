@@ -15,6 +15,9 @@ import {
   Text,
   IconName,
 } from '../../../../components/component-library';
+import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
 import { AmountPill } from './amount-pill';
@@ -29,13 +32,27 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.showFiat
  * @param props.balanceChange
  * @param props.labelColor
+ * @param props.isFirstRow - Whether this is the first row (for heading display)
+ * @param props.hasIncomingTokens - Whether this section contains incoming tokens
+ * @param props.confirmationId - Confirmation ID for alert lookup
  */
 export const BalanceChangeRow: React.FC<{
   label?: string;
   showFiat?: boolean;
   balanceChange: BalanceChange;
   labelColor?: TextColor;
-}> = ({ label, showFiat, balanceChange, labelColor }) => {
+  isFirstRow?: boolean;
+  hasIncomingTokens?: boolean;
+  confirmationId?: string;
+}> = ({
+  label,
+  showFiat,
+  balanceChange,
+  labelColor,
+  isFirstRow,
+  hasIncomingTokens,
+  confirmationId,
+}) => {
   const t = useI18nContext();
 
   const {
@@ -57,15 +74,38 @@ export const BalanceChangeRow: React.FC<{
       gap={1}
       flexWrap={FlexWrap.Wrap}
     >
-      {label && (
-        <Text
-          style={{ whiteSpace: 'nowrap' }}
-          color={labelColor}
-          variant={TextVariant.bodyMd}
-        >
-          {label}
-        </Text>
-      )}
+      {isFirstRow &&
+        label &&
+        (() => {
+          if (!confirmationId) {
+            return (
+              <Text
+                style={{ whiteSpace: 'nowrap' }}
+                color={labelColor}
+                variant={TextVariant.bodyMd}
+              >
+                {label}
+              </Text>
+            );
+          }
+
+          if (hasIncomingTokens) {
+            return (
+              <ConfirmInfoAlertRow
+                alertKey={RowAlertKey.IncomingTokens}
+                ownerId={confirmationId}
+                label={label}
+              />
+            );
+          }
+
+          return (
+            <ConfirmInfoRow
+              label={label}
+              style={{ background: 'transparent' }}
+            />
+          );
+        })()}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
