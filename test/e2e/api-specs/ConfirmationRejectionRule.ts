@@ -77,7 +77,7 @@ export class ConfirmationsRejectRule implements Rule {
                 data: `data:image/png;base64,${screenshotTwo}`,
               });
 
-              await this.driver.clickElement({
+              await this.driver.clickElementAndWaitForWindowToClose({
                 text: 'Connect',
                 tag: 'button',
               });
