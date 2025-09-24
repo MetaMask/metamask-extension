@@ -40,11 +40,6 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
-
-  /**
-   * Whether to show the wallet name.
-   */
-  shouldShowWalletName?: boolean;
 };
 
 const Name = memo(
@@ -52,14 +47,13 @@ const Name = memo(
     value,
     type,
     preferContractSymbol = false,
-    shouldShowWalletName = false,
     variation,
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name, walletName } = useDisplayName({
+    const { name, subtitle } = useDisplayName({
       value,
       type,
       preferContractSymbol,
@@ -98,7 +92,6 @@ const Name = memo(
             type={type}
             variation={variation}
             onClose={handleModalClose}
-            shouldShowWalletName={shouldShowWalletName}
           />
         )}
         <NameDisplay
@@ -109,13 +102,13 @@ const Name = memo(
           handleClick={handleClick}
           {...props}
         />
-        {walletName && shouldShowWalletName && (
+        {subtitle && (
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
             style={{ textAlign: 'right' }}
           >
-            {walletName}
+            {subtitle}
           </Text>
         )}
       </Box>

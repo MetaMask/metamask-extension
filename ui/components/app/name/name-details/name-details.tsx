@@ -65,7 +65,6 @@ const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
 export type NameDetailsProps = {
   onClose: () => void;
-  shouldShowWalletName?: boolean;
   type: NameType;
   value: string;
   variation: string;
@@ -215,7 +214,6 @@ function useProposedNames(value: string, type: NameType, variation: string) {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NameDetails({
   onClose,
-  shouldShowWalletName = false,
   type,
   value,
   variation,
@@ -230,7 +228,7 @@ export default function NameDetails({
     name: displayName,
     hasPetname: hasSavedPetname,
     displayState,
-    walletName,
+    subtitle,
   } = useDisplayName({
     value,
     type,
@@ -398,14 +396,14 @@ export default function NameDetails({
                 variation={variation}
                 showFullName
               />
-              {walletName && shouldShowWalletName && (
+              {subtitle && (
                 <Text
                   as="span"
                   variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}
                   style={{ marginLeft: 4 }}
                 >
-                  {walletName}
+                  {subtitle}
                 </Text>
               )}
             </Box>

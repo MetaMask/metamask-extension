@@ -195,7 +195,7 @@ describe('useDisplayName', () => {
         name: IconName.Question,
         color: undefined,
       },
-      walletName: null,
+      subtitle: null,
     });
   });
 
@@ -220,7 +220,7 @@ describe('useDisplayName', () => {
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -252,7 +252,7 @@ describe('useDisplayName', () => {
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -283,7 +283,7 @@ describe('useDisplayName', () => {
         name: SYMBOL_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -317,7 +317,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -347,7 +347,7 @@ describe('useDisplayName', () => {
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -375,7 +375,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -401,7 +401,7 @@ describe('useDisplayName', () => {
         name: WATCHED_NFT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -428,7 +428,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -454,7 +454,7 @@ describe('useDisplayName', () => {
         name: NFT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -481,7 +481,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -508,7 +508,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -534,7 +534,7 @@ describe('useDisplayName', () => {
         name: ENS_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -561,7 +561,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -601,7 +601,7 @@ describe('useDisplayName', () => {
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -638,7 +638,7 @@ describe('useDisplayName', () => {
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -670,7 +670,7 @@ describe('useDisplayName', () => {
         name: NFT_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -701,7 +701,7 @@ describe('useDisplayName', () => {
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -744,7 +744,7 @@ describe('useDisplayName', () => {
           name: IconName.Danger,
           color: IconColor.errorDefault,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -776,7 +776,7 @@ describe('useDisplayName', () => {
           name: IconName.VerifiedFilled,
           color: IconColor.infoDefault,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -805,7 +805,7 @@ describe('useDisplayName', () => {
         name: 'Warning',
         displayState: TrustSignalDisplayState.Warning,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -842,7 +842,7 @@ describe('useDisplayName', () => {
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
   });
@@ -877,7 +877,7 @@ describe('useDisplayName', () => {
         name: GROUP_NAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -909,7 +909,7 @@ describe('useDisplayName', () => {
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -945,7 +945,7 @@ describe('useDisplayName', () => {
         name: ERC20_TOKEN_NAME_MOCK,
         displayState: TrustSignalDisplayState.Recognized,
         icon: null,
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -976,7 +976,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -1004,7 +1004,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
 
@@ -1033,7 +1033,7 @@ describe('useDisplayName', () => {
           name: IconName.Question,
           color: undefined,
         },
-        walletName: null,
+        subtitle: null,
       });
     });
   });

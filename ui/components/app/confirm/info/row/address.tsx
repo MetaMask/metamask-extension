@@ -1,7 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import React, { memo, useState } from 'react';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
   Display,
@@ -13,8 +12,6 @@ import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { PreferredAvatar } from '../../../preferred-avatar';
-import { getIsMultichainAccountsState2Enabled } from '../../../../../selectors';
-import { getWalletsWithAccounts } from '../../../../../selectors/multichain-accounts/account-tree';
 import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
@@ -29,10 +26,6 @@ export const ConfirmInfoRowAddress = memo(
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
     const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
     const onCloseHandler = () => setIsNicknamePopoverShown(false);
-
-    const isBIP44 = useSelector(getIsMultichainAccountsState2Enabled);
-    const walletsWithAccounts = useSelector(getWalletsWithAccounts);
-    const hasMoreThanOneWallet = Object.keys(walletsWithAccounts).length > 1;
 
     return (
       <Box
@@ -77,7 +70,6 @@ export const ConfirmInfoRowAddress = memo(
               type={NameType.ETHEREUM_ADDRESS}
               preferContractSymbol
               variation={chainId}
-              shouldShowWalletName={isBIP44 && hasMoreThanOneWallet}
             />
           )
         }
