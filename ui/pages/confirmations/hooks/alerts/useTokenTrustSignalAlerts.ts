@@ -68,8 +68,8 @@ export function useTokenTrustSignalAlerts(): Alert[] {
           field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'tokenTrustSignalMalicious',
-          message: t('alertMessageAddressTrustSignal'),
-          reason: t('nameModalTitleMalicious'),
+          message: t('alertMessageTokenTrustSignalMalicious'),
+          reason: t('alertReasonTokenTrustSignalMalicious'),
           severity: Severity.Danger,
         },
       ];
@@ -80,8 +80,8 @@ export function useTokenTrustSignalAlerts(): Alert[] {
           field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'tokenTrustSignalWarning',
-          message: t('alertMessageAddressTrustSignal'),
-          reason: t('nameModalTitleWarning'),
+          message: t('alertMessageTokenTrustSignalWarning'),
+          reason: t('alertReasonTokenTrustSignalWarning'),
           severity: Severity.Warning,
         },
       ];
