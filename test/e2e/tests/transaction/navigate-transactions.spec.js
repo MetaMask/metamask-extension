@@ -5,7 +5,8 @@ const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const { withFixtures, openDapp, WINDOW_TITLES } = require('../../helpers');
+const { withFixtures } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   loginWithBalanceValidation,
@@ -79,7 +80,7 @@ describe('Navigate transactions', function () {
         );
 
         // add transaction
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

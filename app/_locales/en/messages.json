@@ -172,6 +172,9 @@
   "activity": {
     "message": "Activity"
   },
+  "activityEmptyDescription": {
+    "message": "Nothing to see yet. Check the explorer for more recent activity."
+  },
   "activityLog": {
     "message": "Activity log"
   },
@@ -947,6 +950,9 @@
   },
   "bridgeNetCost": {
     "message": "Net cost"
+  },
+  "bridgeNoMMFee": {
+    "message": "No MM fee"
   },
   "bridgePriceImpact": {
     "message": "Price impact"
@@ -1881,6 +1887,9 @@
   "defi": {
     "message": "DeFi"
   },
+  "defiEmptyDescription": {
+    "message": "Lend, borrow, and trade, right in your wallet."
+  },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
   },
@@ -2011,6 +2020,9 @@
   },
   "discover": {
     "message": "Discover"
+  },
+  "discoverNFTs": {
+    "message": "Discover NFTs"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -2454,6 +2466,9 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exploreDefi": {
+    "message": "Explore DeFi"
   },
   "exploreweb3": {
     "message": "Explore web3"
@@ -3909,6 +3924,9 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
+  "nftEmptyDescription": {
+    "message": "There's a world of NFTs out there. Start your collection today."
+  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -3938,9 +3956,6 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noActivity": {
-    "message": "No activity yet"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
@@ -3950,17 +3965,11 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
-  "noDeFiPositions": {
-    "message": "Can't find what you're looking for?"
-  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
-  },
-  "noNFTs": {
-    "message": "No NFTs yet"
   },
   "noNetworksAvailable": {
     "message": "No networks available"
@@ -4863,9 +4872,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
-  },
-  "protocolNotSupported": {
-    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"
