@@ -1,45 +1,5 @@
 import { getBlockExplorerInfo } from './getBlockExplorerInfo';
-
-// Mock the multichain constants
-jest.mock('../../../../shared/constants/multichain/networks', () => ({
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: {
-    'bitcoin:0': {
-      url: 'https://blockstream.info',
-      address: 'https://blockstream.info/address/{address}',
-      transaction: 'https://blockstream.info/tx/{txId}',
-    },
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-      url: 'https://solscan.io',
-      address: 'https://solscan.io/account/{address}',
-      transaction: 'https://solscan.io/tx/{txId}',
-    },
-  },
-  MultichainNetworks: {
-    BITCOIN: 'bitcoin:0',
-    SOLANA: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  },
-}));
-
-// Mock the common constants
-jest.mock('../../../../shared/constants/common', () => ({
-  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP: {
-    '0x1': 'Etherscan',
-    '0x89': 'PolygonScan',
-    '0xa': 'Optimism Explorer',
-  },
-  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP: {
-    '0x1': 'https://etherscan.io/',
-    '0x89': 'https://polygonscan.com/',
-    '0xa': 'https://optimistic.etherscan.io/',
-  },
-}));
-
-// Mock the multichain URL formatting
-jest.mock('../../../../shared/lib/multichain/networks', () => ({
-  formatBlockExplorerAddressUrl: jest.fn((urls, address) =>
-    urls.address.replace('{address}', address),
-  ),
-}));
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 describe('getBlockExplorerInfo utility functions', () => {
   const mockT = (key: string, ...args: string[]) =>
@@ -50,11 +10,11 @@ describe('getBlockExplorerInfo utility functions', () => {
     it('returns correct info for Bitcoin network', () => {
       const result = getBlockExplorerInfo(mockT, testAddress, {
         networkName: 'Bitcoin',
-        chainId: 'bitcoin:0',
+        chainId: MultichainNetworks.BITCOIN,
       });
 
       expect(result).toEqual({
-        addressUrl: 'https://blockstream.info/address/0x1234567890abcdef',
+        addressUrl: 'https://mempool.space/address/0x1234567890abcdef',
         name: 'Blockstream',
         buttonText: 'translated_viewAddressOnExplorer_Blockstream',
       });
@@ -63,7 +23,7 @@ describe('getBlockExplorerInfo utility functions', () => {
     it('returns correct info for Solana network', () => {
       const result = getBlockExplorerInfo(mockT, testAddress, {
         networkName: 'Solana',
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        chainId: MultichainNetworks.SOLANA,
       });
 
       expect(result).toEqual({
