@@ -19,9 +19,7 @@ export default function Authenticated({
     case !completedOnboarding:
       return <Navigate to={OnboardingRoute} replace />;
     default:
-      return (
-        <Navigate to={UNLOCK_ROUTE} state={{ from: location }} replace />
-      );
+      return <Navigate to={UNLOCK_ROUTE} state={{ from: location }} replace />;
   }
 }
 

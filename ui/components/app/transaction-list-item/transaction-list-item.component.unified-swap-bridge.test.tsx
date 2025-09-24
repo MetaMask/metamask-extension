@@ -19,7 +19,6 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
-
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
   submitRequestToBackground: jest.fn(),

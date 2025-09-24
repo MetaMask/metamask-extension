@@ -63,6 +63,7 @@ import {
   SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
   SWAPS_NOTIFICATION_ROUTE,
+  toRelativePath,
 } from '../../helpers/constants/routes';
 import {
   ERROR_FETCHING_QUOTES,
@@ -414,7 +415,7 @@ export default function Swap() {
         <div className="swaps__content">
           <Routes>
             <Route
-              path={PREPARE_SWAP_ROUTE}
+              path={toRelativePath(PREPARE_SWAP_ROUTE)}
               element={
                 swapsEnabled ? (
                   <PrepareSwapPage
@@ -423,12 +424,15 @@ export default function Swap() {
                     shuffledTokensList={shuffledTokensList}
                   />
                 ) : (
-                  <Navigate to={SWAPS_MAINTENANCE_ROUTE} replace />
+                  <Navigate
+                    to={toRelativePath(SWAPS_MAINTENANCE_ROUTE)}
+                    replace
+                  />
                 )
               }
             />
             <Route
-              path={SWAPS_ERROR_ROUTE}
+              path={toRelativePath(SWAPS_ERROR_ROUTE)}
               element={
                 swapsErrorKey ? (
                   <AwaitingSwap
@@ -439,28 +443,35 @@ export default function Swap() {
                     submittedTime={tradeTxData?.submittedTime}
                   />
                 ) : (
-                  <Navigate to={PREPARE_SWAP_ROUTE} replace />
+                  <Navigate to={toRelativePath(PREPARE_SWAP_ROUTE)} replace />
                 )
               }
             />
             <Route
-              path={SWAPS_NOTIFICATION_ROUTE}
+              path={toRelativePath(SWAPS_NOTIFICATION_ROUTE)}
               element={
                 swapsErrorKey ? (
                   <NotificationPage notificationKey={swapsErrorKey} />
                 ) : (
-                  <Navigate to={PREPARE_SWAP_ROUTE} replace />
+                  <Navigate to={toRelativePath(PREPARE_SWAP_ROUTE)} replace />
                 )
               }
             />
             <Route
-              path={LOADING_QUOTES_ROUTE}
+              path={toRelativePath(LOADING_QUOTES_ROUTE)}
               element={(() => {
                 if (!swapsEnabled) {
-                  return <Navigate to={SWAPS_MAINTENANCE_ROUTE} replace />;
+                  return (
+                    <Navigate
+                      to={toRelativePath(SWAPS_MAINTENANCE_ROUTE)}
+                      replace
+                    />
+                  );
                 }
                 if (!aggregatorMetadata) {
-                  return <Navigate to={PREPARE_SWAP_ROUTE} replace />;
+                  return (
+                    <Navigate to={toRelativePath(PREPARE_SWAP_ROUTE)} replace />
+                  );
                 }
                 return (
                   <LoadingQuote
@@ -474,9 +485,9 @@ export default function Swap() {
                         swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
                       ) {
                         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
-                        navigate(SWAPS_ERROR_ROUTE);
+                        navigate(toRelativePath(SWAPS_ERROR_ROUTE));
                       } else {
-                        navigate(PREPARE_SWAP_ROUTE);
+                        navigate(toRelativePath(PREPARE_SWAP_ROUTE));
                       }
                     }}
                     aggregatorMetadata={aggregatorMetadata}
@@ -485,25 +496,25 @@ export default function Swap() {
               })()}
             />
             <Route
-              path={SWAPS_MAINTENANCE_ROUTE}
+              path={toRelativePath(SWAPS_MAINTENANCE_ROUTE)}
               element={
                 swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
-                  <Navigate to={PREPARE_SWAP_ROUTE} replace />
+                  <Navigate to={toRelativePath(PREPARE_SWAP_ROUTE)} replace />
                 )
               }
             />
             <Route
-              path={AWAITING_SIGNATURES_ROUTE}
+              path={toRelativePath(AWAITING_SIGNATURES_ROUTE)}
               element={<AwaitingSignatures />}
             />
             <Route
-              path={SMART_TRANSACTION_STATUS_ROUTE}
+              path={toRelativePath(SMART_TRANSACTION_STATUS_ROUTE)}
               element={<SmartTransactionStatus txId={tradeTxData?.id} />}
             />
             <Route
-              path={AWAITING_SWAP_ROUTE}
+              path={toRelativePath(AWAITING_SWAP_ROUTE)}
               element={
                 routeState === 'awaiting' || tradeTxData ? (
                   <AwaitingSwap

@@ -30,10 +30,7 @@ export function NotificationsPage({ children }: NotificationsPageProps) {
         data-testid="app-header-logo"
         justifyContent={JustifyContent.center}
       >
-        <MetafoxLogo
-          unsetIconHeight
-          onClick={() => navigate(DEFAULT_ROUTE)}
-        />
+        <MetafoxLogo unsetIconHeight onClick={() => navigate(DEFAULT_ROUTE)} />
       </Box>
       <Page>{children}</Page>
     </div>

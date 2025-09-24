@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { act, waitFor } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';

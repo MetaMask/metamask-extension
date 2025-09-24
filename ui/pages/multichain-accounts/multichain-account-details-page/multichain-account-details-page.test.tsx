@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
@@ -15,27 +15,20 @@ const accountDetailsRowWalletTestId = 'account-details-row-wallet';
 const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
 const accountNameInputDataTestId = 'account-name-input';
 
-const mockHistoryPush = jest.fn();
-const mockHistoryGoBack = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    goBack: mockHistoryGoBack,
-  }),
-  useParams: () => ({
-    id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-  }),
-}));
-
-const reactRouterDom = jest.requireMock('react-router-dom');
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+  };
+});
 
 describe('MultichainAccountDetailsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     });
   });
@@ -85,7 +78,7 @@ describe('MultichainAccountDetailsPage', () => {
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('calls history.push with wallet route when wallet row is clicked', () => {
@@ -93,9 +86,7 @@ describe('MultichainAccountDetailsPage', () => {
 
     const walletRow = screen.getByTestId(accountDetailsRowWalletTestId);
     fireEvent.click(walletRow);
-
-    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
     );
   });
@@ -107,7 +98,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('does not render remove account section for Snap wallet type', () => {
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d',
     });
 
@@ -117,7 +108,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('renders remove account section for Keyring wallet type', () => {
-    reactRouterDom.useParams = () => ({
+    mockUseParams.mockReturnValue({
       id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
     });
 

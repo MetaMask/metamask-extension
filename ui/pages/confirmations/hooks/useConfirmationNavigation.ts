@@ -103,14 +103,16 @@ export function navigateToConfirmation(
   const type = nextConfirmation.type as ApprovalType;
 
   if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
-    navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`, { replace: true });
+    navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`, {
+      replace: true,
+    });
     return;
   }
 
   if (isSignatureTransactionType(nextConfirmation)) {
     navigate(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
-      { replace: true }
+      { replace: true },
     );
     return;
   }
@@ -127,7 +129,7 @@ export function navigateToConfirmation(
   if (type === ApprovalType.EthDecrypt) {
     navigate(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,
-      { replace: true }
+      { replace: true },
     );
     return;
   }
@@ -135,7 +137,7 @@ export function navigateToConfirmation(
   if (type === ApprovalType.EthGetEncryptionPublicKey) {
     navigate(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-      { replace: true }
+      { replace: true },
     );
     return;
   }

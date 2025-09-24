@@ -867,7 +867,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                     key="import-token-token-detection-announcement"
                                     onClick={() => {
                                       onClose();
-                                      history.push(
+                                      navigate(
                                         `${SECURITY_ROUTE}#auto-detect-tokens`,
                                       );
                                     }}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom-v5-compat';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';

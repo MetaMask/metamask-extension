@@ -27,8 +27,6 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-const messageIdMock = '12345';
-
 // Router mock removed - not needed since hook doesn't use router functionality
 
 jest.mock('react', () => ({
@@ -71,10 +69,7 @@ function runHook({
     ? getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta)
     : {};
 
-  const response = renderHookWithProvider(
-    useNonContractAddressAlerts,
-    state,
-  );
+  const response = renderHookWithProvider(useNonContractAddressAlerts, state);
 
   return response.result.current;
 }

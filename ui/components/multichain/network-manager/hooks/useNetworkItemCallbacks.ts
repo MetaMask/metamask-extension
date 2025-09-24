@@ -138,7 +138,7 @@ export const useNetworkItemCallbacks = () => {
           : undefined,
         onRpcSelect: () => {
           navigate('/select-rpc', {
-            chainId: hexChainId,
+            state: { chainId: hexChainId },
           });
         },
       };

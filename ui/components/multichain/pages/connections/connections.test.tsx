@@ -1,20 +1,9 @@
 import React from 'react';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  fireEvent,
-  waitFor,
-} from '../../../../../test/jest';
+import { fireEvent, waitFor } from '../../../../../test/jest';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { Connections } from './connections';
-
-// jest.mock('react-router-dom-v5-compat', () => ({
-//   ...jest.requireActual('react-router-dom-v5-compat'),
-//   useParams: () => ({
-//     origin: 'https%3A%2F%2Fmetamask.github.io',
-//   }),
-//   useNavigate: () => jest.fn(),
-// }));
 
 describe('Connections Content', () => {
   const connectedStore = configureStore({

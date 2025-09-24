@@ -81,8 +81,8 @@ import {
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
 
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import Home from './home.component';
-import withRouterHooks from "../../helpers/higher-order-components/with-router-hooks/with-router-hooks";
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;

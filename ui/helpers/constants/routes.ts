@@ -1,4 +1,5 @@
 import { memoize } from 'lodash';
+import { matchPath } from 'react-router-dom-v5-compat';
 
 type AppRoute = {
   path: string;
@@ -136,6 +137,40 @@ export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
+
+// Route base names for use with getRelativeRoutePath
+export const SETTINGS_BASE = 'settings';
+export const CROSS_CHAIN_BASE = 'cross-chain';
+
+/**
+ * Helper function to convert absolute routes to relative paths for nested routing.
+ *
+ * @param absolutePath - The absolute path (e.g., '/settings/general')
+ * @param parentRoute - The parent route to remove (e.g., 'settings')
+ * @returns The relative path (e.g., 'general')
+ */
+export function getRelativeRoutePath(
+  absolutePath: string,
+  parentRoute: string,
+): string {
+  const parentPath = `/${parentRoute}`;
+  return absolutePath
+    .replace(`${parentPath}/`, '') // Remove '/parentRoute/'
+    .replace(parentPath, ''); // Remove '/parentRoute' (for exact match)
+}
+
+/**
+ * Helper function to convert an absolute route to a relative path by removing the leading slash.
+ * Useful for nested routing where you want to use route constants as relative paths.
+ *
+ * @param absolutePath - The absolute path (e.g., '/swaps/prepare-swap-page')
+ * @returns The relative path (e.g., 'swaps/prepare-swap-page')
+ */
+export function toRelativePath(absolutePath: string): string {
+  return absolutePath.startsWith('/')
+    ? absolutePath.substring(1)
+    : absolutePath;
+}
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
@@ -668,3 +703,34 @@ ROUTES.forEach((route) => {
     PATH_NAME_MAP.set(route.path, route.label);
   }
 });
+
+/**
+ * Matches a pathname against multiple paths using React Router's matchPath.
+ * This is needed because v6/v5-compat matchPath expects a single path, not an array.
+ *
+ * @param paths - Array of path patterns to match against
+ * @param pathname - The pathname to match
+ * @param options - Additional matchPath options (exact, strict, etc.)
+ * @param options.exact
+ * @param options.strict
+ * @returns The first match found or null if no match
+ */
+export function matchMultiplePaths(
+  paths: string[],
+  pathname: string,
+  options: { exact?: boolean; strict?: boolean } = {},
+) {
+  for (const path of paths) {
+    const match = matchPath(
+      {
+        path,
+        ...options,
+      },
+      pathname,
+    );
+    if (match) {
+      return match;
+    }
+  }
+  return null;
+}

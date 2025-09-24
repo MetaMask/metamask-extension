@@ -12,7 +12,7 @@ import React, {
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
@@ -20,7 +20,11 @@ import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
+import {
+  PATH_NAME_MAP,
+  getPaths,
+  matchMultiplePaths,
+} from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import { getParticipateInMetaMetrics } from '../selectors';
@@ -157,8 +161,7 @@ export function MetaMetricsProvider({ children }) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType();
-    const match = matchPath(location.pathname, {
-      path: getPaths(),
+    const match = matchMultiplePaths(getPaths(), location.pathname, {
       exact: true,
       strict: true,
     });

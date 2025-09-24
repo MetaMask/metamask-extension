@@ -37,14 +37,12 @@ const TRANSACTION_MOCK = {
   type: TransactionType.contractInteraction,
 };
 
-const mockUseParams = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useParams: jest.fn().mockReturnValue({ id: '123-456' }),
   };
 });
-
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

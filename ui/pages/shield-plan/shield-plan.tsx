@@ -52,6 +52,7 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import LoadingScreen from '../../components/ui/loading-screen';
+import { TokenWithApprovalAmount } from '../../hooks/subscription/useSubscriptionPricing';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import {
   PAYMENT_METHODS,
@@ -280,7 +281,14 @@ const ShieldPlan = () => {
         <ShieldPaymentModal
           isOpen={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
-          selectedToken={selectedToken ?? undefined}
+          selectedToken={
+            selectedToken
+              ? ({
+                  ...selectedToken,
+                  approvalAmount: '0',
+                } as TokenWithApprovalAmount)
+              : undefined
+          }
           selectedPaymentMethod={selectedPaymentMethod}
           hasStableTokenWithBalance={hasStableTokenWithBalance}
           setSelectedPaymentMethod={setSelectedPaymentMethod}

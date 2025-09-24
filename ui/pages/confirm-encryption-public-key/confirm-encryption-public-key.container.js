@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter } from 'react-router-dom-v5-compat';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 import {
   goHome,
@@ -66,6 +66,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(ConfirmEncryptionPublicKey);

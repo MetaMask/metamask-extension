@@ -4,7 +4,6 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { createMemoryHistory } from 'history';
 import {
   TrustSignalDisplayState,
   useTrustSignals,
@@ -179,7 +178,7 @@ describe('TransactionListItem', () => {
       })),
     );
 
-    mockUseLocation.mockReturnValue({ pathname: ''});
+    mockUseLocation.mockReturnValue({ pathname: '' });
   });
 
   afterAll(() => {

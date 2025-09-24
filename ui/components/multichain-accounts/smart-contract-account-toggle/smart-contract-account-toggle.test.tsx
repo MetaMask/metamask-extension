@@ -341,7 +341,9 @@ describe('SmartContractAccountToggle', () => {
 
       render({}, true, mockTransactions); // toggleState = true
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/confirm-transaction/tx-123');
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/confirm-transaction/tx-123',
+      );
     });
 
     it('sets redirect after default page when returnToPage is provided', () => {
@@ -427,7 +429,9 @@ describe('SmartContractAccountToggle', () => {
 
       render({}, true, mockTransactions);
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/confirm-transaction/tx-new');
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/confirm-transaction/tx-new',
+      );
     });
 
     it('does not redirect when no matching transactions are found', () => {

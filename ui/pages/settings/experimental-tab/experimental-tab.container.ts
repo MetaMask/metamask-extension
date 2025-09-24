@@ -19,8 +19,8 @@ import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
 } from '../../../store/store';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import ExperimentalTab from './experimental-tab.component';
-import withRouterHooks from "../../../helpers/higher-order-components/with-router-hooks/with-router-hooks";
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);

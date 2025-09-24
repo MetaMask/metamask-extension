@@ -40,7 +40,9 @@ setBackgroundConnection({
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   getStatePatches: jest.fn().mockResolvedValue([]),
   addPollingTokenToAppState: jest.fn().mockResolvedValue('pollingToken'),
-  gasFeeStartPollingByNetworkClientId: jest.fn().mockResolvedValue('pollingToken'),
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
   removePollingTokenFromAppState: jest.fn().mockResolvedValue({}),
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

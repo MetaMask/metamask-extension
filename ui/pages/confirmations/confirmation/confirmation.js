@@ -319,7 +319,7 @@ export default function ConfirmationPage({
           },
           t,
           dispatch,
-          history,
+          navigate,
           {
             matchedChain,
             currencySymbolWarning,
@@ -337,7 +337,7 @@ export default function ConfirmationPage({
     pendingConfirmation,
     t,
     dispatch,
-    history,
+    navigate,
     matchedChain,
     currencySymbolWarning,
     trackEvent,

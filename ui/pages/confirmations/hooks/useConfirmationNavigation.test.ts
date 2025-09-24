@@ -85,7 +85,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -97,7 +97,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -107,10 +107,9 @@ describe('useConfirmationNavigation', () => {
       result.navigateToId(undefined);
 
       expect(navigate).toHaveBeenCalledTimes(1);
-      expect(navigate).toHaveBeenCalledWith(
-        `${CONFIRMATION_V_NEXT_ROUTE}`,
-        { replace: true }
-      );
+      expect(navigate).toHaveBeenCalledWith(`${CONFIRMATION_V_NEXT_ROUTE}`, {
+        replace: true,
+      });
     });
 
     it('does not navigate to template route if approval flow and pending approval', () => {
@@ -123,7 +122,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -135,7 +134,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONNECT_ROUTE}/${APPROVAL_ID_MOCK}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -147,7 +146,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -161,7 +160,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -173,7 +172,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -185,7 +184,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${DECRYPT_MESSAGE_REQUEST_PATH}`,
-        { replace: true }
+        { replace: true },
       );
     });
 
@@ -215,7 +214,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}`,
-        { replace: true }
+        { replace: true },
       );
     });
   });
@@ -232,7 +231,7 @@ describe('useConfirmationNavigation', () => {
       expect(navigate).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}?test=dummy`,
-        { replace: true }
+        { replace: true },
       );
     });
   });

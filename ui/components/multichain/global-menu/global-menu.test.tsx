@@ -26,8 +26,14 @@ const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
   useNavigate: () => mockUseNavigate,
-  // eslint-disable-next-line react/prop-types
-  Link: ({ children, ...props }) => <a {...props}>{children}</a>,
+  Link: ({
+    children,
+    ...props
+  }: {
+    children: React.ReactNode;
+  } & React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a {...props}>{children}</a>
+  ),
 }));
 
 const mockLockMetaMask = jest.fn();

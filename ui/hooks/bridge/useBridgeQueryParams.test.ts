@@ -5,7 +5,6 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
 const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
@@ -382,7 +381,10 @@ describe('useBridgeQueryParams', () => {
 
     const { store } = renderUseBridgeQueryParams(mockStoreState);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -437,7 +439,10 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -492,7 +497,10 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};

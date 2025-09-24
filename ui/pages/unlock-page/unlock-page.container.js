@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -18,6 +17,7 @@ import {
 } from '../../store/actions';
 import { getIsSocialLoginFlow } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -49,7 +49,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restDispatchProps
   } = dispatchProps;
   const {
-    history,
+    navigate,
     onSubmit: ownPropsSubmit,
     location,
     ...restOwnProps
@@ -57,7 +57,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const onImport = async () => {
     await propsMarkPasswordForgotten();
-    history.push(RESTORE_VAULT_ROUTE);
+    navigate(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
@@ -72,7 +72,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       const search = location.state.from.search || '';
       redirectTo = location.state.from.pathname + search;
     }
-    history.push(redirectTo);
+    navigate(redirectTo);
   };
 
   return {
@@ -81,12 +81,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restOwnProps,
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
-    history,
+    navigate,
     location,
   };
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(UnlockPage);

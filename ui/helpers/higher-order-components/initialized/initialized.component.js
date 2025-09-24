@@ -5,7 +5,11 @@ import { ONBOARDING_ROUTE } from '../../constants/routes';
 
 const onboardingRoute = { pathname: ONBOARDING_ROUTE };
 
-export default function Initialized({ component: Component, completedOnboarding, ...props }) {
+export default function Initialized({
+  component: Component,
+  completedOnboarding,
+  ...props
+}) {
   return completedOnboarding ? (
     <Component {...props} />
   ) : (

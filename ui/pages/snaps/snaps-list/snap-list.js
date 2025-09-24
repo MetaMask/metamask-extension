@@ -43,7 +43,7 @@ const SnapList = () => {
   const navigate = useNavigate();
   const settingsRef = useRef();
   const onClick = (snap) => {
-    history.push(getSnapRoute(snap.id));
+    navigate(getSnapRoute(snap.id));
   };
 
   useEffect(() => {

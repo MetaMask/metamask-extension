@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams, useLocation } from 'react-router-dom-v5-compat';
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import {
   TransactionStatus,
   TransactionType,

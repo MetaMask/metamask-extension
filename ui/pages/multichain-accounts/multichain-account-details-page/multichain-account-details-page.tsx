@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
@@ -43,7 +43,7 @@ import { MultichainAccountEditModal } from '../../../components/multichain-accou
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id } = useParams();
   const accountGroupId = decodeURIComponent(id as string) as AccountGroupId;
   const multichainAccount = useSelector((state) =>
@@ -69,13 +69,13 @@ export const MultichainAccountDetailsPage = () => {
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const handleAddressesClick = () => {
-    history.push(
+    navigate(
       `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );
   };
 
   const handlePrivateKeysClick = () => {
-    history.push(
+    navigate(
       `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );
   };
@@ -83,7 +83,7 @@ export const MultichainAccountDetailsPage = () => {
   const handleSmartAccountClick = () => {
     const firstAccountAddress = accountsWithAddresses[0]?.address;
     if (firstAccountAddress) {
-      history.push(
+      navigate(
         `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(firstAccountAddress)}`,
       );
     }
@@ -94,7 +94,7 @@ export const MultichainAccountDetailsPage = () => {
   };
 
   const handleWalletAction = () => {
-    history.push(walletRoute);
+    navigate(walletRoute);
   };
 
   return (
@@ -108,7 +108,7 @@ export const MultichainAccountDetailsPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             data-testid="back-button"
           />
         }

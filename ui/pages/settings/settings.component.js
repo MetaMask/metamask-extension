@@ -31,6 +31,8 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  SETTINGS_BASE,
+  getRelativeRoutePath,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -483,22 +485,39 @@ class SettingsPage extends PureComponent {
     return (
       <RouterRoutes>
         <Route
-          path={GENERAL_ROUTE}
+          path=""
           element={
             <SettingsTab
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
           }
         />
-        <Route path={ABOUT_US_ROUTE} element={<InfoTab />} />
         <Route
-          path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
+          path={getRelativeRoutePath(GENERAL_ROUTE, SETTINGS_BASE)}
+          element={
+            <SettingsTab
+              lastFetchedConversionDate={this.state.lastFetchedConversionDate}
+            />
+          }
+        />
+        <Route
+          path={getRelativeRoutePath(ABOUT_US_ROUTE, SETTINGS_BASE)}
+          element={<InfoTab />}
+        />
+        <Route
+          path={`${getRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_BASE)}/:snapId`}
           element={<SnapSettingsRenderer />}
         />
-        <Route path={ADVANCED_ROUTE} element={<AdvancedTab />} />
-        <Route path={BACKUPANDSYNC_ROUTE} element={<BackupAndSyncTab />} />
         <Route
-          path={ADD_NETWORK_ROUTE}
+          path={getRelativeRoutePath(ADVANCED_ROUTE, SETTINGS_BASE)}
+          element={<AdvancedTab />}
+        />
+        <Route
+          path={getRelativeRoutePath(BACKUPANDSYNC_ROUTE, SETTINGS_BASE)}
+          element={<BackupAndSyncTab />}
+        />
+        <Route
+          path={getRelativeRoutePath(ADD_NETWORK_ROUTE, SETTINGS_BASE)}
           element={
             <NetworkRouteHandler
               onMount={() =>
@@ -508,7 +527,7 @@ class SettingsPage extends PureComponent {
           }
         />
         <Route
-          path={NETWORKS_ROUTE}
+          path={getRelativeRoutePath(NETWORKS_ROUTE, SETTINGS_BASE)}
           element={
             <NetworkRouteHandler
               onMount={() => this.props.toggleNetworkMenu()}
@@ -516,39 +535,57 @@ class SettingsPage extends PureComponent {
           }
         />
         <Route
-          path={ADD_POPULAR_CUSTOM_NETWORK}
+          path={getRelativeRoutePath(ADD_POPULAR_CUSTOM_NETWORK, SETTINGS_BASE)}
           element={
             <NetworkRouteHandler
               onMount={() => this.props.toggleNetworkMenu()}
             />
           }
         />
-        <Route path={SECURITY_ROUTE} element={<SecurityTab />} />
         <Route
-          path={TRANSACTION_SHIELD_ROUTE}
+          path={getRelativeRoutePath(SECURITY_ROUTE, SETTINGS_BASE)}
+          element={<SecurityTab />}
+        />
+        <Route
+          path={getRelativeRoutePath(TRANSACTION_SHIELD_ROUTE, SETTINGS_BASE)}
           element={<TransactionShield />}
         />
-        <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
+        <Route
+          path={getRelativeRoutePath(EXPERIMENTAL_ROUTE, SETTINGS_BASE)}
+          element={<ExperimentalTab />}
+        />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
           <Route
-            path={DEVELOPER_OPTIONS_ROUTE}
+            path={getRelativeRoutePath(DEVELOPER_OPTIONS_ROUTE, SETTINGS_BASE)}
             element={<DeveloperOptionsTab />}
           />
         )}
-        <Route path={CONTACT_LIST_ROUTE} element={<ContactListTab />} />
-        <Route path={CONTACT_ADD_ROUTE} element={<ContactListTab />} />
         <Route
-          path={`${CONTACT_EDIT_ROUTE}/:id`}
+          path={getRelativeRoutePath(CONTACT_LIST_ROUTE, SETTINGS_BASE)}
           element={<ContactListTab />}
         />
         <Route
-          path={`${CONTACT_VIEW_ROUTE}/:id`}
+          path={getRelativeRoutePath(CONTACT_ADD_ROUTE, SETTINGS_BASE)}
           element={<ContactListTab />}
         />
-        <Route path={REVEAL_SRP_LIST_ROUTE} element={<RevealSrpList />} />
         <Route
-          path={SECURITY_PASSWORD_CHANGE_ROUTE}
+          path={`${getRelativeRoutePath(CONTACT_EDIT_ROUTE, SETTINGS_BASE)}/:id`}
+          element={<ContactListTab />}
+        />
+        <Route
+          path={`${getRelativeRoutePath(CONTACT_VIEW_ROUTE, SETTINGS_BASE)}/:id`}
+          element={<ContactListTab />}
+        />
+        <Route
+          path={getRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_BASE)}
+          element={<RevealSrpList />}
+        />
+        <Route
+          path={getRelativeRoutePath(
+            SECURITY_PASSWORD_CHANGE_ROUTE,
+            SETTINGS_BASE,
+          )}
           element={<ChangePassword />}
         />
         <Route

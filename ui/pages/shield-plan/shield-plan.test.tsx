@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import ShieldPlan from './shield-plan';
 
@@ -11,6 +11,23 @@ jest.mock('react-router-dom-v5-compat', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
+// Mock the types module with the missing constants
+jest.mock('./types', () => ({
+  SUPPORTED_STABLE_TOKENS: ['USDT', 'USDC', 'DAI'],
+  PAYMENT_METHODS: {
+    TOKEN: 'token',
+    CARD: 'card',
+  },
+  PLAN_TYPES: {
+    MONTHLY: 'monthly',
+    ANNUAL: 'annual',
+  },
+  SHIELD_PLAN_PRICES: {
+    MONTHLY: '$4.99',
+    ANNUAL: '$49.99',
+  },
+}));
 
 describe('Change payment method', () => {
   it('should show shield plan page', async () => {

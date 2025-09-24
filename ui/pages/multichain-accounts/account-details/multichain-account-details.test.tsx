@@ -140,7 +140,7 @@ describe('AccountDetails', () => {
 
     it('should render account details for Solana accounts', () => {
       mockUseParams.mockReturnValue({
-        address: MOCK_ACCOUNT_SOLANA_MAINNET.address
+        address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
       });
       const state = createMockState(
         MOCK_ACCOUNT_SOLANA_MAINNET.address,

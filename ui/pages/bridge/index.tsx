@@ -12,8 +12,8 @@ import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  toRelativePath,
 } from '../../helpers/constants/routes';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import {
@@ -149,7 +149,7 @@ const CrossChainSwap = () => {
       <Content padding={0}>
         <Routes>
           <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            path=""
             element={
               <>
                 <BridgeTransactionSettingsModal
@@ -163,7 +163,21 @@ const CrossChainSwap = () => {
             }
           />
           <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+            path={toRelativePath(PREPARE_SWAP_ROUTE)}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => setIsSettingsModalOpen(false)}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={toRelativePath(AWAITING_SIGNATURES_ROUTE)}
             element={
               <>
                 <Content>
