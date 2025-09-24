@@ -45,7 +45,8 @@
       "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "snapsInstallPrivacyWarningShown": true
+      "snapsInstallPrivacyWarningShown": true,
+      "hasShownMultichainAccountsIntroModal": "boolean"
     },
     "BridgeController": {},
     "CurrencyController": {

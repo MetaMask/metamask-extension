@@ -1232,7 +1232,6 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "webpack>events": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -1628,6 +1627,7 @@
       "globals": {
         "Intl.NumberFormat": true,
         "addEventListener": true,
+        "console.error": true,
         "fetch": true,
         "registration": true,
         "removeEventListener": true

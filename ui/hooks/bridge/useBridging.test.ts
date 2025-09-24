@@ -6,14 +6,6 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import useBridging from './useBridging';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
-
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -84,7 +76,7 @@ describe('useBridging', () => {
         isSwap: boolean,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        const { result } = renderUseBridging({
+        const { result, history } = renderUseBridging({
           metamask: {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -108,6 +100,7 @@ describe('useBridging', () => {
             },
           },
         });
+        const mockHistoryPush = jest.spyOn(history, 'push');
 
         result.current.openBridgeExperience(location, token, isSwap);
 
