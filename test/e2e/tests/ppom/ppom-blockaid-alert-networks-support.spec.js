@@ -1,11 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-const {
-  WINDOW_TITLES,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { unlockWallet, withFixtures } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 async function mockInfura(mockServer) {
@@ -68,7 +64,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
           'If you approve this request, you might lose your assets.';
 
         await unlockWallet(driver);
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousTradeOrder');

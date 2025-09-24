@@ -220,7 +220,8 @@ export const AppHeaderUnlockedContent = ({
       numberOfAccountsInGroup === 1 ? t('network') : t('networks');
 
     return (
-      <Box>
+      <Box style={{ overflow: 'hidden' }}>
+        {/* Prevent overflow of account picker by long account names */}
         <Text
           as="div"
           display={Display.Flex}

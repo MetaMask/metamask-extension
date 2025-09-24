@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
   },
-  "noActivity": {
-    "message": "Noch keine Aktivität"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
   },
@@ -3744,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
-  "noDeFiPositions": {
-    "message": "Sie finden nicht, wonach Sie suchen?"
-  },
   "noDomainResolution": {
     "message": "Keine Auflösung für die Domain angegeben."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps und die meisten Hardware-Wallets funktionieren nicht mit Ihrer aktuellen Browserversion."
-  },
-  "noNFTs": {
-    "message": "Noch keine NFTs"
   },
   "noNetworksAvailable": {
     "message": "Keine Netzwerke verfügbar"
@@ -4641,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Vorgeschlagenes Genehmigungslimit"
-  },
-  "protocolNotSupported": {
-    "message": "Möglicherweise unterstützen wir Ihr Protokoll noch nicht."
   },
   "provide": {
     "message": "Bereitstellen"

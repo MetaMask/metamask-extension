@@ -3,7 +3,7 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');
-const { withFixtures, openDapp, WINDOW_TITLES } = require('../../helpers');
+const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 const PREFERENCES_STATE_MOCK = {
@@ -236,7 +236,7 @@ describe('Send ETH', function () {
             await loginWithBalanceValidation(driver);
 
             // initiates a send from the dapp
-            await openDapp(driver);
+            await driver.openNewPage(DAPP_URL);
             await driver.clickElement({ text: 'Send', tag: 'button' });
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -316,7 +316,7 @@ describe('Send ETH', function () {
             await loginWithBalanceValidation(driver);
 
             // initiates a transaction from the dapp
-            await openDapp(driver);
+            await driver.openNewPage(DAPP_URL);
             await driver.clickElement({
               text: 'Create Token',
               tag: 'button',

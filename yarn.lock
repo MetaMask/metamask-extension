@@ -5560,9 +5560,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^43.0.0":
-  version: 43.1.0
-  resolution: "@metamask/bridge-controller@npm:43.1.0"
+"@metamask/bridge-controller@npm:^43.2.0":
+  version: 43.2.0
+  resolution: "@metamask/bridge-controller@npm:43.2.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5587,7 +5587,7 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/7d6b28735ea2c523db143bdc06280e3fe601af4b65e260af9d1c62d029c37a04c627baf487e27a2b9850a6bd665cf65700888c637148d168b53a96940d761262
+  checksum: 10/18d4a2765cbea53d5e0ad8aab0bbf24e3f4e0022c3b019e67500a4ba966034245139b420006faccd2559ca89672a47696cc392364d10b1c99c5841e838d01131
   languageName: node
   linkType: hard
 
@@ -5729,11 +5729,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/design-system-react@npm:0.4.0"
+"@metamask/design-system-react@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/design-system-react@npm:0.5.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.1.0"
+    "@metamask/design-system-shared": "npm:^0.1.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -5741,22 +5741,19 @@ __metadata:
   peerDependencies:
     "@metamask/design-system-tailwind-preset": ^0.6.0
     "@metamask/design-tokens": ^8.1.0
-    "@metamask/utils": ^11.7.0
-    "@solana/addresses": ^2.0.0
-    bitcoin-address-validation: ">=2.0.0"
+    "@metamask/utils": ^11.8.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-    tailwindcss: ^3.0.0
-  checksum: 10/d4770ad0a4865e4b8746b4b4f72e2bf9031c2a0ae6873b7841b16f538ff64e2503aa9d422dc6cc89d29174f9ba5c81c0e8ae9082607f3fe6644bf9edbfad6b6c
+  checksum: 10/111b2bf69bfb59487471923bcd9d7dc47631ad00d94cd38eb5204db18f2d78a12d6a903d5e264572937a1cf81ad28595772b9d5eec1a091d20ec39e6e9ad916c
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/design-system-shared@npm:0.1.0"
+"@metamask/design-system-shared@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@metamask/design-system-shared@npm:0.1.1"
   dependencies:
-    "@metamask/utils": "npm:^11.7.0"
-  checksum: 10/871fb9fd9ce536c841c9f5611fc3bd57faed1215f9d17eeb839074b3b1cc8da75b7257e40e203de28c6fa3f98d3f877ca78a7873c068b69f8a33d4507471c6be
+    "@metamask/utils": "npm:^11.8.0"
+  checksum: 10/8e8dab9ca59f83da76078a9f644d73d90cdb309ce5549acb915fbe2fdfb03803b3d73533e3d64a1bdca4ac2a19514d6885fe5c727832353a5691d310f06735d9
   languageName: node
   linkType: hard
 
@@ -6856,41 +6853,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/notification-services-controller@npm:16.0.0"
+"@metamask/notification-services-controller@npm:^18.1.0":
+  version: 18.1.0
+  resolution: "@metamask/notification-services-controller@npm:18.1.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.11.0"
+    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/controller-utils": "npm:^11.12.0"
     "@metamask/utils": "npm:^11.4.2"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
     loglevel: "npm:^1.8.1"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^22.0.0
-    "@metamask/profile-sync-controller": ^23.0.0
-  checksum: 10/60e1731d840256716eb67c08b3b386666bd21036839eff57ab63ad92b6a07e7f41baddb2707d4392bb610c9e2e1e29012fa4fd430c43c76d534ea2892f78bbb1
-  languageName: node
-  linkType: hard
-
-"@metamask/notification-services-controller@patch:@metamask/notification-services-controller@npm%3A16.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-16.0.0-7d7a016e6f.patch":
-  version: 16.0.0
-  resolution: "@metamask/notification-services-controller@patch:@metamask/notification-services-controller@npm%3A16.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-16.0.0-7d7a016e6f.patch::version=16.0.0&hash=85563a"
-  dependencies:
-    "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.11.0"
-    "@metamask/utils": "npm:^11.4.2"
-    bignumber.js: "npm:^9.1.2"
-    firebase: "npm:^11.2.0"
-    loglevel: "npm:^1.8.1"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/keyring-controller": ^22.0.0
-    "@metamask/profile-sync-controller": ^23.0.0
-  checksum: 10/60aeacd01d1a69a8d2f775b51f7f96d58ccd28b4ba120af0e437c8ed0e2e9bfbd8c72825ead2b20569fbdbc818d7eeec2708a831574def4a5d0985040cf185a4
+    "@metamask/keyring-controller": ^23.0.0
+    "@metamask/profile-sync-controller": ^25.0.0
+  checksum: 10/e98540bd8abbc2168771bb4b26b4f6e42aa917920950a193f3562e1dc5e1eaa43df8a0d82c6d75ec9ae390bfe8c3a566191c748a585445e8664cd91eb9e03046
   languageName: node
   linkType: hard
 
@@ -7462,10 +7440,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^2.3.10":
-  version: 2.3.10
-  resolution: "@metamask/solana-wallet-snap@npm:2.3.10"
-  checksum: 10/06d00d86c2e87c430fd59fd8a28de9bcc50156650dcb2f202b6822beaba458d2fc30ba68c9425010829d4e7763884444cc7f01eb6da047add8d0a42408073ec0
+"@metamask/solana-wallet-snap@npm:^2.3.11":
+  version: 2.3.11
+  resolution: "@metamask/solana-wallet-snap@npm:2.3.11"
+  checksum: 10/9d2423da3a6f4272d15f8bf92364e23853360d27dcda39210f15ae7b2dfe34c0a4c1092950570c874caa4c7deabf03d4be3a718db4cf92353514a5cf1ac7a8c3
   languageName: node
   linkType: hard
 
@@ -31930,7 +31908,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
-    "@metamask/bridge-controller": "npm:^43.0.0"
+    "@metamask/bridge-controller": "npm:^43.2.0"
     "@metamask/bridge-status-controller": "npm:^43.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
@@ -31940,7 +31918,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^0.7.0"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.11.0"
-    "@metamask/design-system-react": "npm:^0.4.0"
+    "@metamask/design-system-react": "npm:^0.5.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^1.1.0"
@@ -31994,7 +31972,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^5.0.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A24.1.0#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch"
-    "@metamask/notification-services-controller": "patch:@metamask/notification-services-controller@npm%3A16.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-16.0.0-7d7a016e6f.patch"
+    "@metamask/notification-services-controller": "npm:^18.1.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -32022,7 +32000,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.5.1"
     "@metamask/snaps-sdk": "npm:^9.3.0"
     "@metamask/snaps-utils": "npm:^11.5.0"
-    "@metamask/solana-wallet-snap": "npm:^2.3.10"
+    "@metamask/solana-wallet-snap": "npm:^2.3.11"
     "@metamask/solana-wallet-standard": "npm:^0.5.1"
     "@metamask/streams": "npm:^0.4.0"
     "@metamask/subscription-controller": "npm:^0.1.0"

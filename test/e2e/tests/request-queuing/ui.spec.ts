@@ -58,7 +58,7 @@ async function openDappAndSwitchChain(
   );
 
   // Open the dapp
-  await openDapp(driver, undefined, dappUrl);
+  await driver.openNewPage(dappUrl);
 
   // Connect to the dapp
   await testDapp.clickConnectAccountButton();
