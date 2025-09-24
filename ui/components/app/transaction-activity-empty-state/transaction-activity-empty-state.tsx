@@ -1,8 +1,8 @@
 import React from 'react';
+import { twMerge } from '@metamask/design-system-react';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
-import { twMerge } from '@metamask/design-system-react';
 
 export type TransactionActivityEmptyStateProps = {
   /**
