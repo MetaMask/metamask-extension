@@ -207,7 +207,7 @@ describe('createHyperliquidReferralMiddleware', () => {
   it('handles errors in referral handler gracefully', async () => {
     const error = new Error('Referral handler failed');
     const mockHandleReferral = jest.fn(() => {
-      throw error;
+      return Promise.reject(error);
     });
     const middleware = createHyperliquidReferralMiddleware(mockHandleReferral);
 
