@@ -43,12 +43,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       # Need to cache `.metamask` folder for the anvil binary
@@ -74,11 +73,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Check circular dependencies
@@ -210,11 +208,10 @@ jobs:
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Download artifact 'build-dist-browserify'
@@ -302,11 +299,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Download artifact 'build-dist-browserify'
@@ -341,11 +337,10 @@ jobs:
 
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Download artifact 'build-dist-browserify'

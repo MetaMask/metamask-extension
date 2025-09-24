@@ -59,11 +59,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true
       - name: Get commit SHA
         id: commit-sha
@@ -86,11 +85,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true
       - name: Generate Attributions
         run: yarn attributions:generate
