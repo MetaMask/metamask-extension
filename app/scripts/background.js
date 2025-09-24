@@ -1613,10 +1613,17 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          controller.handleHyperliquidReferral(
-            tabId,
-            HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
-          );
+          controller
+            .handleHyperliquidReferral(
+              tabId,
+              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+            )
+            .catch((error) => {
+              log.error(
+                'Failed to handle Hyperliquid referral after navigation to connected tab: ',
+                error,
+              );
+            });
         }
       }
     }

@@ -4386,6 +4386,9 @@ describe('MetaMaskController', () => {
               extensionUxDefiReferral: true,
             },
           });
+        jest
+          .spyOn(metamaskController.approvalController, 'has')
+          .mockReturnValue(false);
 
         // Initialize referral state
         metamaskController.preferencesController.update((state) => {
@@ -4422,6 +4425,35 @@ describe('MetaMaskController', () => {
           mockTabId,
           mockNewConnectionTriggerType,
         );
+        expect(
+          metamaskController.approvalController.has,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController.approvalController.add,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController._handleHyperliquidReferralRedirect,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('returns early if there is already a pending approval', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'has')
+          .mockReturnValueOnce(true); // Pending approval exists
+        jest.spyOn(metamaskController.approvalController, 'add');
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+
+        expect(metamaskController.approvalController.has).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+        });
         expect(
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();

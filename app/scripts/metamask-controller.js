@@ -14,7 +14,7 @@ import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
+import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -5790,9 +5790,19 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    // Only show consent if Hyperliquid has permitted accounts
+    // Only continue if Hyperliquid has permitted accounts
     const permittedAccounts = this.getPermittedAccounts(HYPERLIQUID_ORIGIN);
     if (permittedAccounts.length === 0) {
+      return;
+    }
+
+    // Only continue if there is no pending approval
+    const hasPendingApproval = this.approvalController.has({
+      origin: HYPERLIQUID_ORIGIN,
+      type: HYPERLIQUID_APPROVAL_TYPE,
+    });
+
+    if (hasPendingApproval) {
       return;
     }
 
@@ -5813,36 +5823,37 @@ export default class MetamaskController extends EventEmitter {
     // We should redirect to the referral url if the account is approved
     const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
 
-    // If we shouldn't show the approval screen and shouldn't redirect, return
-    if (!shouldShowApproval && !shouldRedirect) {
-      return;
-    }
-
     if (shouldShowApproval) {
-      // method will fail if there is an existing approval request
-      // or if the user rejects the request (e.g. by disconnecting)
-      const approvalResponse = await this.approvalController.add({
-        origin: HYPERLIQUID_ORIGIN,
-        type: HYPERLIQUID_APPROVAL_TYPE,
-        requestData: { selectedAddress: activePermittedAccount },
-        shouldShowRequest:
-          triggerType === HyperliquidPermissionTriggerType.NewConnection,
-      });
+      try {
+        const approvalResponse = await this.approvalController.add({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: { selectedAddress: activePermittedAccount },
+          shouldShowRequest:
+            triggerType === HyperliquidPermissionTriggerType.NewConnection,
+        });
 
-      if (approvalResponse?.approved) {
-        this._handleHyperliquidApprovedAccount(
-          activePermittedAccount,
-          permittedAccounts,
-          declinedAccounts,
-        );
-        await this._handleHyperliquidReferralRedirect(
-          tabId,
-          activePermittedAccount,
-        );
-      } else {
-        this.preferencesController.addReferralDeclinedAccount(
-          activePermittedAccount,
-        );
+        if (approvalResponse?.approved) {
+          this._handleHyperliquidApprovedAccount(
+            activePermittedAccount,
+            permittedAccounts,
+            declinedAccounts,
+          );
+          await this._handleHyperliquidReferralRedirect(
+            tabId,
+            activePermittedAccount,
+          );
+        } else {
+          this.preferencesController.addReferralDeclinedAccount(
+            activePermittedAccount,
+          );
+        }
+      } catch (error) {
+        // Do nothing if the user rejects the request
+        if (error.code === errorCodes.provider.userRejectedRequest) {
+          return;
+        }
+        throw error;
       }
     }
 

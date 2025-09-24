@@ -41,7 +41,7 @@ export function createHyperliquidReferralMiddleware(
   handleHyperliquidReferral: (
     tabId: number,
     triggerType: HyperliquidPermissionTriggerType,
-  ) => void,
+  ) => Promise<void>,
 ) {
   return createAsyncMiddleware(
     async (
@@ -69,17 +69,15 @@ export function createHyperliquidReferralMiddleware(
         );
 
       if (isHyperliquidConnectionRequest && arePermissionsGranted) {
-        try {
-          handleHyperliquidReferral(
-            req.tabId,
-            HyperliquidPermissionTriggerType.NewConnection,
-          );
-        } catch (error) {
+        handleHyperliquidReferral(
+          req.tabId,
+          HyperliquidPermissionTriggerType.NewConnection,
+        ).catch((error) => {
           log.error(
             'Failed to handle Hyperliquid referral after wallet_requestPermissions grant: ',
             error,
           );
-        }
+        });
       }
     },
   );
