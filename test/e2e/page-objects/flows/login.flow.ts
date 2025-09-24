@@ -3,6 +3,7 @@ import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
+import { WALLET_PASSWORD } from '../../constants';
 
 /**
  * This method unlocks the wallet and lands the user on the homepage.
@@ -18,7 +19,7 @@ export const loginWithoutBalanceValidation = async (
   await driver.navigate();
   const loginPage = new LoginPage(driver);
   await loginPage.checkPageIsLoaded();
-  await loginPage.loginToHomepage(password);
+  await loginPage.loginToHomepage(password || WALLET_PASSWORD);
 
   // user should land on homepage after successfully logging in with password
   const homePage = new HomePage(driver);
