@@ -300,7 +300,7 @@ function useAccountGroupNames(
   );
 
   const accountTree = useSelector(getAccountTree);
-  const { wallets } = accountTree;
+  const { wallets } = accountTree ?? {};
   const haveMoreThanOneWallet = useMemo(
     () => Object.keys(wallets).length > 1,
     [wallets],
