@@ -88,6 +88,7 @@ import {
   add0x,
   hexToBytes,
   bytesToHex,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
