@@ -5,8 +5,7 @@ import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { CaipChainId, parseCaipChainId } from '@metamask/utils';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
