@@ -162,7 +162,7 @@ export const Recipient = () => {
             >
               <PreferredAvatar
                 address={matchingRecipient.address}
-                size={AvatarAccountSize.Sm}
+                size={AvatarAccountSize.Xs}
               />
             </Box>
           ) : null
