@@ -719,11 +719,7 @@ export default function TransactionList({
                 )}
               </Box>
             ) : (
-              <Box className="transaction-list__empty">
-                <Box className="transaction-list__empty-text">
-                  {t('noTransactions')}
-                </Box>
-              </Box>
+              <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
             )}
           </Box>
         </Box>
@@ -741,7 +737,7 @@ export default function TransactionList({
         ) : null}
         {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
-          <TransactionActivityEmptyState className="mx-auto mt-4" />
+          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
         ) : (
           <Box className="transaction-list__transactions">
             {pendingTransactions.length > 0 && (

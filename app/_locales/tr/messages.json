@@ -3735,9 +3735,6 @@
   "noThanks": {
     "message": "Hayır, istemiyorum"
   },
-  "noTransactions": {
-    "message": "Herhangi bir işleminiz yok"
-  },
   "noWebcamFound": {
     "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
   },
