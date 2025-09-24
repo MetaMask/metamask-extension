@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import * as actions from '../../../store/actions';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
@@ -171,8 +170,7 @@ describe('MultichainAccountDetailsPage', () => {
     );
     fireEvent.click(removeAccountActionButton);
 
-    expect(screen.getByText(/remove account/iu)).toBeInTheDocument();
-    expect(screen.getByTestId(accountNameInputDataTestId)).toBeInTheDocument();
+    expect(screen.getByText(/will be removed/iu)).toBeInTheDocument();
   });
 
   it('closes account remove modal when close button is clicked', () => {
@@ -187,12 +185,12 @@ describe('MultichainAccountDetailsPage', () => {
     );
     fireEvent.click(removeAccountActionButton);
 
-    expect(screen.getByText(/remove account/iu)).toBeInTheDocument();
+    expect(screen.getByText(/will be removed/iu)).toBeInTheDocument();
 
     const closeButton = screen.getByLabelText('Close');
     fireEvent.click(closeButton);
 
-    expect(screen.queryByText(/remove account/iu)).not.toBeInTheDocument();
+    expect(screen.queryByText(/will be removed/iu)).not.toBeInTheDocument();
   });
 
   it('calls removeAccount action when remove account button is clicked', () => {
