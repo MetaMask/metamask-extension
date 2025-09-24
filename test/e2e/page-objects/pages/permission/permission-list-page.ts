@@ -11,18 +11,13 @@ class PermissionListPage {
 
   private readonly permissionsPage = '[data-testid="permissions-page"]';
 
-  private readonly gatorPermissionsPage =
-    '[data-testid="gator-permissions-page"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(isFlask: boolean = false): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(
-        isFlask ? this.gatorPermissionsPage : this.permissionsPage,
-      );
+      await this.driver.waitForSelector(this.permissionsPage);
     } catch (e) {
       console.log(
         'Timeout while waiting for permission list page to be loaded',
