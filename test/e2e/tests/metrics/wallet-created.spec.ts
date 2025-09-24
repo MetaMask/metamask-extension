@@ -122,7 +122,6 @@ describe('Wallet Created Events', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.delay(10_000);
         await completeCreateNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: true,
@@ -222,7 +221,6 @@ describe('Wallet Created Events', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           wallet_setup_type: 'new',
         });
-        await driver.delay(10_000);
       },
     );
   });
