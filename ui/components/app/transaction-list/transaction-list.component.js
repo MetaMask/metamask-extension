@@ -96,7 +96,7 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
-import { ActivityListItem } from '../../multichain';
+import { ActivityListItem } from '../../multichain/activity-list-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
@@ -127,7 +127,7 @@ import {
   selectBridgeHistoryForAccount,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
-import NoTransactions from './no-transactions';
+import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_INCREMENT = 10;
 
@@ -649,7 +649,7 @@ export default function TransactionList({
         <Box className="transaction-list" {...boxProps}>
           {/* TODO: Non-EVM transactions are not paginated for now. */}
           <Box className="transaction-list__transactions">
-            {nonEvmTransactions?.transactions.length > 0 ? (
+            {nonEvmTransactions?.transactions?.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
                 {groupNonEvmTransactionsByDate(nonEvmTransactionsForToken).map(
                   (dateGroup) => (
@@ -734,14 +734,14 @@ export default function TransactionList({
 
   return (
     <>
-      {showRampsCard ? (
-        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-      ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
+        {showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+        ) : null}
         {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
-          <NoTransactions />
+          <TransactionActivityEmptyState className="mx-auto mt-4" />
         ) : (
           <Box className="transaction-list__transactions">
             {pendingTransactions.length > 0 && (

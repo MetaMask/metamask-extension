@@ -11,15 +11,22 @@ import {
 } from '../../../../helpers/constants/routes';
 import { SendPages } from '../../constants/send';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
-import { submitEvmTransaction } from '../../utils/send';
+import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { asset, chainId, from, fromAccount, maxValueMode, to, value } =
-    useSendContext();
+  const {
+    asset,
+    chainId,
+    from,
+    fromAccount,
+    maxValueMode,
+    toResolved: to,
+    value,
+  } = useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(async () => {
@@ -47,7 +54,7 @@ export const useSendActions = () => {
         fromAccountId: fromAccount?.id as string,
         toAddress: toAddress as string,
         assetId: asset.assetId as CaipAssetType,
-        amount: value as string,
+        amount: addLeadingZeroIfNeeded(value) as string,
       });
     }
   }, [

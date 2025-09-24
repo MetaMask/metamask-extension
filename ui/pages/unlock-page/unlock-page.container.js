@@ -16,7 +16,7 @@ import {
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
 } from '../../store/actions';
-import { getIsSocialLoginFlow } from '../../selectors';
+import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
@@ -28,6 +28,7 @@ const mapStateToProps = (state) => {
     isUnlocked,
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
+    firstTimeFlowType: getFirstTimeFlowType(state),
   };
 };
 

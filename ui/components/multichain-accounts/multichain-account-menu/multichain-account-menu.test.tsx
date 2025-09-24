@@ -10,20 +10,7 @@ const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
 const errorColorSelector = '.mm-box--color-error-default';
 
-const mockHistoryPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
-
 describe('MultichainAccountMenu', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   const renderComponent = (
     props: MultichainAccountMenuProps = {
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
@@ -70,7 +57,7 @@ describe('MultichainAccountMenu', () => {
 
     const menuItems = document.querySelectorAll(menuItemSelector);
 
-    expect(menuItems.length).toBe(5);
+    expect(menuItems.length).toBe(3);
   });
 
   it('adds the remove option to menu when isRemovable is true', async () => {
@@ -96,7 +83,7 @@ describe('MultichainAccountMenu', () => {
 
     const menuItems = document.querySelectorAll(menuItemSelector);
 
-    expect(menuItems.length).toBe(6);
+    expect(menuItems.length).toBe(4);
 
     const removeOption = document.querySelector(errorColorSelector);
 
@@ -104,7 +91,8 @@ describe('MultichainAccountMenu', () => {
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
-    renderComponent();
+    const { history } = renderComponent();
+    const mockHistoryPush = jest.spyOn(history, 'push');
 
     const menuButton = document.querySelector(menuButtonSelector);
 
@@ -174,5 +162,47 @@ describe('MultichainAccountMenu', () => {
         });
       });
     }
+  });
+
+  it('calls handleAccountRenameAction when clicking the rename option', async () => {
+    const mockHandleAccountRenameAction = jest.fn();
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    renderComponent({
+      accountGroupId,
+      isRemovable: false,
+      handleAccountRenameAction: mockHandleAccountRenameAction,
+    });
+
+    const menuButton = document.querySelector(menuButtonSelector);
+    expect(menuButton).not.toBeNull();
+
+    if (menuButton) {
+      await act(async () => {
+        fireEvent.click(menuButton);
+        await waitFor(() => {
+          expect(
+            document.querySelector(popoverOpenSelector),
+          ).toBeInTheDocument();
+        });
+      });
+    }
+
+    // Rename option should be the second menu item
+    const menuItems = document.querySelectorAll(menuItemSelector);
+    expect(menuItems.length).toBe(3);
+
+    const renameOption = menuItems[1];
+    expect(renameOption).not.toBeNull();
+
+    if (renameOption) {
+      await act(async () => {
+        fireEvent.click(renameOption);
+      });
+    }
+
+    expect(mockHandleAccountRenameAction).toHaveBeenCalledWith(accountGroupId);
+    // Verify the popover is closed after clicking rename
+    expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
   });
 });

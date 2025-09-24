@@ -38,7 +38,7 @@ class ActivityListPage {
 
   private readonly viewTransactionOnExplorerButton = {
     text: 'View on block explorer',
-    tag: 'a',
+    tag: 'button',
   };
 
   private readonly cancelTransactionButton = {
@@ -52,6 +52,9 @@ class ActivityListPage {
     text: 'Submit',
     tag: 'button',
   };
+
+  private readonly pendingTransactionItems =
+    '.transaction-list__pending-transactions .activity-list-item';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -154,6 +157,30 @@ class ActivityListPage {
     }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
+    );
+  }
+
+  /**
+   * This function checks the specified number of pending transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
+   *
+   * @param expectedNumber - The number of pending transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of pending transactions is displayed within the timeout period.
+   */
+  async checkPendingTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} pending transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const pendingTxs = await this.driver.findElements(
+        this.pendingTransactionItems,
+      );
+      return pendingTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} pending transactions found in activity list on homepage`,
     );
   }
 

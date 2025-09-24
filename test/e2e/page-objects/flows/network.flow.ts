@@ -40,6 +40,7 @@ export const searchAndSwitchToNetworkFromGlobalMenuFlow = async (
 export const switchToNetworkFromSendFlow = async (
   driver: Driver,
   networkName: string,
+  tokenSymbol = 'ETH',
 ) => {
   console.log(`Switch to network ${networkName} in header bar`);
   const headerNavbar = new HeaderNavbar(driver);
@@ -59,7 +60,7 @@ export const switchToNetworkFromSendFlow = async (
 
   await selectNetworkDialog.selectNetworkName(networkName);
 
-  await sendToPage.clickFirstTokenListButton();
+  await sendToPage.chooseTokenToSend(tokenSymbol);
   await sendToPage.clickSendFlowBackButton();
 
   await headerNavbar.checkPageIsLoaded();

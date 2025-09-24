@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
+import LoadingScreen from '../../../../../components/ui/loading-screen';
 import {
   Box,
   Button,
@@ -13,28 +14,33 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
-import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
-import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
+import { Asset } from '../../../types/send';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const { to } = useSendContext();
+  const [amountValueError, setAmountValueError] = useState<string>();
+  const { asset, toResolved } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
-  const { amountError } = useAmountValidation();
   const { recipientError } = useRecipientValidation();
 
-  const hasError = Boolean(amountError) || Boolean(recipientError);
-  const isDisabled = hasError || !to;
+  const hasError = Boolean(amountValueError) || Boolean(recipientError);
+  const isDisabled = hasError || !toResolved;
 
   const onClick = useCallback(() => {
     handleSubmit();
     captureAmountSelected();
   }, [captureAmountSelected, handleSubmit]);
+
+  if (!asset) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Box
@@ -46,8 +52,9 @@ export const AmountRecipient = () => {
       style={{ flex: 1 }}
     >
       <Box>
+        <SendHero asset={asset as Asset} />
         <Recipient />
-        <Amount />
+        <Amount setAmountValueError={setAmountValueError} />
       </Box>
       <Button
         disabled={isDisabled}
@@ -58,7 +65,7 @@ export const AmountRecipient = () => {
         }
         marginBottom={4}
       >
-        {amountError ?? t('continue')}
+        {amountValueError ?? t('continue')}
       </Button>
     </Box>
   );

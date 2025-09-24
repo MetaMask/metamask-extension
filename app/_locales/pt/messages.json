@@ -1026,8 +1026,8 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buyAndSell": {
-    "message": "Comprar/vender"
+  "buy": {
+    "message": "Comprar"
   },
   "buyMoreAsset": {
     "message": "Comprar mais $1",
@@ -1835,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Nenhuma conta correspondentes encontrada"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Receber em"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Endereço de recebimento ou ENS"
@@ -2675,12 +2672,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Como as cotações funcionam"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Das cotações que pesquisamos, essa é a que apresenta o melhor retorno. Isso é baseado na taxa de swap, que inclui taxas de ponte e uma taxa da MetaMask de $1%, menos taxas de gás. As taxas de gás dependem da carga da rede e da complexidade da transação."
-  },
   "id": {
     "message": "ID"
   },
@@ -2940,9 +2931,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Uma transação anterior ainda está sendo assinada ou enviada"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons e Blockies são dois estilos diferentes de ícones únicos que ajudam você a identificar uma conta num relance."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3351,15 +3339,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Você está adicionando esta rede à MetaMask e dando a este site permissão para usá-la."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Fazer ponte"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Cotação"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Hora"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 quer usar Snaps de $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3723,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noActivity": {
-    "message": "Nenhuma atividade ainda"
-  },
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },
@@ -3735,17 +3711,11 @@
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
-  "noDeFiPositions": {
-    "message": "Não consegue encontrar o que procura?"
-  },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
-  },
-  "noNFTs": {
-    "message": "Nenhum NFT até agora"
   },
   "noNetworksAvailable": {
     "message": "Nenhuma rede disponível"
@@ -4215,13 +4185,6 @@
   "passwordNotLongEnough": {
     "message": "A senha deve ter pelo menos 8 caracteres"
   },
-  "passwordStrength": {
-    "message": "Segurança da senha: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Uma senha forte pode aumentar a segurança da sua carteira caso seu dispositivo seja roubado ou comprometido."
-  },
   "passwordTermsWarning": {
     "message": "Se eu esquecer essa senha, a MetaMask não conseguirá redefini-la para mim."
   },
@@ -4635,9 +4598,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Limite de aprovação proposto"
-  },
-  "protocolNotSupported": {
-    "message": "Talvez ainda não tenhamos suporte ao seu protocolo."
   },
   "provide": {
     "message": "Fornecer"
@@ -7155,9 +7115,6 @@
     "message": "Tome cuidado com $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Fraca"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7184,9 +7141,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Isso aprovará $1 para realização de ponte."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Será necessário confirmar duas transações na sua carteira de hardware."
   },
   "willApproveAmountForSwapping": {
     "message": "Isso aprovará $1 para fazer a troca."

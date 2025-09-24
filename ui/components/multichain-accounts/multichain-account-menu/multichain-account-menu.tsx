@@ -27,6 +27,7 @@ export const MultichainAccountMenu = ({
   accountGroupId,
   isRemovable,
   buttonBackgroundColor,
+  handleAccountRenameAction,
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -45,9 +46,12 @@ export const MultichainAccountMenu = ({
     };
 
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
-      // TODO: Implement account rename click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      if (handleAccountRenameAction) {
+        handleAccountRenameAction(accountGroupId);
+        setIsPopoverOpen(false);
+      }
     };
 
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
@@ -85,7 +89,6 @@ export const MultichainAccountMenu = ({
         textKey: 'rename',
         iconName: IconName.Edit,
         onClick: handleAccountRenameClick,
-        disabled: true,
       },
       {
         textKey: 'addresses',
@@ -116,7 +119,7 @@ export const MultichainAccountMenu = ({
     }
 
     return baseMenuItems;
-  }, [accountGroupId, history, isRemovable]);
+  }, [accountGroupId, handleAccountRenameAction, history, isRemovable]);
 
   return (
     <>

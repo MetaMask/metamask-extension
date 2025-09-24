@@ -104,6 +104,7 @@ class OnboardingCompletePage {
 
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.waitForSelector(this.pinExtensionMessage);
+
     await this.driver.clickElementAndWaitToDisappear(
       this.pinExtensionDoneButton,
     );
