@@ -69,7 +69,12 @@ export const HyperliquidReferralConsent: React.FC<
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} className="h-full">
-      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="mb-6">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        gap={4}
+        className="mb-6"
+      >
         <Text
           textAlign={TextAlign.Center}
           variant={TextVariant.HeadingMd}
@@ -77,7 +82,7 @@ export const HyperliquidReferralConsent: React.FC<
         >
           {t('hyperliquidReferralTitle')}
         </Text>
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative} textAlign={TextAlign.Center}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('hyperliquidReferralSubtitle')}{' '}
           <HyperliquidLink text={t('learnMoreUpperCase')} />
         </Text>
