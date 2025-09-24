@@ -42,8 +42,17 @@ jobs:
   prep-deps:
     runs-on: ubuntu-latest
     steps:
-      - name: Corepack hydrate yarn
-        run: npm run yarn-binary:hydrate
+
+      - name: Checkout minimal files for yarn hydrate
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            package.json
+            .yarn/yarn-corepack.tgz
+            sparse-checkout-cone-mode: false
+
+      # - name: Corepack hydrate yarn
+      #   run: npm run yarn-binary:hydrate
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
