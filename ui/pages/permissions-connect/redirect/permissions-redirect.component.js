@@ -119,13 +119,8 @@ export default function PermissionsRedirect({ subjectMetadata }) {
               width={BlockSize.Full}
               marginLeft={2}
               disabled
-            >
-              <Icon
-                name={IconName.Loading}
-                size={IconSize.Lg}
-                color={IconColor.infoDefault}
-              />
-            </Button>
+              loading
+            />
           </Box>
         </Box>
       </Box>
