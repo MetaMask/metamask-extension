@@ -102,7 +102,6 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           >
             <div
               class="mm-box mm-box--margin-top-4"
-              style="overflow: auto; max-height: 268px;"
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
@@ -343,7 +342,6 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           >
             <div
               class="mm-box mm-box--margin-top-4"
-              style="overflow: auto; max-height: 268px;"
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
@@ -584,7 +582,6 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           >
             <div
               class="mm-box mm-box--margin-top-4"
-              style="overflow: auto; max-height: 268px;"
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
