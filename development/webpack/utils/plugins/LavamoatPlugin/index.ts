@@ -96,7 +96,6 @@ export const lavamoatPlugin = (args: Args) =>
         'fetch',
         'AbortController',
         'OffscreenCanvas',
-        // @ts-expect-error - globals chromedriver needs to function
         /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
         'name',
         'performance',
