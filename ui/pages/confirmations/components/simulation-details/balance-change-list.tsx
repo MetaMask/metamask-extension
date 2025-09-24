@@ -37,7 +37,6 @@ export const BalanceChangeList: React.FC<{
     return sortedBalanceChanges.map((bc) => bc.fiatAmount);
   }, [sortedBalanceChanges]);
 
-  // Detect if these are incoming balance changes (received tokens)
   const hasIncomingTokens = useMemo(() => {
     return balanceChanges.some((bc) => !bc.amount.isNegative());
   }, [balanceChanges]);

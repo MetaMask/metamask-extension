@@ -16,7 +16,6 @@ import {
   IconName,
 } from '../../../../components/component-library';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
@@ -32,7 +31,7 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.showFiat
  * @param props.balanceChange
  * @param props.labelColor
- * @param props.isFirstRow - Whether this is the first row (for heading display)
+ * @param props.isFirstRow - Whether this is the first row
  * @param props.hasIncomingTokens - Whether this section contains incoming tokens
  * @param props.confirmationId - Confirmation ID for alert lookup
  */
@@ -65,6 +64,32 @@ export const BalanceChangeRow: React.FC<{
     onEdit,
   } = balanceChange;
 
+  const renderLabel = () => {
+    if (!label) {
+      return null;
+    }
+
+    if (isFirstRow && hasIncomingTokens && confirmationId) {
+      return (
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.IncomingTokens}
+          ownerId={confirmationId}
+          label={label}
+        />
+      );
+    }
+
+    return (
+      <Text
+        style={{ whiteSpace: 'nowrap' }}
+        color={labelColor}
+        variant={TextVariant.bodyMd}
+      >
+        {label}
+      </Text>
+    );
+  };
+
   return (
     <Box
       data-testid="simulation-details-balance-change-row"
@@ -74,38 +99,7 @@ export const BalanceChangeRow: React.FC<{
       gap={1}
       flexWrap={FlexWrap.Wrap}
     >
-      {isFirstRow &&
-        label &&
-        (() => {
-          if (!confirmationId) {
-            return (
-              <Text
-                style={{ whiteSpace: 'nowrap' }}
-                color={labelColor}
-                variant={TextVariant.bodyMd}
-              >
-                {label}
-              </Text>
-            );
-          }
-
-          if (hasIncomingTokens) {
-            return (
-              <ConfirmInfoAlertRow
-                alertKey={RowAlertKey.IncomingTokens}
-                ownerId={confirmationId}
-                label={label}
-              />
-            );
-          }
-
-          return (
-            <ConfirmInfoRow
-              label={label}
-              style={{ background: 'transparent' }}
-            />
-          );
-        })()}
+      {label && renderLabel()}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

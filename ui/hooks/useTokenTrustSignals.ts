@@ -42,7 +42,6 @@ export function useTokenTrustSignalsForAddresses(
   chainId: string | undefined,
   tokenAddresses: string[] | undefined,
 ): TrustSignalResult[] {
-  // Use the optimized selector to get only the cache entries we need
   const tokenScanResults = useSelector((state) =>
     getTokenScanResultsForAddresses(state, chainId, tokenAddresses),
   ) as Record<string, TokenScanCacheResult>;
