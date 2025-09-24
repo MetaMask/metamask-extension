@@ -220,6 +220,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
     "manageInstitutionalWallets": "boolean",
+    "referrals": "object",
     "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
