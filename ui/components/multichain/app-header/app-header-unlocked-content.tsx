@@ -217,7 +217,9 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     const networksLabel =
-      numberOfAccountsInGroup === 1 ? t('network') : t('networks');
+      numberOfAccountsInGroup === 1
+        ? t('networkAddress')
+        : t('networkAddresses');
 
     return (
       <Box style={{ overflow: 'hidden' }}>
