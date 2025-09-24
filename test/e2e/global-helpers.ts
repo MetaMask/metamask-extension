@@ -4,15 +4,22 @@
  * available globally, eliminating the need to import them in every test file.
  */
 
-import { withFixtures as _withFixtures } from './helpers';
-import _FixtureBuilder from './fixture-builder';
+import { withFixtures as withFixturesImpl } from './helpers';
+import FixtureBuilderClass from './fixture-builder';
 
 // Make withFixtures and FixtureBuilder available globally
 declare global {
-  const withFixtures: typeof _withFixtures;
-  const FixtureBuilder: typeof _FixtureBuilder;
+  const withFixtures: typeof withFixturesImpl;
+  const FixtureBuilder: typeof FixtureBuilderClass;
 }
 
+// Create a properly typed global object
+type GlobalWithHelpers = typeof globalThis & {
+  withFixtures: typeof withFixturesImpl;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  FixtureBuilder: typeof FixtureBuilderClass;
+};
+
 // Attach helpers to the global scope
-(global as any).withFixtures = _withFixtures;
-(global as any).FixtureBuilder = _FixtureBuilder;
+(globalThis as GlobalWithHelpers).withFixtures = withFixturesImpl;
+(globalThis as GlobalWithHelpers).FixtureBuilder = FixtureBuilderClass;

@@ -1,10 +1,10 @@
 import { strict as assert } from 'assert';
 import {
-  DAPP_URL, DAPP_ONE_URL,
+  DAPP_URL,
+  DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
   WINDOW_TITLES,
 } from '../constants';
-import {  } from '../constants';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
