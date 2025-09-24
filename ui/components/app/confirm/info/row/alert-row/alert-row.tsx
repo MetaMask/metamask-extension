@@ -80,10 +80,6 @@ export const ConfirmInfoAlertRow = ({
     </Box>
   ) : null;
 
-  const RowComponent = (
-    <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
-  );
-
   return (
     <>
       {alertModalVisible && (
@@ -96,11 +92,7 @@ export const ConfirmInfoAlertRow = ({
           skipAlertNavigation={true}
         />
       )}
-      {hasFieldAlert ? (
-        <Box className="confirm-info-row--has-alert">{RowComponent}</Box>
-      ) : (
-        RowComponent
-      )}
+      <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
     </>
   );
 };

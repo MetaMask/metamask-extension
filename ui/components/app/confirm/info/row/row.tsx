@@ -154,9 +154,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           color={color}
           paddingRight={contentPaddingRight || null}
           onClick={onClick}
-          style={{
-            ...(onClick && { cursor: 'pointer' }),
-          }}
+          className={onClick && 'hoverable'}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
