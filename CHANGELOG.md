@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: fixes issues with balances not updating on Solana (#36129)
 - fix: improves Solana account synchronization and WebSocket subscriptions (#36129)
 - fix: adds multichain asset prices polling to ensure Solana chart always displays up-to-date price data (#36175)
+- fix: adds support for signing transactions where the fee payer differs from the user's account (#36251)
 
 ## [13.3.0]
 ### Added
