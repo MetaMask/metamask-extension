@@ -117,20 +117,19 @@ export const MultichainAccountDetailsPage = () => {
     if (firstAccountAddress) {
       // Don't want to blindly call removeAccount without an invalid or empty parameter
       dispatch(removeAccount(firstAccountAddress));
+      trackEvent({
+        event: MetaMetricsEventName.AccountRemoved,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: wallet?.type,
+        },
+      });
+
+      dispatch(setAccountDetailsAddress(''));
+      history.push(DEFAULT_ROUTE);
     }
-
-    trackEvent({
-      event: MetaMetricsEventName.AccountRemoved,
-      category: MetaMetricsEventCategory.Accounts,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: wallet?.type,
-      },
-    });
-
-    dispatch(setAccountDetailsAddress(''));
-    history.push(DEFAULT_ROUTE);
   }, [dispatch, trackEvent, history, wallet?.type, accountsWithAddresses]);
 
   const handleWalletAction = () => {
