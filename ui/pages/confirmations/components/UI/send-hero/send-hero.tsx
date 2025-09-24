@@ -36,7 +36,7 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       marginTop={6}
-      marginBottom={6}
+      marginBottom={9}
     >
       <BadgeWrapper
         style={{
@@ -45,7 +45,7 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
         badge={
           nftData.chainId ? (
             <AvatarNetwork
-              size={AvatarNetworkSize.Sm}
+              size={AvatarNetworkSize.Xs}
               name={nftData.networkName ?? ''}
               src={nftData.networkImage}
             />
@@ -58,9 +58,9 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
             src={image || (collection?.imageUrl as string)}
             alt={name}
             style={{
-              width: 80,
-              height: 80,
-              borderRadius: 40,
+              width: 48,
+              height: 48,
+              borderRadius: 12,
               objectFit: 'cover',
             }}
             onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -72,9 +72,9 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
         ) : null}
       </BadgeWrapper>
       <Text
-        variant={TextVariant.bodyLgMedium}
+        variant={TextVariant.headingSm}
         color={TextColor.textDefault}
-        marginTop={2}
+        marginTop={4}
       >
         {asset.name || asset.collection?.name}
       </Text>
@@ -101,13 +101,16 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
   return (
     <Box
       display={Display.Flex}
-      flexDirection={FlexDirection.Row}
+      flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       marginTop={6}
-      marginBottom={6}
+      marginBottom={9}
     >
       <BadgeWrapper
+        style={{
+          alignSelf: 'center',
+        }}
         badge={
           chainId ? (
             <AvatarNetwork
@@ -126,9 +129,9 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
         />
       </BadgeWrapper>
       <Text
-        variant={TextVariant.bodyLgMedium}
+        variant={TextVariant.headingSm}
         color={TextColor.textDefault}
-        marginLeft={2}
+        marginTop={4}
       >
         {symbol}
       </Text>
