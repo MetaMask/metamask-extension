@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Box,
+  BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
@@ -43,7 +44,7 @@ const HyperliquidImage: React.FC = () => {
   return (
     <img
       src="./images/hyperliquid-referral.png"
-      alt="Hyperliquid referral image"
+      alt="Hyperliquid referral"
       width="full"
     />
   );
@@ -76,7 +77,7 @@ export const HyperliquidReferralConsent: React.FC<
         >
           {t('hyperliquidReferralTitle')}
         </Text>
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative} textAlign={TextAlign.Center}>
           {t('hyperliquidReferralSubtitle')}{' '}
           <HyperliquidLink text={t('learnMoreUpperCase')} />
         </Text>
@@ -84,6 +85,7 @@ export const HyperliquidReferralConsent: React.FC<
       <Box
         flexDirection={BoxFlexDirection.Column}
         justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
         className="h-full"
       >
         <Box paddingBottom={6} paddingHorizontal={4}>
