@@ -59,6 +59,11 @@ const NativeTokenPeriodDetails: React.FC<{
 }> = ({ permission, expiry }) => {
   const periodAmount = hexToBigInt(permission.data.periodAmount);
   const { periodDuration } = permission.data;
+
+  if (!permission.data.startTime) {
+    throw new Error('Start time is required');
+  }
+
   const { startTime } = permission.data;
 
   return (
@@ -199,8 +204,13 @@ const Erc20TokenPeriodDetails: React.FC<{
 }> = ({ permission, expiry }) => {
   const periodAmount = hexToBigInt(permission.data.periodAmount);
   const { periodDuration } = permission.data;
-  const { startTime } = permission.data;
   const { tokenAddress } = permission.data;
+
+  if (!permission.data.startTime) {
+    throw new Error('Start time is required');
+  }
+
+  const { startTime } = permission.data;
 
   return (
     <>
