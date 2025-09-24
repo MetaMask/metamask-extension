@@ -243,8 +243,6 @@
     "@endo/env-options@npm:^1.1.11": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
-    "@metamask/phishing-controller@^13.1.0": "file:./../core/packages/phishing-controller",
-    "@metamask/transaction-controller@^60.2.0": "file:./../core/packages/transaction-controller",
     "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
   },
   "dependencies": {
@@ -334,7 +332,7 @@
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/permission-log-controller": "^4.0.0",
-    "@metamask/phishing-controller": "^13.1.0",
+    "@metamask/phishing-controller": "^14.0.0",
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.38.0",
     "@metamask/preinstalled-example-snap": "^0.7.1",
