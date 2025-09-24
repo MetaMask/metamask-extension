@@ -143,7 +143,7 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
- * @param {boolean} withSolanaWebSocket - If we want to re-route all the ws requests to our Solana Local WS server
+ * @param {object} withSolanaWebSocket - Solana WebSocket configuration with server flag and mocks function
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
@@ -946,7 +946,7 @@ async function setupMocking(
    * Solana Websocket
    * Setup HTTP intercept for WebSocket handshake requests
    */
-  if (withSolanaWebSocket) {
+  if (withSolanaWebSocket.server) {
     await server
       .forAnyWebSocket()
       .matching((req) =>
