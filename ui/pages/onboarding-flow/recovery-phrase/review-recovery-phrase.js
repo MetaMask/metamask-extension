@@ -144,7 +144,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
 
   const handleBack = useCallback(() => {
     if (isFromSettingsSecurity && isFromReminder) {
-      console.log('isFromSettingsSecurity');
       navigate(
         `${ONBOARDING_REVEAL_SRP_ROUTE}${
           nextRouteQueryString ? `?${nextRouteQueryString}` : ''
