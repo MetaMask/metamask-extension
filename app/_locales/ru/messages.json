@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noActivity": {
-    "message": "Пока нет активности"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },
@@ -3744,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
   },
-  "noDeFiPositions": {
-    "message": "Не можете найти то, что ищете?"
-  },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps и большинство аппаратных кошельков не будут работать с вашей текущей версией браузера."
-  },
-  "noNFTs": {
-    "message": "Пока нет NFT"
   },
   "noNetworksAvailable": {
     "message": "Нет доступных сетей"
@@ -4641,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Предлагаемый лимит одобрения"
-  },
-  "protocolNotSupported": {
-    "message": "Возможно, мы ещё не поддерживаем ваш протокол."
   },
   "provide": {
     "message": "Предоставить"
