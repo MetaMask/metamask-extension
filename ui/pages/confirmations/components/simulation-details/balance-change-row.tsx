@@ -16,6 +16,7 @@ import {
   IconName,
 } from '../../../../components/component-library';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
@@ -69,7 +70,19 @@ export const BalanceChangeRow: React.FC<{
       return null;
     }
 
-    if (isFirstRow && hasIncomingTokens && confirmationId) {
+    if (!confirmationId) {
+      return (
+        <Text
+          style={{ whiteSpace: 'nowrap' }}
+          color={labelColor}
+          variant={TextVariant.bodyMd}
+        >
+          {label}
+        </Text>
+      );
+    }
+
+    if (hasIncomingTokens && isFirstRow) {
       return (
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.IncomingTokens}
@@ -80,13 +93,7 @@ export const BalanceChangeRow: React.FC<{
     }
 
     return (
-      <Text
-        style={{ whiteSpace: 'nowrap' }}
-        color={labelColor}
-        variant={TextVariant.bodyMd}
-      >
-        {label}
-      </Text>
+      <ConfirmInfoRow label={label} style={{ background: 'transparent' }} />
     );
   };
 
@@ -99,7 +106,7 @@ export const BalanceChangeRow: React.FC<{
       gap={1}
       flexWrap={FlexWrap.Wrap}
     >
-      {label && renderLabel()}
+      {renderLabel()}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
