@@ -43,6 +43,7 @@ type QrParams = {
   callback: (
     address: string,
     networkName: string,
+    chainId: CaipChainId,
     networkImageSrc?: string,
   ) => void;
 };
@@ -132,7 +133,12 @@ export const MultichainAddressRow = ({
 
   // Handle "QR Code" button click
   const handleQrClick = () => {
-    qrActionParams?.callback(address, networkName, networkImageSrc);
+    qrActionParams?.callback(
+      address,
+      networkName,
+      chainId as CaipChainId,
+      networkImageSrc,
+    );
   };
 
   return (

@@ -279,6 +279,7 @@ describe('MultichainAddressRowsList', () => {
     expect(mockOnQrClick).toHaveBeenCalledWith(
       '0x1234567890abcdef1234567890abcdef12345678',
       'Ethereum',
+      'eip155:1',
       './images/eth_logo.svg',
     );
   });

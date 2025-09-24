@@ -105,6 +105,7 @@ describe('MultichainAddressRow', () => {
     expect(mockQrCallback).toHaveBeenCalledWith(
       '0x1234567890123456789012345678901234567890',
       'Ethereum',
+      '0x1',
       expect.anything(),
     );
   });
