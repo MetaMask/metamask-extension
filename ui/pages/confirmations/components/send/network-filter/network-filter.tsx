@@ -185,7 +185,7 @@ export const NetworkFilter = ({
           >
             {t('selectNetworkToFilter')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody paddingLeft={0} paddingRight={0}>
             <NetworkListItem
               name={t('allNetworks')}
               iconSrc={IconName.Global}
