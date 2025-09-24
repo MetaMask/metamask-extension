@@ -482,7 +482,7 @@
     "message": "This site is asking you to sign in using the wrong account."
   },
   "alertMessageTokenTrustSignalMalicious": {
-    "message": "This token has been identified as malicious. Do not interact with this token."
+    "message": "This token has been identified as malicious. We recommend not interacting with this token."
   },
   "alertMessageTokenTrustSignalWarning": {
     "message": "This token has been identified as suspicious. Proceed with caution."
