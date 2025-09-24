@@ -143,17 +143,13 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   ]);
 
   const handleBack = useCallback(() => {
-    if (isFromSettingsSecurity && isFromReminder) {
-      navigate(
-        `${ONBOARDING_REVEAL_SRP_ROUTE}${
-          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
-        }`,
-        { replace: true },
-      );
-    } else {
-      navigate(-1);
-    }
-  }, [isFromSettingsSecurity, navigate, nextRouteQueryString, isFromReminder]);
+    navigate(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}${
+        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+      }`,
+      { replace: true },
+    );
+  }, [navigate, nextRouteQueryString]);
 
   return (
     <Box
