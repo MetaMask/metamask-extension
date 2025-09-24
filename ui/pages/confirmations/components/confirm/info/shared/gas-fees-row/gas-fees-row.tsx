@@ -7,7 +7,6 @@ import {
   ConfirmInfoRowVariant,
 } from '../../../../../../../components/app/confirm/info/row';
 import { Box, Text } from '../../../../../../../components/component-library';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -19,7 +18,6 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 
 export const GasFeesRow = ({
   label,
@@ -45,13 +43,6 @@ export const GasFeesRow = ({
   );
   const { showFiatInTestnets } = useSelector(getPreferences);
 
-  const balanceChangesResult = useBalanceChanges({
-    chainId: transactionMeta?.chainId,
-    simulationData: transactionMeta?.simulationData,
-  });
-  const isLoadingGasUsed =
-    !transactionMeta?.simulationData || balanceChangesResult.pending;
-
   return (
     <ConfirmInfoRow
       data-testid={dataTestId}
@@ -59,30 +50,26 @@ export const GasFeesRow = ({
       tooltip={tooltipText}
       variant={ConfirmInfoRowVariant.Default}
     >
-      {isLoadingGasUsed ? (
-        <Skeleton height={16} width={128} />
-      ) : (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          textAlign={TextAlign.Center}
-          marginLeft={8}
-        >
-          <Text marginRight={1} color={TextColor.textDefault}>
-            {nativeFee}
-          </Text>
-          {(!isTestnet || showFiatInTestnets) &&
-            (fiatFeeWith18SignificantDigits ? (
-              <Tooltip title={fiatFeeWith18SignificantDigits}>
-                <Text color={TextColor.textAlternative}>{fiatFee}</Text>
-              </Tooltip>
-            ) : (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        marginLeft={8}
+      >
+        <Text marginRight={1} color={TextColor.textDefault}>
+          {nativeFee}
+        </Text>
+        {(!isTestnet || showFiatInTestnets) &&
+          (fiatFeeWith18SignificantDigits ? (
+            <Tooltip title={fiatFeeWith18SignificantDigits}>
               <Text color={TextColor.textAlternative}>{fiatFee}</Text>
-            ))}
-        </Box>
-      )}
+            </Tooltip>
+          ) : (
+            <Text color={TextColor.textAlternative}>{fiatFee}</Text>
+          ))}
+      </Box>
     </ConfirmInfoRow>
   );
 };
