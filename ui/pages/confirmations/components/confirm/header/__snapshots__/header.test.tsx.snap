@@ -56,7 +56,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
         >
           G
         </div>
@@ -173,11 +173,11 @@ exports[`Header should match snapshot with token transfer confirmation initiated
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
     </button>
-    <h3
-      class="mm-box mm-text mm-text--heading-md mm-box--color-inherit"
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--color-inherit"
     >
       Review
-    </h3>
+    </h4>
     <div
       class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
     >
@@ -263,7 +263,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
         >
           G
         </div>
