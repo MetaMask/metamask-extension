@@ -10,7 +10,7 @@ import { AlignItems, BackgroundColor, BorderRadius, Display, FlexDirection } fro
 import { Column, Row } from '../layout';
 import { Box } from '../../../components/component-library';
 import { BridgeSkeletonLoader } from './bridge-skeleton-loader';
-import { useMultichainBalances } from '../../../hooks/useMultichainBalances';
+import { Asset } from '../utils/assets-service';
 
 interface AssetListProps {
   assets: Asset[];
