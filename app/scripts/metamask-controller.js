@@ -1030,7 +1030,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkEnablementController.enableNetwork(SolScope.Mainnet);
         }
         if (account.type === EthAccountType.Eoa) {
-          this.networkEnablementController.enableAllPopularNetworks();
+          // this.networkEnablementController.enableAllPopularNetworks();
         }
       },
     );
