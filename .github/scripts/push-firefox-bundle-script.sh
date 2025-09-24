@@ -13,7 +13,7 @@ rawVersion=$(git show -s --format='%s' HEAD | grep -Eo 'release/[0-9]+\.[0-9]+\.
 version="v${rawVersion}"
 
 # Validate that the version was successfully extracted
-if [[ -z "${version}" ]]; then
+if [[ -z "${rawVersion}" ]]; then
     echo "::error:: Failed to extract version from commit message. Ensure it follows the 'release/x.y.z' format."
     exit 1
 fi
