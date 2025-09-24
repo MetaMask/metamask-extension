@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, DAPP_URL, openDapp } = require('../helpers');
+const { withFixtures, DAPP_URL } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const triggerBFCache = async (driver) => {
@@ -33,7 +33,7 @@ describe('BFCache', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await openDapp(driver, undefined, DAPP_URL);
+        await driver.openNewPage(DAPP_URL);
 
         const request = JSON.stringify({
           jsonrpc: '2.0',

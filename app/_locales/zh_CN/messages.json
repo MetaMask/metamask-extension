@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
   },
-  "noActivity": {
-    "message": "暂无活动"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask 未连接到此站点"
   },
@@ -3744,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "无可用汇率"
   },
-  "noDeFiPositions": {
-    "message": "找不到您要查找的内容吗？"
-  },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps 和大多数硬件钱包与您的当前浏览器版本不兼容。"
-  },
-  "noNFTs": {
-    "message": "尚无 NFT"
   },
   "noNetworksAvailable": {
     "message": "无可用网络"
@@ -4641,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
-  },
-  "protocolNotSupported": {
-    "message": "我们可能尚不支持您的协议。"
   },
   "provide": {
     "message": "提供"

@@ -20,6 +20,10 @@ import {
 
 import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
+import {
+  BoxBackgroundColor,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
@@ -284,12 +288,14 @@ export const MultichainAccountsConnectPage: React.FC<
 
       handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
+      setPageMode(MultichainAccountsConnectPageMode.Summary);
     },
     [
       selectedChainIds,
       handleChainIdsSelected,
       setUserHasModifiedSelection,
       setSelectedAccountGroupIds,
+      setPageMode,
     ],
   );
 
@@ -379,7 +385,7 @@ export const MultichainAccountsConnectPage: React.FC<
   return pageMode === MultichainAccountsConnectPageMode.Summary ? (
     <Page
       data-testid="connect-page"
-      className="main-container connect-page"
+      className="main-container multichain-connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header paddingTop={8} paddingBottom={0}>
@@ -441,27 +447,20 @@ export const MultichainAccountsConnectPage: React.FC<
       >
         <Tabs
           onTabClick={() => null}
-          backgroundColor={BackgroundColor.transparent}
-          justifyContent={JustifyContent.center}
+          backgroundColor={BoxBackgroundColor.Transparent}
           defaultActiveTabKey="accounts"
           tabListProps={{
-            backgroundColor: BackgroundColor.transparent,
+            backgroundColor: BoxBackgroundColor.Transparent,
+            justifyContent: BoxJustifyContent.Center,
           }}
         >
           <Tab
+            className="multichain-connect-page__tab"
             name={t('accounts')}
             tabKey="accounts"
-            width={BlockSize.Full}
             data-testid="accounts-tab"
           >
-            <Box
-              marginTop={4}
-              style={{
-                overflow: 'auto',
-                maxHeight: '268px',
-                scrollbarColor: 'var(--color-icon-muted) transparent',
-              }}
-            >
+            <Box marginTop={4}>
               <Box
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.XL}
@@ -520,8 +519,8 @@ export const MultichainAccountsConnectPage: React.FC<
           </Tab>
           <Tab
             name={t('permissions')}
+            className="multichain-connect-page__tab"
             tabKey="permissions"
-            width={BlockSize.Full}
             data-testid="permissions-tab"
             disabled={selectedAccountGroupIds.length === 0}
           >

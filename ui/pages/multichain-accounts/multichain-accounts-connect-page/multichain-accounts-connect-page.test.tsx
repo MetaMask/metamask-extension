@@ -17,7 +17,7 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   useAccountGroupsForPermissions: () => ({
     connectedAccountGroups: [
       {
-        id: 'test-group-1',
+        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
         metadata: { name: 'Test Account Group 1' },
         accounts: [
           {
@@ -29,7 +29,7 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
     ],
     supportedAccountGroups: [
       {
-        id: 'test-group-1',
+        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
         metadata: { name: 'Test Account Group 1' },
         accounts: [
           {
@@ -39,7 +39,7 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
         ],
       },
       {
-        id: 'test-group-2',
+        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1',
         metadata: { name: 'Test Account Group 2' },
         accounts: [
           {
@@ -66,6 +66,12 @@ jest.mock('../../../../shared/modules/selectors/networks', () => ({
   }),
 }));
 
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual('../../../selectors/multichain-accounts/account-tree'),
+  getIconSeedAddressByAccountGroupId: () =>
+    '0xc5b2b5ae370876c0122910f92a13bef85a133e56',
+}));
+
 jest.mock('../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../selectors/multichain'),
   getMultichainNetwork: () => ({
@@ -87,19 +93,19 @@ const mockTargetSubjectMetadata = {
 
 const mockAccountTreeState = {
   wallets: {
-    'test-wallet-1': {
-      id: 'test-wallet-1',
+    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+      id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
       name: 'Test Wallet',
       groups: {
-        'test-group-1': {
-          id: 'test-group-1',
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
           name: 'Test Account Group 1',
           accounts: ['test-account-1'],
         },
       },
     },
   },
-  selectedAccountGroup: 'test-group-1',
+  selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
 };
 
 const mockInternalAccountsState = {

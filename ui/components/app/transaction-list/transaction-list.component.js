@@ -127,7 +127,7 @@ import {
   selectBridgeHistoryForAccount,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
-import NoTransactions from './no-transactions';
+import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_INCREMENT = 10;
 
@@ -734,14 +734,14 @@ export default function TransactionList({
 
   return (
     <>
-      {showRampsCard ? (
-        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-      ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
+        {showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+        ) : null}
         {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
-          <NoTransactions />
+          <TransactionActivityEmptyState className="mx-auto mt-4" />
         ) : (
           <Box className="transaction-list__transactions">
             {pendingTransactions.length > 0 && (
