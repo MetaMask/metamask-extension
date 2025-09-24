@@ -62,7 +62,7 @@ export const MultichainAccountCell = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexStart}
-        style={{ minWidth: 0, flex: 1, overflow: 'hidden' }}
+        style={{ minWidth: 0, flex: 1 }}
       >
         <Box
           className="multichain-account-cell__account-avatar"
@@ -76,7 +76,8 @@ export const MultichainAccountCell = ({
         >
           <PreferredAvatar address={seedAddressIcon} />
         </Box>
-        <Box>
+        <Box style={{ overflow: 'hidden' }}>
+          {/* Prevent overflow of account name by long account names */}
           <Text
             className="multichain-account-cell__account-name"
             variant={TextVariant.bodyMdMedium}
@@ -128,6 +129,8 @@ export const MultichainAccountCell = ({
           display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.flexEnd}
+          data-testid="multichain-account-cell-end-accessory"
+          aria-label={`${accountName} options`}
         >
           {endAccessory}
         </Box>

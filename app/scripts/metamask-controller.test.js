@@ -4803,17 +4803,19 @@ describe('MetaMaskController', () => {
       jest.restoreAllMocks();
     });
 
-    function setEnableMultichainAccountsFlag(flag) {
+    function setEnableMultichainAccountsState2Flag(flag) {
       jest
         .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
         .mockReturnValue({
-          remoteFeatureFlags: { enableMultichainAccounts: flag },
+          remoteFeatureFlags: {
+            enableMultichainAccountsState2: flag,
+          },
           cacheTimestamp: 0,
         });
     }
 
     it('returns false when disabled', () => {
-      setEnableMultichainAccountsFlag({
+      setEnableMultichainAccountsState2Flag({
         enabled: false,
         featureVersion: '2',
         minimumVersion: '11.0.0',
@@ -4824,7 +4826,7 @@ describe('MetaMaskController', () => {
     });
 
     it("returns false when featureVersion !== '2'", () => {
-      setEnableMultichainAccountsFlag({
+      setEnableMultichainAccountsState2Flag({
         enabled: true,
         featureVersion: '1',
         minimumVersion: '11.0.0',
@@ -4835,7 +4837,7 @@ describe('MetaMaskController', () => {
     });
 
     it('returns false when no minimumVersion is set', () => {
-      setEnableMultichainAccountsFlag({
+      setEnableMultichainAccountsState2Flag({
         enabled: true,
         featureVersion: '2',
         minimumVersion: null,
@@ -4846,7 +4848,7 @@ describe('MetaMaskController', () => {
     });
 
     it('returns true when current version is greater than minimumVersion', () => {
-      setEnableMultichainAccountsFlag({
+      setEnableMultichainAccountsState2Flag({
         enabled: true,
         featureVersion: '2',
         minimumVersion: '11.0.0',
@@ -4857,7 +4859,7 @@ describe('MetaMaskController', () => {
     });
 
     it('returns false when current version is less than minimumVersion', () => {
-      setEnableMultichainAccountsFlag({
+      setEnableMultichainAccountsState2Flag({
         enabled: true,
         featureVersion: '2',
         minimumVersion: '9999.0.0',
@@ -5074,7 +5076,7 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
         .mockReturnValue({
           remoteFeatureFlags: {
-            enableMultichainAccounts: {
+            enableMultichainAccountsState2: {
               enabled: true,
               featureVersion: '2',
               minimumVersion: '0.0.0',
@@ -5114,7 +5116,7 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
         .mockReturnValue({
           remoteFeatureFlags: {
-            enableMultichainAccounts: {
+            enableMultichainAccountsState2: {
               enabled: false,
               featureVersion: '2',
               minimumVersion: '0.0.0',
@@ -5176,7 +5178,7 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
         .mockReturnValue({
           remoteFeatureFlags: {
-            enableMultichainAccounts: {
+            enableMultichainAccountsState2: {
               enabled: true,
               featureVersion: '2',
               minimumVersion: '0.0.0',
@@ -5208,7 +5210,7 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
         .mockReturnValue({
           remoteFeatureFlags: {
-            enableMultichainAccounts: {
+            enableMultichainAccountsState2: {
               enabled: false,
               featureVersion: '2',
               minimumVersion: '0.0.0',
