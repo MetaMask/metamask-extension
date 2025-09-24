@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { Nft } from '@metamask/assets-controllers';
@@ -59,8 +59,9 @@ export default function NftFullImage() {
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
-  const nftChainNetwork = nftNetworkConfigs[toHex(chainId?.toString() ?? '')];
-  const nftChainImage = getImageForChainId(toHex(chainId?.toString() ?? ''));
+  const hexChainId = toHex(chainId?.toString() ?? '');
+  const nftChainNetwork = nftNetworkConfigs[hexChainId];
+  const nftChainImage = getImageForChainId(hexChainId);
   const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
   const nftImageAlt = getNftImageAlt({
@@ -84,6 +85,16 @@ export default function NftFullImage() {
     setVisible(true);
   }, []);
 
+  const onClose = useCallback(() => {
+    if (history.action === 'PUSH') {
+      // Previous action was a PUSH, so we can navigate back
+      history.goBack();
+    } else {
+      // Previous action was a POP or something else, safer to navigate back to asset details
+      history.push(`${ASSET_ROUTE}/${hexChainId}/${asset}/${id}`);
+    }
+  }, [asset, hexChainId, history, id]);
+
   return (
     <Box className="main-container asset__container">
       <Page>
@@ -94,7 +105,7 @@ export default function NftFullImage() {
               size={ButtonIconSize.Sm}
               ariaLabel={t('back')}
               iconName={IconName.Close}
-              onClick={() => history.push(`${ASSET_ROUTE}/${asset}/${id}`)}
+              onClick={onClose}
               data-testid="nft-details__close"
               paddingLeft={0}
             />

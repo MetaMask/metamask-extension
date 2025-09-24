@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { openDapp, unlockWallet } from '../../../helpers';
+import { unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
   confirmDepositTransactionWithCustomNonce,
   createDepositTransaction,
-  openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
   toggleOnHexData,
@@ -42,8 +43,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -61,8 +71,18 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -97,7 +117,13 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             '0x100000000000000000000',
           )) ?? console.error('localNodes is undefined or empty');
 
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -143,7 +169,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
-          await openDapp(driver, contractAddress);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -166,8 +193,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createDepositTransaction(driver);
 
@@ -186,8 +222,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createDepositTransaction(driver);
 
@@ -213,8 +258,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createDepositTransaction(driver);
 
@@ -236,8 +290,18 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await toggleOnHexData(driver);
 

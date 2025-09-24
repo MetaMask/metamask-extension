@@ -3702,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noActivity": {
-    "message": "Henüz herhangi bir aktivite yok"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
@@ -3714,17 +3711,11 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
-  "noDeFiPositions": {
-    "message": "Aradığınızı bulamıyor musunuz?"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
-  },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
   },
   "noNetworksAvailable": {
     "message": "Mevcut ağ yok"
@@ -4607,9 +4598,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
-  },
-  "protocolNotSupported": {
-    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
   },
   "provide": {
     "message": "Sun"

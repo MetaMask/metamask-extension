@@ -41,6 +41,7 @@ import {
   getNftDetectionControllerMessenger,
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
+  getAssetsContractControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -57,6 +58,8 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapKeyringBuilderMessenger,
+  getSnapKeyringBuilderInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -137,6 +140,15 @@ import {
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+import {
+  getKeyringControllerInitMessenger,
+  getKeyringControllerMessenger,
+} from './keyring-controller-messenger';
+import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+import {
+  getNetworkControllerInitMessenger,
+  getNetworkControllerMessenger,
+} from './network-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -182,8 +194,24 @@ export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
+export type {
+  KeyringControllerMessenger,
+  KeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
+export {
+  getKeyringControllerMessenger,
+  getKeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type {
+  NetworkControllerMessenger,
+  NetworkControllerInitMessenger,
+} from './network-controller-messenger';
+export {
+  getNetworkControllerMessenger,
+  getNetworkControllerInitMessenger,
+} from './network-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type {
@@ -206,6 +234,8 @@ export {
   getPermissionControllerMessenger,
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
+export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export type {
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
@@ -316,6 +346,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
+  KeyringController: {
+    getMessenger: getKeyringControllerMessenger,
+    getInitMessenger: getKeyringControllerInitMessenger,
+  },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,
     getInitMessenger: noop,
@@ -344,6 +378,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
   },
+  NetworkController: {
+    getMessenger: getNetworkControllerMessenger,
+    getInitMessenger: getNetworkControllerInitMessenger,
+  },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
     getInitMessenger: noop,
@@ -363,6 +401,10 @@ export const CONTROLLER_MESSENGERS = {
   PermissionController: {
     getMessenger: getPermissionControllerMessenger,
     getInitMessenger: getPermissionControllerInitMessenger,
+  },
+  PermissionLogController: {
+    getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
@@ -407,6 +449,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
+  },
+  SnapKeyringBuilder: {
+    getMessenger: getSnapKeyringBuilderMessenger,
+    getInitMessenger: getSnapKeyringBuilderInitMessenger,
   },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,
@@ -466,7 +512,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAssetsContractControllerInitMessenger,
   },
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,

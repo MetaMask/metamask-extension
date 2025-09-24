@@ -34,7 +34,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
                   <rect
                     fill="#18CDF2"
                     height="24"
-                    transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                    transform="translate(-0.78629512784545 -2.47821305209537) rotate(328.9 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -42,7 +42,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
                   <rect
                     fill="#035E56"
                     height="24"
-                    transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                    transform="translate(-13.72384628162403 7.94434640381145) rotate(176.2 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -50,7 +50,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
                   <rect
                     fill="#F26602"
                     height="24"
-                    transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                    transform="translate(12.50088151366794 -10.65385479224781) rotate(468.9 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -250,7 +250,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
                   <rect
                     fill="#18CDF2"
                     height="24"
-                    transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                    transform="translate(-0.78629512784545 -2.47821305209537) rotate(328.9 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -258,7 +258,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
                   <rect
                     fill="#035E56"
                     height="24"
-                    transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                    transform="translate(-13.72384628162403 7.94434640381145) rotate(176.2 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -266,7 +266,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
                   <rect
                     fill="#F26602"
                     height="24"
-                    transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                    transform="translate(12.50088151366794 -10.65385479224781) rotate(468.9 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -343,7 +343,7 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
                   <rect
                     fill="#03405E"
                     height="24"
-                    transform="translate(-5.1032274517898335 -4.005457853807921) rotate(369.5 12 12)"
+                    transform="translate(-5.10322745178983 -4.00545785380792) rotate(369.5 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -351,7 +351,7 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
                   <rect
                     fill="#FAA200"
                     height="24"
-                    transform="translate(4.654017159434154 -10.422671895325516) rotate(387.5 12 12)"
+                    transform="translate(4.65401715943415 -10.42267189532552) rotate(387.5 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"
@@ -359,7 +359,7 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
                   <rect
                     fill="#016F8E"
                     height="24"
-                    transform="translate(-16.380316861028035 -8.91841489898652) rotate(241.5 12 12)"
+                    transform="translate(-16.38031686102804 -8.91841489898652) rotate(241.5 12.00000000000000 12.00000000000000)"
                     width="24"
                     x="0"
                     y="0"

@@ -23,7 +23,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   setFirstTimeFlowType,
   startOAuthLogin,
-  setIsSocialLoginFlowEnabledForMetrics,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
@@ -332,8 +332,13 @@ export default function OnboardingWelcome() {
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
+        if (!isFireFox) {
+          // reset the participate in meta metrics in case it was set to true from previous login attempts
+          // to prevent the queued events from being sent
+          dispatch(setParticipateInMetaMetrics(null));
+        }
+
         if (loginType === LOGIN_TYPE.SRP) {
-          dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
           if (loginOption === LOGIN_OPTION.NEW) {
             await onCreateClick();
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
@@ -349,11 +354,13 @@ export default function OnboardingWelcome() {
 
         if (loginOption === LOGIN_OPTION.NEW) {
           await onSocialLoginCreateClick(loginType);
-          // if firefox, set isSocialLoginFlowEnabledForMetrics to false, otherwise set to true
-          dispatch(setIsSocialLoginFlowEnabledForMetrics(!isFireFox));
         } else if (loginOption === LOGIN_OPTION.EXISTING) {
           await onSocialLoginImportClick(loginType);
-          dispatch(setIsSocialLoginFlowEnabledForMetrics(false));
+        }
+
+        if (!isFireFox) {
+          // automatically set participate in meta metrics to true for social login users in chrome
+          dispatch(setParticipateInMetaMetrics(true));
         }
       } catch (error) {
         handleLoginError(error);
