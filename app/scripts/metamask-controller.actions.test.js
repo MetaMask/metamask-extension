@@ -329,6 +329,9 @@ describe('MetaMaskController', function () {
           configuration: { chainId: '0xa' },
         })
         .mockReturnValueOnce({
+          configuration: { chainId: '0xa' },
+        })
+        .mockReturnValueOnce({
           networkConfigurationsByChainId: {
             '0xa': {
               nativeCurrency: 'ETH',
@@ -343,7 +346,7 @@ describe('MetaMaskController', function () {
         decimals,
         networkClientId: 'networkClientId1',
       });
-      expect(callSpy.mock.calls[0]).toStrictEqual([
+      expect(callSpy.mock.calls[1]).toStrictEqual([
         'NetworkController:getNetworkClientById',
         'networkClientId1',
       ]);
