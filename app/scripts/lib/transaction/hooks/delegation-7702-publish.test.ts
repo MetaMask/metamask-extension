@@ -1,5 +1,4 @@
 import { Messenger } from '@metamask/base-controller';
-import { BridgeStatusControllerGetStateAction } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
@@ -85,7 +84,6 @@ describe('Delegation 7702 Publish Hook', () => {
     process.env.GASLESS_7702_ENFORCER_ADDRESS = ENFORCE_ADDRESS_MOCK;
 
     const baseMessenger = new Messenger<
-      | BridgeStatusControllerGetStateAction
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction,
@@ -97,7 +95,6 @@ describe('Delegation 7702 Publish Hook', () => {
       allowedActions: [
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
-        'BridgeStatusController:getState',
         'DelegationController:signDelegation',
       ],
       allowedEvents: [],
@@ -325,7 +322,6 @@ describe('Delegation 7702 Publish Hook', () => {
       },
     ]);
 
-    // Provide an id and make bridge status return gasIncluded7702: true
     const GASLESS_TX_ID = 'tx-123';
     const gaslessTxMeta = {
       ...TRANSACTION_META_MOCK,

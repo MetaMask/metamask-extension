@@ -4,7 +4,6 @@ import {
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
-import { BridgeStatusControllerGetStateAction } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
@@ -50,7 +49,6 @@ type MessengerActions =
   | AccountsControllerGetStateAction
   | AppStateControllerGetStateAction
   | AuthenticationController.AuthenticationControllerGetBearerToken
-  | BridgeStatusControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
@@ -127,7 +125,6 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
       'AuthenticationController:getBearerToken',
-      'BridgeStatusController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',

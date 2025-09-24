@@ -43,7 +43,7 @@ export function useGasIncluded7702({
 }: UseGasIncluded7702Params): boolean {
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
-  const smartTransactionsEnabled = useSelector((state) =>
+  const isSmartTransaction = useSelector((state) =>
     getIsSmartTransaction(state as never, fromChain?.chainId),
   );
 
@@ -54,7 +54,7 @@ export function useGasIncluded7702({
 
     const checkGasIncluded7702Support = async () => {
       if (
-        (isSendBundleSupportedForChain && smartTransactionsEnabled) ||
+        (isSendBundleSupportedForChain && isSmartTransaction) ||
         !smartAccountOptedIn ||
         !isSwap ||
         !selectedAccount?.address ||
@@ -111,11 +111,11 @@ export function useGasIncluded7702({
     };
   }, [
     smartAccountOptedIn,
-    isSwap,
-    selectedAccount?.address,
     fromChain?.chainId,
     isSendBundleSupportedForChain,
-    smartTransactionsEnabled,
+    isSmartTransaction,
+    isSwap,
+    selectedAccount?.address,
   ]);
 
   return isGasIncluded7702Supported;

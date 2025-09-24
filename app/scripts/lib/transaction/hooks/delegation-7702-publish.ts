@@ -114,14 +114,14 @@ export class Delegation7702PublishHook {
     const { delegationAddress, upgradeContractAddress } =
       atomicBatchChainSupport;
 
-    const isGaslessBridge = transactionMeta.isGasFeeIncluded;
+    const isGaslessSwap = transactionMeta.isGasFeeIncluded;
 
-    if ((!selectedGasFeeToken || !gasFeeTokens?.length) && !isGaslessBridge) {
+    if ((!selectedGasFeeToken || !gasFeeTokens?.length) && !isGaslessSwap) {
       log('Skipping as no selected gas fee token');
       return EMPTY_RESULT;
     }
 
-    const gasFeeToken = isGaslessBridge
+    const gasFeeToken = isGaslessSwap
       ? undefined
       : gasFeeTokens?.find(
           (token) =>
@@ -129,7 +129,7 @@ export class Delegation7702PublishHook {
             selectedGasFeeToken?.toLowerCase(),
         );
 
-    if (!gasFeeToken && !isGaslessBridge) {
+    if (!gasFeeToken && !isGaslessSwap) {
       throw new Error('Selected gas fee token not found');
     }
 
@@ -137,7 +137,7 @@ export class Delegation7702PublishHook {
       parseInt(transactionMeta.chainId, 16),
     );
     const delegationManagerAddress = delegationEnvironment.DelegationManager;
-    const includeTransfer = !isGaslessBridge;
+    const includeTransfer = !isGaslessSwap;
 
     if (includeTransfer && (!gasFeeToken || gasFeeToken === undefined)) {
       throw new Error('Gas fee token not found');
