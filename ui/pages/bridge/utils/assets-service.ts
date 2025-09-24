@@ -1,6 +1,7 @@
 import { toEvmCaipChainId } from "@metamask/multichain-network-controller";
 import { MultichainNetwork } from "@metamask/multichain-transactions-controller";
 import { CaipAssetId, CaipChainId, Hex, isCaipChainId, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
+import { CHAIN_IDS } from "../../../../shared/constants/network";
 
 export interface Asset {
   assetId: string;
@@ -35,7 +36,8 @@ function stringifyChainIds(chainIds: string[]) {
 
 export async function getPopularAssets(value: string, chainIds: string[]): Promise<Asset[]> {
   try {
-    const response = await fetch(`https://token.api.cx.metamask.io/v3/tokens/popular?chainIds=${stringifyChainIds(chainIds)}&minLiquidity=0&minVolume24hUsd=0`);
+    const appendedParams = chainIds.length === 1 && [CHAIN_IDS.ZKSYNC_ERA, CHAIN_IDS.SEI].includes(chainIds[0] as any) ? '&minLiquidity=0&minVolume24hUsd=0' : '';
+    const response = await fetch(`https://token.api.cx.metamask.io/v3/tokens/popular?chainIds=${stringifyChainIds(chainIds)}${appendedParams}`);
     const data = await response.json() as Omit<Asset, 'chainId'>[];
     return data.map((asset) => {
       const { chainId } = parseCaipAssetType(asset.assetId as CaipAssetId);

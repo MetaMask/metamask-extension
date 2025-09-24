@@ -79,7 +79,7 @@ export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
             fontWeight={FontWeight.Medium}
             color={TextColor.textDefault}
           >
-            {asset.balance || '0'} {asset.symbol}
+            {asset.balance || '0'}
           </Text>
           <Text
             variant={TextVariant.bodySm}
