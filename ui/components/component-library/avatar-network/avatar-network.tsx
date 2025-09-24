@@ -56,7 +56,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
           className,
         )}
         borderRadius={BorderRadius.MD}
-        borderWidth={1}
+        borderWidth={2}
         {...{
           backgroundColor,
           borderColor,
