@@ -22,7 +22,7 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         const SCOPE = 'eip155:1337';
         await testDapp.invokeMethod({
@@ -39,7 +39,7 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
         // TODO: temporarily leave this line in place, will migrate to POM once the ticket is resolved
         const resultSummaries = await driver.findElements('.result-summary');
         resultSummaries.forEach(async (element) => await element.click());
-        await testDapp.check_walletNotifyResult(SCOPE);
+        await testDapp.checkWalletNotifyResult(SCOPE);
       },
     );
   });

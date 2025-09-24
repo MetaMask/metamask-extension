@@ -141,9 +141,7 @@ class SnapSimpleKeyringPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.pageTitle,
@@ -327,7 +325,7 @@ class SnapSimpleKeyringPage {
     await this.driver.switchToWindowWithTitle(
       WINDOW_TITLES.SnapSimpleKeyringDapp,
     );
-    await this.check_simpleKeyringSnapConnected();
+    await this.checkSimpleKeyringSnapConnected();
   }
 
   /**
@@ -354,18 +352,14 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.useSyncApprovalToggle);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_errorRequestMessageDisplayed(): Promise<void> {
+  async checkErrorRequestMessageDisplayed(): Promise<void> {
     console.log(
       'Check error request message is displayed on snap simple keyring page',
     );
     await this.driver.waitForSelector(this.errorRequestMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_simpleKeyringSnapConnected(): Promise<void> {
+  async checkSimpleKeyringSnapConnected(): Promise<void> {
     console.log('Check simple keyring snap is connected');
     await this.driver.waitForSelector(this.snapConnectedMessage);
   }

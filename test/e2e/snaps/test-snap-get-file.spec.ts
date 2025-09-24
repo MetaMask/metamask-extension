@@ -25,28 +25,28 @@ describe('Test Snap Get File', function () {
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(driver, 'connectGetFileButton');
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectGetFileButton',
           'Reconnect to Get File Snap',
         );
 
         // click on get file and check correct result
         await testSnaps.scrollAndClickButton('sendGetFileTextButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'fileResultSpan',
           jsonTextValidation,
         );
 
         // click on get base64 and await correct result
         await testSnaps.scrollAndClickButton('sendGetFileBase64Button');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'fileResultSpan',
           base64TextFile,
         );
 
         // click on get hex text and await correct result
         await testSnaps.scrollAndClickButton('sendGetFileHexButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'fileResultSpan',
           hexEncodedFileValidation,
         );

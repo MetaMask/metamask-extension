@@ -20,8 +20,8 @@ describe('Petnames - Signatures', function (this: Suite) {
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_nameIsDisplayed('0xCD2a3...DD826', false);
-        await confirmation.check_nameIsDisplayed('0xbBbBB...bBBbB', false);
+        await confirmation.checkNameIsDisplayed('0xCD2a3...DD826', false);
+        await confirmation.checkNameIsDisplayed('0xbBbBB...bBBbB', false);
         await confirmation.saveName({
           value: '0xCD2a3...DD826',
           proposedName: 'test.lens',
@@ -30,19 +30,19 @@ describe('Petnames - Signatures', function (this: Suite) {
           value: '0xbBbBB...bBBbB',
           proposedName: 'test2.lens',
         });
-        await confirmation.check_nameIsDisplayed('0xCcCCc...ccccC', false);
+        await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
         await confirmation.saveName({
           value: '0xCcCCc...ccccC',
           name: 'Custom Name',
         });
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_nameIsDisplayed('test.lens', true);
-        await confirmation.check_nameIsDisplayed('test2.lens', true);
-        await confirmation.check_nameIsDisplayed('Custom Name', true);
+        await confirmation.checkNameIsDisplayed('test.lens', true);
+        await confirmation.checkNameIsDisplayed('test2.lens', true);
+        await confirmation.checkNameIsDisplayed('Custom Name', true);
       },
     );
   });
@@ -57,11 +57,11 @@ describe('Petnames - Signatures', function (this: Suite) {
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_nameIsDisplayed('0xCD2a3...DD826', false);
-        await confirmation.check_nameIsDisplayed('0xDeaDb...DbeeF', false);
-        await confirmation.check_nameIsDisplayed('0xbBbBB...bBBbB', false);
-        await confirmation.check_nameIsDisplayed('0xB0Bda...bEa57', false);
-        await confirmation.check_nameIsDisplayed('0xB0B0b...00000', false);
+        await confirmation.checkNameIsDisplayed('0xCD2a3...DD826', false);
+        await confirmation.checkNameIsDisplayed('0xDeaDb...DbeeF', false);
+        await confirmation.checkNameIsDisplayed('0xbBbBB...bBBbB', false);
+        await confirmation.checkNameIsDisplayed('0xB0Bda...bEa57', false);
+        await confirmation.checkNameIsDisplayed('0xB0B0b...00000', false);
         await confirmation.saveName({
           value: '0xCD2a3...DD826',
           proposedName: 'test.lens',
@@ -70,19 +70,19 @@ describe('Petnames - Signatures', function (this: Suite) {
           value: '0xB0Bda...bEa57',
           proposedName: 'Test Token 2',
         });
-        await confirmation.check_nameIsDisplayed('0xCcCCc...ccccC', false);
+        await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
         await confirmation.saveName({
           value: '0xCcCCc...ccccC',
           name: 'Custom Name',
         });
-        await confirmation.check_pageIsLoaded();
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_nameIsDisplayed('test.lens', true);
-        await confirmation.check_nameIsDisplayed('Test Toke...', true);
-        await confirmation.check_nameIsDisplayed('Custom Name', true);
+        await confirmation.checkNameIsDisplayed('test.lens', true);
+        await confirmation.checkNameIsDisplayed('Test Toke...', true);
+        await confirmation.checkNameIsDisplayed('Custom Name', true);
       },
     );
   });
@@ -94,6 +94,7 @@ describe('Petnames - Signatures', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
+          .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockLookupSnap,
         title: this.test?.fullTitle(),
@@ -110,9 +111,9 @@ describe('Petnames - Signatures', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmation.check_proposedNames('0xCD2a3...DD826', [
+        await confirmation.checkProposedNames('0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
-          ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
+          ['cd2.1.test.domain', 'Name Lookup Example Snap'],
         ]);
       },
     );

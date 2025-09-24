@@ -32,13 +32,13 @@ export async function withMultiSrp(
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);
       const homePage = new HomePage(driver);
-      await homePage.check_pageIsLoaded();
+      await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.startImportSecretPhrase(srpToUse);
-      await homePage.check_newSrpAddedToastIsDisplayed();
+      await homePage.checkNewSrpAddedToastIsDisplayed();
       await test(driver);
     },
   );

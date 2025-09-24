@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
-import { openDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -41,20 +41,20 @@ describe('Transfer custom tokens', function () {
             new TokenTransferTransactionConfirmation(driver);
           const activityListPage = new ActivityListPage(driver);
 
-          await homePage.check_pageIsLoaded();
+          await homePage.checkPageIsLoaded();
 
           // go to custom tokens view on extension, perform send tokens
           await assetListPage.openTokenDetails(symbol);
           await assetListPage.clickSendButton();
 
-          await sendTokenPage.check_pageIsLoaded();
+          await sendTokenPage.checkPageIsLoaded();
           await sendTokenPage.fillRecipient(recipientAddress);
           await sendTokenPage.fillAmount('1');
           await sendTokenPage.clickContinueButton();
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.checkTokenTransferPageIsLoaded(
             '1',
             symbol,
             expectedNetworkFee,
@@ -68,10 +68,8 @@ describe('Transfer custom tokens', function () {
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
-          await activityListPage.check_txAction(`Sent ${symbol}`);
-          await activityListPage.check_txAmountInActivity(
-            valueWithSymbol('-1'),
-          );
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
+          await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
         },
       );
     });
@@ -102,15 +100,15 @@ describe('Transfer custom tokens', function () {
           const activityListPage = new ActivityListPage(driver);
 
           // transfer token from dapp
-          await openDapp(driver, contractAddress);
-          await testDapp.check_pageIsLoaded();
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
           await testDapp.clickTransferTokens();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
-          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.checkTokenTransferPageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
@@ -129,14 +127,14 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.check_txAction(`Sent ${symbol}`);
-          await activityListPage.check_txAmountInActivity(
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
+          await activityListPage.checkTxAmountInActivity(
             valueWithSymbol('-1.5'),
           );
 
           // check token amount is correct after transaction
           await homePage.goToTokensTab();
-          await assetListPage.check_tokenExistsInList(
+          await assetListPage.checkTokenExistsInList(
             symbol,
             valueWithSymbol('8.5'),
           );
@@ -169,15 +167,16 @@ describe('Transfer custom tokens', function () {
           const activityListPage = new ActivityListPage(driver);
 
           // transfer token from dapp
-          await openDapp(driver, contractAddress);
-          await testDapp.check_pageIsLoaded();
+          await driver.openNewPage(`${DAPP_URL}/?contract=${contractAddress}`);
+
+          await testDapp.checkPageIsLoaded();
           await testDapp.clickTransferTokensWithoutGas();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // check transaction details and confirm
           const expectedNetworkFee = '0.001';
-          await tokenTransferRedesignedConfirmPage.check_tokenTransferPageIsLoaded(
+          await tokenTransferRedesignedConfirmPage.checkTokenTransferPageIsLoaded(
             '1.5',
             symbol,
             expectedNetworkFee,
@@ -190,14 +189,14 @@ describe('Transfer custom tokens', function () {
           );
 
           await homePage.goToActivityList();
-          await activityListPage.check_txAction(`Sent ${symbol}`);
-          await activityListPage.check_txAmountInActivity(
+          await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
+          await activityListPage.checkTxAmountInActivity(
             valueWithSymbol('-1.5'),
           );
 
           // check token amount is correct after transaction
           await homePage.goToTokensTab();
-          await assetListPage.check_tokenExistsInList(
+          await assetListPage.checkTokenExistsInList(
             symbol,
             valueWithSymbol('8.5'),
           );

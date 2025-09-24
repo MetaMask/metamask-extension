@@ -25,15 +25,15 @@ describe('Permissions', function (this: Suite) {
         // open permissions page and check that the dapp is connected
         await new HeaderNavbar(driver).openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.check_connectedToSite(DAPP_HOST_ADDRESS);
-        await permissionListPage.check_numberOfConnectedSites();
+        await permissionListPage.checkPageIsLoaded();
+        await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
+        await permissionListPage.checkNumberOfConnectedSites();
 
         // can get accounts within the dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_getAccountsResult(publicAddress);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkGetAccountsResult(publicAddress);
       },
     );
   });

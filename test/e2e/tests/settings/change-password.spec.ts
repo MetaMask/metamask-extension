@@ -26,25 +26,25 @@ async function doPasswordChangeAndLockWallet(
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
+  await settingsPage.checkPageIsLoaded();
   await settingsPage.goToPrivacySettings();
 
   const privacySettings = new PrivacySettings(driver);
-  await privacySettings.check_pageIsLoaded();
+  await privacySettings.checkPageIsLoaded();
   await privacySettings.openChangePassword();
 
   const changePasswordPage = new ChangePasswordPage(driver);
-  await changePasswordPage.check_pageIsLoaded();
+  await changePasswordPage.checkPageIsLoaded();
 
   await changePasswordPage.confirmCurrentPassword(currentPassword);
 
   await changePasswordPage.changePassword(newPassword);
   if (isSocialLogin) {
-    await changePasswordPage.check_passwordChangedWarning();
+    await changePasswordPage.checkPasswordChangedWarning();
     await changePasswordPage.confirmChangePasswordWarning();
   }
 
-  await privacySettings.check_passwordChangeSuccessToastIsDisplayed();
+  await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
 
   await settingsPage.closeSettingsPage();
 
@@ -71,7 +71,7 @@ describe('Change wallet password', function () {
           password: OLD_PASSWORD,
         });
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         await doPasswordChangeAndLockWallet(driver, OLD_PASSWORD, NEW_PASSWORD);
 
@@ -79,11 +79,11 @@ describe('Change wallet password', function () {
 
         // Try to login with old password, should show incorrect password message
         await loginPage.loginToHomepage(OLD_PASSWORD);
-        await loginPage.check_incorrectPasswordMessageIsDisplayed();
+        await loginPage.checkIncorrectPasswordMessageIsDisplayed();
 
         // Login with new password, should login successfully
         await loginPage.loginToHomepage(NEW_PASSWORD);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
       },
     );
   });
@@ -112,7 +112,7 @@ describe('Change wallet password', function () {
         await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         await doPasswordChangeAndLockWallet(
           driver,
@@ -125,11 +125,11 @@ describe('Change wallet password', function () {
 
         // // Try to login with old password, should show incorrect password message
         await loginPage.loginToHomepage(OLD_PASSWORD);
-        await loginPage.check_incorrectPasswordMessageIsDisplayed();
+        await loginPage.checkIncorrectPasswordMessageIsDisplayed();
 
         // Login with new password, should login successfully
         await loginPage.loginToHomepage(NEW_PASSWORD);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
       },
     );
   });

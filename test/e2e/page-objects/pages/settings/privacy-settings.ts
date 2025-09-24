@@ -137,9 +137,7 @@ class PrivacySettings {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.privacySettingsPageTitle);
     } catch (e) {
@@ -152,9 +150,7 @@ class PrivacySettings {
     console.log('Privacy & Security Settings page is loaded');
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_srpListIsLoaded(): Promise<void> {
+  async checkSrpListIsLoaded(): Promise<void> {
     console.log('Check SRP list is loaded on privacy settings page');
     const srpSelector = {
       text: `Secret Recovery Phrase 1`,
@@ -261,9 +257,7 @@ class PrivacySettings {
     await this.driver.clickElement(this.changePasswordButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_passwordChangeSuccessToastIsDisplayed(): Promise<void> {
+  async checkPasswordChangeSuccessToastIsDisplayed(): Promise<void> {
     console.log(
       'Check password change success toast is displayed on privacy settings page',
     );
@@ -317,9 +311,7 @@ class PrivacySettings {
    * Checks if the delete MetaMetrics data button is enabled on privacy settings page.
    *
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_deleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
+  async checkDeleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.deleteMetaMetricsDataButton, {
         waitAtLeastGuard: 2000,
@@ -333,17 +325,13 @@ class PrivacySettings {
     return true;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_displayedSrpCanBeCopied(): Promise<void> {
+  async checkDisplayedSrpCanBeCopied(): Promise<void> {
     console.log('Check displayed SRP on privacy settings page can be copied');
     await this.driver.clickElement(this.copySrpButton);
     await this.driver.waitForSelector(this.copiedSrpExclamation);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_srpQrCodeIsDisplayed(): Promise<void> {
+  async checkSrpQrCodeIsDisplayed(): Promise<void> {
     console.log('Check SRP QR code is displayed on privacy settings page');
     await clickNestedButton(this.driver, 'QR');
     await this.driver.waitForSelector(this.revealSrpQrCodeImage);
@@ -354,9 +342,7 @@ class PrivacySettings {
    *
    * @param expectedSrpText - The expected SRP text.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_srpTextIsDisplayed(expectedSrpText: string): Promise<void> {
+  async checkSrpTextIsDisplayed(expectedSrpText: string): Promise<void> {
     console.log('Check SRP text is displayed on privacy settings page');
     await this.driver.waitForSelector({
       css: this.displayedSrpText,

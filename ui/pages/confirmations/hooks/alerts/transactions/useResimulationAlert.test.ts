@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
+import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -96,6 +97,16 @@ describe('useResimulationAlert', () => {
       runHook({
         currentConfirmation: notResimulatedConfirmation,
       }),
+    ).toEqual([]);
+  });
+
+  it('returns no alerts if transaction is wallet initiated', () => {
+    const walletInitiatedConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      origin: ORIGIN_METAMASK,
+    };
+    expect(
+      runHook({ currentConfirmation: walletInitiatedConfirmation }),
     ).toEqual([]);
   });
 

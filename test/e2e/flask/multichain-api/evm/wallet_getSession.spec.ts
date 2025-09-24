@@ -24,7 +24,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           const parsedResult = await testDapp.getSession();
 
@@ -59,7 +59,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           const parsedResult = await testDapp.getSession();
 

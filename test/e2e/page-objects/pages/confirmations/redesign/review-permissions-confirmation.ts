@@ -26,9 +26,7 @@ class ReviewPermissionsConfirmation {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(
         this.reviewPermissionsConfirmationTitle,
@@ -53,6 +51,13 @@ class ReviewPermissionsConfirmation {
     await this.driver.clickElement(this.confirmReviewPermissionsButton);
   }
 
+  async clickConfirmReviewPermissionsButtonWithWaitForWindowToClose(): Promise<void> {
+    console.log('Click confirm review permissions button');
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmReviewPermissionsButton,
+    );
+  }
+
   async confirmReviewPermissions(): Promise<void> {
     console.log('Confirm review permissions');
     await this.driver.clickElementAndWaitForWindowToClose(
@@ -60,9 +65,7 @@ class ReviewPermissionsConfirmation {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkIsDisplayed(networkName: string): Promise<void> {
+  async checkNetworkIsDisplayed(networkName: string): Promise<void> {
     console.log(
       `Check network ${networkName} is displayed on review permissions confirmation page`,
     );
@@ -72,9 +75,7 @@ class ReviewPermissionsConfirmation {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_useEnabledNetworksMessageIsDisplayed(): Promise<void> {
+  async checkUseEnabledNetworksMessageIsDisplayed(): Promise<void> {
     console.log('Check use enabled networks message is displayed');
     await this.driver.waitForSelector(this.useEnabledNetworksMessage);
   }

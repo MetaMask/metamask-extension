@@ -6,7 +6,6 @@ import {
   DAPP_URL,
   withFixtures,
   WINDOW_TITLES,
-  openDapp,
   veryLargeDelayMs,
 } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
@@ -40,14 +39,13 @@ describe('Test Snap TxInsights', function () {
         );
 
         // open the test-dapp page
-        await openDapp(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.openTestDappPage();
         await testDapp.clickMaliciousERC20TransferButton();
 
         // Switch back to MetaMask dialog and validate the transaction insights title and type
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapTxInsights.check_transactionInsightsTitle();
-        await snapTxInsights.check_transactionInsightsType('ERC-20');
+        await snapTxInsights.checkTransactionInsightsTitle();
+        await snapTxInsights.checkTransactionInsightsType('ERC-20');
       },
     );
   });
@@ -89,10 +87,10 @@ describe('Test Snap TxInsights', function () {
         await driver.delay(veryLargeDelayMs); // this is needed for the transaction to be processed
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapTxInsights.check_transactionInsightsTitle();
-        await snapTxInsights.check_transactionAddress('0x5CfE7...6a7e1');
-        await snapTxInsights.check_transactionAddress('0x581c3...45947');
-        await snapTxInsights.check_transactionInsightsType('ERC-721');
+        await snapTxInsights.checkTransactionInsightsTitle();
+        await snapTxInsights.checkTransactionAddress('0x5CfE7...6a7e1');
+        await snapTxInsights.checkTransactionAddress('0x581c3...45947');
+        await snapTxInsights.checkTransactionInsightsType('ERC-721');
       },
     );
   });
@@ -127,9 +125,9 @@ describe('Test Snap TxInsights', function () {
         await testDapp.clickERC1155SetApprovalForAllButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapTxInsights.check_transactionInsightsTitle();
-        await snapTxInsights.check_transactionAddress('0x5CfE7...6a7e1');
-        await snapTxInsights.check_transactionAddress('0x581c3...45947');
+        await snapTxInsights.checkTransactionInsightsTitle();
+        await snapTxInsights.checkTransactionAddress('0x5CfE7...6a7e1');
+        await snapTxInsights.checkTransactionAddress('0x581c3...45947');
       },
     );
   });

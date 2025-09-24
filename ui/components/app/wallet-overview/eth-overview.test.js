@@ -90,6 +90,10 @@ describe('EthOverview', () => {
     },
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      accountTree: {
+        wallets: {},
+        selectedAccountGroup: null,
+      },
       remoteFeatureFlags: {
         bridgeConfig: {
           support: true,

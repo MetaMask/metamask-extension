@@ -38,7 +38,7 @@ describe('Test Snap update via snaps component', function () {
         await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
           withExtraScreen: true,
         });
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectUpdateButton',
           'Reconnect to Update Snap',
         );
@@ -52,7 +52,7 @@ describe('Test Snap update via snaps component', function () {
         await snapInstall.clickOkButtonAndContinueOnDialog();
         await headerNavbar.openSnapListPage();
         await snapListPage.clickWebpackPluginSnap();
-        await snapListPage.check_updateLinkIsNotDisplayed();
+        await snapListPage.checkUpdateLinkIsNotDisplayed();
       },
     );
   });

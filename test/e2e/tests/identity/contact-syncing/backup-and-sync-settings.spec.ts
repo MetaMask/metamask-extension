@@ -38,21 +38,23 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
+          await header.checkPageIsLoaded();
 
           // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
-            return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+            return (
+              uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
+            );
           }, 30000);
 
           await header.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToBackupAndSyncSettings();
 
           const backupAndSyncSettingsPage = new BackupAndSyncSettings(driver);
-          await backupAndSyncSettingsPage.check_pageIsLoaded();
+          await backupAndSyncSettingsPage.checkPageIsLoaded();
 
           // Verify backup and sync is initially enabled
           const initialState = await driver.executeScript(() =>
@@ -123,7 +125,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           await settingsPage2.goToContactsSettings();
 
           const contactsSettings = new ContactsSettings(driver);
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.addContact(
             'New Contact Not Synced',
@@ -206,21 +208,23 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           await unlockWallet(driver);
 
           const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
+          await header.checkPageIsLoaded();
 
           // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
-            return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+            return (
+              uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
+            );
           }, 30000);
 
           await header.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToBackupAndSyncSettings();
 
           const backupAndSyncSettingsPage = new BackupAndSyncSettings(driver);
-          await backupAndSyncSettingsPage.check_pageIsLoaded();
+          await backupAndSyncSettingsPage.checkPageIsLoaded();
 
           // Verify backup and sync settings are available and contact syncing is enabled
           const initialState = await driver.executeScript(() =>
@@ -265,7 +269,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           await settingsPage2.goToContactsSettings();
 
           const contactsSettings = new ContactsSettings(driver);
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
           await contactsSettings.addContact(
             'New Contact Synced',
             '0x8888888888888888888888888888888888888888',

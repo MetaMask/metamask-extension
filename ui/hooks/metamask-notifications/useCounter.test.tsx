@@ -37,7 +37,7 @@ const mockState = {
           },
           link: {
             linkText: 'Try now',
-            linkUrl: 'https://portfolio.metamask.io/explore',
+            linkUrl: 'https://app.metamask.io/explore',
             isExternal: false,
           },
         },
@@ -60,7 +60,7 @@ const mockState = {
           },
           link: {
             linkText: 'Try now',
-            linkUrl: 'https://portfolio.metamask.io/explore',
+            linkUrl: 'https://app.metamask.io/explore',
             isExternal: false,
           },
         },

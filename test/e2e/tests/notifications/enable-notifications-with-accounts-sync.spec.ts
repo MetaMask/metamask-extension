@@ -54,7 +54,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      * → First account: enabled
      * → Second account: disabled (persisted from Part 1)
      */
-    it('syncs notification settings on next onboarding after enabling for the first time', async function () {
+    // TODO: Re-write this test when multichain account syncing has been merged
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('syncs notification settings on next onboarding after enabling for the first time', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
       const triggerServer = new MockttpNotificationTriggerServer();
       const mockedAccountsResponse = await getNotificationsMockResponse();
@@ -145,13 +147,13 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           // Assert Notification Account Settings have persisted
           // The second account was switched off from the initial run
           const [{ a: account1 }, { a: account2 }] = notificationsMockAccounts;
-          await notificationsSettingsPage.check_notificationState({
+          await notificationsSettingsPage.checkNotificationState({
             address: account1,
             toggleType: 'address',
             expectedState: 'enabled',
           });
 
-          await notificationsSettingsPage.check_notificationState({
+          await notificationsSettingsPage.checkNotificationState({
             address: account2,
             toggleType: 'address',
             expectedState: 'disabled',
@@ -162,7 +164,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
     async function assertAllAccountsEnabled(driver: Driver) {
       const notificationsSettingsPage = new NotificationsSettingsPage(driver);
       for (const { a: address } of notificationsMockAccounts) {
-        await notificationsSettingsPage.check_notificationState({
+        await notificationsSettingsPage.checkNotificationState({
           address,
           toggleType: 'address',
           expectedState: 'enabled',

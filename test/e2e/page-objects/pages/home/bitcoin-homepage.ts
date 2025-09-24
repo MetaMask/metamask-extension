@@ -14,9 +14,7 @@ class BitcoinHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="coin-overview-swap"]';
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
@@ -38,9 +36,7 @@ class BitcoinHomepage extends HomePage {
    * Checks if the bridge button is enabled on bitcoin account homepage.
    *
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isBridgeButtonEnabled(): Promise<boolean> {
+  async checkIsBridgeButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, {
         timeout: 1000,
@@ -56,9 +52,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the buy/sell button is enabled on bitcoin account homepage.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isBuySellButtonEnabled(): Promise<boolean> {
+  async checkIsBuySellButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.buySellButton, {
         timeout: 1000,
@@ -76,9 +70,7 @@ class BitcoinHomepage extends HomePage {
    *
    * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isExpectedBitcoinBalanceDisplayed(
+  async checkIsExpectedBitcoinBalanceDisplayed(
     expectedBalance: number = 0,
   ): Promise<void> {
     console.log(
@@ -93,9 +85,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the receive button is enabled on bitcoin account homepage.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isReceiveButtonEnabled(): Promise<boolean> {
+  async checkIsReceiveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.receiveButton, {
         timeout: 1000,
@@ -111,9 +101,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the swap button is enabled on bitcoin account homepage.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isSwapButtonEnabled(): Promise<boolean> {
+  async checkIsSwapButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.swapButton, {
         timeout: 1000,

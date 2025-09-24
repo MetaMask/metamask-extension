@@ -10,7 +10,6 @@ import {
   getUseTransactionSimulations,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
-  selectTransactionValue,
 } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -18,7 +17,7 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { isBalanceSufficient } from '../../../send/send.utils';
+import { isBalanceSufficient } from '../../../send-legacy/send.utils';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useInsufficientBalanceAlerts({
@@ -33,6 +32,7 @@ export function useInsufficientBalanceAlerts({
     chainId,
     selectedGasFeeToken,
     gasFeeTokens,
+    txParams: { value = '0x0' } = {},
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
@@ -44,10 +44,6 @@ export function useInsufficientBalanceAlerts({
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId, chainId),
-  );
-
-  const value = useSelector((state) =>
-    selectTransactionValue(state, transactionId),
   );
 
   const totalValue = sumHexes(value, ...batchTransactionValues);

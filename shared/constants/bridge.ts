@@ -7,8 +7,9 @@ import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MultichainNetworks.SOLANA,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
+  MultichainNetworks.BITCOIN,
   ///: END:ONLY_INCLUDE_IF
 ];
 
@@ -30,9 +31,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   ...ALLOWED_EVM_BRIDGE_CHAIN_IDS,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MultichainNetworks.SOLANA,
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
@@ -75,11 +74,9 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
   [CHAIN_IDS.SEI]: 'Sei',
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
@@ -101,11 +98,11 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
   >
 > = {
   [CHAIN_IDS.MAINNET]: {
-    // ETH -> USDC on mainnet
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    symbol: 'USDC',
-    decimals: 6,
-    name: 'USD Coin',
+    // ETH -> mUSD on mainnet
+    address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+    symbol: 'mUSD',
+    decimals: 18,
+    name: 'MetaMask USD',
   },
   [CHAIN_IDS.OPTIMISM]: {
     // ETH -> USDC on Optimism
@@ -157,11 +154,11 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     name: 'Tether USD',
   },
   [CHAIN_IDS.LINEA_MAINNET]: {
-    // ETH -> USDC on Linea
-    address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
-    symbol: 'USDC',
-    decimals: 6,
-    name: 'USD Coin',
+    // ETH -> mUSD on Linea
+    address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+    symbol: 'mUSD',
+    decimals: 18,
+    name: 'MetaMask USD',
   },
   [CHAIN_IDS.SEI]: {
     // SEI -> USDC on Sei

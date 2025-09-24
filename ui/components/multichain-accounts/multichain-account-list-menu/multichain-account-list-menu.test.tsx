@@ -1,6 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
@@ -14,7 +13,8 @@ import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { DeepPartial } from 'redux';
 import {
-  AccountWalletCategory,
+  AccountGroupType,
+  AccountWalletType,
   toAccountWalletId,
   toDefaultAccountGroupId,
 } from '@metamask/account-api';
@@ -43,21 +43,28 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
-
 type TestState = {
   metamask: AccountsControllerState &
     AccountTreeControllerState &
     KeyringControllerState;
 };
 
+function asAccountTree(
+  accountTree: typeof mockDefaultState.metamask.accountTree,
+) {
+  // We type-cast manually as it seems that some mock values "clash" with the actual
+  // expected types... It could be because we have very strict type-constraint which
+  // are too match using a plain JSON dataset.
+  return accountTree as unknown as AccountTreeControllerState['accountTree'];
+}
+
 const MOCK_STATE: TestState = {
   ...mockDefaultState,
   metamask: {
     ...mockDefaultState.metamask,
+    accountTree: {
+      ...asAccountTree(mockDefaultState.metamask.accountTree),
+    },
     remoteFeatureFlags: {
       addBitcoinAccount: true,
     },
@@ -131,15 +138,6 @@ const render = (
 };
 
 describe('MultichainAccountListMenu', () => {
-  const historyPushMock = jest.fn();
-
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
@@ -177,7 +175,7 @@ describe('MultichainAccountListMenu', () => {
 
     const mockPrimaryHdKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
     const mockWalletId1 = toAccountWalletId(
-      AccountWalletCategory.Entropy,
+      AccountWalletType.Entropy,
       mockPrimaryHdKeyringId,
     );
     const mockGroupId1 = toDefaultAccountGroupId(mockWalletId1);
@@ -205,26 +203,34 @@ describe('MultichainAccountListMenu', () => {
             metadata: { id: 'Snap Keyring', name: '' },
           },
         ],
+        accountWalletsMetadata: {},
+        accountGroupsMetadata: {},
         accountTree: {
           selectedAccountGroup: mockGroupId1,
           wallets: {
             [mockWalletId1]: {
               id: mockWalletId1,
+              type: AccountWalletType.Entropy,
+              status: 'ready',
               groups: {
                 [mockGroupId1]: {
                   id: mockGroupId1,
+                  type: AccountGroupType.MultichainAccount,
                   accounts: [mockAccount.id, mockBtcAccount.id],
                   metadata: {
                     name: 'Default',
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                    pinned: false,
+                    hidden: false,
                   },
                 },
               },
               metadata: {
                 name: 'Wallet 1',
-                type: AccountWalletCategory.Entropy,
                 entropy: {
                   id: mockPrimaryHdKeyringId,
-                  index: 0,
                 },
               },
             },

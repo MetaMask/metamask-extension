@@ -1,33 +1,33 @@
 import React from 'react';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../store/store';
 import WelcomeLogin from './welcome-login';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
 
 describe('Welcome login', () => {
   it('should render', () => {
     const mockOnLogin = jest.fn();
+    const store = configureStore({});
     const { getByTestId, getByText } = renderWithProvider(
       <WelcomeLogin onLogin={mockOnLogin} />,
+      store,
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 
-    const importButton = getByText('Import using Secret Recovery Phrase');
+    const importButton = getByText('I have an existing wallet');
     expect(importButton).toBeInTheDocument();
 
-    fireEvent.click(importButton);
-
-    expect(mockOnLogin).toHaveBeenCalledWith(
-      LOGIN_TYPE.SRP,
-      LOGIN_OPTION.EXISTING,
-    );
+    const createButton = getByText('Create a new wallet');
+    expect(createButton).toBeInTheDocument();
   });
 
   it('should display Login Options modal when seedless onboarding feature is enabled', () => {
-    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
     const mockOnLogin = jest.fn();
 
+    const store = configureStore({});
     const { getByTestId, getByText } = renderWithProvider(
       <WelcomeLogin onLogin={mockOnLogin} />,
+      store,
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 

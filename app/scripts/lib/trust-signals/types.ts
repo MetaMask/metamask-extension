@@ -42,6 +42,7 @@ export enum ResultType {
   Benign = 'Benign',
   Trusted = 'Trusted',
   ErrorResult = 'Error',
+  Loading = 'loading',
 }
 
 export type ScanAddressRequest = {
@@ -55,3 +56,16 @@ export type ScanAddressResponse = {
   result_type: ResultType;
   label: string;
 };
+
+export type CachedScanAddressResponse = ScanAddressResponse & {
+  timestamp: number;
+};
+
+export type GetAddressSecurityAlertResponse = (
+  address: string,
+) => ScanAddressResponse | undefined;
+
+export type AddAddressSecurityAlertResponse = (
+  address: string,
+  response: ScanAddressResponse,
+) => void;

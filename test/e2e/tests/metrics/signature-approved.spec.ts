@@ -86,7 +86,7 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // creates a sign typed data V4 signature request
         await testDapp.signTypedDataV4();
@@ -145,7 +145,7 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // creates a sign typed data V3 signature request
         await testDapp.signTypedDataV3Redesign();
@@ -198,7 +198,7 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // creates a sign typed data signature request
         await testDapp.signTypedData();
@@ -251,7 +251,7 @@ describe('Signature Approved Event', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // creates a sign typed data signature request
         await testDapp.personalSign();

@@ -77,8 +77,8 @@ async function createTransactionAssertDetailsAndConfirm(
   const setApprovalForAllConfirmation =
     new SetApprovalForAllTransactionConfirmation(driver);
 
-  await setApprovalForAllConfirmation.check_setApprovalForAllTitle();
-  await setApprovalForAllConfirmation.check_setApprovalForAllSubHeading();
+  await setApprovalForAllConfirmation.checkSetApprovalForAllTitle();
+  await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
 
   await setApprovalForAllConfirmation.clickScrollToBottomButton();
   await setApprovalForAllConfirmation.clickFooterConfirmButton();

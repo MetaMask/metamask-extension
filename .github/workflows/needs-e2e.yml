@@ -4,43 +4,73 @@ on:
   workflow_call:
     outputs:
       needs-e2e:
-        description: Stored coverage
+        description: Whether E2E tests are needed
         value: ${{ jobs.needs-e2e.outputs.needs-e2e }}
 
 jobs:
   needs-e2e:
     runs-on: ubuntu-latest
     outputs:
-      needs-e2e: ${{ steps.needs-e2e.outputs.NEEDS_E2E }}
+      needs-e2e: ${{ steps.determine.outputs.NEEDS_E2E }}
     env:
       # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
       # For a `push` event, the head commit hash is `github.sha`.
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          # By default, the checkout action checks out the last merge commit for pull requests.
-          # Source: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request
-          # However, we need the head commit (the latest commit pushed to the source branch)
-          # because in the workflow, we would like to parse the latest commit tag.
           # Specifying `ref` ensures that the head commit is checked out directly.
           ref: ${{ env.HEAD_COMMIT_HASH }}
 
-      - name: Determine Needs E2E
-        id: needs-e2e
+      - name: Check skip tag
+        id: skip-tag
         run: |
-          if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip e2e]'; then
-              printf '%s\n' "Commit message of '${HEAD_COMMIT_HASH}' contains the substring '[skip e2e]' so e2e tests will not run"
+          echo "SKIP=false" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
+            if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
+              echo "SKIP=true" >> "$GITHUB_OUTPUT"
+              echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
+            fi
+          fi
+
+      - name: Check changed files
+        if: steps.skip-tag.outputs.SKIP != 'true' && (github.event_name == 'pull_request' || github.event_name == 'merge_group')
+        # v3.0.2
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+        id: changes
+        with:
+          filters: .github/e2e-filter-rules.yml
+          list-files: shell
+
+      - name: Determine if E2E needed
+        id: determine
+        run: |
+          # Default to running E2E tests
+          echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
+
+          # Only consider skipping for PRs and merge-queue events
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]]; then
+
+            # Skip if [skip e2e] tag found
+            if [[ "${{ steps.skip-tag.outputs.SKIP }}" == "true" ]]; then
               echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
-          else
-              printf '%s\n' "Commit message of '${HEAD_COMMIT_HASH}' does not contain the substring '[skip e2e]' so e2e tests will run"
-              echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
+              echo "-> Skipping E2E tests due to 'skip-e2e' tag"
+
+            # Skip E2E only if ALL changed files are in non_e2e_related_files filter
+            elif [[ "${{ steps.changes.outputs.non_e2e_related_files_count }}" == "${{ steps.changes.outputs.all_changes_count }}" ]]; then
+              echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
+              echo "-> Skipping E2E tests - only non_e2e_related_files changes found"
+
+            else
+              echo "-> Running E2E tests - found changes outside non_e2e_related_files filter"
+            fi
           fi
 
   prep-e2e:
     # For a `pull_request` event, the branch is `github.head_ref``.
     # For a `push` event, the branch is `github.ref_name`.
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'master' && (github.head_ref || github.ref_name) != 'stable' }}
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' && (github.head_ref || github.ref_name) != 'stable' }}
     needs:
       - needs-e2e
     runs-on: ubuntu-latest

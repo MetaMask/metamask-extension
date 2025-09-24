@@ -15,8 +15,8 @@ describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
     await withBtcAccountSnap(async (driver) => {
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.check_pageIsLoaded();
-      await headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkPageIsLoaded();
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
     }, this.test?.fullTitle());
   });
 
@@ -24,14 +24,14 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(async (driver) => {
       // check that we have one BTC account
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.check_pageIsLoaded();
-      await headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkPageIsLoaded();
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
       // check user cannot create second BTC account
       await headerNavbar.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
-      await accountListPage.check_numberOfAvailableAccounts(2);
+      await accountListPage.checkPageIsLoaded();
+      await accountListPage.checkNumberOfAvailableAccounts(2);
       await accountListPage.openAddAccountModal();
       assert.equal(
         await accountListPage.isBtcAccountCreationButtonEnabled(),
@@ -44,20 +44,20 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(async (driver) => {
       // check that we have one BTC account
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.check_pageIsLoaded();
-      await headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkPageIsLoaded();
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
       // check user can cancel the removal of the BTC account
       await headerNavbar.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.removeAccount(DEFAULT_BTC_ACCOUNT_NAME, false);
-      await headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
       // check the number of accounts. it should be 2.
       await headerNavbar.openAccountMenu();
-      await accountListPage.check_pageIsLoaded();
-      await accountListPage.check_numberOfAvailableAccounts(2);
+      await accountListPage.checkPageIsLoaded();
+      await accountListPage.checkNumberOfAvailableAccounts(2);
     }, this.test?.fullTitle());
   });
 
@@ -65,17 +65,17 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(async (driver) => {
       // check that we have one BTC account
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.check_pageIsLoaded();
-      await headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkPageIsLoaded();
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
       // get the address of the BTC account and remove it
       await headerNavbar.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.openAccountDetailsModal(DEFAULT_BTC_ACCOUNT_NAME);
 
       const accountDetailsModal = new AccountDetailsModal(driver);
-      await accountDetailsModal.check_pageIsLoaded();
+      await accountDetailsModal.checkPageIsLoaded();
       const accountAddress = await accountDetailsModal.getAccountAddress();
       await headerNavbar.openAccountMenu();
       await accountListPage.removeAccount(DEFAULT_BTC_ACCOUNT_NAME);
@@ -90,12 +90,12 @@ describe('Create BTC Account', function (this: Suite) {
       await accountListPage.closeAccountModal();
       await headerNavbar.openAccountMenu();
       await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
-      await headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
       await headerNavbar.openAccountMenu();
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.openAccountDetailsModal(DEFAULT_BTC_ACCOUNT_NAME);
-      await accountDetailsModal.check_pageIsLoaded();
+      await accountDetailsModal.checkPageIsLoaded();
       const recreatedAccountAddress =
         await accountDetailsModal.getAccountAddress();
 
@@ -107,15 +107,15 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(async (driver) => {
       // check that we have one BTC account
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.check_pageIsLoaded();
-      await headerNavbar.check_accountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkPageIsLoaded();
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
 
       await headerNavbar.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.openAccountDetailsModal(DEFAULT_BTC_ACCOUNT_NAME);
       const accountDetailsModal = new AccountDetailsModal(driver);
-      await accountDetailsModal.check_pageIsLoaded();
+      await accountDetailsModal.checkPageIsLoaded();
       const accountAddress = await accountDetailsModal.getAccountAddress();
 
       // go to privacy settings page and get the SRP
@@ -137,14 +137,14 @@ describe('Create BTC Account', function (this: Suite) {
       await headerNavbar.lockMetaMask();
       await new LoginPage(driver).gotoResetPasswordPage();
       const resetPasswordPage = new ResetPasswordPage(driver);
-      await resetPasswordPage.check_pageIsLoaded();
+      await resetPasswordPage.checkPageIsLoaded();
       await resetPasswordPage.resetPassword(seedPhrase, WALLET_PASSWORD);
 
       // check discovered account address is the same
       await headerNavbar.openAccountMenu();
-      await accountListPage.check_pageIsLoaded();
+      await accountListPage.checkPageIsLoaded();
       await accountListPage.openAccountDetailsModal(DEFAULT_BTC_ACCOUNT_NAME);
-      await accountDetailsModal.check_pageIsLoaded();
+      await accountDetailsModal.checkPageIsLoaded();
       const discoveredAccountAddress =
         await accountDetailsModal.getAccountAddress();
 

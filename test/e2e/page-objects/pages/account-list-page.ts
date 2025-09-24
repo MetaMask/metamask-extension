@@ -15,11 +15,15 @@ class AccountListPage {
   private readonly accountListBalance =
     '[data-testid="first-currency-display"]';
 
+  private readonly accountPageBalance = '[data-testid="balance-display"]';
+
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
 
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
+
+  private readonly multichainAccountListItem = '.multichain-account-cell';
 
   private readonly walletHeader =
     '[data-testid="multichain-account-tree-wallet-header"]';
@@ -33,6 +37,9 @@ class AccountListPage {
 
   private readonly accountOptionsMenuButton =
     '[data-testid="account-list-item-menu-button"]';
+
+  private readonly multichainAccountOptionsMenuButton =
+    '[data-testid="multichain-account-cell-end-accessory"]';
 
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
@@ -74,8 +81,32 @@ class AccountListPage {
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
 
+  private readonly closeMultichainAccountsPageButton =
+    '.multichain-page-header button[aria-label="Back"]';
+
+  private readonly addMultichainWalletButton =
+    '[data-testid="account-list-add-wallet-button"]';
+
+  private readonly importWalletFromMultichainWalletModalButton =
+    '[data-testid="add-wallet-modal-import-wallet"]';
+
+  private readonly importAccountFromMultichainWalletModalButton =
+    '[data-testid="add-wallet-modal-import-account"]';
+
+  private readonly multichainAccountMenuItem =
+    '.multichain-account-cell-menu-item';
+
+  private readonly multichainAccountNameInput =
+    '[data-testid="account-name-input"] input';
+
+  private readonly multichainAccountNameInputConfirmButton =
+    '.mm-button-base[aria-label="Confirm"]';
+
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';
+
+  private readonly createMultichainAccountButton =
+    '[data-testid="add-multichain-account-button"]';
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
@@ -181,14 +212,17 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(options?: {
+    isMultichainAccountsState2Enabled?: boolean;
+  }): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.createAccountButton,
-        this.accountOptionsMenuButton,
-      ]);
+      const selectorsToWaitFor = options?.isMultichainAccountsState2Enabled
+        ? [
+            this.createMultichainAccountButton,
+            this.multichainAccountOptionsMenuButton,
+          ]
+        : [this.createAccountButton, this.accountOptionsMenuButton];
+      await this.driver.waitForMultipleSelectors(selectorsToWaitFor);
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
@@ -234,12 +268,28 @@ class AccountListPage {
    *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
+   * @param options - Additional options
+   * @param options.isMultichainAccountsState2Enabled - Whether the multichain accounts state 2 feature is enabled
    */
   async addNewImportedAccount(
     privateKey: string,
     expectedErrorMessage?: string,
+    options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Adding new imported account`);
+
+    if (options?.isMultichainAccountsState2Enabled) {
+      await this.driver.clickElement(this.addMultichainWalletButton);
+      await this.driver.clickElement(
+        this.importAccountFromMultichainWalletModalButton,
+      );
+      await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
+      await this.driver.clickElementAndWaitToDisappear(
+        this.importAccountConfirmButton,
+      );
+      return;
+    }
+
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addImportedAccountButton);
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
@@ -296,6 +346,20 @@ class AccountListPage {
   }
 
   /**
+   * Adds a new multichain account.
+   *
+   * @param options - Options for creating the multichain account
+   * @param options.srpIndex - Optional SRP index for the new account
+   */
+  async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
+    console.log(`Adding new multichain account`);
+    const createMultichainAccountButtons = await this.driver.findElements(
+      this.createMultichainAccountButton,
+    );
+    await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
+  }
+
+  /**
    * Adds a new account of the specified type with an optional custom name.
    *
    * @param options - Options for adding a new account
@@ -324,7 +388,6 @@ class AccountListPage {
   }) {
     console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
     if (!fromModal) {
-      await this.driver.clickElement(this.createAccountButton);
       let addAccountButton;
       switch (accountType) {
         case ACCOUNT_TYPE.Ethereum:
@@ -340,7 +403,8 @@ class AccountListPage {
           throw new Error('Account type not supported');
       }
 
-      await this.driver.clickElement(addAccountButton);
+      await this.driver.clickElement(this.createAccountButton);
+      addAccountButton && (await this.driver.clickElement(addAccountButton));
     }
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
@@ -374,6 +438,13 @@ class AccountListPage {
     console.log(`Close account modal in account list`);
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
+    );
+  }
+
+  async closeMultichainAccountsPage(): Promise<void> {
+    console.log(`Close multichain accounts page`);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeMultichainAccountsPageButton,
     );
   }
 
@@ -433,6 +504,57 @@ class AccountListPage {
   }
 
   /**
+   * Open the multichain account menu for the specified account.
+   *
+   * @param options - Options for opening the multichain account menu
+   * @param options.accountLabel - The label of the account to open the menu for
+   * @param options.srpIndex - Optional SRP index if there are multiple SRPs
+   */
+  async openMultichainAccountMenu(options: {
+    accountLabel: string;
+    srpIndex?: number;
+  }): Promise<void> {
+    console.log(
+      `Open multichain account menu in account list for account ${options.accountLabel}`,
+    );
+    const multichainAccountMenuIcons = await this.driver.findElements(
+      `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
+    );
+
+    await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
+  }
+
+  /**
+   * Click a multichain account menu item.
+   *
+   * @param item - The menu item to click (e.g., 'Account details', 'Rename', 'Addresses')
+   */
+  async clickMultichainAccountMenuItem(
+    item: 'Account details' | 'Rename' | 'Addresses',
+  ): Promise<void> {
+    console.log(`Click multichain account menu item ${item}`);
+    await this.driver.clickElement(
+      `${this.multichainAccountMenuItem}[aria-label="${item}"]`,
+    );
+  }
+
+  /**
+   * Change the label of a multichain account.
+   *
+   * @param newLabel - The new label for the multichain account
+   */
+  async changeMultichainAccountLabel(newLabel: string): Promise<void> {
+    console.log(
+      `Account details modal opened, changing multichain account label to: ${newLabel}`,
+    );
+    await this.driver.clickElement(this.multichainAccountNameInput);
+    await this.driver.fill(this.multichainAccountNameInput, newLabel);
+    await this.driver.clickElement(
+      this.multichainAccountNameInputConfirmButton,
+    );
+  }
+
+  /**
    * Open the account options menu for the specified account.
    *
    * @param accountLabel - The label of the account to open the options menu for.
@@ -464,9 +586,7 @@ class AccountListPage {
    *
    * @param expectedValueAndSuffix - The expected value and suffix to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountValueAndSuffixDisplayed(
+  async checkAccountValueAndSuffixDisplayed(
     expectedValueAndSuffix: string,
   ): Promise<void> {
     console.log(
@@ -484,9 +604,7 @@ class AccountListPage {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_addBitcoinAccountAvailable(
+  async checkAddBitcoinAccountAvailable(
     expectedAvailability: boolean,
   ): Promise<void> {
     console.log(
@@ -586,9 +704,7 @@ class AccountListPage {
     await this.driver.clickElement(this.pinUnpinAccountButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountAddressDisplayedInAccountList(
+  async checkAccountAddressDisplayedInAccountList(
     expectedAddress: string,
   ): Promise<void> {
     console.log(
@@ -605,9 +721,7 @@ class AccountListPage {
    *
    * @param expectedBalance - The expected balance to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountBalanceDisplayed(expectedBalance: string): Promise<void> {
+  async checkAccountBalanceDisplayed(expectedBalance: string): Promise<void> {
     console.log(
       `Check that account balance ${expectedBalance} is displayed in account list`,
     );
@@ -617,9 +731,24 @@ class AccountListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountDisplayedInAccountList(
+  /**
+   * Checks that the account balance is displayed on the multichain account list page.
+   *
+   * @param expectedBalance - The expected balance to check.
+   */
+  async checkMultichainAccountBalanceDisplayed(
+    expectedBalance: string,
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account balance ${expectedBalance} is displayed in account list on accounts page`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountPageBalance,
+      text: expectedBalance,
+    });
+  }
+
+  async checkAccountDisplayedInAccountList(
     expectedLabel: string = 'Account',
   ): Promise<void> {
     console.log(
@@ -631,9 +760,24 @@ class AccountListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_walletDisplayedInAccountListMenu(
+  /**
+   * Checks that the multichain account label is displayed on the multichain account list page.
+   *
+   * @param expectedLabel - The expected label to check.
+   */
+  async checkMultichainAccountNameDisplayed(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account label ${expectedLabel} is displayed on account list page`,
+    );
+    await this.driver.waitForSelector({
+      css: this.multichainAccountListItem,
+      text: expectedLabel,
+    });
+  }
+
+  async checkWalletDisplayedInAccountListMenu(
     expectedLabel: string = 'Wallet',
   ): Promise<void> {
     console.log(
@@ -645,23 +789,17 @@ class AccountListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_walletDetailsButtonIsDisplayed(): Promise<void> {
+  async checkWalletDetailsButtonIsDisplayed(): Promise<void> {
     console.log('Check wallet details button is displayed');
     await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async clickWalletDetailsButton(): Promise<void> {
     console.log('Click wallet details button');
     await this.driver.clickElement(this.walletDetailsButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountNotDisplayedInAccountList(
+  async checkAccountNotDisplayedInAccountList(
     expectedLabel: string = 'Account',
   ): Promise<void> {
     console.log(
@@ -678,9 +816,7 @@ class AccountListPage {
    *
    * @param expectedLabel - The label of the account that should not be displayed.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountIsNotDisplayedInAccountList(
+  async checkAccountIsNotDisplayedInAccountList(
     expectedLabel: string,
   ): Promise<void> {
     console.log(
@@ -692,30 +828,22 @@ class AccountListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountIsPinned(): Promise<void> {
+  async checkAccountIsPinned(): Promise<void> {
     console.log(`Check that account is pinned`);
     await this.driver.waitForSelector(this.pinnedIcon);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountIsUnpinned(): Promise<void> {
+  async checkAccountIsUnpinned(): Promise<void> {
     console.log(`Check that account is unpinned`);
     await this.driver.assertElementNotPresent(this.pinnedIcon);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_addAccountSnapButtonIsDisplayed(): Promise<void> {
+  async checkAddAccountSnapButtonIsDisplayed(): Promise<void> {
     console.log('Check add account snap button is displayed');
     await this.driver.waitForSelector(this.addSnapAccountButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_addAccountSnapButtonNotPresent(): Promise<void> {
+  async checkAddAccountSnapButtonNotPresent(): Promise<void> {
     console.log('Check add account snap button is not present');
     await this.driver.assertElementNotPresent(this.addSnapAccountButton);
   }
@@ -725,9 +853,7 @@ class AccountListPage {
    *
    * @param expectedAvailability - Whether the add watch account button is expected to be displayed.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_addWatchAccountAvailable(
+  async checkAddWatchAccountAvailable(
     expectedAvailability: boolean,
   ): Promise<void> {
     console.log(
@@ -747,9 +873,7 @@ class AccountListPage {
    * Verifies that all occurrences of the account balance value and symbol are displayed as private.
    *
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_balanceIsPrivateEverywhere(): Promise<void> {
+  async checkBalanceIsPrivateEverywhere(): Promise<void> {
     console.log(`Verify all account balance occurrences are private`);
     const balanceSelectors = {
       tag: 'span',
@@ -758,9 +882,7 @@ class AccountListPage {
     await this.driver.elementCountBecomesN(balanceSelectors, 6);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_currentAccountIsImported(): Promise<void> {
+  async checkCurrentAccountIsImported(): Promise<void> {
     console.log(`Check that current account is an imported account`);
     await this.driver.waitForSelector({
       css: this.currentSelectedAccount,
@@ -768,9 +890,7 @@ class AccountListPage {
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_hiddenAccountsListExists(): Promise<void> {
+  async checkHiddenAccountsListExists(): Promise<void> {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
@@ -781,9 +901,7 @@ class AccountListPage {
    * @param expectedNumberOfAccounts - The expected number of accounts showing.
    * @param accountType - Optional account type to filter by. If not provided, counts all accounts.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_numberOfAvailableAccounts(
+  async checkNumberOfAvailableAccounts(
     expectedNumberOfAccounts: number,
     accountType?: ACCOUNT_TYPE,
   ): Promise<void> {
@@ -841,9 +959,7 @@ class AccountListPage {
    *
    * @param accountLabel - The label of the account to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_removeAccountButtonIsNotDisplayed(
+  async checkRemoveAccountButtonIsNotDisplayed(
     accountLabel: string,
   ): Promise<void> {
     console.log(
@@ -862,8 +978,22 @@ class AccountListPage {
     console.log(`Account with label ${accountLabel} selected`);
   }
 
-  async startImportSecretPhrase(srp: string): Promise<void> {
+  async startImportSecretPhrase(
+    srp: string,
+    options?: { isMultichainAccountsState2Enabled?: boolean },
+  ): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
+
+    if (options?.isMultichainAccountsState2Enabled) {
+      await this.driver.clickElement(this.addMultichainWalletButton);
+      await this.driver.clickElement(
+        this.importWalletFromMultichainWalletModalButton,
+      );
+      await this.driver.pasteIntoField(this.importSrpInput, srp);
+      await this.driver.clickElement(this.importSrpConfirmButton);
+      return;
+    }
+
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.importSrpButton);
     await this.driver.waitForSelector(this.importSrpModalTitle);
@@ -878,16 +1008,14 @@ class AccountListPage {
     await this.driver.clickElement(this.exportSrpButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountBelongsToSrp(
+  async checkAccountBelongsToSrp(
     accountName: string,
     srpIndex: number,
   ): Promise<void> {
     console.log(`Check that current account is an imported account`);
     await new HeaderNavbar(this.driver).openSettingsPage();
     const settingsPage = new SettingsPage(this.driver);
-    await settingsPage.check_pageIsLoaded();
+    await settingsPage.checkPageIsLoaded();
     await settingsPage.goToPrivacySettings();
 
     const privacySettings = new PrivacySettings(this.driver);

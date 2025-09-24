@@ -28,7 +28,7 @@ const teamEmojis: TeamEmojis = {
   '@MetaMask/extension-devs': '🧩',
   '@MetaMask/policy-reviewers': '📜',
   '@MetaMask/supply-chain': '🔗',
-  '@MetaMask/snaps-devs': '🫰',
+  '@MetaMask/core-platform': '🫰',
   '@MetaMask/extension-security-team': '🔒',
   '@MetaMask/extension-privacy-reviewers': '🕵️',
   '@MetaMask/confirmations': '✅',
@@ -40,6 +40,9 @@ const teamEmojis: TeamEmojis = {
   '@MetaMask/ramp': '📈',
   '@MetaMask/wallet-ux': '🖥️',
   '@MetaMask/metamask-assets': '💎',
+  '@MetaMask/web3auth': '🔐',
+  '@MetaMask/transactions': '💸',
+  '@MetaMask/qa': '🧪',
 };
 
 main().catch((error: Error): void => {

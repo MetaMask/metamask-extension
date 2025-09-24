@@ -19,7 +19,7 @@ import {
 import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
-  this.timeout(200000); // This test is very long, so we need an unusually high timeout
+  this.timeout(500000); // This test is very long, so we need an unusually high timeout
   // Run sync, async approve, and async reject flows
   // (in Jest we could do this with test.each, but that does not exist here)
 
@@ -48,16 +48,16 @@ describe('Snap Account Signatures', function (this: Suite) {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_accountLabel('SSK Account');
+          await headerNavbar.checkAccountLabel('SSK Account');
 
           // Navigate to experimental settings and disable redesigned signature.
           await headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToExperimentalSettings();
 
           const experimentalSettings = new ExperimentalSettings(driver);
-          await experimentalSettings.check_pageIsLoaded();
+          await experimentalSettings.checkPageIsLoaded();
 
           // Connect the SSK account
           const testDapp = new TestDapp(driver);

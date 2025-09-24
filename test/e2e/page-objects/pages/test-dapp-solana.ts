@@ -37,9 +37,7 @@ export class TestDappSolana {
     await this.driver.openNewPage(url);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.solanaChainDisplay);
     } catch (e) {
@@ -57,7 +55,7 @@ export class TestDappSolana {
    */
   async switchTo() {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.SolanaTestDApp);
-    await this.check_pageIsLoaded();
+    await this.checkPageIsLoaded();
   }
 
   async clickUpdateEndpointButton() {

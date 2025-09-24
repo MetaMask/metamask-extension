@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
 import { tEn } from '../../../../../lib/i18n-helpers';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
@@ -18,6 +19,8 @@ class TransactionConfirmation extends Confirmation {
   private advancedDetailsDataParam: RawLocator;
 
   private advancedDetailsHexData: RawLocator;
+
+  private alertBanner: RawLocator;
 
   private gasFeeFiatText: RawLocator;
 
@@ -59,6 +62,7 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-data-param-0"]';
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
+    this.alertBanner = '[data-testid="confirm-banner-alert"]';
     this.gasFeeCloseToastMessage =
       '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
@@ -71,51 +75,57 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="confirmation__token-details-section"]';
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_walletInitiatedHeadingTitle() {
+  private readonly dappNumberConnected = (dappNumber: string) =>
+    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+
+  async checkWalletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_dappInitiatedHeadingTitle() {
+  async checkDappInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFee(amountToken: string) {
+  async checkGasFee(amountToken: string) {
     await this.driver.findElement({
       css: this.gasFeeText,
       text: amountToken,
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFeeFiat(amountFiat: string) {
+  async checkGasFeeFiat(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeFiatText,
       text: amountFiat,
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFeeSymbol(symbol: string) {
+  async checkGasFeeSymbol(symbol: string) {
     await this.driver.waitForSelector({
       css: this.gasFeeTokenPill,
       text: symbol,
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_gasFeeTokenFee(amountFiat: string) {
+  async checkGasFeeTokenFee(amountFiat: string) {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
+    });
+  }
+
+  /**
+   * Checks if the alert message is displayed on the transaction confirmation page.
+   *
+   * @param message - The message to check.
+   */
+  async checkAlertMessageIsDisplayed(message: string) {
+    console.log(
+      `Checking alert message ${message} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.alertBanner,
+      text: message,
     });
   }
 
@@ -124,9 +134,7 @@ class TransactionConfirmation extends Confirmation {
    *
    * @param account - The sender account to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_isSenderAccountDisplayed(account: string): Promise<boolean> {
+  async checkIsSenderAccountDisplayed(account: string): Promise<boolean> {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
@@ -139,15 +147,22 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_networkIsDisplayed(network: string): Promise<void> {
+  async checkNetworkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Checking network ${network} is displayed on transaction confirmation page.`,
     );
     await this.driver.waitForSelector({
       css: this.transactionDetails,
       text: network,
+    });
+  }
+
+  async checkNoAlertMessageIsDisplayed() {
+    console.log(
+      `Checking no alert message is displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(this.alertBanner, {
+      waitAtLeastGuard: 1000,
     });
   }
 
@@ -309,9 +324,7 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_sendAmount(amount: string) {
+  async checkSendAmount(amount: string) {
     console.log(
       `Checking send amount ${amount} on transaction confirmation page.`,
     );
@@ -319,6 +332,15 @@ class TransactionConfirmation extends Confirmation {
       text: amount,
       tag: 'h2',
     });
+  }
+
+  /**
+   * Check the number of dapps connected
+   *
+   * @param numberOfDapps - The number of dapps connected
+   */
+  async checkNumberOfDappsConnected(numberOfDapps: string) {
+    await this.driver.waitForSelector(this.dappNumberConnected(numberOfDapps));
   }
 }
 

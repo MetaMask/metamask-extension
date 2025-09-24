@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-import { mockWebAuthenticator } from '../../../../test/e2e/helpers/seedless-onboarding/mock-web-authenticator';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
 
@@ -28,7 +27,9 @@ function generateNonce(): string {
   return crypto.randomUUID();
 }
 
-function getIdentityAPI(): typeof chrome.identity | typeof browser.identity {
+export function getIdentityAPI():
+  | typeof chrome.identity
+  | typeof browser.identity {
   // if chrome.identity API is available, we will use it
   // note that, in firefox, chrome.identity is available
   // but only some of the methods are supported
@@ -63,6 +64,10 @@ function getRedirectURL(): string {
 
 export function webAuthenticatorFactory(): WebAuthenticator {
   if (process.env.IN_TEST) {
+    const { mockWebAuthenticator } =
+      // Use `require` to make it easier to exclude this test code from the Browserify build.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      require('../../../../test/e2e/helpers/seedless-onboarding/mock-web-authenticator');
     return mockWebAuthenticator();
   }
 

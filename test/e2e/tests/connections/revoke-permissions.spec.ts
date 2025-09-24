@@ -24,19 +24,19 @@ describe('Revoke Permissions', function () {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
+        await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
 
         // click connect button to revoke permission
         const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
         await sitePermissionPage.disconnectAll();
 
         // Switch to Dapp and check the dapp is disconnected
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_connectedAccounts(DEFAULT_FIXTURE_ACCOUNT, false);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT, false);
       },
     );
   });

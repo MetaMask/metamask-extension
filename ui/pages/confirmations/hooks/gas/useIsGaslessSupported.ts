@@ -8,7 +8,10 @@ import {
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { isRelaySupported } from '../../../../store/actions';
+import {
+  isRelaySupported,
+  isSendBundleSupported,
+} from '../../../../store/actions';
 
 export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =
@@ -40,6 +43,10 @@ export function useIsGaslessSupported() {
     return isRelaySupported(chainId);
   }, [chainId, isSmartTransaction]);
 
+  const { value: sendBundleSupportsChain } = useAsyncResult(async () => {
+    return isSendBundleSupported(chainId);
+  }, [chainId]);
+
   const atomicBatchChainSupport = atomicBatchSupportResult?.find(
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
@@ -49,7 +56,9 @@ export function useIsGaslessSupported() {
     atomicBatchChainSupport?.isSupported && relaySupportsChain,
   );
 
-  const isSupported = isSmartTransaction || is7702Supported;
+  const isSupported = Boolean(
+    (isSmartTransaction && sendBundleSupportsChain) || is7702Supported,
+  );
 
   return {
     isSupported,

@@ -12,9 +12,9 @@ describe('Eth sign', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.clickEthSignButton();
-        await testDapp.check_ethSignErrorMessage();
+        await testDapp.checkEthSignErrorMessage();
       },
     );
   });

@@ -52,20 +52,20 @@ describe('Import flow', function () {
           fillSrpWordByWord: true,
         });
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed();
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('Account 1');
+        await headerNavbar.checkAccountLabel('Account 1');
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.check_addressInAccountDetailsModal(
+        await accountDetailsModal.checkPageIsLoaded();
+        await accountDetailsModal.checkAddressInAccountDetailsModal(
           DEFAULT_FIXTURE_ACCOUNT_SHORTENED.toLowerCase(),
         );
       },
@@ -99,10 +99,10 @@ describe('Import flow', function () {
 
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('Account 1');
+        await headerNavbar.checkAccountLabel('Account 1');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // Imports an account with JSON file
         const jsonFile = path.join(
@@ -118,14 +118,14 @@ describe('Import flow', function () {
 
         // Check new imported account has correct name and label
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
-        await headerNavbar.check_accountLabel('Account 4');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
+        await headerNavbar.checkAccountLabel('Account 4');
 
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_numberOfAvailableAccounts(4);
-        await accountListPage.check_currentAccountIsImported();
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkNumberOfAvailableAccounts(4);
+        await accountListPage.checkCurrentAccountIsImported();
       },
     );
   });
@@ -156,10 +156,10 @@ describe('Import flow', function () {
         await loginWithoutBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('Account 1');
+        await headerNavbar.checkAccountLabel('Account 1');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
 
         // import active account with private key from the account menu and check error message
         await accountListPage.addNewImportedAccount(

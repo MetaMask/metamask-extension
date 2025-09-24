@@ -23,7 +23,7 @@ describe('View DeFi error state', function () {
         const defiTab = new DeFiTab(driver);
 
         // Error message should be displayed
-        await defiTab.check_errorMessageIsDisplayed();
+        await defiTab.checkErrorMessageIsDisplayed();
       },
     );
   });

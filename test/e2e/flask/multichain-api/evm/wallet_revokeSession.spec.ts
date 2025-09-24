@@ -35,7 +35,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes(
           GANACHE_SCOPES,
@@ -45,20 +45,20 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
         const editConnectedAccountsModal = new EditConnectedAccountsModal(
           driver,
         );
-        await editConnectedAccountsModal.check_pageIsLoaded();
+        await editConnectedAccountsModal.checkPageIsLoaded();
         await editConnectedAccountsModal.addNewEthereumAccount();
 
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         /**
          * We verify that scopes are not empty before calling `wallet_revokeSession`
@@ -102,7 +102,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
 
         await testDapp.initCreateSessionScopes(
@@ -112,20 +112,20 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
         const editConnectedAccountsModal = new EditConnectedAccountsModal(
           driver,
         );
-        await editConnectedAccountsModal.check_pageIsLoaded();
+        await editConnectedAccountsModal.checkPageIsLoaded();
         await editConnectedAccountsModal.addNewEthereumAccount();
 
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         await testDapp.revokeSession();
         await driver.delay(largeDelayMs);

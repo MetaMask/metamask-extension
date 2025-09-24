@@ -75,7 +75,7 @@ describe('Test Snap installed', function () {
         await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
 
         // Check installation success
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectDialogsButton',
           'Reconnect to Dialogs Snap',
         );
@@ -102,13 +102,13 @@ describe('Test Snap installed', function () {
         // Click to connect to errors snap and validate the install snaps result
         await testSnaps.scrollAndClickButton('connectErrorsButton');
         await completeSnapInstallSwitchToTestSnap(driver);
-        await testSnaps.check_installedSnapsResult(
+        await testSnaps.checkInstalledSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );
 
         // Click Send error button and validate the message result
         await testSnaps.scrollAndClickButton('sendErrorButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'errorResultSpan',
           '"Hello, world!"',
         );

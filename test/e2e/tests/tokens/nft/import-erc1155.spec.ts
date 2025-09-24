@@ -30,8 +30,8 @@ describe('Import ERC1155 NFT', function () {
         await nftList.importNft(contractAddress, '1');
 
         // Check the ERC1155 token is successfully imported and its image is displayed
-        await nftList.check_successImportNftMessageIsDisplayed();
-        await nftList.check_nftImageIsDisplayed();
+        await nftList.checkSuccessImportNftMessageIsDisplayed();
+        await nftList.checkNftImageIsDisplayed();
       },
     );
   });

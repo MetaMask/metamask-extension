@@ -2,11 +2,17 @@
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
 import { SolScope } from '@metamask/keyring-api';
-import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
 } from '../../constants';
+import {
+  BASE_DISPLAY_NAME,
+  LINEA_MAINNET_DISPLAY_NAME,
+  LOCALHOST_DISPLAY_NAME,
+  MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
@@ -57,10 +63,10 @@ async function getPermissionsPageForHost(
   const homepage = new Homepage(driver);
   await homepage.headerNavbar.openPermissionsPage();
   const permissionListPage = new PermissionListPage(driver);
-  await permissionListPage.check_pageIsLoaded();
+  await permissionListPage.checkPageIsLoaded();
   await permissionListPage.openPermissionPageForSite(hostname);
   const sitePermissionPage = new SitePermissionPage(driver);
-  await sitePermissionPage.check_pageIsLoaded(hostname);
+  await sitePermissionPage.checkPageIsLoaded(hostname);
   return sitePermissionPage;
 }
 /**
@@ -93,17 +99,17 @@ async function checkAccountsAndNetworksDisplayed(
   networks: string[],
   accounts: string[],
 ) {
-  await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+  await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
   await sitePermissionPage.openNetworkPermissionsModal();
   const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
-  await networkPermissionSelectModal.check_pageIsLoaded();
+  await networkPermissionSelectModal.checkPageIsLoaded();
 
-  await networkPermissionSelectModal.check_networkStatus(networks);
+  await networkPermissionSelectModal.checkNetworkStatus(networks);
 
   await networkPermissionSelectModal.clickConfirmEditButton();
   await sitePermissionPage.openAccountPermissionsModal();
   const accountPermissionSelectModal = new EditConnectedAccountsModal(driver);
-  await accountPermissionSelectModal.check_pageIsLoaded();
+  await accountPermissionSelectModal.checkPageIsLoaded();
 
   for (const account of accounts) {
     await checkIsAccountDisplayed(driver, account);
@@ -189,9 +195,9 @@ describe('Multiple Standard Dapp Connections', function () {
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
-        await testDapp.check_connectedAccounts(EVM_ADDRESS_TWO);
+        await testDapp.checkConnectedAccounts(EVM_ADDRESS_TWO);
 
         const requestPermissionsWithoutAccounts =
           getRequestPermissionsRequestObject();
@@ -202,14 +208,14 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
 
         await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_connectedAccounts(EVM_ADDRESS_TWO);
+        await testDapp.checkConnectedAccounts(EVM_ADDRESS_TWO);
       },
     );
   });
@@ -237,9 +243,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
-        await testDapp.check_connectedAccounts(EVM_ADDRESS_TWO);
+        await testDapp.checkConnectedAccounts(EVM_ADDRESS_TWO);
 
         const requestPermissionsWithAccount1 =
           getRequestPermissionsRequestObject([EVM_ADDRESS_ONE]);
@@ -250,7 +256,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
 
         await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_ONE);
 
@@ -261,7 +267,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const expectedConnectedAccounts = `${EVM_ADDRESS_TWO.toLowerCase()},${EVM_ADDRESS_ONE.toLowerCase()}`;
-        await testDapp.check_connectedAccounts(expectedConnectedAccounts);
+        await testDapp.checkConnectedAccounts(expectedConnectedAccounts);
       },
     );
   });
@@ -295,13 +301,13 @@ describe('Multiple Standard Dapp Connections', function () {
           DAPP_HOST_ADDRESS,
         );
 
-        await sitePermissionPage.check_connectedAccountsNumber(3);
-        await sitePermissionPage.check_connectedNetworksNumber(2);
+        await sitePermissionPage.checkConnectedAccountsNumber(3);
+        await sitePermissionPage.checkConnectedNetworksNumber(2);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Solana', 'Localhost 8545'],
+          ['Solana', LOCALHOST_DISPLAY_NAME],
           [
             EVM_ACCOUNT_LABEL_ONE,
             EVM_ACCOUNT_LABEL_TWO,
@@ -327,9 +333,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
-        await connectToDapp(driver);
+        await testDapp.connectAccount({});
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -340,13 +346,18 @@ describe('Multiple Standard Dapp Connections', function () {
           DAPP_HOST_ADDRESS,
         );
 
-        await sitePermissionPage.check_connectedAccountsNumber(2);
-        await sitePermissionPage.check_connectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedAccountsNumber(2);
+        await sitePermissionPage.checkConnectedNetworksNumber(4);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Ethereum Mainnet', 'Linea Mainnet', 'Base Mainnet', 'Solana'],
+          [
+            MAINNET_DISPLAY_NAME,
+            LINEA_MAINNET_DISPLAY_NAME,
+            BASE_DISPLAY_NAME,
+            'Solana',
+          ],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },
@@ -386,7 +397,7 @@ describe('Multiple Standard Dapp Connections', function () {
           driver,
         );
 
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
 
         await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
@@ -404,13 +415,18 @@ describe('Multiple Standard Dapp Connections', function () {
           DAPP_HOST_ADDRESS,
         );
 
-        await sitePermissionPage.check_connectedAccountsNumber(2);
-        await sitePermissionPage.check_connectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedAccountsNumber(2);
+        await sitePermissionPage.checkConnectedNetworksNumber(4);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Ethereum Mainnet', 'Linea Mainnet', 'Base Mainnet', 'Solana'],
+          [
+            MAINNET_DISPLAY_NAME,
+            LINEA_MAINNET_DISPLAY_NAME,
+            BASE_DISPLAY_NAME,
+            'Solana',
+          ],
           [EVM_ACCOUNT_LABEL_TWO, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },
@@ -432,7 +448,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const requestSpecificNetwork = getRestrictedNetworks(['0x1']);
 
@@ -446,7 +462,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(
@@ -458,13 +474,13 @@ describe('Multiple Standard Dapp Connections', function () {
           DAPP_HOST_ADDRESS,
         );
 
-        await sitePermissionPage.check_connectedAccountsNumber(2);
-        await sitePermissionPage.check_connectedNetworksNumber(2);
+        await sitePermissionPage.checkConnectedAccountsNumber(2);
+        await sitePermissionPage.checkConnectedNetworksNumber(2);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Ethereum Mainnet', 'Solana'],
+          [MAINNET_DISPLAY_NAME, 'Solana'],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },

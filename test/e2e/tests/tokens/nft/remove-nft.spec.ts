@@ -62,12 +62,12 @@ describe('Remove NFT', function () {
         await nftListPage.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
+        await nftDetailsPage.checkPageIsLoaded();
         await nftDetailsPage.removeNFT();
 
         // Check the success remove NFT toaster is displayed and the NFT is removed from the NFT tab
-        await nftListPage.check_successRemoveNftMessageIsDisplayed();
-        await nftListPage.check_noNftInfoIsDisplayed();
+        await nftListPage.checkSuccessRemoveNftMessageIsDisplayed();
+        await nftListPage.checkNoNftInfoIsDisplayed();
 
         // Check if event was emitted
         const events = await getEventPayloads(driver, mockedEndpoints);

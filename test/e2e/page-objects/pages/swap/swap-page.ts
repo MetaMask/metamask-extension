@@ -35,6 +35,9 @@ class SwapPage {
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
+  private readonly bridgeSourceTokenButton =
+    '[data-testid="prepare-swap-page-swap-from"]';
+
   private readonly bridgeDestinationButton =
     '[data-testid="bridge-destination-button"]';
 
@@ -97,22 +100,17 @@ class SwapPage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.swapAmount,
         this.destinationTokenButton,
       ]);
     } catch (e) {
-      console.log(
-        'Timeout while waiting for Advanced Settings page to be loaded',
-        e,
-      );
+      console.log('Timeout while waiting for Swap page to be loaded', e);
       throw e;
     }
-    console.log('Advanced Settings page is loaded');
+    console.log('Swap page is loaded');
   }
 
   async clickOnMoreQuotes(): Promise<void> {
@@ -148,6 +146,20 @@ class SwapPage {
     stxToggle.sendKeys(amount);
   }
 
+  async selectSourceToken(sourceToken: string): Promise<void> {
+    console.log('Click source token button');
+    await this.driver.clickElement(this.bridgeSourceTokenButton);
+    // click element wth test-id searchable-item-list-primary-label and text sourceToken
+    await this.driver.waitForSelector({
+      css: '[data-testid="searchable-item-list-primary-label"]',
+      text: sourceToken,
+    });
+    await this.driver.clickElement({
+      css: '[data-testid="searchable-item-list-primary-label"]',
+      text: sourceToken,
+    });
+  }
+
   async selectDestinationToken(destinationToken: string): Promise<void> {
     console.log('Entering swap amount');
     await this.driver.clickElement(this.destinationTokenButton);
@@ -165,6 +177,12 @@ class SwapPage {
       });
       return confirmedTxs.length === 1;
     }, 10000);
+  }
+
+  async checkSwapButtonIsEnabled(): Promise<void> {
+    await this.driver.waitForSelector(this.swapButton, {
+      state: 'enabled',
+    });
   }
 
   async submitSwap(): Promise<void> {

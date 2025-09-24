@@ -22,19 +22,35 @@ export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 export const Browsers = ['brave', 'chrome', 'firefox'] as const;
 export type Browser = (typeof Browsers)[number];
 
-const slash = `(?:\\${sep})?`;
+const slash = `\\${sep}`;
 /**
  * Regular expression to match files in any `node_modules` directory
  * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
  * Windows.
  */
-export const NODE_MODULES_RE = new RegExp(`${slash}node_modules${slash}`, 'u');
+export const NODE_MODULES_RE = new RegExp(
+  `^.*${slash}node_modules${slash}.*$`,
+  'u',
+);
 
 /**
  * Regular expression to match files in the `@lavamoat/snow` node_modules
  * directory.
  */
-export const SNOW_MODULE_RE = /^.*\/node_modules\/@lavamoat\/snow\/.*$/u;
+export const SNOW_MODULE_RE = new RegExp(
+  `^.*${slash}node_modules${slash}@lavamoat${slash}snow${slash}.*$`,
+  'u',
+);
+
+/**
+ * Regular expression to match files in the `@trezor` node_modules directory.
+ * This is used to match Trezor libraries that are CJS modules and need to be
+ * processed with the CJS loader.
+ */
+export const TREZOR_MODULE_RE = new RegExp(
+  `^.*${slash}node_modules${slash}@trezor${slash}.*$`,
+  'u',
+);
 
 /**
  * No Operation. A function that does nothing and returns nothing.

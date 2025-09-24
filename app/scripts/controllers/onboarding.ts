@@ -6,6 +6,7 @@ import {
 } from '@metamask/base-controller';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 
 // Unique name for the controller
 const controllerName = 'OnboardingController';
@@ -42,20 +43,28 @@ const defaultTransientState = {
  */
 const controllerMetadata = {
   seedPhraseBackedUp: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   firstTimeFlowType: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   completedOnboarding: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   onboardingTabs: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: false,
+    usedInUi: true,
   },
 };
 
@@ -128,7 +137,9 @@ export default class OnboardingController extends BaseController<
     state,
   }: {
     messenger: OnboardingControllerMessenger;
-    state: Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>;
+    state:
+      | Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>
+      | undefined;
   }) {
     super({
       messenger,
@@ -214,6 +225,11 @@ export default class OnboardingController extends BaseController<
    * @returns true if the user onboarding flow is Social loing flow, otherwise false.
    */
   getIsSocialLoginFlow(): boolean {
+    const isSocialLoginFeatureEnabled = getIsSeedlessOnboardingFeatureEnabled();
+    if (!isSocialLoginFeatureEnabled) {
+      return false;
+    }
+
     const { firstTimeFlowType } = this.state;
     return (
       firstTimeFlowType === FirstTimeFlowType.socialCreate ||

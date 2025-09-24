@@ -117,7 +117,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         // Create first personal sign
         await testDapp.clickPersonalSign();
@@ -133,7 +133,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         // Switch to confirmation window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await confirmation.check_pageNumbers(1, 2);
+        await confirmation.checkPageNumbers(1, 2);
         await confirmation.verifyOrigin();
         await confirmation.verifyMessage();
 
@@ -145,7 +145,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         // Verify the signature
-        await testDapp.check_successPersonalSign(publicAddress);
+        await testDapp.checkSuccessPersonalSign(publicAddress);
         await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
       },
     );
@@ -166,6 +166,6 @@ async function assertVerifiedPersonalMessage(
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await testDapp.check_successPersonalSign(publicAddress);
+  await testDapp.checkSuccessPersonalSign(publicAddress);
   await testDapp.verifyPersonalSignSigUtilResult(publicAddress);
 }

@@ -30,7 +30,7 @@ describe('Test Snap get preferences', function () {
           driver,
           'getPreferencesConnectButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'getPreferencesConnectButton',
           'Reconnect to Preferences Snap',
         );
@@ -38,7 +38,7 @@ describe('Test Snap get preferences', function () {
         // Click submit button, delayed needed processing and validate the results
         await testSnaps.scrollAndClickButton('getPreferencesSubmitButton');
         await driver.delay(1000);
-        await testSnaps.check_preferencesResult({
+        await testSnaps.checkPreferencesResult({
           locale: 'en',
           currency: 'usd',
           hideBalances: true,

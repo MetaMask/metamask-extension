@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 class AddTokensModal {
@@ -12,9 +11,7 @@ class AddTokensModal {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.tokenListItem,
@@ -31,19 +28,18 @@ class AddTokensModal {
   }
 
   /**
-   * Checks the count of suggested tokens.
+   * Waits for the specified number of suggested tokens to appear.
    *
-   * @param expectedTokenCount - The expected count of suggested tokens.
+   * @param expectedTokenCount - The expected count of suggested tokens to wait for.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_SuggestedTokensCount(expectedTokenCount: number) {
-    const multipleSuggestedTokens = await this.driver.findElements(
-      this.tokenListItem,
+  async waitUntilXTokens(expectedTokenCount: number): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const tokens = await this.driver.findElements(this.tokenListItem);
+        return tokens.length === expectedTokenCount;
+      },
+      { timeout: 10000, interval: 100 },
     );
-
-    // Confirm the expected number of tokens are present as suggested token list
-    assert.equal(multipleSuggestedTokens.length, expectedTokenCount);
   }
 
   async confirmAddTokens() {

@@ -7,6 +7,8 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly accountListPage = '.account-list-page';
+
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
@@ -39,19 +41,19 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
+  private readonly connectionMenu = '[data-testid="connection-menu"]';
+
+  private readonly connectedSitePopoverNetworkButton =
+    '[data-testid="connected-site-popover-network-button"]';
+
+  private readonly networkOption = (networkId: string) =>
+    `[data-testid="${networkId}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async openGlobalNetworksMenu(): Promise<void> {
-    console.log('Open global menu');
-    await this.driver.clickElement(this.threeDotMenuButton);
-    await this.driver.clickElement(this.globalNetworksMenu);
-  }
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
@@ -78,6 +80,11 @@ class HeaderNavbar {
     await this.driver.waitForSelector('.multichain-account-menu-popover__list');
   }
 
+  async openAccountsPage(): Promise<void> {
+    await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector(this.accountListPage);
+  }
+
   async openAccountDetailsModalDetailsTab(): Promise<void> {
     console.log('Open account details modal');
     await this.openThreeDotMenu();
@@ -91,6 +98,12 @@ class HeaderNavbar {
     await this.driver.clickElement(this.openAccountDetailsButton);
   }
 
+  async openGlobalNetworksMenu(): Promise<void> {
+    console.log('Open global menu');
+    await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.clickElement(this.globalNetworksMenu);
+  }
+
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.waitForSelector(this.threeDotMenuButton, {
@@ -101,6 +114,11 @@ class HeaderNavbar {
     } else {
       this.driver.clickElement(this.threeDotMenuButton);
     }
+  }
+
+  async mouseClickOnThreeDotMenu(): Promise<void> {
+    console.log('Clicking three dot menu using mouse move');
+    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
   }
 
   async openPermissionsPage(): Promise<void> {
@@ -135,23 +153,19 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.notificationsButton);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_notificationCountInMenuOption(count: number): Promise<void> {
-    await this.openThreeDotMenu();
+  async checkNotificationCountInMenuOption(count: number): Promise<void> {
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),
     });
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_ifNetworkPickerClickable(clickable: boolean): Promise<void> {
+  async checkIfNetworkPickerClickable(clickable: boolean): Promise<void> {
     console.log('Check whether the network picker is clickable or not');
     assert.equal(
       await (await this.driver.findElement(this.networkPicker)).isEnabled(),
@@ -164,9 +178,7 @@ class HeaderNavbar {
    *
    * @param expectedAddress - The expected address of the account.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountAddress(expectedAddress: string): Promise<void> {
+  async checkAccountAddress(expectedAddress: string): Promise<void> {
     console.log(
       `Verify the displayed account address in header is: ${expectedAddress}`,
     );
@@ -181,9 +193,7 @@ class HeaderNavbar {
    *
    * @param expectedLabel - The expected label of the account.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async check_accountLabel(expectedLabel: string): Promise<void> {
+  async checkAccountLabel(expectedLabel: string): Promise<void> {
     console.log(
       `Verify the displayed account label in header is: ${expectedLabel}`,
     );
@@ -191,6 +201,32 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Open the connection menu
+   */
+  async openConnectionMenu(): Promise<void> {
+    console.log('Opening connection menu');
+    await this.driver.clickElement(this.connectionMenu);
+  }
+
+  /**
+   * Click the connected site popover network button
+   */
+  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
+    console.log('Clicking connected site popover network button');
+    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  }
+
+  /**
+   * Select a network from the network options
+   *
+   * @param networkId - The id of the network to select.
+   */
+  async selectNetwork(networkId: string): Promise<void> {
+    console.log(`Selecting network ${networkId}`);
+    await this.driver.clickElement(this.networkOption(networkId));
   }
 }
 

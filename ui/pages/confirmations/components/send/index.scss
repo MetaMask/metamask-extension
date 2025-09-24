@@ -1,0 +1,44 @@
+@use "design-system";
+
+.redesigned__send {
+  @include design-system.screen-sm-min {
+    &__wrapper {
+      width: 85vw;
+      min-height: 90vh;
+
+      &--has-shadow {
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+      }
+    }
+  }
+
+  @include design-system.screen-md-min {
+    &__wrapper {
+      width: 80vw;
+      min-height: 82vh;
+
+      &--has-shadow {
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+      }
+    }
+  }
+
+  @include design-system.screen-lg-min {
+    &__wrapper {
+      width: 62vw;
+      min-height: 82vh;
+
+      &--has-shadow {
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+      }
+    }
+  }
+
+  @include design-system.screen-sm-max {
+    &__wrapper {
+      width: 100%;
+      overflow-y: auto;
+      background-color: var(--color-background-default);
+    }
+  }
+}

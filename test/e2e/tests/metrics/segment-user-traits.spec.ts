@@ -123,11 +123,11 @@ describe('Segment User Traits', function () {
         assert.equal(events.length, 0);
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleParticipateInMetaMetrics();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
@@ -159,11 +159,14 @@ describe('Segment User Traits', function () {
         assert.equal(events.length, 0);
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
+        // Toggle participate in meta metrics first, then toggle data collection for marketing
+        // Data Collection toggle is disabled if participate in meta metrics is off
+        await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);

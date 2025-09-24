@@ -27,7 +27,7 @@ import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
+import { ellipsify } from '../../../../pages/confirmations/send-legacy/send.utils';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -75,6 +75,7 @@ export type AssetPickerProps = {
   action?: 'send' | 'receive';
   isMultiselectEnabled?: boolean;
   autoFocus?: boolean;
+  isDestinationToken?: boolean;
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
     | 'network'
@@ -110,6 +111,7 @@ export function AssetPicker({
   isTokenListLoading = false,
   isMultiselectEnabled = false,
   autoFocus = true,
+  isDestinationToken = false,
 }: AssetPickerProps) {
   const t = useI18nContext();
 
@@ -215,6 +217,7 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
+        isDestinationToken={isDestinationToken}
         onAssetChange={(
           token:
             | AssetWithDisplayData<ERC20Asset>

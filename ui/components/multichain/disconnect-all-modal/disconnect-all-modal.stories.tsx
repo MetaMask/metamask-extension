@@ -9,14 +9,14 @@ export default {
     type: { control: 'string' },
     hostname: { control: 'string' },
     onClose: { action: 'onClose' },
-    onClick: { action: 'onClose' }
+    onClick: { action: 'onClose' },
   },
   args: {
     type: DisconnectType.Account,
-    hostname: 'portfolio.metamask.io',
+    hostname: 'app.metamask.io',
     onClick: () => undefined,
     onClose: () => undefined,
-  }
+  },
 };
 
 export const DefaultStory = (args) => <DisconnectAllModal {...args} />;

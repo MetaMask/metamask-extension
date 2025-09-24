@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { PermissionConstraint } from '@metamask/permission-controller';
-import { withFixtures } from '../helpers';
+import { WINDOW_TITLES, withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -19,7 +19,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -80,7 +80,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -139,7 +139,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const beforeGetPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
@@ -202,7 +202,7 @@ describe('Revoke Dapp Permissions', function () {
           await loginWithBalanceValidation(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await testDapp.check_pageIsLoaded();
+          await testDapp.checkPageIsLoaded();
           await testDapp.clickPersonalSign();
 
           const revokePermissionsRequest = JSON.stringify({
@@ -217,6 +217,7 @@ describe('Revoke Dapp Permissions', function () {
             ],
           });
 
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           const revokePermissionsResult = await driver.executeScript(
             `return window.ethereum.request(${revokePermissionsRequest})`,
           );

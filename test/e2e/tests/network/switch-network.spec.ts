@@ -45,25 +45,22 @@ describe('Switch network - ', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
 
-        // Validate the switch network functionality to Ethereum Mainnet
+        // Validate the switch network functionality to Ethereum
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality to test network
         await switchToNetworkFromSendFlow(driver, 'Localhost 8545');
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(
-          driver,
-          'Arbitrum One',
-        );
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
+        await homePage.checkLocalNodeBalanceIsDisplayed();
 
-        // Validate the switch network functionality back to Ethereum Mainnet
+        // Validate the switch network functionality back to Ethereum
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
-        await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkLocalNodeBalanceIsDisplayed();
       },
     );
   });

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -11,14 +11,18 @@ import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllChainsToPoll } from '../../../selectors';
-import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  getAllChainsToPoll,
+  getIsMultichainAccountsState2Enabled,
+} from '../../../selectors';
+import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { useAssetListTokenDetection } from '../../app/assets/hooks';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import TransactionList from '../../app/transaction-list';
+import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { AccountOverviewCommonProps } from './common';
@@ -47,14 +51,6 @@ export const AccountOverviewTabs = ({
   const allChainIds = useSelector(getAllChainsToPoll);
 
   useAssetListTokenDetection();
-
-  const tabProps = useMemo(
-    () => ({
-      activeClassName: 'account-overview__tab--active',
-      className: 'account-overview__tab',
-    }),
-    [],
-  );
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
@@ -98,68 +94,73 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
+  const isBIP44FeatureFlagEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
+
   return (
-    <Box style={{ flexGrow: '1' }}>
-      <Tabs
-        defaultActiveTabKey={defaultHomeActiveTabName}
-        onTabClick={handleTabClick}
-        tabsClassName="account-overview__tabs"
-      >
-        {showTokens && (
-          <Tab
-            name={t('tokens')}
-            tabKey="tokens"
-            data-testid="account-overview__asset-tab"
-            {...tabProps}
-          >
-            <Box marginTop={2} marginBottom={2}>
-              <AssetList
-                showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={onClickAsset}
-                safeChains={safeChains}
-              />
-            </Box>
-          </Tab>
-        )}
-        {showDefi && (
-          <Tab
-            name={t('defi')}
-            tabKey="defi"
-            data-testid="account-overview__defi-tab"
-            {...tabProps}
-          >
-            <Box marginTop={2}>
-              <DeFiTab
-                showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={onClickDeFi}
-                safeChains={safeChains}
-              />
-            </Box>
-          </Tab>
-        )}
+    <Tabs<AccountOverviewTabKey>
+      defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
+      onTabClick={handleTabClick}
+      tabListProps={{
+        className: 'px-4',
+      }}
+    >
+      {showTokens && (
+        <Tab
+          name={t('tokens')}
+          tabKey={AccountOverviewTabKey.Tokens}
+          data-testid="account-overview__asset-tab"
+        >
+          <Box marginBottom={2}>
+            <AssetList
+              showTokensLinks={showTokensLinks ?? true}
+              onClickAsset={onClickAsset}
+              safeChains={safeChains}
+            />
+          </Box>
+        </Tab>
+      )}
+      {showDefi && (
+        <Tab
+          name={t('defi')}
+          tabKey={AccountOverviewTabKey.DeFi}
+          data-testid="account-overview__defi-tab"
+        >
+          <Box>
+            <DeFiTab
+              showTokensLinks={showTokensLinks ?? true}
+              onClickAsset={onClickDeFi}
+              safeChains={safeChains}
+            />
+          </Box>
+        </Tab>
+      )}
 
-        {showNfts && (
-          <Tab
-            name={t('nfts')}
-            tabKey="nfts"
-            data-testid="account-overview__nfts-tab"
-            {...tabProps}
-          >
-            <NftsTab />
-          </Tab>
-        )}
+      {showNfts && (
+        <Tab
+          name={t('nfts')}
+          tabKey={AccountOverviewTabKey.Nfts}
+          data-testid="account-overview__nfts-tab"
+        >
+          <NftsTab />
+        </Tab>
+      )}
 
-        {showActivity && (
-          <Tab
-            name={t('activity')}
-            tabKey="activity"
-            data-testid="account-overview__activity-tab"
-            {...tabProps}
-          >
-            <TransactionList boxProps={{ paddingTop: 3 }} />
-          </Tab>
-        )}
-      </Tabs>
-    </Box>
+      {showActivity && (
+        <Tab
+          name={t('activity')}
+          tabKey={AccountOverviewTabKey.Activity}
+          data-testid="account-overview__activity-tab"
+        >
+          {showUnifiedTransactionList ? (
+            <UnifiedTransactionList />
+          ) : (
+            <TransactionList />
+          )}
+        </Tab>
+      )}
+    </Tabs>
   );
 };

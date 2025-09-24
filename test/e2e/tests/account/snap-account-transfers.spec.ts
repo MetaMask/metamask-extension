@@ -40,7 +40,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('SSK Account');
+        await headerNavbar.checkAccountLabel('SSK Account');
 
         // send 1 ETH from snap account to account 1
         await sendRedesignedTransactionWithSnapAccount({
@@ -48,15 +48,15 @@ describe('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
-        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
-        await accountList.check_pageIsLoaded();
+        await accountList.checkPageIsLoaded();
 
         // check the balance of the 2 accounts are updated
         await driver.delay(veryLargeDelayMs);
-        await accountList.check_accountBalanceDisplayed('$44,200');
-        await accountList.check_accountBalanceDisplayed('$40,799');
+        await accountList.checkAccountBalanceDisplayed('$44,200');
+        await accountList.checkAccountBalanceDisplayed('$40,799');
       },
     );
   });
@@ -82,7 +82,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('SSK Account');
+        await headerNavbar.checkAccountLabel('SSK Account');
 
         // send 1 ETH from snap account to account 1 and approve the transaction
         await sendRedesignedTransactionWithSnapAccount({
@@ -91,15 +91,15 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
           isSyncFlow: false,
         });
-        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
-        await accountList.check_pageIsLoaded();
+        await accountList.checkPageIsLoaded();
 
         // check the balance of the 2 accounts are updated
         await driver.delay(veryLargeDelayMs);
-        await accountList.check_accountBalanceDisplayed('$44,200');
-        await accountList.check_accountBalanceDisplayed('$40,799');
+        await accountList.checkAccountBalanceDisplayed('$44,200');
+        await accountList.checkAccountBalanceDisplayed('$40,799');
       },
     );
   });
@@ -126,7 +126,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('SSK Account');
+        await headerNavbar.checkAccountLabel('SSK Account');
 
         // send 1 ETH from snap account to account 1 and reject the transaction
         await sendRedesignedTransactionWithSnapAccount({
@@ -138,10 +138,10 @@ describe('Snap Account Transfers', function (this: Suite) {
         });
 
         // check the transaction is failed in MetaMask activity list
-        await new HomePage(driver).check_pageIsLoaded();
+        await new HomePage(driver).checkPageIsLoaded();
         await new ActivityListPage(
           driver,
-        ).check_failedTxNumberDisplayedInActivity();
+        ).checkFailedTxNumberDisplayedInActivity();
       },
     );
   });

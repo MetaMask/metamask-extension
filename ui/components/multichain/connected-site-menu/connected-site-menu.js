@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   IconColor,
@@ -13,18 +14,23 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarFavicon,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
   Box,
   Icon,
   IconName,
   IconSize,
 } from '../../component-library';
 import {
+  getAllPermittedAccounts,
   getOriginOfCurrentTab,
-  getPermittedAccountsByOrigin,
   getSubjectMetadata,
 } from '../../../selectors';
+import { getDappActiveNetwork } from '../../../selectors/dapp';
 import { ConnectedSitePopover } from '../connected-site-popover';
 import { STATUS_CONNECTED } from '../../../helpers/constants/connected-sites';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
   const [showPopover, setShowPopover] = useState(false);
@@ -33,23 +39,48 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
 
   const subjectMetadata = useSelector(getSubjectMetadata);
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
-  const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
-  const currentTabHasNoAccounts =
-    !permittedAccountsByOrigin[connectedOrigin]?.length;
+  const permittedAccountsByOrigin = useSelector((state) =>
+    getAllPermittedAccounts(state, connectedOrigin),
+  );
+  const dappActiveNetwork = useSelector(getDappActiveNetwork);
+  const currentTabHasNoAccounts = !permittedAccountsByOrigin?.length;
   const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
+
+  // Get network image URL for the badge
+  const getNetworkImageSrc = () => {
+    if (dappActiveNetwork?.chainId) {
+      return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[dappActiveNetwork.chainId];
+    }
+    return undefined;
+  };
 
   const iconElement = currentTabHasNoAccounts ? (
     <Icon
       name={IconName.Global}
-      size={IconSize.Sm}
+      size={IconSize.Lg}
       color={IconColor.iconDefault}
     />
   ) : (
-    <AvatarFavicon
-      name={connectedSubjectsMetadata.name}
-      size={Size.SM}
-      src={connectedSubjectsMetadata.iconUrl}
-    />
+    <BadgeWrapper
+      badge={
+        dappActiveNetwork && (
+          <AvatarNetwork
+            size={AvatarNetworkSize.Xs}
+            name={dappActiveNetwork.name || dappActiveNetwork.nickname}
+            src={getNetworkImageSrc()}
+            backgroundColor={BackgroundColor.backgroundSection}
+            borderWidth={2}
+            borderColor={BorderColor.backgroundDefault}
+          />
+        )
+      }
+    >
+      <AvatarFavicon
+        name={connectedSubjectsMetadata?.name}
+        size={Size.SM}
+        src={connectedSubjectsMetadata?.iconUrl}
+      />
+    </BadgeWrapper>
   );
   return (
     <>

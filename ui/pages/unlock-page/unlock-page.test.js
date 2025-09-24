@@ -36,7 +36,6 @@ jest.mock('@metamask/logo', () => () => {
 
 describe('Unlock Page', () => {
   process.env.METAMASK_BUILD_TYPE = 'main';
-  process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 
   const mockState = {
     metamask: {},

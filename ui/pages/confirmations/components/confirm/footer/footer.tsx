@@ -1,4 +1,3 @@
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +13,6 @@ import {
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import {
   Display,
   FlexDirection,
@@ -23,18 +21,14 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
-import {
-  rejectPendingApproval,
-  resolvePendingApproval,
-  setNextNonce,
-  updateCustomNonce,
-} from '../../../../../store/actions';
+import { resolvePendingApproval } from '../../../../../store/actions';
+import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
-import { getConfirmationSender } from '../utils';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -168,7 +162,7 @@ const Footer = () => {
   const { from } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
-  const { id: currentConfirmationId } = currentConfirmation || {};
+  const { onCancel, resetTransactionState } = useConfirmActions();
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
@@ -185,39 +179,6 @@ const Footer = () => {
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection ||
     isGaslessLoading;
-
-  const rejectApproval = useCallback(
-    ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
-      if (!currentConfirmationId) {
-        return;
-      }
-
-      const error = providerErrors.userRejectedRequest();
-      error.data = { location };
-
-      const serializedError = serializeError(error);
-      dispatch(rejectPendingApproval(currentConfirmationId, serializedError));
-    },
-    [currentConfirmationId, dispatch],
-  );
-
-  const resetTransactionState = useCallback(() => {
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
-    dispatch(clearConfirmTransaction());
-  }, [dispatch]);
-
-  const onCancel = useCallback(
-    ({ location }: { location?: MetaMetricsEventLocation }) => {
-      if (!currentConfirmation) {
-        return;
-      }
-
-      rejectApproval({ location });
-      resetTransactionState();
-    },
-    [currentConfirmation, rejectApproval, resetTransactionState],
-  );
 
   const onSubmit = useCallback(() => {
     if (!currentConfirmation) {

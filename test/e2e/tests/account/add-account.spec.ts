@@ -2,9 +2,8 @@ import { Mockttp } from 'mockttp';
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import { WALLET_PASSWORD, withFixtures } from '../../helpers';
+import { unlockWallet, WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -18,10 +17,11 @@ describe('Add account', function () {
   const localNodeOptions = {
     accounts: 1,
   };
+
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder().build(),
         localNodeOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
@@ -32,31 +32,32 @@ describe('Add account', function () {
         },
       },
       async ({ driver, localNodes }) => {
-        await completeImportSRPOnboardingFlow({ driver });
+        await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+        await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         // Create new account with default name `newAccountName`
         const newAccountName = 'Account 2';
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
         });
-        await headerNavbar.check_accountLabel(newAccountName);
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await headerNavbar.checkAccountLabel(newAccountName);
+        await homePage.checkExpectedBalanceIsDisplayed('0');
 
         // Switch back to the first account and transfer some balance to 2nd account so they will not be removed after recovering SRP
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
-        await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
+        await headerNavbar.checkAccountLabel('Account 1');
+        await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
 
         await sendRedesignedTransactionToAccount({
           driver,
@@ -64,29 +65,30 @@ describe('Add account', function () {
           amount: '2.8',
         });
 
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity('-2.8 ETH');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity('-2.8 ETH');
 
         // Lock wallet and recover via SRP in "forget password" option
         await headerNavbar.lockMetaMask();
         await new LoginPage(driver).gotoResetPasswordPage();
         const resetPasswordPage = new ResetPasswordPage(driver);
-        await resetPasswordPage.check_pageIsLoaded();
+        await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
 
         // Check wallet balance for both accounts
-        await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+        await homePage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList(
           newAccountName,
         );
         await accountListPage.switchToAccount(newAccountName);
-        await headerNavbar.check_accountLabel(newAccountName);
-        await homePage.check_expectedBalanceIsDisplayed('2.8');
+        await headerNavbar.checkAccountLabel(newAccountName);
+        await homePage.checkExpectedBalanceIsDisplayed('2.8');
       },
     );
   });
@@ -105,35 +107,36 @@ describe('Add account', function () {
         await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await headerNavbar.openAccountMenu();
 
         // Create new account with default name Account 2
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Ethereum,
         });
-        await headerNavbar.check_accountLabel('Account 2');
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await headerNavbar.checkAccountLabel('Account 2');
+        await homePage.checkExpectedBalanceIsDisplayed('0');
 
         // Check user cannot delete 2nd account generated from the SRP imported in onboarding
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_removeAccountButtonIsNotDisplayed(
+        await accountListPage.checkRemoveAccountButtonIsNotDisplayed(
           'Account 1',
         );
 
         // Create 3rd account with private key
         await accountListPage.addNewImportedAccount(testPrivateKey);
-        await headerNavbar.check_accountLabel('Account 3');
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await headerNavbar.checkAccountLabel('Account 3');
+        await homePage.checkExpectedBalanceIsDisplayed('0');
 
         // Remove the 3rd account imported with a private key
         await headerNavbar.openAccountMenu();
         await accountListPage.removeAccount('Account 3');
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
           'Account 3',
         );
       },

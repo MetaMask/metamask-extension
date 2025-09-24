@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 
-import { withFixtures, getCleanAppState } from '../../../helpers';
+import { getCleanAppState, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
@@ -162,13 +162,13 @@ describe('Contact Syncing - Existing User', function () {
 
           // Set up UI navigation
           const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
+          await header.checkPageIsLoaded();
 
           // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
             return (
-              uiState?.metamask?.hasAccountSyncingSyncedAtLeastOnce === true
+              uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
             );
           }, 30000);
 
@@ -178,9 +178,9 @@ describe('Contact Syncing - Existing User', function () {
           // STEP 2: Add new contact
           console.log('STEP 2: Adding new contact...');
           await header.openSettingsPage();
-          await settingsPage.check_pageIsLoaded();
+          await settingsPage.checkPageIsLoaded();
           await settingsPage.goToContactsSettings();
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
           await contactsSettings.addContact(
             newContact.name,
             newContact.address,
@@ -234,7 +234,7 @@ describe('Contact Syncing - Existing User', function () {
 
           // Navigate back to contacts list first
           await settingsPage.goToContactsSettings();
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.editContact({
             existingContactName: 'Alice Smith',
@@ -254,7 +254,7 @@ describe('Contact Syncing - Existing User', function () {
           // STEP 4: Delete existing contact (Bob)
           console.log('STEP 4: Deleting existing contact...');
           await settingsPage.goToContactsSettings();
-          await contactsSettings.check_pageIsLoaded();
+          await contactsSettings.checkPageIsLoaded();
 
           await contactsSettings.deleteContact('Bob Johnson');
 

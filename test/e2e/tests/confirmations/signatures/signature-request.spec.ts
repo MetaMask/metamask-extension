@@ -1,15 +1,13 @@
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 
-import {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  WINDOW_TITLES,
+} from '../../../constants';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -45,7 +43,8 @@ describe('Sign Typed Data Signature Request', function () {
           const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
           await unlockWallet(driver);
 
-          await openDapp(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
 
           // creates multiple sign typed data signature requests
           await triggerSignatureRequest(driver, data.type);
@@ -55,7 +54,7 @@ describe('Sign Typed Data Signature Request', function () {
           // creates second sign typed data signature request
           await triggerSignatureRequest(driver, data.type);
 
-          await confirmation.check_pageNumbers(1, 2);
+          await confirmation.checkPageNumbers(1, 2);
 
           await verifyAndAssertRedesignedSignTypedData(driver, data.type);
 
@@ -91,7 +90,8 @@ describe('Sign Typed Data Signature Request', function () {
           const confirmation = new SignTypedData(driver);
           await unlockWallet(driver);
 
-          await openDapp(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
 
           // creates multiple sign typed data signature requests
           await triggerSignatureRequest(driver, data.type);
@@ -104,7 +104,7 @@ describe('Sign Typed Data Signature Request', function () {
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          await confirmation.check_pageNumbers(1, 2);
+          await confirmation.checkPageNumbers(1, 2);
 
           // reject first signature request
           await finalizeSignatureRequest(driver, 'Reject');
@@ -158,13 +158,13 @@ async function verifySignatureResult(
 
   switch (type) {
     case signatureRequestType.signTypedData:
-      await testDapp.check_successSignTypedData(publicAddress);
+      await testDapp.checkSuccessSignTypedData(publicAddress);
       break;
     case signatureRequestType.signTypedDataV3:
-      await testDapp.check_successSignTypedDataV3(publicAddress);
+      await testDapp.checkSuccessSignTypedDataV3(publicAddress);
       break;
     case signatureRequestType.signTypedDataV4:
-      await testDapp.check_successSignTypedDataV4(publicAddress);
+      await testDapp.checkSuccessSignTypedDataV4(publicAddress);
       break;
     default:
       throw new Error(`Unsupported signature type: ${type}`);
@@ -176,17 +176,17 @@ async function verifySignatureRejection(driver: Driver, type: string) {
 
   switch (type) {
     case signatureRequestType.signTypedData:
-      await testDapp.check_failedSignTypedData(
+      await testDapp.checkFailedSignTypedData(
         'Error: User rejected the request.',
       );
       break;
     case signatureRequestType.signTypedDataV3:
-      await testDapp.check_failedSignTypedDataV3(
+      await testDapp.checkFailedSignTypedDataV3(
         'Error: User rejected the request.',
       );
       break;
     case signatureRequestType.signTypedDataV4:
-      await testDapp.check_failedSignTypedDataV4(
+      await testDapp.checkFailedSignTypedDataV4(
         'Error: User rejected the request.',
       );
       break;

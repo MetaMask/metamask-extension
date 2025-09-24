@@ -11,18 +11,18 @@ describe('Account creation', function (this: Suite) {
       async (driver) => {
         // check that we have one Solana account
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Solana 1');
+        await headerNavbar.checkPageIsLoaded();
+        await headerNavbar.checkAccountLabel('Solana 1');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Solana,
           accountName: 'Solana 2',
         });
-        await headerNavbar.check_accountLabel('Solana 2');
+        await headerNavbar.checkAccountLabel('Solana 2');
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_numberOfAvailableAccounts(3);
+        await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );
   });
@@ -31,12 +31,12 @@ describe('Account creation', function (this: Suite) {
       { title: this.test?.fullTitle() },
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Solana 1');
+        await headerNavbar.checkPageIsLoaded();
+        await headerNavbar.checkAccountLabel('Solana 1');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_accountDisplayedInAccountList('Solana 1');
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
+        await accountListPage.checkAccountDisplayedInAccountList('Solana 1');
       },
     );
   });

@@ -15,8 +15,8 @@ describe('Multi injected provider interactions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_providerNumber(2);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkProviderNumber(2);
       },
     );
   });

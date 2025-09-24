@@ -59,16 +59,16 @@ describe('Upgrade Account', function (this: Suite) {
         // acknowledge splash page
         await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
 
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           'Smart account',
         );
-        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',
         );
 
         // Open Settings and very tx details
         await upgradeAndBatchTxConfirmation.clickAdvancedDetailsButton();
-        await upgradeAndBatchTxConfirmation.check_batchTxListIsPresent();
+        await upgradeAndBatchTxConfirmation.checkBatchTxListIsPresent();
 
         // Confirm upgrade and batch tx
         await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
@@ -83,8 +83,8 @@ describe('Upgrade Account', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-        await homePage.check_expectedBalanceIsDisplayed('24.9998', 'ETH');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await homePage.checkExpectedBalanceIsDisplayed('24.9998', 'ETH');
 
         // We check that we have an upgraded account
         accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
@@ -152,10 +152,10 @@ describe('Upgrade Account', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           'Smart account',
         );
-        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',
         );
       },
