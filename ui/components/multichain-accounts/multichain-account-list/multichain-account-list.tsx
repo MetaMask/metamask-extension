@@ -93,15 +93,12 @@ export const MultichainAccountList = ({
     [setIsAccountRenameModalOpen, setRenameAccountGroupId],
   );
 
-  const handleMenuToggle = useCallback(
-    (accountGroupId: AccountGroupId) => {
-      // If the same menu is clicked, close it; otherwise, open the new one
-      setOpenMenuAccountId((current) =>
-        current === accountGroupId ? null : accountGroupId,
-      );
-    },
-    [],
-  );
+  const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
+    // If the same menu is clicked, close it; otherwise, open the new one
+    setOpenMenuAccountId((current) =>
+      current === accountGroupId ? null : accountGroupId,
+    );
+  }, []);
 
   // Convert selectedAccountGroups array to Set for O(1) lookup
   const selectedAccountGroupsSet = useMemo(
