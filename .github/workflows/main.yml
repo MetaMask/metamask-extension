@@ -73,11 +73,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
+          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -208,11 +210,13 @@ jobs:
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
+          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -299,11 +303,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
+          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -337,11 +343,13 @@ jobs:
 
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
+          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
