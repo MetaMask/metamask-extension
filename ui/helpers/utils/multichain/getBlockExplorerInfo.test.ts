@@ -1,5 +1,5 @@
-import { getBlockExplorerInfo } from './getBlockExplorerInfo';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { getBlockExplorerInfo } from './getBlockExplorerInfo';
 
 describe('getBlockExplorerInfo utility functions', () => {
   const mockT = (key: string, ...args: string[]) =>
