@@ -22,8 +22,10 @@ import { getImageForChainId } from '../../confirmations/utils/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkFilterPill } from './network-filter-pill';
 import { debounce, set } from 'lodash';
-import { getPopularAssets, searchAssets } from '../utils/assets-service';
+import { AssetsResponse, getPopularAssets, searchAssets } from '../utils/assets-service';
 import { BridgeAssetList } from './bridge-asset-list';
+import { useMultichainBalances } from '../../../hooks/useMultichainBalances';
+import { useFilteredAssetsWithBalance } from '../hooks/useFilteredAssetsWithBalance';
 
 interface BridgeAssetsModalProps {
   isOpen: boolean;
@@ -43,17 +45,22 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(CHAIN_IDS.MAINNET);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [response, setResponse] = useState<AssetsResponse | null>(null);
+
+  const assetsWithBalance = useFilteredAssetsWithBalance(selectedNetwork);
 
   const debouncedSearchCallback = useCallback(
     debounce(async (value, selectedNetwork) => {
       setIsLoading(true);
-      // const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
-      // if (value.length === 0) {
-      //   const assets = await getPopularAssets(value, networks);
-      // } else {
-      //   const assets = await searchAssets(value, networks);
-      // }
-      // setIsLoading(false);
+      const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
+      let assets = null;
+      if (value.length === 0) {
+        assets = await getPopularAssets(value, networks);
+      } else {
+        assets = await searchAssets(value, networks);
+      }
+      setResponse(assets);
+      setIsLoading(false);
       console.log('Debounced search query:', value);
     }, 300),
     [],
@@ -74,6 +81,7 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
   }
 
   useEffect(() => {
+    setResponse(null);
     debouncedSearchCallback(searchQuery, selectedNetwork);
   }, [selectedNetwork, searchQuery, debouncedSearchCallback]);
 
@@ -116,7 +124,12 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
           />
         </Box>
         <Box padding={4} style={{ overflowY: 'auto' }}>
-          <BridgeAssetList isLoading={isLoading} assets={[]} />
+          <BridgeAssetList
+            isLoading={isLoading}
+            assets={response?.data ?? []}
+            hasMore={response?.pageInfo.hasNextPage ?? false}
+            onLoadMore={() => {}}
+          />
         </Box>
       </ModalContent>
     </Modal>
