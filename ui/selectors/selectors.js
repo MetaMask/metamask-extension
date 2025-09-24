@@ -3048,6 +3048,40 @@ export function getTokenScanCache(state) {
   return state.metamask.tokenScanCache;
 }
 
+/**
+ * Gets specific token scan results for given addresses.
+ *
+ *
+ * @param {*} state
+ * @param {string} chainId - The chain ID to filter by
+ * @param {string[]} tokenAddresses - Array of token addresses to get results for
+ * @returns Object containing only the requested token scan results
+ */
+export const getTokenScanResultsForAddresses = createDeepEqualSelector(
+  [
+    getTokenScanCache,
+    (_state, chainId) => chainId,
+    (_state, _chainId, tokenAddresses) => tokenAddresses,
+  ],
+  (tokenScanCache, chainId, tokenAddresses) => {
+    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+      return {};
+    }
+
+    const results = {};
+    tokenAddresses.forEach((tokenAddress) => {
+      if (tokenAddress) {
+        const cacheKey = `${chainId.toLowerCase()}:${tokenAddress.toLowerCase()}`;
+        if (tokenScanCache?.[cacheKey]) {
+          results[cacheKey] = tokenScanCache[cacheKey];
+        }
+      }
+    });
+
+    return results;
+  },
+);
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.

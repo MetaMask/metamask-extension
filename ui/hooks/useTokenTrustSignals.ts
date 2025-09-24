@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenScanCache } from '../selectors/selectors';
+import { getTokenScanResultsForAddresses } from '../selectors/selectors';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
 
 type TokenScanCacheResult = {
@@ -34,11 +34,18 @@ function getTrustState(
   }
 }
 
+function generateCacheKey(chainId: string, tokenAddress: string) {
+  return `${chainId.toLowerCase()}:${tokenAddress.toLowerCase()}`;
+}
+
 export function useTokenTrustSignalsForAddresses(
   chainId: string | undefined,
   tokenAddresses: string[] | undefined,
 ): TrustSignalResult[] {
-  const tokenScanCache = useSelector(getTokenScanCache);
+  // Use the optimized selector to get only the cache entries we need
+  const tokenScanResults = useSelector((state) =>
+    getTokenScanResultsForAddresses(state, chainId, tokenAddresses),
+  ) as Record<string, TokenScanCacheResult>;
 
   return useMemo(() => {
     if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
@@ -53,13 +60,13 @@ export function useTokenTrustSignalsForAddresses(
         };
       }
 
-      const cacheKey = `${chainId}:${tokenAddress.toLowerCase()}`;
-      const cachedResult = tokenScanCache?.[cacheKey];
+      const cacheKey = generateCacheKey(chainId, tokenAddress);
+      const cachedResult = tokenScanResults[cacheKey];
 
       return {
         state: getTrustState(cachedResult),
         label: null,
       };
     });
-  }, [chainId, tokenAddresses, tokenScanCache]);
+  }, [chainId, tokenAddresses, tokenScanResults]);
 }
