@@ -86,7 +86,6 @@ import {
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
   SolScope,
-  EthAccountType,
 } from '@metamask/keyring-api';
 import {
   hasProperty,
