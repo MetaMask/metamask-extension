@@ -337,6 +337,10 @@ import {
   SnapsRegistryInit,
   WebSocketServiceInit,
 } from './controller-init/snaps';
+import {
+  BackendWebSocketServiceInit,
+  AccountActivityServiceInit,
+} from './controller-init/backend-platform';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
@@ -590,6 +594,25 @@ export default class MetamaskController extends EventEmitter {
         messenger: metaMetricsDataDeletionMessenger,
         state: initState.metaMetricsDataDeletionController,
       });
+
+    const appStateControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AppStateController',
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.approvalController.name}:acceptRequest`,
+        `PreferencesController:getState`,
+      ],
+      allowedEvents: ['PreferencesController:stateChange'],
+    });
+    this.appStateController = new AppStateController({
+      addUnlockListener: this.on.bind(this, 'unlock'),
+      isUnlocked: this.isUnlocked.bind(this),
+      state: initState.AppStateController,
+      onInactiveTimeout: () => this.setLocked(),
+      messenger: appStateControllerMessenger,
+      extension: this.extension,
+    });
+
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -846,6 +869,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
+      BackendWebSocketService: BackendWebSocketServiceInit,
+      AccountActivityService: AccountActivityServiceInit,
       PPOMController: PPOMControllerInit,
       OnboardingController: OnboardingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -937,6 +962,8 @@ export default class MetamaskController extends EventEmitter {
     this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
+    this.backendWebSocketService = controllersByName.BackendWebSocketService;
+    this.accountActivityService = controllersByName.AccountActivityService;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
@@ -1347,6 +1374,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
+      AccountActivityService: this.accountActivityService,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
@@ -1583,6 +1611,15 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
+
+    // Clean up WebSocket connections and account activity subscriptions
+    if (this.controllersByName?.AccountActivityService) {
+      this.controllersByName.AccountActivityService.destroy();
+    }
+    if (this.backendWebSocketService) {
+      this.backendWebSocketService.destroy();
+    }
+
   }
 
   resetStates(resetMethods) {
@@ -7800,6 +7837,12 @@ export default class MetamaskController extends EventEmitter {
 
     // Notify Snaps that the client is open or closed.
     this.controllerMessenger.call('SnapController:setClientActive', open);
+
+    // Handle WebSocket connection lifecycle when client opens/closes
+    if (open && this.backendWebSocketService) {
+      // Extension UI opened - ensure WebSocket is connected
+      this.backendWebSocketService.connect()
+    }
   }
   /* eslint-enable accessor-pairs */
 

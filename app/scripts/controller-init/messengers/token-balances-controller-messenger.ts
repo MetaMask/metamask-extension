@@ -17,12 +17,20 @@ import {
   AccountTrackerUpdateStakedBalancesAction,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import {
+  KeyringControllerAccountRemovedEvent,
+  KeyringControllerUnlockEvent,
+  KeyringControllerLockEvent,
+} from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
+import type {
+  AccountActivityServiceBalanceUpdatedEvent,
+  AccountActivityServiceStatusChangedEvent,
+} from '@metamask/backend-platform';
 
 // Not exported from `@metamask/assets-controllers`.
 type TokensControllerGetStateAction = ControllerGetStateAction<
@@ -47,9 +55,13 @@ type AllowedActions =
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
+  | KeyringControllerUnlockEvent
+  | KeyringControllerLockEvent
   | NetworkControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent
-  | TokensControllerStateChangeEvent;
+  | TokensControllerStateChangeEvent
+  | AccountActivityServiceBalanceUpdatedEvent
+  | AccountActivityServiceStatusChangedEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -82,6 +94,10 @@ export function getTokenBalancesControllerMessenger(
       'TokensController:stateChange',
       'NetworkController:stateChange',
       'KeyringController:accountRemoved',
+      'KeyringController:unlock',
+      'KeyringController:lock',
+      'AccountActivityService:balanceUpdated',
+      'AccountActivityService:statusChanged',
     ],
   });
 }
