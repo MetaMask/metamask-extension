@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
   },
-  "noActivity": {
-    "message": "Δεν υπάρχει δραστηριότητα ακόμα"
-  },
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
   },
@@ -3744,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
   },
-  "noDeFiPositions": {
-    "message": "Δεν μπορείτε να βρείτε αυτό που ψάχνετε;"
-  },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Τα Snaps και τα περισσότερα πορτοφόλια υλικού δεν θα λειτουργούν με την τρέχουσα έκδοση του προγράμματος περιήγησής σας."
-  },
-  "noNFTs": {
-    "message": "Δεν υπάρχουν NFT ακόμα"
   },
   "noNetworksAvailable": {
     "message": "Δεν υπάρχουν διαθέσιμα δίκτυα"
@@ -4641,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Προτεινόμενο όριο έγκρισης"
-  },
-  "protocolNotSupported": {
-    "message": "Ενδέχεται να μην υποστηρίζουμε ακόμη το πρωτόκολλό σας."
   },
   "provide": {
     "message": "Παροχή"

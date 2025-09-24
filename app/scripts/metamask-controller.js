@@ -1756,7 +1756,7 @@ export default class MetamaskController extends EventEmitter {
   isMultichainAccountsFeatureState2Enabled() {
     const featureFlag =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.enableMultichainAccounts;
+        ?.enableMultichainAccountsState2;
     return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
@@ -2618,6 +2618,9 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      multichainAssetsRatesController,
+      ///: END:ONLY_INCLUDE_IF
     } = this;
 
     return {
@@ -2915,6 +2918,12 @@ export default class MetamaskController extends EventEmitter {
         });
       },
 
+      alignMultichainWallets: async () => {
+        if (this.multichainAccountService) {
+          await this.multichainAccountService.alignWallets();
+        }
+      },
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
@@ -3054,7 +3063,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
           appStateController,
         ),
-
+      setHasShownMultichainAccountsIntroModal:
+        appStateController.setHasShownMultichainAccountsIntroModal.bind(
+          appStateController,
+        ),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -3437,6 +3449,16 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      multichainAssetsRatesStartPolling:
+        multichainAssetsRatesController.startPolling.bind(
+          multichainAssetsRatesController,
+        ),
+      multichainAssetsRatesStopPollingByPollingToken:
+        multichainAssetsRatesController.stopPollingByPollingToken.bind(
+          multichainAssetsRatesController,
+        ),
+      ///: END:ONLY_INCLUDE_IF
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
