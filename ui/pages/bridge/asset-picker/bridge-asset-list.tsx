@@ -44,7 +44,7 @@ export const BridgeAssetList = ({ isLoading, assets, hasMore, onLoadMore }: Asse
   }
 
   return (
-    <Column gap={1}>
+    <Column>
       {assets.map((asset) => (
         <AssetItem key={asset.assetId} asset={asset} />
       ))}

@@ -34,29 +34,29 @@ export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
       onClick={onClick}
     >
       <Row alignItems={AlignItems.center} justifyContent={JustifyContent.spaceBetween}>
-        <Row alignItems={AlignItems.center} gap={3}>
-        <Box style={{ position: 'relative', display: 'inline-block' }}>
-          <AvatarToken
-            src={tokenImage}
-            name={asset.symbol}
-            size={AvatarTokenSize.Md}
-          />
-          <Box
-            style={{
-              position: 'absolute',
-              bottom: '-8px',
-              right: '-6px',
-              borderRadius: '50%',
-            }}
-          >
-            <AvatarNetwork
-              src={networkImage}
-              name={asset.chainId}
-              size={AvatarNetworkSize.Xs}
+        <Row alignItems={AlignItems.center} gap={3} style={{ display: 'flex', flexShrink: 0 }}>
+          <Box style={{ position: 'relative', display: 'flex' }}>
+            <AvatarToken
+              src={tokenImage}
+              name={asset.symbol}
+              size={AvatarTokenSize.Md}
             />
+            <Box
+              style={{
+                position: 'absolute',
+                bottom: '-6px',
+                right: '-4px',
+                borderRadius: '50%',
+              }}
+            >
+              <AvatarNetwork
+                src={networkImage}
+                name={asset.chainId}
+                size={AvatarNetworkSize.Xs}
+              />
+            </Box>
           </Box>
-        </Box>
-          <Column gap={1}>
+          <Column gap={1} style={{ display: 'flex', flexShrink: 0 }}>
             <Text
               variant={TextVariant.bodyMd}
               fontWeight={FontWeight.Medium}
