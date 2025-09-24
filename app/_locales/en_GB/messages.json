@@ -172,6 +172,9 @@
   "activity": {
     "message": "Activity"
   },
+  "activityEmptyDescription": {
+    "message": "Nothing to see yet. Check the explorer for more recent activity."
+  },
   "activityLog": {
     "message": "Activity log"
   },
@@ -947,6 +950,9 @@
   },
   "bridgeNetCost": {
     "message": "Net cost"
+  },
+  "bridgeNoMMFee": {
+    "message": "No MM fee"
   },
   "bridgePriceImpact": {
     "message": "Price impact"
@@ -1881,6 +1887,9 @@
   "defi": {
     "message": "DeFi"
   },
+  "defiEmptyDescription": {
+    "message": "Lend, borrow, and trade, right in your wallet."
+  },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
   },
@@ -2011,6 +2020,9 @@
   },
   "discover": {
     "message": "Discover"
+  },
+  "discoverNFTs": {
+    "message": "Discover NFTs"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -2454,6 +2466,9 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exploreDefi": {
+    "message": "Explore DeFi"
   },
   "exploreweb3": {
     "message": "Explore web3"
@@ -3515,6 +3530,34 @@
     "message": "Address copied",
     "description": "Message displayed when the multichain account address is copied to clipboard"
   },
+  "multichainAccountIntroLearnMore": {
+    "message": "Learn more",
+    "description": "Button text to learn more about multichain accounts"
+  },
+  "multichainAccountIntroSameAddressDescription": {
+    "message": "We've merged your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
+    "description": "Description explaining that accounts have been merged"
+  },
+  "multichainAccountIntroSameAddressTitle": {
+    "message": "Same address, more networks",
+    "description": "Title for the second section of the multichain account intro modal"
+  },
+  "multichainAccountIntroSettingUp": {
+    "message": "Setting up your accounts...",
+    "description": "Loading text shown while setting up multichain accounts"
+  },
+  "multichainAccountIntroViewAccounts": {
+    "message": "View accounts",
+    "description": "Button text to view accounts from the intro modal"
+  },
+  "multichainAccountIntroWhatDescription": {
+    "message": "One account, addresses on all the networks MetaMask supports. So now you can use Ethereum, Solana, and more without switching accounts.",
+    "description": "Description explaining what multichain accounts are"
+  },
+  "multichainAccountIntroWhatTitle": {
+    "message": "What are multichain accounts?",
+    "description": "Title for the first section of the multichain account intro modal"
+  },
   "multichainAccountPrivateKeyCopied": {
     "message": "Private key copied",
     "description": "Message displayed when the multichain account private key is copied to clipboard"
@@ -3881,6 +3924,9 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
+  "nftEmptyDescription": {
+    "message": "There's a world of NFTs out there. Start your collection today."
+  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -3910,9 +3956,6 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noActivity": {
-    "message": "No activity yet"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
@@ -3922,17 +3965,11 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
-  "noDeFiPositions": {
-    "message": "Can't find what you're looking for?"
-  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
-  },
-  "noNFTs": {
-    "message": "No NFTs yet"
   },
   "noNetworksAvailable": {
     "message": "No networks available"
@@ -4813,9 +4850,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
-  },
-  "protocolNotSupported": {
-    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"

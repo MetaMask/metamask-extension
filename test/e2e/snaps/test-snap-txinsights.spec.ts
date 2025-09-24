@@ -6,7 +6,6 @@ import {
   DAPP_URL,
   withFixtures,
   WINDOW_TITLES,
-  openDapp,
   veryLargeDelayMs,
 } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
@@ -40,8 +39,7 @@ describe('Test Snap TxInsights', function () {
         );
 
         // open the test-dapp page
-        await openDapp(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.openTestDappPage();
         await testDapp.clickMaliciousERC20TransferButton();
 
         // Switch back to MetaMask dialog and validate the transaction insights title and type

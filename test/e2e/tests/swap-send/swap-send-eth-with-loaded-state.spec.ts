@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { openActionMenuAndStartSendFlow, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -251,7 +251,7 @@ describe('Swap-Send ETH', function () {
           await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
           // START SWAP AND SEND FLOW
-          await openActionMenuAndStartSendFlow(driver);
+          await homePage.startSendFlow();
 
           await swapSendPage.fillRecipientAddressInput(DEFAULT_FIXTURE_ACCOUNT);
           await swapSendPage.fillAmountInput('1');
