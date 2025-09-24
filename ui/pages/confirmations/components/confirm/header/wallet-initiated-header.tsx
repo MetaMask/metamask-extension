@@ -99,7 +99,7 @@ export const WalletInitiatedHeader = () => {
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}
       />
-      <Text variant={TextVariant.headingMd} color={TextColor.inherit}>
+      <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
         {t('review')}
       </Text>
       <AdvancedDetailsButton />
