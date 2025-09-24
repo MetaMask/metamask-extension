@@ -6,7 +6,7 @@ import {
   Text,
   TextDirection,
 } from '../../../../components/component-library';
-import { useFormatters } from '../../../../hooks/formatters';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import {
   TextAlign,
   TextColor,

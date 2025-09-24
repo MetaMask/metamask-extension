@@ -5,7 +5,7 @@ import {
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { useFormatters } from '../../../../hooks/formatters';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import { Box, SensitiveText } from '../../../component-library';

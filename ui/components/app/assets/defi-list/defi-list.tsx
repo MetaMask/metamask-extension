@@ -19,7 +19,7 @@ import PulseLoader from '../../../ui/pulse-loader';
 import { Box } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import { useFormatters } from '../../../../hooks/formatters';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';

@@ -25,7 +25,7 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
-import { useFormatters } from '../../../hooks/formatters';
+import { useFormatters } from '../../../hooks/useFormatters';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
