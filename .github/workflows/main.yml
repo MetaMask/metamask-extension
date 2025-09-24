@@ -42,6 +42,9 @@ jobs:
   prep-deps:
     runs-on: ubuntu-latest
     steps:
+      - name: Corepack hydrate yarn
+        run: npm run yarn-binary:hydrate
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
         with:
