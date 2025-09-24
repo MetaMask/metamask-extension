@@ -272,6 +272,7 @@ export const AssetPickerAmount = ({
                     dispatch(setToChainId(networkConfig.chainId));
                     dispatch(detectNfts(allChainIds));
 
+                    dispatch(setEnabledNetworks(networkConfig.chainId));
                     dispatch(
                       setActiveNetworkWithError(
                         'networkClientId' in rpcEndpoint
