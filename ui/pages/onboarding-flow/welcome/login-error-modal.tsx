@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   IconColor,
@@ -29,6 +30,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getSocialLoginType } from '../../../selectors';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
 type LoginErrorModalProps = {
@@ -44,6 +46,7 @@ export default function LoginErrorModal({
 }: LoginErrorModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const socialLoginType = useSelector(getSocialLoginType);
 
   const getTitle = () => {
     if (loginError === LOGIN_ERROR.UNABLE_TO_CONNECT) {
@@ -62,6 +65,10 @@ export default function LoginErrorModal({
     if (loginError === LOGIN_ERROR.SESSION_EXPIRED) {
       return t('loginErrorSessionExpiredDescription');
     }
+    if (loginError === LOGIN_ERROR.RESET_WALLET && socialLoginType) {
+      return t('loginErrorResetWalletDescription', [socialLoginType]);
+    }
+
     return t('loginErrorGenericDescription', [
       <ButtonLink
         key="loginErrorGenericDescription"
