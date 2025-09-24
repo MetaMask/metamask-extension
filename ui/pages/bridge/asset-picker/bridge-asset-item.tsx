@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, AvatarToken, AvatarTokenSize } from '../../../components/component-library';
+import { Box, Text, AvatarToken, AvatarTokenSize, AvatarNetworkSize, AvatarNetwork } from '../../../components/component-library';
 import { Column, Row } from '../layout';
 import {
   AlignItems,
@@ -12,7 +12,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Asset } from '../utils/assets-service';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import { CaipAssetId, CaipChainId, parseCaipAssetType } from '@metamask/utils';
+import { CaipAssetId, CaipChainId, parseCaipAssetType, parseCaipChainId } from '@metamask/utils';
+import { getImageForChainId } from '../../confirmations/utils/network';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 
 interface AssetItemProps {
   asset: Asset;
@@ -20,8 +22,8 @@ interface AssetItemProps {
 }
 
 export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
-  const chainId = asset.chainId ?? parseCaipAssetType(asset.assetId as CaipAssetId).chainId;
-  const image = getAssetImageUrl(asset.assetId, chainId as CaipChainId);
+  const tokenImage = getAssetImageUrl(asset.assetId, asset.chainId as CaipChainId);
+  const networkImage = getImageForChainId(asset.chainId as CaipChainId);
 
   return (
     <Box
@@ -33,11 +35,28 @@ export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
     >
       <Row alignItems={AlignItems.center} justifyContent={JustifyContent.spaceBetween}>
         <Row alignItems={AlignItems.center} gap={3}>
+        <Box style={{ position: 'relative', display: 'inline-block' }}>
           <AvatarToken
-            src={image}
+            src={tokenImage}
             name={asset.symbol}
             size={AvatarTokenSize.Md}
           />
+          <Box
+            style={{
+              position: 'absolute',
+              bottom: '-2px',
+              right: '-2px',
+              borderRadius: '50%',
+              border: '2px solid white'
+            }}
+          >
+            <AvatarNetwork
+              src={""}
+              name={asset.chainId}
+              size={AvatarNetworkSize.Xs}
+            />
+          </Box>
+        </Box>
           <Column gap={1}>
             <Text
               variant={TextVariant.bodyMd}

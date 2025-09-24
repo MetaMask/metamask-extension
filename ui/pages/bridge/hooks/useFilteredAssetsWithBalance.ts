@@ -22,7 +22,7 @@ export const useFilteredAssetsWithBalance = (network: string | null, assets: Ass
 
     // if network is provided, we only need to get assets with balance on the same network
     if (network) {
-      baseAssets = formattedAssetsWithBalance.filter((asset) => asset.chainId === network);
+      baseAssets = formattedAssetsWithBalance.filter((asset) => parseInt(asset.chainId) === parseInt(network));
     }
 
     // if assets are provided, we need to remove the duplicates that already exist in the assetsWithBalance
