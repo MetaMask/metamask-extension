@@ -2,6 +2,11 @@ import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  ProductType,
+  SUBSCRIPTION_STATUSES,
+  SubscriptionStatus,
+} from '@metamask/subscription-controller';
+import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
 } from '../../../hooks/metamask-notifications/useCounter';
@@ -31,6 +36,7 @@ import {
   IconName,
   Popover,
   PopoverPosition,
+  Tag,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -59,15 +65,24 @@ import {
 } from '../../../selectors';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderRadius,
   BorderStyle,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import {
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+} from '../../../hooks/subscription/useSubscription';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -91,6 +106,20 @@ export const GlobalMenu = ({
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
+
+  const { subscriptions } = useUserSubscriptions();
+  const shieldSubscription = useUserSubscriptionByProduct(
+    'shield' as ProductType,
+    subscriptions,
+  );
+
+  const isActiveShieldSubscription = (
+    [
+      SUBSCRIPTION_STATUSES.active,
+      SUBSCRIPTION_STATUSES.trialing,
+      SUBSCRIPTION_STATUSES.provisional,
+    ] as SubscriptionStatus[]
+  ).includes(shieldSubscription?.status as SubscriptionStatus);
 
   const account = useSelector(getSelectedInternalAccount);
 
@@ -331,7 +360,29 @@ export const GlobalMenu = ({
         }}
         data-testid="global-menu-support"
       >
-        {supportText}
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          {supportText}
+          {isActiveShieldSubscription && (
+            <Tag
+              label={t('priority')}
+              labelProps={{
+                variant: TextVariant.bodySmMedium,
+                color: TextColor.successDefault,
+              }}
+              startIconName={IconName.Sparkle}
+              startIconProps={{
+                color: IconColor.successDefault,
+              }}
+              borderStyle={BorderStyle.none}
+              borderRadius={BorderRadius.LG}
+              backgroundColor={BackgroundColor.successMuted}
+            />
+          )}
+        </Box>
       </MenuItem>
       <MenuItem
         to={SETTINGS_ROUTE}
