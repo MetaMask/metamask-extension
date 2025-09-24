@@ -13,7 +13,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -62,7 +62,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -220,7 +220,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -269,7 +269,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
