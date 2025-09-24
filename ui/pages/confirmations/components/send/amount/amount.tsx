@@ -142,6 +142,7 @@ export const Amount = () => {
         }
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
+        paddingRight={3}
       />
       <Box
         display={Display.Flex}

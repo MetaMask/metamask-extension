@@ -159,7 +159,6 @@ export const Recipient = () => {
             <Box
               alignItems={AlignItems.center}
               display={Display.Flex}
-              paddingLeft={2}
             >
               <PreferredAvatar
                 address={matchingRecipient.address}
@@ -175,6 +174,7 @@ export const Recipient = () => {
         value={localValue}
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
+        paddingRight={3}
       />
       {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
