@@ -1,7 +1,7 @@
 import { toEvmCaipChainId } from "@metamask/multichain-network-controller";
 import { Hex, isCaipChainId } from "@metamask/utils";
 
-interface Asset {
+export interface Asset {
   assetId: string;
   name: string;
   symbol: string;
@@ -10,6 +10,11 @@ interface Asset {
   aggregatedUsdVolume?: string;
   marketCap?: string;
 }
+
+export interface PopularAssetsResponse {
+  data: Asset[];
+}
+
 export interface AssetsResponse {
   data: Asset[];
   count: number;
@@ -24,38 +29,22 @@ function stringifyChainIds(chainIds: string[]) {
   return chainIds.map((id) => isCaipChainId(id) ? id :toEvmCaipChainId(id as Hex)).join(',');
 }
 
-function formatAssets(assets: any[]) {}
-
-export async function getPopularAssets(value: string, chainIds: string[]): Promise<AssetsResponse> {
+export async function getPopularAssets(value: string, chainIds: string[]): Promise<Asset[]> {
   try {
     const response = await fetch(`https://token.api.cx.metamask.io/v3/tokens/popular?chainIds=${stringifyChainIds(chainIds)}&minLiquidity=0&minVolume24hUsd=0`);
     const data = await response.json() as Asset[];
-    return {
-      data,
-      count: data.length,
-      totalCount: data.length,
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: null,
-      },
-    };
+    console.log('***********POPULAR ASSETS***********', data);
+    return data;
   } catch (error) {
     console.error('***********ERROR: No POPULAR ASSETS FOUND***********', error);
-    return {
-      data: [],
-      count: 0,
-      totalCount: 0,
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: null,
-      },
-    };
+    return [];
   }
 }
 
-export async function searchAssets(value: string, chainIds: string[]): Promise<AssetsResponse> {
+export async function searchAssets(value: string, chainIds: string[], endCursor: string | null): Promise<AssetsResponse> {
   try {
-    const response = await fetch(`https://token.api.cx.metamask.io/tokens/search?query=${value}&networks=${stringifyChainIds(chainIds)}`);
+    const baseUrl = `https://token.api.cx.metamask.io/tokens/search?query=${value}&networks=${stringifyChainIds(chainIds)}&first=20`;
+    const response = await fetch(endCursor ? `${baseUrl}&after=${endCursor}` : baseUrl);
     const data = await response.json() as AssetsResponse;
     return data;
   } catch (error) {

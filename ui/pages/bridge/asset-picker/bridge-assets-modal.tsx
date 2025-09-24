@@ -22,7 +22,7 @@ import { getImageForChainId } from '../../confirmations/utils/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkFilterPill } from './network-filter-pill';
 import { debounce, set } from 'lodash';
-import { AssetsResponse, getPopularAssets, searchAssets } from '../utils/assets-service';
+import { Asset, AssetsResponse, getPopularAssets, searchAssets } from '../utils/assets-service';
 import { BridgeAssetList } from './bridge-asset-list';
 import { useMultichainBalances } from '../../../hooks/useMultichainBalances';
 import { useFilteredAssetsWithBalance } from '../hooks/useFilteredAssetsWithBalance';
@@ -45,22 +45,42 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(CHAIN_IDS.MAINNET);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState<AssetsResponse | null>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [endCursor, setEndCursor] = useState<string | null>(null);
 
   const assetsWithBalance = useFilteredAssetsWithBalance(selectedNetwork);
 
   const debouncedSearchCallback = useCallback(
-    debounce(async (value, selectedNetwork) => {
-      setIsLoading(true);
-      const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
-      let assets = null;
-      if (value.length === 0) {
-        assets = await getPopularAssets(value, networks);
+    debounce(async (value, selectedNetwork, currentEndCursor) => {
+      const isLoadingMore = currentEndCursor !== null;
+
+      if (isLoadingMore) {
+        setIsLoadingMore(true);
       } else {
-        assets = await searchAssets(value, networks);
+        setIsLoading(true);
       }
-      setResponse(assets);
-      setIsLoading(false);
+
+      const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
+
+      if (value.length === 0) {
+        const assets = await getPopularAssets(value, networks);
+        setAssets(assets);
+        setHasMore(false)
+        setIsLoading(false);
+      } else {
+        const response = await searchAssets(value, networks, currentEndCursor);
+        if (isLoadingMore) {
+          setAssets(prevAssets => [...prevAssets, ...response.data]);
+        } else {
+          setAssets(response.data);
+        }
+        setHasMore(response.pageInfo.hasNextPage);
+        setEndCursor(response.pageInfo.endCursor);
+        setIsLoadingMore(false);
+      }
+
       console.log('Debounced search query:', value);
     }, 300),
     [],
@@ -80,9 +100,14 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
     closeModal();
   }
 
+  const handleLoadMore = useCallback(() => {
+    if (!isLoadingMore && hasMore && endCursor) {
+      debouncedSearchCallback(searchQuery, selectedNetwork, endCursor);
+    }
+  }, [searchQuery, selectedNetwork, hasMore, isLoadingMore, endCursor, debouncedSearchCallback]);
+
   useEffect(() => {
-    setResponse(null);
-    debouncedSearchCallback(searchQuery, selectedNetwork);
+    debouncedSearchCallback(searchQuery, selectedNetwork, null);
   }, [selectedNetwork, searchQuery, debouncedSearchCallback]);
 
   useEffect(() => {
@@ -126,9 +151,9 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
         <Box padding={4} style={{ overflowY: 'auto' }}>
           <BridgeAssetList
             isLoading={isLoading}
-            assets={response?.data ?? []}
-            hasMore={response?.pageInfo.hasNextPage ?? false}
-            onLoadMore={() => {}}
+            assets={assets}
+            hasMore={hasMore}
+            onLoadMore={handleLoadMore}
           />
         </Box>
       </ModalContent>
