@@ -422,8 +422,12 @@ export default function CreatePassword({
             label={
               <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
                 {checkboxLabel}
-                <br />
-                {!isSocialLoginFlow && createPasswordLink}
+                {!isSocialLoginFlow && (
+                  <>
+                    <br />
+                    {createPasswordLink}
+                  </>
+                )}
               </Text>
             }
           />
