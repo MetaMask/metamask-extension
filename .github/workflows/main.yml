@@ -43,12 +43,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
         with:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
           yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
+          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
