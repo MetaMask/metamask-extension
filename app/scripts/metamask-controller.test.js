@@ -64,6 +64,9 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
+import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
   getOriginsWithSessionProperty,
@@ -4393,6 +4396,299 @@ describe('MetaMaskController', () => {
         await expect(
           metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
         ).rejects.toThrow('Failed to restore seed phrases');
+      });
+    });
+
+    describe('handleHyperliquidReferral', () => {
+      const mockTabId = 140;
+      const mockNewConnectionTriggerType = 'new_connection';
+      const mockOnNavigateTriggerType = 'on_navigate_connected_tab';
+      const mockPermittedAccount = '0x123';
+      const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
+
+      beforeEach(async () => {
+        jest.spyOn(metamaskController, '_handleHyperliquidApprovedAccount');
+        jest.spyOn(metamaskController, '_handleHyperliquidReferralRedirect');
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValue({
+            remoteFeatureFlags: {
+              extensionUxDefiReferral: true,
+            },
+          });
+        jest
+          .spyOn(metamaskController.approvalController, 'has')
+          .mockReturnValue(false);
+
+        // Initialize referral state
+        metamaskController.preferencesController.update((state) => {
+          state.referrals = {
+            hyperliquid: {},
+          };
+        });
+      });
+
+      it('returns early if Hyperliquid feature flag is not enabled', async () => {
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValueOnce({
+            remoteFeatureFlags: {
+              extensionUxDefiReferral: false,
+            },
+          });
+        jest.spyOn(metamaskController, 'getPermittedAccounts');
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(metamaskController.getPermittedAccounts).not.toHaveBeenCalled();
+      });
+
+      it('returns early if Hyperliquid has no permitted accounts', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce([]);
+        jest.spyOn(metamaskController.approvalController, 'add');
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController.approvalController.has,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController.approvalController.add,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController._handleHyperliquidReferralRedirect,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('returns early if there is already a pending approval', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'has')
+          .mockReturnValueOnce(true); // Pending approval exists
+        jest.spyOn(metamaskController.approvalController, 'add');
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+
+        expect(metamaskController.approvalController.has).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+        });
+        expect(
+          metamaskController.approvalController.add,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController._handleHyperliquidReferralRedirect,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('returns early if account has already interacted with the referral', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+        // Set account as already passed
+        metamaskController.preferencesController.update((state) => {
+          state.referrals.hyperliquid = {
+            [mockPermittedAccount]: ReferralStatus.Passed,
+          };
+        });
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController.approvalController.add,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController._handleHyperliquidReferralRedirect,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('triggers approval with pop-up for a new unprocessed account on new connection', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: { selectedAddress: mockPermittedAccount },
+          shouldShowRequest: true, // pop-up = true because triggerType is new connection
+        });
+      });
+
+      it('triggers approval without pop-up for a new unprocessed account on navigate to connected tab', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockOnNavigateTriggerType,
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: { selectedAddress: mockPermittedAccount },
+          shouldShowRequest: false, // false because triggerType is navigate to connected tab
+        });
+      });
+
+      it('handles user approval', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({ approved: true });
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController._handleHyperliquidApprovedAccount,
+        ).toHaveBeenCalledWith(mockPermittedAccount, mockPermittedAccounts, []);
+        expect(
+          metamaskController._handleHyperliquidReferralRedirect,
+        ).toHaveBeenCalledWith(mockTabId, mockPermittedAccount);
+      });
+
+      it('handles user decline', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({ approved: false });
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController._handleHyperliquidApprovedAccount,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController._handleHyperliquidReferralRedirect,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('redirects if account is approved only', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+        // Set account as approved
+        metamaskController.preferencesController.update((state) => {
+          state.referrals.hyperliquid = {
+            [mockPermittedAccount]: ReferralStatus.Approved,
+          };
+        });
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController._handleHyperliquidReferralRedirect,
+        ).toHaveBeenCalledWith(mockTabId, mockPermittedAccount);
+        expect(
+          metamaskController.approvalController.add,
+        ).not.toHaveBeenCalled();
+      });
+
+      describe('_handleHyperliquidApprovedAccount', () => {
+        beforeEach(() => {
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'addReferralApprovedAccount',
+          );
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'removeReferralDeclinedAccount',
+          );
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'setAccountsReferralApproved',
+          );
+        });
+
+        it('approves all permitted accounts when there are no previously declined accounts', () => {
+          metamaskController._handleHyperliquidApprovedAccount(
+            mockPermittedAccount,
+            mockPermittedAccounts,
+            [],
+          );
+          expect(
+            metamaskController.preferencesController
+              .setAccountsReferralApproved,
+          ).toHaveBeenCalledWith(mockPermittedAccounts);
+        });
+
+        it('approves the permitted account and removes the previously declined account from the declined list when it exists there', () => {
+          metamaskController._handleHyperliquidApprovedAccount(
+            mockPermittedAccount,
+            mockPermittedAccounts,
+            [mockPermittedAccounts[1]],
+          );
+          expect(
+            metamaskController.preferencesController.addReferralApprovedAccount,
+          ).toHaveBeenCalledWith(mockPermittedAccount);
+          expect(
+            metamaskController.preferencesController
+              .removeReferralDeclinedAccount,
+          ).toHaveBeenCalledWith(mockPermittedAccounts[1]);
+        });
+      });
+
+      describe('_handleHyperliquidReferralRedirect', () => {
+        it('calls the url update method and marks the permitted account as passed', async () => {
+          jest
+            .spyOn(metamaskController, '_updateHyperliquidReferralUrl')
+            .mockResolvedValueOnce({});
+          jest.spyOn(
+            metamaskController.preferencesController,
+            'addReferralPassedAccount',
+          );
+
+          await metamaskController._handleHyperliquidReferralRedirect(
+            mockTabId,
+            mockPermittedAccount,
+          );
+          expect(
+            metamaskController._updateHyperliquidReferralUrl,
+          ).toHaveBeenCalledWith(mockTabId);
+          expect(
+            metamaskController.preferencesController.addReferralPassedAccount,
+          ).toHaveBeenCalledWith(mockPermittedAccount);
+        });
       });
     });
   });
