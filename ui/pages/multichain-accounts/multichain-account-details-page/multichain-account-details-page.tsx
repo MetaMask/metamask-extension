@@ -5,6 +5,7 @@ import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   Box,
   ButtonIcon,
@@ -70,6 +71,9 @@ export const MultichainAccountDetailsPage = () => {
     useState(false);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
+  const isPrivateKeyWallet = accountsWithAddresses.some(
+    (account) => account.metadata.keyring.type === KeyringTypes.simple,
+  );
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const handleAddressesClick = () => {
@@ -162,7 +166,7 @@ export const MultichainAccountDetailsPage = () => {
               />
             }
           />
-          {isEntropyWallet && (
+          {(isEntropyWallet || isPrivateKeyWallet) && (
             <AccountDetailsRow
               label={t('privateKeys')}
               value={t('unlockToReveal')}
