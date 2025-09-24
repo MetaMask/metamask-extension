@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { openDapp, unlockWallet } from '../../../helpers';
+import { unlockWallet } from '../../../helpers';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   confirmDepositTransaction,
   confirmRedesignedContractDeploymentTransaction,
@@ -28,7 +29,8 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         async ({ driver }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
-          await openDapp(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
 
           await createContractDeploymentTransaction(driver);
 
@@ -54,7 +56,8 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         async ({ driver }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
-          await openDapp(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
 
           await createContractDeploymentTransaction(driver);
 
