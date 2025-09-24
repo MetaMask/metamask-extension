@@ -5261,6 +5261,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/abi-utils@npm:3.0.0, @metamask/abi-utils@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/abi-utils@npm:3.0.0"
+  dependencies:
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.0.1"
+  checksum: 10/068b98185148b9e185b4af4392c6a6f82f1d4b1ff60013c57679c618f37afe9030e3ccc940e1a8b690be6f62ea91115ab18b73f3c3c09f4eff1794e31ababb9b
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^2.0.3":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -5268,16 +5278,6 @@ __metadata:
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^9.0.0"
   checksum: 10/3d32d42c6e98fc4719b2b53597e573764b80936c7cc31d884c87729c4c4f74a30e93096db87aaa7cbcec9d3bb7d22b1adfc98a8bcb4c7c2f17bfbddaa4367d34
-  languageName: node
-  linkType: hard
-
-"@metamask/abi-utils@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/abi-utils@npm:3.0.0"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-  checksum: 10/068b98185148b9e185b4af4392c6a6f82f1d4b1ff60013c57679c618f37afe9030e3ccc940e1a8b690be6f62ea91115ab18b73f3c3c09f4eff1794e31ababb9b
   languageName: node
   linkType: hard
 
@@ -5515,6 +5515,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/auto-changelog@npm:^3.4.4":
+  version: 3.4.4
+  resolution: "@metamask/auto-changelog@npm:3.4.4"
+  dependencies:
+    diff: "npm:^5.0.0"
+    execa: "npm:^5.1.1"
+    prettier: "npm:^2.8.8"
+    semver: "npm:^7.3.5"
+    yargs: "npm:^17.0.1"
+  bin:
+    auto-changelog: dist/cli.js
+  checksum: 10/70e98529a153ebeab10410dbc3f567014999f77ed82f2b52f1b36501b28a4e3614c809a90c89600a739d7710595bfecc30e2260410e6afac7539f8db65a48f2c
+  languageName: node
+  linkType: hard
+
 "@metamask/auto-changelog@npm:^5.1.0":
   version: 5.1.0
   resolution: "@metamask/auto-changelog@npm:5.1.0"
@@ -5676,6 +5691,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/delegation-abis@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/delegation-abis@npm:0.9.0"
+  dependencies:
+    "@metamask/auto-changelog": "npm:^3.4.4"
+  checksum: 10/cd727e64894ad05a0ec23eee56dd093ae06602099ac82c8ca4a59953a3bc4410de6279d7c3fcbf5568956eeec3a408ea88ed12eef4ead8af4b066357ecc66114
+  languageName: node
+  linkType: hard
+
 "@metamask/delegation-controller@npm:^0.7.0":
   version: 0.7.0
   resolution: "@metamask/delegation-controller@npm:0.7.0"
@@ -5689,7 +5713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-core@npm:^0.2.0-rc.1":
+"@metamask/delegation-core@npm:0.2.0-rc.1, @metamask/delegation-core@npm:^0.2.0-rc.1":
   version: 0.2.0-rc.1
   resolution: "@metamask/delegation-core@npm:0.2.0-rc.1"
   dependencies:
@@ -5704,6 +5728,40 @@ __metadata:
   version: 0.11.0
   resolution: "@metamask/delegation-deployments@npm:0.11.0"
   checksum: 10/c926781be67a973ee37f16a373f258036bd894ee2b9207b531606ca2c8be0e6073025fe2bd2e24569ae0118cca0e462d4f4aa6b9df4e1704c46712502de81c88
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-deployments@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/delegation-deployments@npm:0.9.0"
+  dependencies:
+    "@metamask/auto-changelog": "npm:^3.4.4"
+  checksum: 10/7d1b7eba51e8067e8a18755c795077d1506134243a101cca86503acca59fa6fff6c7988aaa19925cee446d3f5057b3c2f62767316837efa8a4fa3737a1741373
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-toolkit@npm:0.10.2":
+  version: 0.10.2
+  resolution: "@metamask/delegation-toolkit@npm:0.10.2"
+  dependencies:
+    "@metamask/delegation-utils": "npm:^0.10.0"
+    webauthn-p256: "npm:^0.0.5"
+  peerDependencies:
+    viem: ">=2.18.2 <3.0.0"
+  checksum: 10/80d114d4edf2851ce4018a7dc942f61e2b4974e166d46a290ffdf95237f113cbf82eda648a7690e394c2c9b68f7189d6d07f5ebde3e18a96a09c98d93822b294
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-utils@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metamask/delegation-utils@npm:0.10.0"
+  dependencies:
+    "@metamask/delegation-abis": "npm:^0.9.0"
+    "@metamask/delegation-deployments": "npm:^0.9.0"
+    buffer: "npm:^6.0.3"
+  peerDependencies:
+    viem: ">=2.18.2 <3.0.0"
+  checksum: 10/ed9df621981ea3104f09228ab79c4b424c607297469f7455e9bf9347215c603fe5e2f457a50030da8307dd08f6cc16df3d08c110f87cb989ed278b590e5def87
   languageName: node
   linkType: hard
 
@@ -6296,6 +6354,21 @@ __metadata:
   peerDependencies:
     "@metamask/snaps-controllers": ^14.0.1
   checksum: 10/71867daa085800c5a042a50a6394d84ff7b631d533e250a782cb8d698028f8bf32896ac6c1b899de3961c746b59c8c7f04d855e65d8d122d33844ee482482f2a
+  languageName: node
+  linkType: hard
+
+"@metamask/gator-permissions-snap@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/gator-permissions-snap@npm:0.3.0"
+  dependencies:
+    "@metamask/abi-utils": "npm:3.0.0"
+    "@metamask/delegation-core": "npm:0.2.0-rc.1"
+    "@metamask/delegation-toolkit": "npm:0.10.2"
+    "@metamask/profile-sync-controller": "npm:21.0.0"
+    "@metamask/snaps-sdk": "npm:8.1.0"
+    "@metamask/utils": "npm:11.4.2"
+    zod: "npm:3.25.76"
+  checksum: 10/7497340d44e2cfb3bea37c0cad392b1cbc27ee7ad24b0ffa5828f803e86be1d4aba766ede041ac0d00de2088e7cb5ce76b5848c7bd633308d36835eacc35898e
   languageName: node
   linkType: hard
 
@@ -6958,6 +7031,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/permissions-kernel-snap@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/permissions-kernel-snap@npm:0.3.0"
+  dependencies:
+    "@metamask/snaps-sdk": "npm:8.1.0"
+    zod: "npm:3.25.76"
+  checksum: 10/2e59f6f107f0a6e401f1716f2cd2e520864e329e968c93439bc796b19e39b71923b1dce702f09a520a103653ffa7b37659de005baff77dbb2f4f7ab0ce97dfa4
+  languageName: node
+  linkType: hard
+
 "@metamask/phishing-controller@npm:^13.1.0":
   version: 13.1.0
   resolution: "@metamask/phishing-controller@npm:13.1.0"
@@ -7077,6 +7160,28 @@ __metadata:
   dependencies:
     "@metamask/snaps-sdk": "npm:^9.3.0"
   checksum: 10/6b8a0e81de0cb6591d8379084711a5b110e967355b8151a8e23c03c5d62d735c1c19f0c6537b4e70f72ae57207b962630dfd47d2722c15b0f5e09bec807261ce
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@npm:21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/profile-sync-controller@npm:21.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
+    "@noble/ciphers": "npm:^0.5.2"
+    "@noble/hashes": "npm:^1.4.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^31.0.0
+    "@metamask/keyring-controller": ^22.0.0
+    "@metamask/providers": ^22.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/4e599cca3b7999c517b906b51cf30470dec9349aa35a94a3a4a5f3847cd6c5bcbb176e8e3b2eeb8ef0ae6b26097920571e9bea8965006d757e9ef2b6898cf671
   languageName: node
   linkType: hard
 
@@ -7639,6 +7744,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/utils@npm:11.4.2":
+  version: 11.4.2
+  resolution: "@metamask/utils@npm:11.4.2"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    lodash.memoize: "npm:^4.1.2"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10/63415da3479f7022bc98e63d0f68a53ef31b2ef3d459eb3f81d62140f510ebba937c7034dd63cde6b2d5faf74250081903cc8009a174a9984d2fec1d0be04b8d
+  languageName: node
+  linkType: hard
+
 "@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.0":
   version: 11.8.0
   resolution: "@metamask/utils@npm:11.8.0"
@@ -7755,6 +7878,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/ciphers@npm:^0.5.2":
+  version: 0.5.3
+  resolution: "@noble/ciphers@npm:0.5.3"
+  checksum: 10/af0ad96b5807feace93e63549e05de6f5e305b36e2e95f02d90532893fbc3af3f19b9621b6de4caa98303659e5df2e7aa082064e5d4a82e6f38c728d48dfae5d
+  languageName: node
+  linkType: hard
+
 "@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
   version: 1.4.2
   resolution: "@noble/curves@npm:1.4.2"
@@ -7806,6 +7936,15 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:1.8.0"
   checksum: 10/00bd975ee76d22b8009b6f2f856eecf7524455d1a89e5f0d78a9d2f60ac1c6955c0b4e9dab55b042832471be7cbcd31db3bf46df444e5e83eaff3fb04b0eb5d7
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:^1.4.0":
+  version: 1.9.7
+  resolution: "@noble/curves@npm:1.9.7"
+  dependencies:
+    "@noble/hashes": "npm:1.8.0"
+  checksum: 10/3cfe2735ea94972988ca9e217e0ebb2044372a7160b2079bf885da789492a6291fc8bf76ca3d8bf8dee477847ee2d6fac267d1e6c4f555054059f5e8c4865d44
   languageName: node
   linkType: hard
 
@@ -31198,6 +31337,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.memoize@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "lodash.memoize@npm:4.1.2"
+  checksum: 10/192b2168f310c86f303580b53acf81ab029761b9bd9caa9506a019ffea5f3363ea98d7e39e7e11e6b9917066c9d36a09a11f6fe16f812326390d8f3a54a1a6da
+  languageName: node
+  linkType: hard
+
 "lodash.memoize@npm:~3.0.3":
   version: 3.0.4
   resolution: "lodash.memoize@npm:3.0.4"
@@ -31945,6 +32091,7 @@ __metadata:
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^24.0.0"
     "@metamask/gator-permissions-controller": "npm:^0.1.0"
+    "@metamask/gator-permissions-snap": "npm:^0.3.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
@@ -31977,6 +32124,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/permission-log-controller": "npm:^4.0.0"
+    "@metamask/permissions-kernel-snap": "npm:^0.3.0"
     "@metamask/phishing-controller": "npm:^13.1.0"
     "@metamask/phishing-warning": "npm:^5.0.1"
     "@metamask/post-message-stream": "npm:^10.0.0"
@@ -35694,7 +35842,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-2@npm:prettier@^2.8.8, prettier@npm:^2.8.0":
+"prettier-2@npm:prettier@^2.8.8, prettier@npm:^2.8.0, prettier@npm:^2.8.8":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -43633,6 +43781,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webauthn-p256@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "webauthn-p256@npm:0.0.5"
+  dependencies:
+    "@noble/curves": "npm:^1.4.0"
+    "@noble/hashes": "npm:^1.4.0"
+  checksum: 10/6bf5d1857dfb99ecb3b318af06eddea874c10135e6ebb9f046270f5cbb162933bc6caf77aedb033e14c09971dda544a5fb367ac545e4ec8001b309ba517555cf
+  languageName: node
+  linkType: hard
+
 "webextension-polyfill@npm:>=0.10.0 <1.0, webextension-polyfill@npm:^0.12.0":
   version: 0.12.0
   resolution: "webextension-polyfill@npm:0.12.0"
@@ -44599,6 +44757,13 @@ __metadata:
   version: 3.22.4
   resolution: "zod@npm:3.22.4"
   checksum: 10/73622ca36a916f785cf528fe612a884b3e0f183dbe6b33365a7d0fc92abdbedf7804c5e2bd8df0a278e1472106d46674281397a3dd800fa9031dc3429758c6ac
+  languageName: node
+  linkType: hard
+
+"zod@npm:3.25.76":
+  version: 3.25.76
+  resolution: "zod@npm:3.25.76"
+  checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
   languageName: node
   linkType: hard
 
