@@ -31,10 +31,6 @@ import { Messenger } from '@metamask/base-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import {
-  NetworkController,
-  getDefaultNetworkControllerState,
-} from '@metamask/network-controller';
-import {
   MethodNames,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -46,7 +42,6 @@ import {
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { PermissionLogController } from '@metamask/permission-log-controller';
 
 import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
@@ -58,8 +53,6 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  BlockExplorerUrl,
-  ChainId,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -89,7 +82,6 @@ import {
   SolScope,
 } from '@metamask/keyring-api';
 import {
-  hasProperty,
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
@@ -157,7 +149,6 @@ import {
   CHAIN_SPEC_URL,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
-  getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
 
 import {
@@ -352,11 +343,6 @@ import { DeFiPositionsControllerInit } from './controller-init/defi-positions/de
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
-import {
-  onRpcEndpointUnavailable,
-  onRpcEndpointDegraded,
-} from './lib/network-controller/messenger-action-handlers';
-import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
@@ -399,6 +385,8 @@ import { PermissionControllerInit } from './controller-init/permission-controlle
 import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
 import { KeyringControllerInit } from './controller-init/keyring-controller-init';
 import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-builder-init';
+import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
+import { NetworkControllerInit } from './controller-init/network-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -554,208 +542,17 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
 
-    const networkControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'NetworkController',
-      allowedEvents: [],
-      allowedActions: ['ErrorReportingService:captureException'],
-    });
-
-    let initialNetworkControllerState = initState.NetworkController;
-    const additionalDefaultNetworks = [
-      ChainId['megaeth-testnet'],
-      ChainId['monad-testnet'],
-    ];
-
-    if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState(
-        additionalDefaultNetworks,
-      );
-
-      /** @type {import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']} */
-      const networks =
-        initialNetworkControllerState.networkConfigurationsByChainId;
-
-      // TODO: Consider changing `getDefaultNetworkControllerState` on the
-      // controller side to include some of these tweaks.
-
-      Object.values(networks).forEach((network) => {
-        const id = network.rpcEndpoints[0].networkClientId;
-        // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
-        if (hasProperty(BlockExplorerUrl, id)) {
-          network.blockExplorerUrls = [BlockExplorerUrl[id]];
-        }
-        network.defaultBlockExplorerUrlIndex = 0;
-      });
-
-      // Add failovers for default Infura RPC endpoints
-      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
-      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('linea-mainnet');
-      networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('base-mainnet');
-
-      // Update default popular network names
-      networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
-      networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
-      networks[CHAIN_IDS.BASE].name = 'Base';
-
-      let network;
-      if (process.env.IN_TEST) {
-        network = {
-          chainId: CHAIN_IDS.LOCALHOST,
-          name: 'Localhost 8545',
-          nativeCurrency: 'ETH',
-          blockExplorerUrls: [],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'networkConfigurationId',
-              url: 'http://localhost:8545',
-              type: 'custom',
-              failoverUrls: [],
-            },
-          ],
-        };
-        networks[CHAIN_IDS.LOCALHOST] = network;
-      } else if (
-        process.env.METAMASK_DEBUG ||
-        process.env.METAMASK_ENVIRONMENT === 'test'
-      ) {
-        network = networks[CHAIN_IDS.SEPOLIA];
-      } else {
-        network = networks[CHAIN_IDS.MAINNET];
-      }
-
-      initialNetworkControllerState.selectedNetworkClientId =
-        network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
-    }
-
-    // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
-    if (
-      initialNetworkControllerState.networkConfigurationsByChainId &&
-      !Object.values(
-        initialNetworkControllerState.networkConfigurationsByChainId,
-      )
-        .flatMap((networkConfiguration) =>
-          networkConfiguration.rpcEndpoints.map(
-            (rpcEndpoint) => rpcEndpoint.networkClientId,
-          ),
-        )
-        .includes(initialNetworkControllerState.selectedNetworkClientId)
-    ) {
-      captureException(
-        new Error(
-          `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
-        ),
-      );
-
-      initialNetworkControllerState.selectedNetworkClientId =
-        initialNetworkControllerState.networkConfigurationsByChainId[
-          CHAIN_IDS.MAINNET
-        ].rpcEndpoints[0].networkClientId;
-    }
-
-    this.networkController = new NetworkController({
-      messenger: networkControllerMessenger,
-      state: initialNetworkControllerState,
-      infuraProjectId: opts.infuraProjectId,
-      getBlockTrackerOptions: () => {
-        return process.env.IN_TEST
-          ? {}
-          : {
-              pollingInterval: 20 * SECOND,
-              // The retry timeout is pretty short by default, and if the endpoint is
-              // down, it will end up exhausting the max number of consecutive
-              // failures quickly.
-              retryTimeout: 20 * SECOND,
-            };
-      },
-      getRpcServiceOptions: (rpcEndpointUrl) => {
-        const maxRetries = 4;
-        const commonOptions = {
-          fetch: globalThis.fetch.bind(globalThis),
-          btoa: globalThis.btoa.bind(globalThis),
-        };
-
-        if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
-          return {
-            ...commonOptions,
-            policyOptions: {
-              maxRetries,
-              // When we fail over to Quicknode, we expect it to be down at
-              // first while it is being automatically activated. If an endpoint
-              // is down, the failover logic enters a "cooldown period" of 30
-              // minutes. We'd really rather not enter that for Quicknode, so
-              // keep retrying longer.
-              maxConsecutiveFailures: (maxRetries + 1) * 14,
-            },
-          };
-        }
-
-        return {
-          ...commonOptions,
-          policyOptions: {
-            maxRetries,
-            // Ensure that the circuit does not break too quickly.
-            maxConsecutiveFailures: (maxRetries + 1) * 7,
-          },
-        };
-      },
-      additionalDefaultNetworks,
-    });
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointUnavailable',
-      async ({ chainId, endpointUrl, error }) => {
-        onRpcEndpointUnavailable({
-          chainId,
-          endpointUrl,
-          error,
-          infuraProjectId: opts.infuraProjectId,
-          trackEvent: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'MetaMetricsController:trackEvent',
-          ),
-          metaMetricsId: this.controllerMessenger.call(
-            'MetaMetricsController:getMetaMetricsId',
-          ),
-        });
-      },
-    );
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointDegraded',
-      async ({ chainId, endpointUrl, error }) => {
-        onRpcEndpointDegraded({
-          chainId,
-          endpointUrl,
-          error,
-          infuraProjectId: opts.infuraProjectId,
-          trackEvent: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'MetaMetricsController:trackEvent',
-          ),
-          metaMetricsId: this.controllerMessenger.call(
-            'MetaMetricsController:getMetaMetricsId',
-          ),
-        });
-      },
-    );
-    this.networkController.initializeProvider();
-
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
+      getNetworkClientById: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkController:getNetworkClientById',
       ),
-      findNetworkClientIdByChainId:
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
+      findNetworkClientIdByChainId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkController:findNetworkClientIdByChainId',
+      ),
     });
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
     this.deprecatedNetworkVersions = {};
 
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
@@ -821,14 +618,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
-    });
-
-    this.permissionLogController = new PermissionLogController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'PermissionLogController',
-      }),
-      restrictedMethods: new Set(Object.keys(RestrictedMethods)),
-      state: initState.PermissionLogController,
     });
 
     // @TODO(snaps): This fixes an issue where `withKeyring` would lock the `KeyringController` mutex.
@@ -970,7 +759,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:signPersonalMessage',
           'KeyringController:signTypedMessage',
           `${this.loggingController.name}:add`,
-          `${this.networkController.name}:getNetworkClientById`,
+          `NetworkController:getNetworkClientById`,
         ],
       }),
       trace,
@@ -1022,7 +811,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // ensure AccountTrackerController updates balances after network change
-    networkControllerMessenger.subscribe(
+    this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       () => {
         this.accountTrackerController.updateAccounts();
@@ -1031,7 +820,6 @@ export default class MetamaskController extends EventEmitter {
 
     const existingControllers = [
       this.approvalController,
-      this.networkController,
       this.accountsController,
     ];
 
@@ -1041,8 +829,10 @@ export default class MetamaskController extends EventEmitter {
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
       PermissionController: PermissionControllerInit,
+      PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
+      NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
@@ -1121,9 +911,11 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
     this.permissionController = controllersByName.PermissionController;
+    this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =
       controllersByName.SubjectMetadataController;
     this.appStateController = controllersByName.AppStateController;
+    this.networkController = controllersByName.NetworkController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
@@ -1198,6 +990,11 @@ export default class MetamaskController extends EventEmitter {
         'MetaMetricsController:trackEvent',
       ),
     });
+
+    this.provider =
+      this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker =
+      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
@@ -1756,7 +1553,7 @@ export default class MetamaskController extends EventEmitter {
   isMultichainAccountsFeatureState2Enabled() {
     const featureFlag =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.enableMultichainAccounts;
+        ?.enableMultichainAccountsState2;
     return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
@@ -2663,6 +2460,9 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      multichainAssetsRatesController,
+      ///: END:ONLY_INCLUDE_IF
     } = this;
 
     return {
@@ -2804,6 +2604,17 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getCryptoApproveTransactionParams.bind(
           this.subscriptionController,
         ),
+      cancelSubscription: this.subscriptionController.cancelSubscription.bind(
+        this.subscriptionController,
+      ),
+      unCancelSubscription:
+        this.subscriptionController.unCancelSubscription.bind(
+          this.subscriptionController,
+        ),
+      getSubscriptionBillingPortalUrl:
+        this.subscriptionController.getBillingPortalUrl.bind(
+          this.subscriptionController,
+        ),
       startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
 
       // hardware wallets
@@ -2939,12 +2750,17 @@ export default class MetamaskController extends EventEmitter {
       setSelectedMultichainAccount: (accountGroupId) => {
         this.accountTreeController.setSelectedAccountGroup(accountGroupId);
       },
-
       setAccountGroupName: (accountGroupId, accountGroupName) => {
         this.accountTreeController.setAccountGroupName(
           accountGroupId,
           accountGroupName,
         );
+      },
+      syncAccountTreeWithUserStorage: async () => {
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorage();
       },
 
       // MultichainAccountService
@@ -2952,6 +2768,12 @@ export default class MetamaskController extends EventEmitter {
         await this.multichainAccountService.createNextMultichainAccountGroup({
           entropySource: walletId,
         });
+      },
+
+      alignMultichainWallets: async () => {
+        if (this.multichainAccountService) {
+          await this.multichainAccountService.alignWallets();
+        }
       },
 
       // AssetsContractController
@@ -3093,7 +2915,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
           appStateController,
         ),
-
+      setHasShownMultichainAccountsIntroModal:
+        appStateController.setHasShownMultichainAccountsIntroModal.bind(
+          appStateController,
+        ),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -3474,6 +3299,16 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      multichainAssetsRatesStartPolling:
+        multichainAssetsRatesController.startPolling.bind(
+          multichainAssetsRatesController,
+        ),
+      multichainAssetsRatesStopPollingByPollingToken:
+        multichainAssetsRatesController.stopPollingByPollingToken.bind(
+          multichainAssetsRatesController,
+        ),
+      ///: END:ONLY_INCLUDE_IF
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
@@ -3587,12 +3422,6 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
-      // AccountTreeController backup and sync
-      syncAccountTreeWithUserStorage:
-        this.accountTreeController.syncWithUserStorage.bind(
-          this.accountTreeController,
-        ),
-
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
@@ -7940,6 +7769,7 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     };
+
     return {
       ...controllerActions,
       snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
@@ -7950,7 +7780,9 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:getSelectedAccount',
         ],
       }),
-      provider: this.provider,
+      provider: this.controllerMessenger.call(
+        'NetworkController:getSelectedNetworkClient',
+      )?.provider,
     };
   }
 
@@ -8805,13 +8637,11 @@ export default class MetamaskController extends EventEmitter {
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
-      getGlobalChainId: this.#getGlobalChainId.bind(this),
-      getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getProvider: () => this.provider,
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
       updateAccountBalanceForTransactionNetwork:
