@@ -213,7 +213,7 @@ export const Recipient = () => {
           >
             {t('selectRecipient')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody paddingRight={0} paddingLeft={0}>
             <RecipientList
               hideModal={closeRecipientModal}
               onToChange={onRecipientSelectedFromModal}
