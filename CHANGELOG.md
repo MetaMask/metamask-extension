@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.3.2]
+### Fixed
+- fix: fixes ci pipeline issue preventing production build creation (#36291)
+
 ## [13.3.1]
 ### Fixed
 - fix: fixes issues with balances not updating on Solana (#36129)
@@ -547,7 +551,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.3.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.3.2...HEAD
+[13.3.2]: https://github.com/MetaMask/metamask-extension/compare/v13.3.1...v13.3.2
 [13.3.1]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...v13.3.1
 [13.3.0]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...v13.3.0
 [13.2.3]: https://github.com/MetaMask/metamask-extension/compare/v13.2.2...v13.2.3
