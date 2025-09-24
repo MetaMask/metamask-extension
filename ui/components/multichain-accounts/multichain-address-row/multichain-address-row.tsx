@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   AlignItems,
   BlockSize,
@@ -43,6 +44,7 @@ type QrParams = {
   callback: (
     address: string,
     networkName: string,
+    chainId: CaipChainId,
     networkImageSrc?: string,
   ) => void;
 };
@@ -132,7 +134,12 @@ export const MultichainAddressRow = ({
 
   // Handle "QR Code" button click
   const handleQrClick = () => {
-    qrActionParams?.callback(address, networkName, networkImageSrc);
+    qrActionParams?.callback(
+      address,
+      networkName,
+      formatChainIdToCaip(chainId),
+      networkImageSrc,
+    );
   };
 
   return (
