@@ -1015,7 +1015,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/gator-permissions-controller>@metamask/delegation-core": {
+    "@metamask/delegation-core": {
       "packages": {
         "@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1347,7 +1347,7 @@
     "@metamask/gator-permissions-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/gator-permissions-controller>@metamask/delegation-core": true,
+        "@metamask/delegation-core": true,
         "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true
