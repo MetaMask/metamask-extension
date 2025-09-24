@@ -50,7 +50,7 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
   const [hasMore, setHasMore] = useState(false);
   const [endCursor, setEndCursor] = useState<string | null>(null);
 
-  const assetsWithBalance = useFilteredAssetsWithBalance(selectedNetwork);
+  const assetsWithBalance = useFilteredAssetsWithBalance(selectedNetwork, assets);
 
   const debouncedSearchCallback = useCallback(
     debounce(async (value, selectedNetwork, currentEndCursor) => {
