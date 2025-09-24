@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
@@ -28,14 +28,15 @@ export const MultichainAccountMenu = ({
   isRemovable,
   buttonBackgroundColor,
   handleAccountRenameAction,
+  isOpen = false,
+  onToggle,
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const togglePopover = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    setIsPopoverOpen(!isPopoverOpen);
+    onToggle?.();
   };
 
   const menuConfig = useMemo(() => {
@@ -50,7 +51,7 @@ export const MultichainAccountMenu = ({
       mouseEvent.preventDefault();
       if (handleAccountRenameAction) {
         handleAccountRenameAction(accountGroupId);
-        setIsPopoverOpen(false);
+        onToggle?.();
       }
     };
 
@@ -119,7 +120,7 @@ export const MultichainAccountMenu = ({
     }
 
     return baseMenuItems;
-  }, [accountGroupId, handleAccountRenameAction, history, isRemovable]);
+  }, [accountGroupId, handleAccountRenameAction, history, isRemovable, onToggle]);
 
   return (
     <>
@@ -143,11 +144,14 @@ export const MultichainAccountMenu = ({
       </Box>
       <Popover
         className="multichain-account-cell-popover-menu"
-        isOpen={isPopoverOpen}
+        isOpen={isOpen}
         position={PopoverPosition.LeftStart}
         referenceElement={popoverRef.current}
         matchWidth={false}
         borderRadius={BorderRadius.LG}
+        isPortal
+        preventOverflow
+        flip
       >
         <MultichainAccountMenuItems menuConfig={menuConfig} />
       </Popover>
