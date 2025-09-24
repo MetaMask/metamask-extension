@@ -83,9 +83,8 @@ jobs:
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          # yarn-custom-url: ${{ vars.YARN_URL }}
           use-yarn-hydrate: true
-          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
 
       - name: Run build
         run: ${{ inputs.build-command }}

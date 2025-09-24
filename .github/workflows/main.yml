@@ -42,16 +42,14 @@ jobs:
   prep-deps:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@ale/gh-workflows-select-use-local-yarn-command
         with:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
-          use-yarn-hydrate: true
-          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
+          # yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
@@ -80,9 +78,8 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
-          use-yarn-hydrate: true
-          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
+          # yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -217,9 +214,8 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
-          use-yarn-hydrate: true
-          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
+          # yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -310,9 +306,8 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
-          use-yarn-hydrate: true
-          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
+          # yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -350,9 +345,8 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
-          use-yarn-hydrate: true
-          yarn-hydrate-command: 'npm run yarn-binary:hydrate'
+          # yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true # This option will hydrate the tarball instead of downloading it
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
