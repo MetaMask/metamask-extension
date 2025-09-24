@@ -13,9 +13,7 @@ import {
   BannerAlertSeverity,
   Box,
   BoxProps,
-  Button,
   ButtonLink,
-  ButtonSize,
   Icon,
   IconName,
   IconSize,
@@ -393,20 +391,6 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
-          {(isCancelled || shieldSubscription?.cancelAtPeriodEnd) &&
-            !loading && (
-              <Box>
-                <Button
-                  data-testid="shield-tx-membership-resubscribe-button"
-                  size={ButtonSize.Sm}
-                  onClick={() => {
-                    executeUnCancelSubscription();
-                  }}
-                >
-                  {t('shieldTxMembershipResubscribe')}
-                </Button>
-              </Box>
-            )}
         </Box>
 
         <Box
@@ -467,6 +451,10 @@ const TransactionShield = () => {
         {!isCancelled &&
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
             // todo: link to submit claim page
+          })}
+        {(isCancelled || shieldSubscription?.cancelAtPeriodEnd) &&
+          buttonRow(t('shieldTxMembershipResubscribe'), () => {
+            executeUnCancelSubscription();
           })}
         {canCancel &&
           buttonRow(
