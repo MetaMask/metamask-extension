@@ -648,9 +648,11 @@ export default function Routes() {
           <Authenticated
             path={PERMISSIONS}
             component={
-              isGatorPermissionsFeatureEnabled()
-                ? GatorPermissionsPage
-                : PermissionsPage
+              // TODO: enable this when gator permission page is implemented
+              // isGatorPermissionsFeatureEnabled()
+              //   ? GatorPermissionsPage
+              //   : PermissionsPage
+              PermissionsPage
             }
             exact
           />
