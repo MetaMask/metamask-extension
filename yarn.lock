@@ -6076,7 +6076,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^8.0.0, @metamask/eth-sig-util@npm:^8.1.2, @metamask/eth-sig-util@npm:^8.2.0":
+"@metamask/eth-sig-util@npm:^8.1.2, @metamask/eth-sig-util@npm:^8.2.0":
   version: 8.2.0
   resolution: "@metamask/eth-sig-util@npm:8.2.0"
   dependencies:
@@ -6636,18 +6636,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/message-manager@npm:12.0.1"
+"@metamask/message-manager@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/message-manager@npm:13.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/base-controller": "npm:^8.4.0"
+    "@metamask/controller-utils": "npm:^11.14.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.8.0"
     "@types/uuid": "npm:^8.3.0"
     jsonschema: "npm:^1.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/f8f728ddfaa5ee901ec099b85160ab9c607dd00068a866f7057c731679c33ec790ad055d8dc31470cd0720dc10587f66b173812c2d2c0c0582083b398ff73f8d
+  checksum: 10/cfbb7032a18ebf36d4212aaf464de65c85fdf35e8a6b148bdfb67056fc68b0e487d1f495e747dc2c1aea5aa1d0beb7e5bbb025489a974f5faebe83beba0e3936
   languageName: node
   linkType: hard
 
@@ -32003,7 +32003,7 @@ __metadata:
     "@metamask/logger": "npm:^0.5.0"
     "@metamask/logging-controller": "npm:^6.0.4"
     "@metamask/logo": "npm:^4.0.0"
-    "@metamask/message-manager": "npm:^12.0.1"
+    "@metamask/message-manager": "npm:^13.0.0"
     "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^0.11.0"
