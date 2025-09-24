@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
 import { tEn } from '../../../../../lib/i18n-helpers';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
@@ -73,6 +74,9 @@ class TransactionConfirmation extends Confirmation {
     this.transactionDetails =
       '[data-testid="confirmation__token-details-section"]';
   }
+
+  private readonly dappNumberConnected = (dappNumber: string) =>
+    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
 
   async checkWalletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
@@ -328,6 +332,15 @@ class TransactionConfirmation extends Confirmation {
       text: amount,
       tag: 'h2',
     });
+  }
+
+  /**
+   * Check the number of dapps connected
+   *
+   * @param numberOfDapps - The number of dapps connected
+   */
+  async checkNumberOfDappsConnected(numberOfDapps: string) {
+    await this.driver.waitForSelector(this.dappNumberConnected(numberOfDapps));
   }
 }
 
