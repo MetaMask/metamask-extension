@@ -39,17 +39,10 @@ export async function getPopularAssets(value: string, chainIds: string[]): Promi
     const data = await response.json() as Omit<Asset, 'chainId'>[];
     return data.map((asset) => {
       const { chainId } = parseCaipAssetType(asset.assetId as CaipAssetId);
-      if (chainId === MultichainNetwork.Solana) {
-        return {
-          ...asset,
-          chainId: asset.assetId as CaipAssetId,
-        }
-      } else {
-        const { reference } = parseCaipChainId(chainId as CaipChainId);
-        return {
-          ...asset,
-          chainId: `0x${parseInt(reference).toString(16)}`,
-        }
+      const { namespace, reference } = parseCaipChainId(chainId as CaipChainId);
+      return {
+        ...asset,
+        chainId: chainId === MultichainNetwork.Solana ? `${namespace}:${reference}` : `0x${parseInt(reference).toString(16)}`,
       }
     });
   } catch (error) {
