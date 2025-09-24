@@ -43,7 +43,9 @@ import {
   AvatarNetwork,
   Icon,
   IconName,
+  IconSize,
 } from '../../component-library';
+import { Toast as ToastNew } from '../../component-library/components-temp/toast';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
@@ -99,6 +101,7 @@ export function ToastMaster() {
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <CopyAddressToast />
+        <TestToast />
       </ToastContainer>
     );
   }
@@ -112,6 +115,31 @@ export function ToastMaster() {
   }
 
   return null;
+}
+
+function TestToast() {
+  const [hideTestToast, setHideTestToast] = useState(false);
+
+  return (
+    Boolean(!hideTestToast) && (
+      <ToastNew
+        dataTestId="test-toast"
+        key="test-toast"
+        title="Shield payment declined"
+        description="Insufficient token balance. Please try again to resume coverage."
+        actionText="Update payment"
+        startAdornment={
+          <Icon
+            name={IconName.CircleX}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
+        }
+        onActionClick={() => console.log('Test Toast Action Clicked')}
+        onClose={() => setHideTestToast(true)}
+      />
+    )
+  );
 }
 
 function ConnectAccountToast() {
@@ -435,7 +463,7 @@ function NewSrpAddedToast() {
   }, [dispatch]);
 
   return (
-    showNewSrpAddedToast && (
+    !showNewSrpAddedToast && (
       <Toast
         key="new-srp-added-toast"
         text={t('importWalletSuccess', [latestHdKeyringNumber])}
