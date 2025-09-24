@@ -48,23 +48,22 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
 
   const combinedAssets = useFilteredAssetsWithBalance(selectedNetwork, assets);
 
-  const debouncedSearchCallback = useCallback(
-    debounce(async (value, selectedNetwork, currentEndCursor) => {
-      const isLoadingMore = currentEndCursor !== null;
+  const fetchAssets = useCallback(async (value: string, selectedNetwork: string | null, currentEndCursor: string | null) => {
+    const isLoadingMore = currentEndCursor !== null;
 
-      if (isLoadingMore) {
-        setIsLoadingMore(true);
-      } else {
-        setIsLoading(true);
-      }
+    if (isLoadingMore) {
+      setIsLoadingMore(true);
+    } else {
+      setIsLoading(true);
+    }
 
-      const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
+    const networks = selectedNetwork !== null ? [selectedNetwork] : SUPPORTED_NETWORKS;
 
+    try {
       if (value.length === 0) {
         const assets = await getPopularAssets(value, networks);
         setAssets(assets);
-        setHasMore(false)
-        setIsLoading(false);
+        setHasMore(false);
       } else {
         const response = await searchAssets(value, networks, currentEndCursor);
         if (isLoadingMore) {
@@ -74,10 +73,15 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
         }
         setHasMore(response.pageInfo.hasNextPage);
         setEndCursor(response.pageInfo.endCursor);
-        setIsLoadingMore(false);
       }
-    }, 300),
-    [],
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
+  }, []);
+
+  const debouncedSearchCallback = useCallback(
+    debounce(fetchAssets, 300), [],
   );
 
   const closeModal = () => {
@@ -101,8 +105,12 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
   }, [searchQuery, selectedNetwork, hasMore, isLoadingMore, endCursor, debouncedSearchCallback]);
 
   useEffect(() => {
+    fetchAssets(searchQuery, selectedNetwork, null);
+  }, [selectedNetwork, fetchAssets]);
+
+  useEffect(() => {
     debouncedSearchCallback(searchQuery, selectedNetwork, null);
-  }, [selectedNetwork, searchQuery, debouncedSearchCallback]);
+  }, [searchQuery, debouncedSearchCallback]);
 
   useEffect(() => {
     return () => {
