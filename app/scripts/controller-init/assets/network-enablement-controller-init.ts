@@ -2,18 +2,21 @@ import {
   NetworkEnablementController,
   NetworkEnablementControllerState,
 } from '@metamask/network-enablement-controller';
+import { NetworkState } from '@metamask/network-controller';
+import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { NetworkEnablementControllerMessenger } from '../messengers/assets';
 import { ControllerInitFunction } from '../types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
+ *
  * @param networkConfigurationsByChainId - The network configurations from NetworkController
  * @param enabledChainId - The single chain ID that should be enabled
  * @returns Record mapping chain IDs to boolean enabled status
  */
 const generateEVMNetworkMap = (
-  networkConfigurationsByChainId: Record<string, any>,
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
   enabledChainId?: string,
 ): Record<string, boolean> => {
   const networkMap: Record<string, boolean> = {};
@@ -28,12 +31,13 @@ const generateEVMNetworkMap = (
 
 /**
  * Generates a map of multichain networks organized by network type based on MultichainNetworkController state.
+ *
  * @param multichainNetworkConfigurationsByChainId - The multichain network configurations
  * @param enabledNetworks - Array of network IDs that should be enabled (empty by default)
  * @returns Record mapping network types to their network maps
  */
 const generateMultichainNetworkMaps = (
-  multichainNetworkConfigurationsByChainId: Record<string, any>,
+  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'],
   enabledNetworks: string[] = [],
 ): Record<string, Record<string, boolean>> => {
   const networkMaps: Record<string, Record<string, boolean>> = {
@@ -57,8 +61,8 @@ const generateMultichainNetworkMaps = (
 };
 
 const generateDefaultNetworkEnablementControllerState = (
-  networkControllerState: any,
-  multichainNetworkControllerState: any,
+  networkControllerState: NetworkState,
+  multichainNetworkControllerState: MultichainNetworkControllerState,
 ): NetworkEnablementControllerState => {
   const { networkConfigurationsByChainId } = networkControllerState;
   const { multichainNetworkConfigurationsByChainId } =
@@ -93,17 +97,17 @@ const generateDefaultNetworkEnablementControllerState = (
         ...multichainMaps,
       },
     };
-  } else {
-    return {
-      enabledNetworkMap: {
-        eip155: generateEVMNetworkMap(
-          networkConfigurationsByChainId,
-          CHAIN_IDS.MAINNET,
-        ),
-        ...multichainMaps,
-      },
-    };
   }
+
+  return {
+    enabledNetworkMap: {
+      eip155: generateEVMNetworkMap(
+        networkConfigurationsByChainId,
+        CHAIN_IDS.MAINNET,
+      ),
+      ...multichainMaps,
+    },
+  };
 };
 
 export const NetworkEnablementControllerInit: ControllerInitFunction<
