@@ -1,4 +1,4 @@
-import { AccountActivityService, WebSocketService as BackendWebSocketService } from '@metamask/backend-platform';
+import { AccountActivityService } from '@metamask/backend-platform';
 import { ControllerInitFunction } from '../types';
 import { AccountActivityServiceMessenger } from '../messengers/backend-platform';
 
@@ -12,16 +12,9 @@ import { AccountActivityServiceMessenger } from '../messengers/backend-platform'
 export const AccountActivityServiceInit: ControllerInitFunction<
   AccountActivityService,
   AccountActivityServiceMessenger
-> = ({ controllerMessenger, getController }) => {
-  // Get the BackendWebSocketService that was already initialized
-  const webSocketService = getController('BackendWebSocketService') as BackendWebSocketService;
-
+> = ({ controllerMessenger }) => {
   const controller = new AccountActivityService({
     messenger: controllerMessenger,
-    webSocketService,
-    // TODO: Add extension-specific configuration when backend-platform is updated:
-    // maxConcurrentSubscriptions: 50, // Conservative limit for extension environment
-    // subscriptionNamespace: 'account-activity.v1', // Use default namespace
   });
 
   return {

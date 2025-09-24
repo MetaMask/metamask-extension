@@ -17,7 +17,11 @@ import {
   AccountTrackerUpdateStakedBalancesAction,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import {
+  KeyringControllerAccountRemovedEvent,
+  KeyringControllerUnlockEvent,
+  KeyringControllerLockEvent,
+} from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AccountTrackerControllerGetStateAction } from '../../controllers/account-tracker-controller';
 import {
@@ -53,6 +57,8 @@ type AllowedActions =
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
+  | KeyringControllerUnlockEvent
+  | KeyringControllerLockEvent
   | NetworkControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent
   | TokensControllerStateChangeEvent
