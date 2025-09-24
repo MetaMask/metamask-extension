@@ -177,7 +177,7 @@ const mapStateToProps = (state, ownProps) => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getSubscriptions: () => dispatch(getSubscriptions()),
+    getSubscriptions: async () => await dispatch(getSubscriptions()),
     toggleNetworkMenu: (payload) => dispatch(toggleNetworkMenu(payload)),
   };
 }
