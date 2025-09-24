@@ -12,7 +12,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccounts } from '../../../../../selectors';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
 import {
-  useTrustSignal,
+  useTrustSignals,
   TrustSignalDisplayState,
 } from '../../../../../hooks/useTrustSignals';
 import { getExperience } from '../../../../../../shared/constants/verification';
@@ -21,34 +21,62 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const internalAccounts = useSelector(getInternalAccounts);
-  const to = useTransferRecipient();
+  const recipient = useTransferRecipient();
   const { isFirstTimeInteraction, chainId, txParams } =
     currentConfirmation ?? {};
-  const recipient = (txParams?.to ?? '0x') as Hex;
+  const transactionTo = txParams?.to;
 
   const isInternalAccount = internalAccounts.some(
-    (account) => account.address?.toLowerCase() === to?.toLowerCase(),
+    (account) => account.address?.toLowerCase() === recipient?.toLowerCase(),
   );
 
-  const { state: trustSignalDisplayState } = useTrustSignal(
-    recipient || '',
-    NameType.ETHEREUM_ADDRESS,
+  const trustSignalRequests = [
+    { value: transactionTo || '', type: NameType.ETHEREUM_ADDRESS },
+  ];
+
+  if (recipient !== transactionTo) {
+    trustSignalRequests.push({
+      value: recipient || '',
+      type: NameType.ETHEREUM_ADDRESS,
+    });
+  }
+
+  const trustSignalResults = useTrustSignals(trustSignalRequests);
+
+  const hasAnyLoadingTrustSignal = trustSignalResults.some(
+    (result) => result.state === TrustSignalDisplayState.Loading,
   );
 
-  const isVerifiedAddress =
-    trustSignalDisplayState === TrustSignalDisplayState.Verified;
+  const isAllAddressesVerified = trustSignalResults.every(
+    (result) => result.state === TrustSignalDisplayState.Verified,
+  );
 
-  const isFirstPartyContract = Boolean(getExperience(recipient, chainId));
+  const isFirstPartyContract = Boolean(
+    getExperience(txParams?.to as Hex, chainId),
+  );
 
-  const isTrustSignalLoading =
-    trustSignalDisplayState === TrustSignalDisplayState.Loading;
+  console.log(
+    'OGO - showAlert',
+    JSON.stringify(
+      {
+        isInternalAccount,
+        isFirstTimeInteraction,
+        isAllAddressesVerified,
+        isFirstPartyContract,
+        hasAnyLoadingTrustSignal,
+        trustSignalResults,
+      },
+      null,
+      2,
+    ),
+  );
 
   const showAlert =
     !isInternalAccount &&
     isFirstTimeInteraction &&
-    !isVerifiedAddress &&
+    !isAllAddressesVerified &&
     !isFirstPartyContract &&
-    !isTrustSignalLoading;
+    !hasAnyLoadingTrustSignal;
 
   return useMemo(() => {
     // If isFirstTimeInteraction is undefined that means it's either disabled or error in accounts API

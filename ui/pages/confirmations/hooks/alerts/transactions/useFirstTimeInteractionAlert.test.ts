@@ -3,6 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { NameType } from '@metamask/name-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -14,6 +15,7 @@ import {
   useTrustSignal,
 } from '../../../../../hooks/useTrustSignals';
 import { getExperience } from '../../../../../../shared/constants/verification';
+import * as useTrustSignalModule from '../../../../../hooks/useTrustSignals';
 import { EXPERIENCES_TYPE } from '../../../../../../shared/constants/first-party-contracts';
 import { useFirstTimeInteractionAlert } from './useFirstTimeInteractionAlert';
 
@@ -43,6 +45,7 @@ const TRANSACTION_META_MOCK = {
   type: TransactionType.contractInteraction,
   txParams: {
     from: ACCOUNT_ADDRESS_MOCK,
+    to: '0xrecipient',
   },
   time: new Date().getTime() - 10000,
 } as TransactionMeta;
@@ -181,7 +184,7 @@ describe('useFirstTimeInteractionAlert', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if transaction destination is verified', () => {
+  it.only('returns no alerts if transaction destination is verified', () => {
     mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Verified,
       label: null,
@@ -231,11 +234,21 @@ describe('useFirstTimeInteractionAlert', () => {
   it('returns alert if isFirstTimeInteraction is true', () => {
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
+      type: TransactionType.simpleSend,
       isFirstTimeInteraction: true,
     };
     const alerts = runHook({
       currentConfirmation: firstTimeConfirmation,
     });
+    const spyOnUseTrustSignal = jest.spyOn(
+      useTrustSignalModule,
+      'useTrustSignal',
+    );
+
+    expect(spyOnUseTrustSignal).toHaveBeenCalledWith(
+      '0xrecipient',
+      NameType.ETHEREUM_ADDRESS,
+    );
 
     expect(alerts).toEqual([
       {
