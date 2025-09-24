@@ -95,7 +95,7 @@ describe('MultichainAccountMenu', () => {
     expect(menuItems.length).toBe(3);
   });
 
-  it('shows 4 menu items including remove option when isRemovable is true', () => {
+  it('adds the remove option to menu when isRemovable is true', () => {
     renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: true,

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
@@ -157,10 +157,8 @@ export const MultichainAccountMenu = ({
         matchWidth={false}
         borderRadius={BorderRadius.LG}
         isPortal
-        preventOverflow
         flip
         onClickOutside={onToggle}
-        onPressEscKey={onToggle}
       >
         <ModalFocus restoreFocus initialFocusRef={popoverRef}>
           <MultichainAccountMenuItems menuConfig={menuConfig} />
