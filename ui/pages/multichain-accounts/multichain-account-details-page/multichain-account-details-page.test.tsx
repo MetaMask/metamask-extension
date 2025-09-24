@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import * as actions from '../../../store/actions';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
@@ -29,7 +30,18 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+// Mock the actions module
+jest.mock('../../../store/actions', () => ({
+  removeAccount: jest.fn().mockImplementation(() => {
+    return jest.fn().mockResolvedValue(true); // Return a thunk that resolves to true
+  }),
+  setAccountDetailsAddress: jest.fn(),
+}));
+
 const reactRouterDom = jest.requireMock('react-router-dom');
+const mockRemoveAccount = jest.requireMock(
+  '../../../store/actions',
+).removeAccount;
 
 describe('MultichainAccountDetailsPage', () => {
   beforeEach(() => {
@@ -148,5 +160,64 @@ describe('MultichainAccountDetailsPage', () => {
     fireEvent.click(closeButton);
 
     expect(screen.queryByText(/rename/iu)).not.toBeInTheDocument();
+  });
+
+  it('opens account remove modal when remove account action button is clicked', () => {
+    reactRouterDom.useParams = () => ({
+      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+    });
+
+    renderComponent();
+
+    const removeAccountActionButton = screen.getByTestId(
+      'account-remove-action',
+    );
+    fireEvent.click(removeAccountActionButton);
+
+    expect(screen.getByText(/remove account/iu)).toBeInTheDocument();
+    expect(screen.getByTestId(accountNameInputDataTestId)).toBeInTheDocument();
+  });
+
+  it('closes account remove modal when close button is clicked', () => {
+    reactRouterDom.useParams = () => ({
+      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+    });
+
+    renderComponent();
+
+    const removeAccountActionButton = screen.getByTestId(
+      'account-remove-action',
+    );
+    fireEvent.click(removeAccountActionButton);
+
+    expect(screen.getByText(/remove account/iu)).toBeInTheDocument();
+
+    const closeButton = screen.getByLabelText('Close');
+    fireEvent.click(closeButton);
+
+    expect(screen.queryByText(/remove account/iu)).not.toBeInTheDocument();
+  });
+
+  it('calls removeAccount action when remove account button is clicked', () => {
+    reactRouterDom.useParams = () => ({
+      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+    });
+
+    renderComponent();
+
+    const removeAccountActionButton = screen.getByTestId(
+      'account-remove-action',
+    );
+    fireEvent.click(removeAccountActionButton);
+
+    const removeAccountButton = screen.getByRole('button', {
+      name: /remove account/iu,
+    });
+    fireEvent.click(removeAccountButton);
+
+    expect(mockRemoveAccount).toHaveBeenCalledTimes(1);
+    expect(mockRemoveAccount).toHaveBeenCalledWith(
+      '0x1234567890123456789012345678901234567890',
+    );
   });
 });
