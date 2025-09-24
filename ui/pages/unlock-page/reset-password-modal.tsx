@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Box,
@@ -27,9 +26,6 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { getIsSocialLoginFlow } from '../../selectors';
-import { useSignOut } from '../../hooks/identity/useAuthentication';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { resetApp } from '../../store/actions';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -40,18 +36,9 @@ export default function ResetPasswordModal({
   onClose: () => void;
   onRestore: () => void;
 }) {
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const { signOut } = useSignOut();
   const t = useI18nContext();
 
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
-
-  const handleResetWallet = async () => {
-    await signOut();
-    await dispatch(resetApp());
-    history.replace(DEFAULT_ROUTE);
-  };
 
   const socialLoginContent = () => {
     return (
@@ -118,18 +105,6 @@ export default function ResetPasswordModal({
           danger
         >
           {t('forgotPasswordModalButton')}
-        </Button>
-
-        <Button
-          data-testid="reset-password-modal-button"
-          variant={ButtonVariant.Primary}
-          onClick={handleResetWallet}
-          size={ButtonSize.Lg}
-          margin={[2, 2, 0, 0]}
-          block
-          danger
-        >
-          Login with a different account
         </Button>
       </Box>
     );

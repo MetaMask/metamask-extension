@@ -32,14 +32,14 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
 type LoginErrorModalProps = {
-  onClose: () => void;
+  onDone: () => void;
   loginError: LoginErrorType;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function LoginErrorModal({
-  onClose,
+  onDone,
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
@@ -102,10 +102,10 @@ export default function LoginErrorModal({
   };
 
   return (
-    <Modal isOpen onClose={onClose} data-testid="login-error-modal">
+    <Modal isOpen onClose={onDone} data-testid="login-error-modal">
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader onClose={onDone}>
           <Box textAlign={TextAlign.Center}>
             <Icon
               name={IconName.Danger}
@@ -128,7 +128,7 @@ export default function LoginErrorModal({
               data-testid="login-error-modal-button"
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
-              onClick={onClose}
+              onClick={onDone}
               block
             >
               {getButtonText()}

@@ -16,7 +16,6 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
-  getIsResettingWalletInProgress,
   getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -37,6 +36,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { getIsResettingWalletInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
@@ -395,7 +395,7 @@ export default function OnboardingWelcome() {
 
       {loginError !== null && (
         <LoginErrorModal
-          onClose={() => setLoginError(null)}
+          onDone={() => setLoginError(null)}
           loginError={loginError}
         />
       )}

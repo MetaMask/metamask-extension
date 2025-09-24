@@ -4136,6 +4136,8 @@ export function resetOnboardingAction() {
 export function resetApp() {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
+      // Sign out from Profile-sync
+      await dispatch(performSignOut());
       // reset onboarding
       await dispatch(resetOnboarding());
       // reset redux state

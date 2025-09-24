@@ -42,6 +42,8 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
+import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
+import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -104,6 +106,10 @@ class UnlockPage extends Component {
      * Indicates the type of first time flow
      */
     firstTimeFlowType: PropTypes.string,
+    /**
+     * Reset Wallet
+     */
+    resetWallet: PropTypes.func,
   };
 
   state = {
@@ -113,6 +119,7 @@ class UnlockPage extends Component {
     isLocked: false,
     isSubmitting: false,
     unlockDelayPeriod: 0,
+    showLoginErrorModal: false,
   };
 
   failed_attempts = 0;
@@ -291,6 +298,11 @@ class UnlockPage extends Component {
         finalErrorMessage = t('passwordChangedRecently');
         errorReason = 'outdated_password';
         break;
+      case SeedlessOnboardingControllerErrorMessage.InvalidRevokeToken:
+      case SeedlessOnboardingControllerErrorMessage.InvalidRefreshToken:
+        finalErrorMessage = message;
+        this.setState({ showLoginErrorModal: true });
+        break;
       default:
         finalErrorMessage = message;
         break;
@@ -421,8 +433,20 @@ class UnlockPage extends Component {
     this.props.onRestore();
   };
 
+  onResetWallet = async () => {
+    this.setState({ showLoginErrorModal: false });
+    await this.props.resetWallet();
+    this.props.history.replace(DEFAULT_ROUTE);
+  };
+
   render() {
-    const { password, error, isLocked, showResetPasswordModal } = this.state;
+    const {
+      password,
+      error,
+      isLocked,
+      showResetPasswordModal,
+      showLoginErrorModal,
+    } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
 
@@ -442,6 +466,12 @@ class UnlockPage extends Component {
           <ResetPasswordModal
             onClose={() => this.setState({ showResetPasswordModal: false })}
             onRestore={this.onRestoreWallet}
+          />
+        )}
+        {showLoginErrorModal && (
+          <LoginErrorModal
+            onDone={this.onResetWallet}
+            loginError={LOGIN_ERROR.RESET_WALLET}
           />
         )}
         <Box
