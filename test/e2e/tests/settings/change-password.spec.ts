@@ -109,7 +109,10 @@ describe('Change wallet password', function () {
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
+        await onboardingCompletePage.completeOnboarding(
+          isSocialImportFlow,
+          true,
+        );
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
