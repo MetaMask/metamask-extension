@@ -176,16 +176,8 @@ export default function OnboardingMetametrics() {
           onChange={(e) =>
             setIsParticipateInMetaMetricsChecked(e.target.checked)
           }
-          label={
-            <Text
-              fontWeight={FontWeight.Medium}
-              onClick={() =>
-                setIsParticipateInMetaMetricsChecked((prev) => !prev)
-              }
-            >
-              {t('onboardingMetametricCheckboxTitleOne')}
-            </Text>
-          }
+          onClick={() => setIsParticipateInMetaMetricsChecked((prev) => !prev)}
+          label={t('onboardingMetametricCheckboxTitleOne')}
           alignItems={AlignItems.center}
         />
         <Text
@@ -216,18 +208,7 @@ export default function OnboardingMetametrics() {
           onClick={() =>
             dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
           }
-          label={
-            <Text
-              fontWeight={FontWeight.Medium}
-              onClick={() =>
-                dispatch(
-                  setDataCollectionForMarketing(!dataCollectionForMarketing),
-                )
-              }
-            >
-              {t('onboardingMetametricCheckboxTitleTwo')}
-            </Text>
-          }
+          label={t('onboardingMetametricCheckboxTitleTwo')}
           alignItems={AlignItems.center}
         />
         <Text

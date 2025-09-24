@@ -41,7 +41,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             checked=""
             class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-opt-in"
-            title="metametrics-opt-in"
+            title="Gather basic usage data"
             type="checkbox"
           />
           <span
@@ -50,11 +50,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           />
         </span>
         <span>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
-          >
-            Gather basic usage data
-          </p>
+          Gather basic usage data
         </span>
       </label>
       <p
@@ -77,16 +73,12 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           <input
             class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-datacollection-opt-in"
-            title="metametrics-datacollection-opt-in"
+            title="Product updates"
             type="checkbox"
           />
         </span>
         <span>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
-          >
-            Product updates
-          </p>
+          Product updates
         </span>
       </label>
       <p
@@ -150,7 +142,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             checked=""
             class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-opt-in"
-            title="metametrics-opt-in"
+            title="Gather basic usage data"
             type="checkbox"
           />
           <span
@@ -159,11 +151,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
           />
         </span>
         <span>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
-          >
-            Gather basic usage data
-          </p>
+          Gather basic usage data
         </span>
       </label>
       <p
@@ -186,16 +174,12 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
           <input
             class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-datacollection-opt-in"
-            title="metametrics-datacollection-opt-in"
+            title="Product updates"
             type="checkbox"
           />
         </span>
         <span>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
-          >
-            Product updates
-          </p>
+          Product updates
         </span>
       </label>
       <p
