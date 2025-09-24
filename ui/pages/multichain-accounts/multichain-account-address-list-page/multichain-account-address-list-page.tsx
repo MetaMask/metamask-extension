@@ -62,7 +62,12 @@ export const MultichainAccountAddressListPage = () => {
 
   // QR Modal handlers
   const handleShowQR = useCallback(
-    (address: string, networkName: string, chainId: CaipChainId, networkImageSrc?: string) => {
+    (
+      address: string,
+      networkName: string,
+      chainId: CaipChainId,
+      networkImageSrc?: string,
+    ) => {
       setSelectedQRData({ address, networkName, chainId, networkImageSrc });
       setIsQRModalOpen(true);
     },

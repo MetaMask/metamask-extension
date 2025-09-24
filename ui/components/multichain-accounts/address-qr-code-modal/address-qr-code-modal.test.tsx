@@ -1,9 +1,12 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
+import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 import { AddressQRCodeModal } from './address-qr-code-modal';
+
+// Import the mocked function
 
 // Mock only the essential dependencies that the component actually uses
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
@@ -26,8 +29,6 @@ const mockUseCopyToClipboard = useCopyToClipboard as jest.MockedFunction<
 >;
 const mockOpenBlockExplorer = openBlockExplorer as jest.Mock;
 
-// Import the mocked function
-const { getBlockExplorerInfo } = require('../../../helpers/utils/multichain/getBlockExplorerInfo');
 const mockGetBlockExplorerInfo = getBlockExplorerInfo as jest.Mock;
 
 describe('AddressQRCodeModal', () => {
@@ -74,7 +75,9 @@ describe('AddressQRCodeModal', () => {
       />,
     );
 
-    expect(screen.queryByText('Test Account / Ethereum')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Test Account / Ethereum'),
+    ).not.toBeInTheDocument();
   });
 
   it('should render the address and copy button', () => {
@@ -98,7 +101,8 @@ describe('AddressQRCodeModal', () => {
   it('should render the view on explorer button for Ethereum', () => {
     // Mock the getBlockExplorerInfo to return Ethereum explorer info
     mockGetBlockExplorerInfo.mockReturnValue({
-      addressUrl: 'https://etherscan.io/address/0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      addressUrl:
+        'https://etherscan.io/address/0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       name: 'Etherscan',
       buttonText: 'View on Etherscan',
     });
@@ -300,6 +304,8 @@ describe('AddressQRCodeModal', () => {
     );
 
     // Should not render explorer button for unknown network
-    expect(screen.queryByRole('button', { name: /View on/ })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /View on/u }),
+    ).not.toBeInTheDocument();
   });
 });

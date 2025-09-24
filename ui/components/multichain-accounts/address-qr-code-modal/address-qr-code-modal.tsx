@@ -94,9 +94,9 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
 
   // Get block explorer info from network configuration
   const explorerInfo = getBlockExplorerInfo(
-    t as (key: string, ...args: any[]) => string,
+    t as (key: string, ...args: string[]) => string,
     address,
-    { networkName, chainId }
+    { networkName, chainId },
   );
 
   const handleExplorerNavigation = useCallback(() => {
@@ -104,7 +104,11 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
       return;
     }
 
-    openBlockExplorer(explorerInfo.addressUrl, 'Address QR Code Modal', trackEvent);
+    openBlockExplorer(
+      explorerInfo.addressUrl,
+      'Address QR Code Modal',
+      trackEvent,
+    );
   }, [explorerInfo, trackEvent]);
 
   return (
