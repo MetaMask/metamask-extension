@@ -122,13 +122,16 @@ describe('Wallet Created Events', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await driver.delay(10_000);
         await completeCreateNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 7);
+
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          assert.equal(events[0].event, 'Wallet Setup Started');
           assert.deepStrictEqual(events[0].properties, {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -143,6 +146,8 @@ describe('Wallet Created Events', function () {
             environment_type: 'fullscreen',
           });
         }
+
+        assert.equal(events[1].event, 'Wallet Creation Attempted');
         assert.deepStrictEqual(events[1].properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -156,6 +161,8 @@ describe('Wallet Created Events', function () {
           environment_type: 'fullscreen',
           locale: 'en',
         });
+
+        assert.equal(events[2].event, 'SRP Revealed');
         assert.deepStrictEqual(events[2].properties, {
           category: 'Onboarding',
           locale: 'en',
@@ -166,6 +173,8 @@ describe('Wallet Created Events', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
         });
+
+        assert.equal(events[3].event, 'SRP Backup Confirm Display');
         assert.ok(
           events[3].properties.category === 'Onboarding' &&
             events[3].properties.chain_id === '0x539' &&
@@ -174,6 +183,8 @@ describe('Wallet Created Events', function () {
             (events[3].properties.hd_entropy_index === 0 ||
               events[3].properties.hd_entropy_index === undefined),
         );
+
+        assert.equal(events[4].event, 'SRP Backup Confirmed');
         assert.ok(
           events[4].properties.category === 'Onboarding' &&
             events[4].properties.chain_id === '0x539' &&
@@ -182,6 +193,8 @@ describe('Wallet Created Events', function () {
             (events[4].properties.hd_entropy_index === 0 ||
               events[4].properties.hd_entropy_index === undefined),
         );
+
+        assert.equal(events[5].event, 'Wallet Created');
         assert.ok(
           events[5].properties.category === 'Onboarding' &&
             events[5].properties.chain_id === '0x539' &&
@@ -190,6 +203,8 @@ describe('Wallet Created Events', function () {
             (events[5].properties.hd_entropy_index === 0 ||
               events[5].properties.hd_entropy_index === undefined),
         );
+
+        assert.equal(events[6].event, 'Wallet Setup Completed');
         assert.deepStrictEqual(events[6].properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -209,6 +224,7 @@ describe('Wallet Created Events', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           wallet_setup_type: 'new',
         });
+        await driver.delay(10_000);
       },
     );
   });
@@ -252,8 +268,6 @@ describe('Wallet Created Events', function () {
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        console.log('mockedEndpoints', mockedEndpoints);
-
         const onboardingOptions: {
           driver: Driver;
           participateInMetaMetrics?: boolean;
