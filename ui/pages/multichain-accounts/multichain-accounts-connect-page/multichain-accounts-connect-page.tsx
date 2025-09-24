@@ -459,14 +459,7 @@ export const MultichainAccountsConnectPage: React.FC<
             tabKey="accounts"
             data-testid="accounts-tab"
           >
-            <Box
-              marginTop={4}
-              style={{
-                overflow: 'auto',
-                maxHeight: '268px',
-                scrollbarColor: 'var(--color-icon-muted) transparent',
-              }}
-            >
+            <Box marginTop={4}>
               <Box
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.XL}
