@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Anda tidak memiliki cukup $1 di akun untuk membayar biaya jaringan."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Harga gas tinggi dan estimasinya kurang akurat."
-  },
   "alertMessageNoGasPrice": {
     "message": "Kami tidak dapat melanjutkan transaksi ini hingga Anda memperbarui biayanya secara manual."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Izin yang tidak diperlukan"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Jaringan sibuk"
   },
   "alertReasonNoGasPrice": {
     "message": "Estimasi biaya tidak tersedia"
@@ -908,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Dampak Harga"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Dampak harga mencerminkan bagaimana order swap memengaruhi harga pasar aset. Jika Anda tidak memiliki cukup dana untuk gas, sebagian token sumber akan dialokasikan secara otomatis untuk menutupi biaya, yang akan mengurangi jumlah yang ditukar. MetaMask tidak memengaruhi atau mengontrol dampak harga."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Dampak harga mencerminkan bagaimana order swap memengaruhi harga pasar aset. Hal ini bergantung pada ukuran perdagangan dan likuiditas yang tersedia di pul. MetaMask tidak memengaruhi atau mengontrol dampak harga."
   },
@@ -1059,8 +1050,8 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buyAndSell": {
-    "message": "Beli/Jual"
+  "buy": {
+    "message": "Beli"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -1868,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Tidak ditemukan akun yang cocok"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Terima di"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alamat penerima atau ENS"
@@ -2714,12 +2702,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howQuotesWork": {
-    "message": "Cara kerja kuotasi"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Kuotasi ini memiliki laba terbaik dari kuotasi yang kami cari. Ini berdasarkan pada nilai tukar, yang mencakup biaya bridge dan biaya MetaMask sebesar $1%, dikurangi biaya gas. Biaya gas bergantung pada seberapa sibuk jaringan dan seberapa rumit transaksinya."
-  },
   "id": {
     "message": "ID"
   },
@@ -2979,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Transaksi sebelumnya sedang ditandatangani atau dikirim"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons dan Blockies merupakan dua gaya ikon unik yang berbeda untuk membantu Anda mengidentifikasi akun dengan cepat."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3390,15 +3369,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Anda menambahkan jaringan ini ke MetaMask dan memberikan situs ini izin untuk menggunakannya."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridge"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Kuotasi"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Waktu"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 ingin menggunakan Snap $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3762,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noActivity": {
-    "message": "Belum ada aktivitas"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask tidak terhubung ke situs ini"
   },
@@ -3774,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
   },
-  "noDeFiPositions": {
-    "message": "Tidak dapat menemukan yang Anda cari?"
-  },
   "noDomainResolution": {
     "message": "Tidak ada resolusi untuk domain yang tersedia."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
-  },
-  "noNFTs": {
-    "message": "Belum ada NFT"
   },
   "noNetworksAvailable": {
     "message": "Jaringan tidak tersedia"
@@ -4254,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "Kata sandi harus memiliki minimal 8 karakter"
   },
-  "passwordStrength": {
-    "message": "Kekuatan kata sandi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Kata sandi yang kuat dapat meningkatkan keamanan dompet jika perangkat Anda dicuri atau disusupi."
-  },
   "passwordTermsWarning": {
     "message": "Jika saya lupa kata sandi ini, MetaMask tidak dapat meresetnya untuk saya."
   },
@@ -4678,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Batas persetujuan yang diajukan"
-  },
-  "protocolNotSupported": {
-    "message": "Kami mungkin belum mendukung protokol Anda."
   },
   "provide": {
     "message": "Berikan"
@@ -7211,9 +7162,6 @@
     "message": "Waspadalah terhadap $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Lemah"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7232,15 +7180,6 @@
   "welcomeBack": {
     "message": "Selamat datang kembali"
   },
-  "welcomeDescription": {
-    "message": "MetaMask merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
-  },
-  "welcomeGetStarted": {
-    "message": "Mulai"
-  },
-  "welcomeTitle": {
-    "message": "Selamat datang di MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Mari kita mulai"
   },
@@ -7249,9 +7188,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Ini akan menyetujui $1 untuk bridge."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Anda perlu mengonfirmasikan dua transaksi pada dompet perangkat keras."
   },
   "willApproveAmountForSwapping": {
     "message": "Ini akan menyetujui $1 untuk pertukaran."

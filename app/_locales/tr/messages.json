@@ -414,9 +414,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Hesabınızda ağ ücretlerini ödemek için yeterli $1 yok."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
-  },
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
@@ -461,9 +458,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Gereksiz izin"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Ağ meşgul"
   },
   "alertReasonNoGasPrice": {
     "message": "Ücret tahmini mevcut değil"
@@ -1032,8 +1026,8 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buyAndSell": {
-    "message": "Al/Sat"
+  "buy": {
+    "message": "Al"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -1841,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Eşleşen hesap bulunamadı"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Alım adresi:"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alıcı adres veya ENS"
@@ -2681,12 +2672,6 @@
   "honeypotTitle": {
     "message": "Bal Tuzağı"
   },
-  "howQuotesWork": {
-    "message": "Teklifler nasıl çalışır?"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Arama yaptığımız teklifler arasında en iyi getiriye sahip olan teklif budur. Bu, köprü ücretlerini ve $1 MetaMask ücreti eksi gaz ücretlerini içeren swap oranına dayanır. Gaz ücretleri, ağın ne kadar yoğun olduğuna ve işlemin ne kadar karmaşık olduğuna bağlıdır."
-  },
   "id": {
     "message": "Kimlik"
   },
@@ -2946,9 +2931,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Önceki bir işlemin imzalanması veya gönderilmesi devam ediyor"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons ve Blockies, bir bakışta bir hesabı tanımlamana yardımcı olan iki farklı benzersiz simge stilidir."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3357,15 +3339,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Bu ağı MetaMask'e ekliyor ve bu siteye ağı kullanma izni veriyorsunuz."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Köprü"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Fiyat Teklifi"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Zaman"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snap kullanmak istiyor",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3729,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noActivity": {
-    "message": "Henüz herhangi bir aktivite yok"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
@@ -3741,17 +3711,11 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
-  "noDeFiPositions": {
-    "message": "Aradığınızı bulamıyor musunuz?"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
-  },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
   },
   "noNetworksAvailable": {
     "message": "Mevcut ağ yok"
@@ -4221,13 +4185,6 @@
   "passwordNotLongEnough": {
     "message": "Şifre en az 8 karakterden oluşmalıdır"
   },
-  "passwordStrength": {
-    "message": "Şifre güvenlik düzeyi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
-  },
   "passwordTermsWarning": {
     "message": "Bu şifreyi unutursam MetaMask bunu benim için sıfırlayamaz."
   },
@@ -4641,9 +4598,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
-  },
-  "protocolNotSupported": {
-    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
   },
   "provide": {
     "message": "Sun"
@@ -7161,9 +7115,6 @@
     "message": "Şuraya dikkat edin: $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Zayıf"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7182,15 +7133,6 @@
   "welcomeBack": {
     "message": "Tekrar hoş geldiniz"
   },
-  "welcomeDescription": {
-    "message": "Milyonların güvendiği MetaMask, web3 dünyasını herkes için erişilebilir kılan güvenli bir cüzdandır."
-  },
-  "welcomeGetStarted": {
-    "message": "Başlarken"
-  },
-  "welcomeTitle": {
-    "message": "MetaMask'e Hoş Geldiniz"
-  },
   "welcomeToMetaMask": {
     "message": "Başlayalım"
   },
@@ -7199,9 +7141,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Bu, köprü için şunu onaylayacaktır: $1."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Donanım cüzdanınızda iki işlemi onaylamanız gerekecektir."
   },
   "willApproveAmountForSwapping": {
     "message": "Bu, takas için şunu onaylayacaktır: $1."

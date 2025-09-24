@@ -4,7 +4,13 @@
 import classnames from 'classnames';
 import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import {
+  Route,
+  RouteComponentProps,
+  Switch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -60,9 +66,14 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+  MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
+  ADD_WALLET_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  SHIELD_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -142,8 +153,17 @@ import { type Confirmation } from '../confirmations/types/confirm';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import { MultichainAccountDetails } from '../multichain-accounts/account-details';
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
+import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
+import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
+import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
+import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
+import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
+import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
+import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -212,12 +232,15 @@ const ConfirmTransaction = mmLazy(
 );
 const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() => {
-    if (process.env.SEND_REDESIGN_ENABLED) {
-      return import('../confirmations/send/index.ts');
-    }
-    return import('../../components/multichain/pages/send/index.js');
-  }) as unknown as DynamicImportType,
+  (() =>
+    import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
+);
+const LegacySendPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/send/index.js'
+    )) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
@@ -268,6 +291,13 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
+const GatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -275,11 +305,11 @@ const Connections = mmLazy(
       '../../components/multichain/pages/connections/index.js'
     )) as unknown as DynamicImportType,
 );
-const ReviewPermissions = mmLazy(
+const State2Wrapper = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
-      '../../components/multichain/pages/review-permissions-page/review-permissions-page.tsx'
+      '../../components/multichain-accounts/state2-wrapper/state2-wrapper.tsx'
     )) as unknown as DynamicImportType,
 );
 
@@ -304,13 +334,35 @@ const MultichainAccountDetailsPage = mmLazy(
       '../multichain-accounts/multichain-account-details-page/index.ts'
     )) as unknown as DynamicImportType,
 );
+
+const SmartAccountPage = mmLazy(
+  (() =>
+    import(
+      '../multichain-accounts/smart-account-page/index.ts'
+    )) as unknown as DynamicImportType,
+);
+
 const NonEvmBalanceCheck = mmLazy(
   (() =>
     import(
       '../nonevm-balance-check/index.tsx'
     )) as unknown as DynamicImportType,
 );
+
+const ShieldPlan = mmLazy(
+  (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
+);
 // End Lazy Routes
+
+const MemoizedReviewPermissionsWrapper = React.memo(
+  (props: RouteComponentProps) => (
+    <State2Wrapper
+      {...props}
+      state1Component={ReviewPermissions}
+      state2Component={MultichainReviewPermissions}
+    />
+  ),
+);
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
@@ -394,6 +446,7 @@ export default function Routes() {
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
@@ -408,7 +461,14 @@ export default function Routes() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const prevPropsRef = useRef({ isUnlocked, totalUnapprovedConfirmationCount });
+  // Multichain intro modal logic (extracted to custom hook)
+  const { showMultichainIntroModal, setShowMultichainIntroModal } =
+    useMultichainAccountsIntroModal(isUnlocked, location);
+
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+  });
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -426,7 +486,10 @@ export default function Routes() {
       dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
     }
 
-    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
+    prevPropsRef.current = {
+      isUnlocked,
+      totalUnapprovedConfirmationCount,
+    };
   }, [
     networkToAutomaticallySwitchTo,
     isUnlocked,
@@ -525,7 +588,10 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
+          <Authenticated
+            path={`${SEND_ROUTE}/:page?`}
+            component={isSendRedesignEnabled ? SendPage : LegacySendPage}
+          />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
@@ -579,10 +645,18 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated
+            path={PERMISSIONS}
+            component={
+              isGatorPermissionsFeatureEnabled()
+                ? GatorPermissionsPage
+                : PermissionsPage
+            }
+            exact
+          />
           <Authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={ReviewPermissions}
+            component={MemoizedReviewPermissionsWrapper}
             exact
           />
           <Authenticated
@@ -591,8 +665,28 @@ export default function Routes() {
             exact
           />
           <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
+            component={MultichainAccountAddressListPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
+            component={MultichainAccountPrivateKeyListPage}
+            exact
+          />
+          <Authenticated
+            path={ADD_WALLET_PAGE_ROUTE}
+            component={AddWalletPage}
+            exact
+          />
+          <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
             component={MultichainAccountDetailsPage}
+            exact
+          />
+          <Authenticated
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            component={SmartAccountPage}
             exact
           />
           <Authenticated
@@ -619,6 +713,7 @@ export default function Routes() {
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
           />
+          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
@@ -760,6 +855,13 @@ export default function Routes() {
         )
         ///: END:ONLY_INCLUDE_IF
       }
+
+      {showMultichainIntroModal ? (
+        <MultichainAccountIntroModalContainer
+          onClose={() => setShowMultichainIntroModal(false)}
+        />
+      ) : null}
+
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
         {!isLoading &&

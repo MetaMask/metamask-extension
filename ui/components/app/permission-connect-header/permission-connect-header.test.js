@@ -11,8 +11,8 @@ describe('Permission Connect Header', () => {
     origin: 'https://metamask.github.io',
     iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   };
-  const expectedTitle = 'github.io';
-  const expectedAltImageText = 'github.io logo';
+  const expectedTitle = 'metamask.github.io';
+  const expectedAltImageText = 'metamask.github.io logo';
 
   it('renders permission connect header', () => {
     const { getByAltText } = renderWithProvider(

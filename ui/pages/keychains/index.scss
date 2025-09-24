@@ -74,14 +74,3 @@
     font-size: inherit;
   }
 }
-
-.reveal-seed {
-  &__tab {
-    display: flex;
-    flex: 1;
-  }
-
-  &__active-tab {
-    color: var(--color-primary-default);
-  }
-}

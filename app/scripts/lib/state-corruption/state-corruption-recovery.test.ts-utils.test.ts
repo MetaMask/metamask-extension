@@ -320,7 +320,7 @@ export function generateScenarios(): Scenario[] {
 // #endregion Scenarios
 
 // To see all scenarios you can uncomment the following line
-// and run this file via `npx tsx test-utils.test.ts`. It will generate a `scenarios.json` file
+// and run this file via `yarn tsx test-utils.test.ts`. It will generate a `scenarios.json` file
 // in the current directory with all the scenarios.
 // require("fs").writeFileSync("scenarios.json", JSON.stringify(generateScenarios(), null, 2));
 

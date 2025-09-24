@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   getAddressBook,
   getCompleteAddressBook,
@@ -40,4 +40,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps))(ContactListTab);
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps),
+)(ContactListTab);

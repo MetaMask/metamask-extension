@@ -1,15 +1,21 @@
-import { NameType } from '@metamask/name-controller';
+import { NameOrigin, NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
-import { selectERC20TokensByChain } from '../selectors';
+import {
+  getIsMultichainAccountsState2Enabled,
+  selectERC20TokensByChain,
+} from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
+import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
+import { MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
@@ -30,6 +36,8 @@ export type UseDisplayNameResponse = {
   displayState: TrustSignalDisplayState;
 };
 
+type UseAccountGroupNamesRequest = UseDisplayNameRequest;
+
 export function useDisplayNames(
   requests: UseDisplayNameRequest[],
 ): UseDisplayNameResponse[] {
@@ -40,6 +48,7 @@ export function useDisplayNames(
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
   const ens = useDomainResolutions(requests);
+  const nameGroupEntries = useAccountGroupNames(requests, nameEntries);
 
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
@@ -49,8 +58,10 @@ export function useDisplayNames(
     const watchedNftName = watchedNFTNames[index];
     const nft = nfts[index];
     const ensName = ens[index];
+    const groupName = nameGroupEntries[index];
 
     let name =
+      groupName ||
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       nameEntry?.name ||
@@ -268,4 +279,59 @@ function getDisplayState(
 
   // Default: Unknown state with no name
   return TrustSignalDisplayState.Unknown;
+}
+
+function useAccountGroupNames(
+  requests: UseAccountGroupNamesRequest[],
+  nameEntries: ReturnType<typeof useNames>,
+): (string | null)[] {
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
+  // Extract unique ethereum addresses from requests
+  const ethereumAddresses = useMemo(() => {
+    return requests
+      .map(({ type, value }, index) => ({
+        address: type === NameType.ETHEREUM_ADDRESS ? value : null,
+        originalIndex: index,
+      }))
+      .filter((item) => item.address !== null);
+  }, [requests]);
+
+  // Get group names for all addresses at once
+  const groupNamesByAddress = useSelector((state: MultichainAccountsState) => {
+    const groupNames: Record<string, string | null> = {};
+    ethereumAddresses.forEach(({ address }) => {
+      if (address) {
+        groupNames[address] = selectAccountGroupNameByInternalAccount(
+          state,
+          address,
+        );
+      }
+    });
+    return groupNames;
+  });
+
+  return useMemo(() => {
+    return requests.map(({ type, value }, index) => {
+      const nameEntry = nameEntries[index];
+      const groupName = groupNamesByAddress?.[value] || null;
+
+      if (
+        type !== NameType.ETHEREUM_ADDRESS ||
+        !isMultichainAccountsState2Enabled ||
+        nameEntry?.origin === NameOrigin.API
+      ) {
+        return null;
+      }
+
+      return groupName;
+    });
+  }, [
+    requests,
+    groupNamesByAddress,
+    isMultichainAccountsState2Enabled,
+    nameEntries,
+  ]);
 }
