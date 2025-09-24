@@ -65,19 +65,16 @@ tailwind.config.js                   @MetaMask/design-system-engineers
 **/pages/notification*/**                           @MetaMask/notifications
 **/utils/notification.util.ts                       @MetaMask/notifications
 
-# Identity team is responsible for authentication and backup and sync inside the Extension.
-# Slack handle: @identity_team | Slack channel: #metamask-identity
-**/identity/**                                          @MetaMask/identity
-
 # Accounts team is responsible for code related with snap management accounts
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
 
 app/scripts/lib/snap-keyring                        @MetaMask/accounts-engineers
 
-# Multichain Accounts
-# This feature is owned by the multichain account tiger team
+# Multichain Accounts, Authentication, Backup and sync
+# Those features are owned by the multichain account tiger team
 # Slack handle: @multichain-accounts-devs | Slack channel: #metamask-bip44-team
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
+**/identity/**                                      @MetaMask/accounts-engineers
 
 # Swaps-Bridge team to own code for the swaps folder
 ui/pages/swaps                                        @MetaMask/swaps-engineers
@@ -103,6 +100,7 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 ui/components/app/whats-new-popup     @MetaMask/core-extension-ux
 ui/css                                @MetaMask/core-extension-ux
 ui/pages/home                         @MetaMask/core-extension-ux
+ui/pages/core                         @MetaMask/core-extension-ux
 ui/components/multichain/             @MetaMask/core-extension-ux
 
 # Co-owned by accounts and core-extension-ux

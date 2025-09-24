@@ -15,6 +15,7 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -66,6 +67,7 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { getIsSmartTransaction } from '../../../shared/modules/selectors';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -681,7 +683,8 @@ export const getValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
   ) => {
-    const { gasIncluded } = activeQuote?.quote ?? {};
+    const { gasIncluded, gasIncluded7702 } = activeQuote?.quote ?? {};
+    const isGasless = gasIncluded7702 || gasIncluded;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
@@ -705,7 +708,7 @@ export const getValidationErrors = createDeepEqualSelector(
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&
-          !gasIncluded &&
+          !isGasless &&
           (isNativeAddress(fromToken.address)
             ? new BigNumber(nativeBalance)
                 .sub(minimumBalanceToUse)
@@ -718,7 +721,7 @@ export const getValidationErrors = createDeepEqualSelector(
           activeQuote &&
           fromToken &&
           fromTokenInputValue &&
-          !gasIncluded &&
+          !isGasless &&
           (isNativeAddress(fromToken.address)
             ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalMaxNetworkFee.amount)
@@ -850,5 +853,53 @@ export const getIsUnifiedUIEnabled = createSelector(
             : false,
         )
       : false;
+  },
+);
+
+export const selectNoFeeAssets = createSelector(
+  [
+    getBridgeFeatureFlags,
+    (_state: BridgeAppState, chainId?: string) => chainId,
+  ],
+  (bridgeFeatureFlags, chainId): string[] => {
+    if (!chainId) {
+      return [];
+    }
+    const caipChainId = formatChainIdToCaip(chainId);
+    return (
+      (
+        bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
+          noFeeAssets?: string[];
+        }
+      )?.noFeeAssets ?? []
+    );
+  },
+);
+
+const getIsGasIncludedSwapSupported = createSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) => getToChain(state)?.chainId,
+    (_, isSendBundleSupportedForChain: boolean) =>
+      isSendBundleSupportedForChain,
+  ],
+  (fromChainId, toChainId, isSendBundleSupportedForChain) => {
+    if (!fromChainId) {
+      return false;
+    }
+    const isSwap = !isCrossChain(fromChainId, toChainId);
+    return isSwap && isSendBundleSupportedForChain;
+  },
+);
+
+export const getIsStxEnabled = createSelector(
+  [(state) => getFromChain(state)?.chainId, (state) => state],
+  (fromChainId, state) => getIsSmartTransaction(state, fromChainId),
+);
+
+export const getIsGasIncluded = createSelector(
+  [getIsStxEnabled, getIsGasIncludedSwapSupported],
+  (isStxEnabled, isGasIncludedSwapSupported) => {
+    return isStxEnabled && isGasIncludedSwapSupported;
   },
 );

@@ -14,6 +14,10 @@ import {
 import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
+import {
+  KeyringControllerGetStateAction,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -39,6 +43,7 @@ import type {
 } from '../../../shared/types/origin-throttling';
 import {
   ScanAddressResponse,
+  CachedScanAddressResponse,
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../lib/trust-signals/types';
@@ -50,7 +55,7 @@ import type {
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
-  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
+  addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   browserEnvironment: Record<string, string>;
   connectedStatusPopoverHasBeenShown: boolean;
   // States used for displaying the changed network toast
@@ -99,6 +104,7 @@ export type AppStateControllerState = {
   timeoutMinutes: number;
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
+  hasShownMultichainAccountsIntroModal: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -111,6 +117,11 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
+export type AppStateControllerGetUnlockPromiseAction = {
+  type: 'AppStateController:getUnlockPromise';
+  handler: (shouldShowUnlockRequest: boolean) => Promise<void>;
+};
+
 export type AppStateControllerRequestQrCodeScanAction = {
   type: 'AppStateController:requestQrCodeScan';
   handler: (request: QrScanRequest) => Promise<SerializedUR>;
@@ -121,14 +132,16 @@ export type AppStateControllerRequestQrCodeScanAction = {
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
+  | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction;
 
 /**
  * Actions that this controller is allowed to call.
  */
-type AllowedActions =
+export type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
+  | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
 /**
@@ -154,7 +167,9 @@ export type AppStateControllerEvents =
 /**
  * Events that this controller is allowed to subscribe.
  */
-type AllowedEvents = PreferencesControllerStateChangeEvent;
+export type AllowedEvents =
+  | KeyringControllerUnlockEvent
+  | PreferencesControllerStateChangeEvent;
 
 export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
@@ -180,8 +195,6 @@ type AppStateControllerInitState = Partial<
 >;
 
 export type AppStateControllerOptions = {
-  addUnlockListener: (callback: () => void) => void;
-  isUnlocked: () => boolean;
   state?: AppStateControllerInitState;
   onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
@@ -227,6 +240,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
   updateModalLastDismissedAt: null,
+  hasShownMultichainAccountsIntroModal: false,
 
   ...getInitialStateOverrides(),
 });
@@ -249,182 +263,276 @@ function getInitialStateOverrides() {
 
 const controllerMetadata = {
   activeQrCodeScanRequest: {
+    includeInStateLogs: false,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   addressSecurityAlertResponses: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   browserEnvironment: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   connectedStatusPopoverHasBeenShown: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   currentExtensionPopupId: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   currentPopupId: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   defaultHomeActiveTabName: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   enableEnforcedSimulations: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   enableEnforcedSimulationsForTransactions: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   enforcedSimulationsSlippage: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   enforcedSimulationsSlippageForTransactions: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   fullScreenGasPollTokens: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   isRampCardClosed: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   isUpdateAvailable: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   lastInteractedConfirmationInfo: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   lastUpdatedAt: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   lastViewedUserSurvey: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   newPrivacyPolicyToastClickedOrClosed: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   newPrivacyPolicyToastShownDate: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   nftsDetectionNoticeDismissed: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   nftsDropdownState: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   notificationGasPollTokens: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   onboardingDate: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   outdatedBrowserWarningLastShown: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   popupGasPollTokens: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   productTour: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   recoveryPhraseReminderHasBeenShown: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   recoveryPhraseReminderLastShown: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   showAccountBanner: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   showBetaHeader: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   showDownloadMobileAppSlide: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   showNetworkBanner: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   showPermissionsTour: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   showTestnetMessageInDropdown: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   signatureSecurityAlertResponses: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   slides: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   snapsInstallPrivacyWarningShown: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   surveyLinkLastClickedOrClosed: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   termsOfUseLastAgreed: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   throttledOrigins: {
+    includeInStateLogs: true,
     persist: false,
     anonymous: true,
+    usedInUi: true,
   },
   timeoutMinutes: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   trezorModel: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   updateModalLastDismissedAt: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
+  },
+  hasShownMultichainAccountsIntroModal: {
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+    includeInStateLogs: true,
   },
 };
 
@@ -439,8 +547,6 @@ export class AppStateController extends BaseController<
 
   #timer: NodeJS.Timeout | null;
 
-  isUnlocked: () => boolean;
-
   readonly waitingForUnlock: { resolve: () => void }[];
 
   #approvalRequestId: string | null;
@@ -450,8 +556,6 @@ export class AppStateController extends BaseController<
   constructor({
     state = {},
     messenger,
-    addUnlockListener,
-    isUnlocked,
     onInactiveTimeout,
     extension,
   }: AppStateControllerOptions) {
@@ -472,9 +576,12 @@ export class AppStateController extends BaseController<
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
-    this.isUnlocked = isUnlocked;
     this.waitingForUnlock = [];
-    addUnlockListener(this.#handleUnlock.bind(this));
+
+    messenger.subscribe(
+      'KeyringController:unlock',
+      this.#handleUnlock.bind(this),
+    );
 
     messenger.subscribe(
       'PreferencesController:stateChange',
@@ -495,6 +602,11 @@ export class AppStateController extends BaseController<
     }
 
     this.messagingSystem.registerActionHandler(
+      'AppStateController:getUnlockPromise',
+      this.getUnlockPromise.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
       'AppStateController:requestQrCodeScan',
       this.#requestQrCodeScan.bind(this),
     );
@@ -513,7 +625,11 @@ export class AppStateController extends BaseController<
    */
   getUnlockPromise(shouldShowUnlockRequest: boolean): Promise<void> {
     return new Promise((resolve) => {
-      if (this.isUnlocked()) {
+      const { isUnlocked } = this.messagingSystem.call(
+        'KeyringController:getState',
+      );
+
+      if (isUnlocked) {
         resolve();
       } else {
         this.#waitForUnlock(resolve, shouldShowUnlockRequest);
@@ -946,6 +1062,17 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Sets whether the multichain intro modal has been shown to the user
+   *
+   * @param hasShown - Whether the modal has been shown
+   */
+  setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
+    this.update((state) => {
+      state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
    * Sets the product tour to be shown to the user
    *
    * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
@@ -1033,7 +1160,27 @@ export class AppStateController extends BaseController<
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
     address: string,
   ): ScanAddressResponse | undefined => {
-    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+    const cached =
+      this.state.addressSecurityAlertResponses[address.toLowerCase()];
+
+    if (!cached) {
+      return undefined;
+    }
+
+    // Check if the cached response has expired (15 minute TTL)
+    const now = Date.now();
+    const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
+    if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
+      // Remove expired entry
+      this.update((state) => {
+        delete state.addressSecurityAlertResponses[address.toLowerCase()];
+      });
+      return undefined;
+    }
+
+    // Return the response without the timestamp
+    const { timestamp, ...response } = cached;
+    return response;
   };
 
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
@@ -1041,8 +1188,10 @@ export class AppStateController extends BaseController<
     addressSecurityAlertResponse: ScanAddressResponse,
   ): void => {
     this.update((state) => {
-      state.addressSecurityAlertResponses[address.toLowerCase()] =
-        addressSecurityAlertResponse;
+      state.addressSecurityAlertResponses[address.toLowerCase()] = {
+        ...addressSecurityAlertResponse,
+        timestamp: Date.now(),
+      };
     });
   };
 
