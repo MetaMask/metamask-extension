@@ -156,10 +156,7 @@ export const Recipient = () => {
         error={Boolean(recipientError)}
         startAccessory={
           matchingRecipient ? (
-            <Box
-              alignItems={AlignItems.center}
-              display={Display.Flex}
-            >
+            <Box alignItems={AlignItems.center} display={Display.Flex}>
               <PreferredAvatar
                 address={matchingRecipient.address}
                 size={AvatarAccountSize.Xs}
