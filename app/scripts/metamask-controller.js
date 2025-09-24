@@ -1168,6 +1168,16 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
+      'NetworkController:networkAdded',
+      (state) => {
+        this.networkEnablementController.enableNetworkInNamespace(
+          state.chainId,
+          KnownCaipNamespace.Eip155,
+        );
+      },
+    );
+
+    this.controllerMessenger.subscribe(
       `OnboardingController:stateChange`,
       previousValueComparator(async (prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
