@@ -105,7 +105,11 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
-  isResettingWalletInProgress: boolean;
+
+  /**
+   * Whether the wallet reset is in progress.
+   */
+  isWalletResetInProgress: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -242,7 +246,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
-  isResettingWalletInProgress: false,
+  isWalletResetInProgress: false,
 
   ...getInitialStateOverrides(),
 });
@@ -536,7 +540,7 @@ const controllerMetadata = {
     usedInUi: true,
     includeInStateLogs: true,
   },
-  isResettingWalletInProgress: {
+  isWalletResetInProgress: {
     persist: true,
     anonymous: true,
     usedInUi: false,
@@ -1386,13 +1390,13 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setIsResettingWalletInProgress(isResetting: boolean): void {
+  setIsWalletResetInProgress(isResetting: boolean): void {
     this.update((state) => {
-      state.isResettingWalletInProgress = isResetting;
+      state.isWalletResetInProgress = isResetting;
     });
   }
 
-  getIsResettingWalletInProgress(): boolean {
-    return this.state.isResettingWalletInProgress;
+  getIsWalletResetInProgress(): boolean {
+    return this.state.isWalletResetInProgress;
   }
 }

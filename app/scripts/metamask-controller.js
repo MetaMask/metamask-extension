@@ -2562,8 +2562,12 @@ export default class MetamaskController extends EventEmitter {
    */
   getState() {
     const { vault } = this.keyringController.state;
+
+    // check if the wallet reset is in progress
     const isResettingWalletInProgress =
-      this.appStateController.getIsResettingWalletInProgress();
+      this.appStateController.getIsWalletResetInProgress();
+
+    // if the keyring vault is present but the wallet reset is in progress, we can assume the wallet has not initialized yet
     const isInitialized = Boolean(vault) && !isResettingWalletInProgress;
     const flatState = this.memStore.getFlatState();
 
@@ -3691,8 +3695,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         }),
       resetStates: this.resetStates.bind(this),
-      setIsResettingWalletInProgress:
-        this.appStateController.setIsResettingWalletInProgress.bind(
+      setIsWalletResetInProgress:
+        this.appStateController.setIsWalletResetInProgress.bind(
           this.appStateController,
         ),
     };
@@ -4491,7 +4495,7 @@ export default class MetamaskController extends EventEmitter {
       await this.keyringController.createNewVaultAndKeychain(password);
 
       // set is resetting wallet in progress to false, in case of createNewVaultAndKeychain being called from resetWallet
-      this.appStateController.setIsResettingWalletInProgress(false);
+      this.appStateController.setIsWalletResetInProgress(false);
 
       return this.keyringController.state.keyrings[0];
     } finally {
@@ -4906,7 +4910,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // set is resetting wallet in progress to false, in case of createNewVaultAndRestore being called from resetWallet
-      this.appStateController.setIsResettingWalletInProgress(false);
+      this.appStateController.setIsWalletResetInProgress(false);
     } finally {
       releaseLock();
     }

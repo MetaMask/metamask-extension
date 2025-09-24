@@ -4145,7 +4145,7 @@ export function resetApp() {
       // reset background controller state
       await submitRequestToBackground('resetStates');
       // set `isResettingWalletInProgress` to true
-      await submitRequestToBackground('setIsResettingWalletInProgress', [true]);
+      await submitRequestToBackground('setIsWalletResetInProgress', [true]);
     } catch (error) {
       console.error(error);
       throw error;
