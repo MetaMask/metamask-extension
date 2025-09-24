@@ -12,7 +12,9 @@ const errorColorSelector = '.mm-box--color-error-default';
 
 describe('MultichainAccountMenu', () => {
   // Test wrapper component that manages state like the parent component does
-  const TestWrapper = (props: Omit<MultichainAccountMenuProps, 'isOpen' | 'onToggle'>) => {
+  const TestWrapper = (
+    props: Omit<MultichainAccountMenuProps, 'isOpen' | 'onToggle'>,
+  ) => {
     const [isOpen, setIsOpen] = useState(false);
     const handleToggle = () => setIsOpen(!isOpen);
 
