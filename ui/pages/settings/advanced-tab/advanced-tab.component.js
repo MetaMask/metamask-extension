@@ -11,10 +11,11 @@ import {
 } from '../../../../shared/constants/smartTransactions';
 import {
   Box,
+  Button,
   ButtonLink,
   ButtonLinkSize,
+  ButtonVariant,
 } from '../../../components/component-library';
-import Button from '../../../components/ui/button';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
@@ -141,8 +142,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              type="secondary"
-              large
+              variant={ButtonVariant.Secondary}
               data-testid="advanced-setting-state-logs-button"
               onClick={() => {
                 window.logStateString(async (err, result) => {
@@ -191,9 +191,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              type="danger"
-              large
-              className="settings-tab__button--red"
+              danger
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
@@ -530,9 +528,8 @@ export default class AdvancedTab extends PureComponent {
               min={0}
             />
             <Button
-              type="primary"
+              variant={ButtonVariant.Secondary}
               data-testid="auto-lockout-button"
-              className="settings-tab__rpc-save-button"
               disabled={lockTimeError !== ''}
               onClick={() => {
                 setAutoLockTimeLimit(this.state.autoLockTimeLimit);
@@ -638,7 +635,7 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <Button
               data-testid="export-data-button"
-              type="secondary"
+              variant={ButtonVariant.Secondary}
               large
               onClick={this.backupUserData}
             >

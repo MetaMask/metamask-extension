@@ -88,6 +88,9 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     SEEDLESS_ONBOARDING_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('SEEDLESS_ONBOARDING_ENABLED'),
+    METAMASK_SHIELD_ENABLED: isTestBuild
+      ? 'false'
+      : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
   });
@@ -206,7 +209,7 @@ function getGoogleClientId({
   ) {
     // we will only load the Production client Id for production builds and release candidate builds
     // prod builds -> `yarn build prod`
-    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `Version-v*`)
+    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `release/*`)
     const googleClientIdRef = assertAndLoadEnvVar(
       'GOOGLE_CLIENT_ID_REF',
       buildType,
@@ -253,7 +256,7 @@ function getAppleClientId({
   ) {
     // we will only load the Production client Id for production builds and release candidate builds
     // prod builds -> `yarn build prod`
-    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `Version-v*`)
+    // release candidate builds -> `yarn build dist` in the release candidate branches (e.g. `release/*`)
     const appleClientIdRef = assertAndLoadEnvVar(
       'APPLE_CLIENT_ID_REF',
       buildType,

@@ -19,6 +19,9 @@ import {
 
 describe('Notification List - View Items and Details', function () {
   it('find each notification type we support, and navigates to their details page', async function () {
+    if (process.env.IS_FORK === 'true') {
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

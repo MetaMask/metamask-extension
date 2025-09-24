@@ -76,11 +76,12 @@ describe('AccountDetailsRow', () => {
       expect(true).toBe(true);
     });
 
-    it('should apply pointer cursor when onClick is provided', () => {
+    it('should apply clickable class when onClick is provided', () => {
       render(<AccountDetailsRow {...defaultProps} onClick={() => undefined} />);
 
       const row = screen.getByText('Test Label').closest('div');
-      expect(row).toHaveStyle({ cursor: 'pointer' });
+      expect(row).toHaveClass('multichain-account-details__row--clickable');
+      expect(row).not.toHaveClass('multichain-account-details__row--default');
     });
   });
 

@@ -32,6 +32,7 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -297,13 +298,16 @@ export function isCurrentProviderCustom(state) {
   );
 }
 
-export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
-  return qrHardware || {};
+export function getActiveQrCodeScanRequest(state) {
+  return state.metamask.activeQrCodeScanRequest;
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
-  return state.metamask.qrHardware?.sign?.request !== undefined;
+  const activeQrCodeScanRequest = getActiveQrCodeScanRequest(state);
+  return (
+    activeQrCodeScanRequest &&
+    activeQrCodeScanRequest.type === QrScanRequestType.SIGN
+  );
 }
 
 export function getCurrentKeyring(state) {
@@ -1370,6 +1374,17 @@ export function getPreferences({ metamask }) {
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
+}
+
+/**
+ * privacy mode preference
+ *
+ * @param state
+ * @returns {boolean}
+ */
+export function getPrivacyMode(state) {
+  const { privacyMode } = getPreferences(state);
+  return Boolean(privacyMode);
 }
 
 export function getUseExternalNameSources(state) {
@@ -3064,6 +3079,17 @@ export function getIsSolanaTestnetSupportEnabled(state) {
   return Boolean(solanaTestnetsEnabled);
 }
 
+/**
+ * Get the state of the `bitcoinTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `bitcoinTestnetsEnabled` remote feature flag.
+ */
+export function getIsBitcoinTestnetSupportEnabled(state) {
+  const { bitcoinTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(bitcoinTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
@@ -3967,3 +3993,14 @@ export function getShowUpdateModal(state) {
 
   return showUpdateModal;
 }
+
+/**
+ * Selector to get the allow list for non-zero unused approvals from remote feature flags.
+ *
+ * @param state - The MetaMask state object
+ * @returns {string[]} Array of URL strings for the allow list
+ */
+export const selectNonZeroUnusedApprovalsAllowList = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
+);

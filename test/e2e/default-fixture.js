@@ -86,7 +86,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
           },
           {
-            networkId: '0x539',
+            networkId: inputChainId,
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
@@ -113,7 +113,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
-        qrHardware: {},
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
@@ -123,6 +122,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
+        hasShownMultichainAccountsIntroModal: true,
       },
       BridgeController: {},
       CurrencyController: {
@@ -220,6 +220,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
           shouldShowAggregatedBalancePopover: true,
           tokenNetworkFilter: {},
+          avatarType: 'maskicon',
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
@@ -283,6 +284,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allIgnoredTokens: {},
         allTokens: {},
       },
+      MultichainAccountService: {},
       TransactionController: {
         transactions: {},
       },

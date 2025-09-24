@@ -1,10 +1,13 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -20,6 +23,7 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -1385,6 +1389,81 @@ describe('Actions', () => {
         ),
       );
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#createNextMultichainAccountGroup', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createNextMultichainAccountGroup in background', () => {
+      const store = mockStore();
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const walletIdWithoutPrefix = stripWalletTypePrefixFromWalletId(walletId);
+      const createNextMultichainAccountGroup = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        createNextMultichainAccountGroup,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      store.dispatch(actions.createNextMultichainAccountGroup(walletId));
+
+      expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
+      expect(
+        createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#setAccountGroupName', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setAccountGroupName in background with correct parameters', async () => {
+      const store = mockStore();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+      const newAccountName = 'New Account Name';
+      const setAccountGroupName = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        setAccountGroupName,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.setAccountGroupName(accountGroupId, newAccountName),
+      );
+
+      expect(setAccountGroupName.callCount).toStrictEqual(1);
+      expect(
+        setAccountGroupName.calledWith(accountGroupId, newAccountName),
+      ).toStrictEqual(true);
+    });
+
+    it('returns false when the background call fails', async () => {
+      const store = mockStore();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+      const newAccountName = 'New Account Name';
+      const setAccountGroupName = sinon
+        .stub()
+        .rejects(new Error('Failed to set account name'));
+
+      background.getApi = sinon.stub().returns({
+        setAccountGroupName,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const result = await store.dispatch(
+        actions.setAccountGroupName(accountGroupId, newAccountName),
+      );
+
+      expect(result).toStrictEqual(false);
     });
   });
 
@@ -2943,29 +3022,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('syncInternalAccountsWithUserStorage', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls syncInternalAccountsWithUserStorage in the background', async () => {
-      const store = mockStore();
-
-      const syncInternalAccountsWithUserStorageStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        syncInternalAccountsWithUserStorage:
-          syncInternalAccountsWithUserStorageStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.syncInternalAccountsWithUserStorage());
-      expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
-        true,
-      );
-    });
-  });
-
   describe('syncContactsWithUserStorage', () => {
     afterEach(() => {
       sinon.restore();
@@ -3005,8 +3061,13 @@ describe('Actions', () => {
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
-        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith(
-          USER_STORAGE_FEATURE_NAMES.accounts,
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        ),
+      ).toBe(true);
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ),
       ).toBe(true);
     });

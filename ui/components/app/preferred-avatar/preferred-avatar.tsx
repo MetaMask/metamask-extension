@@ -5,7 +5,7 @@ import {
   AvatarAccountProps,
   AvatarAccountVariant,
 } from '@metamask/design-system-react';
-import { getUseBlockie } from '../../../selectors';
+import type { MetaMaskReduxState } from '../../../store/store';
 
 /**
  * Renders an avatar for an address based on the user's settings. This wraps AvatarAccount.
@@ -13,9 +13,18 @@ import { getUseBlockie } from '../../../selectors';
  * @param props - Props to pass to AvatarAccount
  */
 export const PreferredAvatar = (props: Omit<AvatarAccountProps, 'ref'>) => {
-  const variant = useSelector(getUseBlockie)
-    ? AvatarAccountVariant.Blockies
-    : AvatarAccountVariant.Jazzicon;
+  const variant = useSelector(getAvatarType);
 
   return <AvatarAccount {...props} variant={variant} />;
 };
+
+const avatarTypeMap = {
+  maskicon: AvatarAccountVariant.Maskicon,
+  jazzicon: AvatarAccountVariant.Jazzicon,
+  blockies: AvatarAccountVariant.Blockies,
+};
+
+function getAvatarType({ metamask: { preferences } }: MetaMaskReduxState) {
+  const avatarType = preferences?.avatarType;
+  return avatarType ? avatarTypeMap[avatarType] : undefined;
+}

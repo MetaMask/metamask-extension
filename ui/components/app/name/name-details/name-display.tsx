@@ -1,11 +1,13 @@
 import React, { memo } from 'react';
 import { NameType } from '@metamask/name-controller';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { PreferredAvatar } from '../../preferred-avatar';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -26,6 +28,7 @@ const NameDisplay = memo(
     variation,
     handleClick,
     showFullName = false,
+    ...props
   }: NameDisplayProps) => {
     const { name, image, icon, displayState } = useDisplayName({
       value,
@@ -47,24 +50,27 @@ const NameDisplay = memo(
         );
       }
 
-      // Otherwise, use Identicon
-      return <Identicon address={value} diameter={16} image={image} />;
+      if (image) {
+        return <Identicon address={value} diameter={16} image={image} />;
+      }
+
+      return <PreferredAvatar address={value} size={AvatarAccountSize.Xs} />;
     };
 
     const renderName = () => {
       if (!name) {
-        return <FormattedName value={value} type={type} />;
+        return <FormattedName value={value} type={type} {...props} />;
       }
 
       if (showFullName) {
         return (
-          <Text className="name__name" variant={TextVariant.bodyMd}>
+          <Text className="name__name" variant={TextVariant.bodyMd} {...props}>
             {name}
           </Text>
         );
       }
 
-      return <ShortenedName name={name} />;
+      return <ShortenedName name={name} {...props} />;
     };
 
     return (

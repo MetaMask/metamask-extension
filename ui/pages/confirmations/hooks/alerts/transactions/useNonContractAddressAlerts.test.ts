@@ -7,6 +7,8 @@ import {
 import { waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
 import { readAddressAsContract } from '../../../../../../shared/modules/contract-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -32,6 +34,7 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({
     id: messageIdMock,
   }),
+  useLocation: jest.fn(),
 }));
 
 jest.mock('react', () => ({
@@ -87,9 +90,14 @@ describe('useNonContractAddressAlerts', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const mockReadAddressAsContract =
     readAddressAsContract as jest.MockedFunction<typeof readAddressAsContract>;
+  const useLocationMock = jest.mocked(useLocation);
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useLocationMock.mockReturnValue({
+      search: '',
+    } as unknown as ReturnType<typeof useLocationMock>);
   });
 
   it('returns no alerts if no confirmation', () => {

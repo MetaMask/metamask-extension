@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "У вас на счету недостаточно $1 для оплаты комиссий сети."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Цены газа высоки, а оценки менее точны."
-  },
   "alertMessageNoGasPrice": {
     "message": "Мы не сможем продолжить эту транзакцию, пока вы не обновите комиссию вручную."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Ненужное разрешение"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Сеть занята"
   },
   "alertReasonNoGasPrice": {
     "message": "Оценка комиссии недоступна"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Узнайте, как мы защищаем вашу конфиденциальность"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Создавайте резервные копии своих счетов и синхронизируйте настройки."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Представляем резервное копирование и синхронизацию"
-  },
   "backupApprovalInfo": {
     "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "Базовый"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Базовый функционал отключен"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
@@ -917,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Влияние на цену"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Если у вас недостаточно средств для оплаты газа, часть вашего исходного токена автоматически выделяется на покрытие комиссий, что уменьшает сумму обмена. MetaMask не влияет на цену и не контролирует влияние на нее."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Оно зависит от объёма сделки и доступной ликвидности в пуле. MetaMask не влияет на цену и не контролирует влияние на нее."
   },
@@ -1068,8 +1050,8 @@
   "busy": {
     "message": "Занят"
   },
-  "buyAndSell": {
-    "message": "Купить/продать"
+  "buy": {
+    "message": "Купить"
   },
   "buyMoreAsset": {
     "message": "Купить еще $1",
@@ -1878,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Подходящие счета не найдены"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Получить в"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Адрес получения или ENS"
   },
@@ -2179,9 +2158,6 @@
   },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
-  },
-  "enableIt": {
-    "message": " Включить"
   },
   "enableSmartContractAccount": {
     "message": "Включить счет смарт-контракта"
@@ -2726,12 +2702,6 @@
   "honeypotTitle": {
     "message": "Ловушка"
   },
-  "howQuotesWork": {
-    "message": "Как работают котировки"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Эта котировка имеет лучшую доходность из всех котировок, которые мы искали. Она основана на курсе свопа, который включает комиссию за промежуточное соединение и комиссию MetaMask в размере $1% за вычетом платы за газ. Плата за газ зависит от загруженности сети и сложности транзакции."
-  },
   "id": {
     "message": "ID"
   },
@@ -2991,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Предыдущая транзакция все еще подписывается или отправляется"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons и Blockies — это два разных стиля уникальных значков, которые помогут вам с первого взгляда идентифицировать свой счет."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3402,15 +3369,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Вы добавляете эту сеть в MetaMask и разрешаете этому сайту использовать ее."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Создание моста"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Котировка"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Время"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 хочет использовать $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3568,9 +3526,6 @@
   },
   "networkIsBusy": {
     "message": "Сеть занята. Цены газа высоки, а оценки менее точны."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Должна быть включена хотя бы одна сеть"
   },
   "networkMenu": {
     "message": "Сетевое меню"
@@ -3777,9 +3732,6 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noActivity": {
-    "message": "Пока нет активности"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask не подключен к этому сайту"
   },
@@ -3789,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
   },
-  "noDeFiPositions": {
-    "message": "Не можете найти то, что ищете?"
-  },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps и большинство аппаратных кошельков не будут работать с вашей текущей версией браузера."
-  },
-  "noNFTs": {
-    "message": "Пока нет NFT"
   },
   "noNetworksAvailable": {
     "message": "Нет доступных сетей"
@@ -4269,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "Пароль должен содержать не менее 8 символов"
   },
-  "passwordStrength": {
-    "message": "Надежность пароля: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
-  },
   "passwordTermsWarning": {
     "message": "Если я забуду этот пароль, MetaMask не сможет восстановить его для меня."
   },
@@ -4693,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Предлагаемый лимит одобрения"
-  },
-  "protocolNotSupported": {
-    "message": "Возможно, мы ещё не поддерживаем ваш протокол."
   },
   "provide": {
     "message": "Предоставить"
@@ -5533,60 +5469,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Включение этой опции позволит пропустить промежуточный экран, который отображается при открытии диплинков в MetaMask. Диплинк — это ссылка типа https://link.metamask.io/home, которая приведет к открытию MetaMask; эти ссылки могут быть замаскированы другими людьми. Промежуточный экран предназначен для защиты от случайного открытия страниц в MetaMask, которые могут отображать ваши счета, токены, историю, балансы, настройки или другую потенциально конфиденциальную информацию. Этот параметр применяется только к ссылкам, подписанным MetaMask."
-  },
-  "slideBridgeDescription": {
-    "message": "Перемещайтесь по 9 блокчейнам, все из которых находятся в Вашем кошельке"
-  },
-  "slideBridgeTitle": {
-    "message": "Готовы создать мост?"
-  },
-  "slideCashOutDescription": {
-    "message": "Продайте свою криптовалюту за наличные"
-  },
-  "slideCashOutTitle": {
-    "message": "Вывести деньги с помощью MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Доступна в некоторых регионах"
-  },
-  "slideDebitCardTitle": {
-    "message": "Дебетовая карта MetaMask"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Берите кошелек с собой везде"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Скачать MetaMask mobile"
-  },
-  "slideFundWalletDescription": {
-    "message": "Добавьте или переведите токены, чтобы начать"
-  },
-  "slideFundWalletTitle": {
-    "message": "Пополните свой кошелек"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Импорт и использование нескольких кошельков в MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Добавьте несколько секретных фраз для восстановления"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Один и тот же адрес, более умные функции"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Начните использовать смарт-счета"
-  },
-  "slideSolanaDescription": {
-    "message": "Создайте счет Solana, чтобы начать"
-  },
-  "slideSolanaTitle": {
-    "message": "Теперь поддерживается Solana"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Выполните минтинг NFT и получите шанс выиграть"
-  },
-  "slideSweepStakeTitle": {
-    "message": "Примите участие в розыгрыше USDC на $5000!"
   },
   "slippage": {
     "message": "Проскальзывание"
@@ -7280,9 +7162,6 @@
     "message": "Остерегайтесь $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Слабый"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7301,15 +7180,6 @@
   "welcomeBack": {
     "message": "С возвращением!"
   },
-  "welcomeDescription": {
-    "message": "MetaMask, которому доверяют миллионы, — это безопасный кошелек, предоставляющим всем доступ к миру web3."
-  },
-  "welcomeGetStarted": {
-    "message": "С чего начать"
-  },
-  "welcomeTitle": {
-    "message": "Добро пожаловать в MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Давайте приступим к делу"
   },
@@ -7318,9 +7188,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Это позволит утвердить $1 для создания моста."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Вам нужно будет подтвердить две транзакции в своем аппаратном кошельке."
   },
   "willApproveAmountForSwapping": {
     "message": "Это позволит утвердить $1 для свопа."

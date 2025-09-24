@@ -1,6 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { getPreferences } from '../../../selectors';
 import {
@@ -98,7 +96,4 @@ export const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
-)(AdvancedTab);
+export default connect(mapStateToProps, mapDispatchToProps)(AdvancedTab);

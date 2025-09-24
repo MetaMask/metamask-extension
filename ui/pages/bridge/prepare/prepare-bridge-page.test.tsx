@@ -11,10 +11,19 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
 import * as SelectorsModule from '../../../selectors/multichain/networks';
-import * as ActionsModule from '../../../store/actions';
+import * as NetworkOrderControllerActionsModule from '../../../store/controller-actions/network-order-controller';
 import PrepareBridgePage, {
   useEnableMissingNetwork,
 } from './prepare-bridge-page';
+
+// Mock the bridge hooks
+jest.mock('../hooks/useGasIncluded7702', () => ({
+  useGasIncluded7702: jest.fn().mockReturnValue(false),
+}));
+
+jest.mock('../hooks/useIsSendBundleSupported', () => ({
+  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+}));
 
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
@@ -64,7 +73,7 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage />,
+      <PrepareBridgePage onOpenSettings={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -140,14 +149,14 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage />,
+      <PrepareBridgePage onOpenSettings={jest.fn()} />,
       configureStore(mockStore),
     );
 
     expect(container).toMatchSnapshot();
 
     expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /mUSD/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
@@ -198,7 +207,10 @@ describe('PrepareBridgePage', () => {
     });
 
     expect(() =>
-      renderWithProvider(<PrepareBridgePage />, configureStore(mockStore)),
+      renderWithProvider(
+        <PrepareBridgePage onOpenSettings={jest.fn()} />,
+        configureStore(mockStore),
+      ),
     ).toThrow();
   });
 
@@ -219,7 +231,7 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { getByTestId } = renderWithProvider(
-      <PrepareBridgePage />,
+      <PrepareBridgePage onOpenSettings={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -281,14 +293,14 @@ describe('useEnableMissingNetwork', () => {
         '0x1': true,
         '0xe708': true,
       });
-    const mockSetEnabledNetworks = jest.spyOn(
-      ActionsModule,
-      'setEnabledNetworks',
+    const mockEnableAllPopularNetworks = jest.spyOn(
+      NetworkOrderControllerActionsModule,
+      'enableAllPopularNetworks',
     );
 
     return {
       mockGetEnabledNetworksByNamespace,
-      mockSetEnabledNetworks,
+      mockEnableAllPopularNetworks,
     };
   };
 
@@ -305,10 +317,7 @@ describe('useEnableMissingNetwork', () => {
     hook.result.current('0x1');
 
     // Assert - Adds 0x1 to enabled networks
-    expect(mocks.mockSetEnabledNetworks).toHaveBeenCalledWith(
-      ['0x1', '0xe708'],
-      'eip155',
-    );
+    expect(mocks.mockEnableAllPopularNetworks).toHaveBeenCalledWith();
   });
 
   it('does not enable popular network if already enabled', () => {
@@ -317,7 +326,7 @@ describe('useEnableMissingNetwork', () => {
 
     // Act - enable 0x1 (already enabled)
     hook.result.current('0x1');
-    expect(mocks.mockSetEnabledNetworks).not.toHaveBeenCalled();
+    expect(mocks.mockEnableAllPopularNetworks).not.toHaveBeenCalled();
   });
 
   it('does not enable non-popular network', () => {
@@ -325,6 +334,6 @@ describe('useEnableMissingNetwork', () => {
     const hook = renderHook(() => useEnableMissingNetwork());
 
     hook.result.current('0x1111'); // not popular network
-    expect(mocks.mockSetEnabledNetworks).not.toHaveBeenCalled();
+    expect(mocks.mockEnableAllPopularNetworks).not.toHaveBeenCalled();
   });
 });

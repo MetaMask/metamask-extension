@@ -41,6 +41,14 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
+  private readonly connectionMenu = '[data-testid="connection-menu"]';
+
+  private readonly connectedSitePopoverNetworkButton =
+    '[data-testid="connected-site-popover-network-button"]';
+
+  private readonly networkOption = (networkId: string) =>
+    `[data-testid="${networkId}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -108,6 +116,11 @@ class HeaderNavbar {
     }
   }
 
+  async mouseClickOnThreeDotMenu(): Promise<void> {
+    console.log('Clicking three dot menu using mouse move');
+    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+  }
+
   async openPermissionsPage(): Promise<void> {
     console.log('Open permissions page in header navbar');
     await this.openThreeDotMenu();
@@ -140,12 +153,12 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.notificationsButton);
   }
 
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),
@@ -188,6 +201,32 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Open the connection menu
+   */
+  async openConnectionMenu(): Promise<void> {
+    console.log('Opening connection menu');
+    await this.driver.clickElement(this.connectionMenu);
+  }
+
+  /**
+   * Click the connected site popover network button
+   */
+  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
+    console.log('Clicking connected site popover network button');
+    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  }
+
+  /**
+   * Select a network from the network options
+   *
+   * @param networkId - The id of the network to select.
+   */
+  async selectNetwork(networkId: string): Promise<void> {
+    console.log(`Selecting network ${networkId}`);
+    await this.driver.clickElement(this.networkOption(networkId));
   }
 }
 

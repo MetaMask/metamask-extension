@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "No tienes suficiente $1 en tu cuenta para pagar las tarifas de red."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Los precios del gas son altos y las estimaciones son menos precisas."
-  },
   "alertMessageNoGasPrice": {
     "message": "No podemos seguir adelante con esta transacción hasta que actualice manualmente la tarifa."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Permiso innecesario"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "La red está ocupada"
   },
   "alertReasonNoGasPrice": {
     "message": "Estimación de tarifa no disponible"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Más información sobre cómo protegemos su privacidad"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Realice una copia de respaldo de sus cuentas y sincronice la configuración."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Presentamos la copia de respaldo y la sincronización"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a su monedero en otro dispositivo."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "Básico"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "La funcionalidad básica está desactivada"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask ofrece funciones básicas como los detalles del token y la configuración de gas mediante servicios de Internet. Al utilizar los servicios de Internet, su dirección IP es compartida, en este caso con MetaMask. Es lo mismo que cuando visita cualquier página web. MetaMask utiliza estos datos temporalmente y nunca los vende. Puede utilizar una VPN o desactivar estos servicios, pero esto podría afectar su experiencia con MetaMask. Para saber más, consulte nuestra $1.",
@@ -917,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Impacto en el precio"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Si no dispones de fondos suficientes para el gas, una parte de tu token de origen se asigna automáticamente para cubrir las comisiones, lo que reducirá la cantidad canjeada. MetaMask no influye ni controla el impacto en el precio."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "El impacto en el precio refleja cómo tu orden de canje afecta el precio de mercado del activo. Depende del tamaño de la operación y de la liquidez disponible en el fondo. MetaMask no influye ni controla el impacto en el precio."
   },
@@ -1068,7 +1050,7 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buyAndSell": {
+  "buy": {
     "message": "Comprar / vender"
   },
   "buyMoreAsset": {
@@ -1878,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "No se encontraron cuentas coincidentes"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Recibir en"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Dirección receptora o ENS"
   },
@@ -2179,9 +2158,6 @@
   },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
-  },
-  "enableIt": {
-    "message": " Activarla"
   },
   "enableSmartContractAccount": {
     "message": "Activar la cuenta de contrato inteligente"
@@ -2726,12 +2702,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Cómo funcionan las cotizaciones"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Esta cotización tiene la mejor rentabilidad de las cotizaciones que buscamos. Se basa en la tarifa de intercambio, que incluye las tarifas de puente y una tarifa de MetaMask del $1 %, menos las tarifas de gas. Las tarifas de gas dependen de lo ocupada que esté la red y de lo compleja que sea la transacción."
-  },
   "id": {
     "message": "ID"
   },
@@ -2991,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Aún se está firmando o enviando una transacción anterior"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons y Blockies son dos estilos distintos de íconos únicos que pueden ayudarlo a identificar rápidamente una cuenta."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3402,15 +3369,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Está agregando esta red a MetaMask y otorgando permiso a este sitio para usarla."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Puenteo"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Cotización"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Hora"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 quiere conectarse a $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3568,9 +3526,6 @@
   },
   "networkIsBusy": {
     "message": "La red está ocupada. Los precios del gas son altos y las estimaciones son menos precisas."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "Debes tener al menos una red habilitada"
   },
   "networkMenu": {
     "message": "Menú de red"
@@ -3777,9 +3732,6 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noActivity": {
-    "message": "Aún no hay actividad"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
   },
@@ -3789,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
-  "noDeFiPositions": {
-    "message": "¿No encuentras lo que buscas?"
-  },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, y la mayoría de los monederos físicos, no funcionarán con la versión actual de su navegador."
-  },
-  "noNFTs": {
-    "message": "No hay ningún NFT aún"
   },
   "noNetworksAvailable": {
     "message": "No hay redes disponibles"
@@ -4269,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "La contraseña debe tener al menos 8 caracteres"
   },
-  "passwordStrength": {
-    "message": "Solidez de la contraseña: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Una contraseña segura puede mejorar la protección de su monedero en caso de que le roben el dispositivo o esté comprometido."
-  },
   "passwordTermsWarning": {
     "message": "Si olvido esta contraseña, MetaMask no podrá restablecerla por mí."
   },
@@ -4693,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
-  },
-  "protocolNotSupported": {
-    "message": "Es posible que aún no admitamos tu protocolo."
   },
   "provide": {
     "message": "Proporcionar"
@@ -5533,60 +5469,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Al activar esta opción, se omitirá la pantalla intersticial que se muestra al abrir enlaces profundos en MetaMask. Un \"enlace profundo\" es un enlace como https://link.metamask.io/home que hace que MetaMask se abra; otros pueden ofuscar estos enlaces. La pantalla intersticial está diseñada para protegerte de abrir accidentalmente páginas dentro de MetaMask que puedan mostrar tus cuentas, tokens, historial, saldos, configuración u otra información potencialmente confidencial. Esta configuración solo se aplica a los enlaces firmados por MetaMask."
-  },
-  "slideBridgeDescription": {
-    "message": "Opere en 9 cadenas, todas dentro de su monedero"
-  },
-  "slideBridgeTitle": {
-    "message": "¿Listo para puentear?"
-  },
-  "slideCashOutDescription": {
-    "message": "Venda sus criptomonedas por efectivo"
-  },
-  "slideCashOutTitle": {
-    "message": "Retire su dinero con MetaMask"
-  },
-  "slideDebitCardDescription": {
-    "message": "Disponible en regiones seleccionadas"
-  },
-  "slideDebitCardTitle": {
-    "message": "Tarjeta de débito MetaMask"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Lleva tu billetera a todas partes"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "Descargar MetaMask para dispositivos móviles"
-  },
-  "slideFundWalletDescription": {
-    "message": "Añada o transfiera tokens para comenzar"
-  },
-  "slideFundWalletTitle": {
-    "message": "Añada fondos a su monedero"
-  },
-  "slideMultiSrpDescription": {
-    "message": "Importar y usar varios monederos en MetaMask"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Agregar varias frases secretas de recuperación"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "La misma dirección, funciones más inteligentes"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Empiece a usar cuentas inteligentes"
-  },
-  "slideSolanaDescription": {
-    "message": "Cree una cuenta de Solana para comenzar"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana ahora es compatible"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Acuñe un NFT ahora para tener la oportunidad de ganar"
-  },
-  "slideSweepStakeTitle": {
-    "message": "¡Participe en el sorteo de $5000 USDC!"
   },
   "slippage": {
     "message": "Deslizamiento"
@@ -7280,9 +7162,6 @@
     "message": "Cuidado con $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Débil"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7301,15 +7180,6 @@
   "welcomeBack": {
     "message": "Bienvenido de nuevo"
   },
-  "welcomeDescription": {
-    "message": "Con la confianza de millones de usuarios, MetaMask es una billetera segura que permite que todos puedan acceder al mundo de la web3."
-  },
-  "welcomeGetStarted": {
-    "message": "Comenzar"
-  },
-  "welcomeTitle": {
-    "message": "Bienvenido a MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Comencemos"
   },
@@ -7318,9 +7188,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Esto aprobará $1 para puentear."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Deberá confirmar dos transacciones en su monedero físico."
   },
   "willApproveAmountForSwapping": {
     "message": "Esto aprobará $1 para canjear."

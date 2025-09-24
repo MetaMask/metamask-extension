@@ -41,30 +41,34 @@ exports[`TokenListItem handles clicking staking opens tab 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
           >
-            <button
-              class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
-              data-testid="staking-entrypoint-0x1"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
             >
-              <span
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              <button
+                class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
+                data-testid="staking-entrypoint-0x1"
+                tabindex="0"
               >
-                •
-              </span>
-              <span
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--color-primary-default"
-              >
-                Earn
-              </span>
-              <span
-                class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
-                style="mask-image: url('./images/icons/stake.svg');"
-              />
-            </button>
-          </p>
+                <span
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  •
+                </span>
+                <span
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--color-primary-default"
+                >
+                  Earn
+                </span>
+                <span
+                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
+                  style="mask-image: url('./images/icons/stake.svg');"
+                />
+              </button>
+            </p>
+          </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
             data-testid="multichain-token-list-item-secondary-value"
@@ -126,11 +130,15 @@ exports[`TokenListItem should display warning scam modal 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
           >
-            
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+            >
+              
+            </p>
+          </div>
           <button
             aria-label=""
             class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
@@ -148,10 +156,6 @@ exports[`TokenListItem should display warning scam modal 1`] = `
           <div
             class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
-              style="mask-image: url('./images/icons/triangle-up.svg');"
-            />
             <p
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
               data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
@@ -208,11 +212,15 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
           >
-            
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+            >
+              
+            </p>
+          </div>
           <button
             aria-label=""
             class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
@@ -230,10 +238,6 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
           <div
             class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-success-default"
-              style="mask-image: url('./images/icons/triangle-up.svg');"
-            />
             <p
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
               data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
@@ -295,9 +299,13 @@ exports[`TokenListItem should render correctly 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-          />
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+            />
+          </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
             data-testid="multichain-token-list-item-secondary-value"
@@ -359,9 +367,13 @@ exports[`TokenListItem should render crypto balance 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-          />
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+            />
+          </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
             data-testid="multichain-token-list-item-secondary-value"
@@ -424,9 +436,13 @@ exports[`TokenListItem should render crypto balance with warning scam 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-          />
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+            />
+          </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
             data-testid="multichain-token-list-item-secondary-value"

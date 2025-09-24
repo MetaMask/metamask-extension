@@ -6,11 +6,11 @@ import { renderWithProvider } from '../../../../test/jest';
 import { ConnectedSitePopover } from './connected-site-popover';
 
 const props = {
+  referenceElement: { current: document.createElement('div') },
   isOpen: true,
   isConnected: true,
   onClick: jest.fn(),
   onClose: jest.fn(),
-  connectedOrigin: 'https://metamask.github.io',
 };
 
 const render = () => {
@@ -18,6 +18,26 @@ const render = () => {
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
+      // Add domains mapping for the test dapp
+      domains: {
+        'https://metamask.github.io': 'goerli-test-client',
+      },
+      // Add network configuration
+      networkConfigurationsByChainId: {
+        ...mockState.metamask.networkConfigurationsByChainId,
+        '0x5': {
+          chainId: '0x5',
+          name: 'Goerli',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              type: 'custom',
+              url: 'https://goerli.test',
+              networkClientId: 'goerli-test-client',
+            },
+          ],
+        },
+      },
       // Add multichain network state
       selectedMultichainNetworkChainId: 'eip155:5',
       isEvmSelected: true,

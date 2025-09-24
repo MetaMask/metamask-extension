@@ -414,9 +414,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Hesabınızda ağ ücretlerini ödemek için yeterli $1 yok."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
-  },
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
@@ -461,9 +458,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Gereksiz izin"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Ağ meşgul"
   },
   "alertReasonNoGasPrice": {
     "message": "Ücret tahmini mevcut değil"
@@ -672,12 +666,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "Hesaplarınızı yedekleyin ve ayarları senkronize edin."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "Yedekleme ve senkronizasyon hizmetinizde"
-  },
   "backupApprovalInfo": {
     "message": "Bu gizli kod, cihazınızı kaybetmeniz, şifrenizi unutmanız, MetaMask'ı yeniden kurmanızın gerektiği ya da cüzdanınıza başka bir cihazdan oturum açmak istemeniz durumunda cüzdanınıza erişim sağlamak için gereklidir."
   },
@@ -701,9 +689,6 @@
   },
   "basic": {
     "message": "Temel"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "Temel işlevsellik kapalı"
   },
   "basicConfigurationDescription": {
     "message": "MetaMask, internet hizmetleri üzerinden token bilgileri ve gaz ayarları gibi temel özellikler sunar. İnternet hizmetlerini kullandığınızda IP adresiniz, bu durumda MetaMask ile, paylaşılır. Bu tıpkı herhangi bir web sitesini ziyaret ettiğinizde olduğu gibidir. MetaMask bu verileri geçici olarak kullanır ve verilerinizi hiçbir zaman satmaz. Bir VPN kullanabilir veya bu hizmetleri kapatabilirsiniz ancak bu durum MetaMask deneyiminizi etkileyebilir. Daha fazla bilgi için $1 bölümümüzü okuyun.",
@@ -1041,8 +1026,8 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buyAndSell": {
-    "message": "Al/Sat"
+  "buy": {
+    "message": "Al"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -1851,9 +1836,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "Eşleşen hesap bulunamadı"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Alım adresi:"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Alıcı adres veya ENS"
   },
@@ -2146,9 +2128,6 @@
   },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
-  },
-  "enableIt": {
-    "message": " Etkinleştir"
   },
   "enableSmartContractAccount": {
     "message": "Akıllı sözleşme hesabını etkinleştir"
@@ -2693,12 +2672,6 @@
   "honeypotTitle": {
     "message": "Bal Tuzağı"
   },
-  "howQuotesWork": {
-    "message": "Teklifler nasıl çalışır?"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Arama yaptığımız teklifler arasında en iyi getiriye sahip olan teklif budur. Bu, köprü ücretlerini ve $1 MetaMask ücreti eksi gaz ücretlerini içeren swap oranına dayanır. Gaz ücretleri, ağın ne kadar yoğun olduğuna ve işlemin ne kadar karmaşık olduğuna bağlıdır."
-  },
   "id": {
     "message": "Kimlik"
   },
@@ -2958,9 +2931,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Önceki bir işlemin imzalanması veya gönderilmesi devam ediyor"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons ve Blockies, bir bakışta bir hesabı tanımlamana yardımcı olan iki farklı benzersiz simge stilidir."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3369,15 +3339,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Bu ağı MetaMask'e ekliyor ve bu siteye ağı kullanma izni veriyorsunuz."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Köprü"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Fiyat Teklifi"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Zaman"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snap kullanmak istiyor",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3535,9 +3496,6 @@
   },
   "networkIsBusy": {
     "message": "Ağ meşgul. Gaz fiyatları yüksektir ve tahminler daha az doğrudur."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "En az bir ağ etkinleştirilmiş olmalıdır"
   },
   "networkMenu": {
     "message": "Ağ Menüsü"
@@ -3744,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noActivity": {
-    "message": "Henüz herhangi bir aktivite yok"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
@@ -3756,17 +3711,11 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
-  "noDeFiPositions": {
-    "message": "Aradığınızı bulamıyor musunuz?"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
-  },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
   },
   "noNetworksAvailable": {
     "message": "Mevcut ağ yok"
@@ -4236,13 +4185,6 @@
   "passwordNotLongEnough": {
     "message": "Şifre en az 8 karakterden oluşmalıdır"
   },
-  "passwordStrength": {
-    "message": "Şifre güvenlik düzeyi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
-  },
   "passwordTermsWarning": {
     "message": "Bu şifreyi unutursam MetaMask bunu benim için sıfırlayamaz."
   },
@@ -4656,9 +4598,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
-  },
-  "protocolNotSupported": {
-    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
   },
   "provide": {
     "message": "Sun"
@@ -5492,60 +5431,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Bu seçenek etkinleştirildiğinde MetaMask'te derin bağlantıları açarken gösterilen geçiş ekranı atlanacaktır. \"Derin bağlantı\", MetaMask'in açılmasına sebep olan https://link.metamask.io/home gibi bir bağlantıdır; bu bağlantılar başkaları tarafından gizlenebilir. Geçiş ekranı, sizi MetaMask dahilinde hesaplarınızı, token'larınızı, geçmişinizi, bakiyelerinizi, ayarlarınızı ve hassas olma potansiyeli olan diğer bilgilerinizi gösterebilecek kazara açılan sayfalardan korumak amacıyla tasarlanmıştır. Bu ayar yalnızca MetaMask tarafından imzalanan bağlantılar için geçerlidir."
-  },
-  "slideBridgeDescription": {
-    "message": "Tamamı cüzdanınız dahilinde olmak üzere 9 zincirde ilerleyin"
-  },
-  "slideBridgeTitle": {
-    "message": "Köprü yapmaya hazır mısınız?"
-  },
-  "slideCashOutDescription": {
-    "message": "Kriptonuzu satarak nakde dönüştürün"
-  },
-  "slideCashOutTitle": {
-    "message": "MetaMask ile paraya çevirin"
-  },
-  "slideDebitCardDescription": {
-    "message": "Belirli bölgelerde mevcuttur"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask banka kartı"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "Cüzdanınızı gittiğiniz her yere götürün"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "MetaMask mobili indirin"
-  },
-  "slideFundWalletDescription": {
-    "message": "Başlamak için token ekleyin veya transfer edin"
-  },
-  "slideFundWalletTitle": {
-    "message": "Cüzdanınıza para ekleyin"
-  },
-  "slideMultiSrpDescription": {
-    "message": "MetaMask'te birden fazla cüzdanı içe aktarın ve kullanın"
-  },
-  "slideMultiSrpTitle": {
-    "message": "Birden fazla Gizli Kurtarma İfadesi ekleyin"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "Aynı adres, daha akıllı özellikler"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "Akıllı hesapları kullanmaya başlayın"
-  },
-  "slideSolanaDescription": {
-    "message": "Başlamak için bir Solana hesabı oluşturun"
-  },
-  "slideSolanaTitle": {
-    "message": "Solana artık destekleniyor"
-  },
-  "slideSweepStakeDescription": {
-    "message": "Kazanma şansı için şimdi bir NFT mint edin"
-  },
-  "slideSweepStakeTitle": {
-    "message": "$5000 USDC Çekilişine katılın!"
   },
   "smartAccountAccept": {
     "message": "Akıllı hesap kullanın"
@@ -7230,9 +7115,6 @@
     "message": "Şuraya dikkat edin: $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Zayıf"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7251,15 +7133,6 @@
   "welcomeBack": {
     "message": "Tekrar hoş geldiniz"
   },
-  "welcomeDescription": {
-    "message": "Milyonların güvendiği MetaMask, web3 dünyasını herkes için erişilebilir kılan güvenli bir cüzdandır."
-  },
-  "welcomeGetStarted": {
-    "message": "Başlarken"
-  },
-  "welcomeTitle": {
-    "message": "MetaMask'e Hoş Geldiniz"
-  },
   "welcomeToMetaMask": {
     "message": "Başlayalım"
   },
@@ -7268,9 +7141,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Bu, köprü için şunu onaylayacaktır: $1."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Donanım cüzdanınızda iki işlemi onaylamanız gerekecektir."
   },
   "willApproveAmountForSwapping": {
     "message": "Bu, takas için şunu onaylayacaktır: $1."

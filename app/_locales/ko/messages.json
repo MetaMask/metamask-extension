@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "계정에 네트워크 수수료를 지불할 만큼의 $1(이)가 부족합니다."
   },
-  "alertMessageNetworkBusy": {
-    "message": "가스비가 높고 견적의 정확도도 떨어집니다."
-  },
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "불필요한 승인"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "네트워크 혼잡"
   },
   "alertReasonNoGasPrice": {
     "message": "수수료 견적 제공 불가"
@@ -684,12 +678,6 @@
   "backupAndSyncPrivacyLink": {
     "message": "개인 정보 보호 방법 알아보기"
   },
-  "backupAndSyncSlideDescription": {
-    "message": "계정을 백업하고 설정을 동기화하세요."
-  },
-  "backupAndSyncSlideTitle": {
-    "message": "백업 및 동기화 소개"
-  },
   "backupApprovalInfo": {
     "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
@@ -713,9 +701,6 @@
   },
   "basic": {
     "message": "기본"
-  },
-  "basicConfigurationBannerTitle": {
-    "message": "기본 기능이 꺼져 있습니다."
   },
   "basicConfigurationDescription": {
     "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 MetaMask 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
@@ -917,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "가격 영향"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "가격 영향은 스왑 주문이 자산의 시장 가격에 미치는 영향을 보여줍니다. 가스비를 충당할 자금이 부족하면 보내는 토큰의 일부가 자동으로 수수료로 사용되어 스왑되는 수량이 줄어듭니다. MetaMask는 가격 영향에 개입하거나 이를 통제하지 않습니다."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "가격 영향은 스왑 주문이 자산의 시장 가격에 미치는 영향을 보여줍니다. 이는 거래 규모와 풀의 가용 유동성에 따라 달라집니다. MetaMask는 가격 영향에 개입하거나 이를 통제하지 않습니다."
   },
@@ -1068,8 +1050,8 @@
   "busy": {
     "message": "바쁨"
   },
-  "buyAndSell": {
-    "message": "매수/매도"
+  "buy": {
+    "message": "매수"
   },
   "buyMoreAsset": {
     "message": "$1 추가 구매",
@@ -1878,9 +1860,6 @@
   "destinationAccountPickerNoMatching": {
     "message": "일치하는 계정을 찾을 수 없습니다"
   },
-  "destinationAccountPickerReceiveAt": {
-    "message": "수신 위치"
-  },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "수신 주소 또는 ENS"
   },
@@ -2179,9 +2158,6 @@
   },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
-  },
-  "enableIt": {
-    "message": " 활성화"
   },
   "enableSmartContractAccount": {
     "message": "스마트 계약 계정 활성화"
@@ -2726,12 +2702,6 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
-  "howQuotesWork": {
-    "message": "견적 방식"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "이 견적은 검색한 견적 중 최고의 수익률을 제공합니다. 이는 브릿지 수수료와 $1% MetaMask 수수료를 포함한 스왑 비율에서 가스비를 뺀 것을 기준으로 합니다. 가스비는 네트워크 혼잡도와 트랜잭션의 복잡성에 따라 달라집니다."
-  },
   "id": {
     "message": "ID"
   },
@@ -2991,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "이전 트랜잭션이 아직 서명 또는 제출 중입니다."
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons와 Blockies는 계정을 한눈에 식별할 수 있게 도와주는 두 가지 고유한 아이콘 스타일입니다."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3402,15 +3369,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "MetaMask에 이 네트워크를 추가하고 이 사이트에 사용 권한을 허용합니다."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "브릿징"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "견적"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "시간"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1에서 $2 Snap 사용을 원합니다.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3568,9 +3526,6 @@
   },
   "networkIsBusy": {
     "message": "네트워크 사용량이 많습니다. 가스비가 높고 견적의 정확도도 떨어집니다."
-  },
-  "networkManagerMustHaveAtLeastOneNetworkEnabled": {
-    "message": "한 개 이상의 네트워크가 활성화되어야 합니다"
   },
   "networkMenu": {
     "message": "네트워크 메뉴"
@@ -3777,9 +3732,6 @@
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
   },
-  "noActivity": {
-    "message": "아직 활동 내역이 없습니다"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
   },
@@ -3789,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
   },
-  "noDeFiPositions": {
-    "message": "원하는 것을 찾을 수 없나요?"
-  },
   "noDomainResolution": {
     "message": "도메인에 대한 해결 방법이 제공되지 않았습니다."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap 및 대부분의 하드웨어 지갑은 현재 사용 중인 브라우저 버전에서 작동하지 않습니다."
-  },
-  "noNFTs": {
-    "message": "아직 NFT가 없음"
   },
   "noNetworksAvailable": {
     "message": "사용 가능한 네트워크 없음"
@@ -4269,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "비밀번호는 8자 이상이어야 합니다"
   },
-  "passwordStrength": {
-    "message": "비밀번호 강도: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "장치가 도난되거나 해킹되는 경우에 대비해 강력한 암호를 설정하면 지갑의 보안을 향상시킬 수 있습니다."
-  },
   "passwordTermsWarning": {
     "message": "이 비밀번호를 잊은 경우, MetaMask는 회원님을 대신하여 비밀번호를 초기화해드릴 수 없습니다."
   },
@@ -4693,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
-  },
-  "protocolNotSupported": {
-    "message": "회원님의 프로토콜은 아직 지원되지 않을 수 있습니다."
   },
   "provide": {
     "message": "제공"
@@ -5533,60 +5469,6 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "이 옵션을 활성화하면 MetaMask에서 딥링크를 열 때 표시되는 중간 화면을 건너뜁니다. '딥링크'는 https://link.metamask.io/home과 같은 링크로 MetaMask가 열리도록 하는 링크입니다. 이러한 링크는 다른 사람들에 의해 숨겨질 수 있습니다. 중간 화면은 계정, 토큰, 기록, 잔액, 설정, 기타 잠재적으로 민감한 정보를 표시할 수 있는 MetaMask 내 페이지를 실수로 여는 것을 방지하기 위해 설계되었습니다. 이 설정은 MetaMask에서 서명된 링크에만 적용됩니다."
-  },
-  "slideBridgeDescription": {
-    "message": "지갑 내에서 9개 체인 간 이동"
-  },
-  "slideBridgeTitle": {
-    "message": "브릿지할 준비가 되셨나요?"
-  },
-  "slideCashOutDescription": {
-    "message": "암호화폐를 현금으로 매도"
-  },
-  "slideCashOutTitle": {
-    "message": "MetaMask로 현금화"
-  },
-  "slideDebitCardDescription": {
-    "message": "일부 지역에서 사용 가능"
-  },
-  "slideDebitCardTitle": {
-    "message": "MetaMask 직불카드"
-  },
-  "slideDownloadMobileAppDescription": {
-    "message": "어디에서든 지갑을 사용하세요"
-  },
-  "slideDownloadMobileAppTitle": {
-    "message": "MetaMask 모바일 다운로드"
-  },
-  "slideFundWalletDescription": {
-    "message": "시작하려면 토큰을 추가하거나 전송하세요"
-  },
-  "slideFundWalletTitle": {
-    "message": "지갑에 자금 추가"
-  },
-  "slideMultiSrpDescription": {
-    "message": "MetaMask에서 여러 지갑을 가져와 사용하세요"
-  },
-  "slideMultiSrpTitle": {
-    "message": "여러 비밀복구구문 추가"
-  },
-  "slideSmartAccountUpgradeDescription": {
-    "message": "같은 주소, 더욱 스마트한 기능"
-  },
-  "slideSmartAccountUpgradeTitle": {
-    "message": "스마트 계정 사용을 시작하세요"
-  },
-  "slideSolanaDescription": {
-    "message": "시작하려면 솔라나 계정을 생성하세요"
-  },
-  "slideSolanaTitle": {
-    "message": "이제 솔라나가 지원됩니다"
-  },
-  "slideSweepStakeDescription": {
-    "message": "NFT를 민팅하고 당첨 기회를 잡으세요"
-  },
-  "slideSweepStakeTitle": {
-    "message": "$5000 USDC 경품 이벤트에 참여하세요!"
   },
   "slippage": {
     "message": "슬리피지"
@@ -7280,9 +7162,6 @@
     "message": "$1에 주의하세요.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "약함"
-  },
   "web3": {
     "message": "웹3"
   },
@@ -7301,15 +7180,6 @@
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
   },
-  "welcomeDescription": {
-    "message": "수백만 명이 신뢰하는 MetaMask는 모두가 웹3 세상에 접근할 수 있도록 돕는 안전한 지갑입니다."
-  },
-  "welcomeGetStarted": {
-    "message": "시작하기"
-  },
-  "welcomeTitle": {
-    "message": "MetaMask에 오신 것을 환영합니다"
-  },
   "welcomeToMetaMask": {
     "message": "시작하기"
   },
@@ -7318,9 +7188,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "브릿지를 위해 $1을(를) 승인합니다."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "하드웨어 지갑에서 두 개의 트랜잭션을 확인해야 합니다."
   },
   "willApproveAmountForSwapping": {
     "message": "스왑을 위해 $1을(를) 승인합니다."

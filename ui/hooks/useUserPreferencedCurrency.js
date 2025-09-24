@@ -19,8 +19,6 @@ import { useMultichainSelector } from './useMultichainSelector';
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
  * @property {number} [ethNumberOfDecimals] - Number of significant decimals to display
  *                                             when using ETH
- * @property {number} [fiatNumberOfDecimals] - Number of significant decimals to display
- *                                            when using fiat
  * @property {boolean} [shouldCheckShowNativeToken] - Boolean to know if checking the setting
  *                                                  show native token as main balance is needed
  */
@@ -66,7 +64,7 @@ export function useUserPreferencedCurrency(type, opts = {}, chainId = null) {
 
   const fiatReturn = {
     currency: currentCurrency,
-    numberOfDecimals: opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2,
+    numberOfDecimals: opts.numberOfDecimals || 2,
   };
 
   const nativeReturn = {

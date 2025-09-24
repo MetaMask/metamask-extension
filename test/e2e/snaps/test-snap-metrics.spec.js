@@ -929,8 +929,8 @@ describe('Test Snap Metrics', function () {
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
-          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/webpack-plugin-example-snap": Failed to fetch tarball for package "@metamask/webpack-plugin-example-snap"..',
-          'Failed to fetch snap "npm:@metamask/webpack-plugin…package "@metamask/webpack-plugin-example-snap"..',
+          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/webpack-plugin-example-snap": Failed to fetch tarball for package "@metamask/webpack-plugin-example-snap".',
+          'Failed to fetch snap "npm:@metamask/webpack-plugin… package "@metamask/webpack-plugin-example-snap".',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

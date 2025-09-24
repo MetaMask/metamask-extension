@@ -102,7 +102,7 @@ export const AppHeader = ({ location }) => {
     width: BlockSize.Full,
     backgroundColor: BackgroundColor.backgroundDefault,
     padding: 2,
-    paddingLeft: 4,
+    paddingLeft: 2,
     paddingRight: 4,
     gap: 2,
   };
@@ -125,7 +125,7 @@ export const AppHeader = ({ location }) => {
           <Box
             className={classnames(
               isUnlocked
-                ? 'multichain-app-header__contents'
+                ? 'multichain-app-header__contents flex'
                 : 'multichain-app-header__lock-contents',
             )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
