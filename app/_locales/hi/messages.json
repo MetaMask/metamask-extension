@@ -3741,9 +3741,6 @@
   "noConversionRateAvailable": {
     "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
   },
-  "noDeFiPositions": {
-    "message": "आप जो खोज रहे हैं वह आपको नहीं मिल रहा?"
-  },
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
   },
@@ -4635,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "प्रस्तावित एप्रूवल सीमा"
-  },
-  "protocolNotSupported": {
-    "message": "हो सकता है कि हम अभी आपके प्रोटोकॉल को सपोर्ट न करें।"
   },
   "provide": {
     "message": "प्रदान करें"

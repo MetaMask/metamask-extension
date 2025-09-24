@@ -437,21 +437,17 @@ exports[`AssetPage should render a native asset 1`] = `
               </button>
             </div>
             <div
-              class="flex flex-col items-center justify-center bg-default mx-auto mt-4 max-w-56"
+              class="flex flex-col gap-3 items-center justify-center bg-default mx-auto mt-4 max-w-56"
               data-testid="activity-tab-empty-state"
             >
-              <div
-                class="mb-4"
-              >
-                <img
-                  alt="Activity"
-                  height="72"
-                  src="./images/empty-state-activity-light.png"
-                  width="72"
-                />
-              </div>
+              <img
+                alt="Activity"
+                height="72"
+                src="./images/empty-state-activity-light.png"
+                width="72"
+              />
               <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center mb-2"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
               >
                 Nothing to see yet. Check the explorer for more recent activity.
               </p>
@@ -927,21 +923,17 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               </button>
             </div>
             <div
-              class="flex flex-col items-center justify-center bg-default mx-auto mt-4 max-w-56"
+              class="flex flex-col gap-3 items-center justify-center bg-default mx-auto mt-4 max-w-56"
               data-testid="activity-tab-empty-state"
             >
-              <div
-                class="mb-4"
-              >
-                <img
-                  alt="Activity"
-                  height="72"
-                  src="./images/empty-state-activity-light.png"
-                  width="72"
-                />
-              </div>
+              <img
+                alt="Activity"
+                height="72"
+                src="./images/empty-state-activity-light.png"
+                width="72"
+              />
               <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center mb-2"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
               >
                 Nothing to see yet. Check the explorer for more recent activity.
               </p>
@@ -1446,21 +1438,17 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               </button>
             </div>
             <div
-              class="flex flex-col items-center justify-center bg-default mx-auto mt-4 max-w-56"
+              class="flex flex-col gap-3 items-center justify-center bg-default mx-auto mt-4 max-w-56"
               data-testid="activity-tab-empty-state"
             >
-              <div
-                class="mb-4"
-              >
-                <img
-                  alt="Activity"
-                  height="72"
-                  src="./images/empty-state-activity-light.png"
-                  width="72"
-                />
-              </div>
+              <img
+                alt="Activity"
+                height="72"
+                src="./images/empty-state-activity-light.png"
+                width="72"
+              />
               <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center mb-2"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
               >
                 Nothing to see yet. Check the explorer for more recent activity.
               </p>
