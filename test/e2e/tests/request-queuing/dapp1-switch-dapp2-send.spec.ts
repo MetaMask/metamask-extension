@@ -156,6 +156,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
+          .withEnabledNetworks({
+            eip155: {
+              '0x53a': true,
+            },
+          })
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -280,6 +285,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
+
+        await driver.delay(100000);
 
         // Check for transaction
         await new ActivityListPage(
