@@ -5,6 +5,7 @@ import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   Box,
   ButtonIcon,
@@ -29,6 +30,7 @@ import {
   getNetworkAddressCount,
   getWallet,
   getInternalAccountsFromGroupById,
+  getIconSeedAddressByAccountGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
@@ -62,10 +64,16 @@ export const MultichainAccountDetailsPage = () => {
   const accountsWithAddresses = useSelector((state) =>
     getInternalAccountsFromGroupById(state, accountGroupId),
   );
+  const seedAddressIcon = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(state, accountGroupId),
+  );
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
+  const isPrivateKeyWallet = accountsWithAddresses.some(
+    (account) => account.metadata.keyring.type === KeyringTypes.simple,
+  );
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const handleAddressesClick = () => {
@@ -122,7 +130,7 @@ export const MultichainAccountDetailsPage = () => {
       >
         <Box className="flex justify-center">
           <PreferredAvatar
-            address={accountGroupId}
+            address={seedAddressIcon}
             size={AvatarAccountSize.Xl}
             data-testid="avatar"
           />
@@ -158,21 +166,23 @@ export const MultichainAccountDetailsPage = () => {
               />
             }
           />
-          <AccountDetailsRow
-            label={t('privateKeys')}
-            value={t('unlockToReveal')}
-            onClick={handlePrivateKeysClick}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('privateKeys')}
-                marginLeft={2}
-                data-testid="private-keys-action"
-              />
-            }
-          />
+          {(isEntropyWallet || isPrivateKeyWallet) && (
+            <AccountDetailsRow
+              label={t('privateKeys')}
+              value={t('unlockToReveal')}
+              onClick={handlePrivateKeysClick}
+              endAccessory={
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  color={IconColor.iconAlternative}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('privateKeys')}
+                  marginLeft={2}
+                  data-testid="private-keys-action"
+                />
+              }
+            />
+          )}
           <AccountDetailsRow
             label={t('smartAccountLabel')}
             value={t('setUp')}

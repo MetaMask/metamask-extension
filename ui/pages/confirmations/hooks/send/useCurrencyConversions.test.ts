@@ -40,9 +40,9 @@ describe('useCurrencyConversions', () => {
     } as unknown as SendContext.SendContextType);
 
     const result = renderHook();
-    expect(result.getFiatValue(10)).toEqual('20');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 20.00');
-    expect(result.getNativeValue(5000)).toEqual('2500');
+    expect(result.getFiatValue('10')).toEqual('20');
+    expect(result.getFiatDisplayValue('10')).toEqual('$ 20.00');
+    expect(result.getNativeValue('5000')).toEqual('2500');
   });
 
   it('conversionSupportedForAsset is false for ERC1155 asset', () => {

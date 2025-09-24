@@ -51,6 +51,7 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "hasShownMultichainAccountsIntroModal": "boolean",
     "surveyLinkLastClickedOrClosed": "object",
     "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
@@ -275,7 +276,8 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean"
+    "manageInstitutionalWallets": "boolean",
+    "referrals": "object"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
