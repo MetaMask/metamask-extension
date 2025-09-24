@@ -74,7 +74,6 @@ export const MultichainAccountList = ({
 
   const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
 
-  // State to track which account menu is open (only one at a time)
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
 
@@ -87,14 +86,13 @@ export const MultichainAccountList = ({
     (accountGroupId) => {
       setRenameAccountGroupId(accountGroupId);
       setIsAccountRenameModalOpen(true);
-      // Close any open menu when rename action is triggered
       setOpenMenuAccountId(null);
     },
     [setIsAccountRenameModalOpen, setRenameAccountGroupId],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
-    // If the same menu is clicked, close it; otherwise, open the new one
+    // If the same menu is clicked, close it, otherwise open the new one
     setOpenMenuAccountId((current) =>
       current === accountGroupId ? null : accountGroupId,
     );
