@@ -241,7 +241,10 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            if (isNativeAddress(token.address) || token.isNative) {
+            if (
+              (isNativeAddress(token.address) || token.isNative) &&
+              !isSolanaChainId(token.chainId)
+            ) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
