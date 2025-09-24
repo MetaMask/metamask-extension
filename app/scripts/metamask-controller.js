@@ -1027,10 +1027,10 @@ export default class MetamaskController extends EventEmitter {
       'AccountsController:selectedAccountChange',
       (account) => {
         if (account.type === SolAccountType.DataAccount) {
-          this.networkEnablementController.enableNetwork(SolScope.Mainnet);
-        }
-        if (account.type === EthAccountType.Eoa) {
-          // this.networkEnablementController.enableAllPopularNetworks();
+          this.networkEnablementController.enableNetworkInNamespace(
+            SolScope.Mainnet,
+            KnownCaipNamespace.Solana,
+          );
         }
       },
     );
