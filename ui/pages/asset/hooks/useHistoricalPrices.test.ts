@@ -220,7 +220,7 @@ describe('useHistoricalPrices', () => {
       '5132883f-598e-482c-a02b-84eeaa352f5b';
 
     const chainId = SolScope.Mainnet;
-    const address = '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC';
+    const address = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
     const currency = 'usd';
     const timeRange = 'P7D';
 
@@ -245,7 +245,7 @@ describe('useHistoricalPrices', () => {
     it('returns the historical prices when the state is populated', async () => {
       const mockState = cloneDeep(mockStateIsNonEvm) as any;
       mockState.metamask.historicalPrices = {
-        '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC': {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           usd: {
             intervals: {
               P1D: [[1, 100]],

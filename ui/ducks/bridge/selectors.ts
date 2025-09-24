@@ -25,7 +25,12 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import {
+  parseCaipChainId,
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import type {
   CurrencyRateState,
   MultichainAssetsControllerState,
@@ -184,8 +189,7 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getMultichainProviderConfig,
-  getFromChains,
+  [getMultichainProviderConfig, getFromChains],
   (providerConfig, fromChains) => {
     return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
   },
@@ -230,6 +234,29 @@ export const getToChain = createSelector(
       : fromChain,
 );
 
+export const getDefaultTokenPair = createDeepEqualSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) =>
+      // @ts-expect-error will be fixed when controller is updated
+      getBridgeFeatureFlags(state).bip44DefaultPairs,
+  ],
+  (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
+    if (!fromChainId) {
+      return null;
+    }
+    const { namespace } = parseCaipChainId(formatChainIdToCaip(fromChainId));
+    const defaultTokenPair = bip44DefaultPairs?.[namespace]?.standard;
+    if (defaultTokenPair) {
+      return Object.entries(defaultTokenPair).flat() as [
+        CaipAssetType,
+        CaipAssetType,
+      ];
+    }
+    return null;
+  },
+);
+
 export const getFromToken = createSelector(
   [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
   (fromToken, fromChain) => {
@@ -263,7 +290,10 @@ export const getToToken = createSelector(
       return toToken;
     }
     // Otherwise, determine the default token to use based on fromToken and toChain
-    const defaultToken = getDefaultToToken(toChain, fromToken);
+    const defaultToken = getDefaultToToken(
+      formatChainIdToCaip(toChain.chainId),
+      fromToken,
+    );
     return defaultToken ? toBridgeToken(defaultToken) : null;
   },
 );

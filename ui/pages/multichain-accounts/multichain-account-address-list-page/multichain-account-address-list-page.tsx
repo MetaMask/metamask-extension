@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { CaipChainId } from '@metamask/utils';
 import {
   Box,
   BoxFlexDirection,
@@ -55,13 +56,19 @@ export const MultichainAccountAddressListPage = () => {
   const [selectedQRData, setSelectedQRData] = useState<{
     address: string;
     networkName: string;
+    chainId: CaipChainId;
     networkImageSrc?: string;
   } | null>(null);
 
   // QR Modal handlers
   const handleShowQR = useCallback(
-    (address: string, networkName: string, networkImageSrc?: string) => {
-      setSelectedQRData({ address, networkName, networkImageSrc });
+    (
+      address: string,
+      networkName: string,
+      chainId: CaipChainId,
+      networkImageSrc?: string,
+    ) => {
+      setSelectedQRData({ address, networkName, chainId, networkImageSrc });
       setIsQRModalOpen(true);
     },
     [],
@@ -109,6 +116,7 @@ export const MultichainAccountAddressListPage = () => {
           address={selectedQRData.address}
           accountName={accountGroup?.metadata?.name || t('account')}
           networkName={selectedQRData.networkName}
+          chainId={selectedQRData.chainId}
           networkImageSrc={selectedQRData.networkImageSrc}
         />
       )}
