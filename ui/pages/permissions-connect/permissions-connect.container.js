@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { compose } from 'redux';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -40,9 +42,7 @@ import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    match: {
-      params: { id: permissionsRequestId },
-    },
+    params: { id: permissionsRequestId },
     location: { pathname },
   } = ownProps;
   let permissionsRequests = getPermissionsRequests(state);
@@ -187,18 +187,15 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const PermissionApprovalContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps, mapDispatchToProps),
 )(PermissionApproval);
 
-PermissionApprovalContainer.propTypes = {
-  history: PropTypes.object.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string,
-    }).isRequired,
+PermissionApproval.propTypes = {
+  navigate: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
+  params: PropTypes.shape({
+    id: PropTypes.string,
   }).isRequired,
 };
-
-export default PermissionApprovalContainer;

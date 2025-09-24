@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom-v5-compat';
 import { WalletDetailsPage } from './wallet-details-page';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

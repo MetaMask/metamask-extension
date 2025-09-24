@@ -6,8 +6,7 @@ import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
-  RouteComponentProps,
-  Switch,
+  Routes,
   useNavigate,
   useLocation,
 } from 'react-router-dom-v5-compat';
@@ -352,18 +351,15 @@ const ShieldPlan = mmLazy(
 );
 // End Lazy Routes
 
-const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: RouteComponentProps) => (
-    <State2Wrapper
-      {...props}
-      state1Component={ReviewPermissions}
-      state2Component={MultichainReviewPermissions}
-    />
-  ),
-);
+const MemoizedReviewPermissionsWrapper = React.memo(() => (
+  <State2Wrapper
+    state1Component={ReviewPermissions}
+    state2Component={MultichainReviewPermissions}
+  />
+));
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function Routes() {
+export default function RoutesComponent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -523,179 +519,157 @@ export default function Routes() {
   }, [currentCurrency, dispatch]);
 
   const renderRoutes = useCallback(() => {
-    const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
-
     const routes = (
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
-        <Switch>
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={LOCK_ROUTE} component={Lock} exact />
-          <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-          {/** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */}
-          <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
-          <RestoreVaultComponent
+        <Routes>
+          <Route path={ONBOARDING_ROUTE} element={<OnboardingFlow />} />
+          <Route path={LOCK_ROUTE} element={<Lock />} />
+          <Route path={UNLOCK_ROUTE} element={<Initialized component={UnlockPage} />} />
+          <Route path={DEEP_LINK_ROUTE} element={<DeepLink />} />
+          <Route
             path={RESTORE_VAULT_ROUTE}
-            component={RestoreVaultPage}
-            exact
+            element={forgottenPassword ? <RestoreVaultPage /> : <Initialized component={RestoreVaultPage} />}
           />
-          <Authenticated
+          <Route
             path={SMART_ACCOUNT_UPDATE}
-            component={SmartAccountUpdate}
+            element={<Authenticated component={SmartAccountUpdate} />}
           />
-          <Authenticated
-            // `:keyringId` is optional here, if not provided, this will fallback
-            // to the main seed phrase.
+          <Route
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
-            component={RevealSeedConfirmation}
+            element={<Authenticated component={RevealSeedConfirmation} />}
           />
-          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
-          <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-          <Authenticated
+          <Route path={IMPORT_SRP_ROUTE} element={<Authenticated component={ImportSrpPage} />} />
+          <Route path={SETTINGS_ROUTE} element={<Authenticated component={Settings} />} />
+          <Route
             path={NOTIFICATIONS_SETTINGS_ROUTE}
-            component={NotificationsSettings}
+            element={<Authenticated component={NotificationsSettings} />}
           />
-          <Authenticated
+          <Route
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
-            component={NotificationDetails}
+            element={<Authenticated component={NotificationDetails} />}
           />
-          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-          <Authenticated path={SNAPS_ROUTE} component={SnapList} exact />
-          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
-          <Authenticated
+          <Route path={NOTIFICATIONS_ROUTE} element={<Authenticated component={Notifications} />} />
+          <Route path={SNAPS_ROUTE} element={<Authenticated component={SnapList} />} />
+          <Route path={SNAPS_VIEW_ROUTE} element={<Authenticated component={SnapView} />} />
+          <Route
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            component={ConfirmTransaction}
+            element={<Authenticated component={ConfirmTransaction} />}
           />
-          <Authenticated
+          <Route
             path={`${SEND_ROUTE}/:page?`}
-            component={isSendRedesignEnabled ? SendPage : LegacySendPage}
+            element={<Authenticated component={isSendRedesignEnabled ? SendPage : LegacySendPage} />}
           />
-          <Authenticated path={SWAPS_ROUTE} component={Swaps} />
-          <Authenticated
+          <Route path={SWAPS_ROUTE} element={<Authenticated component={Swaps} />} />
+          <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            component={CrossChainSwapTxDetails}
-            exact
+            element={<Authenticated component={CrossChainSwapTxDetails} />}
           />
-          <Authenticated
+          <Route
             path={CROSS_CHAIN_SWAP_ROUTE}
-            component={CrossChainSwap}
+            element={<Authenticated component={CrossChainSwap} />}
           />
-          <Authenticated
+          <Route
+            path={`${CROSS_CHAIN_SWAP_ROUTE}/*`}
+            element={<Authenticated component={CrossChainSwap} />}
+          />
+          <Route
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            component={ConfirmAddSuggestedTokenPage}
-            exact
+            element={<Authenticated component={ConfirmAddSuggestedTokenPage} />}
           />
-          <Authenticated
+          <Route
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            component={ConfirmAddSuggestedNftPage}
-            exact
+            element={<Authenticated component={ConfirmAddSuggestedNftPage} />}
           />
-          <Authenticated
+          <Route
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            component={ConfirmationPage}
+            element={<Authenticated component={ConfirmationPage} />}
           />
-          <Authenticated
-            path={NEW_ACCOUNT_ROUTE}
-            component={CreateAccountPage}
-          />
-          <Authenticated
+          <Route path={NEW_ACCOUNT_ROUTE} element={<Authenticated component={CreateAccountPage} />} />
+          <Route
             path={`${CONNECT_ROUTE}/:id`}
-            component={PermissionsConnect}
+            element={<Authenticated component={PermissionsConnect} />}
           />
-          <Authenticated
+          <Route
             path={`${ASSET_ROUTE}/image/:asset/:id`}
-            component={NftFullImage}
+            element={<Authenticated component={NftFullImage} />}
           />
-          <Authenticated
+          <Route
             path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            component={Asset}
+            element={<Authenticated component={Asset} />}
           />
-          <Authenticated
+          <Route
             path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            component={Asset}
+            element={<Authenticated component={Asset} />}
           />
-          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
-          <Authenticated
+          <Route path={`${ASSET_ROUTE}/:chainId`} element={<Authenticated component={Asset} />} />
+          <Route
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
-            component={DeFiPage}
+            element={<Authenticated component={DeFiPage} />}
           />
-          <Authenticated
-            path={`${CONNECTIONS}/:origin`}
-            component={Connections}
-          />
-          <Authenticated
+          <Route
             path={PERMISSIONS}
-            component={
-              isGatorPermissionsFeatureEnabled()
-                ? GatorPermissionsPage
-                : PermissionsPage
-            }
-            exact
+            element={<PermissionsPage />}
           />
-          <Authenticated
+          <Route
+            path={`${CONNECTIONS}/:origin`}
+            element={<Connections />}
+          />
+          <Route
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={MemoizedReviewPermissionsWrapper}
-            exact
+            element={<MemoizedReviewPermissionsWrapper />}
           />
-          <Authenticated
+          <Route
             path={ACCOUNT_LIST_PAGE_ROUTE}
-            component={AccountList}
-            exact
+            element={<Authenticated component={AccountList} />}
           />
-          <Authenticated
+          <Route
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountAddressListPage}
-            exact
+            element={<Authenticated component={MultichainAccountAddressListPage} />}
           />
-          <Authenticated
+          <Route
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountPrivateKeyListPage}
-            exact
+            element={<Authenticated component={MultichainAccountPrivateKeyListPage} />}
           />
-          <Authenticated
+          <Route
             path={ADD_WALLET_PAGE_ROUTE}
-            component={AddWalletPage}
-            exact
+            element={<Authenticated component={AddWalletPage} />}
           />
-          <Authenticated
+          <Route
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
-            component={MultichainAccountDetailsPage}
-            exact
+            element={<Authenticated component={MultichainAccountDetailsPage} />}
           />
-          <Authenticated
-            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
-            component={SmartAccountPage}
-            exact
-          />
-          <Authenticated
-            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            component={WalletDetailsPage}
-            exact
-          />
-          <Authenticated
+          <Route
             path={WALLET_DETAILS_ROUTE}
-            component={WalletDetails}
-            exact
+            element={<Authenticated component={WalletDetails} />}
           />
-          <Authenticated
+          <Route
             path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
-            component={MultichainAccountDetails}
-            exact
+            element={<Authenticated component={MultichainAccountDetails} />}
           />
-          <Authenticated
+          <Route
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
-            component={AddressQRCode}
-            exact
+            element={<Authenticated component={AddressQRCode} />}
           />
-          <Authenticated
+          <Route
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            element={<Authenticated component={SmartAccountPage} />}
+          />
+          <Route
+            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
+            element={<Authenticated component={WalletDetailsPage} />}
+          />
+          <Route
+            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id/address-qr-code`}
+            element={<Authenticated component={AddressQRCode} />}
+          />
+          <Route
             path={NONEVM_BALANCE_CHECK_ROUTE}
-            component={NonEvmBalanceCheck}
+            element={<Authenticated component={NonEvmBalanceCheck} />}
           />
-          <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
-          <Authenticated path={DEFAULT_ROUTE} component={Home} />
-        </Switch>
+          <Route path={SHIELD_PLAN_ROUTE} element={<Authenticated component={ShieldPlan} />} />
+          <Route path={DEFAULT_ROUTE} element={<Authenticated component={Home} />} />
+        </Routes>
       </Suspense>
     );
 
@@ -846,7 +820,7 @@ export default function Routes() {
         ) : null}
         {renderRoutes()}
       </Box>
-      {isUnlocked ? <Alerts history={history} /> : null}
+      {isUnlocked ? <Alerts navigate={navigate} /> : null}
       <ToastMaster />
     </div>
   );

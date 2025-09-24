@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
@@ -64,7 +64,7 @@ import TimerIcon from './timer-icon';
 export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const fetchParams = useSelector(getFetchParams, isEqual) || {};
@@ -470,14 +470,14 @@ export default function SmartTransactionStatusPage() {
         onSubmit={async () => {
           if (showCloseButtonOnly) {
             await dispatch(prepareToLeaveSwaps());
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           } else {
-            history.push(PREPARE_SWAP_ROUTE);
+            navigate(PREPARE_SWAP_ROUTE);
           }
         }}
         onCancel={async () => {
           await dispatch(prepareToLeaveSwaps());
-          history.push(DEFAULT_ROUTE);
+          navigate(DEFAULT_ROUTE);
         }}
         submitText={showCloseButtonOnly ? t('close') : t('tryAgain')}
         hideCancel={showCloseButtonOnly}

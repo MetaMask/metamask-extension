@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
-import { CompatRouter } from 'react-router-dom-v5-compat';
+import { HashRouter } from 'react-router-dom-v5-compat';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
@@ -46,23 +45,21 @@ class Index extends PureComponent {
     return (
       <Provider store={store}>
         <HashRouter hashType="noslash">
-          <CompatRouter>
-            <MetaMetricsProvider>
-              <LegacyMetaMetricsProvider>
-                <I18nProvider>
-                  <LegacyI18nProvider>
-                    <AssetPollingProvider>
-                      <MetamaskIdentityProvider>
-                        <MetamaskNotificationsProvider>
-                          <Routes />
-                        </MetamaskNotificationsProvider>
-                      </MetamaskIdentityProvider>
-                    </AssetPollingProvider>
-                  </LegacyI18nProvider>
-                </I18nProvider>
-              </LegacyMetaMetricsProvider>
-            </MetaMetricsProvider>
-          </CompatRouter>
+          <MetaMetricsProvider>
+            <LegacyMetaMetricsProvider>
+              <I18nProvider>
+                <LegacyI18nProvider>
+                  <AssetPollingProvider>
+                    <MetamaskIdentityProvider>
+                      <MetamaskNotificationsProvider>
+                        <Routes />
+                      </MetamaskNotificationsProvider>
+                    </MetamaskIdentityProvider>
+                  </AssetPollingProvider>
+                </LegacyI18nProvider>
+              </I18nProvider>
+            </LegacyMetaMetricsProvider>
+          </MetaMetricsProvider>
         </HashRouter>
       </Provider>
     );

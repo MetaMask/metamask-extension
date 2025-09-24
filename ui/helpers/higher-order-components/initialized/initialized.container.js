@@ -1,6 +1,4 @@
 import { connect } from 'react-redux';
-import { compose } from 'redux';
-import withRouterHooks from '../with-router-hooks/with-router-hooks';
 import Initialized from './initialized.component';
 
 const mapStateToProps = (state) => {
@@ -13,4 +11,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default compose(withRouterHooks, connect(mapStateToProps))(Initialized);
+export default connect(mapStateToProps)(Initialized);

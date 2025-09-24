@@ -1,6 +1,4 @@
 import { connect } from 'react-redux';
-import { compose } from 'redux';
-import withRouterHooks from '../with-router-hooks/with-router-hooks';
 import Authenticated from './authenticated.component';
 
 const mapStateToProps = (state) => {
@@ -14,7 +12,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default compose(
-  withRouterHooks,
-  connect(mapStateToProps),
-)(Authenticated);
+export default connect(mapStateToProps)(Authenticated);

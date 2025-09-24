@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxFlexDirection,
@@ -25,7 +25,7 @@ import { getMultichainAccountGroupById } from '../../../selectors/multichain-acc
 
 export const MultichainAccountPrivateKeyListPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { accountGroupId } = useParams<{ accountGroupId: string }>();
 
   const decodedAccountGroupId: AccountGroupId | null = accountGroupId
@@ -54,7 +54,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }
@@ -74,7 +74,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
           {decodedAccountGroupId ? (
             <MultichainPrivateKeyList
               groupId={decodedAccountGroupId}
-              goBack={history.goBack}
+              goBack={() => navigate(-1)}
               data-testid="multichain-account-private-key-list"
             />
           ) : null}

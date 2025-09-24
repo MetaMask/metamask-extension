@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom-v5-compat';
 import configureStore from 'redux-mock-store';
 import { AccountGroupId } from '@metamask/account-api';
 import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';

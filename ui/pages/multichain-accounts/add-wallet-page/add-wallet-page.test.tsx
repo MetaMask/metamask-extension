@@ -1,20 +1,19 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 
 import { AddWalletPage } from './add-wallet-page';
 
-const mockHistoryGoBack = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 // Mock the ImportAccount component to test onActionComplete function is passed
 jest.mock(
@@ -67,7 +66,7 @@ describe('AddWalletPage', () => {
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('handles successful import completion', () => {
@@ -78,7 +77,7 @@ describe('AddWalletPage', () => {
     });
     fireEvent.click(successButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('does not navigate on failed import', () => {
@@ -89,6 +88,6 @@ describe('AddWalletPage', () => {
     });
     fireEvent.click(failureButton);
 
-    expect(mockHistoryGoBack).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 });

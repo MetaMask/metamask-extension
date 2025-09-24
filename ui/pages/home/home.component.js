@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, Route } from 'react-router-dom-v5-compat';
+import { Navigate, Route, Routes } from 'react-router-dom-v5-compat';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -870,11 +870,13 @@ export default class Home extends PureComponent {
 
     return (
       <div className="main-container main-container--has-shadow">
-        <Route path={CONNECTED_ROUTE} element={<ConnectedSites />} />
-        <Route
-          path={CONNECTED_ACCOUNTS_ROUTE}
-          element={<ConnectedAccounts />}
-        />
+        <Routes>
+          <Route path={CONNECTED_ROUTE} element={<ConnectedSites />} />
+          <Route
+            path={CONNECTED_ACCOUNTS_ROUTE}
+            element={<ConnectedAccounts />}
+          />
+        </Routes>
         <div className="home__container">
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true

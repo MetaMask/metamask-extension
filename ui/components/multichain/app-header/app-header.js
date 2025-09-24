@@ -63,13 +63,13 @@ export const AppHeader = ({ location }) => {
     SEND_STAGES.ADD_RECIPIENT,
   ].includes(sendStage);
   const isConfirmationPage = Boolean(
-    matchPath(location.pathname, {
+    matchPath({
       path: CONFIRM_TRANSACTION_ROUTE,
       exact: false,
-    }),
+    }, location.pathname),
   );
   const isSwapsPage = Boolean(
-    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
+    matchPath({ path: SWAPS_ROUTE, exact: false }, location.pathname),
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);

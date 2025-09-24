@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -21,7 +21,7 @@ import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 
 export default function NotificationPage({ notificationKey }) {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // TODO: Either add default values or redirect a user out if a notificationKey value is not supported.
@@ -64,7 +64,7 @@ export default function NotificationPage({ notificationKey }) {
       <SwapsFooter
         onSubmit={async () => {
           await dispatch(setSwapsErrorKey(''));
-          history.push(PREPARE_SWAP_ROUTE);
+          navigate(PREPARE_SWAP_ROUTE);
         }}
         submitText={buttonText}
         hideCancel

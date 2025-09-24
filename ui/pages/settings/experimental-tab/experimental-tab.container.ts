@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
@@ -20,6 +20,7 @@ import type {
   MetaMaskReduxState,
 } from '../../../store/store';
 import ExperimentalTab from './experimental-tab.component';
+import withRouterHooks from "../../../helpers/higher-order-components/with-router-hooks/with-router-hooks";
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
@@ -47,6 +48,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(ExperimentalTab);
