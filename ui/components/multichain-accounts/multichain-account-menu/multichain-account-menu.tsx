@@ -34,23 +34,11 @@ export const MultichainAccountMenu = ({
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const popoverDialogRef = useRef<HTMLDivElement>(null);
 
-  const togglePopover = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
+  const togglePopover = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     onToggle?.();
   };
-
-  // Handle Tab key press for accessibility inside the popover
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'Tab' || event.key === 'Escape') {
-        // Close popover on Tab or Escape key
-        onToggle?.();
-      }
-    },
-    [onToggle],
-  );
 
   const menuConfig = useMemo(() => {
     const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
@@ -175,9 +163,7 @@ export const MultichainAccountMenu = ({
         onPressEscKey={onToggle}
       >
         <ModalFocus restoreFocus initialFocusRef={popoverRef}>
-          <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-            <MultichainAccountMenuItems menuConfig={menuConfig} />
-          </div>
+          <MultichainAccountMenuItems menuConfig={menuConfig} />
         </ModalFocus>
       </Popover>
     </>
