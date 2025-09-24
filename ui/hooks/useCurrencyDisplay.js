@@ -18,7 +18,7 @@ import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getCurrencyRates } from '../ducks/metamask/metamask';
-import { useFormatters } from '../helpers/formatters';
+import { useFormatters } from './formatters';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // The smallest non-zero amount that can be displayed.

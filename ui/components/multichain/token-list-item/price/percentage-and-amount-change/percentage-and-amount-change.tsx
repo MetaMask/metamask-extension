@@ -14,7 +14,7 @@ import {
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
-import { useFormatters } from '../../../../../helpers/formatters';
+import { useFormatters } from '../../../../../hooks/formatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 import {

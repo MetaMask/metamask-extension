@@ -20,7 +20,7 @@ import {
 } from '../../../component-library';
 import { getPreferences } from '../../../../selectors';
 import Spinner from '../../../ui/spinner';
-import { useFormatters } from '../../../../helpers/formatters';
+import { useFormatters } from '../../../../hooks/formatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
