@@ -6,7 +6,8 @@ import {
   TransactionMetaMetricsEvent,
 } from '../../../../../shared/constants/transaction';
 import { Driver } from '../../../webdriver/driver';
-import { MOCK_META_METRICS_ID } from '../../../constants';
+import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../../constants';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   confirmContractDeploymentTransaction,
   confirmDepositTransaction,
@@ -15,9 +16,7 @@ import {
 } from './shared';
 
 const {
-  openDapp,
   unlockWallet,
-  WINDOW_TITLES,
   withFixtures,
   getEventPayloads,
 } = require('../../../helpers');
@@ -47,7 +46,8 @@ describe('Metrics', function () {
       }) => {
         await unlockWallet(driver);
 
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         await createContractDeploymentTransaction(driver);
         await confirmContractDeploymentTransaction(driver);

@@ -51,7 +51,6 @@ export const useConfirmActions = () => {
       if (!currentConfirmation) {
         return;
       }
-
       if (navigateBackForSend) {
         navigateBackIfSend();
       }

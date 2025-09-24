@@ -95,14 +95,13 @@ export const AssetMarketDetails = ({
 
   let marketCap = toNumber(tokenMarketDetails.marketCap);
   let totalVolume = toNumber(tokenMarketDetails.totalVolume);
-  let circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
+  const circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
   let allTimeHigh = toNumber(tokenMarketDetails.allTimeHigh);
   let allTimeLow = toNumber(tokenMarketDetails.allTimeLow);
 
   if (isEvm) {
     marketCap *= tokenExchangeRate;
     totalVolume *= tokenExchangeRate;
-    circulatingSupply *= tokenExchangeRate;
     allTimeHigh *= tokenExchangeRate;
     allTimeLow *= tokenExchangeRate;
   }

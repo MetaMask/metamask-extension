@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noActivity": {
-    "message": "Chưa có hoạt động nào"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
@@ -3744,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
-  "noDeFiPositions": {
-    "message": "Không tìm thấy điều bạn đang tìm kiếm?"
-  },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noNetworksAvailable": {
     "message": "Không có mạng nào khả dụng"
@@ -4641,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
-  },
-  "protocolNotSupported": {
-    "message": "Chúng tôi có thể chưa hỗ trợ giao thức của bạn."
   },
   "provide": {
     "message": "Cung cấp"

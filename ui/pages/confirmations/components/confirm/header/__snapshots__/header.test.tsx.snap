@@ -13,7 +13,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -30,7 +30,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
                 <rect
                   fill="#18CDF2"
                   height="32"
-                  transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                  transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -38,7 +38,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
                 <rect
                   fill="#035E56"
                   height="32"
-                  transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                  transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -46,7 +46,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
                 <rect
                   fill="#F26602"
                   height="32"
-                  transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                  transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -62,7 +62,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -220,7 +220,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -237,7 +237,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
                 <rect
                   fill="#C81420"
                   height="32"
-                  transform="translate(-5.505236904904678 -5.265123363737541) rotate(385.9 16 16)"
+                  transform="translate(-5.50523690490468 -5.26512336373754) rotate(385.9 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -245,7 +245,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
                 <rect
                   fill="#E9F500"
                   height="32"
-                  transform="translate(10.674469406726399 12.429928159193388) rotate(184.5 16 16)"
+                  transform="translate(10.67446940672640 12.42992815919339) rotate(184.5 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -253,7 +253,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
                 <rect
                   fill="#FAB300"
                   height="32"
-                  transform="translate(1.815455199236231 -26.03028190637629) rotate(431.3 16 16)"
+                  transform="translate(1.81545519923623 -26.03028190637629) rotate(431.3 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -269,7 +269,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
