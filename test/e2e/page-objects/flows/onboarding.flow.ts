@@ -271,8 +271,10 @@ export async function onboardingMetricsFlow(
     await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
 
+  // The participate in MetaMetrics checkbox defaults to checked.
+  // - If opting in (true): do not click; just validate it's checked.
+  // - If opting out (false): click once to uncheck and validate it's unchecked.
   if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
     await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
   } else {
     await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
