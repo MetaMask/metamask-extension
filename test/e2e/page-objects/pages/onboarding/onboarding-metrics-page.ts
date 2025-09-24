@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingMetricsPage {
   private driver: Driver;
 
-  private readonly iAgreeButton = '[data-testid="metametrics-i-agree"]';
+  private readonly continueButton = '[data-testid="metametrics-i-agree"]';
 
   private readonly dataCollectionForMarketingCheckbox =
     '[data-testid="metametrics-data-collection-checkbox"]';
@@ -17,12 +17,13 @@ class OnboardingMetricsPage {
   private readonly dataParticipateInMetaMetricsCheckedState =
     '.mm-checkbox__input--checked#metametrics-opt-in';
 
+  private readonly dataParticipateInMetaMetricsUncheckedState =
+    '.mm-checkbox__input#metametrics-opt-in';
+
   private readonly metametricsMessage = {
     text: 'Help us improve MetaMask',
     tag: 'h2',
   };
-
-  private readonly noThanksButton = '[data-testid="metametrics-i-agree"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -32,7 +33,7 @@ class OnboardingMetricsPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.metametricsMessage,
-        this.noThanksButton,
+        this.continueButton,
       ]);
     } catch (e) {
       console.log(
@@ -44,12 +45,8 @@ class OnboardingMetricsPage {
     console.log('Onboarding metametrics page is loaded');
   }
 
-  async clickNoThanksButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.noThanksButton);
-  }
-
-  async clickIAgreeButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.iAgreeButton);
+  async clickOnContinueButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.continueButton);
   }
 
   async clickDataCollectionForMarketingCheckbox(): Promise<void> {
@@ -69,6 +66,12 @@ class OnboardingMetricsPage {
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
     await this.driver.waitForSelector(
       this.dataParticipateInMetaMetricsCheckedState,
+    );
+  }
+
+  async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
+    await this.driver.waitForSelector(
+      this.dataParticipateInMetaMetricsUncheckedState,
     );
   }
 }

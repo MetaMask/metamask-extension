@@ -39,7 +39,7 @@ describe('Incremental Security', function (this: Suite) {
         // skip collect metametrics
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.clickOnContinueButton();
         }
 
         // agree to terms of use and start onboarding
@@ -60,7 +60,7 @@ describe('Incremental Security', function (this: Suite) {
         // skip collect metametrics
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.clickOnContinueButton();
         }
 
         // complete onboarding and pin extension

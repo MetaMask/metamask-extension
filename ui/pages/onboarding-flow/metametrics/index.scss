@@ -8,6 +8,10 @@
     align-items: start;
   }
 
+  &__checkbox {
+    cursor: pointer;
+  }
+
   &__user-control {
     height: 200px;
     width: 200px;

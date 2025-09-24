@@ -166,23 +166,23 @@ export default function OnboardingMetametrics() {
         padding={3}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
-        onClick={() =>
-          setIsParticipateInMetaMetricsChecked(
-            !isParticipateInMetaMetricsChecked,
-          )
-        }
+        onClick={() => setIsParticipateInMetaMetricsChecked((prev) => !prev)}
+        className="onboarding-metametrics__checkbox"
       >
         <Checkbox
           id="metametrics-opt-in"
           data-testid="metametrics-checkbox"
           isChecked={isParticipateInMetaMetricsChecked}
-          onClick={() =>
-            setIsParticipateInMetaMetricsChecked(
-              !isParticipateInMetaMetricsChecked,
-            )
+          onChange={(e) =>
+            setIsParticipateInMetaMetricsChecked(e.target.checked)
           }
           label={
-            <Text fontWeight={FontWeight.Medium}>
+            <Text
+              fontWeight={FontWeight.Medium}
+              onClick={() =>
+                setIsParticipateInMetaMetricsChecked((prev) => !prev)
+              }
+            >
               {t('onboardingMetametricCheckboxTitleOne')}
             </Text>
           }
@@ -207,6 +207,7 @@ export default function OnboardingMetametrics() {
         onClick={() =>
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
+        className="onboarding-metametrics__checkbox"
       >
         <Checkbox
           id="metametrics-datacollection-opt-in"
@@ -216,7 +217,14 @@ export default function OnboardingMetametrics() {
             dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
           }
           label={
-            <Text fontWeight={FontWeight.Medium}>
+            <Text
+              fontWeight={FontWeight.Medium}
+              onClick={() =>
+                dispatch(
+                  setDataCollectionForMarketing(!dataCollectionForMarketing),
+                )
+              }
+            >
               {t('onboardingMetametricCheckboxTitleTwo')}
             </Text>
           }

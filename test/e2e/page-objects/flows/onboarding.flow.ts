@@ -270,11 +270,16 @@ export async function onboardingMetricsFlow(
     await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
     await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
+
   if (participateInMetaMetrics) {
     await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
     await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
+  } else {
+    await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsUnchecked();
   }
-  await onboardingMetricsPage.clickIAgreeButton();
+
+  await onboardingMetricsPage.clickOnContinueButton();
 }
 
 /**
