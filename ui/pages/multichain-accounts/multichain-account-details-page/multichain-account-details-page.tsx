@@ -113,7 +113,11 @@ export const MultichainAccountDetailsPage = () => {
   };
 
   const handleAccountRemoveAction = useCallback(() => {
-    dispatch(removeAccount(accountsWithAddresses[0].address));
+    const firstAccountAddress = accountsWithAddresses[0]?.address;
+    if (firstAccountAddress) {
+      // Don't want to blindly call removeAccount without an invalid or empty parameter
+      dispatch(removeAccount(firstAccountAddress));
+    }
 
     trackEvent({
       event: MetaMetricsEventName.AccountRemoved,
