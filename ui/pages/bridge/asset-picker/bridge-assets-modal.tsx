@@ -1,9 +1,7 @@
 import React, {
   useState,
   useCallback,
-  useMemo,
   useEffect,
-  useRef,
 } from 'react';
 import {
   Box,
@@ -11,7 +9,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
 } from '../../../components/component-library';
 import { Column, Row } from '../layout';
 import { JustifyContent } from '../../../helpers/constants/design-system';
@@ -21,10 +18,9 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { getImageForChainId } from '../../confirmations/utils/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { NetworkFilterPill } from './network-filter-pill';
-import { debounce, set } from 'lodash';
-import { Asset, AssetsResponse, getPopularAssets, searchAssets } from '../utils/assets-service';
+import { debounce } from 'lodash';
+import { Asset, getPopularAssets, searchAssets } from '../utils/assets-service';
 import { BridgeAssetList } from './bridge-asset-list';
-import { useMultichainBalances } from '../../../hooks/useMultichainBalances';
 import { useFilteredAssetsWithBalance } from '../hooks/useFilteredAssetsWithBalance';
 
 interface BridgeAssetsModalProps {
@@ -80,8 +76,6 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
         setEndCursor(response.pageInfo.endCursor);
         setIsLoadingMore(false);
       }
-
-      console.log('Debounced search query:', value);
     }, 300),
     [],
   );

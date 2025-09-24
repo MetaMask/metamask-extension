@@ -9,6 +9,9 @@ export interface Asset {
   price?: string;
   aggregatedUsdVolume?: string;
   marketCap?: string;
+  chainId?: string;
+  balance?: string;
+  tokenFiatAmount?: number;
 }
 
 export interface PopularAssetsResponse {
@@ -33,7 +36,6 @@ export async function getPopularAssets(value: string, chainIds: string[]): Promi
   try {
     const response = await fetch(`https://token.api.cx.metamask.io/v3/tokens/popular?chainIds=${stringifyChainIds(chainIds)}&minLiquidity=0&minVolume24hUsd=0`);
     const data = await response.json() as Asset[];
-    console.log('***********POPULAR ASSETS***********', data);
     return data;
   } catch (error) {
     console.error('***********ERROR: No POPULAR ASSETS FOUND***********', error);

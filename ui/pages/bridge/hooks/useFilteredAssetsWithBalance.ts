@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useMultichainBalances } from "../../../hooks/useMultichainBalances";
 import { Asset } from "../utils/assets-service";
 import { formatAddressToAssetId, formatChainIdToCaip } from "@metamask/bridge-controller";
-import { CaipAssetType } from "@metamask/utils";
+import { CaipAssetId } from "@metamask/utils";
 
 export const useFilteredAssetsWithBalance = (network: string | null, assets: Asset[]) => {
   const { assetsWithBalance } = useMultichainBalances();
@@ -13,7 +13,9 @@ export const useFilteredAssetsWithBalance = (network: string | null, assets: Ass
     symbol: asset.symbol,
     decimals: asset.decimals,
     chainId: asset.chainId,
-  })) as (Asset & {chainId?: string}) [], [assetsWithBalance]);
+    balance: asset.string,
+    tokenFiatAmount: asset.tokenFiatAmount,
+  })) as Asset[], [assetsWithBalance]);
 
   const filteredAssets = useMemo(() => {
     let baseAssets = formattedAssetsWithBalance;
@@ -26,7 +28,7 @@ export const useFilteredAssetsWithBalance = (network: string | null, assets: Ass
     // if assets are provided, we need to remove the duplicates that already exist in the assetsWithBalance
     if (assets.length > 0) {
       const existingAssetIds = new Set(baseAssets.map((asset) => asset.assetId))
-      const uniqueNewAssets = assets.filter((asset) => !existingAssetIds.has(asset.assetId as CaipAssetType));
+      const uniqueNewAssets = assets.filter((asset) => !existingAssetIds.has(asset.assetId as CaipAssetId));
       return [...assetsWithBalance, ...uniqueNewAssets] as Asset[];
     }
 

@@ -11,6 +11,7 @@ import { Column, Row } from '../layout';
 import { Box } from '../../../components/component-library';
 import { BridgeSkeletonLoader } from './bridge-skeleton-loader';
 import { Asset } from '../utils/assets-service';
+import { AssetItem } from './bridge-asset-item';
 
 interface AssetListProps {
   assets: Asset[];
@@ -19,18 +20,34 @@ interface AssetListProps {
   onLoadMore: () => void;
 }
 
+const DefaultSkeletonLoader = () => {
+  return (
+    <Column gap={2}>
+      {new Array(10).fill(0).map((_, index) => (
+        <BridgeSkeletonLoader key={index} />
+      ))}
+    </Column>
+  );
+}
+
 export const BridgeAssetList = ({ isLoading, assets, hasMore, onLoadMore }: AssetListProps) => {
   if (isLoading) {
+    return <DefaultSkeletonLoader />;
+  }
+
+  if (assets.length === 0) {
     return (
       <Column gap={2}>
-        {new Array(10).fill(0).map((_, index) => (
-          <BridgeSkeletonLoader key={index} />
-        ))}
+        <div>No assets found</div>
       </Column>
     );
   }
 
   return (
-    <div>AssetList</div>
+    <Column gap={2}>
+      {assets.map((asset) => (
+        <AssetItem key={asset.assetId} asset={asset} />
+      ))}
+    </Column>
   )
 }
