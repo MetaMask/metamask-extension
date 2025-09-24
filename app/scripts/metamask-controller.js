@@ -1789,8 +1789,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   resetStates() {
-    console.log('resetStates');
-    console.log('this.resetMethods', this.resetMethods);
     this.resetMethods.forEach((resetMethod) => {
       try {
         resetMethod();
@@ -2632,7 +2630,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
-      resetState: this.resetStates.bind(this),
+      resetState: this.resetState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
