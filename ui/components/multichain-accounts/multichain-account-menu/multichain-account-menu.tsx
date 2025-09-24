@@ -1,9 +1,10 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
   Icon,
   IconName,
+  ModalFocus,
   Popover,
   PopoverPosition,
 } from '../../component-library';
@@ -33,11 +34,23 @@ export const MultichainAccountMenu = ({
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
+  const popoverDialogRef = useRef<HTMLDivElement>(null);
 
   const togglePopover = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     onToggle?.();
   };
+
+  // Handle Tab key press for accessibility inside the popover
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Tab' || event.key === 'Escape') {
+        // Close popover on Tab or Escape key
+        onToggle?.();
+      }
+    },
+    [onToggle],
+  );
 
   const menuConfig = useMemo(() => {
     const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
@@ -158,8 +171,14 @@ export const MultichainAccountMenu = ({
         isPortal
         preventOverflow
         flip
+        onClickOutside={onToggle}
+        onPressEscKey={onToggle}
       >
-        <MultichainAccountMenuItems menuConfig={menuConfig} />
+        <ModalFocus restoreFocus initialFocusRef={popoverRef}>
+          <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
+            <MultichainAccountMenuItems menuConfig={menuConfig} />
+          </div>
+        </ModalFocus>
       </Popover>
     </>
   );
