@@ -3,13 +3,12 @@ import { Box } from '../../box';
 import {
   BorderColor,
   BorderRadius,
-  Display,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { BannerBase } from '../../banner-base';
-import { ButtonLink } from '../../button-link';
-import { Text } from '../../text';
+import { TextProps } from '../../text';
 
 export const ToastContainer = ({
   children,
@@ -20,12 +19,13 @@ export const ToastContainer = ({
 export const Toast = ({
   startAdornment,
   title,
+  titleProps,
   description,
+  descriptionProps,
   actionText,
   onActionClick,
   onClose,
   borderRadius,
-  textVariant,
   autoHideTime,
   onAutoHideToast,
   dataTestId,
@@ -33,12 +33,13 @@ export const Toast = ({
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
   title: string;
+  titleProps?: TextProps<'p'>;
   description?: string;
+  descriptionProps?: TextProps<'p'>;
   actionText?: string;
   onActionClick?: () => void;
   onClose: () => void;
   borderRadius?: BorderRadius;
-  textVariant?: TextVariant;
   autoHideTime?: number;
   onAutoHideToast?: () => void;
   dataTestId?: string;
@@ -79,25 +80,18 @@ export const Toast = ({
       className={className}
       startAccessory={startAdornment}
       title={title}
+      titleProps={{
+        variant: TextVariant.bodyMdMedium,
+        ...titleProps,
+      }}
       description={description}
+      descriptionProps={{
+        variant: TextVariant.bodySm,
+        color: TextColor.textAlternativeSoft,
+        ...descriptionProps,
+      }}
       actionButtonLabel={actionText}
       actionButtonOnClick={onActionClick}
     />
   );
-  /* <Box display={Display.Flex} gap={4} data-testid={dataTestId}>
-        <Box>
-          <Text className="break-normal" variant={textVariant}>
-            {title}
-          </Text>
-          {description && (
-            <Text className="break-normal" variant={TextVariant.bodySm}>
-              {description}
-            </Text>
-          )}
-          {actionText && onActionClick ? (
-            <ButtonLink onClick={onActionClick}>{actionText}</ButtonLink>
-          ) : null}
-        </Box>
-      </Box>
-    </BannerBase> */
 };
