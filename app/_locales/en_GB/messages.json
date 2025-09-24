@@ -3713,6 +3713,12 @@
   "network": {
     "message": "Network"
   },
+  "networkAddress": {
+    "message": "network address"
+  },
+  "networkAddresses": {
+    "message": "network addresses"
+  },
   "networkChanged": {
     "message": "Network changed"
   },
