@@ -47,11 +47,11 @@ describe('WalletDetailsPage', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('heading', { name: 'Wallet 1' }),
+      screen.getByRole('heading', { name: 'Wallet 1 / Accounts' }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Back')).toBeInTheDocument();
     expect(screen.getByText('Wallet name')).toBeInTheDocument();
-    expect(screen.getAllByText('Wallet 1')[1]).toBeInTheDocument();
+    expect(screen.getAllByText('Wallet 1')[0]).toBeInTheDocument();
     expect(screen.getByText('Balance')).toBeInTheDocument();
     expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
     expect(screen.getByText('Account 1')).toBeInTheDocument();

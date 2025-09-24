@@ -505,7 +505,7 @@ describe('Bridge selectors', () => {
         address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
         assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
-        chainId: '0x1',
+        chainId: 'eip155:1',
         decimals: 18,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
