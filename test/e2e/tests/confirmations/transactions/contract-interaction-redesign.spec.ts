@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { openDapp, unlockWallet } from '../../../helpers';
+import { unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -169,7 +169,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
-          await openDapp(driver, contractAddress);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

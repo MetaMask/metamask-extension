@@ -3692,9 +3692,6 @@
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
   },
-  "noActivity": {
-    "message": "まだアクティビティがありません"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMaskはこのサイトに接続されていません"
   },
@@ -3704,17 +3701,11 @@
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
   },
-  "noDeFiPositions": {
-    "message": "お探しのものが見つかりませんか？"
-  },
   "noDomainResolution": {
     "message": "指定されたドメインの名前解決ができません。"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap、およびほとんどのハードウェアウォレットは、現在お使いのブラウザのバージョンで使用できません。"
-  },
-  "noNFTs": {
-    "message": "NFTはまだありません"
   },
   "noNetworksAvailable": {
     "message": "利用できるネットワークがありません"
@@ -4597,9 +4588,6 @@
   },
   "proposedApprovalLimit": {
     "message": "提案された承認限度額"
-  },
-  "protocolNotSupported": {
-    "message": "お使いのプロトコルはまだサポートされていない可能性があります。"
   },
   "provide": {
     "message": "提供"

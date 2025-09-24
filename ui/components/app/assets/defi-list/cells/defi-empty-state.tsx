@@ -1,45 +1,62 @@
-import React, { FC } from 'react';
-import { Box, Text } from '../../../../component-library';
+import React, { FC, useCallback, useContext } from 'react';
+import { useSelector } from 'react-redux';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../../hooks/useTheme';
+import { TabEmptyState } from '../../../../ui/tab-empty-state';
+import { ThemeType } from '../../../../../../shared/constants/preferences';
+import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
-  Display,
-  JustifyContent,
-  AlignItems,
-  FlexDirection,
-  TextColor,
-  TextVariant,
-  TextAlign,
-} from '../../../../../helpers/constants/design-system';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import {
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+} from '../../../../../selectors';
 
-export const DeFiEmptyStateMessage: FC<{
-  primaryText: string;
-  secondaryText: string;
-}> = ({ primaryText, secondaryText }) => {
+export const DeFiEmptyStateMessage: FC = () => {
+  const t = useI18nContext();
+  const theme = useTheme();
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+
+  const handleExploreDefi = useCallback(() => {
+    const url = getPortfolioUrl(
+      'explore/tokens',
+      'ext_defi_empty_state_button',
+      metaMetricsId,
+      isMetaMetricsEnabled,
+      isMarketingEnabled,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.EmptyDeFiTabButtonClicked,
+      properties: {
+        location: 'DeFiTab',
+        text: 'Explore DeFi',
+      },
+    });
+  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+
+  const defiIcon =
+    theme === ThemeType.dark
+      ? '/images/empty-state-defi-dark.png'
+      : '/images/empty-state-defi-light.png';
+
   return (
-    <Box
-      paddingTop={6}
-      marginTop={12}
-      marginBottom={12}
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Column}
-      className="nfts-tab__link"
-    >
-      <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMdMedium}
-        textAlign={TextAlign.Center}
-        data-testid="defi-tab-no-positions"
-      >
-        {primaryText}
-      </Text>
-      <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMdMedium}
-        textAlign={TextAlign.Center}
-      >
-        {secondaryText}
-      </Text>
-    </Box>
+    <TabEmptyState
+      icon={<img src={defiIcon} alt={t('defi')} width={72} height={72} />}
+      description={t('defiEmptyDescription')}
+      actionButtonText={t('exploreDefi')}
+      onAction={handleExploreDefi}
+      data-testid="defi-tab-empty-state"
+      className="mx-auto mt-4"
+    />
   );
 };
