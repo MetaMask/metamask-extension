@@ -141,7 +141,7 @@ describe('App Installed Events', function () {
           mockedEndpoints,
           false,
         );
-        assert.equal(mockedRequests.length, 0);
+        assert.equal(mockedRequests.length, 1);
       },
     );
   });
