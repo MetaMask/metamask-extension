@@ -56,6 +56,10 @@ const MetametricsToggle = ({
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
           participateInMetaMetrics,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          location: 'Settings',
         },
       });
     } else {
