@@ -162,21 +162,23 @@ export const MultichainAccountDetailsPage = () => {
               />
             }
           />
-          <AccountDetailsRow
-            label={t('privateKeys')}
-            value={t('unlockToReveal')}
-            onClick={handlePrivateKeysClick}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('privateKeys')}
-                marginLeft={2}
-                data-testid="private-keys-action"
-              />
-            }
-          />
+          {isEntropyWallet && (
+            <AccountDetailsRow
+              label={t('privateKeys')}
+              value={t('unlockToReveal')}
+              onClick={handlePrivateKeysClick}
+              endAccessory={
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  color={IconColor.iconAlternative}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('privateKeys')}
+                  marginLeft={2}
+                  data-testid="private-keys-action"
+                />
+              }
+            />
+          )}
           <AccountDetailsRow
             label={t('smartAccountLabel')}
             value={t('setUp')}
