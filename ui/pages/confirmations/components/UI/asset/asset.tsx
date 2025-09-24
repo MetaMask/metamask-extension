@@ -57,7 +57,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Box marginRight={3} style={{ minWidth: 40 }}>
+      <Box marginRight={4} style={{ minWidth: 32 }}>
         <BadgeWrapper
           badge={
             nftData.chainId ? (
@@ -75,9 +75,9 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
               src={image || (collection?.imageUrl as string)}
               alt={name}
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
+                width: 32,
+                height: 32,
+                borderRadius: 8,
                 objectFit: 'cover',
               }}
               onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -142,7 +142,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Box marginRight={3}>
+      <Box marginRight={4}>
         <BadgeWrapper
           badge={
             chainId ? (
@@ -155,7 +155,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
           }
         >
           <AvatarToken
-            size={AvatarTokenSize.Lg}
+            size={AvatarTokenSize.Md}
             src={image}
             name={symbol}
             showHalo={false}
