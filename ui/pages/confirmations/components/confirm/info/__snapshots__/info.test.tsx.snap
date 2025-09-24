@@ -23,7 +23,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-13"
+              aria-describedby="tippy-tooltip-22"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -126,7 +126,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-10"
+              aria-describedby="tippy-tooltip-19"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -189,7 +189,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-11"
+              aria-describedby="tippy-tooltip-20"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -241,7 +241,7 @@ exports[`Info renders info section for approve request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-12"
+                aria-describedby="tippy-tooltip-21"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -391,7 +391,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-4"
+                    aria-describedby="tippy-tooltip-13"
                     class=""
                     data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                     data-tooltipped=""
@@ -476,7 +476,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-5"
+              aria-describedby="tippy-tooltip-14"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -520,7 +520,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-6"
+              aria-describedby="tippy-tooltip-15"
               class=""
               data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
               data-tooltipped=""
@@ -584,7 +584,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-7"
+                aria-describedby="tippy-tooltip-16"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -829,7 +829,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-14"
+              aria-describedby="tippy-tooltip-23"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -932,7 +932,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-15"
+              aria-describedby="tippy-tooltip-24"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -995,7 +995,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-16"
+              aria-describedby="tippy-tooltip-25"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -1047,7 +1047,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-17"
+                aria-describedby="tippy-tooltip-26"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -1810,7 +1810,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-1"
+              aria-describedby="tippy-tooltip-4"
               class=""
               data-original-title="The type of permission being requested"
               data-tooltipped=""
@@ -1850,7 +1850,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-2"
+              aria-describedby="tippy-tooltip-5"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -1892,7 +1892,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-3"
+              aria-describedby="tippy-tooltip-6"
               class=""
               data-original-title="The justification provided by the website for requesting this permission"
               data-tooltipped=""
@@ -1967,7 +1967,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-4"
+              aria-describedby="tippy-tooltip-7"
               class=""
               data-original-title="The initial allowance of the permission"
               data-tooltipped=""
@@ -2021,7 +2021,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-5"
+              aria-describedby="tippy-tooltip-8"
               class=""
               data-original-title="The maximum allowance of the permission"
               data-tooltipped=""
@@ -2075,7 +2075,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-6"
+              aria-describedby="tippy-tooltip-9"
               class=""
               data-original-title="The start date of the stream"
               data-tooltipped=""
@@ -2118,7 +2118,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-7"
+              aria-describedby="tippy-tooltip-10"
               class=""
               data-original-title="The expiration date of the permission"
               data-tooltipped=""
@@ -2166,7 +2166,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-8"
+              aria-describedby="tippy-tooltip-11"
               class=""
               data-original-title="The stream rate of the permission"
               data-tooltipped=""
@@ -2220,7 +2220,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-9"
+              aria-describedby="tippy-tooltip-12"
               class=""
               data-original-title="The available amount per day"
               data-tooltipped=""
