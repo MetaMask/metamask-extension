@@ -163,16 +163,14 @@ describe('Wallet Created Events', function () {
         });
 
         assert.equal(events[2].event, 'SRP Revealed');
-        assert.deepStrictEqual(events[2].properties, {
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x539',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-        });
+        assert.ok(
+          events[2].properties.category === 'Onboarding' &&
+            events[2].properties.chain_id === '0x539' &&
+            events[2].properties.environment_type === 'fullscreen' &&
+            events[2].properties.locale === 'en' &&
+            (events[2].properties.hd_entropy_index === 0 ||
+              events[2].properties.hd_entropy_index === undefined),
+        );
 
         assert.equal(events[3].event, 'SRP Backup Confirm Display');
         assert.ok(
