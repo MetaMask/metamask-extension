@@ -421,8 +421,8 @@ export default function UnifiedTransactionList({
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  const nonEvmTransactions = useSelector(
-    getSelectedAccountGroupMultichainTransactions,
+  const nonEvmTransactions = useSelector((state) =>
+    getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
   );
 
   const nonEvmTransactionsForToken = useMemo(
