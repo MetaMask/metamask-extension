@@ -1750,7 +1750,7 @@ export default class MetamaskController extends EventEmitter {
   isMultichainAccountsFeatureState2Enabled() {
     const featureFlag =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.enableMultichainAccounts;
+        ?.enableMultichainAccountsState2;
     return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
@@ -2905,6 +2905,12 @@ export default class MetamaskController extends EventEmitter {
         });
       },
 
+      alignMultichainWallets: async () => {
+        if (this.multichainAccountService) {
+          await this.multichainAccountService.alignWallets();
+        }
+      },
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),
@@ -3044,7 +3050,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
           appStateController,
         ),
-
+      setHasShownMultichainAccountsIntroModal:
+        appStateController.setHasShownMultichainAccountsIntroModal.bind(
+          appStateController,
+        ),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
