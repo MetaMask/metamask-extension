@@ -162,7 +162,7 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
+// import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
@@ -291,13 +291,13 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
-const GatorPermissionsPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-    )) as unknown as DynamicImportType,
-);
+// const GatorPermissionsPage = mmLazy(
+//   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+//   (() =>
+//     import(
+//       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+//     )) as unknown as DynamicImportType,
+// );
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
