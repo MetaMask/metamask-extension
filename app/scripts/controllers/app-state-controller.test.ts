@@ -1,8 +1,4 @@
 import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
-import type {
-  AcceptRequest,
-  AddApprovalRequest,
-} from '@metamask/approval-controller';
 import { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -11,18 +7,18 @@ import {
 } from '../../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { MINUTE } from '../../../shared/constants/time';
-import { AppStateController } from './app-state-controller';
+import {
+  AllowedActions,
+  AllowedEvents,
+  AppStateController,
+} from './app-state-controller';
 import type {
   AppStateControllerActions,
   AppStateControllerEvents,
   AppStateControllerOptions,
   AppStateControllerState,
 } from './app-state-controller';
-import type {
-  PreferencesControllerState,
-  PreferencesControllerGetStateAction,
-  PreferencesControllerStateChangeEvent,
-} from './preferences-controller';
+import type { PreferencesControllerState } from './preferences-controller';
 
 jest.mock('webextension-polyfill');
 
@@ -75,35 +71,39 @@ describe('AppStateController', () => {
 
   describe('getUnlockPromise', () => {
     it('waits for unlock if the extension is locked', async () => {
-      await withController(({ controller }) => {
-        const isUnlockedMock = jest
-          .spyOn(controller, 'isUnlocked')
-          .mockReturnValue(false);
+      await withController(async ({ controller, controllerMessenger }) => {
+        controllerMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({ isUnlocked: false }),
+        );
+
         expect(controller.waitingForUnlock).toHaveLength(0);
 
         controller.getUnlockPromise(true);
-        expect(isUnlockedMock).toHaveBeenCalled();
         expect(controller.waitingForUnlock).toHaveLength(1);
       });
     });
 
     it('resolves immediately if the extension is already unlocked', async () => {
-      await withController(async ({ controller }) => {
-        const isUnlockedMock = jest
-          .spyOn(controller, 'isUnlocked')
-          .mockReturnValue(true);
+      await withController(async ({ controller, controllerMessenger }) => {
+        controllerMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({ isUnlocked: true }),
+        );
 
         await expect(
           controller.getUnlockPromise(false),
         ).resolves.toBeUndefined();
-
-        expect(isUnlockedMock).toHaveBeenCalled();
       });
     });
 
     it('publishes an unlock change event when isUnlocked is set to false', async () => {
       await withController(async ({ controller, controllerMessenger }) => {
-        jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
+        controllerMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({ isUnlocked: false }),
+        );
+
         const unlockChangeSpy = jest.fn();
         controllerMessenger.subscribe(
           'AppStateController:unlockChange',
@@ -125,37 +125,41 @@ describe('AppStateController', () => {
 
     it('creates approval request when waitForUnlock is called with shouldShowUnlockRequest as true', async () => {
       const addRequestMock = jest.fn().mockResolvedValue(undefined);
-      await withController({ addRequestMock }, async ({ controller }) => {
-        jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
+      await withController(
+        { addRequestMock },
+        async ({ controller, controllerMessenger }) => {
+          controllerMessenger.registerActionHandler(
+            'KeyringController:getState',
+            jest.fn().mockReturnValue({ isUnlocked: false }),
+          );
 
-        controller.getUnlockPromise(true);
+          controller.getUnlockPromise(true);
 
-        expect(addRequestMock).toHaveBeenCalled();
-        expect(addRequestMock).toHaveBeenCalledWith(
-          {
-            id: expect.any(String),
-            origin: ORIGIN_METAMASK,
-            type: 'unlock',
-          },
-          true,
-        );
-      });
+          expect(addRequestMock).toHaveBeenCalled();
+          expect(addRequestMock).toHaveBeenCalledWith(
+            {
+              id: expect.any(String),
+              origin: ORIGIN_METAMASK,
+              type: 'unlock',
+            },
+            true,
+          );
+        },
+      );
     });
 
     it('accepts approval request revolving all the related promises', async () => {
-      let unlockListener: () => void;
       const addRequestMock = jest.fn().mockResolvedValue(undefined);
       await withController(
         {
           addRequestMock,
-          options: {
-            addUnlockListener: (listener) => {
-              unlockListener = listener;
-            },
-          },
         },
         ({ controller, controllerMessenger }) => {
-          jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
+          controllerMessenger.registerActionHandler(
+            'KeyringController:getState',
+            jest.fn().mockReturnValue({ isUnlocked: false }),
+          );
+
           const unlockChangeSpy = jest.fn();
           controllerMessenger.subscribe(
             'AppStateController:unlockChange',
@@ -163,8 +167,6 @@ describe('AppStateController', () => {
           );
 
           controller.getUnlockPromise(true);
-
-          unlockListener();
 
           expect(unlockChangeSpy).toHaveBeenCalled();
           expect(addRequestMock).toHaveBeenCalled();
@@ -719,6 +721,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {
@@ -800,6 +803,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {
@@ -875,6 +879,7 @@ describe('AppStateController', () => {
               "enableEnforcedSimulations": true,
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -950,6 +955,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippage": 10,
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {
@@ -1002,11 +1008,8 @@ type WithControllerCallback<ReturnValue> = ({
 }: {
   controller: AppStateController;
   controllerMessenger: Messenger<
-    | AppStateControllerActions
-    | AddApprovalRequest
-    | AcceptRequest
-    | PreferencesControllerGetStateAction,
-    AppStateControllerEvents | PreferencesControllerStateChangeEvent
+    AppStateControllerActions | AllowedActions,
+    AppStateControllerEvents | AllowedEvents
   >;
 }) => ReturnValue;
 
@@ -1021,21 +1024,23 @@ async function withController<ReturnValue>(
   const { addRequestMock, state, options = {} } = rest;
 
   const controllerMessenger = new Messenger<
-    | AppStateControllerActions
-    | AddApprovalRequest
-    | AcceptRequest
-    | PreferencesControllerGetStateAction,
-    AppStateControllerEvents | PreferencesControllerStateChangeEvent
+    AppStateControllerActions | AllowedActions,
+    AppStateControllerEvents | AllowedEvents
   >();
   const appStateMessenger = controllerMessenger.getRestricted({
     name: 'AppStateController',
     allowedActions: [
-      `ApprovalController:addRequest`,
-      `ApprovalController:acceptRequest`,
-      `PreferencesController:getState`,
+      'ApprovalController:addRequest',
+      'ApprovalController:acceptRequest',
+      'KeyringController:getState',
+      'PreferencesController:getState',
     ],
-    allowedEvents: [`PreferencesController:stateChange`],
+    allowedEvents: [
+      'PreferencesController:stateChange',
+      'KeyringController:unlock',
+    ],
   });
+
   controllerMessenger.registerActionHandler(
     'PreferencesController:getState',
     jest.fn().mockReturnValue({
@@ -1044,6 +1049,7 @@ async function withController<ReturnValue>(
       },
     }),
   );
+
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -1053,8 +1059,6 @@ async function withController<ReturnValue>(
 
   return fn({
     controller: new AppStateController({
-      addUnlockListener: jest.fn(),
-      isUnlocked: jest.fn(() => true),
       onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,

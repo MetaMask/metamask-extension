@@ -9,9 +9,6 @@ const meta: Meta<typeof Tabs> = {
     defaultActiveTabKey: {
       control: 'text',
     },
-    tabsClassName: {
-      control: 'text',
-    },
     onTabClick: {
       action: 'tab-clicked',
     },

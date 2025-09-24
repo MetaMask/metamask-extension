@@ -185,8 +185,6 @@ describe('Send - utils', () => {
       expect(isValidPositiveNumericString('-0.01')).toBe(false);
       expect(isValidPositiveNumericString('abc')).toBe(false);
       expect(isValidPositiveNumericString(' ')).toBe(false);
-      expect(isValidPositiveNumericString('0x5')).toBe(true);
-      expect(isValidPositiveNumericString('0x346ba7725f412cbfdb')).toBe(true);
     });
   });
 

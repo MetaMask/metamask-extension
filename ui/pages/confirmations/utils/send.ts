@@ -243,8 +243,14 @@ export const getLayer1GasFees = async ({
 };
 
 export function isValidPositiveNumericString(str: string) {
+  const decimalRegex = /^(\d+(\.\d+)?|\.\d+)$/u;
+
+  if (!decimalRegex.test(str)) {
+    return false;
+  }
+
   try {
-    const num = new Numeric(str, isHex(str) ? 16 : 10);
+    const num = new Numeric(str, 10);
     return num.greaterThanOrEqualTo(new Numeric('0', 10));
   } catch (err) {
     return false;

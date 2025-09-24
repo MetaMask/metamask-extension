@@ -88,7 +88,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -106,7 +106,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#18CDF2"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -114,7 +114,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#035E56"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -122,7 +122,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#F26602"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -182,7 +182,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -197,7 +197,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -215,7 +215,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#FA6C00"
                         height="32"
-                        transform="translate(0.012499013728094784 -0.006385319322122122) rotate(489.0 16 16)"
+                        transform="translate(0.01249901372809 -0.00638531932212) rotate(489.0 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -223,7 +223,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#FB1868"
                         height="32"
-                        transform="translate(-14.408597140338982 -8.780736166288932) rotate(387.1 16 16)"
+                        transform="translate(-14.40859714033898 -8.78073616628893) rotate(387.1 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -231,7 +231,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#F5BC00"
                         height="32"
-                        transform="translate(-12.05422484490241 -22.091892032818553) rotate(345.4 16 16)"
+                        transform="translate(-12.05422484490241 -22.09189203281855) rotate(345.4 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -280,7 +280,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -295,7 +295,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -313,7 +313,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#F28A02"
                         height="32"
-                        transform="translate(5.856796012320635 8.737636484049885) rotate(159.5 16 16)"
+                        transform="translate(5.85679601232064 8.73763648404988) rotate(159.5 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -321,7 +321,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#18ADF2"
                         height="32"
-                        transform="translate(-10.732044487284895 -4.4515520487224745) rotate(339.9 16 16)"
+                        transform="translate(-10.73204448728490 -4.45155204872247) rotate(339.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -329,7 +329,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#FB1873"
                         height="32"
-                        transform="translate(16.743885100341735 -17.079268707848318) rotate(454.3 16 16)"
+                        transform="translate(16.74388510034174 -17.07926870784832) rotate(454.3 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -378,7 +378,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -393,7 +393,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -411,7 +411,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#18CDF2"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -419,7 +419,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#035E56"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -427,7 +427,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#F26602"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -487,7 +487,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -502,7 +502,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -520,7 +520,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#C81456"
                         height="32"
-                        transform="translate(6.080278063321545 4.084834576158491) rotate(206.2 16 16)"
+                        transform="translate(6.08027806332155 4.08483457615849) rotate(206.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -528,7 +528,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#018E8C"
                         height="32"
-                        transform="translate(-15.505408615168813 -13.011985761210282) rotate(356.3 16 16)"
+                        transform="translate(-15.50540861516881 -13.01198576121028) rotate(356.3 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -536,7 +536,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#03555E"
                         height="32"
-                        transform="translate(27.992111032774744 3.078238146270286) rotate(92.1 16 16)"
+                        transform="translate(27.99211103277474 3.07823814627029) rotate(92.1 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -585,7 +585,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -600,7 +600,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -618,7 +618,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#18CDF2"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -626,7 +626,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#035E56"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -634,7 +634,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                       <rect
                         fill="#F26602"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -694,7 +694,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -801,7 +801,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -819,7 +819,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#18CDF2"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -827,7 +827,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#035E56"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -835,7 +835,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#F26602"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -884,7 +884,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -899,7 +899,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -917,7 +917,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#FA6C00"
                         height="32"
-                        transform="translate(0.012499013728094784 -0.006385319322122122) rotate(489.0 16 16)"
+                        transform="translate(0.01249901372809 -0.00638531932212) rotate(489.0 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -925,7 +925,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#FB1868"
                         height="32"
-                        transform="translate(-14.408597140338982 -8.780736166288932) rotate(387.1 16 16)"
+                        transform="translate(-14.40859714033898 -8.78073616628893) rotate(387.1 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -933,7 +933,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#F5BC00"
                         height="32"
-                        transform="translate(-12.05422484490241 -22.091892032818553) rotate(345.4 16 16)"
+                        transform="translate(-12.05422484490241 -22.09189203281855) rotate(345.4 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -982,7 +982,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -997,7 +997,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1015,7 +1015,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#F28A02"
                         height="32"
-                        transform="translate(5.856796012320635 8.737636484049885) rotate(159.5 16 16)"
+                        transform="translate(5.85679601232064 8.73763648404988) rotate(159.5 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1023,7 +1023,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#18ADF2"
                         height="32"
-                        transform="translate(-10.732044487284895 -4.4515520487224745) rotate(339.9 16 16)"
+                        transform="translate(-10.73204448728490 -4.45155204872247) rotate(339.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1031,7 +1031,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#FB1873"
                         height="32"
-                        transform="translate(16.743885100341735 -17.079268707848318) rotate(454.3 16 16)"
+                        transform="translate(16.74388510034174 -17.07926870784832) rotate(454.3 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1080,7 +1080,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1095,7 +1095,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1113,7 +1113,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#18CDF2"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1121,7 +1121,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#035E56"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1129,7 +1129,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#F26602"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1178,7 +1178,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1193,7 +1193,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1211,7 +1211,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#C81456"
                         height="32"
-                        transform="translate(6.080278063321545 4.084834576158491) rotate(206.2 16 16)"
+                        transform="translate(6.08027806332155 4.08483457615849) rotate(206.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1219,7 +1219,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#018E8C"
                         height="32"
-                        transform="translate(-15.505408615168813 -13.011985761210282) rotate(356.3 16 16)"
+                        transform="translate(-15.50540861516881 -13.01198576121028) rotate(356.3 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1227,7 +1227,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#03555E"
                         height="32"
-                        transform="translate(27.992111032774744 3.078238146270286) rotate(92.1 16 16)"
+                        transform="translate(27.99211103277474 3.07823814627029) rotate(92.1 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1276,7 +1276,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1291,7 +1291,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1309,7 +1309,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#18CDF2"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1317,7 +1317,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#035E56"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1325,7 +1325,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                       <rect
                         fill="#F26602"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -1374,7 +1374,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="Ethereum logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />

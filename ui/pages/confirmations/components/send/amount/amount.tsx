@@ -181,7 +181,7 @@ export const Amount = ({
           variant={TextVariant.bodySm}
         >
           {amountValueError ||
-            (conversionSupportedForAsset ? `~${alternateDisplayValue}` : '')}
+            (conversionSupportedForAsset ? alternateDisplayValue : '')}
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>

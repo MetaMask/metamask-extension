@@ -118,11 +118,11 @@ describe('Amount', () => {
     const { getByRole, getByTestId, getByText } = render();
 
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
-    expect(getByText('~$ 20.00')).toBeInTheDocument();
+    expect(getByText('$ 20.00')).toBeInTheDocument();
     fireEvent.click(getByTestId('toggle-fiat-mode'));
     expect(getByRole('textbox')).toHaveValue('20');
     fireEvent.change(getByRole('textbox'), { target: { value: 100 } });
-    expect(getByText('~0 NEU')).toBeInTheDocument();
+    expect(getByText('0 NEU')).toBeInTheDocument();
   });
 
   it('capture metrics when when fiatmode is toggled', () => {
