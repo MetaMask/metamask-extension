@@ -40,12 +40,11 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import { getSubscriptions, toggleNetworkMenu } from '../../store/actions';
+import { toggleNetworkMenu } from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
-import { getUserSubscriptions } from '../../selectors/subscription';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -145,19 +144,12 @@ const mapStateToProps = (state, ownProps) => {
   const snapSettingsTitle =
     isSnapSettingsRoute && snapNameGetter(decodeSnapIdFromPathname(pathname));
 
-  const { subscriptions } = getUserSubscriptions(state);
-  // get shield subscription
-  const shieldSubscription = subscriptions.find((subscription) =>
-    subscription.products.some((product) => product.name === 'shield'),
-  );
-
   return {
     addNewNetwork,
     addressName,
     backRoute,
     conversionDate,
     currentPath: pathname,
-    hasShieldSubscription: shieldSubscription !== undefined,
     initialBreadCrumbKey,
     initialBreadCrumbRoute,
     isAddressEntryPage,
@@ -177,7 +169,6 @@ const mapStateToProps = (state, ownProps) => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getSubscriptions: async () => await dispatch(getSubscriptions()),
     toggleNetworkMenu: (payload) => dispatch(toggleNetworkMenu(payload)),
   };
 }

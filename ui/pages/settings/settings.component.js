@@ -31,7 +31,6 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
-  SHIELD_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -94,8 +93,6 @@ class SettingsPage extends PureComponent {
     breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    getSubscriptions: PropTypes.func.isRequired,
-    hasShieldSubscription: PropTypes.bool,
     initialBreadCrumbKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
@@ -127,7 +124,6 @@ class SettingsPage extends PureComponent {
 
   componentDidMount() {
     this.handleConversionDate();
-    this.props.getSubscriptions();
   }
 
   componentDidUpdate() {
@@ -530,13 +526,7 @@ class SettingsPage extends PureComponent {
         <Route path={SECURITY_ROUTE} element={<SecurityTab />} />
         <Route
           path={TRANSACTION_SHIELD_ROUTE}
-          element={
-            this.props.hasShieldSubscription ? (
-              <TransactionShield />
-            ) : (
-              <Navigate to={SHIELD_PLAN_ROUTE} />
-            )
-          }
+          element={<TransactionShield />}
         />
         <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
