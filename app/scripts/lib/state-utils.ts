@@ -198,9 +198,14 @@ function deletePathFromPatch(patch: Patch, removePath: (string | true)[]) {
       return true;
     }
 
+    // Do not delete patch as paths do not match and primitive value
+    if (isLastPatchKey && !isObjectOrArray(patch.value)) {
+      return false;
+    }
+
     // Remove path may be inside the patch value
     // Do not delete patch but mutate it to delete remove path from the value
-    if (isLastPatchKey && isObjectOrArray(patch.value)) {
+    if (isLastPatchKey) {
       const remainingPath = removePath.slice(i + 1);
       patch.value = cloneDeep(patch.value);
 
