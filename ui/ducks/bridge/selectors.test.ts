@@ -12,10 +12,7 @@ import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import {
-  mockMultichainNetworkState,
-  mockNetworkState,
-} from '../../../test/stub/networks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -62,7 +59,7 @@ describe('Bridge selectors', () => {
         chainId: '0xa4b1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum One',
+        name: 'Arbitrum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -129,7 +126,7 @@ describe('Bridge selectors', () => {
         chainId: '0xe708',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Linea Mainnet',
+        name: 'Linea',
         rpcEndpoints: [
           {
             networkClientId: expect.anything(),
@@ -161,7 +158,7 @@ describe('Bridge selectors', () => {
         chainId: '0x1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum Mainnet',
+        name: 'Ethereum',
         rpcEndpoints: [
           {
             networkClientId: expect.anything(),
@@ -399,7 +396,7 @@ describe('Bridge selectors', () => {
           ...mockNetworkState(
             { chainId: CHAIN_IDS.MAINNET },
             ...FEATURED_RPCS.filter(
-              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea mainnet is both a built in network, as well as featured RPC
+              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea is both a built in network, as well as featured RPC
             ),
           ),
           useExternalServices: true,
@@ -505,16 +502,16 @@ describe('Bridge selectors', () => {
       const result = getToToken(state as never);
 
       expect(result).toStrictEqual({
-        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
-        chainId: '0x1',
-        decimals: 6,
+        chainId: 'eip155:1',
+        decimals: 18,
         image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-        name: 'USD Coin',
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
+        name: 'MetaMask USD',
         string: '0',
-        symbol: 'USDC',
+        symbol: 'mUSD',
       });
     });
 
@@ -1925,12 +1922,12 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           currencyRates: {},
-          ...mockMultichainNetworkState(),
+          selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
           conversionRates: {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
               rate: 1.5,
             },
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            [`${formatChainIdToCaip(ChainId.SOLANA)}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`]:
               {
                 rate: 2.0,
               },

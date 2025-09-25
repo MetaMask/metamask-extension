@@ -5,7 +5,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
-import { isNativeAddress } from '@metamask/bridge-controller';
 import { useHistory } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
@@ -99,9 +98,10 @@ export function formatToFixedDecimals(
   decimalsToShow: string | number = 5,
   trimTrailingZerosEnabled = true,
 ) {
-  if (!value) {
+  if (!value || !isValidPositiveNumericString(value)) {
     return '0';
   }
+
   const val = new Numeric(value, 10);
   if (val.isZero()) {
     return '0';
@@ -145,7 +145,7 @@ export const prepareEVMTransaction = (
     : fromTokenMinimalUnits(value ?? '0', asset.decimals);
 
   // Native token
-  if (isNativeAddress(asset.address)) {
+  if (asset.isNative) {
     trxnParams.data = '0x';
     trxnParams.to = to;
     trxnParams.value = tokenValue;
@@ -205,7 +205,7 @@ export const submitEvmTransaction = async ({
   const networkClientId = await findNetworkClientIdByChainId(chainId);
 
   let transactionType;
-  if (isNativeAddress(asset.address ?? asset.assetId)) {
+  if (asset.isNative) {
     transactionType = TransactionType.simpleSend;
   } else if (asset.standard === ERC20) {
     transactionType = TransactionType.tokenMethodTransfer;
@@ -241,8 +241,19 @@ export const getLayer1GasFees = async ({
   })) as Hex | undefined;
 };
 
-export function isDecimal(value: string) {
-  return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
+export function isValidPositiveNumericString(str: string) {
+  const decimalRegex = /^(\d+(\.\d+)?|\.\d+)$/u;
+
+  if (!decimalRegex.test(str)) {
+    return false;
+  }
+
+  try {
+    const num = new Numeric(str, 10);
+    return num.greaterThanOrEqualTo(new Numeric('0', 10));
+  } catch (err) {
+    return false;
+  }
 }
 
 export function convertedCurrency(
@@ -250,7 +261,7 @@ export function convertedCurrency(
   conversionRate?: number,
   decimals?: string | number,
 ) {
-  if (!isDecimal(value) || parseFloat(value) < 0) {
+  if (!isValidPositiveNumericString(value)) {
     return undefined;
   }
 

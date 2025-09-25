@@ -558,7 +558,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           <Tab
             name={t('accounts')}
             tabKey="accounts"
-            className="w-full"
             data-testid="accounts-tab"
           >
             <Box marginTop={4}>
@@ -658,7 +657,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           <Tab
             name={t('permissions')}
             tabKey="permissions"
-            className="w-full"
             data-testid="permissions-tab"
             disabled={
               promptToCreateSolanaAccount &&

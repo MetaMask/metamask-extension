@@ -217,10 +217,13 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     const networksLabel =
-      numberOfAccountsInGroup === 1 ? t('network') : t('networks');
+      numberOfAccountsInGroup === 1
+        ? t('networkAddress')
+        : t('networkAddresses', [numberOfAccountsInGroup]);
 
     return (
-      <Box>
+      <Box style={{ overflow: 'hidden' }}>
+        {/* Prevent overflow of account picker by long account names */}
         <Text
           as="div"
           display={Display.Flex}
@@ -243,19 +246,20 @@ export const AppHeaderUnlockedContent = ({
               });
             }}
             disabled={disableAccountPicker}
-            paddingLeft={0}
-            paddingRight={0}
+            paddingLeft={2}
+            paddingRight={2}
           />
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
         <Text
-          color={TextColor.primaryDefault}
-          variant={TextVariant.bodyXs}
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyXsMedium}
           onClick={handleNetworksClick}
           data-testid="networks-subtitle-test-id"
           className="networks-subtitle"
+          paddingInline={2}
         >
-          {`${numberOfAccountsInGroup} ${networksLabel.toLowerCase()}`}
+          {networksLabel}
         </Text>
       </Box>
     );

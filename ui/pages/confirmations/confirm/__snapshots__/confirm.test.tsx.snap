@@ -20,7 +20,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -37,7 +37,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                     <rect
                       fill="#18CDF2"
                       height="32"
-                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                      transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -45,7 +45,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                     <rect
                       fill="#035E56"
                       height="32"
-                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                      transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -53,7 +53,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                     <rect
                       fill="#F26602"
                       height="32"
-                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                      transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -69,7 +69,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -280,7 +280,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -296,7 +296,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -768,7 +768,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -784,7 +784,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -1203,7 +1203,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -1220,7 +1220,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     <rect
                       fill="#18CDF2"
                       height="32"
-                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                      transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -1228,7 +1228,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     <rect
                       fill="#035E56"
                       height="32"
-                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                      transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -1236,7 +1236,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     <rect
                       fill="#F26602"
                       height="32"
-                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                      transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -1252,7 +1252,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -1981,7 +1981,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -1998,7 +1998,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     <rect
                       fill="#017B8E"
                       height="32"
-                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
+                      transform="translate(0.79944606935671 -0.82160111569698) rotate(317.9 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -2006,7 +2006,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     <rect
                       fill="#F2B602"
                       height="32"
-                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
+                      transform="translate(-7.49339603691225 11.40993542828480) rotate(134.1 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -2014,7 +2014,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     <rect
                       fill="#FA8E00"
                       height="32"
-                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
+                      transform="translate(-25.71227269075480 -11.55888104326888) rotate(364.0 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -2030,7 +2030,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -2455,7 +2455,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -2472,7 +2472,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     <rect
                       fill="#017B8E"
                       height="32"
-                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
+                      transform="translate(0.79944606935671 -0.82160111569698) rotate(317.9 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -2480,7 +2480,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     <rect
                       fill="#F2B602"
                       height="32"
-                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
+                      transform="translate(-7.49339603691225 11.40993542828480) rotate(134.1 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -2488,7 +2488,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     <rect
                       fill="#FA8E00"
                       height="32"
-                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
+                      transform="translate(-25.71227269075480 -11.55888104326888) rotate(364.0 16.00000000000000 16.00000000000000)"
                       width="32"
                       x="0"
                       y="0"
@@ -2504,7 +2504,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -3149,7 +3149,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -3166,16 +3166,13 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            />
+            
           </div>
         </div>
         <div
@@ -3263,7 +3260,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -3279,7 +3276,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"

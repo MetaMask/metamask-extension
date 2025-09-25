@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { toHex } from '../../../../../shared/lib/delegation/utils';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import { useSendContext } from '../../context/send';
 import { useSendNfts } from './useSendNfts';
@@ -97,6 +98,12 @@ export const useSendQueryParams = () => {
   }, [to, paramRecipient, updateTo]);
 
   useEffect(() => {
+    if (value === undefined && paramAmount) {
+      updateValue(paramAmount, paramMaxValueMode === 'true');
+    }
+  }, [paramAmount, paramMaxValueMode, updateValue, value]);
+
+  useEffect(() => {
     if (asset || !paramChainId) {
       return;
     }
@@ -105,24 +112,25 @@ export const useSendQueryParams = () => {
         ? toHex(paramChainId)
         : paramChainId;
 
-    const newAsset = [...flatAssets, ...nfts]?.find(
+    let newAsset: Asset | undefined = flatAssets?.find(
       ({ assetId, chainId: tokenChainId, isNative }) =>
         chainId === tokenChainId &&
         ((paramAsset && assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
           (!paramAsset && isNative)),
     );
 
+    if (!newAsset) {
+      newAsset = nfts?.find(
+        ({ address, chainId: tokenChainId, isNative }) =>
+          chainId === tokenChainId &&
+          ((paramAsset &&
+            address?.toLowerCase() === paramAsset.toLowerCase()) ||
+            (!paramAsset && isNative)),
+      );
+    }
+
     if (newAsset) {
       updateAsset(newAsset);
     }
   }, [asset, flatAssets, paramAsset, paramChainId, nfts, updateAsset]);
-
-  useEffect(() => {
-    if (!asset) {
-      return;
-    }
-    if (value === undefined && paramAmount) {
-      updateValue(paramAmount, paramMaxValueMode === 'true');
-    }
-  }, [asset, paramAmount, paramMaxValueMode, updateValue, value]);
 };
