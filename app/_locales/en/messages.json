@@ -2727,6 +2727,9 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hexDataPlaceholder": {
+    "message": "Enter hex data (optional)"
+  },
   "hiddenAccounts": {
     "message": "Hidden accounts"
   },
@@ -3712,6 +3715,13 @@
   },
   "network": {
     "message": "Network"
+  },
+  "networkAddress": {
+    "message": "1 network address"
+  },
+  "networkAddresses": {
+    "message": "$1 network addresses",
+    "description": "$1 is the number of accounts"
   },
   "networkChanged": {
     "message": "Network changed"
@@ -4822,6 +4832,9 @@
   "primaryType": {
     "message": "Primary type"
   },
+  "priority": {
+    "message": "Priority"
+  },
   "priorityFee": {
     "message": "Priority fee"
   },
@@ -5043,6 +5056,9 @@
   },
   "recipientEditAriaLabel": {
     "message": "Edit recipient"
+  },
+  "recipientPlaceholder": {
+    "message": "Enter or paste a valid address"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -5415,6 +5431,9 @@
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
   },
+  "securityDefaultSettingsSocialLogin": {
+    "message": "Security & privacy"
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
@@ -5434,6 +5453,9 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginDefaultSettingsDescription": {
+    "message": "Reduce your chances of joining unsafe networks and protect your accounts and data"
   },
   "securitySocialLoginEnabled": {
     "message": "Enabled"
@@ -5641,7 +5663,7 @@
     "description": "The $1 is the price of the annual plan"
   },
   "shieldPlanAutoRenew": {
-    "message": "Auto renews for $1/month until canceled",
+    "message": "Auto renews for $1 until canceled",
     "description": "The $1 is the price of the monthly plan"
   },
   "shieldPlanCard": {
@@ -5695,7 +5717,7 @@
     "message": "Choose your plan"
   },
   "shieldTx": {
-    "message": "MetaMask Shield"
+    "message": "Transaction Shield"
   },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
@@ -5737,37 +5759,29 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
-  "shieldTxMembershipErrorDeclinedCard": {
-    "message": "Membership is paused due to declined card. $1 to resume coverage.",
-    "description": "The $1 is the action text 'Update payment'"
+  "shieldTxMembershipErrorAddFunds": {
+    "message": "Add funds"
   },
-  "shieldTxMembershipErrorDeclinedCardTooltip": {
-    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  "shieldTxMembershipErrorEnding": {
+    "message": "Your membership is ending on $1. Keep benefits active by renewing.",
+    "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Insufficient funds for your $1 renewal. $2 to keep your access.",
-    "description": "The $1 is date and $2 is the action text 'Update payment'"
+    "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
+    "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientToken": {
     "message": "Insufficient $1",
     "description": "The $1 is the token symbol"
   },
-  "shieldTxMembershipErrorInsufficientTokenBalance": {
-    "message": "Membership is paused due to insufficient token balance. $1 to resume coverage.",
-    "description": "The $1 is the action text 'Update payment'"
+  "shieldTxMembershipErrorPaused": {
+    "message": "Membership paused due to insufficient funds. Coverage will resume after payment update."
   },
-  "shieldTxMembershipErrorInsufficientTokenTooltip": {
-    "message": "Insufficient token balance in your wallet. Top up or select an alternative payment method to resume coverage."
+  "shieldTxMembershipErrorPausedTooltip": {
+    "message": "Insufficient token balance in your wallet. Top up to resume coverage."
   },
-  "shieldTxMembershipErrorMembershipEnding": {
-    "message": "Your membership is ending on $1. $2 to maintain uninterrupted access",
-    "description": "The $1 is date and $2 is the action text 'Renew now'"
-  },
-  "shieldTxMembershipErrorRenewNow": {
-    "message": "Renew now"
-  },
-  "shieldTxMembershipErrorUpdateCardDetails": {
-    "message": "Update card details"
+  "shieldTxMembershipErrorRenew": {
+    "message": "Renew membership"
   },
   "shieldTxMembershipErrorUpdatePayment": {
     "message": "Update payment"
@@ -5781,8 +5795,11 @@
   "shieldTxMembershipInactive": {
     "message": "Inactive membership"
   },
+  "shieldTxMembershipPaused": {
+    "message": "Paused"
+  },
   "shieldTxMembershipResubscribe": {
-    "message": "Resubscribe"
+    "message": "Restart membership"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"

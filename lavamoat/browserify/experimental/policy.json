@@ -935,7 +935,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1013,6 +1013,13 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/delegation-core": {
+      "packages": {
+        "@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true
       }
     },
     "@metamask/design-system-react": {
@@ -1340,6 +1347,8 @@
     "@metamask/gator-permissions-controller": {
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/delegation-core": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true
       }
@@ -1385,22 +1394,6 @@
       }
     },
     "@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/multichain-network-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1548,20 +1541,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/multichain-network-controller>@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": true,
+        "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
