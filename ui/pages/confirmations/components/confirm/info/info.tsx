@@ -5,6 +5,7 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { useTrustSignalMetrics } from '../../../hooks/useTrustSignalMetrics';
+import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -14,6 +15,7 @@ import SetApprovalForAllInfo from './set-approval-for-all-info/set-approval-for-
 import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
+import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
@@ -33,10 +35,18 @@ const Info = () => {
       [TransactionType.revokeDelegation]: () => BaseTransactionInfo,
       [TransactionType.simpleSend]: () => NativeTransferInfo,
       [TransactionType.signTypedData]: () => {
-        const { version } =
-          (currentConfirmation as SignatureRequestType)?.msgParams ?? {};
+        const signatureRequest = currentConfirmation as SignatureRequestType;
+
+        const { version } = signatureRequest?.msgParams ?? {};
         if (version === 'V1') {
           return TypedSignV1Info;
+        }
+        if (signatureRequest?.decodedPermission) {
+          if (!isGatorPermissionsFeatureEnabled()) {
+            throw new Error('Gator permissions feature is not enabled');
+          }
+
+          return TypedSignPermissionInfo;
         }
         return TypedSignInfo;
       },

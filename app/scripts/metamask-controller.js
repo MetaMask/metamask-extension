@@ -382,7 +382,7 @@ import { NameControllerInit } from './controller-init/confirmations/name-control
 import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
 import { SubscriptionControllerInit } from './controller-init/subscription';
-import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
+import { getIdentityAPI } from './services/oauth/web-authenticator-factory';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
@@ -770,6 +770,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:signTypedMessage',
           `${this.loggingController.name}:add`,
           `NetworkController:getNetworkClientById`,
+          `GatorPermissionsController:decodePermissionFromPermissionContextForOrigin`,
         ],
       }),
       trace,
@@ -1880,11 +1881,62 @@ export default class MetamaskController extends EventEmitter {
       getAuthorizedScopesByOrigin,
     );
 
+    // TODO: To be removed when state 2 is fully transitioned.
     // wallet_notify for solana accountChanged when selected account changes
     this.controllerMessenger.subscribe(
       `${this.accountsController.name}:selectedAccountChange`,
       async (account) => {
         if (
+          account.type === SolAccountType.DataAccount &&
+          account.address !== lastSelectedSolanaAccountAddress
+        ) {
+          lastSelectedSolanaAccountAddress = account.address;
+
+          const originsWithSolanaAccountChangedNotifications =
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
+              KnownSessionProperties.SolanaAccountChangedNotifications,
+            );
+
+          // returns a map of origins to permitted solana accounts
+          const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+            this.permissionController.state,
+            [
+              MultichainNetworks.SOLANA,
+              MultichainNetworks.SOLANA_DEVNET,
+              MultichainNetworks.SOLANA_TESTNET,
+            ],
+          );
+
+          if (solanaAccounts.size > 0) {
+            for (const [origin, accounts] of solanaAccounts.entries()) {
+              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedSolanaAddresses.includes(account.address) &&
+                originsWithSolanaAccountChangedNotifications[origin]
+              ) {
+                this._notifySolanaAccountChange(origin, [account.address]);
+              }
+            }
+          }
+        }
+      },
+    );
+
+    // wallet_notify for solana accountChanged when selected account group changes
+    this.controllerMessenger.subscribe(
+      `${this.accountTreeController.name}:selectedAccountGroupChange`,
+      () => {
+        const [account] =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [SolScope.Mainnet],
+          });
+        if (
+          account &&
           account.type === SolAccountType.DataAccount &&
           account.address !== lastSelectedSolanaAccountAddress
         ) {
@@ -2229,28 +2281,76 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
-  async startSubscriptionWithCard(params) {
-    const webAuthenticator = webAuthenticatorFactory();
+  async startSubscriptionWithCard(
+    params,
+    /* current tab can be undefined if open from non tab context (e.g. popup, background) */
+    currentTabId,
+  ) {
+    const identityAPI = getIdentityAPI();
+    const redirectUrl = identityAPI.getRedirectURL();
+
     const { checkoutSessionUrl } =
-      await this.subscriptionController.startShieldSubscriptionWithCard(params);
-    // TODO: use chrome.tabs manually to have full browser feature in checkout session (e.g auto-fill form, etc.)
-    // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
-    // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
-    await new Promise((resolve, reject) => {
-      webAuthenticator.launchWebAuthFlow(
-        {
-          url: checkoutSessionUrl,
-          interactive: true,
-        },
-        (responseUrl) => {
-          try {
-            resolve(responseUrl);
-          } catch (error) {
-            reject(error);
-          }
-        },
-      );
+      await this.subscriptionController.startShieldSubscriptionWithCard({
+        ...params,
+        successUrl: redirectUrl,
+      });
+
+    const checkoutTab = await this.platform.openTab({
+      url: checkoutSessionUrl,
     });
+
+    // --- We will define our listeners here so we can reference them for cleanup ---
+    // eslint-disable-next-line prefer-const
+    let onTabUpdatedListener;
+    // eslint-disable-next-line prefer-const
+    let onTabRemovedListener;
+
+    await new Promise((resolve, reject) => {
+      let checkoutSucceeded = false;
+      const cleanupListeners = () => {
+        // Important: Remove both listeners to prevent memory leaks
+        if (onTabUpdatedListener) {
+          this.platform.removeTabUpdatedListener(onTabUpdatedListener);
+        }
+        if (onTabRemovedListener) {
+          this.platform.removeTabRemovedListener(onTabRemovedListener);
+        }
+      };
+
+      // Set up a listener to watch for navigation on that specific tab
+      onTabUpdatedListener = (tabId, changeInfo, _tab) => {
+        // We only care about updates to our specific checkout tab
+        if (tabId === checkoutTab.id && changeInfo.url) {
+          if (changeInfo.url.startsWith(redirectUrl)) {
+            // Payment was successful!
+            checkoutSucceeded = true;
+
+            // Clean up: close the tab
+            this.platform.closeTab(tabId);
+          }
+          // TODO: handle cancel url ?
+        }
+      };
+      this.platform.addTabUpdatedListener(onTabUpdatedListener);
+
+      // Set up a listener to watch for tab removal
+      onTabRemovedListener = (tabId) => {
+        if (tabId === checkoutTab.id) {
+          cleanupListeners();
+          if (checkoutSucceeded) {
+            resolve();
+          } else {
+            reject(new Error('Checkout failed'));
+          }
+        }
+      };
+      this.platform.addTabRemovedListener(onTabRemovedListener);
+    });
+
+    if (!currentTabId) {
+      // open extension browser shield settings if open from pop up (no current tab)
+      this.platform.openExtensionInBrowser('/settings/transaction-shield');
+    }
 
     // fetch latest user subscriptions after checkout
     const subscriptions = await this.subscriptionController.getSubscriptions();
@@ -7301,6 +7401,10 @@ export default class MetamaskController extends EventEmitter {
             options,
           ),
         getCaveatForOrigin: this.permissionController.getCaveat.bind(
+          this.permissionController,
+          origin,
+        ),
+        updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
           origin,
         ),

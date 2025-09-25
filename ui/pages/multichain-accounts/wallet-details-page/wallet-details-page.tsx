@@ -88,6 +88,10 @@ export const WalletDetailsPage = () => {
     [multichainAccounts, walletAccountBalance],
   );
 
+  const walletDetailsTitle = useMemo(() => {
+    return `${wallet?.metadata.name} / ${t('accounts')}`;
+  }, [wallet?.metadata.name, t]);
+
   return (
     <Page className="multichain-wallet-details-page">
       <Header
@@ -104,7 +108,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {wallet?.metadata.name}
+        {walletDetailsTitle}
       </Header>
       <Content>
         <Box
