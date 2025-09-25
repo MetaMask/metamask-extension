@@ -36,6 +36,7 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
+  NetworkConnectionBanner,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
@@ -78,6 +79,7 @@ export type AppStateControllerState = {
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
   lastViewedUserSurvey: number | null;
+  networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   nftsDetectionNoticeDismissed: boolean;
@@ -191,6 +193,7 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
+    | 'networkConnectionBanner'
   >
 >;
 
@@ -258,6 +261,9 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    networkConnectionBanner: {
+      status: 'unknown' as const,
+    },
   };
 }
 
@@ -370,6 +376,12 @@ const controllerMetadata = {
     includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
+  },
+  networkConnectionBanner: {
+    includeInStateLogs: false,
+    persist: false,
+    anonymous: false,
     usedInUi: true,
   },
   newPrivacyPolicyToastClickedOrClosed: {
@@ -1091,6 +1103,23 @@ export class AppStateController extends BaseController<
   setShowNetworkBanner(showNetworkBanner: boolean): void {
     this.update((state) => {
       state.showNetworkBanner = showNetworkBanner;
+    });
+  }
+
+  /**
+   * Updates the network connection banner state
+   *
+   * @param networkConnectionBanner - The new banner state
+   */
+  updateNetworkConnectionBanner(
+    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
+  ): void {
+    console.log(
+      '[AppStateController] updateNetworkConnectionBanner',
+      networkConnectionBanner,
+    );
+    this.update((state) => {
+      state.networkConnectionBanner = networkConnectionBanner;
     });
   }
 

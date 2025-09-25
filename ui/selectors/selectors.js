@@ -282,6 +282,20 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
+/**
+ * @param {object} state - The Redux state
+ * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
+ */
+export function getNetworkConnectionBanner(state) {
+  console.log(
+    'state.appState.networkConnectionBanner',
+    state.appState.networkConnectionBanner,
+    'state.metamask.networkConnectionBanner',
+    state.metamask.networkConnectionBanner,
+  );
+  return state.metamask.networkConnectionBanner;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {

@@ -2339,7 +2339,10 @@
     "txHistory": {},
     "throttledOrigins": {},
     "delegations": {},
-    "accountsAssets": {}
+    "accountsAssets": {},
+    "networkConnectionBanner": {
+      "status": "unknown"
+    }
   },
   "ramps": {
     "buyableChains": [

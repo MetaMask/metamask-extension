@@ -188,6 +188,7 @@
       }
     },
     "networkConfigurationsByChainId": "object",
+    "networkConnectionBanner": "object",
     "keyrings": "object",
     "selectedAddress": "string",
     "usePhishDetect": true,
