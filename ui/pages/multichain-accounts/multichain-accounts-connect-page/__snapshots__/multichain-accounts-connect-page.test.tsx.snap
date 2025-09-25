@@ -171,11 +171,6 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       >
                         Test Account Group 1
                       </p>
-                      <p
-                        class="mm-box mm-text multichain-account-cell__account-name mm-text--body-sm-medium mm-text--ellipsis mm-box--margin-left-3 mm-box--color-text-alternative"
-                      >
-                        Test Wallet
-                      </p>
                     </div>
                   </div>
                   <div
@@ -185,9 +180,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     <p
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    >
-                      $1,000.00
-                    </p>
+                    />
                     <div
                       aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -418,11 +411,6 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       >
                         Test Account Group 1
                       </p>
-                      <p
-                        class="mm-box mm-text multichain-account-cell__account-name mm-text--body-sm-medium mm-text--ellipsis mm-box--margin-left-3 mm-box--color-text-alternative"
-                      >
-                        Test Wallet
-                      </p>
                     </div>
                   </div>
                   <div
@@ -432,9 +420,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     <p
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    >
-                      $1,000.00
-                    </p>
+                    />
                     <div
                       aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -665,11 +651,6 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       >
                         Test Account Group 1
                       </p>
-                      <p
-                        class="mm-box mm-text multichain-account-cell__account-name mm-text--body-sm-medium mm-text--ellipsis mm-box--margin-left-3 mm-box--color-text-alternative"
-                      >
-                        Test Wallet
-                      </p>
                     </div>
                   </div>
                   <div
@@ -679,9 +660,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     <p
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    >
-                      $1,000.00
-                    </p>
+                    />
                     <div
                       aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
