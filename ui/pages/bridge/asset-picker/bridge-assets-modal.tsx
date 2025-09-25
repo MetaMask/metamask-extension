@@ -38,7 +38,7 @@ const NETWORK_PILLS = SUPPORTED_NETWORKS.map((network) => ({
 }));
 
 export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAssetsModalProps) => {
-  const [selectedNetwork, setSelectedNetwork] = useState<string | null>(CHAIN_IDS.MAINNET);
+  const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -89,10 +89,6 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
     setSearchQuery('');
   }
 
-  const selectNetwork = (networkId: string) => {
-    setSelectedNetwork(networkId !== selectedNetwork ? networkId : null);
-  }
-
   const selectAsset = (asset: Asset) => {
     onSelectAsset(asset);
     closeModal();
@@ -132,12 +128,17 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
         <Column gap={2} paddingLeft={4} paddingRight={4}>
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2} style={{overflow: 'auto'}}>
+              <NetworkFilterPill
+                selected={selectedNetwork === null}
+                network={null}
+                onSelect={() => setSelectedNetwork(null)}
+              />
               {NETWORK_PILLS.map((network) => (
                 <NetworkFilterPill
                   key={network.id}
                   selected={selectedNetwork === network.id}
                   network={network}
-                  onSelect={selectNetwork}
+                  onSelect={(networkId) => setSelectedNetwork(networkId)}
                 />
               ))}
             </Row>

@@ -15,14 +15,14 @@ interface NetworkFilterPillProps {
     id: string;
     name: string;
     image?: string;
-  };
-  onSelect: (id: string) => void;
+  } | null;
+  onSelect: (id: string | null) => void;
 }
 
 export const NetworkFilterPill = ({ selected, network, onSelect }: NetworkFilterPillProps) => {
   return (
     <Box
-      key={network.id}
+      key={network?.id}
       borderColor={BorderColor.primaryMuted}
       borderWidth={1}
       borderRadius={BorderRadius.LG}
@@ -31,7 +31,7 @@ export const NetworkFilterPill = ({ selected, network, onSelect }: NetworkFilter
       paddingBottom={1}
       paddingLeft={3}
       paddingRight={3}
-      onClick={() => onSelect(network.id)}
+      onClick={() => onSelect(network ? network.id : null)}
       style={{
         flex: '1 1 0',
         minWidth: 'fit-content',
@@ -40,13 +40,13 @@ export const NetworkFilterPill = ({ selected, network, onSelect }: NetworkFilter
     >
       <Column gap={1}>
         <Row gap={1} justifyContent={JustifyContent.center}>
-          <AvatarNetwork
+          {network &&<AvatarNetwork
             key={network.id}
             name={network.name}
             src={network.image}
             size={AvatarNetworkSize.Xs}
-          />
-          <Text fontWeight={FontWeight.Medium} variant={TextVariant.bodySm}>{network.name}</Text>
+          />}
+          <Text fontWeight={FontWeight.Medium} variant={TextVariant.bodySm}>{network ? network.name : 'All Networks'}</Text>
         </Row>
       </Column>
     </Box>

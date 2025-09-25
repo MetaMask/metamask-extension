@@ -27,6 +27,8 @@ export const useFilteredAssetsWithBalance = (network: string | null, assets: Ass
       });
     }
 
+    console.log("**********BASE ASSETS***********", baseAssets);
+
     // if assets are provided, we need to remove the duplicates that already exist in the assetsWithBalance
     if (assets.length > 0) {
       const existingAssetIds = new Set(baseAssets.map((asset) => asset.assetId))
