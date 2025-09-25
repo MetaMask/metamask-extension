@@ -25,6 +25,7 @@ export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
   const tokenImage = getAssetImageUrl(asset.assetId, asset.chainId as CaipChainId);
   const networkImage = getImageForChainId(asset.chainId as CaipChainId);
 
+  console.log("**********ASSET***********", asset);
   return (
     <Box
       paddingTop={2}

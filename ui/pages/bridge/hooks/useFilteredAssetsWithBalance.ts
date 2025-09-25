@@ -8,7 +8,7 @@ export const useFilteredAssetsWithBalance = (network: string | null, searchQuery
   const { assetsWithBalance } = useMultichainBalances();
 
   const formattedAssetsWithBalance = useMemo(() => assetsWithBalance.map((asset) => ({
-    assetId: formatAddressToAssetId(asset.address, asset.chainId),
+    assetId: formatAddressToAssetId(asset.address, asset.chainId)?.toLowerCase(),
     name: (asset as any).name || (asset as any).title || asset.symbol,
     symbol: asset.symbol,
     decimals: asset.decimals,
