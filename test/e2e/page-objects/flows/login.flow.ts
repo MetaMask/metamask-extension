@@ -1,4 +1,3 @@
-import { WebElement, error as webDriverErrors } from 'selenium-webdriver';
 import LoginPage from '../pages/login-page';
 import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
