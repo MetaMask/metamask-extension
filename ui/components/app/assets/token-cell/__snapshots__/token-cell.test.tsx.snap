@@ -54,17 +54,13 @@ exports[`Token Cell should match snapshot 1`] = `
               TEST
             </p>
           </div>
-          <div
-            class="mm-box mm-skeleton mm-box--margin-bottom-1 mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--text-align-end mm-box--color-text-default"
+            data-testid="multichain-token-list-item-secondary-value"
+            style="white-space: nowrap; padding-inline-start: 8px;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--text-align-end mm-box--color-text-default"
-              data-testid="multichain-token-list-item-secondary-value"
-              style="white-space: nowrap; padding-inline-start: 8px;"
-            >
-              No conversion rate available
-            </p>
-          </div>
+            No conversion rate available
+          </p>
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
