@@ -8,7 +8,7 @@ import {
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../helpers/constants/design-system';
-import useSetConfirmationAlerts from './setConfirmationAlerts';
+import useSetConfirmationAlerts from './useSetConfirmationAlerts';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 jest.mock('react-redux', () => ({

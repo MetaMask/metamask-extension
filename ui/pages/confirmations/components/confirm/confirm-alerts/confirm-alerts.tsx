@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { AlertActionHandlerProvider } from '../../../../../components/app/alert-system/contexts/alertActionHandler';
 import useConfirmationAlertActions from '../../../hooks/useConfirmationAlertActions';
-import useSetConfirmationAlerts from '../../../hooks/setConfirmationAlerts';
+import useSetConfirmationAlerts from '../../../hooks/useSetConfirmationAlerts';
 import { AlertMetricsProvider } from '../../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { useConfirmationAlertMetrics } from '../../../hooks/useConfirmationAlertMetrics';
 
