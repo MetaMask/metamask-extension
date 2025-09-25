@@ -22,6 +22,12 @@ class TransactionConfirmation extends Confirmation {
 
   private alertBanner: RawLocator;
 
+  private customNonceButton: RawLocator;
+
+  private customNonceInput: RawLocator;
+
+  private customNonceSaveButton: RawLocator;
+
   private gasFeeFiatText: RawLocator;
 
   private gasFeeText: RawLocator;
@@ -63,6 +69,12 @@ class TransactionConfirmation extends Confirmation {
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
     this.alertBanner = '[data-testid="confirm-banner-alert"]';
+    this.customNonceButton = '[data-testid="edit-nonce-icon"]';
+    this.customNonceInput = '[data-testid="custom-nonce-input"]';
+    this.customNonceSaveButton = {
+      tag: 'button',
+      text: 'Save',
+    };
     this.gasFeeCloseToastMessage =
       '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
@@ -170,6 +182,14 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.advancedDetailsButton);
   }
 
+  async clickCustomNonceButton() {
+    await this.driver.clickElement(this.customNonceButton);
+  }
+
+  async clickCustomNonceSaveButton() {
+    await this.driver.clickElement(this.customNonceSaveButton);
+  }
+
   async clickGasFeeTokenPill() {
     await this.driver.clickElement(this.gasFeeTokenArrow);
   }
@@ -177,6 +197,16 @@ class TransactionConfirmation extends Confirmation {
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
     await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 5000);
+  }
+
+  async fillCustomNonce(nonce: string) {
+    await this.driver.fill(this.customNonceInput, nonce);
+  }
+
+  async setCustomNonce(nonce: string) {
+    await this.clickCustomNonceButton();
+    await this.fillCustomNonce(nonce);
+    await this.clickCustomNonceSaveButton();
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {

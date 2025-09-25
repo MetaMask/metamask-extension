@@ -92,6 +92,25 @@ describe('Send - utils', () => {
       });
     });
 
+    it('prepares transaction for native token with hex data', () => {
+      expect(
+        prepareEVMTransaction(
+          EVM_NATIVE_ASSET,
+          {
+            from: '0x123',
+            to: '0x456',
+            value: '0x64',
+          },
+          '0x5',
+        ),
+      ).toStrictEqual({
+        data: '0x5',
+        from: '0x123',
+        to: '0x456',
+        value: '0x56bc75e2d63100000',
+      });
+    });
+
     it('prepares transaction for ERC20 token', () => {
       expect(
         prepareEVMTransaction(
