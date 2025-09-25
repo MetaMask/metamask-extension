@@ -25,6 +25,8 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.actor != 'github-actions[bot]'
     outputs:
       release-branch: ${{ steps.determine-branch.outputs.branch }}
+      # Only one of tag-release or existing-tag-output steps will run based on needs_retag condition
+      # The || operator ensures we get the output from whichever step executed
       tag-name: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
       flask-tag-name: ${{ steps.tag-release.outputs.flask_tag || steps.existing-tag-output.outputs.flask_tag }}
       tag-sha: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
@@ -71,8 +73,8 @@ jobs:
           TAG_NAME="v${VERSION}"
           FLASK_TAG_NAME="v${VERSION}-flask.0"
           HEAD_SHA=$(git rev-parse HEAD)
-          # Shell scripts don't have native boolean types, so we use string values ("true"/"false")
-          # for boolean logic and compare them as strings (shell script convention)
+          # While shell scripts use exit codes (0=true, non-zero=false) for boolean logic,
+          # we use string values ("true"/"false") here for readability and explicit state tracking
           needs_retag="false"
           needs_flask_retag="false"
 
@@ -191,7 +193,7 @@ jobs:
 
           # Create Flask tag if needed
           if [[ "${NEEDS_FLASK_TAG}" == "true" ]]; then
-            git tag -a "${FLASK_TAG_NAME}" -m "Flask version ${FLASK_TAG_NAME#v}"
+            git tag -a "${FLASK_TAG_NAME}" -m "Flask version ${VERSION}-flask.0"
             git push origin "${FLASK_TAG_NAME}"
             echo "Created and pushed Flask tag: ${FLASK_TAG_NAME} at ${SHA}"
           else
