@@ -1,7 +1,10 @@
 import { memoize } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { AssetsContractController } from '@metamask/assets-controllers';
-import { getTokenStandardAndDetails } from '../../../store/actions';
+import {
+  getTokenStandardAndDetails,
+  getTokenStandardAndDetailsByChain,
+} from '../../../store/actions';
 
 export type TokenDetailsERC20 = Awaited<
   ReturnType<
@@ -75,11 +78,16 @@ export const memoizedGetTokenStandardAndDetails = memoize(
  */
 export const fetchErc20Decimals = async (
   address: Hex | string,
+  chainId?: Hex | string,
 ): Promise<number> => {
   try {
-    const { decimals: decStr } = (await memoizedGetTokenStandardAndDetails(
+    const result = (await getTokenStandardAndDetailsByChain(
       address,
+      undefined,
+      undefined,
+      chainId,
     )) as TokenDetailsERC20;
+    const { decimals: decStr } = result;
     const decimals = parseTokenDetailDecimals(decStr);
 
     return decimals ?? ERC20_DEFAULT_DECIMALS;
