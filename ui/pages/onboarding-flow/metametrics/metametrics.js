@@ -223,7 +223,11 @@ export default function OnboardingMetametrics() {
           inputProps={{
             onClick: (e) => e.stopPropagation(),
           }}
-          label={t('onboardingMetametricCheckboxTitleOne')}
+          label={
+            <Text variant={TextVariant.bodyMdMedium}>
+              {t('onboardingMetametricCheckboxTitleOne')}
+            </Text>
+          }
           alignItems={AlignItems.center}
         />
         <Text
@@ -270,7 +274,7 @@ export default function OnboardingMetametrics() {
             isParticipateInMetaMetricsChecked &&
             isDataCollectionForMarketingChecked
           }
-          disabled={!isParticipateInMetaMetricsChecked}
+          isDisabled={!isParticipateInMetaMetricsChecked}
           onChange={() => {
             setIsDataCollectionForMarketingChecked((prev) => !prev);
           }}
@@ -279,7 +283,11 @@ export default function OnboardingMetametrics() {
           inputProps={{
             onClick: (e) => e.stopPropagation(),
           }}
-          label={t('onboardingMetametricCheckboxTitleTwo')}
+          label={
+            <Text variant={TextVariant.bodyMdMedium}>
+              {t('onboardingMetametricCheckboxTitleTwo')}
+            </Text>
+          }
           alignItems={AlignItems.center}
         />
         <Text

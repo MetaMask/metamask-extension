@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Onboarding Metametrics Component should match snapshot 1`] = `
+exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
 <div>
   <div
     class="mm-box onboarding-metametrics mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
@@ -42,7 +42,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           <input
             class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-opt-in"
-            title="Gather basic usage data"
+            title="metametrics-opt-in"
             type="checkbox"
           />
           <span
@@ -51,7 +51,11 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           />
         </span>
         <span>
-          Gather basic usage data
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          >
+            Gather basic usage data
+          </p>
         </span>
       </label>
       <p
@@ -76,12 +80,16 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           <input
             class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-datacollection-opt-in"
-            title="Product updates"
+            title="metametrics-datacollection-opt-in"
             type="checkbox"
           />
         </span>
         <span>
-          Product updates
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          >
+            Product updates
+          </p>
         </span>
       </label>
       <p
@@ -104,7 +112,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
 </div>
 `;
 
-exports[`Onboarding Metametrics Component should match snapshot after new policy date 1`] = `
+exports[`Onboarding Metametrics Component renders match snapshot after new policy date 1`] = `
 <div>
   <div
     class="mm-box onboarding-metametrics mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
@@ -146,7 +154,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
           <input
             class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-opt-in"
-            title="Gather basic usage data"
+            title="metametrics-opt-in"
             type="checkbox"
           />
           <span
@@ -155,7 +163,11 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
           />
         </span>
         <span>
-          Gather basic usage data
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          >
+            Gather basic usage data
+          </p>
         </span>
       </label>
       <p
@@ -180,12 +192,16 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
           <input
             class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-datacollection-opt-in"
-            title="Product updates"
+            title="metametrics-datacollection-opt-in"
             type="checkbox"
           />
         </span>
         <span>
-          Product updates
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          >
+            Product updates
+          </p>
         </span>
       </label>
       <p

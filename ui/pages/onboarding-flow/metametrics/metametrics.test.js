@@ -67,24 +67,20 @@ describe('Onboarding Metametrics Component', () => {
     jest.clearAllMocks();
   });
 
-  it('should match snapshot', () => {
+  it('renders match snapshot', () => {
     const { container } = renderWithProvider(<OnboardingMetametrics />, store);
-
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot after new policy date', () => {
+  it('renders match snapshot after new policy date', () => {
     // TODO: merge this with the previous test once this date is reached
     jest.useFakeTimers().setSystemTime(new Date('2024-06-05'));
-
     const { container } = renderWithProvider(<OnboardingMetametrics />, store);
-
     expect(container).toMatchSnapshot();
-
     jest.useRealTimers();
   });
 
-  it('default value is checked for ParticiapteMetatmric so on continue is should be called with true', async () => {
+  it('default value is checked for ParticiapteMetatmric so on continue setParticipateInMetaMetrics should be called with true', async () => {
     const { queryByText, getByTestId, getAllByRole } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -114,7 +110,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('should set setParticipateInMetaMetrics to false when uncheck the checkbox', async () => {
+  it('when the participate in MetaMetrics checkbox is unchecked, setParticipateInMetaMetrics should be called with false', async () => {
     const { queryByText, getByTestId, getAllByRole } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -154,7 +150,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('should set setDataCollectionForMarketing to false when uncheck the checkbox', async () => {
+  it('when the participate in MetaMetrics checkbox is unchecked, setDataCollectionForMarketing should be called with false', async () => {
     const { queryByText, getAllByRole, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -197,7 +193,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(queryByTestId('onboarding-metametrics')).toBeInTheDocument();
   });
 
-  it('should uncheck setDataCollectionForMarketing to false when participateInMetaMetrics is false', async () => {
+  it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {
     const { getAllByRole } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
