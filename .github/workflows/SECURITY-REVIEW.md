@@ -1,6 +1,6 @@
 # Security Review - Release Process Workflows
 
-## Security Audit Date: 2024
+## Security Audit Date: September 25, 2025
 
 ### Critical Security Fixes Applied
 
@@ -118,5 +118,5 @@ Schedule quarterly reviews to:
 ---
 
 **Security Contact**: security@metamask.io
-**Last Updated**: 2024
+**Last Updated**: September 25, 2025
 **Review Frequency**: Quarterly
