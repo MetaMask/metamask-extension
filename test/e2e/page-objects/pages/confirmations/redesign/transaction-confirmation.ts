@@ -186,18 +186,8 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.customNonceButton);
   }
 
-  async fillCustomNonce(nonce: string) {
-    await this.driver.fill(this.customNonceInput, nonce);
-  }
-
   async clickCustomNonceSaveButton() {
     await this.driver.clickElement(this.customNonceSaveButton);
-  }
-
-  async setCustomNonce(nonce: string) {
-    await this.clickCustomNonceButton();
-    await this.fillCustomNonce(nonce);
-    await this.clickCustomNonceSaveButton();
   }
 
   async clickGasFeeTokenPill() {
@@ -207,6 +197,16 @@ class TransactionConfirmation extends Confirmation {
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
     await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 5000);
+  }
+
+  async fillCustomNonce(nonce: string) {
+    await this.driver.fill(this.customNonceInput, nonce);
+  }
+
+  async setCustomNonce(nonce: string) {
+    await this.clickCustomNonceButton();
+    await this.fillCustomNonce(nonce);
+    await this.clickCustomNonceSaveButton();
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {
