@@ -49,6 +49,7 @@ describe('Metrics', function () {
           driver,
         );
         await deploymentConfirmation.checkTitle();
+        await deploymentConfirmation.checkDeploymentSiteInfo();
         await deploymentConfirmation.clickFooterConfirmButton();
 
         // check activity list

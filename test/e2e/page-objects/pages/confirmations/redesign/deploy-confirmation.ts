@@ -5,6 +5,8 @@ import Confirmation from './confirmation';
 class ContractDeploymentConfirmation extends Confirmation {
   private deploymentHeadingTitle: RawLocator;
 
+  private deploymentSiteInfo: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -14,10 +16,19 @@ class ContractDeploymentConfirmation extends Confirmation {
       css: 'h2',
       text: 'Deploy a contract' as string,
     };
+
+    this.deploymentSiteInfo = {
+      css: 'p',
+      text: 'This site wants you to deploy a contract',
+    }
   }
 
   async checkTitle() {
     await this.driver.waitForSelector(this.deploymentHeadingTitle);
+  }
+
+  async checkDeploymentSiteInfo() {
+    await this.driver.waitForSelector(this.deploymentSiteInfo);
   }
 }
 
