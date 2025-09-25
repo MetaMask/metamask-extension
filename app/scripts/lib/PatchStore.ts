@@ -118,6 +118,15 @@ export class PatchStore {
       .filter(Boolean) as Patch[];
   }
 
+  /**
+   * Normalize patches from a controller.
+   * Converts any root-level patches into multiple property patches
+   * to prevent removing state from other controllers.
+   *
+   * @param eventPatches - Patches from the controller.
+   * @param oldState - The previous state of the controller.
+   * @returns
+   */
   private _normalizeEventPatches(
     eventPatches: Patch[] | undefined,
     oldState: Record<string, Json>,

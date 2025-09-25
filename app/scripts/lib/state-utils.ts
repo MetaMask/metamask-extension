@@ -4,6 +4,7 @@ import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 import { Patch } from 'immer';
 import { cloneDeep } from 'lodash';
+import { Json } from '@metamask/utils';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,6 +28,7 @@ const REMOVE_KEYS = [
   'whitelist',
 
   // SeedlessOnboardingController
+  'accessToken',
   'encryptedKeyringEncryptionKey',
   'encryptedSeedlessEncryptionKey',
   'metadataAccessToken',
@@ -46,7 +48,7 @@ const REMOVE_KEYS = [
  * Matching data in a patch value will also be removed.
  * Using `true` acts as a wildcard to match any key or index at that level.
  */
-const REMOVE_PATHS = [
+const REMOVE_PATHS: (string | true)[][] = [
   ['nodeAuthTokens', true, 'authToken'],
   ['snaps', true, 'auxiliaryFiles'],
   ['snaps', true, 'sourceCode'],
@@ -138,21 +140,6 @@ function sanitizeAuthenticationControllerState(state: FlattenedUIState) {
 }
 
 function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
-  const toDelete = [
-    'vault',
-    'vaultEncryptionKey',
-    'vaultEncryptionSalt',
-    'encryptedSeedlessEncryptionKey',
-    'encryptedKeyringEncryptionKey',
-    'accessToken',
-    'metadataAccessToken',
-    'refreshToken',
-    'revokeToken',
-  ];
-  for (const key of toDelete) {
-    delete state[key];
-  }
-
   // Manually sanitize the nodeAuthTokens.
   const nodeAuthTokens =
     state.nodeAuthTokens as SeedlessOnboardingControllerState['nodeAuthTokens'];
@@ -184,70 +171,92 @@ function sanitizeSeedlessOnboardingControllerState(state: FlattenedUIState) {
   }
 }
 
-function deletePathFromPatch(patch: Patch, removePath: (string | boolean)[]) {
+/**
+ * Ensure that a patch does not contain data with a specific path.
+ * This checks both the patch path, plus any matching data in the patch value.
+ *
+ * @param patch - The patch to check and modify.
+ * @param removePath - The path to remove, with `true` as a wildcard for any key or index.
+ * @returns Whether the entire patch should be removed.
+ */
+function deletePathFromPatch(patch: Patch, removePath: (string | true)[]) {
   for (let i = 0; i < removePath.length; i++) {
     const key = removePath[i];
     const isLastKey = i === removePath.length - 1;
-    const isEndOfPatchKey = i === patch.path.length;
+    const isLastPatchKey = i === patch.path.length - 1;
 
     const isMatch =
       patch.path[i] === key || (key === true && patch.path[i] !== undefined);
 
-    if (isMatch && isLastKey) {
-      return true;
-    }
-
-    if (!isMatch && !isEndOfPatchKey) {
+    // Do not delete patch as paths do not match
+    if (!isMatch) {
       return false;
     }
 
-    if (!isMatch && isEndOfPatchKey) {
-      const remainingPath = removePath.slice(i);
+    // Delete patch as paths match
+    if (isLastKey) {
+      return true;
+    }
 
+    // Remove path may be inside the patch value
+    // Do not delete patch but mutate it to delete remove path from the value
+    if (isLastPatchKey) {
+      const remainingPath = removePath.slice(i + 1);
       patch.value = cloneDeep(patch.value);
+
       deletePathInObject(patch.value, remainingPath);
 
       return false;
     }
+
+    // Continue iterating until we reach the end of the remove path or the patch path
   }
 
   return false;
 }
 
+/**
+ * Delete a specific path from an object.
+ * Uses `true` as a wildcard to match any key or index at that level.
+ *
+ * @param obj - The object to modify.
+ * @param removePath - The path to remove.
+ * @param index - The current index in the path.
+ */
 function deletePathInObject(
-  obj: Record<string, JSON>,
-  removePath: (string | boolean)[],
+  obj: Record<string, Json> | Json[],
+  removePath: (string | true)[],
   index = 0,
 ) {
   const key = removePath[index];
   const isLast = index === removePath.length - 1;
 
-  if (typeof obj !== 'object' || obj === null) {
+  if (isLast && key !== true && key in obj && !Array.isArray(obj)) {
+    delete obj[key];
     return;
   }
 
-  if (isLast && (key as string) in obj) {
-    delete obj[key as string];
+  if (isLast) {
     return;
   }
 
-  const nextObjects = [];
+  let children: Json[] = [];
 
   if (key === true) {
-    if (Array.isArray(obj)) {
-      nextObjects.push(...obj);
-    } else {
-      for (const prop in obj) {
-        if (typeof obj[prop] === 'object' && obj[prop] !== null) {
-          nextObjects.push(obj[prop]);
-        }
-      }
-    }
-  } else {
-    nextObjects.push(obj[key as string]);
+    children = Object.values(obj);
+  } else if (!Array.isArray(obj)) {
+    children = [obj[key]];
   }
 
-  for (const nextObj of nextObjects) {
-    deletePathInObject(nextObj, removePath, index + 1);
+  const validChildren = children.filter(isObjectOrArray);
+
+  for (const child of validChildren) {
+    deletePathInObject(child, removePath, index + 1);
   }
+}
+
+function isObjectOrArray(
+  value: unknown,
+): value is Record<string, Json> | Json[] {
+  return typeof value === 'object' && value !== null && value !== undefined;
 }
