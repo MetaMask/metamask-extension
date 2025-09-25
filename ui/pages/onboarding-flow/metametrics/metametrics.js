@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
@@ -60,17 +60,41 @@ export default function OnboardingMetametrics() {
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const participateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+
+  const [
+    isParticipateInMetaMetricsChecked,
+    setIsParticipateInMetaMetricsChecked,
+  ] = useState(false);
+  const [
+    isDataCollectionForMarketingChecked,
+    setIsDataCollectionForMarketingChecked,
+  ] = useState(false);
+
+  const participateCheckboxRef = useRef(null);
+  const marketingCheckboxRef = useRef(null);
 
   useEffect(() => {
     if (!participateInMetaMetricsSet) {
-      dispatch(setParticipateInMetaMetrics(true));
+      setIsParticipateInMetaMetricsChecked(true);
+      return;
     }
-  }, [dispatch, participateInMetaMetricsSet]);
+
+    if (participateInMetaMetrics) {
+      setIsParticipateInMetaMetricsChecked(participateInMetaMetrics);
+    }
+    if (dataCollectionForMarketing) {
+      setIsDataCollectionForMarketingChecked(dataCollectionForMarketing);
+    }
+  }, [
+    participateInMetaMetricsSet,
+    participateInMetaMetrics,
+    dataCollectionForMarketing,
+  ]);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -93,20 +117,29 @@ export default function OnboardingMetametrics() {
   const handleContinue = async (e) => {
     e.preventDefault();
     try {
-      await trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.AppInstalled,
-      });
+      if (isParticipateInMetaMetricsChecked) {
+        dispatch(
+          setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
+        );
+        dispatch(setParticipateInMetaMetrics(true));
 
-      await trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-        properties: {
-          is_metrics_opted_in: Boolean(participateInMetaMetrics),
-          has_marketing_consent: Boolean(dataCollectionForMarketing),
-          location: 'onboarding_metametrics',
-        },
-      });
+        await trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AppInstalled,
+        });
+        await trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            is_metrics_opted_in: Boolean(participateInMetaMetrics),
+            has_marketing_consent: Boolean(dataCollectionForMarketing),
+            location: 'onboarding_metametrics',
+          },
+        });
+      } else {
+        dispatch(setParticipateInMetaMetrics(false));
+        dispatch(setDataCollectionForMarketing(false));
+      }
     } catch (error) {
       log.error('onConfirm::error', error);
     } finally {
@@ -115,8 +148,9 @@ export default function OnboardingMetametrics() {
   };
 
   const handleParticipateInMetaMetricsChange = () => {
-    dispatch(setParticipateInMetaMetrics(!participateInMetaMetrics));
-    participateInMetaMetrics && dispatch(setDataCollectionForMarketing(false));
+    setIsParticipateInMetaMetricsChecked((prev) => !prev);
+    isParticipateInMetaMetricsChecked &&
+      setIsDataCollectionForMarketingChecked(false);
   };
 
   return (
@@ -166,14 +200,29 @@ export default function OnboardingMetametrics() {
         padding={3}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
-        onClick={handleParticipateInMetaMetricsChange}
         className="onboarding-metametrics__checkbox"
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          participateCheckboxRef.current?.click();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            participateCheckboxRef.current?.click();
+          }
+        }}
       >
         <Checkbox
           id="metametrics-opt-in"
           data-testid="metametrics-checkbox"
-          isChecked={participateInMetaMetrics}
-          onClick={handleParticipateInMetaMetricsChange}
+          isChecked={isParticipateInMetaMetricsChecked}
+          onChange={handleParticipateInMetaMetricsChange}
+          inputRef={participateCheckboxRef}
+          onClick={(e) => e.stopPropagation()}
+          inputProps={{
+            onClick: (e) => e.stopPropagation(),
+          }}
           label={t('onboardingMetametricCheckboxTitleOne')}
           alignItems={AlignItems.center}
         />
@@ -193,21 +242,43 @@ export default function OnboardingMetametrics() {
         padding={3}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
-        onClick={() =>
-          participateInMetaMetrics &&
-          dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
+        className={`${isParticipateInMetaMetricsChecked ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'}`}
+        disabled={!isParticipateInMetaMetricsChecked}
+        role={isParticipateInMetaMetricsChecked ? 'button' : undefined}
+        tabIndex={isParticipateInMetaMetricsChecked ? 0 : undefined}
+        onClick={
+          isParticipateInMetaMetricsChecked
+            ? () => {
+                marketingCheckboxRef.current?.click();
+              }
+            : undefined
         }
-        className={`${participateInMetaMetrics ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'}`}
-        disabled={!participateInMetaMetrics}
+        onKeyDown={
+          isParticipateInMetaMetricsChecked &&
+          ((e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              e.preventDefault();
+              marketingCheckboxRef.current?.click();
+            }
+          })
+        }
       >
         <Checkbox
           id="metametrics-datacollection-opt-in"
           data-testid="metametrics-data-collection-checkbox"
-          isChecked={participateInMetaMetrics && dataCollectionForMarketing}
-          disabled={!participateInMetaMetrics}
-          onClick={() =>
-            dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
+          isChecked={
+            isParticipateInMetaMetricsChecked &&
+            isDataCollectionForMarketingChecked
           }
+          disabled={!isParticipateInMetaMetricsChecked}
+          onChange={() => {
+            setIsDataCollectionForMarketingChecked((prev) => !prev);
+          }}
+          inputRef={marketingCheckboxRef}
+          onClick={(e) => e.stopPropagation()}
+          inputProps={{
+            onClick: (e) => e.stopPropagation(),
+          }}
           label={t('onboardingMetametricCheckboxTitleTwo')}
           alignItems={AlignItems.center}
         />

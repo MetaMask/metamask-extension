@@ -74,6 +74,12 @@ class OnboardingMetricsPage {
       this.dataParticipateInMetaMetricsUncheckedState,
     );
   }
+
+  async skipMetricAndContinue(): Promise<void> {
+    await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
+    await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
+    await this.driver.clickElement(this.continueButton);
+  }
 }
 
 export default OnboardingMetricsPage;

@@ -142,7 +142,6 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(checkbox).not.toBeChecked();
-      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
     });
 
     const continueButton = getByTestId('metametrics-i-agree');
@@ -150,6 +149,7 @@ describe('Onboarding Metametrics Component', () => {
     fireEvent.click(continueButton);
 
     await waitFor(() => {
+      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
       expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });
@@ -179,14 +179,11 @@ describe('Onboarding Metametrics Component', () => {
       fireEvent.click(participateCheckbox);
     });
 
-    await waitFor(() => {
-      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
-    });
-
     const continueButton = getByTestId('metametrics-i-agree');
     fireEvent.click(continueButton);
 
     await waitFor(() => {
+      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
       expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
   });

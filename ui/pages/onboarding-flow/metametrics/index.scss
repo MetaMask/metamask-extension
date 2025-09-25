@@ -8,6 +8,11 @@
     align-items: start;
   }
 
+  &__checkbox-label {
+    cursor: pointer;
+    width: 100%;
+  }
+
   &__checkbox {
     cursor: pointer;
   }

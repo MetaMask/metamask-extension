@@ -115,7 +115,7 @@ describe('App Installed Events', function () {
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickOnContinueButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -133,7 +133,7 @@ describe('App Installed Events', function () {
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickOnContinueButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const mockedRequests = await getEventPayloads(
@@ -141,7 +141,7 @@ describe('App Installed Events', function () {
           mockedEndpoints,
           false,
         );
-        assert.equal(mockedRequests.length, 1);
+        assert.equal(mockedRequests.length, 0);
       },
     );
   });
