@@ -31,6 +31,32 @@ const DefaultSkeletonLoader = () => {
 }
 
 export const BridgeAssetList = ({ isLoading, assets, hasMore, onLoadMore }: AssetListProps) => {
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting && hasMore && !isLoading) {
+      onLoadMore();
+    }
+  }, [hasMore, isLoading, onLoadMore]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, {
+      threshold: 0.1,
+      rootMargin: '20px'
+    });
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [handleObserver]);
+
   if (isLoading) {
     return <DefaultSkeletonLoader />;
   }
@@ -48,6 +74,7 @@ export const BridgeAssetList = ({ isLoading, assets, hasMore, onLoadMore }: Asse
       {assets.map((asset) => (
         <AssetItem key={asset.assetId} asset={asset} />
       ))}
+      {hasMore && <div ref={loadMoreRef} style={{ height: '20px' }} />}
     </Column>
   )
 }
