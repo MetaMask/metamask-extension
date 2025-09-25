@@ -28,17 +28,15 @@ export function useTokenTrustSignalAlerts(): Alert[] {
     if (!tokenBalanceChanges?.length) {
       return undefined;
     }
-    const dedup = new Set<string>();
-    for (const change of tokenBalanceChanges) {
-      if (
-        !change.isDecrease &&
-        change.standard === SimulationTokenStandard.erc20 &&
-        change.address
-      ) {
-        dedup.add(change.address.toLowerCase());
-      }
-    }
-    return dedup.size ? Array.from(dedup) : undefined;
+    const addresses = tokenBalanceChanges
+      .filter(
+        (change) =>
+          !change.isDecrease &&
+          change.standard === SimulationTokenStandard.erc20 &&
+          change.address,
+      )
+      .map((change) => change.address.toLowerCase());
+    return addresses.length ? addresses : undefined;
   }, [tokenBalanceChanges]);
 
   const tokenTrustSignals = useTokenTrustSignalsForAddresses(
@@ -70,7 +68,8 @@ export function useTokenTrustSignalAlerts(): Alert[] {
           severity: Severity.Danger,
         },
       ];
-    } else if (hasWarningToken) {
+    }
+    if (hasWarningToken) {
       return [
         {
           actions: EMPTY_ACTIONS,
