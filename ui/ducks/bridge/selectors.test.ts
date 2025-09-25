@@ -1074,7 +1074,7 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
 
-    it.only('should return isInsufficientGasBalance=true when balance < minimumBalanceForRentExemption + srcTokenAmount', () => {
+    it('should return isInsufficientGasBalance=true when balance < minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x1'),
