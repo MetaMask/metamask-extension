@@ -91,7 +91,9 @@ async function runGitCommands() {
     await exec('git add .');
     console.log('Executed: git add .');
 
-    await exec('git commit -m "Merge origin/main into stable-sync"');
+    await exec(
+      'git commit -m "Merge origin/main into stable-sync" --no-verify',
+    );
     console.log('Executed: git commit');
 
     // Force push since stable-sync is a temporary branch that gets hard reset
