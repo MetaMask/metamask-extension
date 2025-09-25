@@ -16,6 +16,10 @@ import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
 import { MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
+import {
+  getWalletIdAndNameByAccountAddress,
+  getAccountTree,
+} from '../selectors/multichain-accounts/account-tree';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
@@ -34,6 +38,7 @@ export type UseDisplayNameResponse = {
   image?: string;
   icon?: IconProps | null;
   displayState: TrustSignalDisplayState;
+  subtitle?: string | null;
 };
 
 type UseAccountGroupNamesRequest = UseDisplayNameRequest;
@@ -48,7 +53,7 @@ export function useDisplayNames(
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
   const ens = useDomainResolutions(requests);
-  const nameGroupEntries = useAccountGroupNames(requests, nameEntries);
+  const accountGroupEntries = useAccountGroupNames(requests, nameEntries);
 
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
@@ -58,10 +63,11 @@ export function useDisplayNames(
     const watchedNftName = watchedNFTNames[index];
     const nft = nfts[index];
     const ensName = ens[index];
-    const groupName = nameGroupEntries[index];
+    const { accountGroupName, walletName } = accountGroupEntries[index];
+    const subtitle = walletName;
 
     let name =
-      groupName ||
+      accountGroupName ||
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       nameEntry?.name ||
@@ -74,8 +80,6 @@ export function useDisplayNames(
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       erc20Token?.name ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       watchedNftName ||
       ensName ||
       null;
@@ -103,6 +107,7 @@ export function useDisplayNames(
       image,
       icon: trustSignalIcon,
       displayState,
+      subtitle,
     };
   });
 }
@@ -281,12 +286,24 @@ function getDisplayState(
   return TrustSignalDisplayState.Unknown;
 }
 
+type UseAccountGroupNamesResponse = {
+  accountGroupName: string | null;
+  walletName: string | null;
+};
+
 function useAccountGroupNames(
   requests: UseAccountGroupNamesRequest[],
   nameEntries: ReturnType<typeof useNames>,
-): (string | null)[] {
+): UseAccountGroupNamesResponse[] {
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
+  );
+
+  const accountTree = useSelector(getAccountTree);
+  const { wallets } = accountTree ?? {};
+  const haveMoreThanOneWallet = useMemo(
+    () => Object.keys(wallets).length > 1,
+    [wallets],
   );
 
   // Extract unique ethereum addresses from requests
@@ -299,39 +316,52 @@ function useAccountGroupNames(
       .filter((item) => item.address !== null);
   }, [requests]);
 
-  // Get group names for all addresses at once
-  const groupNamesByAddress = useSelector((state: MultichainAccountsState) => {
-    const groupNames: Record<string, string | null> = {};
+  const namesByAddress = useSelector((state: MultichainAccountsState) => {
+    const result: Record<string, UseAccountGroupNamesResponse> = {};
     ethereumAddresses.forEach(({ address }) => {
       if (address) {
-        groupNames[address] = selectAccountGroupNameByInternalAccount(
+        const accountGroupName = selectAccountGroupNameByInternalAccount(
           state,
           address,
         );
+        const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
+        const walletName = walletInfo?.name || null;
+
+        result[address] = {
+          accountGroupName,
+          walletName,
+        };
       }
     });
-    return groupNames;
+    return result;
   });
 
   return useMemo(() => {
     return requests.map(({ type, value }, index) => {
       const nameEntry = nameEntries[index];
-      const groupName = groupNamesByAddress?.[value] || null;
+      const names = namesByAddress?.[value] || {
+        accountGroupName: null,
+        walletName: null,
+      };
 
       if (
         type !== NameType.ETHEREUM_ADDRESS ||
         !isMultichainAccountsState2Enabled ||
         nameEntry?.origin === NameOrigin.API
       ) {
-        return null;
+        return { accountGroupName: null, walletName: null };
       }
 
-      return groupName;
+      return {
+        accountGroupName: names.accountGroupName,
+        walletName: haveMoreThanOneWallet ? names.walletName : null,
+      };
     });
   }, [
     requests,
-    groupNamesByAddress,
+    namesByAddress,
     isMultichainAccountsState2Enabled,
     nameEntries,
+    haveMoreThanOneWallet,
   ]);
 }
