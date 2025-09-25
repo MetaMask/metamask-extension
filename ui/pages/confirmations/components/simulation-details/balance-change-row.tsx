@@ -16,7 +16,6 @@ import {
   IconName,
 } from '../../../../components/component-library';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
@@ -65,21 +64,23 @@ export const BalanceChangeRow: React.FC<{
     onEdit,
   } = balanceChange;
 
+  const defaultTextComponent = (
+    <Text
+      style={{ whiteSpace: 'nowrap' }}
+      color={labelColor}
+      variant={TextVariant.bodyMd}
+    >
+      {label}
+    </Text>
+  );
+
   const renderLabel = () => {
     if (!label) {
       return null;
     }
 
     if (!confirmationId) {
-      return (
-        <Text
-          style={{ whiteSpace: 'nowrap' }}
-          color={labelColor}
-          variant={TextVariant.bodyMd}
-        >
-          {label}
-        </Text>
-      );
+      return defaultTextComponent;
     }
 
     if (hasIncomingTokens && isFirstRow) {
@@ -92,9 +93,7 @@ export const BalanceChangeRow: React.FC<{
       );
     }
 
-    return (
-      <ConfirmInfoRow label={label} style={{ background: 'transparent' }} />
-    );
+    return defaultTextComponent;
   };
 
   return (
