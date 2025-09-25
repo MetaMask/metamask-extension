@@ -150,9 +150,11 @@ export const Amount = ({
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
+        placeholder="0"
         value={amount}
         endAccessory={
-          <div>
+          <Box display={Display.Flex}>
+            <Text>{asset?.symbol}</Text>
             {conversionSupportedForAsset && (
               <ButtonIcon
                 ariaLabel="toggle fiat mode"
@@ -162,7 +164,7 @@ export const Amount = ({
                 data-testid="toggle-fiat-mode"
               />
             )}
-          </div>
+          </Box>
         }
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
@@ -189,7 +191,7 @@ export const Amount = ({
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink
-              marginLeft={1}
+              marginLeft={2}
               onClick={updateToMax}
               variant={TextVariant.bodySm}
             >

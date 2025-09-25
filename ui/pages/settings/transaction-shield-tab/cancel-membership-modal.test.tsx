@@ -20,6 +20,7 @@ const mockSubscription: Subscription = {
     card: {
       brand: 'Visa',
       last4: '1234',
+      displayBrand: 'Visa',
     },
   },
 };
