@@ -1,7 +1,12 @@
+// Mocha type definitions are conflicting with Jest
+import { it as jestIt } from '@jest/globals';
 import {
+  TransactionMeta,
+  TransactionType,
   TransactionController,
   TransactionControllerMessenger,
   TransactionControllerOptions,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
 import { Messenger } from '@metamask/base-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -188,4 +193,33 @@ describe('Transaction Controller Init', () => {
 
     expect(pendingTransactions?.isResubmitEnabled?.()).toBe(false);
   });
+
+  jestIt.each([
+    ['swap', TransactionType.swap, false],
+    ['swapApproval', TransactionType.swapApproval, false],
+    ['bridge', TransactionType.bridge, false],
+    ['bridgeApproval', TransactionType.bridgeApproval, false],
+    ['contractInteraction', TransactionType.contractInteraction, true],
+  ])(
+    'disables automatic gas fee updates for %s transactions',
+    (_label, type, gasFeeUpdateEnabled) => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      const tx: TransactionMeta = {
+        id: '1',
+        type,
+        chainId: CHAIN_ID_MOCK,
+        networkClientId: 'test-network',
+        status: TransactionStatus.unapproved,
+        time: Date.now(),
+        txParams: {
+          from: '0x0000000000000000000000000000000000000000',
+        },
+      };
+
+      expect(isAutomaticGasFeeUpdateEnabled?.(tx)).toBe(gasFeeUpdateEnabled);
+    },
+  );
 });
