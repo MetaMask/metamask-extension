@@ -512,11 +512,7 @@ export default class SecurityTab extends PureComponent {
           >
             <ToggleButton
               value={dataCollectionForMarketing}
-              disabled={
-                socialLoginEnabled
-                  ? false
-                  : !useExternalServices || !participateInMetaMetrics
-              }
+              disabled={!useExternalServices || !participateInMetaMetrics}
               onToggle={(prev) => handleToggle(!prev)}
               offLabel={t('off')}
               onLabel={t('on')}

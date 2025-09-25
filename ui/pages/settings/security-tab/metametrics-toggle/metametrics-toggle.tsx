@@ -23,7 +23,6 @@ import {
 import {
   getParticipateInMetaMetrics,
   getUseExternalServices,
-  getIsSocialLoginFlow,
 } from '../../../../selectors';
 
 const MetametricsToggle = ({
@@ -47,7 +46,6 @@ const MetametricsToggle = ({
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const useExternalServices = useSelector(getUseExternalServices);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
     if (isParticipated) {
@@ -66,7 +64,7 @@ const MetametricsToggle = ({
       });
     } else {
       // disable data collection for marketing if participate in meta metrics is set to false
-      if (dataCollectionForMarketing && !isSocialLoginFlow) {
+      if (dataCollectionForMarketing) {
         await setDataCollectionForMarketing(false);
       }
 
