@@ -1198,7 +1198,6 @@ export default class SecurityTab extends PureComponent {
       useExternalServices,
       toggleExternalServices,
       setBasicFunctionalityModalOpen,
-      hasActiveShieldSubscription,
     } = this.props;
 
     return (
@@ -1224,9 +1223,6 @@ export default class SecurityTab extends PureComponent {
             <ToggleButton
               value={useExternalServices}
               onToggle={() => {
-                if (hasActiveShieldSubscription) {
-                  return;
-                }
                 if (useExternalServices) {
                   // If we are going to be disabling external services, then we want to show the "turn off" warning modal
                   setBasicFunctionalityModalOpen();
@@ -1250,7 +1246,6 @@ export default class SecurityTab extends PureComponent {
               }}
               offLabel={t('off')}
               onLabel={t('on')}
-              disabled={hasActiveShieldSubscription}
             />
           </Box>
           <Text marginBottom={2} color={TextColor.textAlternative}>
