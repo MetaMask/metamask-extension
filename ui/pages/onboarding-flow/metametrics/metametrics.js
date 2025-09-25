@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
@@ -26,6 +26,8 @@ import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
+  getIsParticipateInMetaMetricsSet,
+  getParticipateInMetaMetrics,
 } from '../../../selectors';
 
 import {
@@ -59,6 +61,16 @@ export default function OnboardingMetametrics() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+  const participateInMetaMetricsSet = useSelector(
+    getIsParticipateInMetaMetricsSet,
+  );
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
+  useEffect(() => {
+    if (!participateInMetaMetricsSet) {
+      dispatch(setParticipateInMetaMetrics(true));
+    }
+  }, [dispatch, participateInMetaMetricsSet]);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -78,25 +90,8 @@ export default function OnboardingMetametrics() {
     }
   }
 
-  const [
-    isParticipateInMetaMetricsChecked,
-    setIsParticipateInMetaMetricsChecked,
-  ] = useState(true);
-
   const handleContinue = async (e) => {
     e.preventDefault();
-    if (!isParticipateInMetaMetricsChecked) {
-      await dispatch(setParticipateInMetaMetrics(false));
-      await dispatch(setDataCollectionForMarketing(false));
-      navigate(nextRouteByBrowser);
-      return;
-    }
-
-    await dispatch(
-      setDataCollectionForMarketing(Boolean(dataCollectionForMarketing)),
-    );
-    await dispatch(setParticipateInMetaMetrics(true));
-
     try {
       await trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -107,7 +102,7 @@ export default function OnboardingMetametrics() {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          is_metrics_opted_in: true,
+          is_metrics_opted_in: Boolean(participateInMetaMetrics),
           has_marketing_consent: Boolean(dataCollectionForMarketing),
           location: 'onboarding_metametrics',
         },
@@ -117,6 +112,11 @@ export default function OnboardingMetametrics() {
     } finally {
       navigate(nextRouteByBrowser);
     }
+  };
+
+  const handleParticipateInMetaMetricsChange = () => {
+    dispatch(setParticipateInMetaMetrics(!participateInMetaMetrics));
+    participateInMetaMetrics && dispatch(setDataCollectionForMarketing(false));
   };
 
   return (
@@ -166,17 +166,14 @@ export default function OnboardingMetametrics() {
         padding={3}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
-        onClick={() => setIsParticipateInMetaMetricsChecked((prev) => !prev)}
+        onClick={handleParticipateInMetaMetricsChange}
         className="onboarding-metametrics__checkbox"
       >
         <Checkbox
           id="metametrics-opt-in"
           data-testid="metametrics-checkbox"
-          isChecked={isParticipateInMetaMetricsChecked}
-          onChange={(e) =>
-            setIsParticipateInMetaMetricsChecked(e.target.checked)
-          }
-          onClick={() => setIsParticipateInMetaMetricsChecked((prev) => !prev)}
+          isChecked={participateInMetaMetrics}
+          onClick={handleParticipateInMetaMetricsChange}
           label={t('onboardingMetametricCheckboxTitleOne')}
           alignItems={AlignItems.center}
         />
@@ -197,14 +194,17 @@ export default function OnboardingMetametrics() {
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
         onClick={() =>
+          participateInMetaMetrics &&
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
-        className="onboarding-metametrics__checkbox"
+        className={`${participateInMetaMetrics ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'}`}
+        disabled={!participateInMetaMetrics}
       >
         <Checkbox
           id="metametrics-datacollection-opt-in"
           data-testid="metametrics-data-collection-checkbox"
-          isChecked={dataCollectionForMarketing}
+          isChecked={participateInMetaMetrics && dataCollectionForMarketing}
+          disabled={!participateInMetaMetrics}
           onClick={() =>
             dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
           }
