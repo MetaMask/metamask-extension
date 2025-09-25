@@ -117,6 +117,8 @@ export default class SecurityTab extends PureComponent {
     socialLoginType: PropTypes.string,
     setMarketingConsent: PropTypes.func,
     getMarketingConsent: PropTypes.func,
+    hasShieldSubscription: PropTypes.bool,
+    getSubscriptions: PropTypes.func,
   };
 
   state = {
@@ -167,6 +169,10 @@ export default class SecurityTab extends PureComponent {
       const marketingConsentFromRemote = await this.props.getMarketingConsent();
       // Update marketing consent in the store
       this.props.setDataCollectionForMarketing(marketingConsentFromRemote);
+    }
+
+    if (!this.props.hasShieldSubscription) {
+      await this.props.getSubscriptions();
     }
   }
 
@@ -355,7 +361,7 @@ export default class SecurityTab extends PureComponent {
 
   renderSecurityAlertsToggle() {
     const { t } = this.context;
-    const { securityAlertsEnabled } = this.props;
+    const { securityAlertsEnabled, hasShieldSubscription } = this.props;
 
     return (
       <>
@@ -396,6 +402,7 @@ export default class SecurityTab extends PureComponent {
                 onToggle={this.toggleSecurityAlert.bind(this)}
                 offLabel={t('off')}
                 onLabel={t('on')}
+                disabled={hasShieldSubscription}
               />
             </div>
           </Box>
@@ -406,7 +413,8 @@ export default class SecurityTab extends PureComponent {
 
   renderPhishingDetectionToggle() {
     const { t } = this.context;
-    const { usePhishDetect, setUsePhishDetect } = this.props;
+    const { usePhishDetect, setUsePhishDetect, hasShieldSubscription } =
+      this.props;
 
     return (
       <Box
@@ -430,9 +438,15 @@ export default class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={usePhishDetect}
-            onToggle={(value) => setUsePhishDetect(!value)}
+            onToggle={(value) => {
+              if (hasShieldSubscription) {
+                return;
+              }
+              setUsePhishDetect(!value);
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={hasShieldSubscription}
           />
         </div>
       </Box>
@@ -1154,7 +1168,10 @@ export default class SecurityTab extends PureComponent {
    */
   toggleSecurityAlert(oldValue) {
     const newValue = !oldValue;
-    const { setSecurityAlertsEnabled } = this.props;
+    const { setSecurityAlertsEnabled, hasShieldSubscription } = this.props;
+    if (hasShieldSubscription) {
+      return;
+    }
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -1171,6 +1188,7 @@ export default class SecurityTab extends PureComponent {
       useExternalServices,
       toggleExternalServices,
       setBasicFunctionalityModalOpen,
+      hasShieldSubscription,
     } = this.props;
 
     return (
@@ -1196,6 +1214,9 @@ export default class SecurityTab extends PureComponent {
             <ToggleButton
               value={useExternalServices}
               onToggle={() => {
+                if (hasShieldSubscription) {
+                  return;
+                }
                 if (useExternalServices) {
                   // If we are going to be disabling external services, then we want to show the "turn off" warning modal
                   setBasicFunctionalityModalOpen();
@@ -1219,6 +1240,7 @@ export default class SecurityTab extends PureComponent {
               }}
               offLabel={t('off')}
               onLabel={t('on')}
+              disabled={hasShieldSubscription}
             />
           </Box>
           <Text marginBottom={2} color={TextColor.textAlternative}>

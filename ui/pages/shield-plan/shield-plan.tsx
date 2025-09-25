@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
@@ -9,7 +9,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Content,
@@ -62,7 +62,11 @@ import {
   useSubscriptionPricing,
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
-import { startSubscriptionWithCard } from '../../store/actions';
+import {
+  setSecurityAlertsEnabled,
+  setUsePhishDetect,
+  startSubscriptionWithCard,
+} from '../../store/actions';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -72,6 +76,15 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { useAsyncCallback } from '../../hooks/useAsync';
+import {
+  getIsSecurityAlertsEnabled,
+  getUsePhishDetect,
+} from '../../selectors/selectors';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -80,6 +93,10 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const securityAlertsEnabled = useSelector(getIsSecurityAlertsEnabled);
+  const usePhishDetect = useSelector(getUsePhishDetect);
 
   const {
     subscriptions,
@@ -95,10 +112,34 @@ const ShieldPlan = () => {
 
   useEffect(() => {
     if (shieldSubscription) {
+      // set security alerts enabled to true
+      if (!securityAlertsEnabled) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            blockaid_alerts_enabled: true,
+          },
+        });
+        setSecurityAlertsEnabled(true);
+      }
+
+      // set phishing detection to true
+      if (!usePhishDetect) {
+        dispatch(setUsePhishDetect(true));
+      }
       // redirect to subscription settings page if user already has a subscription
       navigate(TRANSACTION_SHIELD_ROUTE);
     }
-  }, [navigate, shieldSubscription]);
+  }, [
+    dispatch,
+    navigate,
+    securityAlertsEnabled,
+    shieldSubscription,
+    trackEvent,
+    usePhishDetect,
+  ]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
     RECURRING_INTERVALS.year,

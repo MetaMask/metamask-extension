@@ -23,6 +23,7 @@ import {
   getMarketingConsent,
   setMarketingConsent,
   setParticipateInMetaMetrics,
+  getSubscriptions,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -37,6 +38,7 @@ import {
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getUserSubscriptions } from '../../../selectors/subscription';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -61,12 +63,19 @@ const mapStateToProps = (state) => {
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
+  const { subscriptions } = getUserSubscriptions(state);
+  // get shield subscription
+  const shieldSubscription = subscriptions.find((subscription) =>
+    subscription.products.some((product) => product.name === 'shield'),
+  );
+
   return {
     networkConfigurations,
     participateInMetaMetrics: getParticipateInMetaMetrics(state),
     dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,
     useTokenDetection,
+    hasShieldSubscription: shieldSubscription !== undefined,
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useSafeChainsListValidation,
@@ -129,6 +138,7 @@ const mapDispatchToProps = (dispatch) => {
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
     getMarketingConsent: () => getMarketingConsent(),
     setMarketingConsent: (value) => dispatch(setMarketingConsent(value)),
+    getSubscriptions: async () => await dispatch(getSubscriptions()),
   };
 };
 
