@@ -171,6 +171,7 @@ import {
   setTheme,
   showAppHeader,
 } from './utils';
+import { isGatorPermissionsViewEnabled } from '../../../shared/modules/environment';
 
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
@@ -291,13 +292,16 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
-// const GatorPermissionsPage = mmLazy(
-//   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-//   (() =>
-//     import(
-//       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-//     )) as unknown as DynamicImportType,
-// );
+
+///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
+const GatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+///: END:ONLY_INCLUDE_IF
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -545,6 +549,19 @@ export default function Routes() {
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
+    // the permissionsComponent will use GatorPermissionsPage only if the
+    // gator-permissions feature is enabled and the
+    // isGatorPermissionsFeatureEnabled flag is true this allows the
+    // gator-permissions feature to be enabled while the GatorPermissionsPage is
+    // still in development
+    let permissionsComponent = PermissionsPage;
+
+    ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
+    if (isGatorPermissionsViewEnabled()) {
+      permissionsComponent = GatorPermissionsPage;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
     const routes = (
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
@@ -647,13 +664,7 @@ export default function Routes() {
           />
           <Authenticated
             path={PERMISSIONS}
-            component={
-              // TODO: enable this when gator permission page is implemented
-              // isGatorPermissionsFeatureEnabled()
-              //   ? GatorPermissionsPage
-              //   : PermissionsPage
-              PermissionsPage
-            }
+            component={permissionsComponent}
             exact
           />
           <Authenticated

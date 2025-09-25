@@ -19,6 +19,8 @@ export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };
 
-export const isGatorPermissionsFeatureEnabled = (): boolean => {
-  return process.env.GATOR_PERMISSIONS_ENABLED?.toString() === 'true';
+export const isGatorPermissionsViewEnabled = (): boolean => {
+  return (
+    process.env.GATOR_GRANTED_PERMISSIONS_VIEW_ENABLED?.toString() === 'true'
+  );
 };

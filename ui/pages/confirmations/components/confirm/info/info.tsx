@@ -4,7 +4,6 @@ import { useConfirmContext } from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -39,11 +38,10 @@ const Info = () => {
           return TypedSignV1Info;
         }
         if (signatureRequest?.decodedPermission) {
-          if (!isGatorPermissionsFeatureEnabled()) {
-            throw new Error('Gator permissions feature is not enabled');
-          }
-
+          ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
           return TypedSignPermissionInfo;
+          ///: END:ONLY_INCLUDE_IF
+          throw new Error('Gator permissions feature is not enabled');
         }
         return TypedSignInfo;
       },

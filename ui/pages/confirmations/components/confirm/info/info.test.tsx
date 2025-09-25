@@ -11,7 +11,7 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { isGatorPermissionsViewEnabled } from '../../../../../../shared/modules/environment';
 import Info from './info';
 
 jest.mock(
@@ -80,7 +80,7 @@ describe('Info', () => {
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    jest.mocked(isGatorPermissionsViewEnabled).mockReturnValue(false);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);

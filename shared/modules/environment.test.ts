@@ -1,5 +1,5 @@
 import { ENVIRONMENT } from '../../development/build/constants';
-import { isGatorPermissionsFeatureEnabled, isProduction } from './environment';
+import { isGatorPermissionsViewEnabled, isProduction } from './environment';
 
 describe('isProduction', () => {
   let originalMetaMaskEnvironment: string | undefined;
@@ -29,18 +29,18 @@ describe('isProduction', () => {
 });
 
 describe('isGatorPermissionsFeatureEnabled', () => {
-  it('should return true when GATOR_PERMISSIONS_ENABLED is "true"', () => {
-    process.env.GATOR_PERMISSIONS_ENABLED = 'true';
-    expect(isGatorPermissionsFeatureEnabled()).toBe(true);
+  it('should return true when GATOR_GRANTED_PERMISSIONS_VIEW_ENABLED is "true"', () => {
+    process.env.GATOR_GRANTED_PERMISSIONS_VIEW_ENABLED = 'true';
+    expect(isGatorPermissionsViewEnabled()).toBe(true);
   });
 
-  it('should return false when GATOR_PERMISSIONS_ENABLED is "false"', () => {
-    process.env.GATOR_PERMISSIONS_ENABLED = 'false';
-    expect(isGatorPermissionsFeatureEnabled()).toBe(false);
+  it('should return false when GATOR_GRANTED_PERMISSIONS_VIEW_ENABLED is "false"', () => {
+    process.env.GATOR_GRANTED_PERMISSIONS_VIEW_ENABLED = 'false';
+    expect(isGatorPermissionsViewEnabled()).toBe(false);
   });
 
-  it('should return false when GATOR_PERMISSIONS_ENABLED is undefined', () => {
-    delete process.env.GATOR_PERMISSIONS_ENABLED;
-    expect(isGatorPermissionsFeatureEnabled()).toBe(false);
+  it('should return false when GATOR_GRANTED_PERMISSIONS_VIEW_ENABLED is undefined', () => {
+    delete process.env.GATOR_GRANTED_PERMISSIONS_VIEW_ENABLED;
+    expect(isGatorPermissionsViewEnabled()).toBe(false);
   });
 });
