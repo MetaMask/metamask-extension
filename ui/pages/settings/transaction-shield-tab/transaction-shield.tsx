@@ -318,6 +318,22 @@ const TransactionShield = () => {
       flexDirection={FlexDirection.Column}
       padding={4}
     >
+      <Box
+        className="transaction-shield-page__notification-banner"
+        backgroundColor={BackgroundColor.warningMuted}
+        paddingTop={1}
+        paddingBottom={1}
+        paddingInline={4}
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        gap={2}
+        marginBottom={4}
+      >
+        <Icon name={IconName.Info} size={IconSize.Lg} />
+        <Text variant={TextVariant.bodySm}>
+          {t('shieldTxMembershipCancelNotification', ['April 8, 2025'])}
+        </Text>
+      </Box>
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box

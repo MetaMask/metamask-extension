@@ -45,4 +45,11 @@
   .warning-button:hover {
     color: var(--color-warning-default);
   }
+
+  &__notification-banner {
+    margin-inline: 0;
+    @include design-system.screen-sm-max {
+      margin-inline: -16px;
+    }
+  }
 }

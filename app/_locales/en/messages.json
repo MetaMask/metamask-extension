@@ -5756,6 +5756,10 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
+  "shieldTxMembershipCancelNotification": {
+    "message": "Your membership will be cancelled on $1.",
+    "description": "The $1 is the date"
+  },
   "shieldTxMembershipErrorAddFunds": {
     "message": "Add funds"
   },
