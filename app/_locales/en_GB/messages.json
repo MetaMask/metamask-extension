@@ -2727,6 +2727,9 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hexDataPlaceholder": {
+    "message": "Enter hex data (optional)"
+  },
   "hiddenAccounts": {
     "message": "Hidden accounts"
   },
