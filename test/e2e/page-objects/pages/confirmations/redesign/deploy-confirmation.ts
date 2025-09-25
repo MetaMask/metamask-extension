@@ -20,7 +20,7 @@ class ContractDeploymentConfirmation extends Confirmation {
     this.deploymentSiteInfo = {
       css: 'p',
       text: 'This site wants you to deploy a contract',
-    }
+    };
   }
 
   async checkTitle() {
