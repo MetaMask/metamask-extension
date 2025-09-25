@@ -45,7 +45,7 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
         badge={
           nftData.chainId ? (
             <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
+              size={AvatarNetworkSize.Sm}
               name={nftData.networkName ?? ''}
               src={nftData.networkImage}
             />
@@ -114,7 +114,7 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
         badge={
           chainId ? (
             <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
+              size={AvatarNetworkSize.Sm}
               name={networkName || chainNetworkNameAndImage?.networkName || ''}
               src={networkImage || chainNetworkNameAndImage?.networkImage}
             />
