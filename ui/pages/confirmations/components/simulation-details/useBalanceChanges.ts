@@ -190,7 +190,7 @@ export const useBalanceChanges = ({
 
   const erc20Decimals = useAsyncResultOrThrow(
     () => fetchAllErc20Decimals(erc20TokenAddresses, chainId),
-    [JSON.stringify(erc20TokenAddresses)],
+    [chainId, JSON.stringify(erc20TokenAddresses)],
   );
 
   const erc20FiatRates = useAsyncResultOrThrow(
