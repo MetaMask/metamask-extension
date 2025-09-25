@@ -529,8 +529,13 @@ const TransactionShield = () => {
             'shield-tx-membership-cancel-button',
           )}
         {isCancelled &&
-          buttonRow(t('shieldTxMembershipRenew'), () => {
-            // TODO: handle renew membership
+          buttonRow(t('shieldTxMembershipRenew'), async () => {
+            if (isCryptoPayment) {
+              // TODO: handle renew membership crypto
+              console.log('renew membership');
+            } else {
+              await executeUpdateSubscriptionCardPaymentMethod();
+            }
           })}
       </Box>
 
