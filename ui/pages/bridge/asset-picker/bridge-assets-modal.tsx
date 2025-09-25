@@ -122,13 +122,14 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
             autoFocus
           />
         </Box>
-        <Box padding={4} style={{ overflowY: 'auto' }}>
+        <Box paddingTop={4} paddingBottom={4} style={{ overflowY: 'auto' }}>
           <BridgeAssetList
             isLoading={isLoading}
             isLoadingMore={isLoadingMore}
             assets={combinedAssets}
             hasMore={hasMore}
             onLoadMore={handleLoadMore}
+            onAssetSelect={selectAsset}
           />
         </Box>
       </ModalContent>

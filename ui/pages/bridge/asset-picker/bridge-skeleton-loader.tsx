@@ -5,7 +5,7 @@ import { Column, Row } from '../layout';
 
 export const BridgeSkeletonLoader = () => {
   return (
-    <Row gap={2} alignItems={AlignItems.center}>
+    <Row gap={2} alignItems={AlignItems.center} paddingLeft={4} paddingRight={4} paddingTop={2} paddingBottom={2}>
       <Skeleton
         borderRadius={BorderRadius.full}
         height={32}

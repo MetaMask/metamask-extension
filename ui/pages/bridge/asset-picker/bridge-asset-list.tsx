@@ -17,6 +17,7 @@ interface AssetListProps {
   isLoadingMore: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
+  onAssetSelect: (asset: Asset) => void;
 }
 
 const DefaultSkeletonLoader = () => {
@@ -45,7 +46,7 @@ const LoadingIndicator = () => {
   );
 }
 
-export const BridgeAssetList = ({ isLoading, isLoadingMore, assets, hasMore, onLoadMore }: AssetListProps) => {
+export const BridgeAssetList = ({ isLoading, isLoadingMore, assets, hasMore, onLoadMore, onAssetSelect }: AssetListProps) => {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
@@ -87,7 +88,7 @@ export const BridgeAssetList = ({ isLoading, isLoadingMore, assets, hasMore, onL
   return (
     <Column>
       {assets.map((asset) => (
-        <AssetItem key={asset.assetId} asset={asset} />
+        <AssetItem key={asset.assetId} asset={asset} onClick={() => onAssetSelect(asset)} />
       ))}
       {isLoadingMore && <LoadingIndicator/>}
       {hasMore && <div ref={loadMoreRef} style={{ height: '20px' }} />}

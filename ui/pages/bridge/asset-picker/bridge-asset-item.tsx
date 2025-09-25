@@ -27,11 +27,18 @@ export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
 
   return (
     <Box
+      paddingLeft={4}
+      paddingRight={4}
       paddingTop={2}
       paddingBottom={2}
-      backgroundColor={BackgroundColor.transparent}
       borderRadius={BorderRadius.SM}
-      style={{ cursor: onClick ? 'pointer' : 'default' }}
+      style={{ cursor: 'pointer', transition: 'background-color 0.2s ease' }}
+      onMouseEnter={(e) => {
+        e.currentTarget.classList.add('mm-box--background-color-primary-muted');
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.classList.remove('mm-box--background-color-primary-muted');
+      }}
       onClick={onClick}
     >
       <Row alignItems={AlignItems.center} justifyContent={JustifyContent.spaceBetween}>
