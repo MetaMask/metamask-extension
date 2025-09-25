@@ -208,10 +208,14 @@ const TransactionShield = () => {
         />
       );
     }
-    if (membershipErrorState === MEMBERSHIP_ERROR_STATES.ENDING) {
+    if (shieldSubscription?.cancelAtPeriodEnd) {
       return (
         <BannerAlert
-          description={t('shieldTxMembershipErrorEnding', ['April 18'])}
+          description={t('shieldTxMembershipErrorEnding', [
+            getShortDateFormatterV2().format(
+              new Date(shieldSubscription.currentPeriodEnd),
+            ),
+          ])}
           severity={BannerAlertSeverity.Warning}
           marginBottom={4}
           actionButtonLabel={t('shieldTxMembershipErrorRenew')}
@@ -238,7 +242,7 @@ const TransactionShield = () => {
     }
 
     return null;
-  }, [membershipErrorState, t]);
+  }, [membershipErrorState, shieldSubscription, t]);
 
   const paymentMethod = useMemo(() => {
     if (membershipErrorState === MEMBERSHIP_ERROR_STATES.PAUSED) {
