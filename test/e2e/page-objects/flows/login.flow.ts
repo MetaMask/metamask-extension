@@ -43,24 +43,6 @@ export const loginWithBalanceValidation = async (
   await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
 
-  let skeleton:
-    | (WebElement & {
-        waitForElementState: (state: string, timeout: number) => Promise<void>;
-      })
-    | undefined;
-  try {
-    skeleton = await homePage.getSkeleton();
-  } catch (error) {
-    if (error instanceof webDriverErrors.WebDriverError) {
-      // ignore
-    } else {
-      throw error;
-    }
-  }
-  if (skeleton) {
-    await homePage.waitForSkeletonToDisappear(skeleton);
-  }
-
   // Verify the expected balance on the homepage
   if (localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(localNode);
