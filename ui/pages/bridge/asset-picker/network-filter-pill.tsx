@@ -36,6 +36,7 @@ export const NetworkFilterPill = ({ selected, network, onSelect }: NetworkFilter
         flex: '1 1 0',
         minWidth: 'fit-content',
         cursor: 'pointer',
+        flexShrink: 0,
       }}
     >
       <Column gap={1}>
