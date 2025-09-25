@@ -67,7 +67,10 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  SETTINGS_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+} from '../../helpers/constants/routes';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -92,7 +95,8 @@ const ShieldPlan = () => {
 
   useEffect(() => {
     if (shieldSubscription) {
-      navigate(-1);
+      // redirect to subscription settings page if user already has a subscription
+      navigate(TRANSACTION_SHIELD_ROUTE);
     }
   }, [navigate, shieldSubscription]);
 
@@ -195,7 +199,9 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const handleBack = () => {
-    navigate(DEFAULT_ROUTE);
+    // transaction shield settings page has guard to redirect to current shield plan page if there is no subscription
+    // which create a loop so we just back to settings page
+    navigate(SETTINGS_ROUTE, { replace: true });
   };
 
   const rowsStyleProps: BoxProps<'div'> = {
