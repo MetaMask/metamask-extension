@@ -79,11 +79,7 @@ export const BalanceChangeRow: React.FC<{
       return null;
     }
 
-    if (!confirmationId) {
-      return defaultTextComponent;
-    }
-
-    if (hasIncomingTokens && isFirstRow) {
+    if (hasIncomingTokens && isFirstRow && confirmationId) {
       return (
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.IncomingTokens}

@@ -9,8 +9,6 @@ import { RowAlertKey } from '../../../../components/app/confirm/info/row/constan
 import { useConfirmContext } from '../../context/confirm';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// eslint-disable-next-line import/no-restricted-paths
-import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 import { useTokenTrustSignalsForAddresses } from '../../../../hooks/useTokenTrustSignals';
 
 const EMPTY_ALERTS: Alert[] = [];
@@ -45,7 +43,7 @@ export function useTokenTrustSignalAlerts(): Alert[] {
   );
 
   return useMemo(() => {
-    if (!isSecurityAlertsAPIEnabled() || !incomingTokenAddresses?.length) {
+    if (!incomingTokenAddresses?.length) {
       return EMPTY_ALERTS;
     }
 

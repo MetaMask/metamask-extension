@@ -5,7 +5,6 @@ import nock from 'nock';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import * as securityAlertsApi from '../../../../app/scripts/lib/ppom/security-alerts-api';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
@@ -30,14 +29,8 @@ jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
   }),
 }));
 
-jest.mock('../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
-  ...jest.requireActual('../../../../app/scripts/lib/ppom/security-alerts-api'),
-  isSecurityAlertsAPIEnabled: jest.fn(),
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const mockedAssetDetails = jest.mocked(useAssetDetails);
-const mockedSecurityAlertsApi = jest.mocked(securityAlertsApi);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -300,7 +293,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
-    mockedSecurityAlertsApi.isSecurityAlertsAPIEnabled.mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -1016,49 +1008,5 @@ describe('Contract Interaction Confirmation Alerts', () => {
       );
       expect(newAlertContent.textContent).not.toBe(initialText);
     }
-  });
-
-  it('does not display token trust signals when security alerts API is disabled', async () => {
-    // Temporarily disable the security alerts API
-    mockedSecurityAlertsApi.isSecurityAlertsAPIEnabled.mockReturnValue(false);
-
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedContractInteractionTransaction(
-        account.address,
-      );
-
-    const transactionWithMaliciousToken = addTokenBalanceChangesToTransaction(
-      mockedMetaMaskState.transactions[0],
-      ['0x1111111111111111111111111111111111111111'], // Malicious token
-    );
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedMetaMaskState,
-          transactions: [transactionWithMaliciousToken],
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    // Should not have any token trust signal alerts when API is disabled
-    const alerts = screen.queryAllByTestId('inline-alert');
-    if (alerts.length > 0) {
-      fireEvent.click(alerts[0]);
-      const alertTexts = screen.queryAllByText(
-        /token.*malicious|malicious.*token|token.*suspicious|suspicious.*token/iu,
-      );
-      expect(alertTexts).toHaveLength(0);
-    }
-
-    // Re-enable for other tests
-    mockedSecurityAlertsApi.isSecurityAlertsAPIEnabled.mockReturnValue(true);
   });
 });
