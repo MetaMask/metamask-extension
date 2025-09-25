@@ -721,6 +721,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {
@@ -802,6 +803,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {
@@ -877,6 +879,7 @@ describe('AppStateController', () => {
               "enableEnforcedSimulations": true,
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -952,6 +955,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippage": 10,
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
+              "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
               "lastInteractedConfirmationInfo": {

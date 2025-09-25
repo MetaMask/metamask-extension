@@ -12,14 +12,16 @@ import {
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller';
 import { Hex } from '@metamask/utils';
+import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   SmartTransactionHookMessenger,
-  publishSmartTransactionHook,
-  publishBatchSmartTransactionHook,
+  publishBatchHook,
+  publishHook,
 } from '../../lib/smart-transaction/smart-transactions';
-import { trace } from '../../../../shared/lib/trace';
-
+import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
 import {
   handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
@@ -30,16 +32,13 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
 } from '../../lib/transaction/metrics';
+import { ControllerFlatState } from '../controller-list';
+import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
   ControllerInitFunction,
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
-import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
-import { ControllerFlatState } from '../controller-list';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
-import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
-import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -153,7 +152,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       // @ts-expect-error Controller type does not support undefined return value
       publish: (transactionMeta, signedTx) =>
-        publishSmartTransactionHook({
+        publishHook({
           flatState: getFlatState(),
           initMessenger,
           signedTx,
@@ -162,7 +161,7 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionMeta,
         }),
       publishBatch: async (_request: PublishBatchHookRequest) =>
-        await publishBatchSmartTransactionHook({
+        await publishBatchHook({
           transactionController: controller,
           smartTransactionsController: smartTransactionsController(),
           hookControllerMessenger:

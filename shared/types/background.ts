@@ -126,6 +126,7 @@ export type ControllerStatePropertiesEnumerated = {
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
+  hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
@@ -176,7 +177,6 @@ export type ControllerStatePropertiesEnumerated = {
   metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
   participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
   segmentApiCalls: MetaMetricsControllerState['segmentApiCalls'];
-  isSocialLoginFlowEnabledForMetrics: MetaMetricsControllerState['isSocialLoginFlowEnabledForMetrics'];
   traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
@@ -256,6 +256,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentLocale: PreferencesControllerState['currentLocale'];
   forgottenPassword: PreferencesControllerState['forgottenPassword'];
   preferences: PreferencesControllerState['preferences'];
+  referrals: PreferencesControllerState['referrals'];
   useAddressBarEnsResolution: PreferencesControllerState['useAddressBarEnsResolution'];
   ledgerTransportType: PreferencesControllerState['ledgerTransportType'];
   snapRegistryList: PreferencesControllerState['snapRegistryList'];

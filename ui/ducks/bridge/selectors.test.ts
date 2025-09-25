@@ -502,16 +502,16 @@ describe('Bridge selectors', () => {
       const result = getToToken(state as never);
 
       expect(result).toStrictEqual({
-        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
-        chainId: '0x1',
-        decimals: 6,
+        chainId: 'eip155:1',
+        decimals: 18,
         image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-        name: 'USD Coin',
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
+        name: 'MetaMask USD',
         string: '0',
-        symbol: 'USDC',
+        symbol: 'mUSD',
       });
     });
 

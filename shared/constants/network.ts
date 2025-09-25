@@ -183,6 +183,7 @@ export const CHAIN_IDS = {
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
   MEGAETH_TESTNET: '0x18c6',
+  MEGAETH_MAINNET: '0x10e6',
   XRPLEVM_TESTNET: '0x161c28',
   LENS: '0xe8',
   PLUME: '0x18232',
@@ -201,6 +202,7 @@ export const CHAIN_IDS = {
   ACALA: '0x313',
   ACALA_TESTNET: '0x253',
   KARURA: '0x2ae',
+  HEMI: '0xa867',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -275,6 +277,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   XRPLEVM_TESTNET: '0x161c28',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
+  HYPE: '0x3e7',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -325,6 +328,7 @@ export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 export const MEGAETH_TESTNET_DISPLAY_NAME = 'Mega Testnet';
+export const MEGAETH_MAINNET_DISPLAY_NAME = 'Mega Mainnet';
 export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
@@ -356,6 +360,7 @@ export const FRAX_DISPLAY_NAME = 'Fraxtal';
 export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
+export const HEMI_DISPLAY_NAME = 'Hemi';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -435,6 +440,7 @@ export const CURRENCY_SYMBOLS = {
   FRAX: 'FRAX',
   ACALA: 'ACA',
   KARURA: 'KAR',
+  HEMI: 'ETH',
 } as const;
 
 // Non-EVM currency symbols
@@ -518,6 +524,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   WETHIO: 'ZYN',
   CHZ: 'CHZ',
+  HYPE: 'HYPE',
 };
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -607,6 +614,7 @@ export const SHAPE_SEPOLIA_IMAGE_URL = './images/shape-sepolia.svg';
 export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
+export const MEGAETH_MAINNET_IMAGE_URL = './images/MegaETH-logo-mainnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
@@ -642,6 +650,7 @@ export const ACALA_IMAGE_URL = './images/acala.svg';
 export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
 export const KARURA_IMAGE_URL = './images/karura.svg';
 export const KARURA_TOKEN_IMAGE_URL = './images/karura-token.svg';
+export const HEMI_IMAGE_URL = './images/hemi.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -777,6 +786,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
   [CHAIN_IDS.LISK_SEPOLIA]: LISK_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.LENS]: LENS_DISPLAY_NAME,
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
@@ -797,6 +807,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ACALA]: ACALA_DISPLAY_NAME,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.KARURA]: KARURA_DISPLAY_NAME,
+  [CHAIN_IDS.HEMI]: HEMI_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -926,6 +937,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SHAPE_SEPOLIA,
   [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+  [CHAIN_IDS.MEGAETH_MAINNET]: CURRENCY_SYMBOLS.ETH,
   [CHAIN_IDS.LENS]: CURRENCY_SYMBOLS.LENS,
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
   [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
@@ -948,6 +960,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ACALA]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.ACALA_TESTNET]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.KARURA]: CURRENCY_SYMBOLS.KARURA,
+  [CHAIN_IDS.HEMI]: CURRENCY_SYMBOLS.HEMI,
 } as const;
 
 /**
@@ -963,6 +976,11 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION = {
   [CHAINLIST_CHAIN_IDS_MAP.WETHIO]: [
     {
       currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+    },
+  ],
+  [CHAINLIST_CHAIN_IDS_MAP.HYPE]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.HYPE,
     },
   ],
 };
@@ -1008,6 +1026,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_MAINNET_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
@@ -1108,6 +1127,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ACALA]: ACALA_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_IMAGE_URL,
+  [CHAIN_IDS.HEMI]: HEMI_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1144,6 +1164,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.MEGAETH_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_TOKEN_IMAGE_URL,
   [CHAIN_IDS.B3]: B3_IMAGE_URL,
   [CHAIN_IDS.B3_TESTNET]: B3_IMAGE_URL,
@@ -1184,6 +1205,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ACALA]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 /**
