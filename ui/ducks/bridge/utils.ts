@@ -30,6 +30,22 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
 
+/**
+ * Safely gets the native token name for a given chainId.
+ * Returns undefined if the chainId is not supported by the bridge controller.
+ *
+ * @param chainId - The chain ID to get the native token name for
+ * @returns The human-readable name of the native token, or undefined if not supported
+ */
+export const getNativeTokenName = (chainId: string): string | undefined => {
+  try {
+    return getNativeAssetForChainId(chainId)?.name;
+  } catch {
+    // Return undefined for unsupported chains (e.g., test chains)
+    return undefined;
+  }
+};
+
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
   suggestedMaxFeePerGas: string;
@@ -250,7 +266,7 @@ const createBridgeTokenPayload = (
     name?: string;
     assetId?: string;
   },
-  chainId: ChainId | Hex,
+  chainId: ChainId | Hex | CaipChainId,
 ): TokenPayload['payload'] | null => {
   const { assetId, ...rest } = tokenData;
   return toBridgeToken({
@@ -260,13 +276,10 @@ const createBridgeTokenPayload = (
 };
 
 export const getDefaultToToken = (
-  { chainId: targetChainId }: NetworkConfiguration | AddNetworkFields,
-  fromToken: NonNullable<TokenPayload['payload']>,
+  targetChainId: CaipChainId,
+  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address'>,
 ) => {
-  const commonPair =
-    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[
-      targetChainId as keyof typeof BRIDGE_CHAINID_COMMON_TOKEN_PAIR
-    ];
+  const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
 
   if (commonPair) {
     // If source is native token, default to USDC on same chain

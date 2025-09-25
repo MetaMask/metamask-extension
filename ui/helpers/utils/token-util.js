@@ -259,6 +259,16 @@ export function getTokenFiatAmount(
   return result;
 }
 
+/**
+ * Processes and combines data into a token or NFT details
+ *
+ * @param {string} tokenAddress
+ * @param {string} currentUserAddress
+ * @param {string} transactionData
+ * @param {unknown[]} existingNfts
+ * @param {string} chainId
+ * @returns Token or NFT details
+ */
 export async function getAssetDetails(
   tokenAddress,
   currentUserAddress,
@@ -286,6 +296,9 @@ export async function getAssetDetails(
   // if a tokenId is present check if there is an NFT in state matching the address/tokenId
   // and avoid unnecessary network requests to query token details we already have
   if (existingNfts?.length && tokenId) {
+    /**
+     * @type {import('@metamask/assets-controllers').Nft | undefined}
+     */
     const existingNft = existingNfts.find(
       ({ address, tokenId: _tokenId }) =>
         isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,

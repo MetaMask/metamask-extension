@@ -71,6 +71,8 @@ export const BridgeInputGroup = ({
   isMultiselectEnabled,
   onBlockExplorerClick,
   buttonProps,
+  containerProps = {},
+  isDestinationToken = false,
 }: {
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
@@ -82,6 +84,8 @@ export const BridgeInputGroup = ({
   >;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
+  containerProps?: React.ComponentProps<typeof Column>;
+  isDestinationToken?: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   | 'networkProps'
@@ -168,7 +172,7 @@ export const BridgeInputGroup = ({
   };
 
   return (
-    <Column paddingInline={6} gap={1}>
+    <Column gap={1} {...containerProps}>
       <Row gap={4}>
         <TextField
           inputProps={{
@@ -239,6 +243,7 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
+          isDestinationToken={isDestinationToken}
         >
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (

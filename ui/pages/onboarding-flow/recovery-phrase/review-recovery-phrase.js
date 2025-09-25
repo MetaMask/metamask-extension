@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,7 +40,7 @@ import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -61,13 +61,17 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
-      history.replace(
-        `${ONBOARDING_REVEAL_SRP_ROUTE}/${
-          nextRouteQueryString ? `?${nextRouteQueryString}` : ''
-        }`,
+      navigate(
+        {
+          pathname: ONBOARDING_REVEAL_SRP_ROUTE,
+          search: nextRouteQueryString ? `?${nextRouteQueryString}` : '',
+        },
+        {
+          replace: true,
+        },
       );
     }
-  }, [history, secretRecoveryPhrase, nextRouteQueryString]);
+  }, [navigate, secretRecoveryPhrase, nextRouteQueryString]);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -80,12 +84,11 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       },
     });
 
-    history.push(
-      `${ONBOARDING_CONFIRM_SRP_ROUTE}${
-        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
-      }`,
-    );
-  }, [hdEntropyIndex, history, trackEvent, nextRouteQueryString]);
+    navigate({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: nextRouteQueryString ? `?${nextRouteQueryString}` : '',
+    });
+  }, [hdEntropyIndex, navigate, trackEvent, nextRouteQueryString]);
 
   const handleOnShowSrpDetailsModal = useCallback(() => {
     trackEvent({
@@ -123,7 +126,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="review-srp-back-button"
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             ariaLabel={t('back')}
           />
         </Box>

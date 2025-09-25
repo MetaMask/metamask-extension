@@ -414,9 +414,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga bayarin sa network."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Ang mga presyo ng gas ay mataas at ang pagtantiya ay hindi gaanong tumpak."
-  },
   "alertMessageNoGasPrice": {
     "message": "Hindi tayo makakapagpatuloy sa transaksyong ito hanggang sa manwal mong i-update ang bayad."
   },
@@ -461,9 +458,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Hindi kinakailangang pahintulot"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Busy ang network"
   },
   "alertReasonNoGasPrice": {
     "message": "Hindi available ang pagtantiya sa bayad"
@@ -1032,8 +1026,8 @@
   "busy": {
     "message": "Busy"
   },
-  "buyAndSell": {
-    "message": "Bumili/Magbenta"
+  "buy": {
+    "message": "Bumili"
   },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
@@ -1841,9 +1835,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Walang nahanap na katugmang account"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Tanggapin sa"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Tatanggap na address o ENS"
@@ -2681,12 +2672,6 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "howQuotesWork": {
-    "message": "Paano gumagana ang mga quote"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Ang quote na ito ang may pinakamainam na return sa mga quote na hinanap namin. Batay ito sa rate ng pag-swap, na kabilang ang mga bayad sa pag-bridge at $1% na bayad sa MetaMask na binawasan ng mga bayad sa gas. Nakadepende ang mga bayad sa gas sa kung gaano kaabala ang network at kung gaano kakumplikado ang transaksyon."
-  },
   "id": {
     "message": "Id"
   },
@@ -2946,9 +2931,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Isang nakaraang transaksyon ay pinipirmahan o ipinapasa"
-  },
-  "jazzAndBlockies": {
-    "message": "Ang mga Jazzicon at Blockies ay dalawang magkaibang istilo ng mga natatanging icon na makakatulong sa iyong makilala ang isang account sa isang sulyap."
   },
   "jazzicons": {
     "message": "Mga Jazzicon"
@@ -3357,15 +3339,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Idinadagdag mo ang network na ito sa MetaMask at binibigyan ng pahintulot ang site na ito na gamitin ito."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridging"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Quote"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Oras"
-  },
   "multipleSnapConnectionWarning": {
     "message": "Si $1 ay gustong gumamit ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3729,9 +3702,6 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noActivity": {
-    "message": "Wala pang aktibidad"
-  },
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },
@@ -3741,17 +3711,11 @@
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng palitan"
   },
-  "noDeFiPositions": {
-    "message": "Hindi makita ang hinahanap mo?"
-  },
   "noDomainResolution": {
     "message": "Walang resolusyon para sa ibinigay na domain."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
-  },
-  "noNFTs": {
-    "message": "Wala pang mga NFT"
   },
   "noNetworksAvailable": {
     "message": "Walang available na mga network"
@@ -4221,13 +4185,6 @@
   "passwordNotLongEnough": {
     "message": "Ang password ay dapat na hindi bababa sa 8 karakter"
   },
-  "passwordStrength": {
-    "message": "Tibay ng password: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Mapapabuti ng matibay na password ang seguridad ng iyong wallet kung sakaling manakaw o makompromiso ang iyong device."
-  },
   "passwordTermsWarning": {
     "message": "Kung makakalimutan ko ang password na ito, hindi ito mare-reset ng MetaMask para sa akin."
   },
@@ -4641,9 +4598,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Iminumungkahing Limitasyon sa Pag-apruba"
-  },
-  "protocolNotSupported": {
-    "message": "Maaaring hindi pa namin sinusuportahan ang iyong protocol."
   },
   "provide": {
     "message": "Ibigay"
@@ -7161,9 +7115,6 @@
     "message": "Mag-ingat sa $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Madali"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7182,15 +7133,6 @@
   "welcomeBack": {
     "message": "Maligayang pagbabalik"
   },
-  "welcomeDescription": {
-    "message": "Ang MetaMask ay pinagkakatiwalaan ng milyun-milyon. Ito ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
-  },
-  "welcomeGetStarted": {
-    "message": "Magsimula"
-  },
-  "welcomeTitle": {
-    "message": "Welcome sa MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Magsimula na tayo"
   },
@@ -7199,9 +7141,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Aaprubahan nito ang $1 para sa pag-bridge."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Kakailanganin mong kumpirmahin ang dalawang transaksyon sa iyong hardware wallet."
   },
   "willApproveAmountForSwapping": {
     "message": "Aaprubahan nito ang $1 para sa pag-swap."

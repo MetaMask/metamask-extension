@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
 import { tEn } from '../../../../../lib/i18n-helpers';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
@@ -18,6 +19,8 @@ class TransactionConfirmation extends Confirmation {
   private advancedDetailsDataParam: RawLocator;
 
   private advancedDetailsHexData: RawLocator;
+
+  private alertBanner: RawLocator;
 
   private gasFeeFiatText: RawLocator;
 
@@ -59,6 +62,7 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-data-param-0"]';
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
+    this.alertBanner = '[data-testid="confirm-banner-alert"]';
     this.gasFeeCloseToastMessage =
       '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
@@ -70,6 +74,9 @@ class TransactionConfirmation extends Confirmation {
     this.transactionDetails =
       '[data-testid="confirmation__token-details-section"]';
   }
+
+  private readonly dappNumberConnected = (dappNumber: string) =>
+    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
 
   async checkWalletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
@@ -108,6 +115,21 @@ class TransactionConfirmation extends Confirmation {
   }
 
   /**
+   * Checks if the alert message is displayed on the transaction confirmation page.
+   *
+   * @param message - The message to check.
+   */
+  async checkAlertMessageIsDisplayed(message: string) {
+    console.log(
+      `Checking alert message ${message} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.alertBanner,
+      text: message,
+    });
+  }
+
+  /**
    * Checks if the sender account is displayed in the transaction confirmation page.
    *
    * @param account - The sender account to check.
@@ -132,6 +154,15 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector({
       css: this.transactionDetails,
       text: network,
+    });
+  }
+
+  async checkNoAlertMessageIsDisplayed() {
+    console.log(
+      `Checking no alert message is displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(this.alertBanner, {
+      waitAtLeastGuard: 1000,
     });
   }
 
@@ -301,6 +332,15 @@ class TransactionConfirmation extends Confirmation {
       text: amount,
       tag: 'h2',
     });
+  }
+
+  /**
+   * Check the number of dapps connected
+   *
+   * @param numberOfDapps - The number of dapps connected
+   */
+  async checkNumberOfDappsConnected(numberOfDapps: string) {
+    await this.driver.waitForSelector(this.dappNumberConnected(numberOfDapps));
   }
 }
 

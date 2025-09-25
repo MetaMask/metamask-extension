@@ -5,7 +5,6 @@ import {
   switchToNetworkFromSendFlow,
   searchAndSwitchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
-import { disableStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
@@ -23,10 +22,6 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // disable smart transactions step by step for all bridge flows
-        // we cannot use fixtures because migration 135 overrides the opt in value to true
-        await disableStxSetting(driver);
-
         const homePage = new HomePage(driver);
 
         await bridgeTransaction(
@@ -42,7 +37,7 @@ describe('Bridge tests', function (this: Suite) {
           2,
         );
 
-        // Switch to Linea Mainnet to set it as the selected network
+        // Switch to Linea to set it as the selected network
         // in the network-controller
         await switchToNetworkFromSendFlow(driver, 'Linea');
 
@@ -53,7 +48,7 @@ describe('Bridge tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'USDC',
             fromChain: 'Ethereum',
-            toChain: 'Arbitrum One',
+            toChain: 'Arbitrum',
           },
           3,
         );
@@ -70,11 +65,11 @@ describe('Bridge tests', function (this: Suite) {
           4,
         );
 
-        // Switch to Arbitrum One to set it as the selected network
+        // Switch to Arbitrum to set it as the selected network
         // in the network-controller
         await homePage.checkPageIsLoaded();
         await homePage.goToTokensTab();
-        await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum One');
+        await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum');
         await homePage.goToActivityList();
 
         await bridgeTransaction(

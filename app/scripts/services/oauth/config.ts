@@ -128,7 +128,7 @@ function isProductionBuild() {
 
 /**
  * Check if the build is from the release candidate branch.
- * Example: `Version-v13.0.0` branch.
+ * Example: `release/13.0.0` branch.
  *
  * @returns true if the build is from the release candidate branch, false otherwise
  */
@@ -145,7 +145,7 @@ export function loadOAuthConfig(): OAuthConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
   let buildTypeEnv = BuildTypeEnv.DevMain;
-  if (buildType === 'main') {
+  if (buildType === 'main' || buildType === 'experimental') {
     if (isDevOrTestBuild()) {
       buildTypeEnv = BuildTypeEnv.DevMain;
     } else if (isProductionBuild() || isReleaseCandidateBuild()) {

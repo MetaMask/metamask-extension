@@ -1,32 +1,72 @@
 import React, { useCallback, useState } from 'react';
 
-import { Button } from '../../../../../components/component-library';
-import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
+import LoadingScreen from '../../../../../components/ui/loading-screen';
+import {
+  Box,
+  Button,
+  ButtonSize,
+} from '../../../../../components/component-library';
+import {
+  BackgroundColor,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import { useSendActions } from '../../../hooks/send/useSendActions';
+import { useSendContext } from '../../../context/send';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
-import { Header } from '../header';
 import { Recipient } from '../recipient';
+import { Asset } from '../../../types/send';
 
 export const AmountRecipient = () => {
-  const [to, setTo] = useState<string | undefined>();
-  const { goToPreviousPage } = useNavigateSendPage();
+  const t = useI18nContext();
+  const [amountValueError, setAmountValueError] = useState<string>();
+  const { asset, toResolved } = useSendContext();
   const { handleSubmit } = useSendActions();
+  const { captureAmountSelected } = useAmountSelectionMetrics();
+  const { recipientError } = useRecipientValidation();
+
+  const hasError = Boolean(amountValueError) || Boolean(recipientError);
+  const isDisabled = hasError || !toResolved;
 
   const onClick = useCallback(() => {
-    handleSubmit(to);
-  }, [handleSubmit, to]);
+    handleSubmit();
+    captureAmountSelected();
+  }, [captureAmountSelected, handleSubmit]);
+
+  if (!asset) {
+    return <LoadingScreen />;
+  }
 
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <Recipient setTo={setTo} />
-          <Amount />
-          <Button onClick={goToPreviousPage}>Previous</Button>
-          <Button onClick={onClick}>Continue</Button>
-        </div>
-      </div>
-    </div>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      paddingLeft={4}
+      paddingRight={4}
+      style={{ flex: 1 }}
+    >
+      <Box>
+        <SendHero asset={asset as Asset} />
+        <Recipient />
+        <Amount setAmountValueError={setAmountValueError} />
+      </Box>
+      <Button
+        disabled={isDisabled}
+        onClick={onClick}
+        size={ButtonSize.Lg}
+        backgroundColor={
+          hasError ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
+        }
+        marginBottom={4}
+      >
+        {amountValueError ?? t('continue')}
+      </Button>
+    </Box>
   );
 };

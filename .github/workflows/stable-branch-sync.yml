@@ -5,6 +5,9 @@ on:
     branches:
       - stable
 
+permissions:
+  contents: write
+
 jobs:
   get-next-version:
     name: Get next version vX.Y.Z

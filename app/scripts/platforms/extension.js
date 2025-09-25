@@ -132,12 +132,35 @@ export default class ExtensionPlatform {
           )
         : await this._showConfirmedTransaction(txMeta, rpcPrefs);
     } else if (status === TransactionStatus.failed) {
-      await this._showFailedTransaction(txMeta);
+      if (txMeta.error?.message?.includes('EthAppNftNotSupported')) {
+        await this._showFailedTransaction(
+          txMeta,
+          t('ledgerEthAppNftNotSupportedNotification'),
+        );
+      } else {
+        await this._showFailedTransaction(txMeta);
+      }
     }
   }
 
   addOnRemovedListener(listener) {
     browser.windows.onRemoved.addListener(listener);
+  }
+
+  addTabRemovedListener(listener) {
+    browser.tabs.onRemoved.addListener(listener);
+  }
+
+  removeTabRemovedListener(listener) {
+    browser.tabs.onRemoved.removeListener(listener);
+  }
+
+  addTabUpdatedListener(listener) {
+    browser.tabs.onUpdated.addListener(listener);
+  }
+
+  removeTabUpdatedListener(listener) {
+    browser.tabs.onUpdated.removeListener(listener);
   }
 
   async getAllWindows() {

@@ -60,7 +60,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
         statusCode: 200,
         json: [
           {
-            enableMultichainAccounts: {
+            enableMultichainAccountsState2: {
               enabled: true,
               featureVersion: '2',
               minimumVersion: '12.19.0',
@@ -108,7 +108,9 @@ export async function withMultichainAccountsDesignEnabled(
       dapp: true,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      if (accountType === AccountType.HardwareWallet) {
+      // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
+      // Skip strict balance validation for hardware wallets and state 2 flows.
+      if (accountType === AccountType.HardwareWallet || state === 2) {
         await loginWithoutBalanceValidation(driver);
       } else {
         await loginWithBalanceValidation(driver);

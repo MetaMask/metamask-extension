@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí mạng."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Phí gas cao và ước tính kém chính xác hơn."
-  },
   "alertMessageNoGasPrice": {
     "message": "Chúng tôi không thể tiếp tục giao dịch này cho đến khi bạn cập nhật phí thủ công."
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Quyền không cần thiết"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Mạng đang bận"
   },
   "alertReasonNoGasPrice": {
     "message": "Ước tính phí không có sẵn"
@@ -908,9 +902,6 @@
   "bridgePriceImpact": {
     "message": "Tác động giá"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Tác động giá phản ánh cách lệnh hoán đổi của bạn ảnh hưởng đến giá thị trường của tài sản. Nếu bạn không có đủ tiền để trả phí gas, một phần token nguồn của bạn sẽ tự động được phân bổ để thanh toán phí, điều này sẽ làm giảm số lượng được hoán đổi. MetaMask không ảnh hưởng hoặc kiểm soát tác động giá."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Tác động giá phản ánh cách lệnh hoán đổi của bạn ảnh hưởng đến giá thị trường của tài sản. Tác động giá phụ thuộc vào kích thước giao dịch và tính thanh khoản có sẵn trong nhóm. MetaMask không ảnh hưởng hoặc kiểm soát tác động giá."
   },
@@ -1059,8 +1050,8 @@
   "busy": {
     "message": "Đang bận"
   },
-  "buyAndSell": {
-    "message": "Mua/Bán"
+  "buy": {
+    "message": "Mua"
   },
   "buyMoreAsset": {
     "message": "Mua thêm $1",
@@ -1868,9 +1859,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Không tìm thấy tài khoản trùng khớp"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Nhận tại"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Địa chỉ nhận hoặc ENS"
@@ -2714,12 +2702,6 @@
   "honeypotTitle": {
     "message": "Honey Pot (Bẫy trong bẫy)"
   },
-  "howQuotesWork": {
-    "message": "Cách báo giá hoạt động"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Báo giá này có lợi nhuận cao nhất trong các báo giá mà chúng tôi đã tìm kiếm. Báo giá này dựa trên tỷ giá hoán đổi, bao gồm phí cầu nối và $1% phí MetaMask, trừ phí gas. Phí gas phụ thuộc vào mức độ bận rộn của mạng và độ phức tạp của giao dịch."
-  },
   "id": {
     "message": "ID"
   },
@@ -2979,9 +2961,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Giao dịch trước đó vẫn đang được ký hoặc gửi"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons và Blockies là hai kiểu biểu tượng độc nhất khác nhau giúp bạn nhận ra tài khoản trong nháy mắt."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3390,15 +3369,6 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Bạn đang thêm mạng này vào MetaMask và cấp cho trang web này quyền sử dụng mạng này."
   },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Cầu nối"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Báo giá"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Thời gian"
-  },
   "multipleSnapConnectionWarning": {
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3762,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noActivity": {
-    "message": "Chưa có hoạt động nào"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
@@ -3774,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
-  "noDeFiPositions": {
-    "message": "Không tìm thấy điều bạn đang tìm kiếm?"
-  },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noNetworksAvailable": {
     "message": "Không có mạng nào khả dụng"
@@ -4254,13 +4215,6 @@
   "passwordNotLongEnough": {
     "message": "Mật khẩu phải có ít nhất 8 ký tự"
   },
-  "passwordStrength": {
-    "message": "Độ mạnh của mật khẩu: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Một mật khẩu mạnh có thể giúp tăng cường bảo mật cho ví nếu thiết bị của bạn bị đánh cắp hoặc xâm phạm."
-  },
   "passwordTermsWarning": {
     "message": "Nếu tôi quên mật khẩu này, MetaMask không thể đặt lại mật khẩu cho tôi."
   },
@@ -4678,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
-  },
-  "protocolNotSupported": {
-    "message": "Chúng tôi có thể chưa hỗ trợ giao thức của bạn."
   },
   "provide": {
     "message": "Cung cấp"
@@ -7211,9 +7162,6 @@
     "message": "Hãy cẩn thận với $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Yếu"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7232,15 +7180,6 @@
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại"
   },
-  "welcomeDescription": {
-    "message": "Được hàng triệu người tin tưởng, MetaMask là một ví an toàn giúp mọi người tiếp cận thế giới web3."
-  },
-  "welcomeGetStarted": {
-    "message": "Bắt đầu"
-  },
-  "welcomeTitle": {
-    "message": "Chào mừng đến với MetaMask"
-  },
   "welcomeToMetaMask": {
     "message": "Bắt đầu nào"
   },
@@ -7249,9 +7188,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Thao tác này sẽ phê duyệt $1 để thực hiện cầu nối."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Bạn sẽ cần xác nhận hai giao dịch trên ví cứng của mình."
   },
   "willApproveAmountForSwapping": {
     "message": "Thao tác này sẽ phê duyệt $1 để thực hiện hoán đổi."

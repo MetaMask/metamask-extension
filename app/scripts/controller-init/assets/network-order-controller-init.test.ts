@@ -55,6 +55,7 @@ describe('NetworkOrderControllerInit', () => {
     const mockController = {
       state: mockState,
       setEnabledNetworks: jest.fn(),
+      setEnabledNetworksMultichain: jest.fn(),
     };
 
     const mockNetworkConfigState = {
@@ -131,6 +132,7 @@ describe('NetworkOrderControllerInit', () => {
           },
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
+            [SolScope.Devnet]: true,
           },
         },
       }),
@@ -151,6 +153,7 @@ describe('NetworkOrderControllerInit', () => {
           },
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
+            [SolScope.Devnet]: true,
           },
         },
       }),
@@ -208,6 +211,7 @@ describe('validateAndFixNetworkState', () => {
     const mockController = {
       state: mockState,
       setEnabledNetworks: jest.fn(),
+      setEnabledNetworksMultichain: jest.fn(),
     } as unknown as NetworkOrderController;
 
     return {
