@@ -2,16 +2,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { Box, Icon, IconName, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
