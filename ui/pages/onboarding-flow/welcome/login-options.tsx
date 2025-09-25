@@ -85,6 +85,7 @@ export default function LoginOptions({
       onClose={onClose}
       className="options-modal"
       isClosedOnOutsideClick={false}
+      data-theme={ThemeType.dark}
     >
       <ModalContent size={ModalContentSize.Sm} alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
