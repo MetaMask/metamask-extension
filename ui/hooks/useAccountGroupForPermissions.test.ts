@@ -1017,6 +1017,74 @@ describe('useAccountGroupsForPermissions', () => {
       expect(result.current.selectedAndRequestedAccountGroups).toEqual([]);
     });
 
+    it('excludes selected account group when it does not support requested chains', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedChainIds: CaipChainId[] = [
+        MOCK_SOLANA_CHAIN_ID as CaipChainId,
+      ];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const stateOverrides = {
+        accountTree: {
+          selectedAccountGroup: MOCK_GROUP_ID_1,
+          wallets: {
+            [MOCK_WALLET_ID]: {
+              id: MOCK_WALLET_ID,
+              type: AccountWalletType.Entropy,
+              metadata: {
+                name: 'Test Wallet',
+                entropy: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                },
+              },
+              groups: {
+                [MOCK_GROUP_ID_1]: {
+                  id: MOCK_GROUP_ID_1,
+                  type: AccountGroupType.MultichainAccount,
+                  metadata: {
+                    name: 'EVM Group',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                  },
+                  accounts: [mockEvmAccount1.id],
+                },
+                [MOCK_GROUP_ID_2]: {
+                  id: MOCK_GROUP_ID_2,
+                  type: AccountGroupType.MultichainAccount,
+                  metadata: {
+                    name: 'Solana Group',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 1,
+                    },
+                  },
+                  accounts: [mockSolAccount1.id],
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+        stateOverrides,
+      );
+
+      // Should include Group 2 (supports Solana) but NOT Group 1 (selected but doesn't support Solana)
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_2,
+      );
+    });
+
     it('prioritizes requested account groups over selected account group', () => {
       const emptyPermission = createEmptyPermission();
       const requestedCaipAccountIds: CaipAccountId[] = [

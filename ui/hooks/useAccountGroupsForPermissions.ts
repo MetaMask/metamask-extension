@@ -203,7 +203,16 @@ export const useAccountGroupsForPermissions = (
 
     if (!hasPriorityGroups && hasSupportedGroups) {
       // Only include fallback groups when there are no priority groups
-      const fallbackGroup = selectedAccountGroup || supportedAccountGroups[0];
+      // Use selectedAccountGroup if it supports the request, otherwise use first supported group
+      const selectedSupportsRequest =
+        selectedAccountGroup &&
+        (requestedCaipChainIds.length > 0
+          ? supportsChainIds(selectedAccountGroup, requestedCaipChainIds)
+          : supportsNamespaces(selectedAccountGroup, requestedNamespaceSet));
+
+      const fallbackGroup = selectedSupportsRequest
+        ? selectedAccountGroup
+        : supportedAccountGroups[0];
       if (fallbackGroup) {
         fallbackAccountGroups = [fallbackGroup];
       }
