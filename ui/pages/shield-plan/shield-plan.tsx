@@ -69,6 +69,7 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import {
   SETTINGS_ROUTE,
+  SHIELD_CRYPTO_SUBSCRIPTION_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { useAsyncCallback } from '../../hooks/useAsync';
@@ -156,6 +157,10 @@ const ShieldPlan = () => {
       }
     }, [selectedPlan, selectedPaymentMethod, dispatch, isTrialed]);
 
+  const onClickHandler = () => {
+    navigate(SHIELD_CRYPTO_SUBSCRIPTION_ROUTE, { state: { selectedPaymentMethod } });
+  }
+
   const loading =
     subscriptionsLoading ||
     subscriptionPricingLoading ||
@@ -229,6 +234,7 @@ const ShieldPlan = () => {
       >
         {t('shieldPlanTitle')}
       </Header>
+      <Button onClick={onClickHandler}>Click me</Button>
       {error && <Text variant={TextVariant.bodySm}>{error.message}</Text>}
       {loading && <LoadingScreen />}
       {subscriptionPricing && (

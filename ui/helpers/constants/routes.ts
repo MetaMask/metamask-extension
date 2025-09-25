@@ -136,6 +136,7 @@ export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
+export const SHIELD_CRYPTO_SUBSCRIPTION_ROUTE = '/shield-crypto-subscription';
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
@@ -649,6 +650,11 @@ export const ROUTES = [
   {
     path: SHIELD_PLAN_ROUTE,
     label: 'Shield Plan',
+    trackInAnalytics: false,
+  },
+  {
+    path: SHIELD_CRYPTO_SUBSCRIPTION_ROUTE,
+    label: 'Shield Crypto Subscription Route',
     trackInAnalytics: false,
   },
 ] as const satisfies AppRoute[];

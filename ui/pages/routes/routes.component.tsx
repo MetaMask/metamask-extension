@@ -74,6 +74,7 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
   SHIELD_PLAN_ROUTE,
+  SHIELD_CRYPTO_SUBSCRIPTION_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -171,6 +172,7 @@ import {
   setTheme,
   showAppHeader,
 } from './utils';
+import ShieldCryptoSubscription from '../shield-plan/shield-crypto-subscription-route';
 
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
@@ -716,6 +718,7 @@ export default function Routes() {
             component={NonEvmBalanceCheck}
           />
           <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
+          <Authenticated path={SHIELD_CRYPTO_SUBSCRIPTION_ROUTE} component={ShieldCryptoSubscription} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
