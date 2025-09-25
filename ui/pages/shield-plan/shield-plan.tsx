@@ -67,10 +67,7 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
-import {
-  DEFAULT_ROUTE,
-  TRANSACTION_SHIELD_ROUTE,
-} from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -95,8 +92,7 @@ const ShieldPlan = () => {
 
   useEffect(() => {
     if (shieldSubscription) {
-      // redirect to subscription settings page if user already has a subscription
-      navigate(TRANSACTION_SHIELD_ROUTE);
+      navigate(-1);
     }
   }, [navigate, shieldSubscription]);
 
