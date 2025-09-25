@@ -91,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: ensure metametrics page isn't shown when not expected (#36086)
 - fix: prevent automatic creation of missing evm and Solana accounts when basic functionality toggle is off (#36135)
 - fix: disables marketing toggle if user does not participate in metametrics (#36063)
+- fix: fixes issue where simulations results are shown with wrong decimals on some networks (#36346)
 
 ## [13.3.2]
 ### Fixed
