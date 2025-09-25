@@ -47,8 +47,10 @@ jobs:
             exit 1
           fi
 
-          echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
-          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "branch=${BRANCH}"
+            echo "version=${VERSION}"
+          } >> "${GITHUB_OUTPUT}"
           echo "Using release branch: ${BRANCH}"
           echo "Using version: ${VERSION}"
 
@@ -143,9 +145,11 @@ jobs:
 
           # Set output based on whether we need to create/update any tags
           if [[ "${needs_retag}" == "true" ]] || [[ "${needs_flask_retag}" == "true" ]]; then
-            echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
-            echo "needs_main_tag=${needs_retag}" >> "${GITHUB_OUTPUT}"
-            echo "needs_flask_tag=${needs_flask_retag}" >> "${GITHUB_OUTPUT}"
+            {
+              echo "needs_retag=true"
+              echo "needs_main_tag=${needs_retag}"
+              echo "needs_flask_tag=${needs_flask_retag}"
+            } >> "${GITHUB_OUTPUT}"
           else
             echo "needs_retag=false" >> "${GITHUB_OUTPUT}"
             echo "No action needed for tags."
@@ -188,9 +192,11 @@ jobs:
             echo "Flask tag already exists at HEAD, skipping."
           fi
 
-          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
-          echo "flask_tag=${FLASK_TAG_NAME}" >> "${GITHUB_OUTPUT}"
-          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "tag=${TAG_NAME}"
+            echo "flask_tag=${FLASK_TAG_NAME}"
+            echo "sha=${SHA}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Set output for existing tag
         id: existing-tag-output
@@ -201,9 +207,11 @@ jobs:
           TAG_NAME="v${VERSION}"
           FLASK_TAG_NAME="v${VERSION}-flask.0"
           SHA=$(git rev-parse HEAD)
-          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
-          echo "flask_tag=${FLASK_TAG_NAME}" >> "${GITHUB_OUTPUT}"
-          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "tag=${TAG_NAME}"
+            echo "flask_tag=${FLASK_TAG_NAME}"
+            echo "sha=${SHA}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Set status check on release branch
         env:
