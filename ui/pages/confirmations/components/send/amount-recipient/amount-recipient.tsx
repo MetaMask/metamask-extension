@@ -13,6 +13,7 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Asset } from '../../../types/send';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
@@ -20,17 +21,21 @@ import { useRecipientValidation } from '../../../hooks/send/useRecipientValidati
 import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
-import { Asset } from '../../../types/send';
+import { HexData } from '../hex-data';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
   const [amountValueError, setAmountValueError] = useState<string>();
+  const [hexDataError, setHexDataError] = useState<string>();
   const { asset, toResolved } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
   const { recipientError } = useRecipientValidation();
 
-  const hasError = Boolean(amountValueError) || Boolean(recipientError);
+  const hasError =
+    Boolean(amountValueError) ||
+    Boolean(recipientError) ||
+    Boolean(hexDataError);
   const isDisabled = hasError || !toResolved;
 
   const onClick = useCallback(() => {
@@ -55,6 +60,7 @@ export const AmountRecipient = () => {
         <SendHero asset={asset as Asset} />
         <Recipient />
         <Amount setAmountValueError={setAmountValueError} />
+        <HexData setHexDataError={setHexDataError} />
       </Box>
       <Button
         disabled={isDisabled}
@@ -65,7 +71,7 @@ export const AmountRecipient = () => {
         }
         marginBottom={4}
       >
-        {amountValueError ?? t('continue')}
+        {amountValueError ?? hexDataError ?? t('continue')}
       </Button>
     </Box>
   );
