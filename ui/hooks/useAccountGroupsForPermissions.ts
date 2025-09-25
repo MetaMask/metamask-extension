@@ -159,19 +159,15 @@ export const useAccountGroupsForPermissions = (
     const connectedAccountGroupWithRequested: AccountGroupWithInternalAccounts[] =
       [];
 
-    let accountGroupsWithSelectedAccountGroup: AccountGroupWithInternalAccounts[] =
-      [];
+    let accountGroupsToProcess = accountGroups;
 
     if (selectedAccountGroup) {
-      accountGroupsWithSelectedAccountGroup = Array.from(
+      accountGroupsToProcess = Array.from(
         new Set([selectedAccountGroup, ...accountGroups]),
       );
     }
 
-    (accountGroupsWithSelectedAccountGroup.length
-      ? accountGroupsWithSelectedAccountGroup
-      : accountGroups
-    ).forEach((accountGroup) => {
+    accountGroupsToProcess.forEach((accountGroup) => {
       const isConnected = hasConnectedAccounts(
         accountGroup,
         connectedAccountIds,
