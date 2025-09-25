@@ -1,5 +1,6 @@
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -9,6 +10,8 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/controller-actions/transaction-controller', () => ({
   isAtomicBatchSupported: jest.fn(),
 }));
+
+jest.mock('../../../../shared/modules/selectors');
 
 const renderUseGasIncluded7702 = (
   params: Parameters<typeof useGasIncluded7702>[0],
@@ -21,6 +24,7 @@ const renderUseGasIncluded7702 = (
     },
   );
 };
+
 describe('useGasIncluded7702', () => {
   const mockIsRelaySupported = jest.requireMock(
     '../../../store/actions',
@@ -28,17 +32,21 @@ describe('useGasIncluded7702', () => {
   const mockIsAtomicBatchSupported = jest.requireMock(
     '../../../store/controller-actions/transaction-controller',
   ).isAtomicBatchSupported;
+  const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    mockGetIsSmartTransaction.mockReturnValue(false);
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('returns false when isSendBundleSupportedForChain is true', () => {
+  it('returns false and skips checks when send bundle supported AND Smart Transactions enabled', () => {
+    mockGetIsSmartTransaction.mockReturnValue(true);
+
     const { result } = renderUseGasIncluded7702({
       isSwap: true,
       selectedAccount: { address: '0x123' },
@@ -49,6 +57,30 @@ describe('useGasIncluded7702', () => {
     expect(result.current).toBe(false);
     expect(mockIsAtomicBatchSupported).not.toHaveBeenCalled();
     expect(mockIsRelaySupported).not.toHaveBeenCalled();
+  });
+
+  it('proceeds with checks when send bundle supported BUT Smart Transactions disabled', async () => {
+    mockGetIsSmartTransaction.mockReturnValue(false);
+    mockIsAtomicBatchSupported.mockResolvedValue([
+      { chainId: '0x1', isSupported: true },
+    ]);
+    mockIsRelaySupported.mockResolvedValue(true);
+
+    const { result, waitForNextUpdate } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: true,
+    });
+
+    // initial false
+    expect(result.current).toBe(false);
+
+    await waitForNextUpdate();
+
+    expect(mockIsAtomicBatchSupported).toHaveBeenCalled();
+    expect(mockIsRelaySupported).toHaveBeenCalled();
+    expect(result.current).toBe(true);
   });
 
   it('returns false when smartAccountOptedIn is false', () => {

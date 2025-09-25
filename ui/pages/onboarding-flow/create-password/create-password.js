@@ -252,7 +252,7 @@ export default function CreatePassword({
 
     if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
       if (termsChecked) {
-        await dispatch(setMarketingConsent(true));
+        dispatch(setMarketingConsent(true));
         dispatch(setDataCollectionForMarketing(true));
       }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
