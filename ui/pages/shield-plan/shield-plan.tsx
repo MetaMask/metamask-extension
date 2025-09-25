@@ -10,7 +10,7 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import {
   Content,
   Footer,
@@ -67,7 +67,11 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
-import { TRANSACTION_SHIELD_ROUTE } from '../../helpers/constants/routes';
+import {
+  SETTINGS_ROUTE,
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+} from '../../helpers/constants/routes';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -75,6 +79,7 @@ import { getProductPrice } from './utils';
 
 const ShieldPlan = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -196,7 +201,19 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const handleBack = () => {
-    navigate(-1);
+    // Check if previous page is transaction shield settings or current page
+    // If so, replace with settings page instead of navigate since transaction shield settings page also has guard to redirect to current shield plan page if there is no subscription
+    // which create a loop
+    const prevState = location.state?.fromPage;
+    const isSettingsPage =
+      prevState === TRANSACTION_SHIELD_ROUTE ||
+      location.pathname === SHIELD_PLAN_ROUTE;
+
+    if (isSettingsPage) {
+      navigate(SETTINGS_ROUTE, { replace: true });
+    } else {
+      navigate(-1);
+    }
   };
 
   const rowsStyleProps: BoxProps<'div'> = {
