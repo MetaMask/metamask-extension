@@ -1038,6 +1038,7 @@ export enum MetaMetricsNetworkEventSource {
 export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
+  ActivityTabEmptyState = 'Activity Tab Empty State',
 }
 
 export enum MetaMetricsTokenEventSource {
