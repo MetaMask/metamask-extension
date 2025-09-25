@@ -5,7 +5,6 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
-  SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
