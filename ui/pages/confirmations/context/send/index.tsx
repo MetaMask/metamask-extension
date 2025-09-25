@@ -57,7 +57,7 @@ export const SendContext = createContext<SendContextType>({
   updateTo: () => undefined,
   updateToResolved: () => undefined,
   updateValue: () => undefined,
-  value: undefined,
+  value: '0',
 });
 
 export const SendContextProvider: React.FC<{
@@ -74,7 +74,7 @@ export const SendContextProvider: React.FC<{
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
   const [to, updateTo] = useState<string>();
   const [toResolved, updateToResolved] = useState<string>();
-  const [value, setValue] = useState<string>();
+  const [value, setValue] = useState<string>('0');
   const [currentPage, updateCurrentPage] = useState<SendPages>();
 
   const updateValue = useCallback(

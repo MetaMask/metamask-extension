@@ -5057,6 +5057,9 @@
   "recipientEditAriaLabel": {
     "message": "Edit recipient"
   },
+  "recipientPlaceholder": {
+    "message": "Enter or paste a valid address"
+  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
