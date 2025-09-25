@@ -288,9 +288,9 @@ export const MultichainAccountsConnectPage: React.FC<
       ),
     };
   }, [
-    connectedAccountGroups.length,
+    connectedAccountGroups,
     supportedAccountGroups,
-    requestedCaipAccountIds.length,
+    requestedCaipAccountIds,
     selectedAndRequestedAccountGroups,
     connectedAccountGroupWithRequested,
     caipAccountIdsOfConnectedAccountGroupWithRequested,
