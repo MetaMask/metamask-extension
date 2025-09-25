@@ -111,7 +111,7 @@ const ShieldPlan = () => {
   } = useSubscriptionPricing();
 
   const pricingPlans = useSubscriptionProductPlans(
-    'shield' as ProductType,
+    PRODUCT_TYPES.SHIELD,
     subscriptionPricing,
   );
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
@@ -126,6 +126,7 @@ const ShieldPlan = () => {
   const availableTokenBalances = useAvailableTokenBalances({
     paymentChains: cryptoPaymentMethod?.chains,
     price: selectedProductPrice,
+    productType: PRODUCT_TYPES.SHIELD,
   });
   const hasAvailableToken = availableTokenBalances.length > 0;
 

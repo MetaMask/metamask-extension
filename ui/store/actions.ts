@@ -65,13 +65,12 @@ import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
+  GetCryptoApproveTransactionRequest,
   PaymentType,
   PricingResponse,
-  ProductPrice,
   ProductType,
   RecurringInterval,
   Subscription,
-  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -368,10 +367,9 @@ export function getSubscriptionPricing(): ThunkAction<
  * @param params.tokenPaymentInfo - The token payment info.
  * @returns The subscription crypto approval amount.
  */
-export async function getSubscriptionCryptoApprovalAmount(params: {
-  price: ProductPrice;
-  tokenPaymentInfo: TokenPaymentInfo;
-}): Promise<string> {
+export async function getSubscriptionCryptoApprovalAmount(
+  params: GetCryptoApproveTransactionRequest,
+): Promise<string> {
   return await submitRequestToBackground<string>(
     'getSubscriptionCryptoApprovalAmount',
     [params],
