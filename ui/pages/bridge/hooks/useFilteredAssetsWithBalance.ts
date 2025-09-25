@@ -4,7 +4,7 @@ import { Asset } from "../utils/assets-service";
 import { formatAddressToAssetId, formatChainIdToCaip } from "@metamask/bridge-controller";
 import { CaipAssetId } from "@metamask/utils";
 
-export const useFilteredAssetsWithBalance = (network: string | null, assets: Asset[]) => {
+export const useFilteredAssetsWithBalance = (network: string | null, searchQuery: string, assets: Asset[]) => {
   const { assetsWithBalance } = useMultichainBalances();
 
   const formattedAssetsWithBalance = useMemo(() => assetsWithBalance.map((asset) => ({
@@ -27,7 +27,12 @@ export const useFilteredAssetsWithBalance = (network: string | null, assets: Ass
       });
     }
 
-    console.log("**********BASE ASSETS***********", baseAssets);
+    // if search query is provided, we need to filter the assets by name or symbol
+    if (searchQuery.length > 0) {
+      baseAssets = baseAssets.filter((asset) => {
+        return asset.name.toLowerCase().includes(searchQuery.toLowerCase()) || asset.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+      });
+    }
 
     // if assets are provided, we need to remove the duplicates that already exist in the assetsWithBalance
     if (assets.length > 0) {
@@ -38,7 +43,7 @@ export const useFilteredAssetsWithBalance = (network: string | null, assets: Ass
 
 
     return baseAssets;
-  }, [assetsWithBalance, assets, network]);
+  }, [assetsWithBalance, assets, network, searchQuery]);
 
   return filteredAssets;
 }

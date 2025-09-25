@@ -46,7 +46,7 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
   const [hasMore, setHasMore] = useState(false);
   const [endCursor, setEndCursor] = useState<string | null>(null);
 
-  const combinedAssets = useFilteredAssetsWithBalance(selectedNetwork, assets);
+  const combinedAssets = useFilteredAssetsWithBalance(selectedNetwork, searchQuery, assets);
 
   const fetchAssets = useCallback(async (value: string, selectedNetwork: string | null, currentEndCursor: string | null) => {
     const isLoadingMore = currentEndCursor !== null;
