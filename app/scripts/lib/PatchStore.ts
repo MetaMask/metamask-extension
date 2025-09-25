@@ -57,21 +57,20 @@ export class PatchStore {
     newState: Record<string, Json>;
     patches?: Patch[];
   }) {
-    const sanitizedNewState = eventPatches
-      ? newState
-      : sanitizeUIState(newState);
+    let patches = [];
 
-    const normalizedPatches = this._normalizeEventPatches(
-      eventPatches,
-      oldState,
-    );
+    if (eventPatches) {
+      const normalizedPatches = this._normalizeEventPatches(
+        eventPatches,
+        oldState,
+      );
 
-    const sanitizedPatches = normalizedPatches
-      ? sanitizePatches(normalizedPatches)
-      : undefined;
+      patches = sanitizePatches(normalizedPatches ?? []);
+    } else {
+      const sanitizedNewState = sanitizeUIState(newState);
 
-    const patches =
-      sanitizedPatches ?? this._generatePatches(oldState, sanitizedNewState);
+      patches = this._generatePatches(oldState, sanitizedNewState);
+    }
 
     const isInitialized = Boolean(newState.vault);
 
