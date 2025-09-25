@@ -22,6 +22,12 @@ class TransactionConfirmation extends Confirmation {
 
   private alertBanner: RawLocator;
 
+  private customNonceButton: RawLocator;
+
+  private customNonceInput: RawLocator;
+
+  private customNonceSaveButton: RawLocator;
+
   private gasFeeFiatText: RawLocator;
 
   private gasFeeText: RawLocator;
@@ -63,6 +69,12 @@ class TransactionConfirmation extends Confirmation {
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
     this.alertBanner = '[data-testid="confirm-banner-alert"]';
+    this.customNonceButton = '[data-testid="edit-nonce-icon"]';
+    this.customNonceInput = '[data-testid="custom-nonce-input"]';
+    this.customNonceSaveButton = {
+      tag: 'button',
+      text: 'Save',
+    };
     this.gasFeeCloseToastMessage =
       '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
@@ -168,6 +180,24 @@ class TransactionConfirmation extends Confirmation {
 
   async clickAdvancedDetailsButton() {
     await this.driver.clickElement(this.advancedDetailsButton);
+  }
+
+  async clickCustomNonceButton() {
+    await this.driver.clickElement(this.customNonceButton);
+  }
+
+  async fillCustomNonce(nonce: string) {
+    await this.driver.fill(this.customNonceInput, nonce);
+  }
+
+  async clickCustomNonceSaveButton() {
+    await this.driver.clickElement(this.customNonceSaveButton);
+  }
+
+  async setCustomNonce(nonce: string) {
+    await this.clickCustomNonceButton();
+    await this.fillCustomNonce(nonce);
+    await this.clickCustomNonceSaveButton();
   }
 
   async clickGasFeeTokenPill() {
