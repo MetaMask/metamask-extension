@@ -117,7 +117,7 @@ export default class SecurityTab extends PureComponent {
     socialLoginType: PropTypes.string,
     setMarketingConsent: PropTypes.func,
     getMarketingConsent: PropTypes.func,
-    hasShieldSubscription: PropTypes.bool,
+    hasActiveShieldSubscription: PropTypes.bool,
     getSubscriptions: PropTypes.func,
   };
 
@@ -171,7 +171,7 @@ export default class SecurityTab extends PureComponent {
       this.props.setDataCollectionForMarketing(marketingConsentFromRemote);
     }
 
-    if (!this.props.hasShieldSubscription) {
+    if (!this.props.hasActiveShieldSubscription) {
       await this.props.getSubscriptions();
     }
   }
@@ -361,7 +361,7 @@ export default class SecurityTab extends PureComponent {
 
   renderSecurityAlertsToggle() {
     const { t } = this.context;
-    const { securityAlertsEnabled, hasShieldSubscription } = this.props;
+    const { securityAlertsEnabled, hasActiveShieldSubscription } = this.props;
 
     return (
       <>
@@ -402,7 +402,7 @@ export default class SecurityTab extends PureComponent {
                 onToggle={this.toggleSecurityAlert.bind(this)}
                 offLabel={t('off')}
                 onLabel={t('on')}
-                disabled={hasShieldSubscription}
+                disabled={hasActiveShieldSubscription}
               />
             </div>
           </Box>
@@ -413,7 +413,7 @@ export default class SecurityTab extends PureComponent {
 
   renderPhishingDetectionToggle() {
     const { t } = this.context;
-    const { usePhishDetect, setUsePhishDetect, hasShieldSubscription } =
+    const { usePhishDetect, setUsePhishDetect, hasActiveShieldSubscription } =
       this.props;
 
     return (
@@ -439,14 +439,14 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={usePhishDetect}
             onToggle={(value) => {
-              if (hasShieldSubscription) {
+              if (hasActiveShieldSubscription) {
                 return;
               }
               setUsePhishDetect(!value);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
-            disabled={hasShieldSubscription}
+            disabled={hasActiveShieldSubscription}
           />
         </div>
       </Box>
@@ -1121,7 +1121,7 @@ export default class SecurityTab extends PureComponent {
     const {
       useTransactionSimulations,
       setUseTransactionSimulations,
-      hasShieldSubscription,
+      hasActiveShieldSubscription,
     } = this.props;
 
     return (
@@ -1156,14 +1156,14 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={useTransactionSimulations}
             onToggle={(value) => {
-              if (hasShieldSubscription) {
+              if (hasActiveShieldSubscription) {
                 return;
               }
               setUseTransactionSimulations(!value);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
-            disabled={hasShieldSubscription}
+            disabled={hasActiveShieldSubscription}
           />
         </div>
       </Box>
@@ -1177,8 +1177,9 @@ export default class SecurityTab extends PureComponent {
    */
   toggleSecurityAlert(oldValue) {
     const newValue = !oldValue;
-    const { setSecurityAlertsEnabled, hasShieldSubscription } = this.props;
-    if (hasShieldSubscription) {
+    const { setSecurityAlertsEnabled, hasActiveShieldSubscription } =
+      this.props;
+    if (hasActiveShieldSubscription) {
       return;
     }
     this.context.trackEvent({
@@ -1197,7 +1198,7 @@ export default class SecurityTab extends PureComponent {
       useExternalServices,
       toggleExternalServices,
       setBasicFunctionalityModalOpen,
-      hasShieldSubscription,
+      hasActiveShieldSubscription,
     } = this.props;
 
     return (
@@ -1223,7 +1224,7 @@ export default class SecurityTab extends PureComponent {
             <ToggleButton
               value={useExternalServices}
               onToggle={() => {
-                if (hasShieldSubscription) {
+                if (hasActiveShieldSubscription) {
                   return;
                 }
                 if (useExternalServices) {
@@ -1249,7 +1250,7 @@ export default class SecurityTab extends PureComponent {
               }}
               offLabel={t('off')}
               onLabel={t('on')}
-              disabled={hasShieldSubscription}
+              disabled={hasActiveShieldSubscription}
             />
           </Box>
           <Text marginBottom={2} color={TextColor.textAlternative}>
