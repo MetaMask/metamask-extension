@@ -89,6 +89,10 @@ export const BalanceChangeRow: React.FC<{
           alertKey={RowAlertKey.IncomingTokens}
           ownerId={confirmationId}
           label={label}
+          style={{
+            margin: 0,
+            padding: 0,
+          }}
         />
       );
     }
