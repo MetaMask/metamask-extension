@@ -4,7 +4,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { PermissionsPage } from './permissions-page';
 
 mockState.metamask.subjectMetadata = {
@@ -112,7 +112,9 @@ jest.mock('../../../../../shared/modules/environment');
 describe('All Connections', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(false);
   });
 
   describe('render', () => {
@@ -143,7 +145,9 @@ describe('All Connections', () => {
     });
 
     it('renders sites title when Gator Permissions feature is enabled', () => {
-      jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+      jest
+        .mocked(isGatorPermissionsRevocationFeatureEnabled)
+        .mockReturnValue(true);
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('permissions-page-title')).toHaveTextContent('Sites');
     });

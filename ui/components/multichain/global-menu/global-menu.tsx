@@ -84,7 +84,7 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
-import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -285,7 +285,9 @@ export const GlobalMenu = ({
       ></Box>
       <MenuItem
         to={
-          isGatorPermissionsFeatureEnabled() ? GATOR_PERMISSIONS : PERMISSIONS
+          isGatorPermissionsRevocationFeatureEnabled()
+            ? GATOR_PERMISSIONS
+            : PERMISSIONS
         }
         iconName={IconName.SecurityTick}
         onClick={() => {
