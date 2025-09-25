@@ -14,12 +14,17 @@ import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
-import { getUseCurrencyRateCheck } from '../../../../../selectors';
+import {
+  getUseCurrencyRateCheck,
+  selectAnyEnabledNetworksAreAvailable,
+} from '../../../../../selectors';
 import { TokenFiatDisplayInfo } from '../../types';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/modules/selectors/networks';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
+import { Skeleton } from '../../../../component-library/skeleton';
+import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
 
 type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -53,12 +58,13 @@ export const TokenCellSecondaryDisplay = React.memo(
 
     const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
-    const getSecondaryDisplayText = () => {
-      if (!useCurrencyRateCheck) {
-        return '';
-      }
-      return token.secondary || t('noConversionRateAvailable');
-    };
+    const anyEnabledNetworksAreAvailable = useSelector(
+      selectAnyEnabledNetworksAreAvailable,
+    );
+
+    const secondaryDisplayText = useCurrencyRateCheck
+      ? token.secondary || t('noConversionRateAvailable')
+      : '';
 
     // show scam warning
     if (showScamWarning) {
@@ -81,18 +87,27 @@ export const TokenCellSecondaryDisplay = React.memo(
 
     // secondary display text
     return (
-      <SensitiveText
-        fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
-        variant={token.secondary ? TextVariant.bodyMd : TextVariant.bodySm}
-        textAlign={TextAlign.End}
-        data-testid="multichain-token-list-item-secondary-value"
-        ellipsis={token.isStakeable}
-        isHidden={privacyMode}
-        length={SensitiveTextLength.Medium}
-        style={secondaryDisplayStyle}
+      <Skeleton
+        isLoading={
+          !anyEnabledNetworksAreAvailable &&
+          isZeroAmount(secondaryDisplayText) &&
+          secondaryDisplayText !== t('noConversionRateAvailable')
+        }
+        marginBottom={1}
       >
-        {getSecondaryDisplayText()}
-      </SensitiveText>
+        <SensitiveText
+          fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
+          variant={token.secondary ? TextVariant.bodyMd : TextVariant.bodySm}
+          textAlign={TextAlign.End}
+          data-testid="multichain-token-list-item-secondary-value"
+          ellipsis={token.isStakeable}
+          isHidden={privacyMode}
+          length={SensitiveTextLength.Medium}
+          style={secondaryDisplayStyle}
+        >
+          {secondaryDisplayText}
+        </SensitiveText>
+      </Skeleton>
     );
   },
   (prevProps, nextProps) =>
