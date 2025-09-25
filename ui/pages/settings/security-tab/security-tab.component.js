@@ -1118,8 +1118,11 @@ export default class SecurityTab extends PureComponent {
 
   renderSimulationsToggle() {
     const { t } = this.context;
-    const { useTransactionSimulations, setUseTransactionSimulations } =
-      this.props;
+    const {
+      useTransactionSimulations,
+      setUseTransactionSimulations,
+      hasShieldSubscription,
+    } = this.props;
 
     return (
       <Box
@@ -1152,9 +1155,15 @@ export default class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={useTransactionSimulations}
-            onToggle={(value) => setUseTransactionSimulations(!value)}
+            onToggle={(value) => {
+              if (hasShieldSubscription) {
+                return;
+              }
+              setUseTransactionSimulations(!value);
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={hasShieldSubscription}
           />
         </div>
       </Box>

@@ -65,6 +65,7 @@ import {
 import {
   setSecurityAlertsEnabled,
   setUsePhishDetect,
+  setUseTransactionSimulations,
   startSubscriptionWithCard,
 } from '../../store/actions';
 import {
@@ -79,6 +80,7 @@ import { useAsyncCallback } from '../../hooks/useAsync';
 import {
   getIsSecurityAlertsEnabled,
   getUsePhishDetect,
+  getUseTransactionSimulations,
 } from '../../selectors/selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -97,6 +99,7 @@ const ShieldPlan = () => {
 
   const securityAlertsEnabled = useSelector(getIsSecurityAlertsEnabled);
   const usePhishDetect = useSelector(getUsePhishDetect);
+  const useTransactionSimulations = useSelector(getUseTransactionSimulations);
 
   const {
     subscriptions,
@@ -129,6 +132,12 @@ const ShieldPlan = () => {
       if (!usePhishDetect) {
         dispatch(setUsePhishDetect(true));
       }
+
+      // set transaction simulations to true
+      if (!useTransactionSimulations) {
+        setUseTransactionSimulations(true);
+      }
+
       // redirect to subscription settings page if user already has a subscription
       navigate(TRANSACTION_SHIELD_ROUTE);
     }
@@ -139,6 +148,7 @@ const ShieldPlan = () => {
     shieldSubscription,
     trackEvent,
     usePhishDetect,
+    useTransactionSimulations,
   ]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
