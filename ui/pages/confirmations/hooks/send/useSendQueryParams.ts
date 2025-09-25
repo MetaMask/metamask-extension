@@ -1,4 +1,4 @@
-import { isHexString } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import { useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -17,11 +17,13 @@ export const useSendQueryParams = () => {
   const {
     asset,
     currentPage,
+    hexData,
     maxValueMode,
     to,
     updateValue,
     updateCurrentPage,
     updateAsset,
+    updateHexData,
     updateTo,
     value,
   } = useSendContext();
@@ -43,6 +45,7 @@ export const useSendQueryParams = () => {
   const paramAsset = searchParams.get('asset');
   const paramAmount = searchParams.get('amount');
   const paramChainId = searchParams.get('chainId');
+  const paramHexData = searchParams.get('hexData');
   const paramRecipient = searchParams.get('recipient');
   const paramMaxValueMode = searchParams.get('maxValueMode');
 
@@ -72,6 +75,9 @@ export const useSendQueryParams = () => {
     if (maxValueMode !== undefined && paramMaxValueMode !== `${maxValueMode}`) {
       queryParams.set('maxValueMode', maxValueMode.toString());
     }
+    if (hexData !== undefined && paramHexData !== hexData) {
+      queryParams.set('hexData', hexData.toString());
+    }
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
@@ -79,6 +85,7 @@ export const useSendQueryParams = () => {
   }, [
     asset,
     history,
+    hexData,
     maxValueMode,
     paramAmount,
     paramAsset,
@@ -96,6 +103,12 @@ export const useSendQueryParams = () => {
       updateTo(paramRecipient);
     }
   }, [to, paramRecipient, updateTo]);
+
+  useEffect(() => {
+    if (hexData === undefined && paramHexData) {
+      updateHexData(paramHexData as Hex);
+    }
+  }, [hexData, paramHexData, updateHexData]);
 
   useEffect(() => {
     if (value === undefined && paramAmount) {

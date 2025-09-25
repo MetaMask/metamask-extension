@@ -2727,6 +2727,9 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hexDataPlaceholder": {
+    "message": "Enter hex data (optional)"
+  },
   "hiddenAccounts": {
     "message": "Hidden accounts"
   },
@@ -5710,9 +5713,6 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
-  "shieldPlanYearly": {
-    "message": "Yearly"
-  },
   "shieldTx": {
     "message": "Transaction Shield"
   },
@@ -5809,7 +5809,7 @@
     "message": "Renew membership"
   },
   "shieldTxMembershipResubscribe": {
-    "message": "Resubscribe"
+    "message": "Restart membership"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
