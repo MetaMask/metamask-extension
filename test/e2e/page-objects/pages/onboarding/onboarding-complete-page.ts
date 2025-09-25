@@ -94,18 +94,9 @@ class OnboardingCompletePage {
     );
   }
 
-  async completeOnboarding(
-    isSocialImportFlow: boolean = false,
-    isLoginFlow: boolean = false,
-  ): Promise<void> {
+  async completeOnboarding(): Promise<void> {
     console.log('Complete onboarding');
-    if (isLoginFlow) {
-      await this.displayDownloadAppPageAndContinue();
-    }
-
-    if (!isSocialImportFlow) {
-      await this.clickCreateWalletDoneButton();
-    }
+    await this.clickCreateWalletDoneButton();
   }
 
   async completeBackup(): Promise<void> {

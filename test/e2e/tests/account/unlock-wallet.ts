@@ -101,8 +101,7 @@ describe('Unlock wallet - ', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
+        await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

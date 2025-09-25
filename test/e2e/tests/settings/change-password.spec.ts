@@ -108,11 +108,7 @@ describe('Change wallet password', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(
-          isSocialImportFlow,
-          true,
-        );
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

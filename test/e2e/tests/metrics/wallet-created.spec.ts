@@ -290,7 +290,7 @@ describe('Wallet Created Events', function () {
         await createNewWalletWithSocialLoginOnboardingFlow(onboardingOptions);
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.completeOnboarding(true, true);
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
 
