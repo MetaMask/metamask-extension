@@ -34,19 +34,21 @@ function stringifyChainIds(chainIds: string[]) {
   return chainIds.map((id) => isCaipChainId(id) ? id :toEvmCaipChainId(id as Hex)).join(',');
 }
 
+function transformAsset(asset: Omit<Asset, 'chainId'>): Asset {
+  const { chainId } = parseCaipAssetType(asset.assetId as CaipAssetId);
+  const { namespace, reference } = parseCaipChainId(chainId as CaipChainId);
+  return {
+    ...asset,
+    chainId: chainId === MultichainNetwork.Solana ? `${namespace}:${reference}` : `0x${parseInt(reference).toString(16)}`,
+  }
+}
+
 export async function getPopularAssets(value: string, chainIds: string[]): Promise<Asset[]> {
   try {
     const appendedParams = chainIds.length === 1 && [CHAIN_IDS.ZKSYNC_ERA, CHAIN_IDS.SEI].includes(chainIds[0] as any) ? '&minLiquidity=0&minVolume24hUsd=0' : '';
     const response = await fetch(`https://token.api.cx.metamask.io/v3/tokens/popular?chainIds=${stringifyChainIds(chainIds)}${appendedParams}`);
     const data = await response.json() as Omit<Asset, 'chainId'>[];
-    return data.map((asset) => {
-      const { chainId } = parseCaipAssetType(asset.assetId as CaipAssetId);
-      const { namespace, reference } = parseCaipChainId(chainId as CaipChainId);
-      return {
-        ...asset,
-        chainId: chainId === MultichainNetwork.Solana ? `${namespace}:${reference}` : `0x${parseInt(reference).toString(16)}`,
-      }
-    });
+    return data.map((asset) => transformAsset(asset));
   } catch (error) {
     console.error('***********ERROR: No POPULAR ASSETS FOUND***********', error);
     return [];
@@ -58,6 +60,7 @@ export async function searchAssets(value: string, chainIds: string[], endCursor:
     const baseUrl = `https://token.api.cx.metamask.io/tokens/search?query=${value}&networks=${stringifyChainIds(chainIds)}&first=20`;
     const response = await fetch(endCursor ? `${baseUrl}&after=${endCursor}` : baseUrl);
     const data = await response.json() as AssetsResponse;
+    data.data = data.data.map((asset) => transformAsset(asset));
     return data;
   } catch (error) {
     console.error('***********ERROR: No SEARCH ASSETS FOUND***********', error);
