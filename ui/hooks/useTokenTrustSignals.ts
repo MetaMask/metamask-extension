@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getTokenScanResultsForAddresses } from '../selectors/selectors';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
-import { generateTokenCacheKey } from '../helpers/utils/token-util';
+import { generateTokenCacheKey } from '../helpers/utils/trust-signals';
 
 type TokenScanCacheResult = {
   data: {

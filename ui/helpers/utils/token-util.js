@@ -353,14 +353,3 @@ export async function getAssetDetails(
     ...tokenDetails,
   };
 }
-
-/**
- * Generates a cache key for token scan results
- *
- * @param {string} chainId - The chain ID
- * @param {string} tokenAddress - The token address
- * @returns {string} The cache key in format "chainId:tokenAddress" (both lowercase)
- */
-export function generateTokenCacheKey(chainId, tokenAddress) {
-  return `${chainId.toLowerCase()}:${tokenAddress.toLowerCase()}`;
-}

@@ -90,6 +90,7 @@ describe('useTokenTrustSignals', () => {
       getTokenScanResultsForAddressesMock.mockReturnValue({
         [cacheKey]: {
           data: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Malicious',
           },
           timestamp: TIMESTAMP_MOCK,
@@ -113,6 +114,7 @@ describe('useTokenTrustSignals', () => {
       getTokenScanResultsForAddressesMock.mockReturnValue({
         [cacheKey]: {
           data: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Warning',
           },
           timestamp: TIMESTAMP_MOCK,
@@ -138,12 +140,14 @@ describe('useTokenTrustSignals', () => {
       getTokenScanResultsForAddressesMock.mockReturnValue({
         [cacheKey1]: {
           data: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Malicious',
           },
           timestamp: TIMESTAMP_MOCK,
         },
         [cacheKey2]: {
           data: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Benign',
           },
           timestamp: TIMESTAMP_MOCK,
@@ -178,6 +182,7 @@ describe('useTokenTrustSignals', () => {
       getTokenScanResultsForAddressesMock.mockReturnValue({
         [expectedCacheKey]: {
           data: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Benign',
           },
           timestamp: TIMESTAMP_MOCK,
