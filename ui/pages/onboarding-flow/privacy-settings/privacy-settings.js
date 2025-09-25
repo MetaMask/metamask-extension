@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import log from 'loglevel';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
@@ -49,9 +50,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
-  getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
-  getUseExternalServices,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -65,6 +65,8 @@ import {
   setUseTransactionSimulations,
   setUseExternalNameSources,
   setEditedNetwork,
+  setDataCollectionForMarketing,
+  setMarketingConsent,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -77,10 +79,7 @@ import {
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import DeleteMetaMetricsDataButton from '../../settings/security-tab/delete-metametrics-data-button';
-import {
-  useEnableMetametrics,
-  useDisableMetametrics,
-} from '../../../hooks/useMetametrics';
+import MetametricsToggle from '../../settings/security-tab/metametrics-toggle/metametrics-toggle';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
@@ -105,9 +104,8 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const useExternalNameSources = useSelector(getUseExternalNameSources);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const useExternalServices = useSelector(getUseExternalServices);
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
@@ -229,54 +227,15 @@ export default function PrivacySettings() {
     },
   ];
 
-  const { enableMetametrics, error: enableMetametricsError } =
-    useEnableMetametrics();
-  const { disableMetametrics, error: disableMetametricsError } =
-    useDisableMetametrics();
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const error = enableMetametricsError || disableMetametricsError;
-
-  const handleUseParticipateInMetaMetrics = async (isParticipated) => {
-    console.log('isParticipated', isParticipated);
-    if (isParticipated) {
-      await enableMetametrics();
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnMetaMetrics,
-        properties: {
-          isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_metrics_opted_in: true,
-          location: 'Default Manage Settings',
-        },
-      });
-    } else {
-      await disableMetametrics();
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOffMetaMetrics,
-        properties: {
-          isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
-        },
-      });
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_metrics_opted_in: false,
-          location: 'Default Manage Settings',
-        },
-      });
+  const handleDataCollectionForMarketing = async (value) => {
+    try {
+      dispatch(setMarketingConsent(value));
+    } catch (error) {
+      log.error('Error setting marketing consent in default settings', error);
     }
+    dispatch(setDataCollectionForMarketing(value));
   };
+
   return (
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
@@ -740,34 +699,13 @@ export default function PrivacySettings() {
                   />
                   {isSocialLoginFlow && (
                     <>
-                      <Box
-                        flexDirection={FlexDirection.Column}
-                        display={Display.Flex}
-                        gap={2}
-                        alignItems={AlignItems.flexStart}
-                        justifyContent={JustifyContent.flexStart}
-                      >
-                        <Setting
-                          value={participateInMetaMetrics}
-                          setValue={handleUseParticipateInMetaMetrics}
-                          title={t('participateInMetaMetrics')}
-                          disabled={!useExternalServices}
-                          description={t(
-                            'participateInMetaMetricsDefaultSettingsDescription',
-                          )}
-                        />
-                        {error && (
-                          <Box paddingBottom={4}>
-                            <Text
-                              as="p"
-                              color={TextColor.errorDefault}
-                              variant={TextVariant.bodySm}
-                            >
-                              {t('notificationsSettingsBoxError')}
-                            </Text>
-                          </Box>
-                        )}
-                      </Box>
+                      <MetametricsToggle
+                        dataCollectionForMarketing={dataCollectionForMarketing}
+                        setDataCollectionForMarketing={
+                          handleDataCollectionForMarketing
+                        }
+                        fromDefaultSettings
+                      />
                       <DeleteMetaMetricsDataButton defaultPrivacySettings />
                     </>
                   )}

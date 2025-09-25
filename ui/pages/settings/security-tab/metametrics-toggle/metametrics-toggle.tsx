@@ -28,9 +28,11 @@ import {
 const MetametricsToggle = ({
   dataCollectionForMarketing,
   setDataCollectionForMarketing,
+  fromDefaultSettings = false,
 }: {
   dataCollectionForMarketing: boolean;
   setDataCollectionForMarketing: (value: boolean) => Promise<void>;
+  fromDefaultSettings?: boolean;
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -48,6 +50,7 @@ const MetametricsToggle = ({
   const useExternalServices = useSelector(getUseExternalServices);
 
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
+    console.log('isParticipated', isParticipated);
     if (isParticipated) {
       await enableMetametrics();
       trackEvent({
@@ -56,14 +59,12 @@ const MetametricsToggle = ({
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
           participateInMetaMetrics,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_metrics_opted_in: true,
-          location: 'Settings',
+          location: fromDefaultSettings ? 'Default Settings' : 'Settings',
         },
       });
     } else {
       // disable data collection for marketing if participate in meta metrics is set to false
+      console.log('dataCollectionForMarketing', dataCollectionForMarketing);
       if (dataCollectionForMarketing) {
         await setDataCollectionForMarketing(false);
       }
