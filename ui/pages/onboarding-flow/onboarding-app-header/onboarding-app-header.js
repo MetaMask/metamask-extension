@@ -30,7 +30,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -72,7 +72,7 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
           isOnboarding
         />
 
-        {pathname === ONBOARDING_DOWNLOAD_APP_ROUTE ? (
+        {pathname === ONBOARDING_COMPLETION_ROUTE ? (
           <Box paddingTop={12}>
             <BannerTip
               borderColor={BorderColor.borderMuted}
@@ -98,14 +98,14 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
                     name={IconName.Extension}
                     key="extension"
                     color={TextColor.textDefault}
-                    size={IconSize.Sm}
+                    size={IconSize.Md}
                     className="onboarding-app-header__banner-tip-icon"
                   />,
                   <Icon
                     name={IconName.Keep}
                     key="keep"
                     color={TextColor.textDefault}
-                    size={IconSize.Sm}
+                    size={IconSize.Md}
                     className="onboarding-app-header__banner-tip-icon"
                   />,
                 ])}
