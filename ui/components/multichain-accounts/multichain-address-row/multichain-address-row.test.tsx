@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen, render } from '@testing-library/react';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from './multichain-address-row';
 
@@ -7,8 +8,14 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
 
+jest.mock('@metamask/bridge-controller', () => ({
+  formatChainIdToCaip: jest.fn(),
+}));
+
 const mockCopyCallback = jest.fn();
 const mockQrCallback = jest.fn();
+
+const mockFormatChainIdToCaip = formatChainIdToCaip as jest.Mock;
 
 const defaultProps = {
   chainId: '0x1',
@@ -41,6 +48,7 @@ describe('MultichainAddressRow', () => {
   beforeEach(() => {
     mockCopyCallback.mockClear();
     mockQrCallback.mockClear();
+    mockFormatChainIdToCaip.mockClear();
     (useCopyToClipboard as jest.Mock).mockReturnValue([
       false,
       mockCopyCallback,
@@ -99,12 +107,18 @@ describe('MultichainAddressRow', () => {
   });
 
   it('handles QR button click with onQrClick callback', () => {
+    // Mock the formatChainIdToCaip function to return the expected CAIP format
+    mockFormatChainIdToCaip.mockReturnValue('eip155:1');
+
     renderComponent(propsWithQrCode);
     const qrButton = screen.getByTestId('multichain-address-row-qr-button');
     fireEvent.click(qrButton);
+
+    expect(mockFormatChainIdToCaip).toHaveBeenCalledWith('0x1');
     expect(mockQrCallback).toHaveBeenCalledWith(
       '0x1234567890123456789012345678901234567890',
       'Ethereum',
+      'eip155:1', // Should be converted to CAIP format
       expect.anything(),
     );
   });
@@ -123,5 +137,45 @@ describe('MultichainAddressRow', () => {
     renderComponent({ className: 'custom-class' });
     const addressRow = screen.getByTestId('multichain-address-row');
     expect(addressRow).toHaveClass('custom-class');
+  });
+
+  it('converts decimal chainId to CAIP format in QR callback', () => {
+    // Mock the formatChainIdToCaip function to return the expected CAIP format
+    mockFormatChainIdToCaip.mockReturnValue('eip155:137');
+
+    renderComponent({
+      ...propsWithQrCode,
+      chainId: '137', // Polygon chain ID as decimal
+    });
+    const qrButton = screen.getByTestId('multichain-address-row-qr-button');
+    fireEvent.click(qrButton);
+
+    expect(mockFormatChainIdToCaip).toHaveBeenCalledWith('137');
+    expect(mockQrCallback).toHaveBeenCalledWith(
+      '0x1234567890123456789012345678901234567890',
+      'Ethereum',
+      'eip155:137', // Should be converted to CAIP format
+      undefined,
+    );
+  });
+
+  it('preserves CAIP format chainId in QR callback', () => {
+    // Mock the formatChainIdToCaip function to return the same CAIP format
+    mockFormatChainIdToCaip.mockReturnValue('eip155:42161');
+
+    renderComponent({
+      ...propsWithQrCode,
+      chainId: 'eip155:42161', // Arbitrum chain ID already in CAIP format
+    });
+    const qrButton = screen.getByTestId('multichain-address-row-qr-button');
+    fireEvent.click(qrButton);
+
+    expect(mockFormatChainIdToCaip).toHaveBeenCalledWith('eip155:42161');
+    expect(mockQrCallback).toHaveBeenCalledWith(
+      '0x1234567890123456789012345678901234567890',
+      'Ethereum',
+      'eip155:42161', // Should remain unchanged
+      expect.anything(),
+    );
   });
 });
