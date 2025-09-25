@@ -60,7 +60,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
         statusCode: 200,
         json: [
           {
-            enableMultichainAccounts: {
+            enableMultichainAccountsState2: {
               enabled: true,
               featureVersion: '2',
               minimumVersion: '12.19.0',

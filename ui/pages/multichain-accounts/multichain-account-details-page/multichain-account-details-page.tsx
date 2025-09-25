@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   Box,
   ButtonIcon,
@@ -29,6 +30,7 @@ import {
   getNetworkAddressCount,
   getWallet,
   getInternalAccountsFromGroupById,
+  getIconSeedAddressByAccountGroupId,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
@@ -36,14 +38,27 @@ import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
+import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
+import {
+  removeAccount,
+  setAccountDetailsAddress,
+} from '../../../store/actions';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
   const { id } = useParams();
   const accountGroupId = decodeURIComponent(id as string) as AccountGroupId;
   const multichainAccount = useSelector((state) =>
@@ -62,10 +77,18 @@ export const MultichainAccountDetailsPage = () => {
   const accountsWithAddresses = useSelector((state) =>
     getInternalAccountsFromGroupById(state, accountGroupId),
   );
+  const seedAddressIcon = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(state, accountGroupId),
+  );
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
+    useState(false);
+  const [isAccountRemoveModalOpen, setIsAccountRemoveModalOpen] =
     useState(false);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
+  const isPrivateKeyWallet = accountsWithAddresses.some(
+    (account) => account.metadata.keyring.type === KeyringTypes.simple,
+  );
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const handleAddressesClick = () => {
@@ -92,6 +115,26 @@ export const MultichainAccountDetailsPage = () => {
   const handleAccountNameAction = () => {
     setIsAccountRenameModalOpen(true);
   };
+
+  const handleAccountRemoveAction = useCallback(() => {
+    const firstAccountAddress = accountsWithAddresses[0]?.address;
+    if (firstAccountAddress) {
+      // Don't want to blindly call removeAccount without an invalid or empty parameter
+      dispatch(removeAccount(firstAccountAddress));
+      trackEvent({
+        event: MetaMetricsEventName.AccountRemoved,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: wallet?.type,
+        },
+      });
+
+      dispatch(setAccountDetailsAddress(''));
+      history.push(DEFAULT_ROUTE);
+    }
+  }, [dispatch, trackEvent, history, wallet?.type, accountsWithAddresses]);
 
   const handleWalletAction = () => {
     history.push(walletRoute);
@@ -122,7 +165,7 @@ export const MultichainAccountDetailsPage = () => {
       >
         <Box className="flex justify-center">
           <PreferredAvatar
-            address={accountGroupId}
+            address={seedAddressIcon}
             size={AvatarAccountSize.Xl}
             data-testid="avatar"
           />
@@ -158,21 +201,23 @@ export const MultichainAccountDetailsPage = () => {
               />
             }
           />
-          <AccountDetailsRow
-            label={t('privateKeys')}
-            value={t('unlockToReveal')}
-            onClick={handlePrivateKeysClick}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('privateKeys')}
-                marginLeft={2}
-                data-testid="private-keys-action"
-              />
-            }
-          />
+          {(isEntropyWallet || isPrivateKeyWallet) && (
+            <AccountDetailsRow
+              label={t('privateKeys')}
+              value={t('unlockToReveal')}
+              onClick={handlePrivateKeysClick}
+              endAccessory={
+                <ButtonIcon
+                  iconName={IconName.ArrowRight}
+                  color={IconColor.iconAlternative}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('privateKeys')}
+                  marginLeft={2}
+                  data-testid="private-keys-action"
+                />
+              }
+            />
+          )}
           <AccountDetailsRow
             label={t('smartAccountLabel')}
             value={t('setUp')}
@@ -222,6 +267,7 @@ export const MultichainAccountDetailsPage = () => {
               label={t('removeAccount')}
               labelColor={TextColor.errorDefault}
               value={''}
+              onClick={() => setIsAccountRemoveModalOpen(true)}
               endAccessory={
                 <ButtonIcon
                   iconName={IconName.ArrowRight}
@@ -240,6 +286,15 @@ export const MultichainAccountDetailsPage = () => {
             isOpen={isAccountRenameModalOpen}
             onClose={() => setIsAccountRenameModalOpen(false)}
             accountGroupId={multichainAccount.id}
+          />
+        )}
+        {isAccountRemoveModalOpen && (
+          <AccountRemoveModal
+            isOpen={isAccountRemoveModalOpen}
+            onClose={() => setIsAccountRemoveModalOpen(false)}
+            onSubmit={handleAccountRemoveAction}
+            accountName={multichainAccount.metadata.name}
+            accountAddress={accountsWithAddresses[0]?.address}
           />
         )}
       </Content>
