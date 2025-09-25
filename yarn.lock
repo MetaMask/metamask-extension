@@ -4868,20 +4868,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@lavamoat/webpack@npm:1.3.2"
+"@lavamoat/webpack@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@lavamoat/webpack@npm:1.4.0"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^4.3.4"
     "@lavamoat/types": "npm:^0.0.1"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^16.6.2"
+    lavamoat-core: "npm:^16.7.0"
     ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/3f0d73385cd4c3dcf84ef13a8da29cf94c8af7fc3ffed66bd15922b0bd103b2d43c3ba7051092748d337fcee5de354f140f0a2f51394af973a72b012318ae6b3
+  checksum: 10/422a58d7243396e7fc552f90ac585fcf20880ae36605d37cf5719718ec7c9ff173436d519abfc60d235b7d370ea31fb540f9cac652e77c05e2babfe2b104d96c
   languageName: node
   linkType: hard
 
@@ -30718,9 +30718,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.6.1, lavamoat-core@npm:^16.6.2":
-  version: 16.6.2
-  resolution: "lavamoat-core@npm:16.6.2"
+"lavamoat-core@npm:^16.6.1, lavamoat-core@npm:^16.7.0":
+  version: 16.7.0
+  resolution: "lavamoat-core@npm:16.7.0"
   dependencies:
     "@babel/types": "npm:7.27.3"
     "@lavamoat/types": "npm:^0.0.1"
@@ -30730,7 +30730,7 @@ __metadata:
     ses: "npm:1.14.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/da47f0ff727ac9c598b6d74562b8fdffd7e421fa1f890ddccc39e797f083260869a6e5733279c40d2257d878b41bd719e1f5431c0dff5380b8502a89c62364b1
+  checksum: 10/ad5c3fa47f0c59bbb4b7dbf0b709788aa7091d7eb69bf7dbb8dc395fe0b276d9b01e28fe72b9a81560de02da19ae8bd85468cc04fe8f2a48918477e7183a420d
   languageName: node
   linkType: hard
 
@@ -31949,7 +31949,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.13"
     "@lavamoat/snow": "npm:^2.0.3"
-    "@lavamoat/webpack": "npm:1.3.2"
+    "@lavamoat/webpack": "npm:1.4.0"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
