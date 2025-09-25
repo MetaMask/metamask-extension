@@ -183,7 +183,16 @@ describe('AmountRecipient', () => {
       value: '1',
     } as unknown as ReturnType<typeof SendContext.useSendContext>);
 
-    const { getAllByRole, getByRole } = render();
+    const { getAllByRole, getByRole } = render({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        featureFlags: {
+          ...mockState.metamask.featureFlags,
+          sendHexData: true,
+        },
+      },
+    });
 
     fireEvent.change(getAllByRole('textbox')[2], {
       target: { value: '###' },
