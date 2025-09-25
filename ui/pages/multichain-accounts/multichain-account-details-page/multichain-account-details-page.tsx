@@ -31,6 +31,7 @@ import {
   getWallet,
   getIconSeedAddressByAccountGroupId,
   getInternalAccountByGroupAndCaip,
+  getInternalAccountsFromGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
@@ -73,6 +74,9 @@ export const MultichainAccountDetailsPage = () => {
     wallet?.type !== AccountWalletType.Snap;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
+  );
+  const accountsWithAddresses = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, accountGroupId),
   );
   const evmInternalAccount = useSelector((state) =>
     getInternalAccountByGroupAndCaip(state, accountGroupId, 'eip155:1'),
