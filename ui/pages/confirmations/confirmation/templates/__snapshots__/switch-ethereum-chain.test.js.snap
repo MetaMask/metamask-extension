@@ -49,7 +49,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>
@@ -74,7 +74,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>
@@ -161,7 +161,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>
@@ -186,7 +186,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>
