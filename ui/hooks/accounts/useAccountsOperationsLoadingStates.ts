@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import { t } from '../../../shared/lib/translate';
 import { AccountTreeController } from '@metamask/account-tree-controller';
+import { useI18nContext } from '../useI18nContext';
 
 type AppState = {
   metamask: AccountTreeController['state'];
 };
 
 export const useAccountsOperationsLoadingStates = () => {
+  const t = useI18nContext();
   const isAccountSyncingInProgress = useSelector(
     (state: AppState) => state.metamask.isAccountTreeSyncingInProgress,
   );
