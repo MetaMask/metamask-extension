@@ -50,7 +50,6 @@ const MetametricsToggle = ({
   const useExternalServices = useSelector(getUseExternalServices);
 
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
-    console.log('isParticipated', isParticipated);
     if (isParticipated) {
       await enableMetametrics();
       trackEvent({
@@ -64,7 +63,6 @@ const MetametricsToggle = ({
       });
     } else {
       // disable data collection for marketing if participate in meta metrics is set to false
-      console.log('dataCollectionForMarketing', dataCollectionForMarketing);
       if (dataCollectionForMarketing) {
         await setDataCollectionForMarketing(false);
       }
