@@ -18,7 +18,6 @@ import {
   getSelectedAccountGroup,
   getAccountGroupWithInternalAccounts,
 } from '../../../../selectors/multichain-accounts/account-tree';
-import { getSelectedAccount } from '../../../../selectors';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 
@@ -27,7 +26,7 @@ export type SendContextType = {
   chainId?: string;
   currentPage?: SendPages;
   fromAccount?: InternalAccount;
-  from: string;
+  from?: string;
   hexData?: Hex;
   maxValueMode?: boolean;
   to?: string;
@@ -64,7 +63,6 @@ export const SendContextProvider: React.FC<{
   children: ReactElement[] | ReactElement;
 }> = ({ children }) => {
   const [asset, setAsset] = useState<Asset>();
-  const from = useSelector(getSelectedAccount);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
     getAccountGroupWithInternalAccounts,
@@ -133,7 +131,7 @@ export const SendContextProvider: React.FC<{
         chainId,
         currentPage,
         fromAccount,
-        from: from?.address as string,
+        from: fromAccount?.address,
         hexData,
         maxValueMode,
         to,
