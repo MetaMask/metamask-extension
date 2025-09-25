@@ -150,6 +150,7 @@ export const Amount = ({
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
+        placeholder="0"
         value={amount}
         endAccessory={
           <Box display={Display.Flex}>
