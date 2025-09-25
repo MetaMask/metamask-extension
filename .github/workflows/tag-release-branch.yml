@@ -71,7 +71,8 @@ jobs:
           TAG_NAME="v${VERSION}"
           FLASK_TAG_NAME="v${VERSION}-flask.0"
           HEAD_SHA=$(git rev-parse HEAD)
-          # Using string values for boolean logic (shell script convention)
+          # Shell scripts don't have native boolean types, so we use string values ("true"/"false")
+          # for boolean logic and compare them as strings (shell script convention)
           needs_retag="false"
           needs_flask_retag="false"
 
@@ -104,7 +105,7 @@ jobs:
             else
               echo "::error::Tag ${TAG_NAME} exists but not at HEAD."
               echo "::error::To move the tag, run this workflow again with 'force-retag' enabled."
-              # Log full details only to GitHub logs, not to error output
+              # Log debug details to stderr (for logs) but not as GitHub error annotation (::error::)
               echo "Debug: Tag is at ${TAG_SHA:0:7}, HEAD is at ${HEAD_SHA:0:7}" >&2
               exit 1
             fi
@@ -135,7 +136,7 @@ jobs:
             else
               echo "::error::Flask tag ${FLASK_TAG_NAME} exists but not at HEAD."
               echo "::error::To move the tag, run this workflow again with 'force-retag' enabled."
-              # Log full details only to GitHub logs, not to error output
+              # Log debug details to stderr (for logs) but not as GitHub error annotation (::error::)
               echo "Debug: Flask tag is at ${FLASK_TAG_SHA:0:7}, HEAD is at ${HEAD_SHA:0:7}" >&2
               exit 1
             fi
@@ -190,7 +191,7 @@ jobs:
 
           # Create Flask tag if needed
           if [[ "${NEEDS_FLASK_TAG}" == "true" ]]; then
-            git tag -a "${FLASK_TAG_NAME}" -m "Flask version ${VERSION}-flask.0"
+            git tag -a "${FLASK_TAG_NAME}" -m "Flask version ${FLASK_TAG_NAME#v}"
             git push origin "${FLASK_TAG_NAME}"
             echo "Created and pushed Flask tag: ${FLASK_TAG_NAME} at ${SHA}"
           else
