@@ -9,12 +9,12 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../test/d
 import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/typed_sign';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
+import * as useTransactionEventFragmentHook from '../../confirmations/hooks/useTransactionEventFragment';
+import * as useSignatureEventFragmentHook from '../../confirmations/hooks/useSignatureEventFragment';
 import { useTrustSignalMetrics } from './useTrustSignalMetrics';
-import * as useTransactionEventFragmentHook from './useTransactionEventFragment';
-import * as useSignatureEventFragmentHook from './useSignatureEventFragment';
 
-jest.mock('./useTransactionEventFragment');
-jest.mock('./useSignatureEventFragment');
+jest.mock('../../confirmations/hooks/useTransactionEventFragment');
+jest.mock('../../confirmations/hooks/useSignatureEventFragment');
 
 const mockUpdateTransactionEventFragment = jest.fn();
 const mockUpdateSignatureEventFragment = jest.fn();

@@ -3,13 +3,16 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
-import { useConfirmContext } from '../context/confirm';
-import { isSignatureTransactionType } from '../utils';
-import type { Confirmation, SignatureRequestType } from '../types/confirm';
+import { useConfirmContext } from '../../confirmations/context/confirm';
+import { isSignatureTransactionType } from '../../confirmations/utils';
+import type {
+  Confirmation,
+  SignatureRequestType,
+} from '../../confirmations/types/confirm';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
-import { useTransactionEventFragment } from './useTransactionEventFragment';
-import { useSignatureEventFragment } from './useSignatureEventFragment';
+import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
+import { useSignatureEventFragment } from '../../confirmations/hooks/useSignatureEventFragment';
 
 export type TrustSignalMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
