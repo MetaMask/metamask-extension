@@ -18,7 +18,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
-  GenericQuoteRequest,
+  type BridgeController,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -359,35 +359,40 @@ const PrepareBridgePage = ({
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
-  const quoteParams: Partial<GenericQuoteRequest> = useMemo(
-    () => ({
-      srcTokenAddress: fromToken?.address,
-      destTokenAddress: toToken?.address,
-      srcTokenAmount:
-        fromAmount && fromToken?.decimals
-          ? calcTokenValue(
-              // Treat empty or incomplete amount as 0 to reject NaN
-              ['', '.'].includes(fromAmount) ? '0' : fromAmount,
-              fromToken.decimals,
-            )
-              .toFixed()
-              // Length of decimal part cannot exceed token.decimals
-              .split('.')[0]
-          : undefined,
-      srcChainId: fromChain?.chainId,
-      destChainId: toChain?.chainId,
-      // This override allows quotes to be returned when the rpcUrl is a forked network
-      // Otherwise quotes get filtered out by the bridge-api when the wallet's real
-      // balance is less than the tenderly balance
-      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
-        ? true
+  const quoteParams:
+    | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
+    | undefined = useMemo(
+    () =>
+      selectedAccount?.address
+        ? {
+            srcTokenAddress: fromToken?.address,
+            destTokenAddress: toToken?.address,
+            srcTokenAmount:
+              fromAmount && fromToken?.decimals
+                ? calcTokenValue(
+                    // Treat empty or incomplete amount as 0 to reject NaN
+                    ['', '.'].includes(fromAmount) ? '0' : fromAmount,
+                    fromToken.decimals,
+                  )
+                    .toFixed()
+                    // Length of decimal part cannot exceed token.decimals
+                    .split('.')[0]
+                : undefined,
+            srcChainId: fromChain?.chainId,
+            destChainId: toChain?.chainId,
+            // This override allows quotes to be returned when the rpcUrl is a forked network
+            // Otherwise quotes get filtered out by the bridge-api when the wallet's real
+            // balance is less than the tenderly balance
+            insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+              ? true
+              : undefined,
+            slippage,
+            walletAddress: selectedAccount.address,
+            destWalletAddress: selectedDestinationAccount?.address,
+            gasIncluded,
+            gasIncluded7702,
+          }
         : undefined,
-      slippage,
-      walletAddress: selectedAccount?.address ?? '',
-      destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded,
-      gasIncluded7702,
-    }),
     [
       fromToken?.address,
       fromToken?.decimals,
@@ -419,6 +424,9 @@ const PrepareBridgePage = ({
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
+    if (!quoteParams) {
+      return;
+    }
     const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -782,6 +790,9 @@ const PrepareBridgePage = ({
             ) : (
               <PrepareBridgePageFooter
                 onFetchNewQuotes={() => {
+                  if (!quoteParams) {
+                    return;
+                  }
                   debouncedUpdateQuoteRequestInController(quoteParams, {
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
