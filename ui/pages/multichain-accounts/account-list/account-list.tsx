@@ -9,6 +9,9 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Icon,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import {
   Content,
@@ -39,6 +42,7 @@ import {
   Box,
 } from '../../../components/component-library';
 import { filterWalletsByGroupName } from './utils';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -48,6 +52,18 @@ export const AccountList = () => {
   const { selectedAccountGroup } = accountTree;
   const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
   const [searchPattern, setSearchPattern] = useState<string>('');
+
+  const {
+    isAccountSyncingInProgress,
+    loadingMessage: accountOperationLoadingMessage,
+  } = useAccountsOperationsLoadingStates();
+
+  const addWalletButtonLabel = useMemo(() => {
+    if (isAccountSyncingInProgress) {
+      return accountOperationLoadingMessage;
+    }
+    return t('addWallet');
+  }, [isAccountSyncingInProgress, accountOperationLoadingMessage, t]);
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
@@ -156,10 +172,23 @@ export const AccountList = () => {
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={handleOpenAddWalletModal}
+          isDisabled={isAccountSyncingInProgress}
           isFullWidth
           data-testid="account-list-add-wallet-button"
         >
-          <Text variant={TextVariant.bodyMdMedium}>{t('addWallet')}</Text>
+          <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
+            {isAccountSyncingInProgress && (
+              <Icon
+                className="add-multichain-account__icon-box__icon-loading"
+                name={IconName.Loading}
+                color={IconColor.IconMuted}
+                size={IconSize.Lg}
+              />
+            )}
+            <Text variant={TextVariant.bodyMdMedium}>
+              {addWalletButtonLabel}
+            </Text>
+          </Box>
         </Button>
       </Footer>
       <AddWalletModal
