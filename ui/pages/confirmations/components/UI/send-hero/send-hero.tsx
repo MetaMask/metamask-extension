@@ -23,11 +23,13 @@ import {
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
 import { Asset, NFT_STANDARDS } from '../../../types/send';
+import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 
 const NFTHero = ({ asset }: { asset: Asset }) => {
   const nftData = asset;
   const { collection, name, image } = nftData;
+  const nftItemSrc = useNftImageUrl(image as string);
 
   return (
     <Box
@@ -55,7 +57,7 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
         {image || collection?.imageUrl ? (
           <Box
             as="img"
-            src={image || (collection?.imageUrl as string)}
+            src={nftItemSrc || (collection?.imageUrl as string)}
             alt={name}
             style={{
               width: 48,

@@ -12,7 +12,6 @@ import {
   fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
-  isDecimal,
   convertedCurrency,
   navigateToSendRoute,
   getLayer1GasFees,
@@ -20,6 +19,7 @@ import {
   removeAdditionalDecimalPlaces,
   getFractionLength,
   addLeadingZeroIfNeeded,
+  isValidPositiveNumericString,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -86,6 +86,25 @@ describe('Send - utils', () => {
         }),
       ).toStrictEqual({
         data: '0x',
+        from: '0x123',
+        to: '0x456',
+        value: '0x56bc75e2d63100000',
+      });
+    });
+
+    it('prepares transaction for native token with hex data', () => {
+      expect(
+        prepareEVMTransaction(
+          EVM_NATIVE_ASSET,
+          {
+            from: '0x123',
+            to: '0x456',
+            value: '0x64',
+          },
+          '0x5',
+        ),
+      ).toStrictEqual({
+        data: '0x5',
         from: '0x123',
         to: '0x456',
         value: '0x56bc75e2d63100000',
@@ -177,14 +196,14 @@ describe('Send - utils', () => {
     });
   });
 
-  describe('isDecimal', () => {
+  describe('isValidPositiveNumericString', () => {
     it('return true for decimal values and false otherwise', () => {
-      expect(isDecimal('10')).toBe(true);
-      expect(isDecimal('10.01')).toBe(true);
-      expect(isDecimal('.01')).toBe(true);
-      expect(isDecimal('-0.01')).toBe(true);
-      expect(isDecimal('abc')).toBe(false);
-      expect(isDecimal(' ')).toBe(false);
+      expect(isValidPositiveNumericString('10')).toBe(true);
+      expect(isValidPositiveNumericString('10.01')).toBe(true);
+      expect(isValidPositiveNumericString('.01')).toBe(true);
+      expect(isValidPositiveNumericString('-0.01')).toBe(false);
+      expect(isValidPositiveNumericString('abc')).toBe(false);
+      expect(isValidPositiveNumericString(' ')).toBe(false);
     });
   });
 

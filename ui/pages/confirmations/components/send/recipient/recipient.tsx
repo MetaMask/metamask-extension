@@ -136,7 +136,7 @@ export const Recipient = () => {
           data-testid="open-recipient-modal-btn"
           iconName={IconName.Book}
           onClick={openRecipientModal}
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
         />
       );
     }
@@ -167,6 +167,7 @@ export const Recipient = () => {
         endAccessory={renderEndAccessory()}
         onChange={(e) => onToChange(e.target.value)}
         onBlur={captureMetrics}
+        placeholder={t('recipientPlaceholder')}
         ref={recipientInputRef}
         value={localValue}
         width={BlockSize.Full}
