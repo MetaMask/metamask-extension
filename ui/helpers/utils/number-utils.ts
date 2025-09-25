@@ -27,6 +27,6 @@ export function isZeroAmount(
     return amount === 0;
   }
 
-  const onlyNumbers = amount.replace(/\D+/gu, '');
+  const onlyNumbers = amount.replace(/\D+/gu, '').trim();
   return /^0*$/u.test(onlyNumbers);
 }
