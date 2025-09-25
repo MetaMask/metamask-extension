@@ -3713,6 +3713,13 @@
   "network": {
     "message": "Network"
   },
+  "networkAddress": {
+    "message": "1 network address"
+  },
+  "networkAddresses": {
+    "message": "$1 network addresses",
+    "description": "$1 is the number of accounts"
+  },
   "networkChanged": {
     "message": "Network changed"
   },
@@ -5418,6 +5425,9 @@
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
   },
+  "securityDefaultSettingsSocialLogin": {
+    "message": "Security & privacy"
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
@@ -5437,6 +5447,9 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginDefaultSettingsDescription": {
+    "message": "Reduce your chances of joining unsafe networks and protect your accounts and data"
   },
   "securitySocialLoginEnabled": {
     "message": "Enabled"

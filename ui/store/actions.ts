@@ -392,9 +392,10 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground<Subscription[]>(
       'startSubscriptionWithCard',
-      [params],
+      [params, currentTab?.id],
     );
 
     return subscriptions;

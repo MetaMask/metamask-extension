@@ -44,6 +44,7 @@ describe('Transaction Shield Page', () => {
             card: {
               brand: 'Visa',
               last4: '1234',
+              displayBrand: 'Visa',
             },
           },
         } satisfies Subscription,
