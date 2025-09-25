@@ -2,7 +2,10 @@ import React from 'react';
 import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { EVM_ASSET } from '../../../../../../test/data/send/assets';
+import {
+  EVM_ASSET,
+  EVM_NATIVE_ASSET,
+} from '../../../../../../test/data/send/assets';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
@@ -138,11 +141,55 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByRole } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
+    fireEvent.change(getAllByRole('textbox')[1], {
       target: { value: MOCK_ADDRESS },
     });
 
     fireEvent.click(getByRole('button', { name: 'Insufficient Funds' }));
+    expect(mockHandleSubmit).not.toHaveBeenCalled();
+  });
+
+  it('in case of error in hex data submit button displays error and is disabled', async () => {
+    const mockHandleSubmit = jest.fn();
+    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+      handleSubmit: mockHandleSubmit,
+    } as unknown as ReturnType<typeof SendActions.useSendActions>);
+    const mockCaptureAmountSelected = jest.fn();
+    jest
+      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+      .mockReturnValue({
+        captureAmountSelected: mockCaptureAmountSelected,
+      } as unknown as ReturnType<
+        typeof AmountSelectionMetrics.useAmountSelectionMetrics
+      >);
+    jest
+      .spyOn(AmountValidation, 'useAmountValidation')
+      .mockReturnValue(
+        {} as unknown as ReturnType<
+          typeof AmountValidation.useAmountValidation
+        >,
+      );
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_NATIVE_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateHexData: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+
+    const { getAllByRole, getByRole } = render();
+
+    fireEvent.change(getAllByRole('textbox')[2], {
+      target: { value: '###' },
+    });
+
+    fireEvent.click(getByRole('button', { name: 'Invalid hex data' }));
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 });
