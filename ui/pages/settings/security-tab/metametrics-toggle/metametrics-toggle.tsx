@@ -28,9 +28,11 @@ import {
 const MetametricsToggle = ({
   dataCollectionForMarketing,
   setDataCollectionForMarketing,
+  fromDefaultSettings = false,
 }: {
   dataCollectionForMarketing: boolean;
   setDataCollectionForMarketing: (value: boolean) => Promise<void>;
+  fromDefaultSettings?: boolean;
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -56,6 +58,7 @@ const MetametricsToggle = ({
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
           participateInMetaMetrics,
+          location: fromDefaultSettings ? 'Default Settings' : 'Settings',
         },
       });
     } else {

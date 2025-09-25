@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+// LEGACY SCRIPT
+// This script is considered legacy as it is meant to be
+// replaced by stable-branch-sync.yml GitHub Action in
+// the future. However, it is kept for now as a backup
+// and for manual use if needed.
+
 // USAGE:
 // Simply run `yarn stable-sync` from any branch.
 // This will create/update a local stable-sync branch
@@ -79,19 +85,12 @@ async function runGitCommands() {
     await exec('git checkout origin/stable -- CHANGELOG.md');
     console.log('Executed: git checkout origin/stable -- CHANGELOG.md');
 
-    const { stdout: packageJsonContent } = await exec(
-      'git show origin/stable:package.json',
-    );
-    const packageJson = JSON.parse(packageJsonContent);
-    const packageVersion = packageJson.version;
-
-    await exec(`yarn version "${packageVersion}"`);
-    console.log('Executed: yarn version');
-
     await exec('git add .');
     console.log('Executed: git add .');
 
-    await exec('git commit -m "Merge origin/main into stable-sync"');
+    await exec(
+      'git commit -m "Merge origin/main into stable-sync" --no-verify',
+    );
     console.log('Executed: git commit');
 
     // Force push since stable-sync is a temporary branch that gets hard reset
