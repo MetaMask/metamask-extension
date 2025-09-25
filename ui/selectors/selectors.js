@@ -129,6 +129,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { generateTokenCacheKey } from '../helpers/utils/token-util';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -3072,7 +3073,7 @@ export const getTokenScanResultsForAddresses = createDeepEqualSelector(
     const results = {};
     tokenAddresses.forEach((tokenAddress) => {
       if (tokenAddress) {
-        const cacheKey = `${chainId.toLowerCase()}:${tokenAddress.toLowerCase()}`;
+        const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
         if (tokenScanCache?.[cacheKey]) {
           results[cacheKey] = tokenScanCache[cacheKey];
         }

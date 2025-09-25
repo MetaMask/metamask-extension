@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getTokenScanResultsForAddresses } from '../selectors/selectors';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
+import { generateTokenCacheKey } from '../helpers/utils/token-util';
 
 type TokenScanCacheResult = {
   data: {
@@ -34,10 +35,6 @@ function getTrustState(
   }
 }
 
-function generateCacheKey(chainId: string, tokenAddress: string) {
-  return `${chainId.toLowerCase()}:${tokenAddress.toLowerCase()}`;
-}
-
 export function useTokenTrustSignalsForAddresses(
   chainId: string | undefined,
   tokenAddresses: string[] | undefined,
@@ -59,7 +56,7 @@ export function useTokenTrustSignalsForAddresses(
         };
       }
 
-      const cacheKey = generateCacheKey(chainId, tokenAddress);
+      const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
       const cachedResult = tokenScanResults[cacheKey];
 
       return {
