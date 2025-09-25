@@ -125,6 +125,8 @@ export const MultichainAccountsConnectPage: React.FC<
   rejectPermissionsRequest,
   approveConnection,
   targetSubjectMetadata,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  activeTabOrigin,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -206,20 +208,15 @@ export const MultichainAccountsConnectPage: React.FC<
     return namespace !== KnownCaipNamespace.Wallet;
   });
 
-  const requestedCaipChainIdsOrDefault = useMemo(
+  const requestedCaipChainIdsAndDefault = useMemo(
     () =>
-      requestedCaipChainIds.length > 0
-        ? requestedCaipChainIds
-        : [
-            ...new Set([
-              ...nonTestNetworkConfigurations.map(
-                ({ caipChainId }) => caipChainId,
-              ),
-              ...testNetworkConfigurations.map(
-                ({ caipChainId }) => caipChainId,
-              ),
-            ]),
-          ],
+      Array.from(
+        new Set([
+          ...requestedCaipChainIds,
+          ...nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId),
+          ...testNetworkConfigurations.map(({ caipChainId }) => caipChainId),
+        ]),
+      ),
     [
       nonTestNetworkConfigurations,
       requestedCaipChainIds,
@@ -236,7 +233,7 @@ export const MultichainAccountsConnectPage: React.FC<
   } = useAccountGroupsForPermissions(
     existingCaip25CaveatValue,
     requestedCaipAccountIds,
-    requestedCaipChainIdsOrDefault,
+    requestedCaipChainIdsAndDefault,
     requestedNamespacesWithoutWallet,
   );
 
@@ -244,7 +241,7 @@ export const MultichainAccountsConnectPage: React.FC<
     useState(false);
 
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
-    requestedCaipChainIdsOrDefault,
+    requestedCaipChainIdsAndDefault,
   );
 
   const handleChainIdsSelected = useCallback(
@@ -280,7 +277,7 @@ export const MultichainAccountsConnectPage: React.FC<
         suggestedAccountGroups: [defaultSelectedAccountGroup],
         suggestedCaipAccountIds: getCaip25AccountFromAccountGroupAndScope(
           [defaultSelectedAccountGroup],
-          requestedCaipChainIdsOrDefault,
+          requestedCaipChainIdsAndDefault,
         ),
       };
     }
@@ -289,7 +286,7 @@ export const MultichainAccountsConnectPage: React.FC<
       suggestedAccountGroups: selectedAndRequestedAccountGroups,
       suggestedCaipAccountIds: getCaip25AccountFromAccountGroupAndScope(
         selectedAndRequestedAccountGroups,
-        requestedCaipChainIdsOrDefault,
+        requestedCaipChainIdsAndDefault,
       ),
     };
   }, [
@@ -299,7 +296,7 @@ export const MultichainAccountsConnectPage: React.FC<
     selectedAndRequestedAccountGroups,
     connectedAccountGroupWithRequested,
     caipAccountIdsOfConnectedAccountGroupWithRequested,
-    requestedCaipChainIdsOrDefault,
+    requestedCaipChainIdsAndDefault,
   ]);
 
   const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(

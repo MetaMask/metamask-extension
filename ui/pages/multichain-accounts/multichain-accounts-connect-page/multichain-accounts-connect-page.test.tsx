@@ -18,69 +18,12 @@ import {
   MultichainConnectPageProps,
 } from './multichain-accounts-connect-page';
 
+// Mock the hook with a jest function for spying
+const mockUseAccountGroupsForPermissions = jest.fn();
+
 jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
-  useAccountGroupsForPermissions: () => ({
-    connectedAccountGroups: [
-      {
-        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-        metadata: { name: 'Test Account Group 1' },
-        accounts: [
-          {
-            address: '0x123',
-            scopes: ['eip155:0'],
-          },
-        ],
-      },
-    ],
-    supportedAccountGroups: [
-      {
-        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-        metadata: { name: 'Test Account Group 1' },
-        accounts: [
-          {
-            address: '0x123',
-            scopes: ['eip155:0'],
-          },
-        ],
-      },
-      {
-        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1',
-        metadata: { name: 'Test Account Group 2' },
-        accounts: [
-          {
-            address: '0x456',
-            scopes: ['eip155:0'],
-          },
-        ],
-      },
-    ],
-    existingConnectedCaipAccountIds: ['eip155:1:0x123'],
-    connectedAccountGroupWithRequested: [
-      {
-        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-        metadata: { name: 'Test Account Group 1' },
-        accounts: [
-          {
-            address: '0x123',
-            scopes: ['eip155:0'],
-          },
-        ],
-      },
-    ],
-    caipAccountIdsOfConnectedAccountGroupWithRequested: ['eip155:1:0x123'],
-    selectedAndRequestedAccountGroups: [
-      {
-        id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-        metadata: { name: 'Test Account Group 1' },
-        accounts: [
-          {
-            address: '0x123',
-            scopes: ['eip155:0'],
-          },
-        ],
-      },
-    ],
-  }),
+  useAccountGroupsForPermissions: (...args: unknown[]) =>
+    mockUseAccountGroupsForPermissions(...args),
 }));
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
@@ -92,6 +35,31 @@ jest.mock('../../../../shared/modules/selectors/networks', () => ({
       nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
       rpcUrls: ['https://mainnet.infura.io'],
       blockExplorerUrls: ['https://etherscan.io'],
+    },
+    'eip155:137': {
+      chainId: 'eip155:137',
+      name: 'Polygon Mainnet',
+      nativeCurrency: { symbol: 'MATIC', name: 'Polygon', decimals: 18 },
+      rpcUrls: ['https://polygon-mock-url'],
+      blockExplorerUrls: ['https://polygonscan-mock-url'],
+    },
+    'eip155:11155111': {
+      chainId: 'eip155:11155111',
+      name: 'Sepolia Testnet',
+      nativeCurrency: {
+        symbol: 'SepoliaETH',
+        name: 'Sepolia Ether',
+        decimals: 18,
+      },
+      rpcUrls: ['https://sepolia-mock-url'],
+      blockExplorerUrls: ['https://sepolia-mock-url'],
+    },
+    'eip155:80001': {
+      chainId: 'eip155:80001',
+      name: 'Polygon Mumbai Testnet',
+      nativeCurrency: { symbol: 'MATIC', name: 'Polygon', decimals: 18 },
+      rpcUrls: ['https://rpc-mumbai-mock-url'],
+      blockExplorerUrls: ['https://mumbai-mock-url'],
     },
   }),
 }));
@@ -317,6 +285,79 @@ const render = (
 describe('MultichainConnectPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Set up the default mock implementation
+    mockUseAccountGroupsForPermissions.mockReturnValue({
+      connectedAccountGroups: [
+        {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+          metadata: { name: 'Test Account Group 1' },
+          walletName: 'Test Wallet',
+          walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          accounts: [
+            {
+              address: '0x123',
+              scopes: ['eip155:0'],
+            },
+          ],
+        },
+      ],
+      supportedAccountGroups: [
+        {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+          metadata: { name: 'Test Account Group 1' },
+          walletName: 'Test Wallet',
+          walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          accounts: [
+            {
+              address: '0x123',
+              scopes: ['eip155:0'],
+            },
+          ],
+        },
+        {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1',
+          metadata: { name: 'Test Account Group 2' },
+          walletName: 'Test Wallet',
+          walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          accounts: [
+            {
+              address: '0x456',
+              scopes: ['eip155:0'],
+            },
+          ],
+        },
+      ],
+      existingConnectedCaipAccountIds: ['eip155:1:0x123'],
+      connectedAccountGroupWithRequested: [
+        {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+          metadata: { name: 'Test Account Group 1' },
+          walletName: 'Test Wallet',
+          walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          accounts: [
+            {
+              address: '0x123',
+              scopes: ['eip155:0'],
+            },
+          ],
+        },
+      ],
+      caipAccountIdsOfConnectedAccountGroupWithRequested: ['eip155:1:0x123'],
+      selectedAndRequestedAccountGroups: [
+        {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+          metadata: { name: 'Test Account Group 1' },
+          walletName: 'Test Wallet',
+          walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          accounts: [
+            {
+              address: '0x123',
+              scopes: ['eip155:0'],
+            },
+          ],
+        },
+      ],
+    });
   });
 
   it('renders correctly', () => {
@@ -588,5 +629,99 @@ describe('MultichainConnectPage', () => {
 
     expect(getByTestId('accounts-tab')).toBeDefined();
     expect(getByTestId('permissions-tab')).toBeDefined();
+  });
+
+  it('calls useAccountGroupsForPermissions with all available networks', () => {
+    mockUseAccountGroupsForPermissions.mockClear();
+
+    render();
+
+    expect(mockUseAccountGroupsForPermissions).toHaveBeenCalledTimes(1);
+
+    const [
+      existingCaip25CaveatValue,
+      requestedCaipAccountIds,
+      requestedCaipChainIdsAndDefault,
+      requestedNamespacesWithoutWallet,
+    ] = mockUseAccountGroupsForPermissions.mock.calls[0];
+
+    expect(existingCaip25CaveatValue).toEqual({
+      requiredScopes: {},
+      optionalScopes: {},
+      sessionProperties: {},
+      isMultichainOrigin: true,
+    });
+
+    expect(requestedCaipAccountIds).toEqual(['eip155:1:0x123']);
+
+    // the mock getAllNetworkConfigurationsByCaipChainId only returns these networks.
+    expect(requestedCaipChainIdsAndDefault).toEqual(
+      expect.arrayContaining([
+        'eip155:1', // Requested network + mainnet
+        'eip155:137', // Polygon mainnet (non-test)
+        'eip155:11155111', // Sepolia testnet
+        'eip155:80001', // Polygon Mumbai testnet
+      ]),
+    );
+
+    // Should include all 4 networks
+    expect(requestedCaipChainIdsAndDefault).toHaveLength(4);
+
+    expect(requestedNamespacesWithoutWallet).toEqual(['eip155']);
+  });
+
+  it('calls useAccountGroupsForPermissions with requested networks plus all available networks when additional networks requested', () => {
+    mockUseAccountGroupsForPermissions.mockClear();
+
+    render({
+      props: {
+        request: {
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                      'eip155:137': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: true,
+                  },
+                },
+              ],
+            },
+          },
+          metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
+          },
+        },
+      },
+    });
+
+    expect(mockUseAccountGroupsForPermissions).toHaveBeenCalledTimes(1);
+
+    const [, , requestedCaipChainIdsAndDefault] =
+      mockUseAccountGroupsForPermissions.mock.calls[0];
+
+    // Should include requested networks (eip155:1, eip155:137) plus all available networks
+    // Since we use Array.from(new Set(...)), duplicates should be removed
+    expect(requestedCaipChainIdsAndDefault).toEqual(
+      expect.arrayContaining([
+        'eip155:1', // Requested + available
+        'eip155:137', // Requested + available
+        'eip155:11155111', // Available testnet
+        'eip155:80001', // Available testnet
+      ]),
+    );
+
+    expect(requestedCaipChainIdsAndDefault).toHaveLength(4);
   });
 });
