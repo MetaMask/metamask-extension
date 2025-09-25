@@ -771,6 +771,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:signTypedMessage',
           `${this.loggingController.name}:add`,
           `NetworkController:getNetworkClientById`,
+          `GatorPermissionsController:decodePermissionFromPermissionContextForOrigin`,
         ],
       }),
       trace,
@@ -1881,11 +1882,62 @@ export default class MetamaskController extends EventEmitter {
       getAuthorizedScopesByOrigin,
     );
 
+    // TODO: To be removed when state 2 is fully transitioned.
     // wallet_notify for solana accountChanged when selected account changes
     this.controllerMessenger.subscribe(
       `${this.accountsController.name}:selectedAccountChange`,
       async (account) => {
         if (
+          account.type === SolAccountType.DataAccount &&
+          account.address !== lastSelectedSolanaAccountAddress
+        ) {
+          lastSelectedSolanaAccountAddress = account.address;
+
+          const originsWithSolanaAccountChangedNotifications =
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
+              KnownSessionProperties.SolanaAccountChangedNotifications,
+            );
+
+          // returns a map of origins to permitted solana accounts
+          const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+            this.permissionController.state,
+            [
+              MultichainNetworks.SOLANA,
+              MultichainNetworks.SOLANA_DEVNET,
+              MultichainNetworks.SOLANA_TESTNET,
+            ],
+          );
+
+          if (solanaAccounts.size > 0) {
+            for (const [origin, accounts] of solanaAccounts.entries()) {
+              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedSolanaAddresses.includes(account.address) &&
+                originsWithSolanaAccountChangedNotifications[origin]
+              ) {
+                this._notifySolanaAccountChange(origin, [account.address]);
+              }
+            }
+          }
+        }
+      },
+    );
+
+    // wallet_notify for solana accountChanged when selected account group changes
+    this.controllerMessenger.subscribe(
+      `${this.accountTreeController.name}:selectedAccountGroupChange`,
+      () => {
+        const [account] =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [SolScope.Mainnet],
+          });
+        if (
+          account &&
           account.type === SolAccountType.DataAccount &&
           account.address !== lastSelectedSolanaAccountAddress
         ) {

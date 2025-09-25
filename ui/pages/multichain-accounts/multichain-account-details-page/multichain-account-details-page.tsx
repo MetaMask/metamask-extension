@@ -29,8 +29,9 @@ import {
   getMultichainAccountGroupById,
   getNetworkAddressCount,
   getWallet,
-  getInternalAccountsFromGroupById,
   getIconSeedAddressByAccountGroupId,
+  getInternalAccountByGroupAndCaip,
+  getInternalAccountsFromGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
@@ -77,6 +78,9 @@ export const MultichainAccountDetailsPage = () => {
   const accountsWithAddresses = useSelector((state) =>
     getInternalAccountsFromGroupById(state, accountGroupId),
   );
+  const evmInternalAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(state, accountGroupId, 'eip155:1'),
+  );
   const seedAddressIcon = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountGroupId),
   );
@@ -104,10 +108,10 @@ export const MultichainAccountDetailsPage = () => {
   };
 
   const handleSmartAccountClick = () => {
-    const firstAccountAddress = accountsWithAddresses[0]?.address;
-    if (firstAccountAddress) {
+    const evmAccountAddress = evmInternalAccount?.address;
+    if (evmAccountAddress) {
       history.push(
-        `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(firstAccountAddress)}`,
+        `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(evmAccountAddress)}`,
       );
     }
   };

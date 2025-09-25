@@ -387,7 +387,7 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded,
+      gasIncluded: gasIncluded || gasIncluded7702,
       gasIncluded7702,
     }),
     [

@@ -38,5 +38,7 @@ export const SettingsPageComponent = () => (
     snapSettingsTitle=""
     toggleNetworkMenu={() => undefined}
     useExternalServices
+    hasShieldSubscription={false}
+    getSubscriptions={() => undefined}
   />
 );
