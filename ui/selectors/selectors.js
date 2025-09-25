@@ -3051,16 +3051,17 @@ export function getTokenScanCache(state) {
 /**
  * Gets specific token scan results for given addresses.
  *
- *
  * @param {*} state
- * @param {string} chainId - The chain ID to filter by
- * @param {string[]} tokenAddresses - Array of token addresses to get results for
- * @returns Object containing only the requested token scan results
+ * @param {string} chainId
+ * @param {string[]} tokenAddresses
+ * @returns {Record<string, TokenScanCacheResult>}
  */
 export const getTokenScanResultsForAddresses = createDeepEqualSelector(
   [
     getTokenScanCache,
+    // eslint-disable-next-line jsdoc/check-param-names
     (_state, chainId) => chainId,
+    // eslint-disable-next-line jsdoc/check-param-names
     (_state, _chainId, tokenAddresses) => tokenAddresses,
   ],
   (tokenScanCache, chainId, tokenAddresses) => {
