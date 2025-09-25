@@ -96,25 +96,6 @@ export const hasRequestedAccountIds = (
 };
 
 /**
- * Removes duplicate account groups from an array based on their IDs
- *
- * @param accountGroups - Array of account groups that may contain duplicates
- * @returns Array with unique account groups based on their IDs
- */
-const deduplicateAccountGroups = (
-  accountGroups: AccountGroupWithInternalAccounts[],
-): AccountGroupWithInternalAccounts[] => {
-  const seen = new Set<string>();
-  return accountGroups.filter((group) => {
-    if (seen.has(group.id)) {
-      return false;
-    }
-    seen.add(group.id);
-    return true;
-  });
-};
-
-/**
  * Hook that manages account groups for CAIP-25 permissions, providing both connected
  * and supported account groups based on existing permissions, requested chains/namespaces,
  * and specific account IDs with prioritization support.
@@ -229,13 +210,15 @@ export const useAccountGroupsForPermissions = (
     }
 
     // Combine priority groups with fallback groups (if any) and remove duplicates
-    const selectedAndRequestedAccountGroups = deduplicateAccountGroups([
+    const selectedAndRequestedAccountGroups = new Set([
       ...prioritySupportedGroups,
       ...fallbackAccountGroups,
     ]);
 
     return {
-      selectedAndRequestedAccountGroups,
+      selectedAndRequestedAccountGroups: Array.from(
+        selectedAndRequestedAccountGroups,
+      ),
       supportedAccountGroups: [
         ...prioritySupportedGroups,
         ...supportedAccountGroups,
@@ -245,8 +228,8 @@ export const useAccountGroupsForPermissions = (
         ...connectedAccountGroups,
       ],
       connectedCaipAccountIds: connectedAccountIds,
-      connectedAccountGroupWithRequested: deduplicateAccountGroups(
-        connectedAccountGroupWithRequested,
+      connectedAccountGroupWithRequested: Array.from(
+        new Set(connectedAccountGroupWithRequested),
       ),
       caipAccountIdsOfConnectedAccountGroupWithRequested,
     };
