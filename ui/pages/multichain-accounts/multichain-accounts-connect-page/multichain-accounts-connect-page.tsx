@@ -206,26 +206,27 @@ export const MultichainAccountsConnectPage: React.FC<
     return namespace !== KnownCaipNamespace.Wallet;
   });
 
-  const requestedCaipChainIdsOrDefault = useMemo(
-    () =>
-      requestedCaipChainIds.length > 0
-        ? requestedCaipChainIds
-        : [
-            ...new Set([
-              ...nonTestNetworkConfigurations.map(
-                ({ caipChainId }) => caipChainId,
-              ),
-              ...testNetworkConfigurations.map(
-                ({ caipChainId }) => caipChainId,
-              ),
-            ]),
-          ],
-    [
-      nonTestNetworkConfigurations,
-      requestedCaipChainIds,
-      testNetworkConfigurations,
-    ],
-  );
+  const requestedCaipChainIdsOrDefault = useMemo(() => {
+    if (requestedCaipChainIds.length > 0) {
+      return requestedCaipChainIds;
+    }
+
+    if (requestedNamespaces.length > 0) {
+      return nonTestNetworkConfigurations
+        .filter(({ caipChainId }) => {
+          const { namespace } = parseCaipChainId(caipChainId);
+          return requestedNamespaces.includes(namespace);
+        })
+        .map(({ caipChainId }) => caipChainId);
+    }
+
+    // No supported chains or namespaces
+    return [];
+  }, [
+    nonTestNetworkConfigurations,
+    requestedCaipChainIds,
+    requestedNamespaces,
+  ]);
 
   const {
     connectedAccountGroups,
