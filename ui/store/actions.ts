@@ -65,6 +65,7 @@ import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
+  PaymentType,
   PricingResponse,
   ProductPrice,
   ProductType,
@@ -395,6 +396,22 @@ export function startSubscriptionWithCard(params: {
     const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground<Subscription[]>(
       'startSubscriptionWithCard',
+      [params, currentTab?.id],
+    );
+
+    return subscriptions;
+  };
+}
+
+export function updateSubscriptionCardPaymentMethod(params: {
+  paymentType: Extract<PaymentType, 'card'>;
+  subscriptionId: string;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
+    const subscriptions = await submitRequestToBackground(
+      'updateSubscriptionCardPaymentMethod',
       [params, currentTab?.id],
     );
 

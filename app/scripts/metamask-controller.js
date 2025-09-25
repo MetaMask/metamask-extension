@@ -138,6 +138,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { PAYMENT_TYPES } from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -2281,6 +2282,87 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
+  async updateSubscriptionCardPaymentMethod(
+    params,
+    /* current tab can be undefined if open from non tab context (e.g. popup, background) */
+    currentTabId,
+  ) {
+    const { paymentType } = params;
+    if (paymentType !== PAYMENT_TYPES.byCard) {
+      throw new Error('Only card payment type is supported');
+    }
+
+    const identityAPI = getIdentityAPI();
+    const redirectUrl = identityAPI.getRedirectURL();
+
+    const { redirectUrl: checkoutSessionUrl } =
+      await this.subscriptionController.updatePaymentMethod({
+        ...params,
+        successUrl: redirectUrl,
+      });
+
+    const checkoutTab = await this.platform.openTab({
+      url: checkoutSessionUrl,
+    });
+
+    // --- We will define our listeners here so we can reference them for cleanup ---
+    // eslint-disable-next-line prefer-const
+    let onTabUpdatedListener;
+    // eslint-disable-next-line prefer-const
+    let onTabRemovedListener;
+
+    await new Promise((resolve, reject) => {
+      let checkoutSucceeded = false;
+      const cleanupListeners = () => {
+        // Important: Remove both listeners to prevent memory leaks
+        if (onTabUpdatedListener) {
+          this.platform.removeTabUpdatedListener(onTabUpdatedListener);
+        }
+        if (onTabRemovedListener) {
+          this.platform.removeTabRemovedListener(onTabRemovedListener);
+        }
+      };
+
+      // Set up a listener to watch for navigation on that specific tab
+      onTabUpdatedListener = (tabId, changeInfo, _tab) => {
+        // We only care about updates to our specific checkout tab
+        if (tabId === checkoutTab.id && changeInfo.url) {
+          if (changeInfo.url.startsWith(redirectUrl)) {
+            // Payment was successful!
+            checkoutSucceeded = true;
+
+            // Clean up: close the tab
+            this.platform.closeTab(tabId);
+          }
+          // TODO: handle cancel url ?
+        }
+      };
+      this.platform.addTabUpdatedListener(onTabUpdatedListener);
+
+      // Set up a listener to watch for tab removal
+      onTabRemovedListener = (tabId) => {
+        if (tabId === checkoutTab.id) {
+          cleanupListeners();
+          if (checkoutSucceeded) {
+            resolve();
+          } else {
+            reject(new Error('Checkout failed'));
+          }
+        }
+      };
+      this.platform.addTabRemovedListener(onTabRemovedListener);
+    });
+
+    if (!currentTabId) {
+      // open extension browser shield settings if open from pop up (no current tab)
+      this.platform.openExtensionInBrowser('/settings/transaction-shield');
+    }
+
+    // fetch latest user subscriptions after checkout
+    const subscriptions = await this.subscriptionController.getSubscriptions();
+    return subscriptions;
+  }
+
   async startSubscriptionWithCard(
     params,
     /* current tab can be undefined if open from non tab context (e.g. popup, background) */
@@ -2675,6 +2757,8 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
       startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
+      updateSubscriptionCardPaymentMethod:
+        this.updateSubscriptionCardPaymentMethod.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),

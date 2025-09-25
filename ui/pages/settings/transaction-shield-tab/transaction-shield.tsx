@@ -42,6 +42,7 @@ import {
   useCancelSubscription,
   useOpenGetSubscriptionBillingPortal,
   useUnCancelSubscription,
+  useUpdateSubscriptionCardPaymentMethod,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
@@ -122,11 +123,20 @@ const TransactionShield = () => {
     openGetSubscriptionBillingPortalResult,
   ] = useOpenGetSubscriptionBillingPortal();
 
+  const [
+    executeUpdateSubscriptionCardPaymentMethod,
+    updateSubscriptionCardPaymentMethodResult,
+  ] = useUpdateSubscriptionCardPaymentMethod({
+    subscriptionId: shieldSubscription?.id,
+    recurringInterval: shieldSubscription?.interval,
+  });
+
   const loading =
     subscriptionsLoading ||
     cancelSubscriptionResult.pending ||
     unCancelSubscriptionResult.pending ||
-    openGetSubscriptionBillingPortalResult.pending;
+    openGetSubscriptionBillingPortalResult.pending ||
+    updateSubscriptionCardPaymentMethodResult.pending;
 
   useEffect(() => {
     if (!loading && !shieldSubscription) {
@@ -221,9 +231,13 @@ const TransactionShield = () => {
               ? 'shieldTxMembershipErrorAddFunds'
               : 'shieldTxMembershipErrorUpdatePayment',
           )}
-          actionButtonOnClick={() => {
-            // TODO: handle update payment
-            console.log('update payment');
+          actionButtonOnClick={async () => {
+            if (isCryptoPayment) {
+              // TODO: handle add funds crypto
+              console.log('add funds');
+            } else {
+              await executeUpdateSubscriptionCardPaymentMethod();
+            }
           }}
         />
       );
@@ -249,10 +263,11 @@ const TransactionShield = () => {
     return null;
   }, [
     isPaused,
-    isCryptoPayment,
     isSubscriptionEndingSoon,
     shieldSubscription,
     t,
+    isCryptoPayment,
+    executeUpdateSubscriptionCardPaymentMethod,
   ]);
 
   const paymentMethod = useMemo(() => {
@@ -274,8 +289,13 @@ const TransactionShield = () => {
             startIconProps={{
               size: IconSize.Md,
             }}
-            onClick={() => {
-              console.log('update payment');
+            onClick={async () => {
+              if (isCryptoPayment) {
+                // TODO: handle add funds crypto
+                console.log('add funds');
+              } else {
+                await executeUpdateSubscriptionCardPaymentMethod();
+              }
             }}
             danger
           >
@@ -322,6 +342,7 @@ const TransactionShield = () => {
     isCryptoPayment,
     isSubscriptionEndingSoon,
     t,
+    executeUpdateSubscriptionCardPaymentMethod,
   ]);
 
   return (
