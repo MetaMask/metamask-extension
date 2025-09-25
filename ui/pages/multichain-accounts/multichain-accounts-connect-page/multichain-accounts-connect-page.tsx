@@ -125,8 +125,6 @@ export const MultichainAccountsConnectPage: React.FC<
   rejectPermissionsRequest,
   approveConnection,
   targetSubjectMetadata,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  activeTabOrigin,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
