@@ -452,7 +452,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--display-flex"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                       >
                         <div
                           class="name name__clickable name__missing"
@@ -505,7 +505,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--display-flex"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                       >
                         <div
                           class="name name__clickable name__missing"
@@ -555,7 +555,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -658,7 +658,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -940,7 +940,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--display-flex"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                       >
                         <div
                           class="name name__clickable name__missing"
@@ -990,7 +990,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1093,7 +1093,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1399,7 +1399,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1609,7 +1609,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex"
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1649,7 +1649,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex"
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1689,7 +1689,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex"
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1825,7 +1825,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex"
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -1865,7 +1865,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex"
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -1905,7 +1905,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex"
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -2193,7 +2193,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                       </div>
                     </div>
                     <div
-                      class="mm-box mm-box--display-flex"
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                     >
                       <div
                         class="name name__clickable name__missing"
@@ -2242,7 +2242,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2345,7 +2345,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2649,7 +2649,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2799,7 +2799,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -2839,7 +2839,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -2937,7 +2937,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -3028,7 +3028,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -3413,7 +3413,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -3623,7 +3623,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex"
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3663,7 +3663,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex"
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3703,7 +3703,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex"
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3839,7 +3839,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex"
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -3879,7 +3879,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex"
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -3919,7 +3919,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex"
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
