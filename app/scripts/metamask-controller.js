@@ -770,6 +770,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:signTypedMessage',
           `${this.loggingController.name}:add`,
           `NetworkController:getNetworkClientById`,
+          `GatorPermissionsController:decodePermissionFromPermissionContextForOrigin`,
         ],
       }),
       trace,
