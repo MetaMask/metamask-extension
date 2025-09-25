@@ -79,15 +79,6 @@ async function runGitCommands() {
     await exec('git checkout origin/stable -- CHANGELOG.md');
     console.log('Executed: git checkout origin/stable -- CHANGELOG.md');
 
-    const { stdout: packageJsonContent } = await exec(
-      'git show origin/stable:package.json',
-    );
-    const packageJson = JSON.parse(packageJsonContent);
-    const packageVersion = packageJson.version;
-
-    await exec(`yarn version "${packageVersion}"`);
-    console.log('Executed: yarn version');
-
     await exec('git add .');
     console.log('Executed: git add .');
 
