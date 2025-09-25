@@ -213,10 +213,7 @@ import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  isGatorPermissionsFeatureEnabled,
-} from '../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import {
@@ -369,7 +366,9 @@ import {
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
 
+///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
 import { TokenListControllerInit } from './controller-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
@@ -1352,12 +1351,12 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
-      processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
-        ? forwardRequestToSnap.bind(null, {
-            snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
-          })
-        : undefined,
+      ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
+      processRequestExecutionPermissions: forwardRequestToSnap.bind(null, {
+        snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
+        handleRequest: this.handleSnapRequest.bind(this),
+      }),
+      ///: END:ONLY_INCLUDE_IF
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates

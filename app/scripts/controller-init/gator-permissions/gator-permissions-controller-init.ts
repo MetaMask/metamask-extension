@@ -4,15 +4,24 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
 import { ControllerInitFunction } from '../types';
-import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
 import { GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
 
 const generateDefaultGatorPermissionsControllerState =
   (): Partial<GatorPermissionsControllerState> => {
+    let isGatorPermissionsEnabled = false;
+    ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
+    isGatorPermissionsEnabled = true;
+    ///: END:ONLY_INCLUDE_IF
+
+    const state: Partial<GatorPermissionsControllerState> = {
+      isGatorPermissionsEnabled,
+    };
+
     const gatorPermissionsProviderSnapId =
       process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
 
-    // if GATOR_PERMISSIONS_PROVIDER_SNAP_ID is not specified, GatorPermissionsController will initialize it's default
+    // if GATOR_PERMISSIONS_PROVIDER_SNAP_ID is not specified,
+    // GatorPermissionsController will initialize it's default
     if (gatorPermissionsProviderSnapId !== undefined) {
       try {
         assertIsValidSnapId(gatorPermissionsProviderSnapId);
@@ -24,15 +33,7 @@ const generateDefaultGatorPermissionsControllerState =
           },
         );
       }
-    }
 
-    const isGatorPermissionsEnabled = isGatorPermissionsFeatureEnabled();
-
-    const state: Partial<GatorPermissionsControllerState> = {
-      isGatorPermissionsEnabled,
-    };
-
-    if (gatorPermissionsProviderSnapId) {
       state.gatorPermissionsProviderSnapId = gatorPermissionsProviderSnapId;
     }
 
