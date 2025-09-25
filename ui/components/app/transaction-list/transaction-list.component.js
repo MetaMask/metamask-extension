@@ -371,7 +371,6 @@ export default function TransactionList({
 
   const chainId = useSelector(getCurrentChainId);
 
-  console.log('chainId ********************', chainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
@@ -733,11 +732,6 @@ export default function TransactionList({
     );
   }
   ///: END:ONLY_INCLUDE_IF
-
-  console.log(
-    'pendingTransactions ********************',
-    completedTransactions,
-  );
 
   return (
     <>

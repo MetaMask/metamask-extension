@@ -86,6 +86,8 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
   );
 
+  const enabledChainIds = useSelector(getAllEnabledNetworksForAllNamespaces);
+
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
   // extract the solana account of the selected account group
@@ -174,10 +176,6 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
-    const enabledChainIds = Object.entries(allEnabledNetworksForAllNamespaces)
-      .filter(([, enabled]) => enabled)
-      .map(([chainId]) => chainId);
-
     // Helper function to filter networks based on account type and selection
     const getFilteredNetworks = () => {
       if (isMultichainAccountsState2Enabled) {
@@ -264,7 +262,6 @@ const DefaultNetworks = memo(() => {
       );
     });
   }, [
-    allEnabledNetworksForAllNamespaces,
     orderedNetworks,
     isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
@@ -279,6 +276,7 @@ const DefaultNetworks = memo(() => {
     evmAccountGroup,
     dispatch,
     selectedAccount,
+    enabledChainIds,
   ]);
 
   // Memoize the additional network list items
