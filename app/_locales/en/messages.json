@@ -4436,9 +4436,6 @@
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
   },
-  "participateInMetaMetricsDefaultSettingsDescription": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored. You can opt out or delete your usage data at any time."
-  },
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
