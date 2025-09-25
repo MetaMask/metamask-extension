@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, ButtonVariant, ButtonSize, Icon, IconName } from "../../../components/component-library";
+import { Button, ButtonVariant, ButtonSize, Icon, IconName, IconSize } from "../../../components/component-library";
 import { AlignItems, JustifyContent } from "../../../helpers/constants/design-system";
 import { Column, Row } from "../layout";
 import { NetworkFilterPill } from "./network-filter-pill";
@@ -62,7 +62,7 @@ export const NetworkCarousel = ({ selectedNetwork, setSelectedNetwork }: Network
             onClick={scrollLeft}
             disabled={!canScrollLeft}
           >
-            <Icon name={IconName.ArrowLeft} />
+            <Icon name={IconName.ArrowLeft} size={IconSize.Sm} />
           </Button>
 
           <div
@@ -98,7 +98,7 @@ export const NetworkCarousel = ({ selectedNetwork, setSelectedNetwork }: Network
             onClick={scrollRight}
             disabled={!canScrollRight}
           >
-            <Icon name={IconName.ArrowRight} />
+            <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
           </Button>
         </Row>
       </Row>
