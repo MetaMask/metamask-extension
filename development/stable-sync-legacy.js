@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+// LEGACY SCRIPT
+// This script is considered legacy as it is meant to be
+// replaced by stable-branch-sync.yml GitHub Action in
+// the future. However, it is kept for now as a backup
+// and for manual use if needed.
+
 // USAGE:
 // Simply run `yarn stable-sync` from any branch.
 // This will create/update a local stable-sync branch
