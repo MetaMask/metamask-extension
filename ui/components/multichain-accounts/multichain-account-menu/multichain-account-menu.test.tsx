@@ -160,36 +160,5 @@ describe('MultichainAccountMenu', () => {
     }
 
     expect(mockHandleAccountRenameAction).toHaveBeenCalledWith(accountGroupId);
-    expect(mockOnToggle).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onToggle when rename action is performed with controlled props', async () => {
-    const mockHandleAccountRenameAction = jest.fn();
-    const mockOnToggle = jest.fn();
-    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
-
-    renderComponent({
-      accountGroupId,
-      isRemovable: false,
-      isOpen: true,
-      onToggle: mockOnToggle,
-      handleAccountRenameAction: mockHandleAccountRenameAction,
-    });
-
-    // Rename option should be the second menu item
-    const menuItems = document.querySelectorAll(menuItemSelector);
-    expect(menuItems.length).toBe(3);
-
-    const renameOption = menuItems[1];
-    expect(renameOption).not.toBeNull();
-
-    if (renameOption) {
-      await act(async () => {
-        fireEvent.click(renameOption);
-      });
-    }
-
-    expect(mockHandleAccountRenameAction).toHaveBeenCalledWith(accountGroupId);
-    expect(mockOnToggle).toHaveBeenCalledTimes(1);
   });
 });

@@ -120,13 +120,7 @@ export const MultichainAccountMenu = ({
     }
 
     return baseMenuItems;
-  }, [
-    accountGroupId,
-    handleAccountRenameAction,
-    history,
-    isRemovable,
-    onToggle,
-  ]);
+  }, [accountGroupId, handleAccountRenameAction, history, isRemovable]);
 
   return (
     <>
