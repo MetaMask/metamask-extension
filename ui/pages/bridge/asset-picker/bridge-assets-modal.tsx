@@ -94,11 +94,11 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
     closeModal();
   }
 
-  const handleLoadMore = useCallback(() => {
+  const handleLoadMore = () => {
     if (!isLoadingMore && hasMore && endCursor) {
-      debouncedSearchCallback(searchQuery, selectedNetwork, endCursor);
+      fetchAssets(searchQuery, selectedNetwork, endCursor);
     }
-  }, [searchQuery, selectedNetwork, hasMore, isLoadingMore, endCursor, debouncedSearchCallback]);
+  }
 
   useEffect(() => {
     fetchAssets(searchQuery, selectedNetwork, null);
@@ -154,6 +154,7 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
         <Box padding={4} style={{ overflowY: 'auto' }}>
           <BridgeAssetList
             isLoading={isLoading}
+            isLoadingMore={isLoadingMore}
             assets={combinedAssets}
             hasMore={hasMore}
             onLoadMore={handleLoadMore}

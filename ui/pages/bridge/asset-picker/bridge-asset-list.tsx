@@ -1,21 +1,20 @@
 import React, {
-  useState,
   useCallback,
-  useMemo,
   useEffect,
   useRef,
 } from 'react';
-import { Skeleton } from '../../../components/component-library/skeleton';
-import { AlignItems, BackgroundColor, BorderRadius, Display, FlexDirection } from '../../../helpers/constants/design-system';
+import { AlignItems, BlockSize, Display, FlexDirection, JustifyContent } from '../../../helpers/constants/design-system';
 import { Column, Row } from '../layout';
 import { Box } from '../../../components/component-library';
 import { BridgeSkeletonLoader } from './bridge-skeleton-loader';
 import { Asset } from '../utils/assets-service';
 import { AssetItem } from './bridge-asset-item';
+import Preloader from '../../../components/ui/icon/preloader';
 
 interface AssetListProps {
   assets: Asset[];
   isLoading: boolean;
+  isLoadingMore: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
 }
@@ -30,7 +29,23 @@ const DefaultSkeletonLoader = () => {
   );
 }
 
-export const BridgeAssetList = ({ isLoading, assets, hasMore, onLoadMore }: AssetListProps) => {
+const LoadingIndicator = () => {
+  return (
+    <Box
+      height={BlockSize.Full}
+      width={BlockSize.Full}
+      display={Display.Flex}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      flexDirection={FlexDirection.Column}
+      data-testid="notifications-list-loading"
+    >
+      <Preloader size={24} />
+    </Box>
+  );
+}
+
+export const BridgeAssetList = ({ isLoading, isLoadingMore, assets, hasMore, onLoadMore }: AssetListProps) => {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
@@ -74,6 +89,7 @@ export const BridgeAssetList = ({ isLoading, assets, hasMore, onLoadMore }: Asse
       {assets.map((asset) => (
         <AssetItem key={asset.assetId} asset={asset} />
       ))}
+      {isLoadingMore && <LoadingIndicator/>}
       {hasMore && <div ref={loadMoreRef} style={{ height: '20px' }} />}
     </Column>
   )
