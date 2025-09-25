@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: adds MetaMask shield entry point modal (#35347)
 - feat: adds designs for amount input (#35510)
 - feat: adds max button to amount page (#35474)
+- feat: adds metametrics toggle and delete metametrics data button in default settings (#36275)
 
 ### Fixed
 - fix: fixes a bug that was causing to show spam Solana transactions in the activity list (#35695)
@@ -74,6 +75,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: fixes source for multichain account names in account picker (#35478)
 - fix: plans 966 enhance ledger not supported error (#35291)
 - fix: fixes a bug causing ENS lookups to fail after certain network switches (#35430)
+- fix: removes metametrics consent page for social logins in chromium browsers (#35939)
+- fix: migrates remaining identicons from legacy circle-form to new square-form (#35892)
+- fix: renames maskicons to polycons (#35955)
+- fix: prevents network manager icon from being updated when switching networks from dapp permissions modal (#35946)
+- fix: fixes marketing opt-out toggle in settings (#35938)
+- fix: increases our security posture by locking down cross_origin_opener_policy to same-origin openers only (#35922)
+- fix: fixes issue with ens name resolutions, where resolution is only visible momentarily (#35847)
+- fix: migrates remaining identicons in the activity tab (#36000)
+- fix: fixes oauth login in experimental builds (#36140)
+- fix: fixes crash when closing a full nft image (#36162)
+- fix: ensures settings network manager correctly adds network (#36156)
+- fix: adds a 15-minute cache expiration for address security alert (#36169)
+- fix: migrates remaining identicons on notifications (#36210)
+- fix: ensure metametrics page isn't shown when not expected (#36086)
+- fix: prevent automatic creation of missing evm and Solana accounts when basic functionality toggle is off (#36135)
+- fix: disables marketing toggle if user does not participate in metametrics (#36063)
 
 ## [13.3.2]
 ### Fixed
