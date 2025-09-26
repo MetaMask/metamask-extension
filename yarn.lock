@@ -32142,7 +32142,6 @@ __metadata:
     "@metamask/gator-permissions-controller": "npm:^0.2.0"
     "@metamask/gator-permissions-snap": "npm:^0.3.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
-    "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/kernel-browser-runtime": "npm:^0.4.0"
