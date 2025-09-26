@@ -268,6 +268,7 @@ export async function onboardingMetricsFlow(
   await onboardingMetricsPage.checkPageIsLoaded();
   if (dataCollectionForMarketing) {
     await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
+    await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
   if (participateInMetaMetrics) {
     await onboardingMetricsPage.clickIAgreeButton();

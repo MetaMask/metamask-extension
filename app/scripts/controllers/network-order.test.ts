@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   NetworkConfiguration,
   NetworkControllerGetStateAction,
@@ -33,6 +33,7 @@ describe('NetworkOrderController - constructor', () => {
         },
         [KnownCaipNamespace.Solana]: {
           [SolScope.Mainnet]: true,
+          [SolScope.Devnet]: true,
         },
         [KnownCaipNamespace.Bip122]: {},
       },
@@ -209,6 +210,131 @@ describe('NetworkOrderController - constructor', () => {
       mockNetworkState,
       [],
     );
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "enabledNetworkMap": {
+            "bip122": {},
+            "eip155": {
+              "0x1": true,
+              "0x2105": true,
+              "0xe708": true,
+            },
+            "solana": {
+              "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
+            },
+          },
+          "orderedNetworkList": [],
+        }
+      `);
+    });
+
+    it('includes expected state in state logs', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "enabledNetworkMap": {
+            "bip122": {},
+            "eip155": {
+              "0x1": true,
+              "0x2105": true,
+              "0xe708": true,
+            },
+            "solana": {
+              "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
+            },
+          },
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "enabledNetworkMap": {
+            "bip122": {},
+            "eip155": {
+              "0x1": true,
+              "0x2105": true,
+              "0xe708": true,
+            },
+            "solana": {
+              "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
+            },
+          },
+          "orderedNetworkList": [],
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "enabledNetworkMap": {
+            "bip122": {},
+            "eip155": {
+              "0x1": true,
+              "0x2105": true,
+              "0xe708": true,
+            },
+            "solana": {
+              "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": true,
+            },
+          },
+          "orderedNetworkList": [],
+        }
+      `);
+    });
   });
 });
 

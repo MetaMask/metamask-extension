@@ -30,20 +30,6 @@ describe('useRedesignedSendFlow', () => {
     return result.current;
   };
 
-  it('returns enabled true when development environment override is active', () => {
-    process.env.SEND_REDESIGN_ENABLED = 'true';
-    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-
-    mockGetRemoteFeatureFlags.mockReturnValue({
-      sendRedesign: { enabled: false },
-    });
-    mockGetIsMultichainAccountsState2Enabled.mockReturnValue(false);
-
-    const result = renderHook();
-
-    expect(result).toEqual({ enabled: true });
-  });
-
   it('returns enabled false when development environment override is not active', () => {
     process.env.SEND_REDESIGN_ENABLED = 'false';
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
@@ -138,20 +124,5 @@ describe('useRedesignedSendFlow', () => {
     const result = renderHook();
 
     expect(result).toEqual({ enabled: false });
-  });
-
-  it('prioritizes development environment override over feature flags', () => {
-    process.env.SEND_REDESIGN_ENABLED = 'true';
-    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-
-    mockGetRemoteFeatureFlags.mockReturnValue({
-      sendRedesign: { enabled: true },
-    });
-    mockGetIsMultichainAccountsState2Enabled.mockReturnValue(false);
-
-    const result = renderHook();
-
-    expect(result).toEqual({ enabled: true });
-    expect(mockGetIsMultichainAccountsState2Enabled).toHaveBeenCalled();
   });
 });

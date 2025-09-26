@@ -436,7 +436,7 @@ export const NETWORKS_2_API_MOCK_RESULT = {
   active: true,
   networkId: 1,
   chainId: 1,
-  chainName: 'Ethereum Mainnet',
+  chainName: 'Ethereum',
   nativeCurrency: {
     name: 'Ether',
     symbol: 'ETH',
