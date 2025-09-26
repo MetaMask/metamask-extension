@@ -249,7 +249,6 @@ export default function CreatePassword({
         ),
       },
     });
-    console.log('create-password:isSocialLoginFlow', isSocialLoginFlow);
     if (isSocialLoginFlow) {
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
