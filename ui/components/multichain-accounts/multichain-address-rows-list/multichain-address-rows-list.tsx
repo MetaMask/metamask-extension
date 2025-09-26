@@ -128,8 +128,9 @@ export const MultichainAddressRowsList = ({
         clearButtonOnClick={handleClearSearch}
         width={BlockSize.Full}
         borderWidth={0}
+        marginBottom={2}
         backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.LG}
+        borderRadius={BorderRadius.XL}
         data-testid="multichain-address-rows-list-search"
       />
 
