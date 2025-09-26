@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ERC721 } from '@metamask/controller-utils';
 
 import {
@@ -26,12 +26,21 @@ import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversio
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
 import { useSendType } from '../../../hooks/send/useSendType';
-import { formatToFixedDecimals, getFractionLength } from '../../../utils/send';
+import {
+  formatToFixedDecimals,
+  getFractionLength,
+  isValidPositiveNumericString,
+} from '../../../utils/send';
 
-export const Amount = () => {
+export const Amount = ({
+  setAmountValueError,
+}: {
+  setAmountValueError: (str?: string) => void;
+}) => {
   const t = useI18nContext();
   const { asset, updateValue, value } = useSendContext();
   const [amount, setAmount] = useState(value ?? '');
+  const [amountValueError, setAmountValueErrorLocal] = useState<string>();
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
   const {
@@ -58,6 +67,19 @@ export const Amount = () => {
   );
   const { amountError } = useAmountValidation();
 
+  useEffect(() => {
+    let amtError: string | undefined;
+    if (amountError) {
+      amtError = amountError;
+    } else if (amount === undefined || amount === null || amount === '') {
+      amtError = undefined;
+    } else if (!isValidPositiveNumericString(amount)) {
+      amtError = t('invalidValue');
+    }
+    setAmountValueError(amtError);
+    setAmountValueErrorLocal(amtError);
+  }, [amount, amountError, setAmountValueError, setAmountValueErrorLocal, t]);
+
   const onChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
@@ -78,12 +100,14 @@ export const Amount = () => {
     const newFiatMode = !fiatMode;
     setFiatMode(newFiatMode);
     if (newFiatMode) {
-      if (amount !== undefined) {
+      if (amount !== undefined && isValidPositiveNumericString(amount)) {
         setAmount(getFiatValue(amount));
       }
       setAmountInputTypeFiat();
     } else {
-      setAmount(value ?? '');
+      if (!value || isValidPositiveNumericString(value)) {
+        setAmount(value ?? '');
+      }
       setAmountInputTypeToken();
     }
   }, [
@@ -122,13 +146,15 @@ export const Amount = () => {
         {t('amount')}
       </Text>
       <TextField
-        error={Boolean(amountError)}
+        error={Boolean(amountValueError)}
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
+        placeholder="0"
         value={amount}
         endAccessory={
-          <div>
+          <Box display={Display.Flex}>
+            <Text>{asset?.symbol}</Text>
             {conversionSupportedForAsset && (
               <ButtonIcon
                 ariaLabel="toggle fiat mode"
@@ -138,7 +164,7 @@ export const Amount = () => {
                 data-testid="toggle-fiat-mode"
               />
             )}
-          </div>
+          </Box>
         }
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
@@ -150,12 +176,14 @@ export const Amount = () => {
       >
         <Text
           color={
-            amountError ? TextColor.errorDefault : TextColor.textAlternative
+            amountValueError
+              ? TextColor.errorDefault
+              : TextColor.textAlternative
           }
           variant={TextVariant.bodySm}
         >
-          {amountError ||
-            (conversionSupportedForAsset ? `~${alternateDisplayValue}` : '')}
+          {amountValueError ||
+            (conversionSupportedForAsset ? alternateDisplayValue : '')}
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
@@ -163,7 +191,7 @@ export const Amount = () => {
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink
-              marginLeft={1}
+              marginLeft={2}
               onClick={updateToMax}
               variant={TextVariant.bodySm}
             >

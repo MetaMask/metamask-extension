@@ -3,6 +3,7 @@ const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {
   By,
+  Browser,
   Condition,
   Key,
   until,
@@ -1200,32 +1201,6 @@ class Driver {
   }
 
   /**
-   * Switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
-   *
-   * @param {int} handleId - unique ID for the tab whose title is needed.
-   * @param {string} expectedTitle - the title we are expecting.
-   * @returns nothing on success.
-   * @throws {Error} Throws an error if the window title is incorrect.
-   */
-  async switchToHandleAndWaitForTitleToBe(handleId, expectedTitle) {
-    await this.driver.switchTo().window(handleId);
-
-    let currentTitle = await this.driver.getTitle();
-
-    // Wait 25 x 200ms = 5 seconds for the title to be set properly
-    for (let i = 0; i < 25 && currentTitle !== expectedTitle; i++) {
-      await this.driver.sleep(200);
-      currentTitle = await this.driver.getTitle();
-    }
-
-    if (currentTitle !== expectedTitle) {
-      throw new Error(
-        `switchToHandleAndWaitForTitleToBe got title ${currentTitle} instead of ${expectedTitle}`,
-      );
-    }
-  }
-
-  /**
    * Switches the context of the browser session to the window tab with the given title.
    * This functionality is especially valuable in complex testing scenarios involving multiple window tabs,
    * allowing for interaction with a particular window or tab based on its title
@@ -1443,24 +1418,82 @@ class Driver {
   }
 
   /**
-   * Get the text of the alert popup that is currently open in the browser
-   * session.
+   * Wait for a browser alert to appear and verify its text. Automatically detects
+   * whether a window switch is needed by comparing current window with target window.
+   * If they match, uses normal alert waiting. If different, attempts window switching
+   * but handles the case where Selenium fails to switch to a window with an active alert (throws UnexpectedAlertOpenError)
    *
-   * @param text - The text of the alert popup.
-   * @param options - Options for the function.
-   * @param options.timeout - The maximum time to wait for the alert to be
-   * present.
-   * @returns {Promise<string>} The text of the alert popup.
+   * @param {object} options - Required options for the function.
+   * @param {string} options.text - The expected text of the alert popup.
+   * @param {string} options.windowTitle - The target window title where the alert should appear.
+   * @param {number} [options.timeout] - The maximum time to wait for the alert to be present.
+   * @returns {Promise<void>} Promise that resolves when alert is found and verified.
    */
-  async waitForAlert(text, { timeout = this.timeout } = {}) {
-    await this.driver.wait(until.alertIsPresent(), timeout);
-    const alert = await this.driver.switchTo().alert();
-    const alertText = await alert.getText();
+  async waitForBrowserAlert({ text, windowTitle, timeout = this.timeout }) {
+    const currentTitle = await this.driver.getTitle();
+    if (currentTitle === windowTitle) {
+      await this.driver.wait(until.alertIsPresent(), timeout);
+      const alert = await this.driver.switchTo().alert();
+      const alertText = await alert.getText();
 
-    if (text && alertText !== text) {
-      throw new Error(
-        `Expected alert text to be "${text}", but got "${alertText}".`,
-      );
+      if (alertText !== text) {
+        throw new Error(
+          `Expected alert text to be "${text}", but got "${alertText}".`,
+        );
+      }
+    } else {
+      await this.driver.wait(async () => {
+        try {
+          await this.switchToWindowWithTitle(windowTitle);
+          // If window switch succeeds, alert hasn't appeared yet - keep waiting
+          return false;
+        } catch (error) {
+          if (
+            error.name === 'UnexpectedAlertOpenError' ||
+            (error.message &&
+              error.message.includes('unexpected alert open')) ||
+            (error.message &&
+              error.message.includes('Unexpected alert dialog detected'))
+          ) {
+            if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+              // Firefox doesn't include alert text in error message
+              try {
+                const alert = await this.driver.switchTo().alert();
+                const alertText = await alert.getText();
+                if (alertText !== text) {
+                  throw new Error(
+                    `Expected alert text to be "${text}", but got "${alertText}".`,
+                  );
+                }
+                return true;
+              } catch (alertError) {
+                console.warn(
+                  `Could not access alert directly. Expected: "${text}". Error: ${alertError.message}`,
+                );
+                return true;
+              }
+            } else {
+              const alertTextMatch = error.message.match(
+                /Alert text\s*:\s*(.+?)(?:\s*\}|$)/u,
+              );
+              if (alertTextMatch) {
+                const alertText = alertTextMatch[1].trim();
+                if (alertText !== text) {
+                  throw new Error(
+                    `Expected alert text to be "${text}", but got "${alertText}".`,
+                  );
+                }
+                return true;
+              }
+              throw new Error(
+                `Could not extract alert text from UnexpectedAlertOpenError. Full error message: "${error.message}"`,
+              );
+            }
+          } else {
+            throw error;
+          }
+        }
+      }, timeout);
     }
   }
 
@@ -1471,27 +1504,6 @@ class Driver {
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
-  }
-
-  /**
-   * Closes all windows except those in the given list of exceptions
-   *
-   * @param {Array<string>} exceptions - The list of window handle exceptions
-   * @param {Array} [windowHandles] - The full list of window handles
-   * @returns {Promise<void>}
-   */
-  async closeAllWindowHandlesExcept(exceptions, windowHandles) {
-    // eslint-disable-next-line no-param-reassign
-    windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
-
-    for (const handle of windowHandles) {
-      if (!exceptions.includes(handle)) {
-        await this.driver.switchTo().window(handle);
-        await this.delay(1000);
-        await this.driver.close();
-        await this.delay(1000);
-      }
-    }
   }
 
   // Error handling

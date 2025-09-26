@@ -51,6 +51,7 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "hasShownMultichainAccountsIntroModal": "boolean",
     "surveyLinkLastClickedOrClosed": "object",
     "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
@@ -149,8 +150,7 @@
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "isSocialLoginFlowEnabledForMetrics": "boolean"
+    "segmentApiCalls": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -276,7 +276,8 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean"
+    "manageInstitutionalWallets": "boolean",
+    "referrals": "object"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {

@@ -90,6 +90,7 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '',
       updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
     mockUseRecipients.mockReturnValue([]);
   });
@@ -125,6 +126,7 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByRole } = renderComponent();
@@ -179,6 +181,7 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByRole } = renderComponent();
@@ -193,6 +196,7 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '',
       updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByRole } = renderComponent();
@@ -221,6 +225,7 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByTestId } = renderComponent();
@@ -232,6 +237,7 @@ describe('Recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
     const { getByTestId } = renderComponent();

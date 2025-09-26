@@ -54,12 +54,17 @@ import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
+  BillingPortalResponse,
   PricingResponse,
   ProductPrice,
   ProductType,
@@ -387,12 +392,44 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground<Subscription[]>(
       'startSubscriptionWithCard',
-      [params],
+      [params, currentTab?.id],
     );
 
     return subscriptions;
+  };
+}
+
+export function cancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('cancelSubscription', [params]);
+  };
+}
+
+export function unCancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('unCancelSubscription', [params]);
+  };
+}
+
+export function getSubscriptionBillingPortalUrl(): ThunkAction<
+  BillingPortalResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const res = await submitRequestToBackground<BillingPortalResponse>(
+      'getSubscriptionBillingPortalUrl',
+      [],
+    );
+    return res;
   };
 }
 
@@ -412,6 +449,10 @@ export function restoreSocialBackupAndGetSeedPhrase(
         'restoreSocialBackupAndGetSeedPhrase',
         [password],
       );
+
+      // sync marketing consent with metametrics
+      const marketingConsent = await getMarketingConsent();
+      dispatch(setDataCollectionForMarketing(marketingConsent));
 
       dispatch(hideWarning());
       await forceUpdateMetamaskState(dispatch);
@@ -4103,6 +4144,9 @@ export function resetOnboarding(): ThunkAction<
       if (isSocialLoginFlow) {
         await dispatch(resetOAuthLoginState());
       }
+
+      // reset metametrics optin status
+      dispatch(setParticipateInMetaMetrics(null));
     } catch (err) {
       console.error(err);
     }
@@ -4225,20 +4269,6 @@ export function setDataCollectionForMarketing(
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
-    });
-  };
-}
-
-export function setIsSocialLoginFlowEnabledForMetrics(
-  isSocialLoginFlowEnabledForMetrics: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setIsSocialLoginFlowEnabledForMetrics', [
-      isSocialLoginFlowEnabledForMetrics,
-    ]);
-    dispatch({
-      type: actionConstants.SET_IS_SOCIAL_LOGIN_FLOW_ENABLED_FOR_METRICS,
-      value: isSocialLoginFlowEnabledForMetrics,
     });
   };
 }
@@ -4428,12 +4458,16 @@ export function setUseCurrencyRateCheck(
 // MultichainAssetsRatesController
 export function fetchHistoricalPricesForAsset(
   address: CaipAssetType,
+  internalAccount: InternalAccount,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
+    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
+      address,
+      internalAccount,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -6841,10 +6875,10 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
     try {
       await Promise.all([
         submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          'multichain_accounts_groups',
+          USER_STORAGE_GROUPS_FEATURE_KEY,
         ]),
         submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          'multichain_accounts_wallets',
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ]),
       ]);
     } catch (error) {
@@ -7032,6 +7066,14 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
+export function setMultichainAccountsIntroModalShown(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
+      value,
+    ]);
+  };
+}
+
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {
@@ -7074,6 +7116,11 @@ export async function multichainUpdateTransactions(
     accountId,
   ]);
 }
+
+export async function alignMultichainWallets(): Promise<void> {
+  return await submitRequestToBackground<void>('alignMultichainWallets', []);
+}
+
 ///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
