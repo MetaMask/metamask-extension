@@ -356,12 +356,14 @@ export const getToAccounts = createSelector(
 );
 
 const _getFromNativeBalance = createSelector(
-  getFromChain,
-  (state: BridgeAppState) => state.bridge.fromNativeBalance,
-  getMultichainBalances,
-  getSelectedInternalAccount,
-  (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, { id }) => {
-    if (!fromChain) {
+  [
+    getFromChain,
+    (state: BridgeAppState) => state.bridge.fromNativeBalance,
+    getMultichainBalances,
+    (state) => getFromAccount(state)?.id,
+  ],
+  (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, id) => {
+    if (!fromChain || !id) {
       return null;
     }
 

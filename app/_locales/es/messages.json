@@ -3765,9 +3765,6 @@
   "noThanks": {
     "message": "No, gracias"
   },
-  "noTransactions": {
-    "message": "No tiene transacciones"
-  },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
   },
