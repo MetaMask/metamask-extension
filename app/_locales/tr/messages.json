@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Bu bir beta sürümdür. Lütfen hataları bildirin $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
   },
@@ -4712,9 +4709,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Genel adres (0x) veya alan adı gir"
-  },
-  "recommendedGasLabel": {
-    "message": "Önerilen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Şimdi yedekle"
