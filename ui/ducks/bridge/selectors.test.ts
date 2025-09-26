@@ -636,68 +636,26 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const recommendedQuoteMetadata = {
-        includedTxFees: null,
-        adjustedReturn: {
-          usd: '13.84343712858974048',
-          valueInCurrency: '13.84343712858974048',
-        },
-        cost: {
-          valueInCurrency: '0.15656287141025952',
-          usd: '0.15656287141025952',
-        },
-        sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '14',
-        },
-        swapRate: '0.99887714285714285714',
-        toTokenAmount: {
-          valueInCurrency: '13.8444372',
-          usd: '13.8444372',
-          amount: '13.98428',
-        },
-        gasFee: {
-          effective: {
-            amount: '7.141025952e-8',
-            usd: '7.141025952e-8',
-            valueInCurrency: '7.141025952e-8',
-          },
-          total: {
-            amount: '7.141025952e-8',
-            usd: '7.141025952e-8',
-            valueInCurrency: '7.141025952e-8',
-          },
-          max: {
-            amount: '9.933761952e-8',
-            usd: '9.933761952e-8',
-            valueInCurrency: '9.933761952e-8',
-          },
-        },
-        totalMaxNetworkFee: {
-          amount: '0.00100009933761952',
-          valueInCurrency: '0.00100009933761952',
-          usd: '0.00100009933761952',
-        },
-        totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.00100007141025952',
-        },
-      };
-
       const result = getBridgeQuotes(state as never);
       expect(result.sortedQuotes).toHaveLength(2);
-      expect(result).toStrictEqual({
+      const { recommendedQuote, activeQuote, ...rest } = result;
+      expect(recommendedQuote).toStrictEqual(activeQuote);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(rest).toStrictEqual({
         sortedQuotes: expect.any(Array),
-        recommendedQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
-        activeQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
         quotesLastFetchedMs: 100,
         isLoading: false,
         quotesRefreshCount: 5,
@@ -762,55 +720,6 @@ describe('Bridge selectors', () => {
       });
       const result = getBridgeQuotes(state as never);
 
-      const recommendedQuoteMetadata = {
-        includedTxFees: null,
-        adjustedReturn: {
-          valueInCurrency: '13.843437128589739081572',
-          usd: '39.080515131939180597564',
-        },
-        cost: {
-          valueInCurrency: '0.156562871410260918428',
-          usd: '240.919484868060819402436',
-        },
-        sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '280',
-        },
-        swapRate: '0.99887714285714285714',
-        toTokenAmount: {
-          valueInCurrency: '13.844437199999998601572',
-          amount: '13.98428',
-          usd: '39.100516560144370997564',
-        },
-        gasFee: {
-          effective: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          total: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          max: {
-            amount: '9.933761952e-8',
-            usd: '0.0000019867523904',
-            valueInCurrency: '9.933761952e-8',
-          },
-        },
-        totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.0200014282051904',
-        },
-        totalMaxNetworkFee: {
-          valueInCurrency: '0.00100009933761952',
-          amount: '0.00100009933761952',
-          usd: '0.0200019867523904',
-        },
-      };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
         {
@@ -827,16 +736,25 @@ describe('Bridge selectors', () => {
           expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
         },
       );
-      expect(result).toStrictEqual({
+
+      const { recommendedQuote, activeQuote, ...rest } = result;
+      expect(recommendedQuote).toStrictEqual(activeQuote);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(rest).toStrictEqual({
         sortedQuotes: expect.any(Array),
-        recommendedQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
-        activeQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
         quotesLastFetchedMs: 100,
         isLoading: false,
         quotesRefreshCount: 2,
@@ -902,56 +820,8 @@ describe('Bridge selectors', () => {
       });
       const result = getBridgeQuotes(state as never);
 
-      const recommendedQuoteMetadata = {
-        includedTxFees: null,
-        adjustedReturn: {
-          valueInCurrency: '13.84343712858974048',
-          usd: '13.8244357717948096',
-        },
-        cost: {
-          valueInCurrency: '0.15656287141025952',
-          usd: '266.1755642282051904',
-        },
-        sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '280',
-        },
-        swapRate: '0.99887714285714285714',
-        toTokenAmount: {
-          valueInCurrency: '13.8444372',
-          amount: '13.98428',
-          usd: '13.8444372',
-        },
-        gasFee: {
-          effective: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          total: {
-            amount: '7.141025952e-8',
-            usd: '0.0000014282051904',
-            valueInCurrency: '7.141025952e-8',
-          },
-          max: {
-            amount: '9.933761952e-8',
-            usd: '0.0000019867523904',
-            valueInCurrency: '9.933761952e-8',
-          },
-        },
-        totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.0200014282051904',
-        },
-        totalMaxNetworkFee: {
-          valueInCurrency: '0.00100009933761952',
-          amount: '0.00100009933761952',
-          usd: '0.0200019867523904',
-        },
-      };
       expect(result.sortedQuotes).toHaveLength(2);
+
       const EXPECTED_SORTED_COSTS = [
         {
           valueInCurrency: '0.15656287141025952',
@@ -968,16 +838,24 @@ describe('Bridge selectors', () => {
         },
       );
 
-      expect(result).toStrictEqual({
+      const { recommendedQuote, activeQuote, ...rest } = result;
+      expect(recommendedQuote).toStrictEqual(activeQuote);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect(rest).toStrictEqual({
         sortedQuotes: expect.any(Array),
-        recommendedQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
-        activeQuote: {
-          ...mockErc20Erc20Quotes[0],
-          ...recommendedQuoteMetadata,
-        },
         quotesLastFetchedMs: 100,
         quotesInitialLoadTimeMs: 11000,
         isLoading: false,

@@ -1,7 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -12,7 +11,8 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -39,6 +39,7 @@ import type {
 } from '../../../shared/types/origin-throttling';
 import {
   ScanAddressResponse,
+  CachedScanAddressResponse,
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../lib/trust-signals/types';
@@ -50,6 +51,7 @@ import type {
 
 export type AppStateControllerState = {
   timeoutMinutes: number;
+  addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   connectedStatusPopoverHasBeenShown: boolean;
   defaultHomeActiveTabName: AccountOverviewTabKey | null;
   browserEnvironment: Record<string, string>;
@@ -65,6 +67,7 @@ export type AppStateControllerState = {
   showPermissionsTour: boolean;
   showNetworkBanner: boolean;
   showAccountBanner: boolean;
+  productTour?: string;
   showDownloadMobileAppSlide: boolean;
   trezorModel: string | null;
   currentPopupId?: number;
@@ -79,11 +82,10 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  qrHardware: Json;
+  activeQrCodeScanRequest: QrScanRequest | null;
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
-  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
   currentExtensionPopupId: number;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
@@ -110,10 +112,17 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
+export type AppStateControllerRequestQrCodeScanAction = {
+  type: 'AppStateController:requestQrCodeScan';
+  handler: (request: QrScanRequest) => Promise<SerializedUR>;
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
-export type AppStateControllerActions = AppStateControllerGetStateAction;
+export type AppStateControllerActions =
+  | AppStateControllerGetStateAction
+  | AppStateControllerRequestQrCodeScanAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -146,9 +155,7 @@ export type AppStateControllerEvents =
 /**
  * Events that this controller is allowed to subscribe.
  */
-type AllowedEvents =
-  | PreferencesControllerStateChangeEvent
-  | KeyringControllerQRKeyringStateChangeEvent;
+type AllowedEvents = PreferencesControllerStateChangeEvent;
 
 export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
@@ -166,7 +173,6 @@ type PollingTokenType =
 type AppStateControllerInitState = Partial<
   Omit<
     AppStateControllerState,
-    | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
@@ -200,6 +206,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showPermissionsTour: true,
   showNetworkBanner: true,
   showAccountBanner: true,
+  productTour: 'accountIcon',
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
@@ -220,12 +227,12 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   enableEnforcedSimulationsForTransactions: {},
   enforcedSimulationsSlippage: 10,
   enforcedSimulationsSlippageForTransactions: {},
+  activeQrCodeScanRequest: null,
   ...getInitialStateOverrides(),
 });
 
 function getInitialStateOverrides() {
   return {
-    qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
     addressSecurityAlertResponses: {},
@@ -298,6 +305,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  productTour: {
+    persist: true,
+    anonymous: true,
+  },
   trezorModel: {
     persist: true,
     anonymous: true,
@@ -332,7 +343,7 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  qrHardware: {
+  activeQrCodeScanRequest: {
     persist: false,
     anonymous: true,
   },
@@ -427,6 +438,8 @@ export class AppStateController extends BaseController<
 
   #approvalRequestId: string | null;
 
+  #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
+
   constructor({
     state = {},
     messenger,
@@ -469,19 +482,15 @@ export class AppStateController extends BaseController<
       },
     );
 
-    messenger.subscribe(
-      'KeyringController:qrKeyringStateChange',
-      (qrHardware: Json) =>
-        this.update((currentState) => {
-          // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-          currentState.qrHardware = qrHardware;
-        }),
-    );
-
     const { preferences } = messenger.call('PreferencesController:getState');
     if (typeof preferences.autoLockTimeLimit === 'number') {
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }
+
+    this.messagingSystem.registerActionHandler(
+      'AppStateController:requestQrCodeScan',
+      this.#requestQrCodeScan.bind(this),
+    );
 
     this.#approvalRequestId = null;
   }
@@ -930,6 +939,17 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Sets the product tour to be shown to the user
+   *
+   * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
+   */
+  setProductTour(productTour: string): void {
+    this.update((state) => {
+      state.productTour = productTour;
+    });
+  }
+
+  /**
    * Sets whether the Network Banner should be shown
    *
    * @param showNetworkBanner
@@ -980,6 +1000,7 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
+      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
       state.nftsDropdownState = nftsDropdownState;
     });
   }
@@ -1005,7 +1026,27 @@ export class AppStateController extends BaseController<
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
     address: string,
   ): ScanAddressResponse | undefined => {
-    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+    const cached =
+      this.state.addressSecurityAlertResponses[address.toLowerCase()];
+
+    if (!cached) {
+      return undefined;
+    }
+
+    // Check if the cached response has expired (15 minute TTL)
+    const now = Date.now();
+    const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
+    if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
+      // Remove expired entry
+      this.update((state) => {
+        delete state.addressSecurityAlertResponses[address.toLowerCase()];
+      });
+      return undefined;
+    }
+
+    // Return the response without the timestamp
+    const { timestamp, ...response } = cached;
+    return response;
   };
 
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
@@ -1013,8 +1054,10 @@ export class AppStateController extends BaseController<
     addressSecurityAlertResponse: ScanAddressResponse,
   ): void => {
     this.update((state) => {
-      state.addressSecurityAlertResponses[address.toLowerCase()] =
-        addressSecurityAlertResponse;
+      state.addressSecurityAlertResponses[address.toLowerCase()] = {
+        ...addressSecurityAlertResponse,
+        timestamp: Date.now(),
+      };
     });
   };
 
@@ -1108,6 +1151,67 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
     });
+  }
+
+  /**
+   * Completes a QR code scan by resolving the promise with the scanned data.
+   *
+   * @param scannedData - The data that was scanned from the QR code.
+   * @throws If no QR code scan is in progress.
+   */
+  completeQrCodeScan(scannedData: SerializedUR): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.resolve(scannedData);
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Cancels the current QR code scan, if one is in progress.
+   * This will reject the promise with an error.
+   *
+   * @param error - The error to reject the promise with.
+   * @throws If no QR code scan is in progress.
+   */
+  cancelQrCodeScan(error?: Error): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Requests a QR code scan and returns a promise that resolves with the scanned data.
+   * If a scan is already in progress, it returns the existing promise.
+   *
+   * @param request - The QR code scan request.
+   * @returns The scanned QR code data.
+   */
+  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
+    if (this.#qrCodeScanPromise) {
+      return this.#qrCodeScanPromise.promise;
+    }
+
+    const deferredPromise = createDeferredPromise<SerializedUR>();
+    this.#qrCodeScanPromise = deferredPromise;
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = request;
+    });
+
+    return deferredPromise.promise;
   }
 
   setEnableEnforcedSimulations(enabled: boolean): void {

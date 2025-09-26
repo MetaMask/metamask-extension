@@ -44,7 +44,6 @@ describe('Localization', function () {
 
         // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
         await new HomePage(driver).checkExpectedBalanceIsDisplayed(
-          'PHP',
           '₱2,500,000.00',
         );
       },

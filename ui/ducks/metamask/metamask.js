@@ -162,6 +162,9 @@ export default function reduceMetamask(state = initialState, action) {
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
+        // reset metametrics optin status
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
       };
     }
 

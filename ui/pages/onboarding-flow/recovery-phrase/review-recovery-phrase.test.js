@@ -1,20 +1,18 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import RecoveryPhrase from './review-recovery-phrase';
 
-const mockHistoryPush = jest.fn();
-const mockHistoryReplace = jest.fn();
+const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    replace: mockHistoryReplace,
-  }),
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockStore = configureMockStore()({
   metamask: {
@@ -39,6 +37,10 @@ const mockStore = configureMockStore()({
 });
 
 describe('Review Recovery Phrase Component', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const TEST_SEED =
     'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
@@ -96,7 +98,10 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: '',
+    });
   });
 
   it('should route to url with reminder parameter', () => {
@@ -115,8 +120,9 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
-      `${ONBOARDING_CONFIRM_SRP_ROUTE}${isReminderParam}`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: isReminderParam,
+    });
   });
 });

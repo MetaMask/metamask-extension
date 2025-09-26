@@ -55,6 +55,7 @@ describe('NetworkOrderControllerInit', () => {
     const mockController = {
       state: mockState,
       setEnabledNetworks: jest.fn(),
+      setEnabledNetworksMultichain: jest.fn(),
     };
 
     const mockNetworkConfigState = {
@@ -208,6 +209,7 @@ describe('validateAndFixNetworkState', () => {
     const mockController = {
       state: mockState,
       setEnabledNetworks: jest.fn(),
+      setEnabledNetworksMultichain: jest.fn(),
     } as unknown as NetworkOrderController;
 
     return {

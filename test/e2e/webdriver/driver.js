@@ -44,6 +44,10 @@ function wrapElementWithAPI(element, driver) {
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
+
+    // Wait for DOM to update before checking if clearing worked
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
     if ((await element.getProperty('value')) !== '') {
       await driver.driver
@@ -53,6 +57,9 @@ function wrapElementWithAPI(element, driver) {
         .sendKeys('a')
         .keyUp(driver.Key.MODIFIER)
         .perform();
+
+      // Wait for second clearing method to complete
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
     await element.sendKeys(input);
   };
@@ -1650,7 +1657,10 @@ function collectMetrics() {
  * @param {string} testTitle - The title of the test
  */
 function sanitizeTestTitle(testTitle) {
-  return testTitle
+  // Maximum length for directory names (conservative limit to avoid filesystem issues)
+  const MAX_DIR_NAME_LENGTH = 200;
+
+  let sanitized = testTitle
     .toLowerCase()
     .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
     .trim()
@@ -1658,6 +1668,23 @@ function sanitizeTestTitle(testTitle) {
     .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
     .replace(/--+/gu, '-') // Collapse multiple dashes
     .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
+
+  // Truncate if too long, but try to break at word boundaries (dashes)
+  if (sanitized.length > MAX_DIR_NAME_LENGTH) {
+    let truncated = sanitized.substring(0, MAX_DIR_NAME_LENGTH);
+
+    // Try to find the last dash to break at a word boundary
+    // and only use dash if it's not too far back
+    const lastDashIndex = truncated.lastIndexOf('-');
+    if (lastDashIndex > MAX_DIR_NAME_LENGTH * 0.7) {
+      truncated = truncated.substring(0, lastDashIndex);
+    }
+
+    // Clean up any trailing dashes
+    sanitized = truncated.replace(/-+$/gu, '');
+  }
+
+  return sanitized;
 }
 
 module.exports = { Driver, PAGES, errorMessages };

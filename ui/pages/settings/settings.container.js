@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   getAddressBookEntryOrAccountName,
   getSettingsPageSnapsIds,
@@ -37,12 +37,14 @@ import {
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -63,6 +65,7 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -83,6 +86,9 @@ const mapStateToProps = (state, ownProps) => {
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
+  );
+  const isTransactionShieldPage = Boolean(
+    pathname.match(TRANSACTION_SHIELD_ROUTE),
   );
   const isNetworksFormPage =
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
@@ -147,10 +153,12 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbKey,
     initialBreadCrumbRoute,
     isAddressEntryPage,
+    isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,
     isPopup,
     isRevealSrpListPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
+    isTransactionShieldPage,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     settingsPageSnaps,
@@ -166,6 +174,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(Settings);

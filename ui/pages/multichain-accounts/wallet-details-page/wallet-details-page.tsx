@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -11,21 +11,16 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  Icon,
   IconName,
-  IconSize,
   Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -36,14 +31,15 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
-import SRPQuiz from '../../../components/app/srp-quiz-modal';
-import {
-  ACCOUNT_LIST_PAGE_ROUTE,
-  ONBOARDING_REVIEW_SRP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
+import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
+import {
+  useSingleWalletAccountsBalanceCallback,
+  useSingleWalletDisplayBalance,
+} from '../../../hooks/multichain-accounts/useWalletBalance';
 
 export const WalletDetailsPage = () => {
   const t = useI18nContext();
@@ -51,10 +47,12 @@ export const WalletDetailsPage = () => {
   const { id } = useParams();
   const walletId = decodeURIComponent(id as string) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
-  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
   const { multichainAccounts, keyringId, isSRPBackedUp } =
     useWalletInfo(walletId);
+
+  const walletTotalBalance = useSingleWalletDisplayBalance(walletId);
+  const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
 
   useEffect(() => {
     if (!wallet) {
@@ -76,15 +74,6 @@ export const WalletDetailsPage = () => {
     history.goBack();
   };
 
-  const handleSrpBackupClick = () => {
-    if (shouldShowBackupReminder) {
-      const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-      history.push(backUpSRPRoute);
-    } else {
-      setSrpQuizModalVisible(true);
-    }
-  };
-
   const multichainAccountCells = useMemo(
     () =>
       multichainAccounts.map((group) => (
@@ -92,11 +81,11 @@ export const WalletDetailsPage = () => {
           key={`multichain-account-cell-${group.id}`}
           accountId={group.id as AccountGroupId}
           accountName={group.metadata.name}
-          balance="$ n/a"
+          balance={walletAccountBalance(group.id) ?? ''}
           disableHoverEffect={true}
         />
       )),
-    [multichainAccounts],
+    [multichainAccounts, walletAccountBalance],
   );
 
   return (
@@ -115,7 +104,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {t('walletDetails')}
+        {wallet?.metadata.name}
       </Header>
       <Content>
         <Box
@@ -159,54 +148,21 @@ export const WalletDetailsPage = () => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
             >
-              $ n/a
+              {walletTotalBalance ?? '$ n/a'}
             </Text>
           </Box>
           {isEntropyWallet ? (
-            <Box
+            <MultichainSrpBackup
               className={classnames(
                 'multichain-wallet-details-page__row',
                 'multichain-wallet-details-page__row--last',
                 'multichain-wallet-details-page__srp-button',
               )}
-              padding={4}
-              width={BlockSize.Full}
-              textAlign={TextAlign.Left}
-              {...rowStylesProps}
-              as="button"
-              onClick={handleSrpBackupClick}
-            >
-              <Box>
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  color={TextColor.textDefault}
-                >
-                  {t('secretRecoveryPhrase')}
-                </Text>
-              </Box>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={2}
-              >
-                {shouldShowBackupReminder ? (
-                  <Text
-                    variant={TextVariant.bodyMdMedium}
-                    color={TextColor.errorDefault}
-                  >
-                    {t('backup')}
-                  </Text>
-                ) : null}
-                <Icon
-                  name={IconName.ArrowRight}
-                  size={IconSize.Sm}
-                  color={IconColor.iconAlternative}
-                />
-              </Box>
-            </Box>
+              shouldShowBackupReminder={shouldShowBackupReminder}
+              keyringId={keyringId}
+            />
           ) : null}
         </Box>
-
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -217,14 +173,6 @@ export const WalletDetailsPage = () => {
           {isEntropyWallet && <AddMultichainAccount walletId={walletId} />}
         </Box>
       </Content>
-      {isEntropyWallet && srpQuizModalVisible && (
-        <SRPQuiz
-          keyringId={keyringId}
-          isOpen={srpQuizModalVisible}
-          onClose={() => setSrpQuizModalVisible(false)}
-          closeAfterCompleting
-        />
-      )}
     </Page>
   );
 };

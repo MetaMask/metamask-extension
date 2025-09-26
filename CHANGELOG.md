@@ -6,6 +6,93 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.4.0]
+### Added
+- feat: adds verified trust signal to dapp connection page (#35760)
+- feat: hides bridge recipient picker until there is an active bridge quote (#35821)
+- feat: implements bridge destination account picker modal (#35819)
+- feat: unifies evm and non-evm activity lists for BIP-44 (#35740)
+- feat: renders a new account icon feature tour (#35670)
+- feat: adds mask icons option (#35502)
+- feat: adds version segmentation for carousel and in-app announcement notifications (#35820)
+- feat: optimizes image used for metamask shield settings (#35829)
+- feat: redesigns unified swaps quote card (#35778)
+- feat: adds rename account feature for multichain accounts (#35741)
+- feat: adds view to reveal account group private keys (#35719)
+- feat: adds support for the network selector in BIP-44 account groups (#35579)
+- feat: implements recipient validation and resolutions for Solana and EVM accounts (#35744)
+- feat: enables account groups in dapp connection flow (#35513)
+- feat: removes `getting started` page, `terms of use` and adds footer for `terms of use` in login (#35555)
+- feat: adds initial smart account page routing for multichain accounts (#35665)
+- feat: shows connected network icon (#35657)
+- feat: adds support to Solana tokens with multiplier (#35695)
+- feat: adds search functionality to the multichain account list (#35616)
+- feat: adds QR code modal for sharing account addresses (#35454)
+- feat: adds Acala/Karura logo, updates bufferMultiplier (#33547)
+- feat: improves how balance is fetched for various tokens in new send flow (#35640)
+- feat: adds tooltip for url trust signal badges (#35459)
+- feat: adds perp push notification translations (#35621)
+- feat: runs alignment mechanism at the appropriate time so that user's multichain accounts contain all the necessary internal accounts when user wants to use them (#35190)
+- feat: removes `network is busy` alert (#34827)
+- feat: adds `Add Wallet` button to account list page that opens modal with import options (#35536)
+- feat: adds `Settings > Transaction Shield` UI (#35352)
+- feat: adds SRP backup process to multichain account details (#35518)
+- feat: adds dedicated `Add Wallet` page for private key import with proper routing (#35543)
+- feat: adds MetaMask shield entry point modal (#35347)
+- feat: adds designs for amount input (#35510)
+- feat: adds max button to amount page (#35474)
+- feat: adds metametrics toggle and delete metametrics data button in default settings (#36275)
+
+### Fixed
+- fix: fixes a bug that was causing to show spam Solana transactions in the activity list (#35695)
+- fix: fixes an issue that was causing to show an empty symbol instead of UNKNOWN in activity list for Solana tokens with no metadata (#35695)
+- fix: adds UI adjustments for multichain accounts features (#35839)
+- fix: fixes a bug with opening multiple block explorer URLs from multichain QR code modal (#35822)
+- fix: adds token detail name to destination account picker (#35810)
+- fix: updates the native currency for FRAX network to FRAX (#35784)
+- fix: fixes error in Solana assets when toggling fiat mode (#35827)
+- fix: fixes in amount input about min decimals supported by the asset (#35808)
+- fix: fixes multichain account menu by hiding pin and hide features that are not implemented (#35812)
+- fix: adds minor UI and functionality adjustments to the multichain account details (#35818)
+- fix: ensures long dapp urls don't overflow on dapp connection flow (#35715)
+- fix: only shows account list badge for accounts that are connected and active (#35803)
+- fix: fixes account picker alignment under multichain accounts feature flag (#35807)
+- fix: displays custom networks when bip 44 is enabled (#35798)
+- fix: fixes multichain accounts UI for search bar, account details page and wallet details page (#35793)
+- fix: prevents lengthy spinner on load when selected network is slow to respond (#35516)
+- fix: notifies client when native SOL balance reaches zero (#35739)
+- fix: fixes issues related to fiat mode toggling on amount page (#35725)
+- fix: clears edit status after close edit network dialog (#35519)
+- fix: fixes sending NFT tokens in new send implementation (#35702)
+- fix: stops showing USDC instead of SOL when a bridge is created from SOL to ETH (#35668)
+- fix: stops showing truncated origin on the dapp connection page (#35443)
+- fix: uses new send implementation for native SOL token (#35644)
+- Fix: displays Solana Bridge transactions with correct label and details (#35539)
+- fix: adds fallback mechanism to better handle batch transactions (#34019)
+- fix: improves max mode implementation on new send flow (#35611)
+- fix: fixes minor bugs related to address list (#35592)
+- fix: fixes a bug that was causing the current network for dapps without permitted accounts to change unnecessarily (#35559)
+- fix: fixes source for multichain account names in account picker (#35478)
+- fix: plans 966 enhance ledger not supported error (#35291)
+- fix: fixes a bug causing ENS lookups to fail after certain network switches (#35430)
+- fix: removes metametrics consent page for social logins in chromium browsers (#35939)
+- fix: migrates remaining identicons from legacy circle-form to new square-form (#35892)
+- fix: renames maskicons to polycons (#35955)
+- fix: prevents network manager icon from being updated when switching networks from dapp permissions modal (#35946)
+- fix: fixes marketing opt-out toggle in settings (#35938)
+- fix: increases our security posture by locking down cross_origin_opener_policy to same-origin openers only (#35922)
+- fix: fixes issue with ens name resolutions, where resolution is only visible momentarily (#35847)
+- fix: migrates remaining identicons in the activity tab (#36000)
+- fix: fixes oauth login in experimental builds (#36140)
+- fix: fixes crash when closing a full nft image (#36162)
+- fix: ensures settings network manager correctly adds network (#36156)
+- fix: adds a 15-minute cache expiration for address security alert (#36169)
+- fix: migrates remaining identicons on notifications (#36210)
+- fix: ensure metametrics page isn't shown when not expected (#36086)
+- fix: prevent automatic creation of missing evm and Solana accounts when basic functionality toggle is off (#36135)
+- fix: disables marketing toggle if user does not participate in metametrics (#36063)
+- fix: fixes issue where simulations results are shown with wrong decimals on some networks (#36346)
+
 ## [13.3.2]
 ### Fixed
 - fix: fixes ci pipeline issue preventing production build creation (#36291)
@@ -551,7 +638,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.3.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.4.0...HEAD
+[13.4.0]: https://github.com/MetaMask/metamask-extension/compare/v13.3.2...v13.4.0
 [13.3.2]: https://github.com/MetaMask/metamask-extension/compare/v13.3.1...v13.3.2
 [13.3.1]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...v13.3.1
 [13.3.0]: https://github.com/MetaMask/metamask-extension/compare/v13.2.3...v13.3.0
