@@ -871,8 +871,6 @@
   "ui/components/ui/info-tooltip/info-tooltip-icon.js",
   "ui/components/ui/info-tooltip/info-tooltip.js",
   "ui/components/ui/info-tooltip/info-tooltip.stories.js",
-  "ui/components/ui/jazzicon/index.js",
-  "ui/components/ui/jazzicon/jazzicon.component.js",
   "ui/components/ui/list-item/index.js",
   "ui/components/ui/list-item/list-item.component.js",
   "ui/components/ui/list-item/list-item.component.test.js",
