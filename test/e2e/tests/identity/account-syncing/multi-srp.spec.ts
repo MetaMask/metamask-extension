@@ -3,8 +3,7 @@ import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
-import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { unlockWallet } from '../../../helpers';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,

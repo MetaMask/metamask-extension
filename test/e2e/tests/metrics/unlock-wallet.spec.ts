@@ -1,8 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { getEventPayloads } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 

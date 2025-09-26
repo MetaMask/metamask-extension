@@ -1356,7 +1356,7 @@ class Driver {
   /**
    * If we already know this window, switch to it
    * Otherwise, return null
-   * This is used in helpers.switchToOrOpenDapp() and when there's an alert open
+   * This is used when there's an alert open
    *
    * @param {string} title - The title of the window we want to switch to
    * @returns {Promise<void>}  promise that resolves once the switch is complete

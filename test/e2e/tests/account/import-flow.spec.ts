@@ -2,8 +2,6 @@ import path from 'path';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { DEFAULT_FIXTURE_ACCOUNT_SHORTENED } from '../../constants';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

@@ -1,13 +1,7 @@
 import { strict as assert } from 'assert';
 import { pick } from 'lodash';
-import {
-  ACCOUNT_1,
-  ACCOUNT_2,
-  largeDelayMs,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { largeDelayMs } from '../../../helpers';
+import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';

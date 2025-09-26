@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';

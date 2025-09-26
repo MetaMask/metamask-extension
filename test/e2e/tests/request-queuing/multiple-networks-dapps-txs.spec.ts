@@ -1,6 +1,5 @@
 import { Suite } from 'mocha';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixture-builder';
 import {
   withFixtures,
   DAPP_URL,

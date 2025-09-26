@@ -3,8 +3,7 @@ import {
   createInternalTransaction,
   createDappTransaction,
 } from '../../page-objects/flows/transaction';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 

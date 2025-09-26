@@ -5,7 +5,6 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { E2E_SRP } from '../../../default-fixture';
-import FixtureBuilder from '../../../fixture-builder';
 import {
   withFixtures,
   unlockWallet,

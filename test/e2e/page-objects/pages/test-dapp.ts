@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
-import { DAPP_URL } from '../../constants';
-import { WINDOW_TITLES } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
 class TestDapp {

@@ -2,18 +2,12 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {
-  withFixtures,
-  WINDOW_TITLES,
-  sentryRegEx,
-  largeDelayMs,
-} from '../../helpers';
+import { sentryRegEx, largeDelayMs } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../constants';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer

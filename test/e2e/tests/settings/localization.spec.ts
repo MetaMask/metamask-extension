@@ -1,5 +1,3 @@
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';

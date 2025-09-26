@@ -1,6 +1,4 @@
 import { Driver } from '../webdriver/driver';
-import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
 import { mockManageStateSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';

@@ -1,7 +1,6 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { withFixtures, regularDelayMs } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { regularDelayMs } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {

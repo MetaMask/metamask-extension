@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { regularDelayMs, withFixtures } from '../../helpers';
+import { regularDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';

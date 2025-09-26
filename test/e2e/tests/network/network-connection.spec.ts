@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Hex } from '@metamask/utils';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenList from '../../page-objects/pages/token-list';

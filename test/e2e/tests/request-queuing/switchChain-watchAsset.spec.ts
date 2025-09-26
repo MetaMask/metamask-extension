@@ -1,8 +1,6 @@
 import { Suite } from 'mocha';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { DAPP_URL } from '../../constants';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';

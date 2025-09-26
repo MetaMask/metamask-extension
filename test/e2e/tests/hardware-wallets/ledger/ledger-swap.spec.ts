@@ -1,6 +1,5 @@
 import { Browser } from 'selenium-webdriver';
-import FixtureBuilder from '../../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';

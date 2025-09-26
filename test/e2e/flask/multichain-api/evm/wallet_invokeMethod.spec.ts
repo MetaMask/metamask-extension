@@ -1,15 +1,12 @@
 import { strict as assert } from 'assert';
 import { isHexString } from '@metamask/utils';
+import { convertETHToHexGwei, largeDelayMs } from '../../../helpers';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  convertETHToHexGwei,
-  largeDelayMs,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
+} from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';

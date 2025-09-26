@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { unlockWallet, veryLargeDelayMs, withFixtures } from '../../helpers';
+import { unlockWallet, veryLargeDelayMs } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   switchToNetworkFromSendFlow,

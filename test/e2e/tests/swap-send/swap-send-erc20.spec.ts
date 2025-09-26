@@ -1,6 +1,5 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
-import { withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {

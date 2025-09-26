@@ -1,14 +1,13 @@
 import assert from 'node:assert/strict';
 import type { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { emptyHtmlPage } from '../../mock-e2e';
-import FixtureBuilder from '../../fixture-builder';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import type { Anvil } from '../../seeder/anvil';
 import type { Ganache } from '../../seeder/ganache';

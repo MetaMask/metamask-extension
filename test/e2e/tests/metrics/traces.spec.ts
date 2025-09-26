@@ -1,6 +1,4 @@
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
 import {
   expectMockRequest,
   expectNoMockRequest,

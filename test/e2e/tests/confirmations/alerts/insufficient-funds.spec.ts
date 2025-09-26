@@ -1,5 +1,4 @@
-import FixtureBuilder from '../../../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { TestSuiteArguments } from '../transactions/shared';
 import AlertModal from '../../../page-objects/pages/confirmations/redesign/alert-modal';

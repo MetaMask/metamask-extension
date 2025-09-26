@@ -3,8 +3,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Background Events', function () {
   it('can trigger a background event with a date to open a dialog', async function () {

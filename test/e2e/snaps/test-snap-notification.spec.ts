@@ -3,8 +3,8 @@ import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { unlockWallet } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 

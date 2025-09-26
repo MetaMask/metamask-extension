@@ -1,6 +1,4 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
 import { PAGES } from '../../webdriver/driver';
 

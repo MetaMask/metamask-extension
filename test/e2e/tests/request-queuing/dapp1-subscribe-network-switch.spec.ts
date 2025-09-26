@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';

@@ -1,7 +1,8 @@
 import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { Json } from '@metamask/utils';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { replaceColon } from '../../flask/multichain-api/testHelpers';
 

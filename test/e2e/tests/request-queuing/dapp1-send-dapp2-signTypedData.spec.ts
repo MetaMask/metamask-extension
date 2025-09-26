@@ -1,4 +1,3 @@
-import FixtureBuilder from '../../fixture-builder';
 import {
   withFixtures,
   DAPP_URL,

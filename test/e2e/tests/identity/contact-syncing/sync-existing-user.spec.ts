@@ -2,8 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 
-import { getCleanAppState, withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { getCleanAppState } from '../../../helpers';
 import { mockIdentityServices } from '../mocks';
 import {
   IDENTITY_TEAM_SEED_PHRASE,
