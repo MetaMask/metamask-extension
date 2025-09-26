@@ -33,7 +33,6 @@ describe('Permissions Page', function () {
   });
 
   it('should navigate to home route when Gator Permissions Revocation feature is disabled', async function () {
-    process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED = 'false';
     await withFixtures(
       {
         dapp: true,
