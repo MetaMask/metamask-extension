@@ -353,6 +353,7 @@ export const MultichainReviewPermissions = () => {
   ) : (
     <MultichainEditAccountsPage
       title={t('connectWithMetaMask')}
+      confirmButtonText={t('update')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}

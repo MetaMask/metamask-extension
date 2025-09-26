@@ -88,7 +88,7 @@ exports[`Connections Content should render correctly 1`] = `
                         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                       >
                         <div
-                          class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                          class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                         >
                           <div
                             class="flex [&>div]:!rounded-none"
@@ -105,7 +105,7 @@ exports[`Connections Content should render correctly 1`] = `
                                 <rect
                                   fill="#18CDF2"
                                   height="32"
-                                  transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                                  transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                                   width="32"
                                   x="0"
                                   y="0"
@@ -113,7 +113,7 @@ exports[`Connections Content should render correctly 1`] = `
                                 <rect
                                   fill="#035E56"
                                   height="32"
-                                  transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                                  transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                                   width="32"
                                   x="0"
                                   y="0"
@@ -121,7 +121,7 @@ exports[`Connections Content should render correctly 1`] = `
                                 <rect
                                   fill="#F26602"
                                   height="32"
-                                  transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                                  transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                                   width="32"
                                   x="0"
                                   y="0"
@@ -147,7 +147,7 @@ exports[`Connections Content should render correctly 1`] = `
                 class="mm-box mm-box--display-none mm-box--sm:display-flex"
               >
                 <div
-                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -164,7 +164,7 @@ exports[`Connections Content should render correctly 1`] = `
                         <rect
                           fill="#18CDF2"
                           height="32"
-                          transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                          transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                           width="32"
                           x="0"
                           y="0"
@@ -172,7 +172,7 @@ exports[`Connections Content should render correctly 1`] = `
                         <rect
                           fill="#035E56"
                           height="32"
-                          transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                          transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                           width="32"
                           x="0"
                           y="0"
@@ -180,7 +180,7 @@ exports[`Connections Content should render correctly 1`] = `
                         <rect
                           fill="#F26602"
                           height="32"
-                          transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                          transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                           width="32"
                           x="0"
                           y="0"
@@ -275,7 +275,7 @@ exports[`Connections Content should render correctly 1`] = `
                                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                 >
                                   <img
-                                    alt="Polygon Mainnet logo"
+                                    alt="Polygon logo"
                                     class="mm-avatar-network__network-image"
                                     src="./images/pol-token.svg"
                                   />
@@ -289,7 +289,7 @@ exports[`Connections Content should render correctly 1`] = `
                                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                 >
                                   <img
-                                    alt="Binance Smart Chain logo"
+                                    alt="BNB Chain logo"
                                     class="mm-avatar-network__network-image"
                                     src="./images/bnb.svg"
                                   />

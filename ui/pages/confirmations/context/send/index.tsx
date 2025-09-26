@@ -17,7 +17,6 @@ import {
   getSelectedAccountGroup,
   getAccountGroupWithInternalAccounts,
 } from '../../../../selectors/multichain-accounts/account-tree';
-import { getSelectedAccount } from '../../../../selectors';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 
@@ -26,7 +25,7 @@ export type SendContextType = {
   chainId?: string;
   currentPage?: SendPages;
   fromAccount?: InternalAccount;
-  from: string;
+  from?: string;
   maxValueMode?: boolean;
   to?: string;
   toResolved?: string;
@@ -59,7 +58,6 @@ export const SendContextProvider: React.FC<{
   children: ReactElement[] | ReactElement;
 }> = ({ children }) => {
   const [asset, setAsset] = useState<Asset>();
-  const from = useSelector(getSelectedAccount);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
     getAccountGroupWithInternalAccounts,
@@ -81,10 +79,15 @@ export const SendContextProvider: React.FC<{
 
   const updateAsset = useCallback(
     (newAsset: Asset) => {
-      updateValue('', false);
+      // if user is switching asset we cleanup recipient and amount
+      if (asset) {
+        updateValue('', false);
+        updateTo('');
+        updateToResolved('');
+      }
       setAsset(newAsset);
     },
-    [setAsset, updateValue],
+    [asset, setAsset, updateTo, updateToResolved, updateValue],
   );
 
   const chainId =
@@ -121,7 +124,7 @@ export const SendContextProvider: React.FC<{
         chainId,
         currentPage,
         fromAccount,
-        from: from?.address as string,
+        from: fromAccount?.address,
         maxValueMode,
         to,
         toResolved: toResolved ?? to,

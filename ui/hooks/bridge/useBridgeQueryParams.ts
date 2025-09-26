@@ -172,6 +172,7 @@ export const useBridgeQueryParams = () => {
     ) => {
       const { chainId: fromChainId } = fromAsset;
 
+
       if (fromTokenMetadata) {
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
@@ -187,6 +188,7 @@ export const useBridgeQueryParams = () => {
               ? (nativeAsset?.address ?? '')
               : assetReference,
         };
+
         // Only update if chain is different
         if (fromChainId === formatChainIdToCaip(network.chainId)) {
           dispatch(setFromToken(token));

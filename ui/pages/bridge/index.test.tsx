@@ -2,15 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { BridgeBackgroundAction } from '@metamask/bridge-controller';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
+import { MOCKS, CONSTANTS } from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
 import CrossChainSwap from '.';
 
 const mockUseNavigate = jest.fn();
@@ -18,6 +14,12 @@ jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => ({
+      pathname: '/cross-chain',
+      search: '',
+      hash: '',
+      state: null,
+    }),
   };
 });
 
@@ -107,11 +109,7 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-      >
-        <CrossChainSwap />
-      </MemoryRouter>,
+      <CrossChainSwap />,
       store,
     );
 

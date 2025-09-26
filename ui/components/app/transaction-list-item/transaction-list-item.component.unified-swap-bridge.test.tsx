@@ -137,7 +137,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
   });
 
-  it.only('should render completed bridge tx summary', () => {
+  it('should render completed bridge tx summary', () => {
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
     const { queryByTestId, getByTestId } = renderWithProvider(
       <TransactionListItem

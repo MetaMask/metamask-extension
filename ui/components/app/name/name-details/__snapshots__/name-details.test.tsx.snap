@@ -70,7 +70,7 @@ exports[`NameDetails renders proposed names 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -87,7 +87,7 @@ exports[`NameDetails renders proposed names 1`] = `
                         <rect
                           fill="#C8144D"
                           height="16"
-                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                          transform="translate(-0.82057263134762 -2.37530075527900) rotate(408.5 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -95,7 +95,7 @@ exports[`NameDetails renders proposed names 1`] = `
                         <rect
                           fill="#FB1860"
                           height="16"
-                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                          transform="translate(7.73308941258565 -1.34654664170197) rotate(402.6 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -103,7 +103,7 @@ exports[`NameDetails renders proposed names 1`] = `
                         <rect
                           fill="#03505E"
                           height="16"
-                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                          transform="translate(1.10004642302088 -13.14731808528485) rotate(308.0 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -326,7 +326,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -343,7 +343,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                         <rect
                           fill="#FB1860"
                           height="16"
-                          transform="translate(0.19210008248770236 0.5915711789105838) rotate(143.0 8 8)"
+                          transform="translate(0.19210008248770 0.59157117891058) rotate(143.0 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -351,7 +351,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                         <rect
                           fill="#FA7500"
                           height="16"
-                          transform="translate(-2.7557679797195904 -8.4018342526145) rotate(382.5 8 8)"
+                          transform="translate(-2.75576797971959 -8.40183425261450) rotate(382.5 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -359,7 +359,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                         <rect
                           fill="#F93F01"
                           height="16"
-                          transform="translate(-7.199752352370425 -10.579665389870966) rotate(411.5 8 8)"
+                          transform="translate(-7.19975235237043 -10.57966538987097) rotate(411.5 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -545,7 +545,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -562,7 +562,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                         <rect
                           fill="#C8144D"
                           height="16"
-                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                          transform="translate(-0.82057263134762 -2.37530075527900) rotate(408.5 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -570,7 +570,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                         <rect
                           fill="#FB1860"
                           height="16"
-                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                          transform="translate(7.73308941258565 -1.34654664170197) rotate(402.6 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -578,7 +578,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                         <rect
                           fill="#03505E"
                           height="16"
-                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                          transform="translate(1.10004642302088 -13.14731808528485) rotate(308.0 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -766,7 +766,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="name name__recognized_unsaved"
               >
                 <div
-                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -783,7 +783,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                         <rect
                           fill="#F5C000"
                           height="16"
-                          transform="translate(1.6695934255664566 -1.8063309104606964) rotate(439.0 8 8)"
+                          transform="translate(1.66959342556646 -1.80633091046070) rotate(439.0 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -791,7 +791,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                         <rect
                           fill="#2369E1"
                           height="16"
-                          transform="translate(2.5174423326839017 8.347530486970694) rotate(166.1 8 8)"
+                          transform="translate(2.51744233268390 8.34753048697069) rotate(166.1 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -799,7 +799,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                         <rect
                           fill="#FB1864"
                           height="16"
-                          transform="translate(-12.211473117536537 6.428761618147152) rotate(254.1 8 8)"
+                          transform="translate(-12.21147311753654 6.42876161814715) rotate(254.1 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -987,7 +987,7 @@ exports[`NameDetails renders with saved name 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -1004,7 +1004,7 @@ exports[`NameDetails renders with saved name 1`] = `
                         <rect
                           fill="#C8144D"
                           height="16"
-                          transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                          transform="translate(-0.82057263134762 -2.37530075527900) rotate(408.5 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -1012,7 +1012,7 @@ exports[`NameDetails renders with saved name 1`] = `
                         <rect
                           fill="#FB1860"
                           height="16"
-                          transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                          transform="translate(7.73308941258565 -1.34654664170197) rotate(402.6 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"
@@ -1020,7 +1020,7 @@ exports[`NameDetails renders with saved name 1`] = `
                         <rect
                           fill="#03505E"
                           height="16"
-                          transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                          transform="translate(1.10004642302088 -13.14731808528485) rotate(308.0 8.00000000000000 8.00000000000000)"
                           width="16"
                           x="0"
                           y="0"

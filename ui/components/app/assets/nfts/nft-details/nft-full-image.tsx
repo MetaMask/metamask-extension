@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams, useLocation } from 'react-router-dom-v5-compat';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
@@ -59,8 +59,9 @@ export default function NftFullImage() {
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
-  const nftChainNetwork = nftNetworkConfigs[toHex(chainId?.toString() ?? '')];
-  const nftChainImage = getImageForChainId(toHex(chainId?.toString() ?? ''));
+  const hexChainId = toHex(chainId?.toString() ?? '');
+  const nftChainNetwork = nftNetworkConfigs[hexChainId];
+  const nftChainImage = getImageForChainId(hexChainId);
   const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
   const nftImageAlt = getNftImageAlt({
@@ -77,12 +78,25 @@ export default function NftFullImage() {
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setVisible(true);
   }, []);
+
+  const onClose = useCallback(() => {
+    // In React Router v6/v5-compat, we can use navigate(-1) to go back
+    // or navigate to a specific route if we need more control
+    if (location.key && location.key !== 'default') {
+      // There's history to go back to
+      navigate(-1);
+    } else {
+      // No history or direct navigation, go to asset details
+      navigate(`${ASSET_ROUTE}/${hexChainId}/${asset}/${id}`);
+    }
+  }, [asset, hexChainId, location.key, navigate, id]);
 
   return (
     <Box className="main-container asset__container">
@@ -94,7 +108,7 @@ export default function NftFullImage() {
               size={ButtonIconSize.Sm}
               ariaLabel={t('back')}
               iconName={IconName.Close}
-              onClick={() => navigate(`${ASSET_ROUTE}/${asset}/${id}`)}
+              onClick={onClose}
               data-testid="nft-details__close"
               paddingLeft={0}
             />

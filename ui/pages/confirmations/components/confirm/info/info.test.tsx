@@ -7,10 +7,16 @@ import {
   getMockPersonalSignConfirmState,
   getMockSetApprovalForAllConfirmState,
   getMockTypedSignConfirmState,
+  getMockTypedSignPermissionConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
+import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
 import Info from './info';
+
+jest.mock('../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
 
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -40,6 +46,11 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
 
+jest.mock('../../../../../../shared/modules/environment', () => ({
+  ...jest.requireActual('../../../../../../shared/modules/environment'),
+  isGatorPermissionsFeatureEnabled: jest.fn().mockReturnValue(true),
+}));
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
 
@@ -63,6 +74,23 @@ describe('Info', () => {
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders info section for typed sign request with permission', () => {
+    const state = getMockTypedSignPermissionConfirmState();
+    const mockStore = configureMockStore([])(state);
+    const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('throws an error if gator permissions feature is not enabled', () => {
+    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+
+    const state = getMockTypedSignPermissionConfirmState();
+    const mockStore = configureMockStore([])(state);
+    expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
+      'Gator permissions feature is not enabled',
+    );
   });
 
   it('renders info section for contract interaction request', () => {

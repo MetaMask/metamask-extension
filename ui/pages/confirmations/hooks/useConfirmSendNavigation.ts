@@ -1,9 +1,19 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { useConfirmContext } from '../context/confirm';
 import { useRedesignedSendFlow } from './useRedesignedSendFlow';
+
+const SendTransactionTypes = [
+  TransactionType.simpleSend,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
 
 export const useConfirmSendNavigation = () => {
   const navigate = useNavigate();
@@ -15,7 +25,7 @@ export const useConfirmSendNavigation = () => {
       return;
     }
     const { origin, type } = currentConfirmation;
-    if (origin === 'metamask' && type === 'simpleSend') {
+    if (origin === 'metamask' && type && SendTransactionTypes.includes(type)) {
       navigate(-1);
     }
   }, [currentConfirmation, navigate, isSendRedesignEnabled]);

@@ -5,7 +5,9 @@ import {
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+
 import { AssetType } from '../../../../../../shared/constants/transaction';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
   ButtonIcon,
@@ -27,6 +29,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { showSendTokenPage } from '../../../../../store/actions';
+import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useConfirmContext } from '../../../context/confirm';
 import { navigateToSendRoute } from '../../../utils/send';
 import { useRedesignedSendFlow } from '../../../hooks/useRedesignedSendFlow';
@@ -37,7 +40,7 @@ export const WalletInitiatedHeader = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
-
+  const { onCancel } = useConfirmActions();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const handleBackButtonClick = useCallback(async () => {
@@ -50,6 +53,17 @@ export const WalletInitiatedHeader = () => {
     const isNFTTokenSend =
       currentConfirmation.type === TransactionType.tokenMethodTransferFrom ||
       currentConfirmation.type === TransactionType.tokenMethodSafeTransferFrom;
+
+    if (
+      isSendRedesignEnabled &&
+      (isNativeSend || isERC20TokenSend || isNFTTokenSend)
+    ) {
+      onCancel({
+        location: MetaMetricsEventLocation.Confirmation,
+        navigateBackForSend: true,
+      });
+      return;
+    }
 
     let assetType: AssetType;
     if (isNativeSend) {
@@ -66,7 +80,13 @@ export const WalletInitiatedHeader = () => {
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
     navigateToSendRoute(navigate, isSendRedesignEnabled);
-  }, [currentConfirmation, dispatch, navigate, isSendRedesignEnabled]);
+  }, [
+    currentConfirmation,
+    dispatch,
+    navigate,
+    isSendRedesignEnabled,
+    onCancel,
+  ]);
 
   return (
     <Box

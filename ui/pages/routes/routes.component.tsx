@@ -138,6 +138,8 @@ import { BasicConfigurationModal } from '../../components/app/basic-configuratio
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
+import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
@@ -160,6 +162,7 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+// import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
@@ -288,6 +291,13 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
+// const GatorPermissionsPage = mmLazy(
+//   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+//   (() =>
+//     import(
+//       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+//     )) as unknown as DynamicImportType,
+// );
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -448,7 +458,14 @@ export default function RoutesComponent() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const prevPropsRef = useRef({ isUnlocked, totalUnapprovedConfirmationCount });
+  // Multichain intro modal logic (extracted to custom hook)
+  const { showMultichainIntroModal, setShowMultichainIntroModal } =
+    useMultichainAccountsIntroModal(isUnlocked, location);
+
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+  });
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -641,7 +658,20 @@ export default function RoutesComponent() {
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
             element={<Authenticated component={DeFiPage} />}
           />
-          <Route path={PERMISSIONS} element={<PermissionsPage />} />
+          <Route
+            path={PERMISSIONS}
+            element={
+              <Authenticated
+                component={
+                  // TODO: enable this when gator permission page is implemented
+                  // isGatorPermissionsFeatureEnabled()
+                  //   ? GatorPermissionsPage
+                  //   : PermissionsPage
+                  PermissionsPage
+                }
+              />
+            }
+          />
           <Route path={`${CONNECTIONS}/:origin`} element={<Connections />} />
           <Route
             path={`${REVIEW_PERMISSIONS}/:origin`}
@@ -732,7 +762,7 @@ export default function RoutesComponent() {
     }
 
     return routes;
-  }, [autoLockTimeLimit, forgottenPassword, dispatch]);
+  }, [autoLockTimeLimit, forgottenPassword, dispatch, isSendRedesignEnabled]);
 
   const t = useI18nContext();
 
@@ -856,6 +886,13 @@ export default function RoutesComponent() {
         )
         ///: END:ONLY_INCLUDE_IF
       }
+
+      {showMultichainIntroModal ? (
+        <MultichainAccountIntroModalContainer
+          onClose={() => setShowMultichainIntroModal(false)}
+        />
+      ) : null}
+
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
         {!isLoading &&

@@ -783,7 +783,7 @@
     },
     "@metamask/account-api": {
       "packages": {
-        "@metamask/account-api>@metamask/keyring-utils": true
+        "@metamask/keyring-utils": true
       }
     },
     "@metamask/account-tree-controller": {
@@ -813,7 +813,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
@@ -935,7 +935,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1013,6 +1013,13 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/delegation-core": {
+      "packages": {
+        "@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true
       }
     },
     "@metamask/design-system-react": {
@@ -1229,10 +1236,9 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-internal-snap-client": true,
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "webpack>events": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -1341,6 +1347,8 @@
     "@metamask/gator-permissions-controller": {
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/delegation-core": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true
       }
@@ -1387,23 +1395,7 @@
     },
     "@metamask/keyring-api": {
       "packages": {
-        "@metamask/account-api>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/multichain-network-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/account-api>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1411,7 +1403,7 @@
     },
     "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
       "packages": {
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1438,7 +1430,7 @@
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true
       }
     },
@@ -1447,13 +1439,13 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/account-api>@metamask/keyring-utils": true
+        "@metamask/keyring-utils": true
       }
     },
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
@@ -1461,12 +1453,12 @@
     "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/account-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
-    "@metamask/account-api>@metamask/keyring-utils": {
+    "@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
@@ -1514,6 +1506,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/account-api": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-api": true,
@@ -1548,20 +1541,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/multichain-network-controller>@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": true,
+        "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1627,6 +1607,7 @@
       "globals": {
         "Intl.NumberFormat": true,
         "addEventListener": true,
+        "console.error": true,
         "fetch": true,
         "registration": true,
         "removeEventListener": true

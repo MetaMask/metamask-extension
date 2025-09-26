@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
   },
-  "noActivity": {
-    "message": "अभी तक कोई गतिविधि नहीं"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
   },
@@ -3744,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
   },
-  "noDeFiPositions": {
-    "message": "आप जो खोज रहे हैं वह आपको नहीं मिल रहा?"
-  },
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
-  },
-  "noNFTs": {
-    "message": "अभी तक कोई NFT नहीं"
   },
   "noNetworksAvailable": {
     "message": "कोई भी नेटवर्क उपलब्ध नहीं है"
@@ -4641,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "प्रस्तावित एप्रूवल सीमा"
-  },
-  "protocolNotSupported": {
-    "message": "हो सकता है कि हम अभी आपके प्रोटोकॉल को सपोर्ट न करें।"
   },
   "provide": {
     "message": "प्रदान करें"

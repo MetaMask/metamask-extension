@@ -106,7 +106,7 @@ export const AppHeader = ({ location }) => {
     width: BlockSize.Full,
     backgroundColor: BackgroundColor.backgroundDefault,
     padding: 2,
-    paddingLeft: 4,
+    paddingLeft: 2,
     paddingRight: 4,
     gap: 2,
   };

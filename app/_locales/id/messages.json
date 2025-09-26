@@ -3732,9 +3732,6 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noActivity": {
-    "message": "Belum ada aktivitas"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask tidak terhubung ke situs ini"
   },
@@ -3744,17 +3741,11 @@
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
   },
-  "noDeFiPositions": {
-    "message": "Tidak dapat menemukan yang Anda cari?"
-  },
   "noDomainResolution": {
     "message": "Tidak ada resolusi untuk domain yang tersedia."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
-  },
-  "noNFTs": {
-    "message": "Belum ada NFT"
   },
   "noNetworksAvailable": {
     "message": "Jaringan tidak tersedia"
@@ -4641,9 +4632,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Batas persetujuan yang diajukan"
-  },
-  "protocolNotSupported": {
-    "message": "Kami mungkin belum mendukung protokol Anda."
   },
   "provide": {
     "message": "Berikan"

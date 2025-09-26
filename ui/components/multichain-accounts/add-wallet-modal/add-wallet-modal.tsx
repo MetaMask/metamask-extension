@@ -124,6 +124,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
               borderColor={BoxBorderColor.BorderMuted}
               className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
               tabIndex={0}
+              data-testid={`add-wallet-modal-${option.id}`}
             >
               <Icon
                 name={option.iconName}

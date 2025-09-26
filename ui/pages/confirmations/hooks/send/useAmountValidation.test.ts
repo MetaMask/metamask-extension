@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Asset } from '../../types/send';
 import * as SendContext from '../../context/send';
 import {
@@ -89,7 +89,7 @@ describe('useAmountValidation', () => {
       asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
-      value: 10,
+      value: '10',
     } as unknown as SendContext.SendContextType);
 
     const { result } = renderHookWithProvider(
