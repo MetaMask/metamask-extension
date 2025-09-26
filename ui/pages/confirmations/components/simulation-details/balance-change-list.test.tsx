@@ -16,6 +16,14 @@ jest.mock('./fiat-display', () => ({
   TotalFiatDisplay: jest.fn(() => null),
 }));
 
+jest.mock('../../context/confirm', () => ({
+  useConfirmContext: jest.fn(() => ({
+    currentConfirmation: {
+      id: 'testTransactionId',
+    },
+  })),
+}));
+
 describe('BalanceChangeList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
