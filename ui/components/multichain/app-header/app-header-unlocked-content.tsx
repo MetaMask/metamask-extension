@@ -353,7 +353,7 @@ export const AppHeaderUnlockedContent = ({
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={3}>
+        <Box display={Display.Flex} gap={2}>
           {showConnectedStatus && (
             <Box ref={menuRef} data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator
