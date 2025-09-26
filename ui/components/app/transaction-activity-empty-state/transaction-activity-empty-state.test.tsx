@@ -161,10 +161,8 @@ describe('TransactionActivityEmptyState', () => {
   });
 
   it('applies custom className', () => {
-    renderComponent({ className: 'custom-class' });
-    const { container } = renderComponent({ className: 'custom-class' });
-
-    expect(container.firstChild).toHaveClass('custom-class');
+    const { getByTestId } = renderComponent({ className: 'custom-class' });
+    expect(getByTestId('activity-tab-empty-state')).toHaveClass('custom-class');
   });
 
   it('renders light theme image by default', () => {
