@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,11 +24,6 @@ import {
   Text,
 } from '../../../components/component-library';
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { setCompletedOnboarding } from '../../../store/actions';
 
@@ -39,26 +34,14 @@ export default function OnboardingDownloadApp() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentKeyring = useSelector(getCurrentKeyring);
-  const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const handleClick = async () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.ExtensionPinned,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        wallet_setup_type:
-          firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
-      },
-    });
     if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
       await dispatch(setCompletedOnboarding());
-      navigate(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE, { replace: true });
     } else {
-      navigate(ONBOARDING_COMPLETION_ROUTE);
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     }
   };
 

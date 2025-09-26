@@ -11,6 +11,7 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCurrentKeyring,
@@ -66,7 +67,6 @@ export default function OnboardingWelcome() {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
         navigate(
@@ -75,6 +75,8 @@ export default function OnboardingWelcome() {
             : ONBOARDING_METAMETRICS,
           { replace: true },
         );
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         if (isFireFox) {
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });

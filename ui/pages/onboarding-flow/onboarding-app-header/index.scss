@@ -8,6 +8,10 @@
 
   &__banner-tip {
     border-radius: 20px;
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: design-system.$onboarding-app-header-z-index;
 
     &-icon {
       margin-bottom: -4px;
