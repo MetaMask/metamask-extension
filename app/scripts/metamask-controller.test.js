@@ -707,7 +707,9 @@ describe('MetaMaskController', () => {
           ).toBeDefined();
         });
 
-        expect(accountsControllerSpy).toHaveBeenCalledTimes(1);
+        // + 1 in `createNewVaultAndKeychain` (onboarding)
+        // + 1 in `submitPassword`
+        expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
       });
     });
 
