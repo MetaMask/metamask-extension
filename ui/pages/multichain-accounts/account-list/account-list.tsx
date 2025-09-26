@@ -1,24 +1,19 @@
 import React, { useCallback, useMemo, useState } from 'react';
-
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
 import {
   Button,
-  ButtonSize,
-  ButtonVariant,
   ButtonIcon,
   ButtonIconSize,
-  IconName,
+  ButtonSize,
+  ButtonVariant,
   Icon,
-  IconSize,
   IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -31,18 +26,24 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
-import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { useAllWalletAccountsBalances } from '../../../hooks/multichain-accounts/useAccountBalance';
-import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
+import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import {
+  Box,
+  Text,
   TextFieldSearch,
   TextFieldSearchSize,
-  Text,
-  Box,
 } from '../../../components/component-library';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
+import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
+import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { filterWalletsByGroupName } from './utils';
-import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 
 export const AccountList = () => {
   const t = useI18nContext();

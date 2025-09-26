@@ -1,6 +1,5 @@
 import { useAccountsOperationsLoadingStates } from './useAccountsOperationsLoadingStates';
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers';
-import { t } from '../../../shared/lib/translate';
 
 describe('useAccountsOperationsLoadingStates', () => {
   const getState = (isSyncing: boolean) => ({
@@ -16,7 +15,7 @@ describe('useAccountsOperationsLoadingStates', () => {
     );
     expect(result.current.isAccountSyncingInProgress).toBe(true);
     expect(result.current.areAnyOperationsLoading).toBe(true);
-    expect(result.current.loadingMessage).toBe(t('syncing'));
+    expect(result.current.loadingMessage).toBe('Syncing...');
   });
 
   it('returns no loading state and undefined message when no accounts operations are in progress', () => {

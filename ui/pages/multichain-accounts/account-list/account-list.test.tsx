@@ -1,11 +1,11 @@
 import React from 'react';
-import { screen, fireEvent, within, waitFor } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 
+import configureStore from '../../../store/store';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import configureStore from '../../../store/store';
 import { AccountList } from './account-list';
-import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 
 const mockHistoryGoBack = jest.fn();
 const mockHistoryPush = jest.fn();
