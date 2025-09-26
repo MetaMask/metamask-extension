@@ -123,7 +123,7 @@ async function mocked4Bytes(mockServer: MockttpServer) {
 async function mocks(server: MockttpServer) {
   return [await mocked4Bytes(server)];
 }
-
+// fix
 async function createMintTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#mintButton');
