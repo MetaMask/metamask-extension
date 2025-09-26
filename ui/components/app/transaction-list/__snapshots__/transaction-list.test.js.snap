@@ -256,7 +256,7 @@ exports[`TransactionList renders TransactionList component with props hideTokenT
       </button>
     </div>
     <div
-      class="flex flex-col gap-3 items-center justify-center bg-default mx-auto mt-4 max-w-56"
+      class="flex flex-col gap-3 items-center justify-center bg-default max-w-64 mx-auto mt-5 mb-6"
       data-testid="activity-tab-empty-state"
     >
       <img
