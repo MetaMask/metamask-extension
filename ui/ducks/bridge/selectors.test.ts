@@ -1095,6 +1095,22 @@ describe('Bridge selectors', () => {
           },
         },
         metamaskStateOverrides: {
+          accountTree: {
+            selectedAccountGroup: 'entropy-test-account-group-id/0',
+            wallets: {
+              'entropy-test-account-group-id': {
+                id: 'entropy-test-account-group-id',
+                type: 'entropy',
+              },
+              groups: {
+                'entropy-test-account-group-id/0': {
+                  id: 'entropy-test-account-group-id/0',
+                  type: 'multichain-account',
+                  accounts: ['test-account-id'],
+                },
+              },
+            },
+          },
           internalAccounts: {
             selectedAccount: 'test-account-id',
             accounts: {

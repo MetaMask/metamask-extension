@@ -13,6 +13,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import { assertAdvancedGasDetails } from './shared';
 
 const { withFixtures, getEventPayloads } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -49,6 +50,7 @@ describe('Metrics', function () {
           driver,
         );
         await deploymentConfirmation.checkTitle();
+        await deploymentConfirmation.checkDeploymentSiteInfo();
         await deploymentConfirmation.clickFooterConfirmButton();
 
         // check activity list
@@ -67,6 +69,8 @@ describe('Metrics', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.clickAdvancedDetailsButton();
+
+        await assertAdvancedGasDetails(driver);
         await transactionConfirmation.clickFooterConfirmButton();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
