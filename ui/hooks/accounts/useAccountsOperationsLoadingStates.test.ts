@@ -1,5 +1,5 @@
-import { useAccountsOperationsLoadingStates } from './useAccountsOperationsLoadingStates';
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers';
+import { useAccountsOperationsLoadingStates } from './useAccountsOperationsLoadingStates';
 
 describe('useAccountsOperationsLoadingStates', () => {
   const getState = (isSyncing: boolean) => ({
