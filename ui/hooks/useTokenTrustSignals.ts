@@ -40,7 +40,7 @@ export function useTokenTrustSignalsForAddresses(
   tokenAddresses: string[] | undefined,
 ): TrustSignalResult[] {
   const tokenScanResults = useSelector((state) =>
-    // eslint-disable-next-line jsdoc/check-param-names
+    // @ts-ignore - getTokenScanResultsForAddresses selector accepts 3 parameters but TS infers incorrectly from JS file
     getTokenScanResultsForAddresses(state, chainId, tokenAddresses),
   ) as Record<string, TokenScanCacheResult>;
 
