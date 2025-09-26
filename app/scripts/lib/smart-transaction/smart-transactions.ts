@@ -1,13 +1,20 @@
+import {
+  AcceptRequest,
+  AddApprovalRequest,
+  EndFlow,
+  StartFlow,
+  UpdateRequestState,
+} from '@metamask/approval-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import SmartTransactionsController, {
   SmartTransactionsControllerSmartTransactionEvent,
 } from '@metamask/smart-transactions-controller';
 import {
   Fee,
   Fees,
-  SmartTransactionStatuses,
   SmartTransaction,
+  SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller/dist/types';
-import type { Hex } from '@metamask/utils';
 import {
   TransactionController,
   TransactionMeta,
@@ -15,31 +22,25 @@ import {
   TransactionType,
   type PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
-import { RestrictedMessenger } from '@metamask/base-controller';
-import {
-  AddApprovalRequest,
-  UpdateRequestState,
-  StartFlow,
-  EndFlow,
-  AcceptRequest,
-} from '@metamask/approval-controller';
 
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
-import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
+import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import {
   getFeatureFlagsByChainId,
   getIsSmartTransaction,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
+import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
 import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
 import { Delegation7702PublishHook } from '../transaction/hooks/delegation-7702-publish';
+import { isSendBundleSupported } from '../transaction/sentinel-api';
 import { getTransactionById } from '../transaction/util';
 
 const namespace = 'SmartTransactions';
@@ -568,7 +569,7 @@ function getSmartTransactionCommonParams(
   };
 }
 
-export async function publishSmartTransactionHook({
+export async function publishHook({
   flatState,
   initMessenger,
   signedTx,
@@ -585,8 +586,25 @@ export async function publishSmartTransactionHook({
 }) {
   const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
     getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+  const sendBundleSupport = await isSendBundleSupported(
+    transactionMeta.chainId,
+  );
 
-  if (isSmartTransaction) {
+  if (!isSmartTransaction || !sendBundleSupport) {
+    const hook = new Delegation7702PublishHook({
+      isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+        transactionController,
+      ),
+      messenger: initMessenger,
+    }).getHook();
+
+    return await hook(transactionMeta, signedTx);
+  }
+
+  if (
+    isSmartTransaction &&
+    (sendBundleSupport || transactionMeta.selectedGasFeeToken !== undefined)
+  ) {
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
@@ -604,17 +622,11 @@ export async function publishSmartTransactionHook({
     }
   }
 
-  const hook = new Delegation7702PublishHook({
-    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-      transactionController,
-    ),
-    messenger: initMessenger,
-  }).getHook();
-
-  return await hook(transactionMeta, signedTx);
+  // Default: fall back to regular transaction submission
+  return { transactionHash: undefined };
 }
 
-export function publishBatchSmartTransactionHook({
+export function publishBatchHook({
   transactionController,
   smartTransactionsController,
   hookControllerMessenger,

@@ -37,7 +37,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                 >
                   <div
-                    class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                    class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -54,7 +54,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#18CDF2"
                             height="32"
-                            transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                            transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -62,7 +62,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#035E56"
                             height="32"
-                            transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                            transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -70,7 +70,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#F26602"
                             height="32"
-                            transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                            transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -96,7 +96,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           class="mm-box mm-box--display-none mm-box--sm:display-flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -113,7 +113,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#18CDF2"
                     height="32"
-                    transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                    transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -121,7 +121,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#035E56"
                     height="32"
-                    transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                    transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -129,7 +129,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#F26602"
                     height="32"
-                    transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                    transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -224,7 +224,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Polygon Mainnet logo"
+                              alt="Polygon logo"
                               class="mm-avatar-network__network-image"
                               src="./images/pol-token.svg"
                             />
@@ -238,7 +238,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Binance Smart Chain logo"
+                              alt="BNB Chain logo"
                               class="mm-avatar-network__network-image"
                               src="./images/bnb.svg"
                             />
@@ -318,7 +318,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                 >
                   <div
-                    class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                    class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -335,7 +335,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#018E74"
                             height="32"
-                            transform="translate(6.3132478822336004 -5.428280652507946) rotate(358.4 16 16)"
+                            transform="translate(6.31324788223360 -5.42828065250795) rotate(358.4 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -343,7 +343,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#18CAF2"
                             height="32"
-                            transform="translate(7.685615565022901 -12.13837331367715) rotate(414.8 16 16)"
+                            transform="translate(7.68561556502290 -12.13837331367715) rotate(414.8 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -351,7 +351,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#C81474"
                             height="32"
-                            transform="translate(-5.608908748503153 -25.081111298235626) rotate(322.3 16 16)"
+                            transform="translate(-5.60890874850315 -25.08111129823563) rotate(322.3 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -377,7 +377,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           class="mm-box mm-box--display-none mm-box--sm:display-flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -394,7 +394,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#018E74"
                     height="32"
-                    transform="translate(6.3132478822336004 -5.428280652507946) rotate(358.4 16 16)"
+                    transform="translate(6.31324788223360 -5.42828065250795) rotate(358.4 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -402,7 +402,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#18CAF2"
                     height="32"
-                    transform="translate(7.685615565022901 -12.13837331367715) rotate(414.8 16 16)"
+                    transform="translate(7.68561556502290 -12.13837331367715) rotate(414.8 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -410,7 +410,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#C81474"
                     height="32"
-                    transform="translate(-5.608908748503153 -25.081111298235626) rotate(322.3 16 16)"
+                    transform="translate(-5.60890874850315 -25.08111129823563) rotate(322.3 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -505,7 +505,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Polygon Mainnet logo"
+                              alt="Polygon logo"
                               class="mm-avatar-network__network-image"
                               src="./images/pol-token.svg"
                             />
@@ -519,7 +519,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Binance Smart Chain logo"
+                              alt="BNB Chain logo"
                               class="mm-avatar-network__network-image"
                               src="./images/bnb.svg"
                             />
@@ -599,7 +599,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                 >
                   <div
-                    class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                    class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -616,7 +616,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#C81432"
                             height="32"
-                            transform="translate(-0.583645999400264 -3.1039565032560605) rotate(331.7 16 16)"
+                            transform="translate(-0.58364599940026 -3.10395650325606) rotate(331.7 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -624,7 +624,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#187AF2"
                             height="32"
-                            transform="translate(-12.717635568312648 6.331674609038503) rotate(160.5 16 16)"
+                            transform="translate(-12.71763556831265 6.33167460903850) rotate(160.5 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -632,7 +632,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#FB183E"
                             height="32"
-                            transform="translate(28.6680862233552 -2.984235702254764) rotate(517.6 16 16)"
+                            transform="translate(28.66808622335520 -2.98423570225476) rotate(517.6 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -658,7 +658,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           class="mm-box mm-box--display-none mm-box--sm:display-flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -675,7 +675,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#C81432"
                     height="32"
-                    transform="translate(-0.583645999400264 -3.1039565032560605) rotate(331.7 16 16)"
+                    transform="translate(-0.58364599940026 -3.10395650325606) rotate(331.7 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -683,7 +683,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#187AF2"
                     height="32"
-                    transform="translate(-12.717635568312648 6.331674609038503) rotate(160.5 16 16)"
+                    transform="translate(-12.71763556831265 6.33167460903850) rotate(160.5 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -691,7 +691,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#FB183E"
                     height="32"
-                    transform="translate(28.6680862233552 -2.984235702254764) rotate(517.6 16 16)"
+                    transform="translate(28.66808622335520 -2.98423570225476) rotate(517.6 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -786,7 +786,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Polygon Mainnet logo"
+                              alt="Polygon logo"
                               class="mm-avatar-network__network-image"
                               src="./images/pol-token.svg"
                             />
@@ -800,7 +800,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Binance Smart Chain logo"
+                              alt="BNB Chain logo"
                               class="mm-avatar-network__network-image"
                               src="./images/bnb.svg"
                             />
@@ -894,7 +894,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                 >
                   <div
-                    class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                    class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -911,7 +911,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#2340E1"
                             height="32"
-                            transform="translate(-1.9490904468166024 -1.0214651118866318) rotate(257.0 16 16)"
+                            transform="translate(-1.94909044681660 -1.02146511188663) rotate(257.0 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -919,7 +919,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#016D8E"
                             height="32"
-                            transform="translate(12.81547793667531 3.042947044480663) rotate(77.0 16 16)"
+                            transform="translate(12.81547793667531 3.04294704448066) rotate(77.0 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -927,7 +927,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#F5F500"
                             height="32"
-                            transform="translate(13.127605578158805 -22.247335466025433) rotate(465.0 16 16)"
+                            transform="translate(13.12760557815881 -22.24733546602543) rotate(465.0 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -953,7 +953,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           class="mm-box mm-box--display-none mm-box--sm:display-flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -970,7 +970,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#2340E1"
                     height="32"
-                    transform="translate(-1.9490904468166024 -1.0214651118866318) rotate(257.0 16 16)"
+                    transform="translate(-1.94909044681660 -1.02146511188663) rotate(257.0 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -978,7 +978,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#016D8E"
                     height="32"
-                    transform="translate(12.81547793667531 3.042947044480663) rotate(77.0 16 16)"
+                    transform="translate(12.81547793667531 3.04294704448066) rotate(77.0 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -986,7 +986,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#F5F500"
                     height="32"
-                    transform="translate(13.127605578158805 -22.247335466025433) rotate(465.0 16 16)"
+                    transform="translate(13.12760557815881 -22.24733546602543) rotate(465.0 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -1081,7 +1081,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Polygon Mainnet logo"
+                              alt="Polygon logo"
                               class="mm-avatar-network__network-image"
                               src="./images/pol-token.svg"
                             />
@@ -1095,7 +1095,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Binance Smart Chain logo"
+                              alt="BNB Chain logo"
                               class="mm-avatar-network__network-image"
                               src="./images/bnb.svg"
                             />
@@ -1175,7 +1175,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                 >
                   <div
-                    class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                    class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -1192,7 +1192,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#C81435"
                             height="32"
-                            transform="translate(-2.119319732745029 -1.8856543404847388) rotate(249.5 16 16)"
+                            transform="translate(-2.11931973274503 -1.88565434048474) rotate(249.5 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -1200,7 +1200,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#F5E400"
                             height="32"
-                            transform="translate(-1.5132951940983728 12.006291365578917) rotate(269.5 16 16)"
+                            transform="translate(-1.51329519409837 12.00629136557892) rotate(269.5 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -1208,7 +1208,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#F96001"
                             height="32"
-                            transform="translate(7.578094081568198 24.82791748135462) rotate(216.3 16 16)"
+                            transform="translate(7.57809408156820 24.82791748135462) rotate(216.3 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -1234,7 +1234,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           class="mm-box mm-box--display-none mm-box--sm:display-flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -1251,7 +1251,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#C81435"
                     height="32"
-                    transform="translate(-2.119319732745029 -1.8856543404847388) rotate(249.5 16 16)"
+                    transform="translate(-2.11931973274503 -1.88565434048474) rotate(249.5 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -1259,7 +1259,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#F5E400"
                     height="32"
-                    transform="translate(-1.5132951940983728 12.006291365578917) rotate(269.5 16 16)"
+                    transform="translate(-1.51329519409837 12.00629136557892) rotate(269.5 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -1267,7 +1267,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#F96001"
                     height="32"
-                    transform="translate(7.578094081568198 24.82791748135462) rotate(216.3 16 16)"
+                    transform="translate(7.57809408156820 24.82791748135462) rotate(216.3 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -1362,7 +1362,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Polygon Mainnet logo"
+                              alt="Polygon logo"
                               class="mm-avatar-network__network-image"
                               src="./images/pol-token.svg"
                             />
@@ -1376,7 +1376,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Binance Smart Chain logo"
+                              alt="BNB Chain logo"
                               class="mm-avatar-network__network-image"
                               src="./images/bnb.svg"
                             />
@@ -1474,7 +1474,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                 >
                   <div
-                    class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                    class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                   >
                     <div
                       class="flex [&>div]:!rounded-none"
@@ -1491,7 +1491,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#238FE1"
                             height="32"
-                            transform="translate(-4.225116043000625 4.953154575894918) rotate(161.9 16 16)"
+                            transform="translate(-4.22511604300063 4.95315457589492) rotate(161.9 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -1499,7 +1499,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#FB1891"
                             height="32"
-                            transform="translate(-4.425829304725563 12.962271707551116) rotate(224.3 16 16)"
+                            transform="translate(-4.42582930472556 12.96227170755112) rotate(224.3 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -1507,7 +1507,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                           <rect
                             fill="#F90901"
                             height="32"
-                            transform="translate(-26.833286698037487 -15.298402889891959) rotate(344.7 16 16)"
+                            transform="translate(-26.83328669803749 -15.29840288989196) rotate(344.7 16.00000000000000 16.00000000000000)"
                             width="32"
                             x="0"
                             y="0"
@@ -1533,7 +1533,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           class="mm-box mm-box--display-none mm-box--sm:display-flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -1550,7 +1550,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#238FE1"
                     height="32"
-                    transform="translate(-4.225116043000625 4.953154575894918) rotate(161.9 16 16)"
+                    transform="translate(-4.22511604300063 4.95315457589492) rotate(161.9 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -1558,7 +1558,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#FB1891"
                     height="32"
-                    transform="translate(-4.425829304725563 12.962271707551116) rotate(224.3 16 16)"
+                    transform="translate(-4.42582930472556 12.96227170755112) rotate(224.3 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -1566,7 +1566,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   <rect
                     fill="#F90901"
                     height="32"
-                    transform="translate(-26.833286698037487 -15.298402889891959) rotate(344.7 16 16)"
+                    transform="translate(-26.83328669803749 -15.29840288989196) rotate(344.7 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -1661,7 +1661,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Polygon Mainnet logo"
+                              alt="Polygon logo"
                               class="mm-avatar-network__network-image"
                               src="./images/pol-token.svg"
                             />
@@ -1675,7 +1675,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                           >
                             <img
-                              alt="Binance Smart Chain logo"
+                              alt="BNB Chain logo"
                               class="mm-avatar-network__network-image"
                               src="./images/bnb.svg"
                             />

@@ -49,19 +49,29 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import {
-  USER_STORAGE_FEATURE_NAMES,
-  UserProfileLineage,
-} from '@metamask/profile-sync-controller/sdk';
+import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
+import {
+  BillingPortalResponse,
+  PricingResponse,
+  ProductPrice,
+  ProductType,
+  RecurringInterval,
+  Subscription,
+  TokenPaymentInfo,
+} from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -312,6 +322,114 @@ export function createNewVaultAndSyncWithSocial(
         throw error;
       }
     }
+  };
+}
+
+/**
+ * Fetches user subscriptions.
+ *
+ * @returns The subscriptions.
+ */
+export function getSubscriptions(): ThunkAction<
+  Subscription[],
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground('getSubscriptions');
+  };
+}
+
+/**
+ * Fetches the subscription pricing.
+ *
+ * @returns The subscription pricing.
+ */
+export function getSubscriptionPricing(): ThunkAction<
+  PricingResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground<PricingResponse>(
+      'getSubscriptionPricing',
+    );
+  };
+}
+
+/**
+ * Get crypto total amount needed for a subscription.
+ *
+ * @param params - The parameters.
+ * @param params.price - The price.
+ * @param params.tokenPaymentInfo - The token payment info.
+ * @returns The subscription crypto approval amount.
+ */
+export async function getSubscriptionCryptoApprovalAmount(params: {
+  price: ProductPrice;
+  tokenPaymentInfo: TokenPaymentInfo;
+}): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getSubscriptionCryptoApprovalAmount',
+    [params],
+  );
+}
+
+/**
+ * Starts a subscription with a card.
+ *
+ * @param params - The parameters.
+ * @param params.products - The list of products.
+ * @param params.isTrialRequested - Is trial requested.
+ * @param params.recurringInterval - The recurring interval.
+ * @returns The subscription response.
+ */
+export function startSubscriptionWithCard(params: {
+  products: ProductType[];
+  isTrialRequested: boolean;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
+    const subscriptions = await submitRequestToBackground<Subscription[]>(
+      'startSubscriptionWithCard',
+      [params, currentTab?.id],
+    );
+
+    return subscriptions;
+  };
+}
+
+export function cancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('cancelSubscription', [params]);
+  };
+}
+
+export function unCancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('unCancelSubscription', [params]);
+  };
+}
+
+export function getSubscriptionBillingPortalUrl(): ThunkAction<
+  BillingPortalResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const res = await submitRequestToBackground<BillingPortalResponse>(
+      'getSubscriptionBillingPortalUrl',
+      [],
+    );
+    return res;
   };
 }
 
@@ -4340,12 +4458,16 @@ export function setUseCurrencyRateCheck(
 // MultichainAssetsRatesController
 export function fetchHistoricalPricesForAsset(
   address: CaipAssetType,
+  internalAccount: InternalAccount,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
+    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
+      address,
+      internalAccount,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -6705,14 +6827,14 @@ export function deleteNotificationsById(
 }
 
 /**
- * Synchronizes accounts data with user storage between devices.
+ * Synchronizes account tree data with user storage between devices.
  *
  * This function sends a request to the background script to sync accounts data and update the state accordingly.
  * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
  * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
  */
-export function syncInternalAccountsWithUserStorage(): ThunkAction<
+export function syncAccountTreeWithUserStorage(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -6723,68 +6845,12 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'syncInternalAccountsWithUserStorage',
+        'syncAccountTreeWithUserStorage',
       );
       return response;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
-    }
-  };
-}
-
-/**
- * "Locks" account syncing by setting the necessary flags in UserStorageController.
- * This is used to temporarily prevent account syncing from listening to accounts being changed, and the downward sync to happen.
- *
- * @returns
- */
-export function lockAccountSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground(
-        'setIsAccountSyncingReadyToBeDispatched',
-        [false],
-      );
-      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
-        false,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
- * "Unlocks" account syncing by setting the necessary flags in UserStorageController.
- * This is used to resume account syncing after it has been locked.
- * This will trigger a downward sync if this is called after a lockAccountSyncing call.
- *
- * @returns
- */
-export function unlockAccountSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
-        true,
-      ]);
-      return await submitRequestToBackground(
-        'setIsAccountSyncingReadyToBeDispatched',
-        [true],
-      );
-    } catch (error) {
-      return getErrorMessage(error);
     }
   };
 }
@@ -6807,11 +6873,14 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      const response = await submitRequestToBackground(
-        'deleteAccountSyncingDataFromUserStorage',
-        [USER_STORAGE_FEATURE_NAMES.accounts],
-      );
-      return response;
+      await Promise.all([
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        ]),
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          USER_STORAGE_WALLETS_FEATURE_KEY,
+        ]),
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -6997,6 +7066,14 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
+export function setMultichainAccountsIntroModalShown(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
+      value,
+    ]);
+  };
+}
+
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {
@@ -7039,6 +7116,11 @@ export async function multichainUpdateTransactions(
     accountId,
   ]);
 }
+
+export async function alignMultichainWallets(): Promise<void> {
+  return await submitRequestToBackground<void>('alignMultichainWallets', []);
+}
+
 ///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<

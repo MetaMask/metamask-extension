@@ -220,6 +220,7 @@ export const MultichainReviewPermissions = () => {
   const handleAccountGroupIdsSelected = useCallback(
     (accountGroupIds: string[]) => {
       if (accountGroupIds.length === 0) {
+        setPageMode(MultichainReviewPermissionsPageMode.Summary);
         setShowDisconnectAllModal(true);
         return;
       }
@@ -236,7 +237,7 @@ export const MultichainReviewPermissions = () => {
       setPageMode(MultichainReviewPermissionsPageMode.Summary);
       dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
     },
-    [],
+    [activeTabOrigin, connectedChainIds, dispatch, supportedAccountGroups],
   );
 
   return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
@@ -352,6 +353,7 @@ export const MultichainReviewPermissions = () => {
   ) : (
     <MultichainEditAccountsPage
       title={t('connectWithMetaMask')}
+      confirmButtonText={t('update')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}

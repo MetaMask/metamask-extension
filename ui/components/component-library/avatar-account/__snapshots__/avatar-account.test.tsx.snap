@@ -21,7 +21,7 @@ exports[`AvatarAccount should render correctly 1`] = `
           <rect
             fill="#F2CA02"
             height="32"
-            transform="translate(1.431306801437213 -0.09488555961102602) rotate(529.4 16 16)"
+            transform="translate(1.43130680143721 -0.09488555961103) rotate(529.4 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -29,7 +29,7 @@ exports[`AvatarAccount should render correctly 1`] = `
           <rect
             fill="#FAA200"
             height="32"
-            transform="translate(10.974858326048588 -13.039888710538095) rotate(336.9 16 16)"
+            transform="translate(10.97485832604859 -13.03988871053810) rotate(336.9 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"
@@ -37,7 +37,7 @@ exports[`AvatarAccount should render correctly 1`] = `
           <rect
             fill="#C8142C"
             height="32"
-            transform="translate(-22.963750275720685 -20.223166935456838) rotate(276.6 16 16)"
+            transform="translate(-22.96375027572068 -20.22316693545684) rotate(276.6 16.00000000000000 16.00000000000000)"
             width="32"
             x="0"
             y="0"

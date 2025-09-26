@@ -102,7 +102,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
-                        alt="Ethereum Mainnet logo"
+                        alt="Ethereum logo"
                         class="mm-avatar-network__network-image"
                         src="./images/eth_logo.svg"
                       />
@@ -193,9 +193,9 @@ exports[`Bridge renders the component with initial props 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
                     >
                       <img
-                        alt="USDC logo"
+                        alt="mUSD logo"
                         class="mm-avatar-token__token-image"
-                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
                       />
                     </div>
                     <div
@@ -205,7 +205,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Ethereum Mainnet logo"
+                          alt="Ethereum logo"
                           class="mm-avatar-network__network-image"
                           src="./images/eth_logo.svg"
                         />
@@ -221,7 +221,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       <p
                         class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
                       >
-                        USDC
+                        mUSD
                       </p>
                     </label>
                   </span>
@@ -242,7 +242,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                   class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
                   style="cursor: pointer; text-decoration: underline;"
                 >
-                  0xa0...eb48
+                  0xac...35da
                 </a>
               </div>
             </div>

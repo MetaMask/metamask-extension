@@ -1,6 +1,8 @@
 import { Messenger } from '@metamask/base-controller';
 import {
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
+  NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
@@ -31,12 +33,24 @@ export function getPPOMControllerMessenger(
   });
 }
 
+type AllowedInitializationActions =
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetSelectedNetworkClientAction
+  | NetworkControllerGetStateAction;
+
 export function getPPOMControllerInitMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: Messenger<
+    MessengerActions | AllowedInitializationActions,
+    MessengerEvents
+  >,
 ) {
   return messenger.getRestricted({
     name: 'PPOMControllerInit',
     allowedEvents: ['PreferencesController:stateChange'],
-    allowedActions: [],
+    allowedActions: [
+      'NetworkController:getNetworkClientById',
+      'NetworkController:getSelectedNetworkClient',
+      'NetworkController:getState',
+    ],
   });
 }
