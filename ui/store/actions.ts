@@ -312,7 +312,11 @@ export function createNewVaultAndSyncWithSocial(
         seedPhrase,
         primaryKeyring.metadata.id,
       );
+
       dispatch(hideWarning());
+      // force update the state after creating the vault
+      await forceUpdateMetamaskState(dispatch);
+
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -719,6 +723,10 @@ export function createNewVaultAndGetSeedPhrase(
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
+
+      // force update the state after creating the vault
+      await forceUpdateMetamaskState(dispatch);
+
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
