@@ -50,6 +50,11 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
               size={AvatarNetworkSize.Sm}
               name={nftData.networkName ?? ''}
               src={nftData.networkImage}
+              style={{
+                width: 20,
+                height: 20,
+                borderWidth: 2,
+              }}
             />
           ) : null
         }
@@ -119,6 +124,11 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
               size={AvatarNetworkSize.Sm}
               name={networkName || chainNetworkNameAndImage?.networkName || ''}
               src={networkImage || chainNetworkNameAndImage?.networkImage}
+              style={{
+                width: 20,
+                height: 20,
+                borderWidth: 2,
+              }}
             />
           ) : null
         }
