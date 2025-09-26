@@ -61,7 +61,7 @@ exports[`AccountPicker renders properly 1`] = `
           </div>
           <span
             class="mm-box mm-text multichain-account-picker__label w-full mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
-            style="font-weight: medium;"
+            style="font-weight: 500;"
           >
             Account 1
           </span>

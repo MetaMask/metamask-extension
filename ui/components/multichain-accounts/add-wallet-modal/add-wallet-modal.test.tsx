@@ -86,4 +86,20 @@ describe('AddWalletModal', () => {
 
     expect(screen.queryByText('Add wallet')).not.toBeInTheDocument();
   });
+
+  it('renders institutional wallet option when institutional wallets are enabled', () => {
+    renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
+
+    expect(
+      screen.getByText('Manage institutional wallets'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render institutional wallet option when institutional wallets are disabled', () => {
+    renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
+
+    expect(
+      screen.queryByText('Manage institutional wallets'),
+    ).not.toBeInTheDocument();
+  });
 });

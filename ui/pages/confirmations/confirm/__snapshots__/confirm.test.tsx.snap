@@ -62,11 +62,6 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 </div>
               </div>
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
           </div>
           <div
             class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -75,13 +70,13 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             >
-              Test Account
+              Account 1
             </p>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Goerli
+              Wallet 1
             </p>
           </div>
         </div>
@@ -137,6 +132,38 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
           >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
@@ -286,28 +313,15 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 class="flex [&>div]:!rounded-none"
               />
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
-            </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
+            
           </div>
         </div>
         <div
@@ -593,6 +607,41 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Goerli logo"
+                    class="mm-avatar-network__network-image"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
                     Request from
                   </p>
                   <div>
@@ -774,28 +823,15 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 class="flex [&>div]:!rounded-none"
               />
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
-            </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
+            
           </div>
         </div>
         <div
@@ -1028,6 +1064,41 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Goerli logo"
+                    class="mm-avatar-network__network-image"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
                     Request from
                   </p>
                   <div>
@@ -1245,11 +1316,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 </div>
               </div>
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
           </div>
           <div
             class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -1258,13 +1324,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             >
-              Test Account
+              Account 1
             </p>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Goerli
+              Wallet 1
             </p>
           </div>
         </div>
@@ -1321,6 +1387,38 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
             data-testid="confirmation_request-section"
           >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
@@ -2023,25 +2121,15 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 </div>
               </div>
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
+            
           </div>
         </div>
         <div
@@ -2280,6 +2368,38 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
                     Request from
                   </p>
                   <div>
@@ -2497,25 +2617,15 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 </div>
               </div>
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
+            class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
+            
           </div>
         </div>
         <div
@@ -2571,6 +2681,38 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
             data-testid="confirmation_request-section"
           >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
@@ -2802,16 +2944,55 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                           class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class="name name__clickable name__missing"
+                            class="name name__clickable name__recognized_unsaved"
                           >
-                            <span
-                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                              style="mask-image: url('./images/icons/question.svg');"
-                            />
-                            <p
-                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            <div
+                              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
                             >
-                              0x0DCD5...3E7bc
+                              <div
+                                class="flex [&>div]:!rounded-none"
+                              >
+                                <div
+                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+                                >
+                                  <svg
+                                    height="16"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  >
+                                    <rect
+                                      fill="#18CDF2"
+                                      height="16"
+                                      transform="translate(-0.52419675189697 -1.65214203473025) rotate(328.9 8.00000000000000 8.00000000000000)"
+                                      width="16"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#035E56"
+                                      height="16"
+                                      transform="translate(-9.14923085441602 5.29623093587430) rotate(176.2 8.00000000000000 8.00000000000000)"
+                                      width="16"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#F26602"
+                                      height="16"
+                                      transform="translate(8.33392100911196 -7.10256986149854) rotate(468.9 8.00000000000000 8.00000000000000)"
+                                      width="16"
+                                      x="0"
+                                      y="0"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                            <p
+                              class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                            >
+                              Account 1
                             </p>
                           </div>
                         </div>
@@ -3155,15 +3336,6 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 class="flex [&>div]:!rounded-none"
               />
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="network logo"
-                class="mm-avatar-network__network-image"
-                src=""
-              />
-            </div>
           </div>
           <div
             class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
@@ -3266,14 +3438,6 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 class="flex [&>div]:!rounded-none"
               />
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
-            </div>
           </div>
           <div
             class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -3282,13 +3446,13 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             >
-              Test Account
+              Account 1
             </p>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Goerli
+              Wallet 1
             </p>
           </div>
         </div>
@@ -3335,6 +3499,41 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
             data-testid="confirmation_request-section"
           >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Goerli logo"
+                    class="mm-avatar-network__network-image"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
