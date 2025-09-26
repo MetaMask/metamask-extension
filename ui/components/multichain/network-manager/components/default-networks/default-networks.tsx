@@ -95,13 +95,9 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
   );
 
-  let btcAccountGroup = null;
-
-  if (isFlask()) {
-    btcAccountGroup = useSelector((state) =>
-      getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
-    );
-  }
+  const btcAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
+  );
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -274,6 +270,7 @@ const DefaultNetworks = memo(() => {
     solAccountGroup,
     isMultichainAccountsState2Enabled,
     evmAccountGroup,
+    selectedAccount.scopes,
     dispatch,
     selectedAccount,
     enabledChainIds,

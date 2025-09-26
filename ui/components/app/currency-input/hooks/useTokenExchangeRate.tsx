@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
@@ -41,6 +41,19 @@ export default function useTokenExchangeRate(
     Record<string, ExchangeRate>
   >({});
 
+  const contractExchangeRate = tokenAddress
+    ? contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress]
+    : undefined;
+
+  useEffect(() => {
+    if (!contractExchangeRate && tokenAddress) {
+      setExchangeRates((prev) => ({
+        ...prev,
+        [tokenAddress]: LOADING,
+      }));
+    }
+  }, [contractExchangeRate, tokenAddress]);
+
   return useMemo(() => {
     if (!selectedNativeConversionRate) {
       return undefined;
@@ -62,14 +75,7 @@ export default function useTokenExchangeRate(
       return undefined;
     }
 
-    const contractExchangeRate =
-      contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress];
-
     if (!contractExchangeRate) {
-      setExchangeRates((prev) => ({
-        ...prev,
-        [tokenAddress]: LOADING,
-      }));
       fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
         .then((addressToExchangeRate) => {
           setExchangeRates((prev) => ({
@@ -95,6 +101,6 @@ export default function useTokenExchangeRate(
     nativeCurrency,
     tokenAddress,
     selectedNativeConversionRate,
-    contractExchangeRates,
+    contractExchangeRate,
   ]);
 }

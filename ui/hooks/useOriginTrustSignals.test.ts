@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import { RecommendedAction } from '@metamask/phishing-controller';
 import { getUrlScanCacheResult } from '../selectors/selectors';
 import { TrustSignalDisplayState } from './useTrustSignals';
@@ -29,7 +30,11 @@ describe('useOriginTrustSignals', () => {
   it('returns unknown state when selector returns undefined', () => {
     getUrlScanCacheResultMock.mockReturnValue(undefined);
 
-    const result = useOriginTrustSignals('');
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals(''));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Unknown,
@@ -50,7 +55,11 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals(ORIGIN_MOCK));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Malicious,
@@ -71,7 +80,11 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals(ORIGIN_MOCK));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Warning,
@@ -88,7 +101,11 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals(ORIGIN_MOCK));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Verified,
@@ -105,7 +122,11 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals(ORIGIN_MOCK));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Unknown,
@@ -122,7 +143,11 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals(ORIGIN_MOCK));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Unknown,
@@ -139,7 +164,11 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals(ORIGIN_MOCK));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Unknown,
@@ -150,7 +179,11 @@ describe('useOriginTrustSignals', () => {
   it('returns unknown state when origin is invalid URL', () => {
     getUrlScanCacheResultMock.mockReturnValue(undefined);
 
-    const result = useOriginTrustSignals('not-a-valid-url');
+    const {
+      result: {
+        all: [result],
+      },
+    } = renderHook(() => useOriginTrustSignals('not-a-valid-url'));
 
     expect(result).toStrictEqual({
       state: TrustSignalDisplayState.Unknown,

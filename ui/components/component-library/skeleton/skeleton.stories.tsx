@@ -78,7 +78,7 @@ export const HideChildren: Story = {
     width: 'max-content',
     hideChildren: true,
   },
-  render: (args) => {
+  render: function Render(args) {
     const [isLoaded, setIsLoaded] = React.useState(false);
     return (
       <Box>
@@ -139,14 +139,30 @@ BorderRadiusStory.storyName = 'BorderRadius';
 export const TokenListSkeleton: Story = {
   render: () => (
     <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
-      <Skeleton width={32} height={32} borderRadius={BorderRadius.full} style={{
-        minWidth: 32, // add classname with this style attached
-      }} />
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={1} width={BlockSize.Full} paddingRight={12}>
+      <Skeleton
+        width={32}
+        height={32}
+        borderRadius={BorderRadius.full}
+        style={{
+          minWidth: 32, // add classname with this style attached
+        }}
+      />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={1}
+        width={BlockSize.Full}
+        paddingRight={12}
+      >
         <Skeleton width="100%" height={16} />
         <Skeleton width="70%" height={16} />
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={1} width={BlockSize.OneThird}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={1}
+        width={BlockSize.OneThird}
+      >
         <Skeleton width="100%" height={16} />
         <Skeleton width="100%" height={16} />
       </Box>
