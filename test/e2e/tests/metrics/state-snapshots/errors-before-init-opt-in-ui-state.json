@@ -45,7 +45,8 @@
       "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "snapsInstallPrivacyWarningShown": true
+      "snapsInstallPrivacyWarningShown": true,
+      "hasShownMultichainAccountsIntroModal": "boolean"
     },
     "BridgeController": {},
     "CurrencyController": {
@@ -135,7 +136,8 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "isMultiAccountBalancesEnabled": "boolean",
-      "showIncomingTransactions": "object"
+      "showIncomingTransactions": "object",
+      "referrals": "object"
     },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {

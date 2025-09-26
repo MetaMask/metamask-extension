@@ -9,7 +9,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
-import { ChainId } from '../../../../shared/constants/network';
+import { CHAIN_IDS, ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -67,6 +67,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
+import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRedesignedSendFlow';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
@@ -107,6 +108,7 @@ const CoinButtons = ({
   >;
   const currentChainId = useSelector(getCurrentChainId);
   const displayNewIconButtons = process.env.REMOVE_GNS;
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   // Multichain accounts feature flag and selected account group
   const isMultichainAccountsState2Enabled = useSelector(
@@ -224,7 +226,11 @@ const CoinButtons = ({
   );
 
   const setCorrectChain = useCallback(async () => {
-    if (currentChainId !== chainId && multichainChainId !== chainId) {
+    if (
+      currentChainId !== chainId &&
+      multichainChainId !== chainId &&
+      !isMultichainAccountsState2Enabled
+    ) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -239,7 +245,14 @@ const CoinButtons = ({
         throw err;
       }
     }
-  }, [currentChainId, chainId, networks, dispatch]);
+  }, [
+    isMultichainAccountsState2Enabled,
+    currentChainId,
+    multichainChainId,
+    chainId,
+    networks,
+    dispatch,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -265,7 +278,7 @@ const CoinButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type)) {
+    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
       await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
@@ -279,11 +292,12 @@ const CoinButtons = ({
     if (trackingLocation !== 'home') {
       params = { chainId: chainId.toString() };
     }
-    navigateToSendRoute(history, params);
+    navigateToSendRoute(history, isSendRedesignEnabled, params);
   }, [
     chainId,
     account,
     setCorrectChain,
+    isSendRedesignEnabled,
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
     ///: END:ONLY_INCLUDE_IF
@@ -314,11 +328,13 @@ const CoinButtons = ({
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
-      await setCorrectChain();
       // Handle clicking from the wallet overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        getNativeAssetForChainId(chainId),
+        getNativeAssetForChainId(
+          location.pathname.split('/').filter(Boolean).at(-1) ??
+            CHAIN_IDS.MAINNET,
+        ),
         isSwap,
       );
     },
@@ -331,6 +347,13 @@ const CoinButtons = ({
       return;
     }
     if (multichainChainId === MultichainNetworks.SOLANA) {
+      handleBridgeOnClick(true);
+      return;
+    }
+    if (
+      isMultichainAccountsState2Enabled &&
+      chainId === MultichainNetworks.SOLANA
+    ) {
       handleBridgeOnClick(true);
       return;
     }
@@ -365,6 +388,8 @@ const CoinButtons = ({
     setCorrectChain,
     isSwapsChain,
     chainId,
+    isMultichainAccountsState2Enabled,
+    multichainChainId,
     isUnifiedUIEnabled,
     usingHardwareWallet,
     defaultSwapsToken,
@@ -415,7 +440,7 @@ const CoinButtons = ({
           Icon={
             displayNewIconButtons ? (
               <Icon
-                name={IconName.Money}
+                name={IconName.Dollar}
                 color={IconColor.iconAlternative}
                 size={IconSize.Md}
               />
@@ -429,7 +454,7 @@ const CoinButtons = ({
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
-          label={t('buyAndSell')}
+          label={t('buy')}
           onClick={handleBuyAndSellOnClick}
           width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
@@ -447,13 +472,13 @@ const CoinButtons = ({
         Icon={
           displayNewIconButtons ? (
             <Icon
-              name={IconName.SwapHorizontal}
+              name={IconName.SwapVertical}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           ) : (
             <Icon
-              name={IconName.SwapHorizontal}
+              name={IconName.SwapVertical}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
@@ -543,7 +568,7 @@ const CoinButtons = ({
             Icon={
               displayNewIconButtons ? (
                 <Icon
-                  name={IconName.QrCode}
+                  name={IconName.Received}
                   color={IconColor.iconAlternative}
                   size={IconSize.Md}
                 />

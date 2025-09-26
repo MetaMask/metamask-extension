@@ -4,6 +4,8 @@ export const EVM_ASSET = {
   chainId: 5,
   metadata: {},
   symbol: 'NEU',
+  decimals: 0,
+  rawBalanceHex: '0x5',
 };
 
 export const EVM_NATIVE_ASSET = {
@@ -14,10 +16,13 @@ export const EVM_NATIVE_ASSET = {
   iconUrl: '',
   name: 'Ether',
   symbol: 'ETH',
+  isNative: true,
+  rawBalanceHex: '0x5',
 };
 
 export const SOLANA_NATIVE_ASSET = {
-  address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+  address: '0x0000000000000000000000000000000000000000',
+  assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
   aggregators: [],
   balance: '400',
   balanceFiat: '1500',

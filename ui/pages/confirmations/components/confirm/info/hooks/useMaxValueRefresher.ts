@@ -5,9 +5,10 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 
 import {
-  getSelectedAccountCachedBalance,
+  getCrossChainMetaMaskCachedBalances,
   selectMaxValueModeForTransaction,
 } from '../../../../../../selectors';
 import {
@@ -40,13 +41,22 @@ export const useMaxValueRefresher = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const dispatch = useDispatch();
-  const { id: transactionId } = transactionMeta;
+  const {
+    chainId,
+    id: transactionId,
+    txParams: { from },
+  } = transactionMeta;
   const isMaxAmountMode = useSelector((state) =>
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
   );
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-
-  const balance = useSelector(getSelectedAccountCachedBalance);
+  const [searchParams] = useSearchParams();
+  const paramMaxValueMode = searchParams.get('maxValueMode') === 'true';
+  const isMaxValueMode = isMaxAmountMode || paramMaxValueMode;
+  const crossChainNativeBalances = useSelector(
+    getCrossChainMetaMaskCachedBalances,
+  ) as { [chainId: string]: { [from: string]: string } };
+  const balance = crossChainNativeBalances?.[chainId]?.[from] ?? HEX_ZERO;
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
   const gas = (transactionMeta.txParams.gas as Hex) || HEX_ZERO;
   const gasPrice = (transactionMeta.txParams.gasPrice as Hex) || HEX_ZERO;
@@ -60,16 +70,16 @@ export const useMaxValueRefresher = () => {
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_send_max: isMaxAmountMode,
+          is_send_max: isMaxValueMode,
         },
       },
       transactionId,
     );
-  }, [isMaxAmountMode, transactionId]);
+  }, [isMaxValueMode, transactionId]);
 
   useEffect(() => {
     if (
-      !isMaxAmountMode ||
+      !isMaxValueMode ||
       transactionMeta.type !== TransactionType.simpleSend
     ) {
       return;
@@ -99,7 +109,7 @@ export const useMaxValueRefresher = () => {
       }),
     );
   }, [
-    isMaxAmountMode,
+    isMaxValueMode,
     balance,
     gas,
     gasPrice,

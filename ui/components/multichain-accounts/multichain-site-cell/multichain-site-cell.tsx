@@ -1,18 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupId } from '@metamask/account-api';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  Box,
-  IconName,
-} from '../../component-library';
+import { Box, IconName } from '../../component-library';
 import { EditNetworksModal } from '../../multichain/edit-networks-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -85,6 +82,16 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
     });
   };
 
+  const accountMessageConnectedState = useMemo(() => {
+    return selectedAccountGroupIds.length === 1
+      ? t('connectedWithAccountName', [
+          supportedAccountGroups.find(
+            (account) => account.id === selectedAccountGroupIds[0],
+          )?.metadata.name || '',
+        ])
+      : t('connectedWithAccount', [selectedAccountGroupIds.length]);
+  }, [selectedAccountGroupIds, supportedAccountGroups, t]);
+
   return (
     <>
       <Box
@@ -96,9 +103,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('accountsPermissionsTitle')}
           iconName={IconName.Eye}
-          connectedMessage={t('requestingFor', [
-            selectedAccountGroupIds.length,
-          ])}
+          connectedMessage={accountMessageConnectedState}
           unconnectedMessage={t('requestingFor', [
             selectedAccountGroupIds.length,
           ])}
@@ -108,14 +113,13 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           paddingTopValue={0}
           content={
             selectedAccountGroupIds.length === 1 ? (
-              <AvatarAccount
+              <PreferredAvatar
                 address={
                   supportedAccountGroups.find(
                     (account) => account.id === selectedAccountGroupIds[0],
-                  )?.accounts[0].address || ''
+                  )?.id || ''
                 }
                 size={AvatarAccountSize.Xs}
-                borderColor={BorderColor.transparent}
               />
             ) : (
               <MultichainSiteCellTooltip
@@ -130,9 +134,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Global}
           connectedMessage={t('connectedWithNetwork', [selectedChainIdsLength])}
-          unconnectedMessage={t('requestingForNetwork', [
-            selectedChainIdsLength,
-          ])}
+          unconnectedMessage={t('requestingFor')}
           isConnectFlow={isConnectFlow}
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}

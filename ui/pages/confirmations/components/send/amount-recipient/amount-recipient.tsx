@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import LoadingScreen from '../../../../../components/ui/loading-screen';
 import {
   Box,
   Button,
@@ -12,57 +13,66 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Asset } from '../../../types/send';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
-import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendActions } from '../../../hooks/send/useSendActions';
+import { useSendContext } from '../../../context/send';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
-import { Header } from '../header';
 import { Recipient } from '../recipient';
+import { HexData } from '../hex-data';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const [to, setTo] = useState<string | undefined>();
+  const [amountValueError, setAmountValueError] = useState<string>();
+  const [hexDataError, setHexDataError] = useState<string>();
+  const { asset, toResolved } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
-  const { amountError } = useAmountValidation();
+  const { recipientError } = useRecipientValidation();
+
+  const hasError =
+    Boolean(amountValueError) ||
+    Boolean(recipientError) ||
+    Boolean(hexDataError);
+  const isDisabled = hasError || !toResolved;
 
   const onClick = useCallback(() => {
-    handleSubmit(to);
+    handleSubmit();
     captureAmountSelected();
-  }, [captureAmountSelected, handleSubmit, to]);
+  }, [captureAmountSelected, handleSubmit]);
 
-  const hasAmountError = Boolean(amountError);
+  if (!asset) {
+    return <LoadingScreen />;
+  }
 
   return (
-    <div className="send__wrapper">
-      <div className="send__container">
-        <div className="send__content">
-          <Header />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.spaceBetween}
-            className="send__body"
-          >
-            <Box>
-              <Recipient setTo={setTo} />
-              <Amount />
-            </Box>
-            <Button
-              disabled={hasAmountError}
-              onClick={onClick}
-              size={ButtonSize.Lg}
-              backgroundColor={
-                hasAmountError
-                  ? BackgroundColor.errorDefault
-                  : BackgroundColor.iconDefault
-              }
-            >
-              {amountError ?? t('continue')}
-            </Button>
-          </Box>
-        </div>
-      </div>
-    </div>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      paddingLeft={4}
+      paddingRight={4}
+      style={{ flex: 1 }}
+    >
+      <Box>
+        <SendHero asset={asset as Asset} />
+        <Recipient />
+        <Amount setAmountValueError={setAmountValueError} />
+        <HexData setHexDataError={setHexDataError} />
+      </Box>
+      <Button
+        disabled={isDisabled}
+        onClick={onClick}
+        size={ButtonSize.Lg}
+        backgroundColor={
+          hasError ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
+        }
+        marginBottom={4}
+      >
+        {amountValueError ?? hexDataError ?? t('continue')}
+      </Button>
+    </Box>
   );
 };

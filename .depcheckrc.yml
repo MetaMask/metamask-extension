@@ -96,6 +96,8 @@ ignores:
   - '@metamask/bitcoin-wallet-snap'
   - '@metamask/solana-wallet-snap'
   - '@metamask/institutional-wallet-snap'
+  - '@metamask/gator-permissions-snap'
+  - '@metamask/permissions-kernel-snap'
 
 # files depcheck should not parse
 ignorePatterns:

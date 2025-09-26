@@ -1,63 +1,44 @@
 @use "design-system";
 
-.send {
-  &__wrapper {
-    display: flex;
-    flex: 1 0 auto;
-    justify-content: center;
-    min-height: 0;
-    padding: 12px;
-    width: 100%;
-  }
-
-  &__container {
-    align-items: center;
-    background-color: var(--color-background-default);
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__content {
-    height: 100%;
-    padding-bottom: 12px;
-    max-width: 650px;
-    width: 100%;
-  }
-
-  &__body {
-    height: calc(100% - 64px);
-  }
-
+.redesigned__send {
   @include design-system.screen-sm-min {
-    &__container {
-      min-height: 90vh;
+    &__wrapper {
       width: 85vw;
+      min-height: 90vh;
+
+      &--has-shadow {
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+      }
     }
   }
 
   @include design-system.screen-md-min {
-    &__container {
-      min-height: 82vh;
+    &__wrapper {
       width: 80vw;
+      min-height: 82vh;
+
+      &--has-shadow {
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+      }
     }
   }
 
   @include design-system.screen-lg-min {
-    &__container {
-      min-height: 82vh;
+    &__wrapper {
       width: 62vw;
+      min-height: 82vh;
+
+      &--has-shadow {
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+      }
     }
   }
 
   @include design-system.screen-sm-max {
-    &__container {
-      background-color: var(--color-background-default);
-      overflow-y: auto;
-      width: 100%;
-    }
-
     &__wrapper {
-      flex: 1;
+      width: 100%;
+      overflow-y: auto;
+      background-color: var(--color-background-default);
     }
   }
 }
