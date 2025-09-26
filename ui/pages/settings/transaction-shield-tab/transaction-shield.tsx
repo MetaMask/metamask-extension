@@ -49,7 +49,7 @@ import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { useFormatters } from '../../../helpers/formatters';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import CancelMembershipModal from './cancel-membership-modal';

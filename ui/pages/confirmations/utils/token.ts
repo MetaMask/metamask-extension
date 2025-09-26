@@ -1,7 +1,10 @@
 import { memoize } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { AssetsContractController } from '@metamask/assets-controllers';
-import { getTokenStandardAndDetails } from '../../../store/actions';
+import {
+  getTokenStandardAndDetails,
+  getTokenStandardAndDetailsByChain,
+} from '../../../store/actions';
 
 export type TokenDetailsERC20 = Awaited<
   ReturnType<
@@ -70,16 +73,22 @@ export const memoizedGetTokenStandardAndDetails = memoize(
  * Fetches the decimals for the given token address.
  *
  * @param address - The ethereum token contract address. It is expected to be in hex format.
+ * @param chainId - ChainId on which we need to check token. It is expected to be in hex format.
  * We currently accept strings since we have a patch that accepts a custom string
  * {@see .yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch}
  */
 export const fetchErc20Decimals = async (
   address: Hex | string,
+  chainId?: Hex | string,
 ): Promise<number> => {
   try {
-    const { decimals: decStr } = (await memoizedGetTokenStandardAndDetails(
+    const result = (await getTokenStandardAndDetailsByChain(
       address,
+      undefined,
+      undefined,
+      chainId,
     )) as TokenDetailsERC20;
+    const { decimals: decStr } = result;
     const decimals = parseTokenDetailDecimals(decStr);
 
     return decimals ?? ERC20_DEFAULT_DECIMALS;

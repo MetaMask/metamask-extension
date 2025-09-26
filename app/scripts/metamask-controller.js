@@ -4475,7 +4475,16 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       await this.keyringController.createNewVaultAndKeychain(password);
-      return this.keyringController.state.keyrings[0];
+      const primaryKeyring = this.keyringController.state.keyrings[0];
+
+      // Once we have our first HD keyring available, we re-create the internal list of
+      // accounts (they should be up-to-date already, but we still run `updateAccounts` as
+      // there are some account migration happening in that function).
+      this.accountsController.updateAccounts();
+      // Then we can build the initial tree.
+      this.accountTreeController.init();
+
+      return primaryKeyring;
     } finally {
       releaseLock();
     }
@@ -4856,7 +4865,7 @@ export default class MetamaskController extends EventEmitter {
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
-      this.accountTreeController.init();
+      this.accountTreeController.reinit();
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
