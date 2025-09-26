@@ -3065,7 +3065,7 @@
         "define": true
       }
     },
-    "@metamask/design-system-react>@metamask/jazzicon>color>clone": {
+    "gulp-watch>vinyl-file>vinyl>clone": {
       "packages": {
         "browserify>buffer": true
       }
@@ -3100,7 +3100,7 @@
     },
     "@metamask/design-system-react>@metamask/jazzicon>color": {
       "packages": {
-        "@metamask/design-system-react>@metamask/jazzicon>color>clone": true,
+        "gulp-watch>vinyl-file>vinyl>clone": true,
         "@metamask/design-system-react>@metamask/jazzicon>color>color-convert": true,
         "@metamask/design-system-react>@metamask/jazzicon>color>color-string": true
       }
