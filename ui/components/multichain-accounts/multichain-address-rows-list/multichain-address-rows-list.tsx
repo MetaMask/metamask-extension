@@ -130,7 +130,7 @@ export const MultichainAddressRowsList = ({
         borderWidth={0}
         marginBottom={2}
         backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.XL}
+        borderRadius={BorderRadius.LG}
         data-testid="multichain-address-rows-list-search"
       />
 
