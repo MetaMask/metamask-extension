@@ -120,10 +120,10 @@ export const hasNamespaceSupport = (
   return false;
 };
 
-export const getCaip25AccountFromAccountGroupAndScope = (
+export const getCaip25AccountIdsFromAccountGroupAndScope = (
   accountGroups: AccountGroupWithInternalAccounts[],
   scopes: CaipChainId[],
-) => {
+): CaipAccountId[] => {
   // Pre-parse all chain namespaces and cache common strings
   const chainNamespaces = new Map<CaipChainId, string>();
   const eip155Scope = `${KnownCaipNamespace.Eip155}:0`;

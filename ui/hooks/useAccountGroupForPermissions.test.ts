@@ -741,7 +741,7 @@ describe('useAccountGroupsForPermissions', () => {
     });
   });
 
-  describe('caipAccountIdsOfConnectedAccountGroupWithRequested', () => {
+  describe('caipAccountIdsOfConnectedAndRequestedAccountGroups', () => {
     it('returns CAIP account IDs for connected account groups with requested chains', () => {
       const existingPermission = createPermissionWithEvmAccounts([
         mockEvmAccount1.address,
@@ -757,7 +757,7 @@ describe('useAccountGroupsForPermissions', () => {
       );
 
       expect(
-        result.current.caipAccountIdsOfConnectedAccountGroupWithRequested,
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
       ).toContain(`eip155:1:${mockEvmAccount1.address}`);
     });
 
@@ -777,7 +777,7 @@ describe('useAccountGroupsForPermissions', () => {
       );
 
       expect(
-        result.current.caipAccountIdsOfConnectedAccountGroupWithRequested,
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
       ).toContain(`eip155:1:${mockEvmAccount2.address}`);
     });
 
@@ -799,7 +799,7 @@ describe('useAccountGroupsForPermissions', () => {
       );
 
       const caipAccountIds =
-        result.current.caipAccountIdsOfConnectedAccountGroupWithRequested;
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups;
       const uniqueIds = [...new Set(caipAccountIds)];
       expect(caipAccountIds).toHaveLength(uniqueIds.length);
     });
@@ -822,7 +822,7 @@ describe('useAccountGroupsForPermissions', () => {
       );
 
       const caipAccountIds =
-        result.current.caipAccountIdsOfConnectedAccountGroupWithRequested;
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups;
       expect(caipAccountIds).toContain(`eip155:1:${mockEvmAccount1.address}`);
       expect(caipAccountIds).toContain(`eip155:137:${mockEvmAccount1.address}`);
     });
@@ -840,7 +840,7 @@ describe('useAccountGroupsForPermissions', () => {
       );
 
       expect(
-        result.current.caipAccountIdsOfConnectedAccountGroupWithRequested,
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
       ).toEqual([]);
     });
 
@@ -862,7 +862,7 @@ describe('useAccountGroupsForPermissions', () => {
       );
 
       expect(
-        result.current.caipAccountIdsOfConnectedAccountGroupWithRequested,
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
       ).toContain(`${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount1.address}`);
     });
 
@@ -886,7 +886,7 @@ describe('useAccountGroupsForPermissions', () => {
       );
 
       const caipAccountIds =
-        result.current.caipAccountIdsOfConnectedAccountGroupWithRequested;
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups;
       expect(caipAccountIds).toContain(`eip155:1:${mockEvmAccount1.address}`);
       expect(caipAccountIds).toContain(
         `${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount1.address}`,
