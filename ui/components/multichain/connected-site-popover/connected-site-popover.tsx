@@ -170,7 +170,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
             </ButtonLink>
           </Box>
         )}
-        <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+        <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <ButtonSecondary
             block
             onClick={() => {
