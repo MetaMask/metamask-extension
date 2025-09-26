@@ -298,9 +298,7 @@ const PrepareBridgePage = ({
           };
         })()
       : null,
-    selectedDestinationAccount && 'id' in selectedDestinationAccount
-      ? selectedDestinationAccount.id
-      : undefined,
+    selectedDestinationAccount?.address,
   );
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);

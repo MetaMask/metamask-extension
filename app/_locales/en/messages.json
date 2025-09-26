@@ -4002,9 +4002,6 @@
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
   },
-  "noTransactions": {
-    "message": "You have no transactions"
-  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
