@@ -9,6 +9,8 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { uniq } from 'lodash';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import {
   AlignItems,
   BlockSize,
@@ -57,9 +59,12 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
-import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
+import {
+  AppState,
+  getPermissionGroupDetailsByOrigin,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { SiteCell } from './site-cell/site-cell';
+import { PermissionsCell } from './permissions-cell/permissions-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -149,6 +154,10 @@ export const ReviewPermissions = () => {
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
 
+  const gatorPermissionGroupDetails = useSelector((state: AppState) =>
+    getPermissionGroupDetailsByOrigin(state, activeTabOrigin),
+  );
+
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
       setShowDisconnectAllModal(true);
@@ -226,9 +235,27 @@ export const ReviewPermissions = () => {
               selectedChainIds={connectedChainIds}
               hideAllToasts={hideAllToasts}
             />
-          ) : (
+          ) : null}
+          {gatorPermissionGroupDetails
+            ? Object.entries(gatorPermissionGroupDetails).map(
+                ([permissionGroupName, details]) => (
+                  <PermissionsCell
+                    key={permissionGroupName}
+                    nonTestNetworks={nonTestNetworks}
+                    testNetworks={testNetworks}
+                    totalCount={details.count}
+                    chainIds={details.chains}
+                    paddingTop={connectedAccountAddresses.length === 0 ? 4 : 0}
+                  />
+                ),
+              )
+            : null}
+          {connectedAccountAddresses.length === 0 &&
+          Object.values(gatorPermissionGroupDetails).every(
+            (details) => details.count === 0,
+          ) ? (
             <NoConnectionContent />
-          )}
+          ) : null}
           {showDisconnectAllModal ? (
             <DisconnectAllModal
               type={DisconnectType.Account}
