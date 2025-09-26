@@ -516,7 +516,8 @@ const TransactionShield = () => {
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
             // todo: link to submit claim page
           })}
-        {(!isMembershipInactive || shieldSubscription?.cancelAtPeriodEnd) &&
+        {!isMembershipInactive &&
+          shieldSubscription?.cancelAtPeriodEnd &&
           buttonRow(t('shieldTxMembershipResubscribe'), () => {
             executeUnCancelSubscription();
           })}
