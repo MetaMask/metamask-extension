@@ -61,14 +61,14 @@ export const SmartContractAccountToggleSection = ({
   return (
     <Box
       width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundAlternative}
+      backgroundColor={BackgroundColor.backgroundSection}
       paddingTop={3}
-      paddingBottom={3}
+      paddingBottom={4}
       paddingLeft={4}
-      paddingRight={4}
+      paddingRight={2}
       style={{ borderRadius: '8px' }}
     >
-      <Box>
+      <Box paddingRight={2}>
         <Text variant={TextVariant.bodyMdMedium} marginBottom={2}>
           {t('enableSmartContractAccount')}
         </Text>
@@ -84,8 +84,9 @@ export const SmartContractAccountToggleSection = ({
             target="_blank"
             rel="noopener noreferrer"
             style={{
+              height: '22px',
               fontSize: '14px',
-              lineHeight: '20px',
+              lineHeight: '22px',
               verticalAlign: 'baseline',
             }}
           >
