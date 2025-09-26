@@ -106,10 +106,10 @@ export default function NftsTab() {
         alignItems={AlignItems.center}
         display={Display.Flex}
         marginTop={4}
+        paddingTop={4}
+        paddingBottom={4}
       >
-        <Box marginTop={4} marginBottom={4}>
-          <PulseLoader />
-        </Box>
+        <PulseLoader />
       </Box>
     );
   }
@@ -135,7 +135,7 @@ export default function NftsTab() {
             />
           </Box>
         ) : (
-          <NftEmptyState className="mx-auto mt-4" />
+          <NftEmptyState className="mx-auto mt-5 mb-6" />
         )}
       </Box>
     </>

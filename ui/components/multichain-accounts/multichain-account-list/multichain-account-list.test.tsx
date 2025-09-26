@@ -47,6 +47,13 @@ const mockSetAccountGroupName = jest.requireMock(
 const mockSetSelectedMultichainAccount = jest.requireMock(
   '../../../store/actions',
 ).setSelectedMultichainAccount;
+
+const popoverOpenSelector = '.mm-popover--open';
+const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
+const modalHeaderSelector = '.mm-modal-header';
+const walletHeaderTestId = 'multichain-account-tree-wallet-header';
+const accountNameInputTestId = 'account-name-input';
+
 const mockWalletOneEntropySource = '01JKAF3DSGM3AB87EM9N0K41AJ';
 const mockWalletTwoEntropySource = '01JKAF3PJ247KAM6C03G5Q0NP8';
 
@@ -140,9 +147,7 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Wallet 1')).toBeInTheDocument();
     expect(screen.getByText('Wallet 2')).toBeInTheDocument();
 
-    const walletHeaders = screen.getAllByTestId(
-      'multichain-account-tree-wallet-header',
-    );
+    const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
     expect(walletHeaders).toHaveLength(2);
 
     expect(
@@ -303,9 +308,7 @@ describe('MultichainAccountList', () => {
       },
     );
 
-    expect(
-      screen.queryAllByTestId('multichain-account-tree-wallet-header'),
-    ).toHaveLength(1);
+    expect(screen.queryAllByTestId(walletHeaderTestId)).toHaveLength(1);
     expect(
       screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
     ).toBeInTheDocument();
@@ -321,9 +324,7 @@ describe('MultichainAccountList', () => {
     renderComponent();
 
     // Find the menu button for the first account and click it
-    const menuButton = document.querySelector(
-      '.multichain-account-cell-popover-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
     expect(menuButton).toBeInTheDocument();
 
     await act(async () => {
@@ -333,7 +334,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find the popover
-    const popover = document.querySelector('.mm-popover--open');
+    const popover = document.querySelector(popoverOpenSelector);
     expect(popover).toBeInTheDocument();
 
     // Find all menu items within the popover
@@ -354,7 +355,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify the modal is open by finding the modal header
-    const modalHeader = document.querySelector('.mm-modal-header');
+    const modalHeader = document.querySelector(modalHeaderSelector);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the header text inside the modal
@@ -364,7 +365,7 @@ describe('MultichainAccountList', () => {
     }
 
     // Find the actual input element directly
-    const inputContainer = screen.getByTestId('account-name-input');
+    const inputContainer = screen.getByTestId(accountNameInputTestId);
     // Get the input element inside the container using a more direct selector
     const inputElement = inputContainer.querySelector('input');
     expect(inputElement).toBeInTheDocument();
@@ -395,16 +396,16 @@ describe('MultichainAccountList', () => {
     );
 
     // Verify the modal is closed after submission
-    expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(accountNameInputTestId),
+    ).not.toBeInTheDocument();
   });
 
   it('opens account rename modal and closes it without saving', async () => {
     renderComponent();
 
     // Find the menu button for the first account and click it
-    const menuButton = document.querySelector(
-      '.multichain-account-cell-popover-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
     expect(menuButton).toBeInTheDocument();
 
     await act(async () => {
@@ -414,7 +415,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find the popover
-    const popover = document.querySelector('.mm-popover--open');
+    const popover = document.querySelector(popoverOpenSelector);
     expect(popover).toBeInTheDocument();
 
     // Find all menu items within the popover
@@ -435,7 +436,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify that the modal is open
-    const modalHeader = document.querySelector('.mm-modal-header');
+    const modalHeader = document.querySelector(modalHeaderSelector);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the close button by aria-label
@@ -447,8 +448,83 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify the modal is closed and action was not called
-    expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(accountNameInputTestId),
+    ).not.toBeInTheDocument();
     expect(mockSetAccountGroupName).not.toHaveBeenCalled();
+  });
+
+  describe('Menu state management', () => {
+    it('opens menu for specific account when menu button is clicked', async () => {
+      renderComponent();
+
+      // Initially no menus should be open
+      expect(
+        document.querySelector(popoverOpenSelector),
+      ).not.toBeInTheDocument();
+
+      // Click first account's menu button
+      const firstMenuButton = document.querySelector(menuButtonSelector);
+      expect(firstMenuButton).toBeInTheDocument();
+
+      await act(async () => {
+        if (firstMenuButton) {
+          fireEvent.click(firstMenuButton);
+        }
+      });
+
+      // Menu should now be open
+      expect(document.querySelector(popoverOpenSelector)).toBeInTheDocument();
+    });
+
+    it('closes menu when same menu button is clicked twice', async () => {
+      renderComponent();
+
+      const menuButton = document.querySelector(menuButtonSelector);
+      expect(menuButton).toBeInTheDocument();
+
+      // Click to open
+      await act(async () => {
+        if (menuButton) {
+          fireEvent.click(menuButton);
+        }
+      });
+      expect(document.querySelector(popoverOpenSelector)).toBeInTheDocument();
+
+      // Click again to close
+      await act(async () => {
+        if (menuButton) {
+          fireEvent.click(menuButton);
+        }
+      });
+      expect(
+        document.querySelector(popoverOpenSelector),
+      ).not.toBeInTheDocument();
+    });
+
+    it('switches between menus when different menu buttons are clicked', async () => {
+      renderComponent();
+
+      const menuButtons = document.querySelectorAll(menuButtonSelector);
+      expect(menuButtons.length).toBeGreaterThanOrEqual(2);
+
+      // Click first menu button
+      await act(async () => {
+        fireEvent.click(menuButtons[0]);
+      });
+
+      const openPopover = document.querySelector(popoverOpenSelector);
+      expect(openPopover).toBeInTheDocument();
+
+      // Click second menu button
+      await act(async () => {
+        fireEvent.click(menuButtons[1]);
+      });
+
+      // Should still have exactly one open popover (switched to second menu)
+      const openPopovers = document.querySelectorAll(popoverOpenSelector);
+      expect(openPopovers).toHaveLength(1);
+    });
   });
 
   describe('Checkbox functionality', () => {

@@ -158,7 +158,7 @@ export function AssetPickerModalNftTab({
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           )}
-          <NftEmptyState className="mx-auto mt-4" />
+          <NftEmptyState className="mx-auto mt-5 mb-6" />
         </>
       )}
     </Box>

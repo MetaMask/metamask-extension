@@ -1,9 +1,11 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
+
 import {
   Box,
   Icon,
   IconName,
+  ModalFocus,
   Popover,
   PopoverPosition,
 } from '../../component-library';
@@ -28,14 +30,15 @@ export const MultichainAccountMenu = ({
   isRemovable,
   buttonBackgroundColor,
   handleAccountRenameAction,
+  isOpen = false,
+  onToggle,
 }: MultichainAccountMenuProps) => {
   const navigate = useNavigate();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const togglePopover = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    setIsPopoverOpen(!isPopoverOpen);
+  const togglePopover = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    onToggle?.();
   };
 
   const menuConfig = useMemo(() => {
@@ -50,7 +53,6 @@ export const MultichainAccountMenu = ({
       mouseEvent.preventDefault();
       if (handleAccountRenameAction) {
         handleAccountRenameAction(accountGroupId);
-        setIsPopoverOpen(false);
       }
     };
 
@@ -143,13 +145,18 @@ export const MultichainAccountMenu = ({
       </Box>
       <Popover
         className="multichain-account-cell-popover-menu"
-        isOpen={isPopoverOpen}
+        isOpen={isOpen}
         position={PopoverPosition.LeftStart}
         referenceElement={popoverRef.current}
         matchWidth={false}
         borderRadius={BorderRadius.LG}
+        isPortal
+        flip
+        onClickOutside={onToggle}
       >
-        <MultichainAccountMenuItems menuConfig={menuConfig} />
+        <ModalFocus restoreFocus initialFocusRef={popoverRef}>
+          <MultichainAccountMenuItems menuConfig={menuConfig} />
+        </ModalFocus>
       </Popover>
     </>
   );

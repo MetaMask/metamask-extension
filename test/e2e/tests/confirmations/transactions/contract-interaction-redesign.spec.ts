@@ -7,14 +7,15 @@ import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import {
   assertAdvancedGasDetails,
-  confirmDepositTransaction,
-  confirmDepositTransactionWithCustomNonce,
-  createDepositTransaction,
   TestSuiteArguments,
   toggleAdvancedDetails,
-  toggleOnHexData,
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');
@@ -55,8 +56,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
 
-          await createDepositTransaction(driver);
-          await confirmDepositTransaction(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -83,9 +86,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
-
-          await createDepositTransaction(driver);
-          await confirmDepositTransaction(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -124,18 +128,20 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
-
-          await createDepositTransaction(driver);
-          await confirmDepositTransaction(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
 
           // Assert transaction is completed
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-          await driver.waitForSelector('.transaction-status-label--confirmed');
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+          const activityList = new ActivityListPage(driver);
+          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityList.checkTxAction({ action: 'Deposit' });
         },
       );
     });
@@ -204,10 +210,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
-
-          await createDepositTransaction(driver);
-
-          await confirmDepositTransaction(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -233,15 +239,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
-
-          await createDepositTransaction(driver);
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          // re open advanced details
-          await toggleAdvancedDetails(driver);
-
-          await confirmDepositTransactionWithCustomNonce(driver, '10');
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickAdvancedDetailsButton();
+          await transactionConfirmation.setCustomNonce('10');
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -269,12 +272,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
-
-          await createDepositTransaction(driver);
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          await toggleAdvancedDetails(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickAdvancedDetailsButton();
           await assertAdvancedGasDetails(driver);
         },
       );
@@ -299,17 +300,23 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             await contractRegistry?.getContractAddress(smartContract);
 
           await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const homePage = new HomePage(driver);
+          await homePage.headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.clickAdvancedTab();
+          const advancedSettingsPage = new AdvancedSettings(driver);
+          await advancedSettingsPage.checkPageIsLoaded();
+          await advancedSettingsPage.toggleOnHexData();
+
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
 
-          await toggleOnHexData(driver);
-
-          await createDepositTransaction(driver);
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          // re open advanced details
-          await toggleAdvancedDetails(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickAdvancedDetailsButton();
 
           await assertAdvancedGasDetails(driver);
         },

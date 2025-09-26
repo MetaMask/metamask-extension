@@ -83,7 +83,7 @@ export const AccountList = () => {
     <Page className="account-list-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon

@@ -74,6 +74,9 @@ export const MultichainAccountList = ({
 
   const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
 
+  const [openMenuAccountId, setOpenMenuAccountId] =
+    useState<AccountGroupId | null>(null);
+
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
     setRenameAccountGroupId(undefined);
@@ -83,9 +86,17 @@ export const MultichainAccountList = ({
     (accountGroupId) => {
       setRenameAccountGroupId(accountGroupId);
       setIsAccountRenameModalOpen(true);
+      setOpenMenuAccountId(null);
     },
     [setIsAccountRenameModalOpen, setRenameAccountGroupId],
   );
+
+  const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
+    // If the same menu is clicked, close it, otherwise open the new one
+    setOpenMenuAccountId((current) =>
+      current === accountGroupId ? null : accountGroupId,
+    );
+  }, []);
 
   // Convert selectedAccountGroups array to Set for O(1) lookup
   const selectedAccountGroupsSet = useMemo(
@@ -191,6 +202,10 @@ export const MultichainAccountList = ({
                       accountGroupId={groupId as AccountGroupId}
                       isRemovable={isRemovable}
                       handleAccountRenameAction={handleAccountRenameAction}
+                      isOpen={openMenuAccountId === groupId}
+                      onToggle={() =>
+                        handleMenuToggle(groupId as AccountGroupId)
+                      }
                     />
                   }
                 />
@@ -230,6 +245,8 @@ export const MultichainAccountList = ({
     selectedAccountGroupsSet,
     showAccountCheckbox,
     handleAccountRenameAction,
+    handleMenuToggle,
+    openMenuAccountId,
   ]);
 
   return (

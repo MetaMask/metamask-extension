@@ -190,13 +190,13 @@ export const prepareEVMTransaction = (
 };
 
 export const submitEvmTransaction = async ({
-                                             asset,
-                                             chainId,
-                                             from,
-                                             hexData,
-                                             to,
-                                             value,
-                                           }: {
+  asset,
+  chainId,
+  from,
+  hexData,
+  to,
+  value,
+}: {
   asset: Asset;
   chainId: Hex;
   from: Hex;
@@ -225,11 +225,11 @@ export const submitEvmTransaction = async ({
 };
 
 export const getLayer1GasFees = async ({
-                                         asset,
-                                         chainId,
-                                         from,
-                                         value,
-                                       }: {
+  asset,
+  chainId,
+  from,
+  value,
+}: {
   asset: Asset;
   chainId: Hex;
   from: Hex;

@@ -2727,6 +2727,9 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hexDataPlaceholder": {
+    "message": "Enter hex data (optional)"
+  },
   "hiddenAccounts": {
     "message": "Hidden accounts"
   },
@@ -3999,9 +4002,6 @@
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
   },
-  "noTransactions": {
-    "message": "You have no transactions"
-  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
@@ -5054,6 +5054,9 @@
   "recipientEditAriaLabel": {
     "message": "Edit recipient"
   },
+  "recipientPlaceholder": {
+    "message": "Enter or paste a valid address"
+  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
@@ -5710,9 +5713,6 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
-  "shieldPlanYearly": {
-    "message": "Yearly"
-  },
   "shieldTx": {
     "message": "Transaction Shield"
   },
@@ -5796,7 +5796,7 @@
     "message": "Paused"
   },
   "shieldTxMembershipResubscribe": {
-    "message": "Resubscribe"
+    "message": "Restart membership"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"

@@ -1,8 +1,8 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
