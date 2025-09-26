@@ -47,8 +47,8 @@ function publish_tag() {
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
-if [[ "${current_commit_msg}" =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+) ]]; then
-    tag="${BASH_REMATCH[1]}"
+if [[ "${current_commit_msg}" =~ release/([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+) ]]; then
+    tag="v${BASH_REMATCH[1]}"
     flask_version="$(print_build_version 'flask')"
 
     printf '%s\n' 'Creating GitHub Release'

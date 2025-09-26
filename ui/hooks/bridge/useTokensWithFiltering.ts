@@ -107,19 +107,19 @@ type FilterPredicate = (
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
  * @param tokenToExclude.chainId
- * @param accountId - the accountId to use for the token list
+ * @param accountAddress - the account address used for balances
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
-  accountId?: string,
+  accountAddress?: string,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
   );
 
   const { assetsWithBalance: multichainTokensWithBalance } =
-    useMultichainBalances(accountId);
+    useMultichainBalances(accountAddress);
 
   const cachedTokens = useSelector(
     (state: BridgeAppState) => state.metamask.tokensChainsCache,
@@ -241,7 +241,10 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            if (isNativeAddress(token.address) || token.isNative) {
+            if (
+              (isNativeAddress(token.address) || token.isNative) &&
+              !isSolanaChainId(token.chainId)
+            ) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
