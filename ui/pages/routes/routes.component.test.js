@@ -50,6 +50,12 @@ jest.mock('../../store/actions', () => ({
   setTokenNetworkFilter: jest.fn(),
 }));
 
+// Mock getIsMultichainAccountsState2Enabled to false
+jest.mock('../../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+  getIsMultichainAccountsState1Enabled: jest.fn(() => false),
+}));
+
 // Mock the dispatch function
 const mockDispatch = jest.fn();
 

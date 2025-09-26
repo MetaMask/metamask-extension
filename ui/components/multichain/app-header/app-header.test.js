@@ -20,6 +20,12 @@ jest.mock('react-router-dom-v5-compat', () => ({
   Link: ({ children, ...props }) => <a {...props}>{children}</a>,
 }));
 
+// Mock getIsMultichainAccountsState2Enabled to false
+jest.mock('../../../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+  getIsMultichainAccountsState1Enabled: jest.fn(() => false),
+}));
+
 const render = ({
   stateChanges = {},
   location = {},

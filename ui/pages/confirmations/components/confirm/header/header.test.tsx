@@ -11,6 +11,12 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import configureStore from '../../../../../store/store';
 import Header from './header';
 
+// Mock getIsMultichainAccountsState2Enabled to false
+jest.mock('../../../../../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+  getIsMultichainAccountsState1Enabled: jest.fn(() => false),
+}));
+
 const render = (state: DefaultRootState = getMockTypedSignConfirmState()) => {
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<Header />, store);

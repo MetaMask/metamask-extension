@@ -55,6 +55,11 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
             </div>
           </div>
         </div>
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+        >
+          G
+        </div>
       </div>
       <div
         class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -63,13 +68,13 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           data-testid="header-account-name"
         >
-          Account 1
+          Test Account
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
         >
-          Wallet 1
+          Goerli
         </p>
       </div>
     </div>
@@ -257,15 +262,25 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
             </div>
           </div>
         </div>
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+        >
+          G
+        </div>
       </div>
       <div
-        class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           data-testid="header-account-name"
         />
-        
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="header-network-display-name"
+        >
+          Goerli
+        </p>
       </div>
     </div>
     <div
