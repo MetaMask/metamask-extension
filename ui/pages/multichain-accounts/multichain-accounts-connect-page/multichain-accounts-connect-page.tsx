@@ -156,8 +156,6 @@ export const MultichainAccountsConnectPage: React.FC<
     [request.permissions],
   );
 
-  console.log('requestedCaip25CaveatValue', requestedCaip25CaveatValue);
-
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
       existingCaip25CaveatValue
