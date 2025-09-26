@@ -293,6 +293,7 @@ describe('Wallet Created Events', function () {
         await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+        await onboardingCompletePage.clickCreateWalletDoneButton();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 4);

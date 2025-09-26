@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
+  // ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import DownloadApp from './download-app';
@@ -118,32 +118,32 @@ describe('Download App Onboarding View', () => {
     });
   });
 
-  describe('When the user has not created a wallet', () => {
-    it('should redirect to the onboarding welcome route', () => {
-      const mockState = {
-        metamask: {
-          internalAccounts: {
-            accounts: {},
-            selectedAccount: '',
-          },
-          keyrings: [
-            {
-              type: 'HD Key Tree',
-              accounts: ['0x0000000000000000000000000000000000000000'],
-            },
-          ],
-          firstTimeFlowType: FirstTimeFlowType.create,
-          seedPhraseBackedUp: true,
-        },
-      };
+  // describe('When the user has not created a wallet', () => {
+  //   it('should redirect to the onboarding welcome route', () => {
+  //     const mockState = {
+  //       metamask: {
+  //         internalAccounts: {
+  //           accounts: {},
+  //           selectedAccount: '',
+  //         },
+  //         keyrings: [
+  //           {
+  //             type: 'HD Key Tree',
+  //             accounts: ['0x0000000000000000000000000000000000000000'],
+  //           },
+  //         ],
+  //         firstTimeFlowType: FirstTimeFlowType.create,
+  //         seedPhraseBackedUp: true,
+  //       },
+  //     };
 
-      const store = arrangeMocks(mockState);
-      renderWithProvider(<DownloadApp />, store);
+  //     const store = arrangeMocks(mockState);
+  //     renderWithProvider(<DownloadApp />, store);
 
-      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
-        replace: true,
-      });
-    });
-  });
+  //     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+  //     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+  //       replace: true,
+  //     });
+  //   });
+  // });
 });

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -12,7 +12,6 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -23,7 +22,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
+import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { setCompletedOnboarding } from '../../../store/actions';
 
@@ -33,7 +32,6 @@ export default function OnboardingDownloadApp() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const handleClick = async () => {
@@ -44,13 +42,6 @@ export default function OnboardingDownloadApp() {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     }
   };
-
-  useEffect(() => {
-    // if the user has not created a wallet, redirect to onboarding welcome route
-    if (!currentKeyring) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
-    }
-  }, [currentKeyring, navigate]);
 
   return (
     <Box
