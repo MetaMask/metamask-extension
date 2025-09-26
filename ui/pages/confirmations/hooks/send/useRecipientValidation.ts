@@ -43,7 +43,7 @@ export const useRecipientValidation = () => {
         error: 'invalidAddress',
       };
     },
-    [chainId, isEvmSendType, isSolanaSendType],
+    [chainId, isEvmSendType, isSolanaSendType, validateName],
   );
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const useRecipientValidation = () => {
     recipientError: result?.error ? t(result?.error) : undefined,
     recipientResolvedLookup: result?.resolvedLookup,
     toAddressValidated: result?.toAddressValidated,
-    recipientValidationLoading: false,
+    recipientValidationLoading: loading,
     recipientWarning: result?.warning ? t(result?.warning) : undefined,
   };
 };
