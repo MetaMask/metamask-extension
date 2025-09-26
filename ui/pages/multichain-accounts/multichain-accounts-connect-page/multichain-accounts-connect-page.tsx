@@ -87,6 +87,7 @@ import { MultichainEditAccountsPage } from '../../../components/multichain-accou
 import { getCaip25AccountFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
 import { useAllWalletAccountsBalances } from '../../../hooks/multichain-accounts/useAccountBalance';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -150,28 +151,42 @@ export const MultichainAccountsConnectPage: React.FC<
     [existingPermissions],
   );
 
-  const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
-    request.permissions,
+  const requestedCaip25CaveatValue = useMemo(
+    () => getCaip25CaveatValueFromPermissions(request.permissions),
+    [request.permissions],
   );
 
-  const requestedCaip25CaveatValueWithExistingPermissions =
-    existingCaip25CaveatValue
-      ? mergeCaip25CaveatValues(
-          requestedCaip25CaveatValue,
-          existingCaip25CaveatValue,
-        )
-      : requestedCaip25CaveatValue;
+  console.log('requestedCaip25CaveatValue', requestedCaip25CaveatValue);
+
+  const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
+    () =>
+      existingCaip25CaveatValue
+        ? mergeCaip25CaveatValues(
+            requestedCaip25CaveatValue,
+            existingCaip25CaveatValue,
+          )
+        : requestedCaip25CaveatValue,
+    [existingCaip25CaveatValue, requestedCaip25CaveatValue],
+  );
 
   const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
 
-  const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
+  const requestedNamespaces = useMemo(
+    () =>
+      getAllNamespacesFromCaip25CaveatValue(
+        requestedCaip25CaveatValueWithExistingPermissions,
+      ),
+    [requestedCaip25CaveatValueWithExistingPermissions],
   );
 
-  const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
-    (namespace) => namespace !== KnownCaipNamespace.Wallet,
+  const requestedNamespacesWithoutWallet = useMemo(
+    () =>
+      requestedNamespaces.filter(
+        (namespace) => namespace !== KnownCaipNamespace.Wallet,
+      ),
+    [requestedNamespaces],
   );
 
   const networkConfigurationsByCaipChainId = useSelector(
@@ -199,30 +214,70 @@ export const MultichainAccountsConnectPage: React.FC<
     [networkConfigurationsByCaipChainId],
   );
 
-  const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
-  ).filter((chainId) => {
-    const { namespace } = parseCaipChainId(chainId);
-    return namespace !== KnownCaipNamespace.Wallet;
-  });
+  const currentlySelectedNetwork = useSelector(getMultichainNetwork);
 
-  const requestedCaipChainIdsOrDefault = useMemo(() => {
-    if (requestedCaipChainIds.length > 0) {
-      return requestedCaipChainIds;
+  const existingCaipChainIds = useMemo(
+    () => getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue),
+    [existingCaip25CaveatValue],
+  );
+
+  const requestedCaipChainIds = useMemo(
+    () =>
+      getAllScopesFromCaip25CaveatValue(requestedCaip25CaveatValue).filter(
+        (chainId) => {
+          const { namespace } = parseCaipChainId(chainId);
+          return namespace !== KnownCaipNamespace.Wallet;
+        },
+      ),
+    [requestedCaip25CaveatValue],
+  );
+
+  const requestedandExistingCaipChainIdsOrDefault = useMemo(() => {
+    const allNetworksList = [
+      ...nonTestNetworkConfigurations,
+      ...testNetworkConfigurations,
+    ].map(({ caipChainId }) => caipChainId);
+
+    const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
+      (requestedCaipChainId) =>
+        allNetworksList.includes(requestedCaipChainId as CaipChainId),
+    );
+
+    // If globally selected network is a test network, include that in the default selected networks for connection request
+    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
+    const selectedTestNetwork = testNetworkConfigurations.find(
+      (network: { caipChainId: CaipChainId }) =>
+        network.caipChainId === currentlySelectedNetworkChainId,
+    );
+
+    const defaultSelectedNetworkList = selectedTestNetwork
+      ? [...nonTestNetworkConfigurations, selectedTestNetwork].map(
+          ({ caipChainId }) => caipChainId,
+        )
+      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
+
+    if (supportedRequestedCaipChainIds.length > 0) {
+      return Array.from(
+        new Set([...supportedRequestedCaipChainIds, ...existingCaipChainIds]),
+      );
     }
 
     if (requestedNamespaces.length > 0) {
-      return nonTestNetworkConfigurations
-        .filter(({ caipChainId }) => {
-          const { namespace } = parseCaipChainId(caipChainId);
-          return requestedNamespaces.includes(namespace);
-        })
-        .map(({ caipChainId }) => caipChainId);
+      return Array.from(
+        new Set(
+          defaultSelectedNetworkList.filter((caipChainId) => {
+            const { namespace } = parseCaipChainId(caipChainId);
+            return requestedNamespaces.includes(namespace);
+          }),
+        ),
+      );
     }
 
-    // No supported chains or namespaces
-    return [];
+    return defaultSelectedNetworkList;
   }, [
+    existingCaipChainIds,
+    currentlySelectedNetwork,
+    testNetworkConfigurations,
     nonTestNetworkConfigurations,
     requestedCaipChainIds,
     requestedNamespaces,
@@ -237,7 +292,7 @@ export const MultichainAccountsConnectPage: React.FC<
   } = useAccountGroupsForPermissions(
     existingCaip25CaveatValue,
     requestedCaipAccountIds,
-    requestedCaipChainIdsOrDefault,
+    requestedandExistingCaipChainIdsOrDefault,
     requestedNamespacesWithoutWallet,
   );
 
@@ -245,7 +300,7 @@ export const MultichainAccountsConnectPage: React.FC<
     useState(false);
 
   const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
-    requestedCaipChainIdsOrDefault,
+    requestedandExistingCaipChainIdsOrDefault,
   );
 
   const handleChainIdsSelected = useCallback(
@@ -281,7 +336,7 @@ export const MultichainAccountsConnectPage: React.FC<
         suggestedAccountGroups: [defaultSelectedAccountGroup],
         suggestedCaipAccountIds: getCaip25AccountFromAccountGroupAndScope(
           [defaultSelectedAccountGroup],
-          requestedCaipChainIdsOrDefault,
+          requestedandExistingCaipChainIdsOrDefault,
         ),
       };
     }
@@ -290,7 +345,7 @@ export const MultichainAccountsConnectPage: React.FC<
       suggestedAccountGroups: selectedAndRequestedAccountGroups,
       suggestedCaipAccountIds: getCaip25AccountFromAccountGroupAndScope(
         selectedAndRequestedAccountGroups,
-        requestedCaipChainIdsOrDefault,
+        requestedandExistingCaipChainIdsOrDefault,
       ),
     };
   }, [
@@ -300,7 +355,7 @@ export const MultichainAccountsConnectPage: React.FC<
     selectedAndRequestedAccountGroups,
     connectedAccountGroupWithRequested,
     caipAccountIdsOfConnectedAccountGroupWithRequested,
-    requestedCaipChainIdsOrDefault,
+    requestedandExistingCaipChainIdsOrDefault,
   ]);
 
   const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(
