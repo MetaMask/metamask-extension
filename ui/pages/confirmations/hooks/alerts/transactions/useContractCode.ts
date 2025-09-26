@@ -13,13 +13,9 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
  *
  * @param address - The hex-encoded Ethereum address to check for contract code
  * @param networkClientId - The network client identifier to use for the code lookup
- *
  * @returns An async result object containing:
- *   - `contractCode`: The processed contract bytecode as a hex string, or null if unavailable
- *   - `isContractAddress`: Boolean indicating if the address contains contract code
- *     - `true` when valid contract bytecode is present (not '0x' or '0x0')
- *     - `false` when address is an EOA (code is '0x' or '0x0')
- *     - `null` when address or networkClientId parameters are missing
+ * - `contractCode`: The processed contract bytecode as a hex string, or null if unavailable
+ * - `isContractAddress`: Boolean indicating if the address contains contract code
  */
 export function useContractCode(address: Hex, networkClientId: string) {
   const getCodeAsync = useCallback(async () => {
