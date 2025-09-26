@@ -49,7 +49,7 @@ export const useRecipientValidation = () => {
 
   useEffect(() => {
     if (prevAddressValidated.current === to) {
-      return;
+      return undefined;
     }
     let cancel = false;
 
