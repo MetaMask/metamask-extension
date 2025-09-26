@@ -193,7 +193,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
@@ -433,7 +433,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
@@ -673,7 +673,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
