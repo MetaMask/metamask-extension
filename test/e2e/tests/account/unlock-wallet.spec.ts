@@ -63,7 +63,7 @@ describe('Unlock wallet - ', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.completeOnboarding();
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

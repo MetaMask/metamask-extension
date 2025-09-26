@@ -109,7 +109,12 @@ describe('Download App Onboarding View', () => {
       fireEvent.click(continueButton);
 
       expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        {
+          replace: true,
+        },
+      );
     });
   });
 
