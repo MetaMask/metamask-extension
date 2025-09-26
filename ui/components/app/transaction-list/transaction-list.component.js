@@ -719,7 +719,10 @@ export default function TransactionList({
                 )}
               </Box>
             ) : (
-              <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+              <TransactionActivityEmptyState
+                className="mx-auto mt-5 mb-6"
+                account={selectedAccount}
+              />
             )}
           </Box>
         </Box>
