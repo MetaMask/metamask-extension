@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
@@ -20,6 +20,7 @@ export const useRecipientValidation = () => {
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
   const [loading, setLoading] = useState(false);
+  const prevAddressValidated = useRef<string>();
 
   const validateRecipient = useCallback(
     async (toAddress): Promise<RecipientValidationResult> => {
@@ -47,6 +48,9 @@ export const useRecipientValidation = () => {
   );
 
   useEffect(() => {
+    if (prevAddressValidated.current === to) {
+      return;
+    }
     let cancel = false;
 
     (async () => {
@@ -54,6 +58,7 @@ export const useRecipientValidation = () => {
       const validationResult = await validateRecipient(to);
 
       if (!cancel) {
+        prevAddressValidated.current = to;
         setResult({ ...validationResult, toAddressValidated: to });
         setLoading(false);
       }
