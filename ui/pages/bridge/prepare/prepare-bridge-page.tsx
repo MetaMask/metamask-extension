@@ -102,6 +102,7 @@ import {
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
+import { setEnabledAllPopularNetworks } from '../../../store/actions';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
@@ -115,7 +116,6 @@ import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
-import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
@@ -145,7 +145,7 @@ export const useEnableMissingNetwork = () => {
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full briding tx activity
-            dispatch(enableAllPopularNetworks());
+            dispatch(setEnabledAllPopularNetworks());
           }
         }
       }

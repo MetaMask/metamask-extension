@@ -370,6 +370,7 @@ export default function TransactionList({
   );
 
   const chainId = useSelector(getCurrentChainId);
+
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
