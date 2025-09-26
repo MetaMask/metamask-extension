@@ -38,7 +38,7 @@ export const BalanceChangeList: React.FC<{
   }, [sortedBalanceChanges]);
 
   const hasIncomingTokens = useMemo(() => {
-    return balanceChanges.some((bc) => !bc.amount.isNegative());
+    return balanceChanges.some((bc) => bc.amount && !bc.amount.isNegative());
   }, [balanceChanges]);
 
   if (sortedBalanceChanges.length === 0) {
