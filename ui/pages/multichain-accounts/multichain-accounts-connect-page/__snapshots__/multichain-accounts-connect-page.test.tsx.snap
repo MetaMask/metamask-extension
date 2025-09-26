@@ -107,9 +107,9 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
               >
                 <div
-                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-transparent"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-                  style="cursor: default;"
+                  style="cursor: default; position: relative;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
@@ -347,9 +347,9 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
               >
                 <div
-                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-transparent"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-                  style="cursor: default;"
+                  style="cursor: default; position: relative;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
@@ -587,9 +587,9 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
               >
                 <div
-                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-transparent"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-                  style="cursor: default;"
+                  style="cursor: default; position: relative;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
