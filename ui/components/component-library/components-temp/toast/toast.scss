@@ -1,0 +1,12 @@
+@use "design-system";
+
+.toast-banner {
+  position: relative;
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+
+  .mm-banner-base__close-button {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+  }
+}

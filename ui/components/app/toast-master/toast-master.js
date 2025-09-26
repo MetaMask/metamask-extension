@@ -11,6 +11,7 @@ import {
   SURVEY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
+  AlignItems,
   BorderColor,
   BorderRadius,
   IconColor,
@@ -123,19 +124,19 @@ function TestToast() {
   return (
     Boolean(!hideTestToast) && (
       <ToastNew
-        dataTestId="test-toast"
+        data-testid="test-toast"
         key="test-toast"
         title="Shield payment declined"
         description="Insufficient token balance. Please try again to resume coverage."
-        actionText="Update payment"
-        startAdornment={
+        actionButtonLabel="Update payment"
+        startAccessory={
           <Icon
             name={IconName.CircleX}
             color={IconColor.errorDefault}
             size={IconSize.Lg}
           />
         }
-        onActionClick={() => console.log('Test Toast Action Clicked')}
+        actionButtonOnClick={() => console.log('Test Toast Action Clicked')}
         onClose={() => setHideTestToast(true)}
       />
     )
