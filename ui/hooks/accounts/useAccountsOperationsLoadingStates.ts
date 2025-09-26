@@ -26,7 +26,7 @@ export const useAccountsOperationsLoadingStates = () => {
       default:
         return undefined;
     }
-  }, [isAccountSyncingInProgress]);
+  }, [isAccountSyncingInProgress, t]);
 
   return {
     areAnyOperationsLoading,
