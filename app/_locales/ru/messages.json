@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "Добавление счет..."
   },
-  "addingCustomNetwork": {
-    "message": "Добавление сети"
-  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
