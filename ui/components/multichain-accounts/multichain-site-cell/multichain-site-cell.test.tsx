@@ -234,6 +234,9 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
     hideAllToasts: jest.fn(),
   };
 
+  // Use the supportedAccountGroups from props if provided, otherwise use default
+  const supportedAccountGroups = props.accountsGroups ?? mockAccountGroups;
+
   const store = configureStore(createMockState(stateOverrides));
 
   return render(
@@ -242,7 +245,7 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
         showEditAccounts={jest.fn()}
         {...defaultProps}
         {...props}
-        supportedAccountGroups={mockAccountGroups}
+        supportedAccountGroups={supportedAccountGroups}
       />
     </Provider>,
   );
