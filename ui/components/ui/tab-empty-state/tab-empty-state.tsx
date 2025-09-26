@@ -65,7 +65,7 @@ export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
 }) => {
   return (
     <Box
-      className={twMerge(className, 'max-w-56')}
+      className={twMerge('max-w-56', className)}
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}

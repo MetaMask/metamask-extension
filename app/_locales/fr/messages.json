@@ -3735,9 +3735,6 @@
   "noThanks": {
     "message": "Non merci"
   },
-  "noTransactions": {
-    "message": "Vous n’avez aucune transaction"
-  },
   "noWebcamFound": {
     "message": "La caméra de votre ordinateur n’a pas été trouvée. Veuillez réessayer."
   },
