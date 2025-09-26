@@ -47,7 +47,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
     <Page className="max-w-[600px]">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
