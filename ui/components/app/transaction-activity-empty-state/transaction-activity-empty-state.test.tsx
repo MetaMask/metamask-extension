@@ -1,3 +1,4 @@
+// / <reference types="jest" />
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
@@ -18,7 +19,9 @@ import {
 // Mock the useBridging hook
 jest.mock('../../../hooks/bridge/useBridging');
 
-const mockAccount: InternalAccount = {
+const createAccount = (
+  overrides: Partial<InternalAccount> = {},
+): InternalAccount => ({
   id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
   address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   type: 'eip155:eoa',
@@ -37,28 +40,98 @@ const mockAccount: InternalAccount = {
     keyring: { type: 'HD Key Tree' },
     importTime: Date.now(),
   },
+  ...overrides,
+});
+
+const mockAccount = createAccount();
+
+const createStateOverrides = (
+  metamaskOverrides: Record<string, unknown> = {},
+) => ({
+  metamask: {
+    ...mockState.metamask,
+    ...metamaskOverrides,
+  },
+});
+
+const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
+  createStateOverrides({
+    useExternalServices: true,
+    selectedNetworkClientId: 'goerli',
+    networkConfigurationsByChainId: {
+      ...mockState.metamask.networkConfigurationsByChainId,
+      '0x5': {
+        // Goerli testnet - not in allowed swaps chains
+        chainId: '0x5',
+        name: 'Goerli',
+        nativeCurrency: 'ETH',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            type: 'infura',
+            url: 'https://goerli.infura.io/v3/test',
+            networkClientId: 'goerli',
+          },
+        ],
+        blockExplorerUrls: [],
+      },
+    },
+  });
+
+const createStateWithoutExternalServices = (): ReturnType<
+  typeof createStateOverrides
+> =>
+  createStateOverrides({
+    useExternalServices: false,
+  });
+
+const createValidSwapState = (): ReturnType<typeof createStateOverrides> =>
+  createStateOverrides({
+    useExternalServices: true,
+    selectedNetworkClientId: 'testNetworkConfigurationId', // This points to mainnet in mock state
+  });
+
+const expectSwapButtonState = (enabled: boolean): HTMLElement => {
+  const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
+  if (enabled) {
+    expect(swapButton).not.toBeDisabled();
+  } else {
+    expect(swapButton).toBeDisabled();
+  }
+  return swapButton;
 };
 
-describe('TransactionActivityEmptyState', () => {
-  const middleware = [thunk];
+const setupMocks = (): {
+  mockOpenBridgeExperience: jest.Mock;
+  mockUseBridging: jest.MockedFunction<typeof useBridging>;
+} => {
   const mockOpenBridgeExperience = jest.fn();
   const mockUseBridging = useBridging as jest.MockedFunction<
     typeof useBridging
   >;
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockUseBridging.mockReturnValue({
-      openBridgeExperience: mockOpenBridgeExperience,
+  jest.clearAllMocks();
+  mockUseBridging.mockReturnValue({
+    openBridgeExperience: mockOpenBridgeExperience,
+  });
+
+  // Mock useMultichainSelector to return EVM network by default
+  jest
+    .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
+    .mockReturnValue({
+      chainId: '0x1', // Default to mainnet (EVM)
+      isEvmNetwork: true,
     });
 
-    // Mock useMultichainSelector to return EVM network by default
-    jest
-      .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
-      .mockReturnValue({
-        chainId: '0x1', // Default to mainnet (EVM)
-        isEvmNetwork: true,
-      });
+  return { mockOpenBridgeExperience, mockUseBridging };
+};
+
+describe('TransactionActivityEmptyState', () => {
+  const middleware = [thunk];
+  let mockOpenBridgeExperience: jest.Mock;
+
+  beforeEach(() => {
+    ({ mockOpenBridgeExperience } = setupMocks());
   });
 
   const renderComponent = (
@@ -89,7 +162,9 @@ describe('TransactionActivityEmptyState', () => {
   });
 
   it('applies custom className', () => {
+    renderComponent({ className: 'custom-class' });
     const { container } = renderComponent({ className: 'custom-class' });
+
     expect(container.firstChild).toHaveClass('custom-class');
   });
 
@@ -104,8 +179,10 @@ describe('TransactionActivityEmptyState', () => {
 
   it('renders dark theme image when dark theme is selected', () => {
     renderComponent(
-      {},
-      { metamask: { ...mockState.metamask, theme: ThemeType.dark } },
+      {}, // no prop changes
+      {
+        metamask: { ...mockState.metamask, theme: ThemeType.dark },
+      },
     );
     const image = screen.getByAltText('Activity');
     expect(image).toHaveAttribute(
@@ -115,121 +192,86 @@ describe('TransactionActivityEmptyState', () => {
   });
 
   describe('Swap button functionality', () => {
-    const accountWithoutSigning: InternalAccount = {
-      ...mockAccount,
+    const accountWithoutSigning = createAccount({
       methods: ['personal_sign'], // No eth_signTransaction or eth_signUserOperation
-    };
+    });
 
-    const accountWithSigning: InternalAccount = {
-      ...mockAccount,
+    const accountWithSigning = createAccount({
       methods: [EthMethod.SignTransaction, 'personal_sign'],
-    };
-
-    it('disables swap button when not a swaps chain', () => {
-      // Override state to simulate testnet (non-swaps chain)
-      const testnetState = {
-        metamask: {
-          ...mockState.metamask,
-          useExternalServices: true,
-          selectedNetworkClientId: 'goerli',
-          networkConfigurationsByChainId: {
-            ...mockState.metamask.networkConfigurationsByChainId,
-            '0x5': {
-              // Goerli testnet - not in allowed swaps chains
-              chainId: '0x5',
-              name: 'Goerli',
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  type: 'infura',
-                  url: 'https://goerli.infura.io/v3/test',
-                  networkClientId: 'goerli',
-                },
-              ],
-              blockExplorerUrls: [],
-            },
-          },
-        },
-      };
-
-      renderComponent({ account: accountWithSigning }, testnetState);
-      const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
-      expect(swapButton).toBeDisabled();
     });
 
-    it('disables swap button when external services are disabled', () => {
-      const stateWithoutExternalServices = {
-        metamask: {
-          ...mockState.metamask,
-          useExternalServices: false,
-        },
-      };
-
-      renderComponent(
+    // TODO: Our jest describe is typed as Mocha this should be fixed
+    (describe as unknown as jest.Describe).each<
+      [
+        string,
+        Partial<TransactionActivityEmptyStateProps>,
+        ReturnType<typeof createStateOverrides> | Record<string, never>,
+      ]
+    >([
+      [
+        'not a swaps chain',
         { account: accountWithSigning },
-        stateWithoutExternalServices,
-      );
-      const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
-      expect(swapButton).toBeDisabled();
-    });
-
-    it('disables swap button when account cannot sign transactions', () => {
-      renderComponent({ account: accountWithoutSigning });
-      const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
-      expect(swapButton).toBeDisabled();
-    });
+        createTestnetState(),
+      ],
+      [
+        'external services are disabled',
+        { account: accountWithSigning },
+        createStateWithoutExternalServices(),
+      ],
+      [
+        'account cannot sign transactions',
+        { account: accountWithoutSigning },
+        {},
+      ],
+    ])(
+      'disables swap button when %s',
+      (
+        _condition: string,
+        props: Partial<TransactionActivityEmptyStateProps>,
+        stateOverrides:
+          | ReturnType<typeof createStateOverrides>
+          | Record<string, never>,
+      ) => {
+        it(`should disable swap button`, () => {
+          renderComponent(props, stateOverrides);
+          expectSwapButtonState(false);
+        });
+      },
+    );
 
     it('enables swap button when all conditions are met', () => {
-      const validState = {
-        metamask: {
-          ...mockState.metamask,
-          useExternalServices: true,
-          selectedNetworkClientId: 'testNetworkConfigurationId', // This points to mainnet in mock state
-        },
+      const props: Partial<TransactionActivityEmptyStateProps> = {
+        account: accountWithSigning,
       };
-
-      renderComponent({ account: accountWithSigning }, validState);
-      const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
-      expect(swapButton).not.toBeDisabled();
+      const stateOverrides = createValidSwapState();
+      renderComponent(props, stateOverrides);
+      expectSwapButtonState(true);
     });
 
     it('enables swap button for Solana networks even when isSwapsChain is false', () => {
-      // Mock multichain selector to return Solana
       jest
         .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
         .mockReturnValue({
           chainId: MultichainNetworks.SOLANA,
           isEvmNetwork: false,
         });
-
-      const testnetState = {
-        metamask: {
-          ...mockState.metamask,
-          useExternalServices: true,
-          selectedNetworkClientId: 'goerli', // This makes isSwapsChain false
-        },
+      const props: Partial<TransactionActivityEmptyStateProps> = {
+        account: accountWithSigning,
       };
-
-      renderComponent({ account: accountWithSigning }, testnetState);
-      const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
-      expect(swapButton).not.toBeDisabled(); // Should be enabled due to Solana logic
+      const stateOverrides = createTestnetState();
+      renderComponent(props, stateOverrides);
+      expectSwapButtonState(true); // Should be enabled due to Solana logic
     });
 
     it('calls openBridgeExperience when swap button is clicked', () => {
-      const validState = {
-        metamask: {
-          ...mockState.metamask,
-          useExternalServices: true,
-          selectedNetworkClientId: 'testNetworkConfigurationId', // This points to mainnet in mock state
-        },
+      const props: Partial<TransactionActivityEmptyStateProps> = {
+        account: accountWithSigning,
       };
-
-      renderComponent({ account: accountWithSigning }, validState);
-      const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
+      const stateOverrides = createValidSwapState();
+      renderComponent(props, stateOverrides);
+      const swapButton = expectSwapButtonState(true);
 
       fireEvent.click(swapButton);
-
       expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
         'Activity Tab Empty State',
         undefined, // No specific token

@@ -38,7 +38,6 @@ export const TransactionActivityEmptyState: React.FC<
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
 
-  // Get multichain network info for Solana detection (same as coin-buttons)
   const { chainId: multichainChainId } = useMultichainSelector(
     getMultichainNetwork,
     account,
@@ -46,7 +45,6 @@ export const TransactionActivityEmptyState: React.FC<
 
   const { openBridgeExperience } = useBridging();
 
-  // Theme-aware icon selection
   const activityIcon =
     theme === ThemeType.dark
       ? './images/empty-state-activity-dark.png'
@@ -60,6 +58,11 @@ export const TransactionActivityEmptyState: React.FC<
     );
   }, [openBridgeExperience]);
 
+  // Determine if swap button should be enabled
+  const isSwapButtonEnabled =
+    multichainChainId === MultichainNetworks.SOLANA ||
+    (isSwapsChain && isSigningEnabled && isExternalServicesEnabled);
+
   return (
     <TabEmptyState
       icon={
@@ -68,12 +71,7 @@ export const TransactionActivityEmptyState: React.FC<
       description={t('activityEmptyDescription')}
       actionButtonText={t('swapTokens')}
       actionButtonProps={{
-        isDisabled:
-          // Disable for all non-swap chains but enable EVM and nonEVM(e.g. Solana) networks
-          // Same logic as coin-buttons.tsx
-          multichainChainId === MultichainNetworks.SOLANA
-            ? false
-            : !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled,
+        isDisabled: !isSwapButtonEnabled,
       }}
       onAction={handleSwapOnClick}
       data-testid="activity-tab-empty-state"
