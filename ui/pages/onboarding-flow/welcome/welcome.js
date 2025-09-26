@@ -69,20 +69,19 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        navigate(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-          { replace: true },
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (isFireFox) {
-          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+        if (isFireFox || firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+          navigate(
+            isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+            { replace: true },
+          );
         } else {
-          navigate(ONBOARDING_METAMETRICS, { replace: true });
+          // we don't display the metametrics screen for social login flows if the user is not on firefox
+          navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
         navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }

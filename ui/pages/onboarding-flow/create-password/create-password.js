@@ -60,7 +60,6 @@ import {
   setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -82,8 +81,6 @@ export default function CreatePassword({
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
   const currentKeyring = useSelector(getCurrentKeyring);
-  const isSeedlessOnboardingFeatureEnabled =
-    getIsSeedlessOnboardingFeatureEnabled();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
 
@@ -112,18 +109,22 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        navigate(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-          { replace: true },
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (isFirefox) {
+        if (
+          !isFirefox &&
+          firstTimeFlowType === FirstTimeFlowType.socialImport
+        ) {
+          // we don't display the metametrics screen for social login flows if the user is not on firefox
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
-          navigate(ONBOARDING_METAMETRICS, { replace: true });
+          navigate(
+            isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+            { replace: true },
+          );
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
         navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }
@@ -196,7 +197,7 @@ export default function CreatePassword({
       },
     });
 
-    if (isFirefox) {
+    if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -249,8 +250,7 @@ export default function CreatePassword({
         ),
       },
     });
-
-    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
+    if (isSocialLoginFlow) {
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
         dispatch(setDataCollectionForMarketing(true));
