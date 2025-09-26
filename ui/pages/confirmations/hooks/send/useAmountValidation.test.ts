@@ -89,7 +89,7 @@ describe('useAmountValidation', () => {
       asset: { ...EVM_NATIVE_ASSET, rawBalance: '0x5' },
       chainId: '0x5',
       from: MOCK_ADDRESS_1,
-      value: 10,
+      value: '10',
     } as unknown as SendContext.SendContextType);
 
     const { result } = renderHookWithProvider(
