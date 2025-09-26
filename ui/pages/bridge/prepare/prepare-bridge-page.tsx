@@ -849,7 +849,7 @@ const PrepareBridgePage = ({
         {isCannotVerifyTokenBannerOpen &&
           toToken &&
           toTokenIsNotNative &&
-          occurrences &&
+          Boolean(occurrences) &&
           Number(occurrences) < 2 && (
             <BannerAlert
               severity={BannerAlertSeverity.Warning}
