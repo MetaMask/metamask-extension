@@ -238,7 +238,7 @@ describe('Request-queue UI changes', function () {
           originText: DAPP_URL,
         });
         const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         // Go to the second dapp, ensure it uses Ethereum
         await selectDappClickSend(driver, DAPP_ONE_URL);
@@ -247,7 +247,7 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
       },
     );
   });
