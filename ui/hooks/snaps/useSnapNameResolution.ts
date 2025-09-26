@@ -18,6 +18,7 @@ export function useSnapNameResolution() {
 
   /**
    * Filters the available snaps based on the provided chain ID and domain.
+   *
    * @param chainId - The CAIP-2 chain ID.
    * @param domain - The domain to resolve.
    * @returns The filtered snap IDs.
@@ -50,6 +51,7 @@ export function useSnapNameResolution() {
 
   /**
    * Fetches name resolutions from the available snaps for the given chain ID and domain.
+   *
    * @param chainId - The CAIP-2 chain ID.
    * @param domain - The domain to resolve.
    * @returns An object containing the resolutions and any errors encountered.
@@ -59,7 +61,7 @@ export function useSnapNameResolution() {
       const availableSnaps = getAvailableSnaps(chainId, domain);
 
       if (availableSnaps.length === 0) {
-        return;
+        return undefined;
       }
 
       const responses = await Promise.allSettled(
