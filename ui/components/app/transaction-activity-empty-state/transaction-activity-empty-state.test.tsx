@@ -1,4 +1,3 @@
-// / <reference types="jest" />
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
