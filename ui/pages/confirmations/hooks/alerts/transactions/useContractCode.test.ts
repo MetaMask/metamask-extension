@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { addHexPrefix, padToEven } from 'ethereumjs-util';
+import { Hex } from '@metamask/utils';
 
 import { getCode } from '../../../../../store/actions';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
@@ -32,7 +33,7 @@ describe('useContractCode', () => {
   });
 
   it('returns null values when address is missing', async () => {
-    renderHook(() => useContractCode('' as any, mockNetworkClientId));
+    renderHook(() => useContractCode('' as Hex, mockNetworkClientId));
 
     const getCodeAsyncCallback = mockUseAsyncResult.mock.calls[0][0];
     const asyncResult = await getCodeAsyncCallback();
