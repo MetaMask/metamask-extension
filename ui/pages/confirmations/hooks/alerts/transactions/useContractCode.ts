@@ -20,7 +20,6 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
  *     - `true` when valid contract bytecode is present (not '0x' or '0x0')
  *     - `false` when address is an EOA (code is '0x' or '0x0')
  *     - `null` when address or networkClientId parameters are missing
- *
  */
 export function useContractCode(address: Hex, networkClientId: string) {
   const getCodeAsync = useCallback(async () => {
