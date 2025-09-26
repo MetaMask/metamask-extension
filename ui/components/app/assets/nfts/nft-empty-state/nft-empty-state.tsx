@@ -1,5 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { twMerge } from '@metamask/design-system-react';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -59,7 +60,7 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
       actionButtonText={t('discoverNFTs')}
       onAction={handleDiscoverNfts}
       data-testid="nft-tab-empty-state"
-      className={className}
+      className={twMerge('max-w-64', className)}
     />
   );
 };

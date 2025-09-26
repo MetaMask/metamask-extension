@@ -3741,9 +3741,6 @@
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
   },
-  "noDeFiPositions": {
-    "message": "원하는 것을 찾을 수 없나요?"
-  },
   "noDomainResolution": {
     "message": "도메인에 대한 해결 방법이 제공되지 않았습니다."
   },
@@ -3767,9 +3764,6 @@
   },
   "noThanks": {
     "message": "괜찮습니다"
-  },
-  "noTransactions": {
-    "message": "트랜잭션이 없습니다"
   },
   "noWebcamFound": {
     "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도하세요."
@@ -4635,9 +4629,6 @@
   },
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
-  },
-  "protocolNotSupported": {
-    "message": "회원님의 프로토콜은 아직 지원되지 않을 수 있습니다."
   },
   "provide": {
     "message": "제공"

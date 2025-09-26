@@ -3741,9 +3741,6 @@
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
-  "noDeFiPositions": {
-    "message": "¿No encuentras lo que buscas?"
-  },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
   },
@@ -3767,9 +3764,6 @@
   },
   "noThanks": {
     "message": "No, gracias"
-  },
-  "noTransactions": {
-    "message": "No tiene transacciones"
   },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
@@ -4635,9 +4629,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
-  },
-  "protocolNotSupported": {
-    "message": "Es posible que aún no admitamos tu protocolo."
   },
   "provide": {
     "message": "Proporcionar"

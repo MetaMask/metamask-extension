@@ -64,7 +64,8 @@ exports[`NameDetails renders proposed names 1`] = `
             class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
-              style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
+              class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              style="text-align: center;"
             >
               <div
                 class="name name__saved"
@@ -320,7 +321,8 @@ exports[`NameDetails renders when no address value is passed 1`] = `
             class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
-              style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
+              class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              style="text-align: center;"
             >
               <div
                 class="name name__missing"
@@ -539,7 +541,8 @@ exports[`NameDetails renders with no saved name 1`] = `
             class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
-              style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
+              class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              style="text-align: center;"
             >
               <div
                 class="name name__missing"
@@ -760,7 +763,8 @@ exports[`NameDetails renders with recognized name 1`] = `
             class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
-              style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
+              class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              style="text-align: center;"
             >
               <div
                 class="name name__recognized_unsaved"
@@ -981,7 +985,8 @@ exports[`NameDetails renders with saved name 1`] = `
             class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
-              style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
+              class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+              style="text-align: center;"
             >
               <div
                 class="name name__saved"

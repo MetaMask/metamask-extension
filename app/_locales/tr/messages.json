@@ -3711,9 +3711,6 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
-  "noDeFiPositions": {
-    "message": "Aradığınızı bulamıyor musunuz?"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
@@ -3737,9 +3734,6 @@
   },
   "noThanks": {
     "message": "Hayır, istemiyorum"
-  },
-  "noTransactions": {
-    "message": "Herhangi bir işleminiz yok"
   },
   "noWebcamFound": {
     "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
@@ -4601,9 +4595,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
-  },
-  "protocolNotSupported": {
-    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
   },
   "provide": {
     "message": "Sun"

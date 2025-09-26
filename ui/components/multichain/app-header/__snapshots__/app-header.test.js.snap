@@ -139,7 +139,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             class="mm-box mm-text networks-subtitle mm-text--body-xs-medium mm-box--padding-inline-2 mm-box--color-text-alternative"
             data-testid="networks-subtitle-test-id"
           >
-            10 networks
+            10 network addresses
           </p>
         </div>
       </div>
