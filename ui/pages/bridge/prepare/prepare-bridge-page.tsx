@@ -298,9 +298,7 @@ const PrepareBridgePage = ({
           };
         })()
       : null,
-    selectedDestinationAccount && 'id' in selectedDestinationAccount
-      ? selectedDestinationAccount.id
-      : undefined,
+    selectedDestinationAccount?.address,
   );
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
@@ -851,7 +849,7 @@ const PrepareBridgePage = ({
         {isCannotVerifyTokenBannerOpen &&
           toToken &&
           toTokenIsNotNative &&
-          occurrences &&
+          Boolean(occurrences) &&
           Number(occurrences) < 2 && (
             <BannerAlert
               severity={BannerAlertSeverity.Warning}
