@@ -120,6 +120,17 @@ export const hasNamespaceSupport = (
   return false;
 };
 
+/**
+ * Generates CAIP-25 account IDs from account groups filtered by supported scopes.
+ *
+ * This function takes account groups and filters their accounts based on scope compatibility,
+ * returning CAIP-25 formatted account identifiers. It handles special EIP-155 wildcard logic
+ * where eip155:0 scope matches any EVM chain, and specific EVM chains match the wildcard scope.
+ *
+ * @param accountGroups - Array of account groups containing internal accounts with scope information
+ * @param scopes - Array of CAIP chain IDs to filter accounts by
+ * @returns Array of unique CAIP-25 account IDs for accounts that support the requested scopes
+ */
 export const getCaip25AccountIdsFromAccountGroupAndScope = (
   accountGroups: AccountGroupWithInternalAccounts[],
   scopes: CaipChainId[],
