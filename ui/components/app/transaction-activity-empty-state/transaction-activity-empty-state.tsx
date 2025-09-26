@@ -1,7 +1,9 @@
 import React from 'react';
+import { twMerge } from '@metamask/design-system-react';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
+import { ThemeType } from '../../../../shared/constants/preferences';
 
 export type TransactionActivityEmptyStateProps = {
   /**
@@ -18,7 +20,7 @@ export const TransactionActivityEmptyState: React.FC<
 
   // Theme-aware icon selection
   const activityIcon =
-    theme === 'dark'
+    theme === ThemeType.dark
       ? './images/empty-state-activity-dark.png'
       : './images/empty-state-activity-light.png';
 
@@ -28,8 +30,8 @@ export const TransactionActivityEmptyState: React.FC<
         <img src={activityIcon} alt={t('activity')} width={72} height={72} />
       }
       description={t('activityEmptyDescription')}
-      className={className}
       data-testid="activity-tab-empty-state"
+      className={twMerge('max-w-64', className)}
     />
   );
 };

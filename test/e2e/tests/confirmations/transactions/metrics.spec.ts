@@ -8,18 +8,14 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../../constants';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import {
-  confirmContractDeploymentTransaction,
-  confirmDepositTransaction,
-  createContractDeploymentTransaction,
-  createDepositTransaction,
-} from './shared';
+import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/redesign/deploy-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import { assertAdvancedGasDetails } from './shared';
 
-const {
-  unlockWallet,
-  withFixtures,
-  getEventPayloads,
-} = require('../../../helpers');
+const { withFixtures, getEventPayloads } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 
 describe('Metrics', function () {
@@ -44,17 +40,38 @@ describe('Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint;
       }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
+        // deploy contract
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.clickPiggyBankContract();
+        const deploymentConfirmation = new ContractDeploymentConfirmation(
+          driver,
+        );
+        await deploymentConfirmation.checkTitle();
+        await deploymentConfirmation.checkDeploymentSiteInfo();
+        await deploymentConfirmation.clickFooterConfirmButton();
 
-        await createContractDeploymentTransaction(driver);
-        await confirmContractDeploymentTransaction(driver);
+        // check activity list
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAction({ action: 'Contract deployment' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await createDepositTransaction(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await confirmDepositTransaction(driver);
+        // deposit contract
+        await testDapp.createDepositTransaction();
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.clickAdvancedDetailsButton();
+
+        await assertAdvancedGasDetails(driver);
+        await transactionConfirmation.clickFooterConfirmButton();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 

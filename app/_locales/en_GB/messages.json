@@ -2742,6 +2742,9 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hexDataPlaceholder": {
+    "message": "Enter hex data (optional)"
+  },
   "hiddenAccounts": {
     "message": "Hidden accounts"
   },
@@ -4014,9 +4017,6 @@
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
   },
-  "noTransactions": {
-    "message": "You have no transactions"
-  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
@@ -5069,6 +5069,9 @@
   "recipientEditAriaLabel": {
     "message": "Edit recipient"
   },
+  "recipientPlaceholder": {
+    "message": "Enter or paste a valid address"
+  },
   "recommendedGasLabel": {
     "message": "Recommended"
   },
@@ -5440,6 +5443,9 @@
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
   },
+  "securityDefaultSettingsSocialLogin": {
+    "message": "Security & privacy"
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
@@ -5459,6 +5465,9 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginDefaultSettingsDescription": {
+    "message": "Reduce your chances of joining unsafe networks and protect your accounts and data"
   },
   "securitySocialLoginEnabled": {
     "message": "Enabled"
@@ -5719,9 +5728,6 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
-  "shieldPlanYearly": {
-    "message": "Yearly"
-  },
   "shieldTx": {
     "message": "Transaction Shield"
   },
@@ -5805,7 +5811,7 @@
     "message": "Paused"
   },
   "shieldTxMembershipResubscribe": {
-    "message": "Resubscribe"
+    "message": "Restart membership"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"

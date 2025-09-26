@@ -392,9 +392,10 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground<Subscription[]>(
       'startSubscriptionWithCard',
-      [params],
+      [params, currentTab?.id],
     );
 
     return subscriptions;
@@ -4457,12 +4458,16 @@ export function setUseCurrencyRateCheck(
 // MultichainAssetsRatesController
 export function fetchHistoricalPricesForAsset(
   address: CaipAssetType,
+  internalAccount: InternalAccount,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
+    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
+      address,
+      internalAccount,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }

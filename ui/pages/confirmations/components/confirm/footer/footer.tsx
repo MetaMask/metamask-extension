@@ -22,12 +22,12 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import { resolvePendingApproval } from '../../../../../store/actions';
-import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useConfirmContext } from '../../../context/confirm';
+import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
+import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
-import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
-import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
 
