@@ -3732,9 +3732,6 @@
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
   },
-  "noTransactions": {
-    "message": "Wala kang transaksyon"
-  },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
   },

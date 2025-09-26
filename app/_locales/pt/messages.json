@@ -3732,9 +3732,6 @@
   "noSnaps": {
     "message": "Você não tem nenhum snap instalado."
   },
-  "noTransactions": {
-    "message": "Você não tem transações"
-  },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
   },

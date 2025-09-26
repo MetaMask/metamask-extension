@@ -3762,9 +3762,6 @@
   "noSnaps": {
     "message": "Snaps не установлены."
   },
-  "noTransactions": {
-    "message": "У вас нет транзакций"
-  },
   "noWebcamFound": {
     "message": "Веб-камера вашего компьютера не найдена. Попробуйте еще раз."
   },

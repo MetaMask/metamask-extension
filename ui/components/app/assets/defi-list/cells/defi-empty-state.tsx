@@ -56,7 +56,7 @@ export const DeFiEmptyStateMessage: FC = () => {
       actionButtonText={t('exploreDefi')}
       onAction={handleExploreDefi}
       data-testid="defi-tab-empty-state"
-      className="mx-auto mt-4"
+      className="mx-auto mt-5 mb-6 max-w-48"
     />
   );
 };
