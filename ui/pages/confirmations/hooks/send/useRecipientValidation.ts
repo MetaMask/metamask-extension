@@ -51,10 +51,10 @@ export const useRecipientValidation = () => {
 
     (async () => {
       setLoading(true);
-      const result = await validateRecipient(to);
+      const validationResult = await validateRecipient(to);
 
       if (!cancel) {
-        setResult({ ...result, toAddressValidated: to });
+        setResult({ ...validationResult, toAddressValidated: to });
         setLoading(false);
       }
     })();

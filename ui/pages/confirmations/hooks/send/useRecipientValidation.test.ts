@@ -1,13 +1,12 @@
-import { AddressResolution } from '@metamask/snaps-sdk';
 import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import * as NameValidation from './useNameValidation';
 import { useSendContext } from '../../context/send';
 import * as SendValidationUtils from '../../utils/sendValidations';
+import * as NameValidation from './useNameValidation';
 import { useSendType } from './useSendType';
 import { useRecipientValidation } from './useRecipientValidation';
 
