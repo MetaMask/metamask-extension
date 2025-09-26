@@ -166,7 +166,7 @@ export default function Notifications() {
           <ButtonIcon
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={() => {
               navigate(DEFAULT_ROUTE);
             }}
@@ -177,7 +177,7 @@ export default function Notifications() {
           <ButtonIcon
             ariaLabel="Notifications Settings"
             iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={() => {
               navigate(NOTIFICATIONS_SETTINGS_ROUTE);
             }}
