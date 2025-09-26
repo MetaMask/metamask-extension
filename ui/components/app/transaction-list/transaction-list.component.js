@@ -124,7 +124,7 @@ import {
   stopIncomingTransactionPolling,
 } from '../../../store/controller-actions/transaction-controller';
 import {
-  selectBridgeHistoryForAccount,
+  selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
@@ -607,9 +607,7 @@ export default function TransactionList({
 
   const trackEvent = useContext(MetaMetricsContext);
 
-  const bridgeHistoryItems = useSelector((state) =>
-    selectBridgeHistoryForAccount(state, selectedAccount.address),
-  );
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const selectedBridgeHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, selectedTransaction?.id),
   );
