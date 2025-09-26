@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Dies ist eine BETA-Version. Bitte melden Sie Fehler $1."
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask-Version"
   },
@@ -4746,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Öffentliche Adresse (0x) oder Domainname eingeben"
-  },
-  "recommendedGasLabel": {
-    "message": "Empfohlen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Jetzt sichern"
