@@ -69,7 +69,7 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        if (isFireFox || firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+        if (isFireFox) {
           navigate(
             isParticipateInMetaMetricsSet
               ? ONBOARDING_COMPLETION_ROUTE
@@ -77,9 +77,10 @@ export default function OnboardingWelcome() {
             { replace: true },
           );
         } else {
-          // we don't display the metametrics screen for social login flows if the user is not on firefox
-          navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
