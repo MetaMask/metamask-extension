@@ -17,10 +17,18 @@ export const getDappActiveNetwork = createDeepEqualSelector(
     }
 
     for (const chainId in networkConfigurationsByChainId) {
-      if (Object.prototype.hasOwnProperty.call(networkConfigurationsByChainId, chainId)) {
-        const network = networkConfigurationsByChainId[chainId as keyof typeof networkConfigurationsByChainId];
+      if (
+        Object.prototype.hasOwnProperty.call(
+          networkConfigurationsByChainId,
+          chainId,
+        )
+      ) {
+        const network =
+          networkConfigurationsByChainId[
+            chainId as keyof typeof networkConfigurationsByChainId
+          ];
         const hasMatchingEndpoint = network.rpcEndpoints.some(
-          (rpcEndpoint: any) => rpcEndpoint.networkClientId === networkClientId,
+          (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
         );
         if (hasMatchingEndpoint) {
           return network;
