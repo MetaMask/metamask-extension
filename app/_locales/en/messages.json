@@ -5763,10 +5763,6 @@
   "shieldTxMembershipErrorAddFunds": {
     "message": "Add funds"
   },
-  "shieldTxMembershipErrorEnding": {
-    "message": "Your membership is ending on $1. Keep benefits active by renewing.",
-    "description": "The $1 is the date"
-  },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
     "description": "The $1 is the date"
@@ -5783,9 +5779,6 @@
   },
   "shieldTxMembershipErrorPausedCryptoTooltip": {
     "message": "Insufficient token balance in your wallet. Top up to resume coverage."
-  },
-  "shieldTxMembershipErrorRenew": {
-    "message": "Renew membership"
   },
   "shieldTxMembershipErrorUpdateCard": {
     "message": "Update card details"
