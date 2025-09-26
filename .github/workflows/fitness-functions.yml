@@ -19,7 +19,7 @@ jobs:
           is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Run fitness functions
         env:
