@@ -76,8 +76,14 @@ jest.mock('../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../selectors/multichain'),
   getMultichainNetwork: () => ({
     chainId: 'eip155:1',
-    name: 'Ethereum Mainnet',
-    nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+    nickname: 'Ethereum Mainnet',
+    isAddressCompatible: () => true,
+    decimals: 18,
+    blockExplorerFormatUrls: {
+      url: 'https://mock.url',
+      address: 'https://mock.url/address/{address}',
+      transaction: 'https://mock.url/tx/{txId}',
+    },
   }),
 }));
 
