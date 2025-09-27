@@ -88,9 +88,10 @@ export type ManifestFlags = {
      */
     disableSync?: boolean;
     /**
-     * Whether to simulate an unresponsive background by ignoring connections from the UI
+     * Simulate a delay to how quickly the background responds to the UI. Set this to `true` to
+     * make the background completely unresponsive.
      */
-    simulateUnresponsiveBackground?: boolean;
+    simulateDelayedBackgroundResponse?: number | boolean;
     /**
      * The Infura project ID to use for API requests, useful to inject into a test build that doesn't have one
      */
