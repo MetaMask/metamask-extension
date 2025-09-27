@@ -129,10 +129,7 @@ export const lavamoatPlugin = (args: Args) =>
         // globals opera needs to function
         'opr',
         // globals used by e2e
-        'ret_nodes',
-        'browser',
-        'chrome',
-        'indexedDB',
+        ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
       ],
     },
   });
