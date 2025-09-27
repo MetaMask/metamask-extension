@@ -122,6 +122,9 @@ export const ONBOARDED_IN_THIS_UI_SESSION = 'ONBOARDED_IN_THIS_UI_SESSION';
 // social login onboarding
 export const RESET_SOCIAL_LOGIN_ONBOARDING = 'RESET_SOCIAL_LOGIN_ONBOARDING';
 
+// DANGER: Reset everything
+export const RESET_APP = 'RESET_APP';
+
 // Ledger
 
 export const SET_WEBHID_CONNECTED_STATUS = 'SET_WEBHID_CONNECTED_STATUS';

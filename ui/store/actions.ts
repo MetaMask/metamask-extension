@@ -4141,6 +4141,8 @@ export function resetOnboarding(): ThunkAction<
       const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
 
+      await submitRequestToBackground('resetOnboarding');
+
       if (isSocialLoginFlow) {
         await dispatch(resetOAuthLoginState());
       }
@@ -4156,6 +4158,37 @@ export function resetOnboarding(): ThunkAction<
 export function resetOnboardingAction() {
   return {
     type: actionConstants.RESET_ONBOARDING,
+  };
+}
+
+/**
+ * Reset the wallet
+ *
+ * @returns void
+ */
+export function resetApp() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      // Sign out from Profile-sync
+      await dispatch(performSignOut());
+      // reset onboarding
+      await dispatch(resetOnboarding());
+      // reset redux state
+      await dispatch(resetAppAction());
+      // reset background controller state
+      await submitRequestToBackground('resetStates');
+      // set `isResettingWalletInProgress` to true
+      await submitRequestToBackground('setIsWalletResetInProgress', [true]);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+}
+
+export function resetAppAction() {
+  return {
+    type: actionConstants.RESET_APP,
   };
 }
 

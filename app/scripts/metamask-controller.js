@@ -1492,7 +1492,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // if this is the first time, clear the state of by calling these methods
-    const resetMethods = [
+    this.resetMethods = [
       this.accountTrackerController.resetState.bind(
         this.accountTrackerController,
       ),
@@ -1507,19 +1507,25 @@ export default class MetamaskController extends EventEmitter {
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
+      this.seedlessOnboardingController.clearState.bind(
+        this.seedlessOnboardingController,
+      ),
+      this.tokenListController.clearingTokenListData.bind(
+        this.tokenListController,
+      ),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
     if (isManifestV3) {
       if (isFirstMetaMaskControllerSetup === true) {
-        this.resetStates(resetMethods);
+        this.resetStates();
         this.extension.storage.session.set({
           isFirstMetaMaskControllerSetup: false,
         });
       }
     } else {
       // it's always the first time in MV2
-      this.resetStates(resetMethods);
+      this.resetStates();
     }
 
     // Automatic login via config password
@@ -1622,8 +1628,8 @@ export default class MetamaskController extends EventEmitter {
     this.multichainRatesController.stop();
   }
 
-  resetStates(resetMethods) {
-    resetMethods.forEach((resetMethod) => {
+  resetStates() {
+    this.resetMethods.forEach((resetMethod) => {
       try {
         resetMethod();
       } catch (err) {
@@ -2493,13 +2499,23 @@ export default class MetamaskController extends EventEmitter {
    */
   getState() {
     const { vault } = this.keyringController.state;
-    const isInitialized = Boolean(vault);
+
+    // check if the wallet reset is in progress
+    const isResettingWalletInProgress =
+      this.appStateController.getIsWalletResetInProgress();
+
+    // if the keyring vault is present but the wallet reset is in progress, we can assume the wallet has not initialized yet
+    const isInitialized = Boolean(vault) && !isResettingWalletInProgress;
     const flatState = this.memStore.getFlatState();
 
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
     };
+  }
+
+  resetState() {
+    // TODO: Implement this
   }
 
   /**
@@ -2553,6 +2569,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
+      resetState: this.resetState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
@@ -3116,6 +3133,8 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
+      resetOnboarding:
+        onboardingController.resetOnboarding.bind(onboardingController),
 
       // alert controller
       setAlertEnabledness:
@@ -3623,6 +3642,11 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
+      resetStates: this.resetStates.bind(this),
+      setIsWalletResetInProgress:
+        this.appStateController.setIsWalletResetInProgress.bind(
+          this.appStateController,
+        ),
     };
   }
 
@@ -4417,6 +4441,10 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       await this.keyringController.createNewVaultAndKeychain(password);
+
+      // set is resetting wallet in progress to false, in case of createNewVaultAndKeychain being called from resetWallet
+      this.appStateController.setIsWalletResetInProgress(false);
+
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
       // Once we have our first HD keyring available, we re-create the internal list of
@@ -4837,6 +4865,9 @@ export default class MetamaskController extends EventEmitter {
           await this.syncKeyringEncryptionKey();
         }
       }
+
+      // set is resetting wallet in progress to false, in case of createNewVaultAndRestore being called from resetWallet
+      this.appStateController.setIsWalletResetInProgress(false);
     } finally {
       releaseLock();
     }
