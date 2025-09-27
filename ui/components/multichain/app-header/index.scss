@@ -15,6 +15,12 @@
   &__contents {
     height: 68px;
 
+    // Side panel specific width constraints
+    html[data-environment-type="sidepanel"] & {
+      min-width: 360px;
+      max-width: 490px;
+    }
+
     @include design-system.screen-sm-min {
       width: $width-screen-sm-min;
     }
@@ -49,6 +55,12 @@
   &__lock-contents {
     flex-flow: row nowrap;
     height: 68px;
+
+    // Side panel specific width constraints
+    html[data-environment-type="sidepanel"] & {
+      min-width: 360px;
+      max-width: 490px;
+    }
 
     @include design-system.screen-sm-max {
       height: $height-screen-sm-max;

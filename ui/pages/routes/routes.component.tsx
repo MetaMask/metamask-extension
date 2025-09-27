@@ -169,6 +169,7 @@ import {
   hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
+  setEnvironmentType,
   showAppHeader,
 } from './utils';
 
@@ -534,6 +535,7 @@ export default function Routes() {
 
   useEffect(() => {
     setTheme(theme);
+    setEnvironmentType();
   }, [theme]);
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -55,6 +56,16 @@ export function setTheme(theme) {
     'data-theme',
     getThemeFromRawTheme(theme),
   );
+}
+
+export function setEnvironmentType() {
+  const environmentType = getEnvironmentType();
+  if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
+    document.documentElement.setAttribute(
+      'data-environment-type',
+      environmentType,
+    );
+  }
 }
 
 function onConfirmPage(props) {
