@@ -18,5 +18,8 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Lint images
+        run: yarn lint:images
+
       - name: Verify locales
         run: yarn verify-locales --quiet
