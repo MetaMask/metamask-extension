@@ -1,10 +1,16 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
 import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
+  Text,
 } from '../../../../component-library';
 import {
   getNativeCurrency,
@@ -18,10 +24,16 @@ import {
   getIsSwapAndSendDisabledForNetwork,
   getSwapsBlockedTokens,
   getSendAsset,
+  getRecipient,
 } from '../../../../../ducks/send';
+import { getTransactions } from '../../../../../selectors/transactions';
+import { getInternalAccounts } from '../../../../../selectors/accounts';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
-import { Display } from '../../../../../helpers/constants/design-system';
+import {
+  Display,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
@@ -33,6 +45,10 @@ import {
   getUseExternalServices,
 } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import {
+  getAddressPoisoningDetectionEnabled,
+  checkForAddressPoisoning,
+} from '../../../../../ducks/domains';
 
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
@@ -52,6 +68,7 @@ export const SendPageRecipientContent = ({
   onClick: () => React.ComponentProps<typeof AssetPicker>['onClick'];
 }) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const {
     receiveAsset,
@@ -59,6 +76,42 @@ export const SendPageRecipientContent = ({
     amount: sendAmount,
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
+
+  // Get the recipient address to check for address poisoning
+  const recipient = useSelector(getRecipient);
+  const addressPoisoningDetectionEnabled = useSelector(
+    getAddressPoisoningDetectionEnabled,
+  );
+  const [addressPoisoningWarning, setAddressPoisoningWarning] = React.useState<{
+    warning: string;
+    message: string;
+    similarAddress: string;
+  } | null>(null);
+
+  // Get transaction history from selector instead of localStorage
+  const transactions = useSelector(getTransactions);
+  // Get the user's own accounts to check if sending to self
+  const internalAccounts = useSelector(getInternalAccounts);
+
+  // Check for address poisoning when the recipient address changes
+  useEffect(() => {
+    if (recipient.address && addressPoisoningDetectionEnabled) {
+      const warning = checkForAddressPoisoning(
+        recipient.address,
+        addressPoisoningDetectionEnabled,
+        transactions,
+        internalAccounts,
+      );
+      setAddressPoisoningWarning(warning);
+    } else {
+      setAddressPoisoningWarning(null);
+    }
+  }, [
+    recipient.address,
+    addressPoisoningDetectionEnabled,
+    transactions,
+    internalAccounts,
+  ]);
 
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
@@ -112,9 +165,6 @@ export const SendPageRecipientContent = ({
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Gas data
-  const dispatch = useDispatch();
-
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (
@@ -142,6 +192,22 @@ export const SendPageRecipientContent = ({
           </BannerAlert>
         </SendPageRow>
       ) : null}
+
+      {/* Display address poisoning warning if detected */}
+      {addressPoisoningWarning ? (
+        <SendPageRow>
+          <BannerAlert
+            severity={BannerAlertSeverity.Warning}
+            data-testid="address-poisoning-warning"
+          >
+            <Text variant={TextVariant.bodyMdBold} marginBottom={2}>
+              {addressPoisoningWarning.warning}
+            </Text>
+            <Text marginBottom={2}>{addressPoisoningWarning.message}</Text>
+          </BannerAlert>
+        </SendPageRow>
+      ) : null}
+
       <SendPageRow>
         <AssetPickerAmount
           header={t('sendSelectReceiveAsset')}
