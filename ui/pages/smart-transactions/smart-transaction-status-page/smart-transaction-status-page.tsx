@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   SmartTransactionStatuses,
   SmartTransaction,
-} from '@metamask/smart-transactions-controller/dist/types';
+} from '@metamask/smart-transactions-controller';
 
 import {
   Box,

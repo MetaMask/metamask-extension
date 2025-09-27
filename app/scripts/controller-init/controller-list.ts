@@ -9,7 +9,7 @@ import {
   SubjectMetadataController,
 } from '@metamask/permission-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {

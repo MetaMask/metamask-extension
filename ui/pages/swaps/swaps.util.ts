@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { Hex, Json } from '@metamask/utils';
-import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
+import { IndividualTxFees } from '@metamask/smart-transactions-controller';
 import {
   FeeMarketGasFeeEstimates,
   TransactionParams,
