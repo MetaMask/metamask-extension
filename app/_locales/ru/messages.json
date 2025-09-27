@@ -101,8 +101,9 @@
   "accountDetails": {
     "message": "Реквизиты счета"
   },
-  "accountIdenticon": {
-    "message": "Идентикон счета"
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Создать резервную копию",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIsntConnectedToastText": {
     "message": "$1 не подключен к $2"
@@ -137,6 +138,9 @@
   "accountSelectionRequired": {
     "message": "Вам необходимо выбрать счет!"
   },
+  "accountSmallCase": {
+    "message": "счет"
+  },
   "accountTypeNotSupported": {
     "message": "Тип счета не поддерживается"
   },
@@ -166,6 +170,9 @@
   },
   "addACustomNetwork": {
     "message": "Добавить пользовательскую сеть"
+  },
+  "addAHardwareWallet": {
+    "message": "Добавить аппаратный кошелек"
   },
   "addANetwork": {
     "message": "Добавить сеть"
@@ -305,6 +312,9 @@
   "addUrl": {
     "message": "Добавить URL-адрес"
   },
+  "addWallet": {
+    "message": "Добавить кошелек"
+  },
   "addingAccount": {
     "message": "Добавление счет..."
   },
@@ -320,6 +330,10 @@
   "addressCopied": {
     "message": "Адрес скопирован"
   },
+  "addressLabel": {
+    "message": "адрес",
+    "description": "Label for address count (single address). Used on multichain account details page."
+  },
   "addressMismatch": {
     "message": "Несоответствие адреса сайта"
   },
@@ -334,6 +348,10 @@
   "addresses": {
     "message": "Адреса",
     "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "адреса",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "Дополнительно"
@@ -504,6 +522,9 @@
   "allPermissions": {
     "message": "Все разрешения"
   },
+  "allPopularNetworks": {
+    "message": "Все популярные сети"
+  },
   "allTimeHigh": {
     "message": "Максимум за все время"
   },
@@ -629,6 +650,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "Установите время бездействия в минутах, прежде чем MetaMask будет заблокирован."
+  },
+  "available": {
+    "message": "доступные"
   },
   "average": {
     "message": "Средний"
@@ -843,12 +867,6 @@
     "message": "Одобрить использование $1 для моста",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Вы разрешаете доступ к указанной сумме: $1 $2. Контракт не предусматривает доступа к каким-либо дополнительным средствам."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Вам нужно будет разрешить доступ к $1 $2 для создания моста, а затем утвердить создание моста к $2. Для этого потребуется два отдельных подтверждения."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ссылка обозревателя блоков скопирована!"
   },
@@ -895,12 +913,6 @@
   },
   "bridgeNetCost": {
     "message": "Чистая стоимость"
-  },
-  "bridgePriceImpact": {
-    "message": "Влияние на цену"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "Влияние на цену отражает, как ваш своп-ордер влияет на рыночную цену актива. Оно зависит от объёма сделки и доступной ликвидности в пуле. MetaMask не влияет на цену и не контролирует влияние на нее."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Влияние на цену"
@@ -1131,6 +1143,9 @@
   },
   "clearActivityDescription": {
     "message": "Это приведет к сбросу одноразового номера для счета и удалению данных со вкладки \"Активность\" в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
+  },
+  "clearFilters": {
+    "message": "Очистить все фильтры"
   },
   "click": {
     "message": "Нажмите"
@@ -1434,9 +1449,6 @@
   "connectingToLineaGoerli": {
     "message": "Подключение к тестовой сети Linea Goerli..."
   },
-  "connectingToLineaMainnet": {
-    "message": "Подключение к Мейн-нету Linea"
-  },
   "connectingToLineaSepolia": {
     "message": "Подключение к тестовой сети Linea Sepolia..."
   },
@@ -1526,6 +1538,14 @@
   "create": {
     "message": "Создать"
   },
+  "createMultichainAccountButton": {
+    "message": "Создать счет",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Создание счета...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Создать новый счет"
   },
@@ -1537,9 +1557,6 @@
   },
   "createPasswordDetails": {
     "message": "Разблокирует MetaMask только на этом устройстве."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Используйте его для восстановления кошелька на всех устройствах."
   },
   "createSnapAccountDescription": {
     "message": "$1 хочет добавить новый счет в MetaMask."
@@ -1674,9 +1691,6 @@
   },
   "dataCollectionForMarketing": {
     "message": "Сбор данных для маркетинга"
-  },
-  "dataCollectionForMarketingDescription": {
-    "message": "Мы будем использовать MetaMetrics, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем делиться соответствующими новостями (например, новостями о функциях продукта и другими материалами)."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Хорошо"
@@ -2746,6 +2760,9 @@
     "message": "$1 о том, как работают импортированные ключи",
     "description": "$1 is a link to learn more about imported keys"
   },
+  "importAnAccount": {
+    "message": "Импортировать счет"
+  },
   "importNFT": {
     "message": "Импорт NFT"
   },
@@ -2863,6 +2880,9 @@
   "insufficientFundsForGas": {
     "message": "Недостаточно средств для оплаты газа"
   },
+  "insufficientFundsSend": {
+    "message": "Недостаточно средств"
+  },
   "insufficientLockedLiquidityDescription": {
     "message": "Отсутствие адекватно заблокированной или сожженной ликвидности делает токен уязвимым к внезапному изъятию ликвидности, что может привести к нестабильности рынка."
   },
@@ -2939,6 +2959,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "Секретная фраза для восстановления не найдена."
+  },
+  "invalidValue": {
+    "message": "Неверная сумма"
   },
   "ipfsGateway": {
     "message": "Шлюз IPFS"
@@ -3129,9 +3152,6 @@
   },
   "lineaGoerli": {
     "message": "Тестовая сеть Linea Goerli"
-  },
-  "lineaMainnet": {
-    "message": "Мейн-нет Linea"
   },
   "lineaSepolia": {
     "message": "Тестовая сеть Linea Sepolia"
@@ -3363,6 +3383,14 @@
   "moreQuotes": {
     "message": "Больше котировок"
   },
+  "multichainAccountAddressCopied": {
+    "message": "Адрес скопирован",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "Закрытый ключ скопирован",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Вы добавляете эту сеть в MetaMask и разрешаете этому сайту использовать ее."
   },
@@ -3560,9 +3588,6 @@
   "networkNameLinea": {
     "message": "Linea"
   },
-  "networkNameOpMainnet": {
-    "message": "Мейн-нет OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3601,6 +3626,12 @@
   "networkSwitchConnectionError": {
     "message": "Нам не удается подключиться к $1",
     "description": "$1 represents the network name"
+  },
+  "networkTabCustom": {
+    "message": "Пользовательские"
+  },
+  "networkTabPopular": {
+    "message": "Популярные"
   },
   "networkURL": {
     "message": "URL сети"
@@ -4039,6 +4070,9 @@
   "onboardingImportWallet": {
     "message": "У меня есть существующий кошелек"
   },
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "Условиями использования"
+  },
   "onboardingMetametricsAgree": {
     "message": "Я согласен(-на)"
   },
@@ -4205,9 +4239,6 @@
   },
   "passwordChangedRecentlyDescription": {
     "message": "Введите новый пароль, чтобы остаться в MetaMask."
-  },
-  "passwordNotLongEnough": {
-    "message": "Пароль должен содержать не менее 8 символов"
   },
   "passwordTermsWarning": {
     "message": "Если я забуду этот пароль, MetaMask не сможет восстановить его для меня."
@@ -4615,6 +4646,10 @@
   "privateKeyWarning": {
     "message": "Предупреждение: никогда не раскрывайте этот ключ. Любой, у кого есть ваши закрытые ключи, может украсть любые активы, хранящиеся на вашем счете."
   },
+  "privateKeys": {
+    "message": "Закрытые ключи",
+    "description": "Private keys row label on multichain account details page."
+  },
   "privateNetwork": {
     "message": "Частная сеть"
   },
@@ -4632,6 +4667,18 @@
   },
   "publicAddress": {
     "message": "Публичный адрес"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "Лимитный ордер исполнен"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "Позиция ликвидирована"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "Сработал стоп-лосс"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "Сработал тейк-профит"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "Вы получили $1 $2"
@@ -4720,9 +4767,6 @@
   "rank": {
     "message": "Рейтинг"
   },
-  "rateIncludesMMFee": {
-    "message": "В курс включена комиссия в размере $1%"
-  },
   "reAddAccounts": {
     "message": "повторно добавить любые другие счета"
   },
@@ -4740,6 +4784,10 @@
   },
   "received": {
     "message": "Получено"
+  },
+  "receivingAddress": {
+    "message": "Принимающий адрес",
+    "description": "Page title when viewing addresses for receiving funds"
   },
   "recipientAddressPlaceholderNew": {
     "message": "Введите публичный адрес (0x) или имя домена"
@@ -4927,6 +4975,10 @@
   "reusedTokenNameWarning": {
     "message": "В токене здесь используется символ другого токена, который вы отслеживаете. Это может запутать или ввести в заблуждение."
   },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "Этот ключ предоставляет полный контроль над вашим счетом соответствующего блокчейна.",
+    "description": "Description for the banner warning users not to share their private key"
+  },
   "revealSecretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
   },
@@ -5033,6 +5085,10 @@
   },
   "searchTokensByNameOrAddress": {
     "message": "Поиск токенов по имени или адресу"
+  },
+  "searchYourAccounts": {
+    "message": "Поиск по вашим счетам",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
@@ -5262,6 +5318,10 @@
     "message": "Одобрить $1 без ограничений по расходам",
     "description": "The token symbol that is being approved"
   },
+  "setUp": {
+    "message": "Настроить",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
   "settingAddSnapAccount": {
     "message": "Добавить Snap счета"
   },
@@ -5273,6 +5333,12 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Запросы на подпись или транзакции"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "С чего начать"
+  },
+  "shieldEntryModalSkip": {
+    "message": "Пропустить"
   },
   "show": {
     "message": "Показать"
@@ -5469,6 +5535,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "Изменить проскальзывание"
+  },
+  "smartAccount": {
+    "message": "Смарт-счет"
   },
   "smartAccountAccept": {
     "message": "Использовать смарт-счет"
@@ -6911,6 +6980,10 @@
   "unlockPageTooManyFailedAttempts": {
     "message": "Слишком много попыток. Попробуйте ещё раз через "
   },
+  "unlockToReveal": {
+    "message": "Разблокируйте, чтобы показать",
+    "description": "Label used for Private Keys row on multichain account details page."
+  },
   "unpin": {
     "message": "Открепить"
   },
@@ -7177,17 +7250,15 @@
   "whatsThis": {
     "message": "Что это?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Это позволит утвердить $1 для создания моста."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Это позволит утвердить $1 для свопа."
-  },
   "withdrawing": {
     "message": "Выполняется вывод"
   },
   "wrongNetworkName": {
     "message": "Согласно нашим записям, имя сети может не соответствовать этому ID блокчейна."
+  },
+  "wrongPassword": {
+    "message": "Неверный пароль",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "Да"

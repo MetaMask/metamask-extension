@@ -101,8 +101,9 @@
   "accountDetails": {
     "message": "账户详情"
   },
-  "accountIdenticon": {
-    "message": "账户 Identicon"
+  "accountDetailsSrpBackUpMessage": {
+    "message": "备份",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
   "accountIsntConnectedToastText": {
     "message": "$1 未连接到 $2"
@@ -137,6 +138,9 @@
   "accountSelectionRequired": {
     "message": "您需要选择一个账户！"
   },
+  "accountSmallCase": {
+    "message": "账户"
+  },
   "accountTypeNotSupported": {
     "message": "账户类型不受支持"
   },
@@ -166,6 +170,9 @@
   },
   "addACustomNetwork": {
     "message": "添加自定义网络"
+  },
+  "addAHardwareWallet": {
+    "message": "添加硬件钱包"
   },
   "addANetwork": {
     "message": "添加网络"
@@ -305,6 +312,9 @@
   "addUrl": {
     "message": "添加 URL"
   },
+  "addWallet": {
+    "message": "添加钱包"
+  },
   "addingAccount": {
     "message": "添加账户"
   },
@@ -320,6 +330,10 @@
   "addressCopied": {
     "message": "地址已复制"
   },
+  "addressLabel": {
+    "message": "地址",
+    "description": "Label for address count (single address). Used on multichain account details page."
+  },
   "addressMismatch": {
     "message": "网站地址不匹配"
   },
@@ -334,6 +348,10 @@
   "addresses": {
     "message": "地址",
     "description": "Multichain account menu item for linking to addresses page"
+  },
+  "addressesLabel": {
+    "message": "地址",
+    "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
     "message": "高级"
@@ -504,6 +522,9 @@
   "allPermissions": {
     "message": "所有许可"
   },
+  "allPopularNetworks": {
+    "message": "所有热门网络"
+  },
   "allTimeHigh": {
     "message": "有史以来新高"
   },
@@ -629,6 +650,9 @@
   },
   "autoLockTimeLimitDescription": {
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
+  },
+  "available": {
+    "message": "可用"
   },
   "average": {
     "message": "平均值"
@@ -843,12 +867,6 @@
     "message": "批准 $1 进行桥接",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "您将允许获取指定金额 $1 $2。该合约将不会获取任何额外资金。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "您需要允许获取 $1 $2 用于桥接，然后批准桥接到 $2。这需要两次单独的确认。"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "区块浏览器链接已复制！"
   },
@@ -895,12 +913,6 @@
   },
   "bridgeNetCost": {
     "message": "净成本"
-  },
-  "bridgePriceImpact": {
-    "message": "价格影响"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "价格影响反映您的兑换订单对资产市场价格的影响程度。它取决于交易规模及资金池中的可用流动性。MetaMask 不会干预或控制价格影响。"
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "价格影响"
@@ -1048,7 +1060,7 @@
     "message": "忙碌中"
   },
   "buy": {
-    "message": "出入金"
+    "message": "买入"
   },
   "buyMoreAsset": {
     "message": "购买更多$1",
@@ -1131,6 +1143,9 @@
   },
   "clearActivityDescription": {
     "message": "这将会重置账户的 nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和传入的交易不会改变。"
+  },
+  "clearFilters": {
+    "message": "清除筛选条件"
   },
   "click": {
     "message": "点击"
@@ -1434,9 +1449,6 @@
   "connectingToLineaGoerli": {
     "message": "正在连接 Linea Goerli 测试网络"
   },
-  "connectingToLineaMainnet": {
-    "message": "正在连接到 Linea 主网"
-  },
   "connectingToLineaSepolia": {
     "message": "正在连接 Linea Sepolia 测试网络"
   },
@@ -1526,6 +1538,14 @@
   "create": {
     "message": "创建"
   },
+  "createMultichainAccountButton": {
+    "message": "创建账户",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "正在创建账户......",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "创建新账户"
   },
@@ -1537,9 +1557,6 @@
   },
   "createPasswordDetails": {
     "message": "仅在此设备上解锁 MetaMask。"
-  },
-  "createPasswordDetailsSocial": {
-    "message": "使用此功能在所有设备上恢复钱包。"
   },
   "createSnapAccountDescription": {
     "message": "$1 想在 MetaMask 添加一个新账户。"
@@ -1674,9 +1691,6 @@
   },
   "dataCollectionForMarketing": {
     "message": "用于营销目的的数据收集"
-  },
-  "dataCollectionForMarketingDescription": {
-    "message": "我们将使用 MetaMetrics 来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点和其他内容）。"
   },
   "dataCollectionWarningPopoverButton": {
     "message": "好的"
@@ -2746,6 +2760,9 @@
     "message": "通过 $1 了解导入密钥的工作原理",
     "description": "$1 is a link to learn more about imported keys"
   },
+  "importAnAccount": {
+    "message": "导入账户"
+  },
   "importNFT": {
     "message": "导入 NFT"
   },
@@ -2863,6 +2880,9 @@
   "insufficientFundsForGas": {
     "message": "燃料资金不足"
   },
+  "insufficientFundsSend": {
+    "message": "资金不足"
+  },
   "insufficientLockedLiquidityDescription": {
     "message": "该代币因缺乏充足的锁定或销毁流动性，可能面临突发性流动性撤出风险，进而可能引发市场动荡。"
   },
@@ -2939,6 +2959,9 @@
   },
   "invalidSeedPhraseNotFound": {
     "message": "未找到私钥助记词。"
+  },
+  "invalidValue": {
+    "message": "无效值"
   },
   "ipfsGateway": {
     "message": "IPFS网关"
@@ -3129,9 +3152,6 @@
   },
   "lineaGoerli": {
     "message": "Linea Goerli 测试网络"
-  },
-  "lineaMainnet": {
-    "message": "Linea 主网"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia 测试网络"
@@ -3363,6 +3383,14 @@
   "moreQuotes": {
     "message": "更多报价"
   },
+  "multichainAccountAddressCopied": {
+    "message": "地址已复制",
+    "description": "Message displayed when the multichain account address is copied to clipboard"
+  },
+  "multichainAccountPrivateKeyCopied": {
+    "message": "私钥已复制",
+    "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
   },
@@ -3560,9 +3588,6 @@
   "networkNameLinea": {
     "message": "Linea"
   },
-  "networkNameOpMainnet": {
-    "message": "OP主网"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3601,6 +3626,12 @@
   "networkSwitchConnectionError": {
     "message": "我们无法连接到 $1",
     "description": "$1 represents the network name"
+  },
+  "networkTabCustom": {
+    "message": "自定义"
+  },
+  "networkTabPopular": {
+    "message": "热门"
   },
   "networkURL": {
     "message": "网络 URL"
@@ -4039,6 +4070,9 @@
   "onboardingImportWallet": {
     "message": "我已有一个钱包"
   },
+  "onboardingLoginFooterTermsOfUse": {
+    "message": "使用条款"
+  },
   "onboardingMetametricsAgree": {
     "message": "我同意"
   },
@@ -4205,9 +4239,6 @@
   },
   "passwordChangedRecentlyDescription": {
     "message": "输入您的新密码以保持登录 MetaMask。"
-  },
-  "passwordNotLongEnough": {
-    "message": "密码必须至少包含 8 个字符"
   },
   "passwordTermsWarning": {
     "message": "如果我忘记该密码，MetaMask 将无法为我重设。"
@@ -4615,6 +4646,10 @@
   "privateKeyWarning": {
     "message": "警告：切勿泄露此私钥。任何拥有您私钥的人都可以窃取您账户中持有的任何资产。"
   },
+  "privateKeys": {
+    "message": "私钥",
+    "description": "Private keys row label on multichain account details page."
+  },
   "privateNetwork": {
     "message": "私有网络"
   },
@@ -4632,6 +4667,18 @@
   },
   "publicAddress": {
     "message": "公钥"
+  },
+  "pushNotificationLimitOrderFilledTitle": {
+    "message": "限价订单已成交"
+  },
+  "pushNotificationPositionLiquidatedTitle": {
+    "message": "仓位已清算"
+  },
+  "pushNotificationStopLossTriggeredTitle": {
+    "message": "止损已触发"
+  },
+  "pushNotificationTakeProfitTriggeredTitle": {
+    "message": "止盈已触发"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "您收到了 $1 $2"
@@ -4720,9 +4767,6 @@
   "rank": {
     "message": "排名"
   },
-  "rateIncludesMMFee": {
-    "message": "价格包括 $1% 费用"
-  },
   "reAddAccounts": {
     "message": "重新添加任何其他账户"
   },
@@ -4740,6 +4784,10 @@
   },
   "received": {
     "message": "已收到"
+  },
+  "receivingAddress": {
+    "message": "接收地址",
+    "description": "Page title when viewing addresses for receiving funds"
   },
   "recipientAddressPlaceholderNew": {
     "message": "输入公钥 (0x) 或域名"
@@ -4927,6 +4975,10 @@
   "reusedTokenNameWarning": {
     "message": "此处的代币使用了与您关注的另一种代币相同的符号，这可能会让人感到困惑或具有欺骗性。"
   },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "此密钥授予您对关联链上账户的完全控制权。",
+    "description": "Description for the banner warning users not to share their private key"
+  },
   "revealSecretRecoveryPhrase": {
     "message": "私钥助记词"
   },
@@ -5033,6 +5085,10 @@
   },
   "searchTokensByNameOrAddress": {
     "message": "按名称或地址搜索代币"
+  },
+  "searchYourAccounts": {
+    "message": "搜索您的账户",
+    "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
     "message": "私钥助记词"
@@ -5262,6 +5318,10 @@
     "message": "批准$1，且无消费限制",
     "description": "The token symbol that is being approved"
   },
+  "setUp": {
+    "message": "设置",
+    "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
   "settingAddSnapAccount": {
     "message": "添加账户 Snap"
   },
@@ -5273,6 +5333,12 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "签名和交易请求"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "开始使用"
+  },
+  "shieldEntryModalSkip": {
+    "message": "跳过"
   },
   "show": {
     "message": "显示"
@@ -5469,6 +5535,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "编辑滑移"
+  },
+  "smartAccount": {
+    "message": "智能账户"
   },
   "smartAccountAccept": {
     "message": "使用智能账户"
@@ -6911,6 +6980,10 @@
   "unlockPageTooManyFailedAttempts": {
     "message": "尝试次数过多。请在以下时间之后重试： "
   },
+  "unlockToReveal": {
+    "message": "解锁后方可显示",
+    "description": "Label used for Private Keys row on multichain account details page."
+  },
   "unpin": {
     "message": "取消置顶"
   },
@@ -7177,17 +7250,15 @@
   "whatsThis": {
     "message": "这是什么？"
   },
-  "willApproveAmountForBridging": {
-    "message": "这将会批准 $1 用于桥接。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "这将会批准 $1 用于兑换。"
-  },
   "withdrawing": {
     "message": "提取"
   },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
+  },
+  "wrongPassword": {
+    "message": "密码错误",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "yes": {
     "message": "是"
