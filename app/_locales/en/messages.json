@@ -7098,6 +7098,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "syncing": {
+    "message": "Syncing..."
+  },
   "tapToReveal": {
     "message": "Tap to reveal"
   },
