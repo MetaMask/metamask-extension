@@ -23,9 +23,9 @@ const APP_VERSION = packageJson.version;
 export const isMultichainAccountsFeatureEnabled = (
   enableMultichainAccounts: MultichainAccountsFeatureFlag | undefined | null,
   featureVersion: string,
-) => {
+): boolean => {
   if (!enableMultichainAccounts || !APP_VERSION) {
-    return false;
+    return true;
   }
 
   const {
@@ -34,13 +34,14 @@ export const isMultichainAccountsFeatureEnabled = (
     minimumVersion,
   } = enableMultichainAccounts;
 
-  if (!enabled || !currentFeatureVersion || !minimumVersion) {
-    return false;
+  if (enabled === undefined) {
+    return true;
   }
 
-  if (currentFeatureVersion !== featureVersion) {
-    return false;
-  }
-
-  return semver.gte(APP_VERSION, minimumVersion);
+  return (
+    enabled &&
+    minimumVersion !== null &&
+    currentFeatureVersion === featureVersion &&
+    semver.gte(APP_VERSION, minimumVersion)
+  );
 };

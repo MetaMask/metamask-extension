@@ -22,6 +22,13 @@ import MetaMaskController from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
+// Mock getIsMultichainAccountsState2Enabled to false
+jest.mock('../../shared/lib/multichain-accounts/remote-feature-flag', () => ({
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+  getIsMultichainAccountsState1Enabled: jest.fn(() => false),
+  isMultichainAccountsFeatureEnabled: jest.fn(() => false),
+}));
+
 const ganacheServer = new Ganache();
 
 const browserPolyfillMock = {

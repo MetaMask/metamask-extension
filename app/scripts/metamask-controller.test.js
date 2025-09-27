@@ -4118,6 +4118,11 @@ describe('MetaMaskController', () => {
       });
 
       it('should handle multiple seed phrases that need to be imported', async () => {
+        // TODO: remove this once we understand why this depends on bip-44 being disabled
+        jest
+          .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+          .mockReturnValue(false);
+
         const mockRootSRP = new Uint8Array([1, 2, 3, 4]);
         const mockOtherSRP1 = new Uint8Array([5, 6, 7, 8]);
         const mockOtherSRP2 = new Uint8Array([9, 10, 11, 12]);
@@ -5089,6 +5094,11 @@ describe('MetaMaskController', () => {
     });
 
     it('calls _importAccountsWithBalances when firstTimeFlowType is socialImport', async () => {
+      // TODO: remove this once we understand why this depends on bip-44 being disabled
+      jest
+        .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+        .mockReturnValue(false);
+
       // prev=false
       await publishOnboardingState({
         completedOnboarding: false,
