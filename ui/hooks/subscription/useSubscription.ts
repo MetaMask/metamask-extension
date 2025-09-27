@@ -1,12 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import { ProductType, Subscription } from '@metamask/subscription-controller';
+import {
+  PAYMENT_TYPES,
+  ProductType,
+  RecurringInterval,
+  Subscription,
+} from '@metamask/subscription-controller';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   cancelSubscription,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   unCancelSubscription,
+  updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
@@ -76,4 +82,26 @@ export const useOpenGetSubscriptionBillingPortal = () => {
     const { url } = await dispatch(getSubscriptionBillingPortalUrl());
     return await platform.openTab({ url });
   }, [dispatch]);
+};
+
+export const useUpdateSubscriptionCardPaymentMethod = ({
+  subscriptionId,
+  recurringInterval,
+}: {
+  subscriptionId?: string;
+  recurringInterval?: RecurringInterval;
+}) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  return useAsyncCallback(async () => {
+    if (!subscriptionId || !recurringInterval) {
+      throw new Error('Subscription ID and recurring interval are required');
+    }
+    await dispatch(
+      updateSubscriptionCardPaymentMethod({
+        subscriptionId,
+        paymentType: PAYMENT_TYPES.byCard,
+        recurringInterval,
+      }),
+    );
+  }, [dispatch, subscriptionId, recurringInterval]);
 };
