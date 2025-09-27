@@ -366,7 +366,7 @@ export const GlobalMenu = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           {supportText}
-          {isActiveShieldSubscription && (
+          {isActiveShieldSubscription && basicFunctionality && (
             <Tag
               label={t('priority')}
               labelProps={{

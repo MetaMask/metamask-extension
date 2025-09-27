@@ -3010,6 +3010,16 @@ export function getIsSecurityAlertsEnabled(state) {
 }
 
 /**
+ * To get the `getUsePhishDetect` value which determines whether phishing detection is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUsePhishDetect(state) {
+  return state.metamask.usePhishDetect;
+}
+
+/**
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state
