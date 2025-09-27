@@ -182,7 +182,7 @@ export async function mockLedgerTransactionRequests(mockServer: MockttpServer) {
 // Mock network information for swap API
 async function mockSwapNetworkInfo(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/1')
+    .forGet('https://bridge.api.cx.metamask.io/networks/1')
     .thenCallback(() => ({
       statusCode: 200,
       json: {
