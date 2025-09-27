@@ -3729,9 +3729,6 @@
   "noSnaps": {
     "message": "Aucun Snap installé"
   },
-  "noThanks": {
-    "message": "Non merci"
-  },
   "noWebcamFound": {
     "message": "La caméra de votre ordinateur n’a pas été trouvée. Veuillez réessayer."
   },
@@ -4009,45 +4006,11 @@
   "onboardingImportWallet": {
     "message": "J’ai déjà un portefeuille"
   },
-  "onboardingMetametricsAgree": {
-    "message": "J’accepte"
-  },
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Ce sera toujours :"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Si nous envisageons d’utiliser ces données à d’autres fins, nous vous en informerons. Vous pouvez consulter notre $1 à tout moment (nous ne vendons jamais les données que vous nous confiez).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Politique de confidentialité"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Les clics et les contenus visualisés sur l’application sont enregistrés, mais d’autres renseignements (comme votre adresse publique) ne le sont pas.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privé :"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Nous utilisons votre adresse IP de temps en temps pour détecter votre emplacement général (comme votre pays ou votre région), mais nous ne l’enregistrons pas.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Général :"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Vous pouvez décider à tout moment de partager ou de supprimer vos données d’utilisation dans les paramètres.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Facultatif :"
-  },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Nous utiliserons ces données pour savoir comment vous interagissez avec nos communications commerciales et pour partager avec vous des informations pertinentes (comme les caractéristiques des produits)."
   },
   "onboardingOptionIcon": {
     "message": "Icône $1",

@@ -3729,9 +3729,6 @@
   "noSnaps": {
     "message": "snapがインストールされていません"
   },
-  "noThanks": {
-    "message": "結構です"
-  },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
   },
@@ -4009,45 +4006,11 @@
   "onboardingImportWallet": {
     "message": "既存のウォレットがあります"
   },
-  "onboardingMetametricsAgree": {
-    "message": "同意します"
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMaskの改善のため、基本的な利用状況や診断データの収集にご協力ください。収集される情報は常に次のように制限されます:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "このデータを他の目的で利用する場合は、事前にお知らせいたします。当社の$1はいつでもご確認いただけます（ここで提供されたデータを当社が販売することは絶対にありません）。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "プライバシー ポリシー"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 アプリのクリック数や表示回数は保存されますが、その他の詳細 (ユーザーのパブリックアドレスなど) は保存されません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "非公開:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 大まかな位置情報（国や地域など）の検出にユーザーのIPアドレスが一時的に使用されますが、保存されることはありません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "一般:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 使用状況データを共有するか削除するかは、設定でいつでも指定できます。",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "任意:"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "このデータは、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
   },
   "onboardingOptionIcon": {
     "message": "$1アイコン",

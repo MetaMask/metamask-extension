@@ -3759,9 +3759,6 @@
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
   },
-  "noThanks": {
-    "message": "Không, cảm ơn"
-  },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
   },
@@ -4039,45 +4036,11 @@
   "onboardingImportWallet": {
     "message": "Tôi đã có ví"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Tôi đồng ý"
-  },
   "onboardingMetametricsDescription": {
     "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải thiện MetaMask. Hoạt động thu thập này sẽ luôn:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi có kế hoạch sử dụng dữ liệu này cho mục đích khác. Bạn có thể xem lại $1 bất kỳ lúc nào (chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Chính sách quyền riêng tư"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Chỉ lưu trữ các lượt nhấp và lượt xem trên ứng dụng, các thông tin khác (chẳng hạn như địa chỉ công khai của bạn) sẽ không được lưu trữ.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Riêng tư:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Chúng tôi tạm thời sử dụng địa chỉ IP của bạn để xác định vị trí chung (chẳng hạn như quốc gia hoặc khu vực của bạn), nhưng dữ liệu này sẽ không bao giờ được lưu trữ.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Chung:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Bạn có thể chọn chia sẻ hoặc xóa dữ liệu sử dụng của mình trong phần cài đặt bất kỳ lúc nào.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Không bắt buộc:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
   },
   "onboardingOptionIcon": {
     "message": "Biểu tượng $1",
