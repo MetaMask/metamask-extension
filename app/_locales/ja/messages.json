@@ -4091,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "すべて消去"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "すべて非表示"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "各単語の間に半角スペースを追加して、誰にも見られていないことを確認してください。"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "すべて表示"
   },
   "onekey": {
     "message": "OneKey"

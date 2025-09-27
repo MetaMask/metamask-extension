@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Очистить все"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Скрыть все"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Добавьте пробелы между всеми словами и убедитесь, что никто не видит."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Показать все"
   },
   "onekey": {
     "message": "OneKey"
