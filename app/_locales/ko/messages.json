@@ -737,9 +737,6 @@
   "beta": {
     "message": "베타"
   },
-  "betaHeaderText": {
-    "message": "베타 버전입니다. 버그는 $1로 보고하세요"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 베타 버전"
   },
@@ -3765,9 +3762,6 @@
   "noThanks": {
     "message": "괜찮습니다"
   },
-  "noTransactions": {
-    "message": "트랜잭션이 없습니다"
-  },
   "noWebcamFound": {
     "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도하세요."
   },
@@ -4749,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "공개 주소(0x) 또는 도메인 이름 입력"
-  },
-  "recommendedGasLabel": {
-    "message": "권장됨"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "지금 백업"

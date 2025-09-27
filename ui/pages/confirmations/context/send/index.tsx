@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { isHexString } from 'ethereumjs-util';
@@ -17,7 +18,6 @@ import {
   getSelectedAccountGroup,
   getAccountGroupWithInternalAccounts,
 } from '../../../../selectors/multichain-accounts/account-tree';
-import { getSelectedAccount } from '../../../../selectors';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 
@@ -26,12 +26,14 @@ export type SendContextType = {
   chainId?: string;
   currentPage?: SendPages;
   fromAccount?: InternalAccount;
-  from: string;
+  from?: string;
+  hexData?: Hex;
   maxValueMode?: boolean;
   to?: string;
   toResolved?: string;
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
+  updateHexData: (data: Hex) => void;
   updateTo: (to: string) => void;
   updateToResolved: (to: string | undefined) => void;
   updateValue: (value: string, maxValueMode?: boolean) => void;
@@ -44,11 +46,13 @@ export const SendContext = createContext<SendContextType>({
   currentPage: undefined,
   fromAccount: {} as InternalAccount,
   from: '',
+  hexData: undefined,
   maxValueMode: undefined,
   to: undefined,
   toResolved: undefined,
   updateAsset: () => undefined,
   updateCurrentPage: () => undefined,
+  updateHexData: () => undefined,
   updateTo: () => undefined,
   updateToResolved: () => undefined,
   updateValue: () => undefined,
@@ -59,12 +63,12 @@ export const SendContextProvider: React.FC<{
   children: ReactElement[] | ReactElement;
 }> = ({ children }) => {
   const [asset, setAsset] = useState<Asset>();
-  const from = useSelector(getSelectedAccount);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
     getAccountGroupWithInternalAccounts,
   );
   const [fromAccount, updateFromAccount] = useState<InternalAccount>();
+  const [hexData, updateHexData] = useState<Hex>();
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
   const [to, updateTo] = useState<string>();
   const [toResolved, updateToResolved] = useState<string>();
@@ -86,10 +90,11 @@ export const SendContextProvider: React.FC<{
         updateValue('', false);
         updateTo('');
         updateToResolved('');
+        updateHexData(undefined);
       }
       setAsset(newAsset);
     },
-    [asset, setAsset, updateTo, updateToResolved, updateValue],
+    [asset, setAsset, updateHexData, updateTo, updateToResolved, updateValue],
   );
 
   const chainId =
@@ -126,12 +131,14 @@ export const SendContextProvider: React.FC<{
         chainId,
         currentPage,
         fromAccount,
-        from: from?.address as string,
+        from: fromAccount?.address,
+        hexData,
         maxValueMode,
         to,
         toResolved: toResolved ?? to,
         updateAsset,
         updateCurrentPage,
+        updateHexData,
         updateTo,
         updateToResolved,
         updateValue,

@@ -737,9 +737,6 @@
   "beta": {
     "message": "बीटा"
   },
-  "betaHeaderText": {
-    "message": "यह बीटा वर्शन है। कृपया बग रिपोर्ट करें $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask बीटा वर्शन"
   },
@@ -3765,9 +3762,6 @@
   "noThanks": {
     "message": "जी नहीं, धन्यवाद"
   },
-  "noTransactions": {
-    "message": "आपके पास कोई ट्रांसेक्शन नहीं है"
-  },
   "noWebcamFound": {
     "message": "आपके कंप्यूटर का वेबकैम नहीं मिला। कृपया फिर से कोशिश करें।"
   },
@@ -4749,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "पब्लिक एड्रेस (0x) या डोमेन नाम डालें"
-  },
-  "recommendedGasLabel": {
-    "message": "अनुशंसित"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "अभी बैकअप लें"

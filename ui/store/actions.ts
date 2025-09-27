@@ -64,6 +64,7 @@ import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
+  BillingPortalResponse,
   PricingResponse,
   ProductPrice,
   ProductType,
@@ -391,12 +392,44 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground<Subscription[]>(
       'startSubscriptionWithCard',
-      [params],
+      [params, currentTab?.id],
     );
 
     return subscriptions;
+  };
+}
+
+export function cancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('cancelSubscription', [params]);
+  };
+}
+
+export function unCancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('unCancelSubscription', [params]);
+  };
+}
+
+export function getSubscriptionBillingPortalUrl(): ThunkAction<
+  BillingPortalResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const res = await submitRequestToBackground<BillingPortalResponse>(
+      'getSubscriptionBillingPortalUrl',
+      [],
+    );
+    return res;
   };
 }
 
@@ -4458,12 +4491,16 @@ export function setUseCurrencyRateCheck(
 // MultichainAssetsRatesController
 export function fetchHistoricalPricesForAsset(
   address: CaipAssetType,
+  internalAccount: InternalAccount,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
+    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
+      address,
+      internalAccount,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -5061,44 +5098,33 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
- * @deprecated - this unsafely sets the EnabledNetworkMap,
- * - we want to have better control on how we enable networks (either single network or all, not in between)
- * Please use controller-actions/network-order-controller.ts actions
- * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
- * to be enabled. All other networks will be implicitly disabled.
- * @param networkId - The CAIP-2 chain ID of the currently selected network
+ * Sets the enabled networks in the controller state.
+ * Only a single network or all networks can be enabled at once, not an arbitrary subset.
+ * Uses actions from controller-actions/network-order-controller.ts for better control.
+ *
+ * @param chainId - A single chainId (e.g. 'eip155:1') to be enabled. All other networks will be implicitly disabled.
  */
 export function setEnabledNetworks(
-  chainIds: string[],
-  networkId: CaipNamespace,
+  chainId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworks', [
-      chainIds,
-      networkId,
-    ]);
+    await submitRequestToBackground('setEnabledNetworks', [chainId]);
   };
 }
 
 /**
- * Sets the enabled networks in the controller state with multichain account behavior.
- * This method updates the enabledNetworkMap to mark specified networks as enabled
- * and disables all networks in other namespaces (multichain account exclusive behavior).
- * It can handle both a single chain ID or an array of chain IDs.
+ * Enables all popular networks in the controller state.
  *
- * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
- * to be enabled. All other networks will be implicitly disabled.
- * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
+ * @returns callback to enable all popular networks.
  */
-export function setEnabledNetworksMultichain(
-  chainIds: string[],
-  namespace: CaipNamespace,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setEnabledAllPopularNetworks(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworksMultichain', [
-      chainIds,
-      namespace,
-    ]);
+    await submitRequestToBackground('setEnabledAllPopularNetworks');
   };
 }
 

@@ -5,10 +5,6 @@ import TransactionConfirmation from './transaction-confirmation';
 class TokenTransferTransactionConfirmation extends TransactionConfirmation {
   private readonly confirmButton = '[data-testid="confirm-footer-button"]';
 
-  private readonly editGasFeeButton = '[data-testid="edit-gas-fee-icon"]';
-
-  private readonly gasInputs = 'input[type="number"]';
-
   private readonly interactingWithParagraph = {
     css: 'p',
     text: tEn('interactingWith') as string,
@@ -26,7 +22,10 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
     text: tEn('transactionFlowNetwork') as string,
   };
 
-  private readonly saveButton = { text: 'Save', tag: 'button' };
+  private readonly networkTextElement = (networkText: string) => ({
+    css: 'p',
+    text: networkText,
+  });
 
   constructor(driver: Driver) {
     super(driver);
@@ -38,30 +37,6 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
   async clickConfirmButton(): Promise<void> {
     console.log('Click confirm button to confirm transaction');
     await this.driver.clickElement(this.confirmButton);
-  }
-
-  /**
-   * Edits the gas fee by setting custom gas limit and price values
-   *
-   * @param gasLimit - The gas limit value to set
-   * @param gasPrice - The gas price value to set
-   */
-  async editGasFee(gasLimit: string, gasPrice: string): Promise<void> {
-    console.log('Editing gas fee values');
-
-    await this.driver.clickElement(this.editGasFeeButton);
-
-    const inputs = await this.driver.findElements(this.gasInputs);
-    const [gasLimitInput, gasPriceInput] = inputs;
-
-    await gasLimitInput.clear();
-    await gasLimitInput.sendKeys(gasLimit);
-    await gasPriceInput.clear();
-    await gasPriceInput.sendKeys(gasPrice);
-
-    await this.driver.clickElement(this.saveButton);
-
-    console.log('Gas fee values updated successfully');
   }
 
   // Check Methods
@@ -114,6 +89,16 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
       );
       throw e;
     }
+  }
+
+  /**
+   * Check if network text is displayed
+   *
+   * @param networkText - The expected network text to verify
+   */
+  async checkNetwork(networkText: string): Promise<void> {
+    console.log(`Checking for network text: ${networkText}`);
+    await this.driver.waitForSelector(this.networkTextElement(networkText));
   }
 }
 
