@@ -93,16 +93,6 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   await onboardingPasswordPage.checkPageIsLoaded();
 
   await onboardingPasswordPage.createWalletPassword(password);
-
-  // give a short delay to ensure that account synchronization is completed
-  await driver.delay(500);
-
-  // if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-  //   await onboardingMetricsFlow(driver, {
-  //     participateInMetaMetrics: true,
-  //     dataCollectionForMarketing: true,
-  //   });
-  // }
 };
 
 /**
