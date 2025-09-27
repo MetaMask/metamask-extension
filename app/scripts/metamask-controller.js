@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
+import browser from 'webextension-polyfill';
 import {
   createAsyncMiddleware,
   createScaffoldMiddleware,
@@ -13,7 +14,7 @@ import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
+import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -31,22 +32,16 @@ import { Messenger } from '@metamask/base-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import {
-  NetworkController,
-  getDefaultNetworkControllerState,
-} from '@metamask/network-controller';
-import {
   MethodNames,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
   SubjectType,
 } from '@metamask/permission-controller';
-
 import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { PermissionLogController } from '@metamask/permission-log-controller';
 
 import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
@@ -58,8 +53,6 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  BlockExplorerUrl,
-  ChainId,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -89,7 +82,6 @@ import {
   SolScope,
 } from '@metamask/keyring-api';
 import {
-  hasProperty,
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
@@ -157,7 +149,6 @@ import {
   CHAIN_SPEC_URL,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
-  getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
 
 import {
@@ -170,6 +161,7 @@ import { RestrictedMethods } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
+  HYPERLIQUID_APPROVAL_TYPE,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
@@ -227,6 +219,10 @@ import {
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
+import {
+  HYPERLIQUID_ORIGIN,
+  METAMASK_REFERRAL_CODE,
+} from '../../shared/constants/referrals';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -256,6 +252,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
+import { ReferralStatus } from './controllers/preferences-controller';
 import { AlertController } from './controllers/alert-controller';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
@@ -270,6 +267,10 @@ import {
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
+import {
+  createHyperliquidReferralMiddleware,
+  HyperliquidPermissionTriggerType,
+} from './lib/createHyperliquidReferralMiddleware';
 
 import {
   diffMap,
@@ -352,11 +353,6 @@ import { DeFiPositionsControllerInit } from './controller-init/defi-positions/de
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
-import {
-  onRpcEndpointUnavailable,
-  onRpcEndpointDegraded,
-} from './lib/network-controller/messenger-action-handlers';
-import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
@@ -386,7 +382,7 @@ import { NameControllerInit } from './controller-init/confirmations/name-control
 import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
 import { SubscriptionControllerInit } from './controller-init/subscription';
-import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
+import { getIdentityAPI } from './services/oauth/web-authenticator-factory';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
@@ -397,8 +393,11 @@ import { PreferencesControllerInit } from './controller-init/preferences-control
 import { AppStateControllerInit } from './controller-init/app-state-controller-init';
 import { PermissionControllerInit } from './controller-init/permission-controller-init';
 import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
+import { NetworkEnablementControllerInit } from './controller-init/assets/network-enablement-controller-init';
 import { KeyringControllerInit } from './controller-init/keyring-controller-init';
 import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-builder-init';
+import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
+import { NetworkControllerInit } from './controller-init/network-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -554,208 +553,17 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
 
-    const networkControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'NetworkController',
-      allowedEvents: [],
-      allowedActions: ['ErrorReportingService:captureException'],
-    });
-
-    let initialNetworkControllerState = initState.NetworkController;
-    const additionalDefaultNetworks = [
-      ChainId['megaeth-testnet'],
-      ChainId['monad-testnet'],
-    ];
-
-    if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState(
-        additionalDefaultNetworks,
-      );
-
-      /** @type {import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']} */
-      const networks =
-        initialNetworkControllerState.networkConfigurationsByChainId;
-
-      // TODO: Consider changing `getDefaultNetworkControllerState` on the
-      // controller side to include some of these tweaks.
-
-      Object.values(networks).forEach((network) => {
-        const id = network.rpcEndpoints[0].networkClientId;
-        // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
-        if (hasProperty(BlockExplorerUrl, id)) {
-          network.blockExplorerUrls = [BlockExplorerUrl[id]];
-        }
-        network.defaultBlockExplorerUrlIndex = 0;
-      });
-
-      // Add failovers for default Infura RPC endpoints
-      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
-      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('linea-mainnet');
-      networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('base-mainnet');
-
-      // Update default popular network names
-      networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
-      networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
-      networks[CHAIN_IDS.BASE].name = 'Base';
-
-      let network;
-      if (process.env.IN_TEST) {
-        network = {
-          chainId: CHAIN_IDS.LOCALHOST,
-          name: 'Localhost 8545',
-          nativeCurrency: 'ETH',
-          blockExplorerUrls: [],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'networkConfigurationId',
-              url: 'http://localhost:8545',
-              type: 'custom',
-              failoverUrls: [],
-            },
-          ],
-        };
-        networks[CHAIN_IDS.LOCALHOST] = network;
-      } else if (
-        process.env.METAMASK_DEBUG ||
-        process.env.METAMASK_ENVIRONMENT === 'test'
-      ) {
-        network = networks[CHAIN_IDS.SEPOLIA];
-      } else {
-        network = networks[CHAIN_IDS.MAINNET];
-      }
-
-      initialNetworkControllerState.selectedNetworkClientId =
-        network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
-    }
-
-    // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
-    if (
-      initialNetworkControllerState.networkConfigurationsByChainId &&
-      !Object.values(
-        initialNetworkControllerState.networkConfigurationsByChainId,
-      )
-        .flatMap((networkConfiguration) =>
-          networkConfiguration.rpcEndpoints.map(
-            (rpcEndpoint) => rpcEndpoint.networkClientId,
-          ),
-        )
-        .includes(initialNetworkControllerState.selectedNetworkClientId)
-    ) {
-      captureException(
-        new Error(
-          `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
-        ),
-      );
-
-      initialNetworkControllerState.selectedNetworkClientId =
-        initialNetworkControllerState.networkConfigurationsByChainId[
-          CHAIN_IDS.MAINNET
-        ].rpcEndpoints[0].networkClientId;
-    }
-
-    this.networkController = new NetworkController({
-      messenger: networkControllerMessenger,
-      state: initialNetworkControllerState,
-      infuraProjectId: opts.infuraProjectId,
-      getBlockTrackerOptions: () => {
-        return process.env.IN_TEST
-          ? {}
-          : {
-              pollingInterval: 20 * SECOND,
-              // The retry timeout is pretty short by default, and if the endpoint is
-              // down, it will end up exhausting the max number of consecutive
-              // failures quickly.
-              retryTimeout: 20 * SECOND,
-            };
-      },
-      getRpcServiceOptions: (rpcEndpointUrl) => {
-        const maxRetries = 4;
-        const commonOptions = {
-          fetch: globalThis.fetch.bind(globalThis),
-          btoa: globalThis.btoa.bind(globalThis),
-        };
-
-        if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
-          return {
-            ...commonOptions,
-            policyOptions: {
-              maxRetries,
-              // When we fail over to Quicknode, we expect it to be down at
-              // first while it is being automatically activated. If an endpoint
-              // is down, the failover logic enters a "cooldown period" of 30
-              // minutes. We'd really rather not enter that for Quicknode, so
-              // keep retrying longer.
-              maxConsecutiveFailures: (maxRetries + 1) * 14,
-            },
-          };
-        }
-
-        return {
-          ...commonOptions,
-          policyOptions: {
-            maxRetries,
-            // Ensure that the circuit does not break too quickly.
-            maxConsecutiveFailures: (maxRetries + 1) * 7,
-          },
-        };
-      },
-      additionalDefaultNetworks,
-    });
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointUnavailable',
-      async ({ chainId, endpointUrl, error }) => {
-        onRpcEndpointUnavailable({
-          chainId,
-          endpointUrl,
-          error,
-          infuraProjectId: opts.infuraProjectId,
-          trackEvent: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'MetaMetricsController:trackEvent',
-          ),
-          metaMetricsId: this.controllerMessenger.call(
-            'MetaMetricsController:getMetaMetricsId',
-          ),
-        });
-      },
-    );
-    networkControllerMessenger.subscribe(
-      'NetworkController:rpcEndpointDegraded',
-      async ({ chainId, endpointUrl, error }) => {
-        onRpcEndpointDegraded({
-          chainId,
-          endpointUrl,
-          error,
-          infuraProjectId: opts.infuraProjectId,
-          trackEvent: this.controllerMessenger.call.bind(
-            this.controllerMessenger,
-            'MetaMetricsController:trackEvent',
-          ),
-          metaMetricsId: this.controllerMessenger.call(
-            'MetaMetricsController:getMetaMetricsId',
-          ),
-        });
-      },
-    );
-    this.networkController.initializeProvider();
-
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
+      getNetworkClientById: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkController:getNetworkClientById',
       ),
-      findNetworkClientIdByChainId:
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
+      findNetworkClientIdByChainId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkController:findNetworkClientIdByChainId',
+      ),
     });
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
     this.deprecatedNetworkVersions = {};
 
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
@@ -821,14 +629,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
-    });
-
-    this.permissionLogController = new PermissionLogController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'PermissionLogController',
-      }),
-      restrictedMethods: new Set(Object.keys(RestrictedMethods)),
-      state: initState.PermissionLogController,
     });
 
     // @TODO(snaps): This fixes an issue where `withKeyring` would lock the `KeyringController` mutex.
@@ -970,7 +770,8 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:signPersonalMessage',
           'KeyringController:signTypedMessage',
           `${this.loggingController.name}:add`,
-          `${this.networkController.name}:getNetworkClientById`,
+          `NetworkController:getNetworkClientById`,
+          `GatorPermissionsController:decodePermissionFromPermissionContextForOrigin`,
         ],
       }),
       trace,
@@ -1022,16 +823,28 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // ensure AccountTrackerController updates balances after network change
-    networkControllerMessenger.subscribe(
+    this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       () => {
         this.accountTrackerController.updateAccounts();
       },
     );
 
+    // TODO: Remove this after BIP-44 rollout
+    accountsControllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (account) => {
+        if (account.type === SolAccountType.DataAccount) {
+          this.networkEnablementController.enableNetworkInNamespace(
+            SolScope.Mainnet,
+            KnownCaipNamespace.Solana,
+          );
+        }
+      },
+    );
+
     const existingControllers = [
       this.approvalController,
-      this.networkController,
       this.accountsController,
     ];
 
@@ -1041,8 +854,10 @@ export default class MetamaskController extends EventEmitter {
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
       PermissionController: PermissionControllerInit,
+      PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
+      NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
@@ -1099,6 +914,7 @@ export default class MetamaskController extends EventEmitter {
       SnapsNameProvider: SnapsNameProviderInit,
       EnsController: EnsControllerInit,
       NameController: NameControllerInit,
+      NetworkEnablementController: NetworkEnablementControllerInit,
     };
 
     const {
@@ -1121,9 +937,11 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
     this.permissionController = controllersByName.PermissionController;
+    this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =
       controllersByName.SubjectMetadataController;
     this.appStateController = controllersByName.AppStateController;
+    this.networkController = controllersByName.NetworkController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
@@ -1182,6 +1000,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.SeedlessOnboardingController;
     this.subscriptionController = controllersByName.SubscriptionController;
     this.networkOrderController = controllersByName.NetworkOrderController;
+    this.networkEnablementController =
+      controllersByName.NetworkEnablementController;
     this.shieldController = controllersByName.ShieldController;
     this.gatorPermissionsController =
       controllersByName.GatorPermissionsController;
@@ -1198,6 +1018,11 @@ export default class MetamaskController extends EventEmitter {
         'MetaMetricsController:trackEvent',
       ),
     });
+
+    this.provider =
+      this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker =
+      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
@@ -1328,7 +1153,7 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IF(bitcoin)
 
         const allEnabledNetworks = Object.values(
-          this.networkOrderController.state.enabledNetworkMap,
+          this.networkEnablementController.state.enabledNetworkMap,
         ).reduce((acc, curr) => {
           return { ...acc, ...curr };
         }, {});
@@ -1347,12 +1172,19 @@ export default class MetamaskController extends EventEmitter {
           ///: END:ONLY_INCLUDE_IF(bitcoin)
 
           if (shouldEnableMainetNetworks) {
-            this.networkOrderController.setEnabledNetworksMultichain(
-              ['0x1'],
-              KnownCaipNamespace.Eip155,
-            );
+            this.networkEnablementController.enableNetwork('0x1');
           }
         }
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'NetworkController:networkAdded',
+      (state) => {
+        this.networkEnablementController.enableNetworkInNamespace(
+          state.chainId,
+          KnownCaipNamespace.Eip155,
+        );
       },
     );
 
@@ -1568,6 +1400,7 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: this.subjectMetadataController,
       AnnouncementController: this.announcementController,
       NetworkOrderController: this.networkOrderController,
+      NetworkEnablementController: this.networkEnablementController,
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
       GatorPermissionsController: this.gatorPermissionsController,
@@ -1624,6 +1457,7 @@ export default class MetamaskController extends EventEmitter {
         SubjectMetadataController: this.subjectMetadataController,
         AnnouncementController: this.announcementController,
         NetworkOrderController: this.networkOrderController,
+        NetworkEnablementController: this.networkEnablementController,
         AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
@@ -1756,7 +1590,7 @@ export default class MetamaskController extends EventEmitter {
   isMultichainAccountsFeatureState2Enabled() {
     const featureFlag =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.enableMultichainAccounts;
+        ?.enableMultichainAccountsState2;
     return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
@@ -2073,11 +1907,62 @@ export default class MetamaskController extends EventEmitter {
       getAuthorizedScopesByOrigin,
     );
 
+    // TODO: To be removed when state 2 is fully transitioned.
     // wallet_notify for solana accountChanged when selected account changes
     this.controllerMessenger.subscribe(
       `${this.accountsController.name}:selectedAccountChange`,
       async (account) => {
         if (
+          account.type === SolAccountType.DataAccount &&
+          account.address !== lastSelectedSolanaAccountAddress
+        ) {
+          lastSelectedSolanaAccountAddress = account.address;
+
+          const originsWithSolanaAccountChangedNotifications =
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
+              KnownSessionProperties.SolanaAccountChangedNotifications,
+            );
+
+          // returns a map of origins to permitted solana accounts
+          const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+            this.permissionController.state,
+            [
+              MultichainNetworks.SOLANA,
+              MultichainNetworks.SOLANA_DEVNET,
+              MultichainNetworks.SOLANA_TESTNET,
+            ],
+          );
+
+          if (solanaAccounts.size > 0) {
+            for (const [origin, accounts] of solanaAccounts.entries()) {
+              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedSolanaAddresses.includes(account.address) &&
+                originsWithSolanaAccountChangedNotifications[origin]
+              ) {
+                this._notifySolanaAccountChange(origin, [account.address]);
+              }
+            }
+          }
+        }
+      },
+    );
+
+    // wallet_notify for solana accountChanged when selected account group changes
+    this.controllerMessenger.subscribe(
+      `${this.accountTreeController.name}:selectedAccountGroupChange`,
+      () => {
+        const [account] =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [SolScope.Mainnet],
+          });
+        if (
+          account &&
           account.type === SolAccountType.DataAccount &&
           account.address !== lastSelectedSolanaAccountAddress
         ) {
@@ -2422,28 +2307,76 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
-  async startSubscriptionWithCard(params) {
-    const webAuthenticator = webAuthenticatorFactory();
+  async startSubscriptionWithCard(
+    params,
+    /* current tab can be undefined if open from non tab context (e.g. popup, background) */
+    currentTabId,
+  ) {
+    const identityAPI = getIdentityAPI();
+    const redirectUrl = identityAPI.getRedirectURL();
+
     const { checkoutSessionUrl } =
-      await this.subscriptionController.startShieldSubscriptionWithCard(params);
-    // TODO: use chrome.tabs manually to have full browser feature in checkout session (e.g auto-fill form, etc.)
-    // use same launchWebAuthFlow api as oauth service to launch the stripe checkout session and get redirected back to extension from a pop up
-    // without having to handle chrome.windows.create and chrome.tabs.onUpdated event explicitly
-    await new Promise((resolve, reject) => {
-      webAuthenticator.launchWebAuthFlow(
-        {
-          url: checkoutSessionUrl,
-          interactive: true,
-        },
-        (responseUrl) => {
-          try {
-            resolve(responseUrl);
-          } catch (error) {
-            reject(error);
-          }
-        },
-      );
+      await this.subscriptionController.startShieldSubscriptionWithCard({
+        ...params,
+        successUrl: redirectUrl,
+      });
+
+    const checkoutTab = await this.platform.openTab({
+      url: checkoutSessionUrl,
     });
+
+    // --- We will define our listeners here so we can reference them for cleanup ---
+    // eslint-disable-next-line prefer-const
+    let onTabUpdatedListener;
+    // eslint-disable-next-line prefer-const
+    let onTabRemovedListener;
+
+    await new Promise((resolve, reject) => {
+      let checkoutSucceeded = false;
+      const cleanupListeners = () => {
+        // Important: Remove both listeners to prevent memory leaks
+        if (onTabUpdatedListener) {
+          this.platform.removeTabUpdatedListener(onTabUpdatedListener);
+        }
+        if (onTabRemovedListener) {
+          this.platform.removeTabRemovedListener(onTabRemovedListener);
+        }
+      };
+
+      // Set up a listener to watch for navigation on that specific tab
+      onTabUpdatedListener = (tabId, changeInfo, _tab) => {
+        // We only care about updates to our specific checkout tab
+        if (tabId === checkoutTab.id && changeInfo.url) {
+          if (changeInfo.url.startsWith(redirectUrl)) {
+            // Payment was successful!
+            checkoutSucceeded = true;
+
+            // Clean up: close the tab
+            this.platform.closeTab(tabId);
+          }
+          // TODO: handle cancel url ?
+        }
+      };
+      this.platform.addTabUpdatedListener(onTabUpdatedListener);
+
+      // Set up a listener to watch for tab removal
+      onTabRemovedListener = (tabId) => {
+        if (tabId === checkoutTab.id) {
+          cleanupListeners();
+          if (checkoutSucceeded) {
+            resolve();
+          } else {
+            reject(new Error('Checkout failed'));
+          }
+        }
+      };
+      this.platform.addTabRemovedListener(onTabRemovedListener);
+    });
+
+    if (!currentTabId) {
+      // open extension browser shield settings if open from pop up (no current tab)
+      this.platform.openExtensionInBrowser('/settings/transaction-shield');
+    }
 
     // fetch latest user subscriptions after checkout
     const subscriptions = await this.subscriptionController.getSubscriptions();
@@ -2612,6 +2545,9 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      multichainAssetsRatesController,
+      ///: END:ONLY_INCLUDE_IF
     } = this;
 
     return {
@@ -2753,6 +2689,17 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getCryptoApproveTransactionParams.bind(
           this.subscriptionController,
         ),
+      cancelSubscription: this.subscriptionController.cancelSubscription.bind(
+        this.subscriptionController,
+      ),
+      unCancelSubscription:
+        this.subscriptionController.unCancelSubscription.bind(
+          this.subscriptionController,
+        ),
+      getSubscriptionBillingPortalUrl:
+        this.subscriptionController.getBillingPortalUrl.bind(
+          this.subscriptionController,
+        ),
       startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
 
       // hardware wallets
@@ -2888,12 +2835,17 @@ export default class MetamaskController extends EventEmitter {
       setSelectedMultichainAccount: (accountGroupId) => {
         this.accountTreeController.setSelectedAccountGroup(accountGroupId);
       },
-
       setAccountGroupName: (accountGroupId, accountGroupName) => {
         this.accountTreeController.setAccountGroupName(
           accountGroupId,
           accountGroupName,
         );
+      },
+      syncAccountTreeWithUserStorage: async () => {
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorage();
       },
 
       // MultichainAccountService
@@ -2901,6 +2853,12 @@ export default class MetamaskController extends EventEmitter {
         await this.multichainAccountService.createNextMultichainAccountGroup({
           entropySource: walletId,
         });
+      },
+
+      alignMultichainWallets: async () => {
+        if (this.multichainAccountService) {
+          await this.multichainAccountService.alignWallets();
+        }
       },
 
       // AssetsContractController
@@ -3042,7 +3000,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setEnforcedSimulationsSlippageForTransaction.bind(
           appStateController,
         ),
-
+      setHasShownMultichainAccountsIntroModal:
+        appStateController.setHasShownMultichainAccountsIntroModal.bind(
+          appStateController,
+        ),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -3211,8 +3172,8 @@ export default class MetamaskController extends EventEmitter {
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
       setEnabledNetworks: this.setEnabledNetworks.bind(this),
-      setEnabledNetworksMultichain:
-        this.setEnabledNetworksMultichain.bind(this),
+      setEnabledAllPopularNetworks:
+        this.setEnabledAllPopularNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -3423,6 +3384,16 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      multichainAssetsRatesStartPolling:
+        multichainAssetsRatesController.startPolling.bind(
+          multichainAssetsRatesController,
+        ),
+      multichainAssetsRatesStopPollingByPollingToken:
+        multichainAssetsRatesController.stopPollingByPollingToken.bind(
+          multichainAssetsRatesController,
+        ),
+      ///: END:ONLY_INCLUDE_IF
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
@@ -3536,12 +3507,6 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
-      // AccountTreeController backup and sync
-      syncAccountTreeWithUserStorage:
-        this.accountTreeController.syncWithUserStorage.bind(
-          this.accountTreeController,
-        ),
-
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
@@ -4452,7 +4417,16 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       await this.keyringController.createNewVaultAndKeychain(password);
-      return this.keyringController.state.keyrings[0];
+      const primaryKeyring = this.keyringController.state.keyrings[0];
+
+      // Once we have our first HD keyring available, we re-create the internal list of
+      // accounts (they should be up-to-date already, but we still run `updateAccounts` as
+      // there are some account migration happening in that function).
+      this.accountsController.updateAccounts();
+      // Then we can build the initial tree.
+      this.accountTreeController.init();
+
+      return primaryKeyring;
     } finally {
       releaseLock();
     }
@@ -4833,7 +4807,7 @@ export default class MetamaskController extends EventEmitter {
       // newly created accounts.
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
-      this.accountTreeController.init();
+      this.accountTreeController.reinit();
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
@@ -5746,6 +5720,158 @@ export default class MetamaskController extends EventEmitter {
 
     const ethAccounts = getEthAccounts(caveat.value);
     return this.sortEvmAccountsByLastSelected(ethAccounts);
+  }
+
+  /**
+   * Handles Hyperliquid referral approval flow.
+   * Shows approval confirmation screen if needed and manages referral URL redirection.
+   * This can be triggered by connection permission grants or existing connections.
+   *
+   * @param {number} tabId - The browser tab ID to update.
+   * @param {HyperliquidPermissionTriggerType} triggerType - The trigger type.
+   */
+  async handleHyperliquidReferral(tabId, triggerType) {
+    const isHyperliquidReferralEnabled =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUxDefiReferral;
+
+    if (!isHyperliquidReferralEnabled) {
+      return;
+    }
+
+    // Only continue if Hyperliquid has permitted accounts
+    const permittedAccounts = this.getPermittedAccounts(HYPERLIQUID_ORIGIN);
+    if (permittedAccounts.length === 0) {
+      return;
+    }
+
+    // Only continue if there is no pending approval
+    const hasPendingApproval = this.approvalController.has({
+      origin: HYPERLIQUID_ORIGIN,
+      type: HYPERLIQUID_APPROVAL_TYPE,
+    });
+
+    if (hasPendingApproval) {
+      return;
+    }
+
+    // First account is the active Hyperliquid account
+    const activePermittedAccount = permittedAccounts[0];
+
+    const referralStatusByAccount =
+      this.preferencesController.state.referrals.hyperliquid;
+    const permittedAccountStatus =
+      referralStatusByAccount[activePermittedAccount];
+    const declinedAccounts = Object.keys(referralStatusByAccount).filter(
+      (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
+    );
+
+    // We should show approval screen if the account does not have a status
+    const shouldShowApproval = permittedAccountStatus === undefined;
+
+    // We should redirect to the referral url if the account is approved
+    const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
+
+    if (shouldShowApproval) {
+      try {
+        const approvalResponse = await this.approvalController.add({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: { selectedAddress: activePermittedAccount },
+          shouldShowRequest:
+            triggerType === HyperliquidPermissionTriggerType.NewConnection,
+        });
+
+        if (approvalResponse?.approved) {
+          this._handleHyperliquidApprovedAccount(
+            activePermittedAccount,
+            permittedAccounts,
+            declinedAccounts,
+          );
+          await this._handleHyperliquidReferralRedirect(
+            tabId,
+            activePermittedAccount,
+          );
+        } else {
+          this.preferencesController.addReferralDeclinedAccount(
+            activePermittedAccount,
+          );
+        }
+      } catch (error) {
+        // Do nothing if the user rejects the request
+        if (error.code === errorCodes.provider.userRejectedRequest) {
+          return;
+        }
+        throw error;
+      }
+    }
+
+    if (shouldRedirect) {
+      await this._handleHyperliquidReferralRedirect(
+        tabId,
+        activePermittedAccount,
+      );
+    }
+  }
+
+  /**
+   * Handles redirection to the Hyperliquid referral page.
+   *
+   * @param {number} tabId - The browser tab ID to update.
+   * @param {string} permittedAccount - The permitted account.
+   */
+  async _handleHyperliquidReferralRedirect(tabId, permittedAccount) {
+    await this._updateHyperliquidReferralUrl(tabId);
+    // Mark this account as having been shown the Hyperliquid referral page
+    this.preferencesController.addReferralPassedAccount(permittedAccount);
+  }
+
+  /**
+   * Handles referral states for permitted accounts after user approval.
+   *
+   * @param {string} activePermittedAccount - The active permitted account.
+   * @param {string[]} permittedAccounts - The permitted accounts.
+   * @param {string[]} declinedAccounts - The previously declined permitted accounts.
+   */
+  _handleHyperliquidApprovedAccount(
+    activePermittedAccount,
+    permittedAccounts,
+    declinedAccounts,
+  ) {
+    if (declinedAccounts.length === 0) {
+      // If there are no previously declined permitted accounts then
+      // we approve all permitted accounts so that the user is not
+      // shown the approval screen unnecessarily when switching
+      this.preferencesController.setAccountsReferralApproved(permittedAccounts);
+    } else {
+      this.preferencesController.addReferralApprovedAccount(
+        activePermittedAccount,
+      );
+      // If there are any previously declined accounts then
+      // we do not approve them, but instead remove them from the declined list
+      // so they have the option to participate again in future
+      permittedAccounts.forEach((account) => {
+        if (declinedAccounts.includes(account)) {
+          this.preferencesController.removeReferralDeclinedAccount(account);
+        }
+      });
+    }
+  }
+
+  /**
+   * Updates the browser tab URL to the Hyperliquid referral page.
+   *
+   * @param {number} tabId - The browser tab ID to update.
+   */
+  async _updateHyperliquidReferralUrl(tabId) {
+    try {
+      const { url } = await browser.tabs.get(tabId);
+      const { search } = new URL(url || '');
+      const newUrl = `${HYPERLIQUID_ORIGIN}/join/${METAMASK_REFERRAL_CODE}${search}`;
+      await browser.tabs.update(tabId, { url: newUrl });
+    } catch (error) {
+      log.error('Failed to update URL to Hyperliquid referral page: ', error);
+    }
   }
 
   /**
@@ -6745,18 +6871,13 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       },
-      setEnabledNetworks: (chainIds, namespace) => {
-        this.networkOrderController.setEnabledNetworks(chainIds, namespace);
-      },
-      setEnabledNetworksMultichain: (chainIds, namespace) => {
-        this.networkOrderController.setEnabledNetworksMultichain(
-          chainIds,
-          namespace,
-        );
+      setEnabledNetworks: (chainId) => {
+        this.networkEnablementController.enableNetwork(chainId);
       },
       getEnabledNetworks: (namespace) => {
         return (
-          this.networkOrderController.state.enabledNetworkMap[namespace] || {}
+          this.networkEnablementController.state.enabledNetworkMap[namespace] ||
+          {}
         );
       },
       getCurrentChainIdForDomain: (domain) => {
@@ -6927,6 +7048,13 @@ export default class MetamaskController extends EventEmitter {
         this.permissionController.createPermissionMiddleware({
           origin,
         }),
+      );
+
+      // Add Hyperliquid permission monitoring middleware
+      engine.push(
+        createHyperliquidReferralMiddleware(
+          this.handleHyperliquidReferral.bind(this),
+        ),
       );
     }
 
@@ -7303,6 +7431,10 @@ export default class MetamaskController extends EventEmitter {
             options,
           ),
         getCaveatForOrigin: this.permissionController.getCaveat.bind(
+          this.permissionController,
+          origin,
+        ),
+        updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
           origin,
         ),
@@ -7889,6 +8021,7 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     };
+
     return {
       ...controllerActions,
       snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
@@ -7899,7 +8032,9 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:getSelectedAccount',
         ],
       }),
-      provider: this.provider,
+      provider: this.controllerMessenger.call(
+        'NetworkController:getSelectedNetworkClient',
+      )?.provider,
     };
   }
 
@@ -8148,21 +8283,18 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setEnabledNetworks = (chainIds, networkId) => {
+  setEnabledNetworks = (chainId) => {
     try {
-      this.networkOrderController.setEnabledNetworks(chainIds, networkId);
+      this.networkEnablementController.enableNetwork(chainId);
     } catch (err) {
       log.error(err.message);
       throw err;
     }
   };
 
-  setEnabledNetworksMultichain = (chainIds, namespace) => {
+  setEnabledAllPopularNetworks = () => {
     try {
-      this.networkOrderController.setEnabledNetworksMultichain(
-        chainIds,
-        namespace,
-      );
+      this.networkEnablementController.enableAllPopularNetworks();
     } catch (err) {
       log.error(err.message);
       throw err;
@@ -8754,13 +8886,11 @@ export default class MetamaskController extends EventEmitter {
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
-      getGlobalChainId: this.#getGlobalChainId.bind(this),
-      getGlobalNetworkClientId: this.#getGlobalNetworkClientId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getProvider: () => this.provider,
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
       updateAccountBalanceForTransactionNetwork:

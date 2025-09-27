@@ -69,18 +69,19 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        navigate(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-          { replace: true },
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (isFireFox) {
-          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+        if (isFireFox || firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+          navigate(
+            isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+            { replace: true },
+          );
         } else {
-          navigate(ONBOARDING_METAMETRICS, { replace: true });
+          // we don't display the metametrics screen for social login flows if the user is not on firefox
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
         navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }
@@ -332,6 +333,12 @@ export default function OnboardingWelcome() {
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
+        if (!isFireFox) {
+          // reset the participate in meta metrics in case it was set to true from previous login attempts
+          // to prevent the queued events from being sent
+          dispatch(setParticipateInMetaMetrics(null));
+        }
+
         if (loginType === LOGIN_TYPE.SRP) {
           if (loginOption === LOGIN_OPTION.NEW) {
             await onCreateClick();
@@ -353,7 +360,7 @@ export default function OnboardingWelcome() {
         }
 
         if (!isFireFox) {
-          // sent queued events
+          // automatically set participate in meta metrics to true for social login users in chrome
           dispatch(setParticipateInMetaMetrics(true));
         }
       } catch (error) {

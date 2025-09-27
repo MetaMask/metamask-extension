@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Esta es una versión beta. Por favor, comunique los errores $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versión Beta de MetaMask"
   },
@@ -3732,9 +3729,6 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noActivity": {
-    "message": "Aún no hay actividad"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask no está conectado a este sitio"
   },
@@ -3744,17 +3738,11 @@
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
-  "noDeFiPositions": {
-    "message": "¿No encuentras lo que buscas?"
-  },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, y la mayoría de los monederos físicos, no funcionarán con la versión actual de su navegador."
-  },
-  "noNFTs": {
-    "message": "No hay ningún NFT aún"
   },
   "noNetworksAvailable": {
     "message": "No hay redes disponibles"
@@ -3773,9 +3761,6 @@
   },
   "noThanks": {
     "message": "No, gracias"
-  },
-  "noTransactions": {
-    "message": "No tiene transacciones"
   },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
@@ -4642,9 +4627,6 @@
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
   },
-  "protocolNotSupported": {
-    "message": "Es posible que aún no admitamos tu protocolo."
-  },
   "provide": {
     "message": "Proporcionar"
   },
@@ -4761,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Ingrese la dirección pública (0x) o el nombre del dominio"
-  },
-  "recommendedGasLabel": {
-    "message": "Recomendado"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Realizar una copia de seguridad ahora"

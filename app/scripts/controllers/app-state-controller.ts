@@ -104,6 +104,7 @@ export type AppStateControllerState = {
   timeoutMinutes: number;
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
+  hasShownMultichainAccountsIntroModal: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -239,6 +240,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
   updateModalLastDismissedAt: null,
+  hasShownMultichainAccountsIntroModal: false,
 
   ...getInitialStateOverrides(),
 });
@@ -525,6 +527,12 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
     usedInUi: true,
+  },
+  hasShownMultichainAccountsIntroModal: {
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+    includeInStateLogs: true,
   },
 };
 
@@ -1054,6 +1062,17 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Sets whether the multichain intro modal has been shown to the user
+   *
+   * @param hasShown - Whether the modal has been shown
+   */
+  setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
+    this.update((state) => {
+      state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
    * Sets the product tour to be shown to the user
    *
    * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
@@ -1150,7 +1169,7 @@ export class AppStateController extends BaseController<
 
     // Check if the cached response has expired (15 minute TTL)
     const now = Date.now();
-    const ADDRESS_SECURITY_ALERT_TTL = Number(MINUTE);
+    const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
     if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
       // Remove expired entry
       this.update((state) => {

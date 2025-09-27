@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
-import { withFixtures, openActionMenuAndStartSendFlow } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   NATIVE_TOKEN_SYMBOL,
@@ -26,7 +27,8 @@ describe('Swap-Send ERC20', function () {
           await loginWithBalanceValidation(driver, localNodes[0]);
 
           // START SWAP AND SEND FLOW
-          await openActionMenuAndStartSendFlow(driver);
+          const homePage = new HomePage(driver);
+          await homePage.startSendFlow();
 
           await swapSendPage.fillRecipientAddressInput(RECIPIENT_ADDRESS);
           await swapSendPage.fillAmountInput('1');

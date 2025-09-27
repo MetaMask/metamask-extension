@@ -89,6 +89,7 @@ buildTypes:
       - bitcoin
       - multi-srp
       - multichain
+      - gator-permissions
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -107,6 +108,7 @@ buildTypes:
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
+      - GATOR_PERMISSIONS_ENABLED: true
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -162,6 +164,12 @@ features:
   ocap-kernel:
     assets:
       - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
+  gator-permissions:
+    assets:
+      - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json
+        dest: snaps/permissions-kernel-snap.json
+      - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
+        dest: snaps/gator-permissions-snap.json
 
 # Env variables that are required for all types of builds
 #

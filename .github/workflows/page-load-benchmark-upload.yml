@@ -16,7 +16,7 @@ jobs:
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download page load benchmark results
         uses: actions/download-artifact@v4

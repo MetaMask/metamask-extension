@@ -35,12 +35,14 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
+  getAssetsContractControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -143,6 +145,11 @@ import {
   getKeyringControllerInitMessenger,
   getKeyringControllerMessenger,
 } from './keyring-controller-messenger';
+import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+import {
+  getNetworkControllerInitMessenger,
+  getNetworkControllerMessenger,
+} from './network-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -198,6 +205,14 @@ export {
 } from './keyring-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type {
+  NetworkControllerMessenger,
+  NetworkControllerInitMessenger,
+} from './network-controller-messenger';
+export {
+  getNetworkControllerMessenger,
+  getNetworkControllerInitMessenger,
+} from './network-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type {
@@ -220,6 +235,8 @@ export {
   getPermissionControllerMessenger,
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
+export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export type {
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
@@ -362,6 +379,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
   },
+  NetworkController: {
+    getMessenger: getNetworkControllerMessenger,
+    getInitMessenger: getNetworkControllerInitMessenger,
+  },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
     getInitMessenger: noop,
@@ -381,6 +402,10 @@ export const CONTROLLER_MESSENGERS = {
   PermissionController: {
     getMessenger: getPermissionControllerMessenger,
     getInitMessenger: getPermissionControllerInitMessenger,
+  },
+  PermissionLogController: {
+    getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
@@ -488,7 +513,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAssetsContractControllerInitMessenger,
   },
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,
@@ -508,6 +533,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkEnablementController: {
+    getMessenger: getNetworkEnablementControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

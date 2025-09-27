@@ -1,6 +1,11 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import { getUseBlockie } from '../../../selectors';
 import { Text } from '../../component-library/text';
 import {
@@ -17,11 +22,6 @@ import {
   AvatarToken,
 } from '../../component-library/avatar-token';
 import { Box } from '../../component-library/box';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-} from '../../component-library/avatar-account';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -88,7 +88,6 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                       ? AvatarAccountVariant.Blockies
                       : AvatarAccountVariant.Jazzicon
                   }
-                  borderColor={borderColor}
                 />
               )}
               {avatarType === AvatarType.NETWORK && (
