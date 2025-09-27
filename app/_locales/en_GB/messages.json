@@ -173,7 +173,7 @@
     "message": "Activity"
   },
   "activityEmptyDescription": {
-    "message": "Nothing to see yet. Check the explorer for more recent activity."
+    "message": "Nothing to see yet. Swap your first token today."
   },
   "activityLog": {
     "message": "Activity log"
@@ -7031,6 +7031,9 @@
   "swapTokenVerifiedSources": {
     "message": "Confirmed by $1 sources. Verify on $2.",
     "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
+  "swapTokens": {
+    "message": "Swap tokens"
   },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",

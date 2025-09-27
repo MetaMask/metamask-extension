@@ -732,7 +732,10 @@ export default function UnifiedTransactionList({
           <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
         ) : null}
         {processedUnifiedActivityItems.length === 0 ? (
-          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+          <TransactionActivityEmptyState
+            className="mx-auto mt-5 mb-6"
+            account={selectedAccount}
+          />
         ) : (
           <Box className="transaction-list__transactions">
             {processedUnifiedActivityItems
