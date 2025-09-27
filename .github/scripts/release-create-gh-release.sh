@@ -38,11 +38,19 @@ function publish_tag() {
     shift
     local build_version="${1}"
     shift
+    local tag_name="v${build_version}"
+
+    # Check if tag already exists
+    if git rev-parse "${tag_name}" >/dev/null 2>&1; then
+        printf '%s\n' "${build_name} tag ${tag_name} already exists. Skipping tag creation."
+        return 0
+    fi
 
     git config user.email "metamaskbot@users.noreply.github.com"
     git config user.name "MetaMask Bot"
-    git tag -a "v${build_version}" -m "${build_name} version ${build_version}"
-    git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "v${build_version}"
+    git tag -a "${tag_name}" -m "${build_name} version ${build_version}"
+    git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "${tag_name}"
+    printf '%s\n' "${build_name} tag ${tag_name} created and pushed."
 }
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
