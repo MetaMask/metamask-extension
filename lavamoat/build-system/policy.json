@@ -1925,12 +1925,12 @@
         "fs.Stats": true
       }
     },
-    "@metamask/jazzicon>color>clone": {
+    "vinyl>clone": {
       "globals": {
         "Buffer": true
       }
     },
-    "vinyl>clone": {
+    "gulp-watch>vinyl-file>vinyl>clone": {
       "globals": {
         "Buffer": true
       }
@@ -8456,7 +8456,7 @@
       },
       "packages": {
         "gulp-watch>vinyl-file>vinyl>clone-stats": true,
-        "@metamask/jazzicon>color>clone": true,
+        "gulp-watch>vinyl-file>vinyl>clone": true,
         "gulp-watch>vinyl-file>vinyl>replace-ext": true
       }
     },
