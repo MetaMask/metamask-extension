@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "添加账户"
   },
-  "addingCustomNetwork": {
-    "message": "正在添加网络"
-  },
   "additionalNetworks": {
     "message": "其他网络"
   },
