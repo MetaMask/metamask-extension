@@ -11,6 +11,7 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCurrentKeyring,
@@ -66,10 +67,9 @@ export default function OnboardingWelcome() {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        if (isFireFox || firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+        if (isFireFox) {
           navigate(
             isParticipateInMetaMetricsSet
               ? ONBOARDING_COMPLETION_ROUTE
@@ -77,9 +77,10 @@ export default function OnboardingWelcome() {
             { replace: true },
           );
         } else {
-          // we don't display the metametrics screen for social login flows if the user is not on firefox
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {

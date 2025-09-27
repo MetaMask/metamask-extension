@@ -35,9 +35,10 @@ describe('Metamask onboarding (with social login)', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.completeOnboarding();
+        await onboardingCompletePage.clickCreateWalletDoneButton();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -65,8 +66,7 @@ describe('Metamask onboarding (with social login)', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

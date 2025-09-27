@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextVariant,
@@ -9,9 +9,11 @@ import {
   BlockSize,
   FlexDirection,
   AlignItems,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  DEFAULT_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -21,17 +23,26 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { getCurrentKeyring } from '../../../selectors';
+import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { setCompletedOnboarding } from '../../../store/actions';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingDownloadApp() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currentKeyring = useSelector(getCurrentKeyring);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const handleClick = async () => {
-    navigate(ONBOARDING_PIN_EXTENSION_ROUTE);
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      await dispatch(setCompletedOnboarding());
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+    }
   };
 
   useEffect(() => {
@@ -66,7 +77,9 @@ export default function OnboardingDownloadApp() {
             alt="Download the app"
           />
         </Box>
-        <Text variant={TextVariant.bodyMd}>{t('downloadAppDescription')}</Text>
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          {t('downloadAppDescription')}
+        </Text>
       </Box>
       <Box>
         <Button

@@ -290,9 +290,10 @@ describe('Wallet Created Events', function () {
         await createNewWalletWithSocialLoginOnboardingFlow(onboardingOptions);
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.completeOnboarding();
+        await onboardingCompletePage.clickCreateWalletDoneButton();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 4);
