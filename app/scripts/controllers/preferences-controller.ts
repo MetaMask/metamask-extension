@@ -1065,7 +1065,7 @@ export class PreferencesController extends BaseController<
       (identitiesMap: Record<string, AccountIdentityEntry>, account) => {
         identitiesMap[account.address] = {
           address: account.address,
-          name: account.metadata.name,
+          name: account.metadata?.name || '',
           lastSelected: account.metadata.lastSelected,
         };
 
