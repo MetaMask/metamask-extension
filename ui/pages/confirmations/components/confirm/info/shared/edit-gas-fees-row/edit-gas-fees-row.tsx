@@ -48,7 +48,7 @@ export const EditGasFeesRow = ({
     selectConfirmationAdvancedDetailsOpen,
   );
 
-  const { chainId, simulationData } = transactionMeta;
+  const { chainId, isGasFeeSponsored, simulationData } = transactionMeta;
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
@@ -83,7 +83,7 @@ export const EditGasFeesRow = ({
             textAlign={TextAlign.Center}
             gap={1}
           >
-            {!gasFeeToken && (
+            {!gasFeeToken && !isGasFeeSponsored && (
               <EditGasIconButton
                 supportsEIP1559={supportsEIP1559}
                 setShowCustomizeGasPopover={setShowCustomizeGasPopover}
@@ -93,11 +93,12 @@ export const EditGasFeesRow = ({
               <FiatValue
                 fullValue={fiatFeeWith18SignificantDigits}
                 roundedValue={fiatValue}
+                isSponsored={isGasFeeSponsored}
               />
             ) : (
               <TokenValue roundedValue={tokenValue} />
             )}
-            <SelectedGasFeeToken />
+            {!isGasFeeSponsored && <SelectedGasFeeToken />}
           </Box>
         )}
       </ConfirmInfoAlertRow>
@@ -145,11 +146,13 @@ function FiatValue({
   fullValue,
   roundedValue,
   variant,
+  isSponsored = false,
 }: {
   color?: TextColor;
   fullValue: string | null;
   roundedValue: string;
   variant?: TextVariant;
+  isSponsored?: boolean;
 }) {
   const styleProps = { color, variant };
   const value = (
@@ -158,10 +161,29 @@ function FiatValue({
     </Text>
   );
 
-  return fullValue ? (
-    <Tooltip title={fullValue}>{value}</Tooltip>
+  const FreeNotice = isSponsored && (
+    <Text color={TextColor.successDefault} style={{ marginRight: '4px' }}>
+      Free
+    </Text>
+  );
+  const ConditionalValue = isSponsored ? (
+    <Text color={color} style={{ textDecoration: 'line-through' }}>
+      {value}
+    </Text>
   ) : (
-    <>{value}</>
+    value
+  );
+
+  return fullValue ? (
+    <>
+      {FreeNotice}
+      <Tooltip title={fullValue}>{ConditionalValue}</Tooltip>
+    </>
+  ) : (
+    <>
+      {FreeNotice}
+      {ConditionalValue}
+    </>
   );
 }
 
