@@ -74,6 +74,8 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
   SHIELD_PLAN_ROUTE,
+  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -162,7 +164,6 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-// import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
@@ -291,13 +292,20 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
-// const GatorPermissionsPage = mmLazy(
-//   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-//   (() =>
-//     import(
-//       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-//     )) as unknown as DynamicImportType,
-// );
+const GatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const TokenTransferPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -645,15 +653,15 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
-            path={PERMISSIONS}
-            component={
-              // TODO: enable this when gator permission page is implemented
-              // isGatorPermissionsFeatureEnabled()
-              //   ? GatorPermissionsPage
-              //   : PermissionsPage
-              PermissionsPage
-            }
+            path={GATOR_PERMISSIONS}
+            component={GatorPermissionsPage}
+            exact
+          />
+          <Authenticated
+            path={TOKEN_TRANSFER_ROUTE}
+            component={TokenTransferPage}
             exact
           />
           <Authenticated

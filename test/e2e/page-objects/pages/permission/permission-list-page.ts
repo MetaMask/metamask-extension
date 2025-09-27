@@ -11,6 +11,8 @@ class PermissionListPage {
 
   private readonly permissionsPage = '[data-testid="permissions-page"]';
 
+  private readonly backButton = '[data-testid="permissions-page-back"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -66,6 +68,14 @@ class PermissionListPage {
       );
       return connectedSites.length === expectedNumberOfConnectedSites;
     });
+  }
+
+  /**
+   * Click the back button on the permissions page
+   */
+  async clickBackButton(): Promise<void> {
+    console.log('Click back button on permissions page');
+    await this.driver.clickElement(this.backButton);
   }
 }
 

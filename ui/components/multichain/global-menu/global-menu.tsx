@@ -18,6 +18,7 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
+  GATOR_PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -83,6 +84,7 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -282,7 +284,11 @@ export const GlobalMenu = ({
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
-        to={PERMISSIONS}
+        to={
+          isGatorPermissionsRevocationFeatureEnabled()
+            ? GATOR_PERMISSIONS
+            : PERMISSIONS
+        }
         iconName={IconName.SecurityTick}
         onClick={() => {
           trackEvent({
