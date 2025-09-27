@@ -214,20 +214,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           marginBottom={4}
           width={BlockSize.Full}
         >
-          {!isFromReminder && (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('stepOf', [3, 3])}
-            </Text>
-          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('confirmRecoveryPhraseTitle')}
           </Text>
         </Box>
         <Box marginBottom={6}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
             {t('confirmRecoveryPhraseDetails')}
           </Text>
         </Box>
