@@ -3291,7 +3291,7 @@ describe('Actions', () => {
 
       const expectedActions = [{ type: 'HIDE_WARNING' }];
 
-      await store.dispatch(actions.syncSeedPhrases());
+      await store.dispatch(actions.syncSecretDataWithSocialLogin());
 
       expect(store.getActions()).toStrictEqual(expectedActions);
       expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
@@ -3308,7 +3308,7 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', payload: errorMessage },
       ];
 
-      await expect(store.dispatch(actions.syncSeedPhrases())).rejects.toThrow(
+      await expect(store.dispatch(actions.syncSecretDataWithSocialLogin())).rejects.toThrow(
         errorMessage,
       );
 
@@ -3324,7 +3324,7 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       try {
-        await store.dispatch(actions.syncSeedPhrases());
+        await store.dispatch(actions.syncSecretDataWithSocialLogin());
       } catch (error) {
         // Expected to throw
       }
