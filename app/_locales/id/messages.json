@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Ini merupakan versi beta. Harap laporkan bug $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versi MetaMask Beta"
   },
@@ -4746,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Masukkan alamat publik (0x) atau nama domain"
-  },
-  "recommendedGasLabel": {
-    "message": "Direkomendasikan"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cadangkan sekarang"
