@@ -105,29 +105,39 @@ const mapStateToProps = (state, ownProps) => {
     );
   });
 
-  const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
-  const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
-  const snapsConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAPS_CONNECT_ROUTE}`;
-  const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
-  const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
-  const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
+  // For nested routing in React Router v6/v5-compat, use relative paths
+  const connectPath = '';
+  const confirmPermissionPath = CONNECT_CONFIRM_PERMISSIONS_ROUTE.slice(1); // Remove leading slash
+  const snapsConnectPath = CONNECT_SNAPS_CONNECT_ROUTE.slice(1); // Remove leading slash
+  const snapInstallPath = CONNECT_SNAP_INSTALL_ROUTE.slice(1); // Remove leading slash
+  const snapUpdatePath = CONNECT_SNAP_UPDATE_ROUTE.slice(1); // Remove leading slash
+  const snapResultPath = CONNECT_SNAP_RESULT_ROUTE.slice(1); // Remove leading slash
+  // For checking pathname, we need to construct the full absolute paths
+  const fullSnapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
+  const fullSnapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
+  const fullSnapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
   const isSnapInstallOrUpdateOrResult =
-    pathname === snapInstallPath ||
-    pathname === snapUpdatePath ||
-    pathname === snapResultPath;
+    pathname === fullSnapInstallPath ||
+    pathname === fullSnapUpdatePath ||
+    pathname === fullSnapResultPath;
 
   let totalPages = 1 + isRequestingAccounts;
   totalPages += isSnapInstallOrUpdateOrResult;
   totalPages = totalPages.toString();
 
+  // For page calculation, we need to check against full absolute paths
+  const fullConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
+  const fullConfirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
+  const fullSnapsConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAPS_CONNECT_ROUTE}`;
+
   let page = '';
-  if (pathname === connectPath) {
+  if (pathname === fullConnectPath) {
     page = '1';
-  } else if (pathname === confirmPermissionPath) {
+  } else if (pathname === fullConfirmPermissionPath) {
     page = isRequestingAccounts ? '2' : '1';
   } else if (isSnapInstallOrUpdateOrResult) {
     page = isRequestingAccounts ? '3' : '2';
-  } else if (pathname === snapsConnectPath) {
+  } else if (pathname === fullSnapsConnectPath) {
     page = 1;
   } else {
     throw new Error('Incorrect path for permissions-connect component');

@@ -721,13 +721,13 @@ export function matchMultiplePaths(
   options: { exact?: boolean; strict?: boolean } = {},
 ) {
   for (const path of paths) {
-    const match = matchPath(
-      {
-        path,
-        ...options,
-      },
-      pathname,
-    );
+    // Convert v5 options to v6 options
+    const v6Options = {
+      path,
+      end: options.exact ?? false,
+      caseSensitive: options.strict ?? false,
+    };
+    const match = matchPath(v6Options, pathname);
     if (match) {
       return match;
     }

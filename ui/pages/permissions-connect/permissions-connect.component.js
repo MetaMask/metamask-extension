@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Routes, Route } from 'react-router-dom-v5-compat';
+import { Routes, Route, Navigate } from 'react-router-dom-v5-compat';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -154,42 +154,47 @@ export default class PermissionConnect extends Component {
 
   componentDidMount() {
     const {
-      connectPath,
-      confirmPermissionPath,
-      snapsConnectPath,
+      getRequestAccountTabIds,
+    } = this.props;
+    getRequestAccountTabIds();
+  }
+
+  getNavigationComponent() {
+    const {
+      permissionsRequest,
+      requestType,
       snapInstallPath,
       snapUpdatePath,
       snapResultPath,
-      requestType,
-      getRequestAccountTabIds,
-      permissionsRequest,
-      navigate,
+      snapsConnectPath,
+      confirmPermissionPath,
       isRequestingAccounts,
+      permissionsRequestId,
+      location,
     } = this.props;
-    getRequestAccountTabIds();
 
     if (!permissionsRequest) {
-      navigate(DEFAULT_ROUTE, { replace: true });
-      return;
+      return <Navigate to={DEFAULT_ROUTE} replace />;
     }
-    if (this.props.location.pathname === connectPath && !isRequestingAccounts) {
+
+    // For path comparison, we need to construct the full absolute path
+    const fullConnectPath = `/connect/${permissionsRequestId}`;
+    if (location.pathname === fullConnectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
-          navigate(snapInstallPath, { replace: true });
-          break;
+          return <Navigate to={snapInstallPath} replace />;
         case 'wallet_updateSnap':
-          navigate(snapUpdatePath, { replace: true });
-          break;
+          return <Navigate to={snapUpdatePath} replace />;
         case 'wallet_installSnapResult':
-          navigate(snapResultPath, { replace: true });
-          break;
+          return <Navigate to={snapResultPath} replace />;
         case 'wallet_connectSnaps':
-          navigate(snapsConnectPath, { replace: true });
-          break;
+          return <Navigate to={snapsConnectPath} replace />;
         default:
-          navigate(confirmPermissionPath, { replace: true });
+          return <Navigate to={confirmPermissionPath} replace />;
       }
     }
+
+    return null;
   }
 
   componentDidUpdate(prevProps) {
@@ -461,6 +466,12 @@ export default class PermissionConnect extends Component {
     } = this.state;
 
     const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
+
+    // Handle declarative navigation - check for redirects first
+    const navigationComponent = this.getNavigationComponent();
+    if (navigationComponent) {
+      return navigationComponent;
+    }
 
     return (
       <div className="permissions-connect">

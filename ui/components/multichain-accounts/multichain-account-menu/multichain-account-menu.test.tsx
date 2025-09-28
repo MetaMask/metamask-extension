@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, act } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate;
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 

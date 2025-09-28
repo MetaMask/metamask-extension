@@ -172,7 +172,6 @@ export const useBridgeQueryParams = () => {
     ) => {
       const { chainId: fromChainId } = fromAsset;
 
-
       if (fromTokenMetadata) {
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,

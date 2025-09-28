@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams, useLocation } from 'react-router-dom-v5-compat';
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import {
-  Routes as Switch,
+  Routes,
   Route,
   useNavigate,
   useLocation,
@@ -266,7 +266,7 @@ export default function OnboardingFlow() {
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
       >
-        <Switch>
+        <Routes>
           <Route path={ONBOARDING_ACCOUNT_EXIST} element={<AccountExist />} />
           <Route
             path={ONBOARDING_ACCOUNT_NOT_FOUND}
@@ -355,7 +355,7 @@ export default function OnboardingFlow() {
             ///: END:ONLY_INCLUDE_IF
           }
           <Route path="*" element={<OnboardingFlowSwitch />} />
-        </Switch>
+        </Routes>
       </Box>
       {isLoading && <LoadingScreen />}
     </Box>
