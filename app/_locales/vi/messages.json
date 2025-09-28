@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1"
-  },
   "betaMetamaskVersion": {
     "message": "Phiên bản MetaMask Beta"
   },
@@ -3732,9 +3729,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noActivity": {
-    "message": "Chưa có hoạt động nào"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
@@ -3744,17 +3738,11 @@
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
-  "noDeFiPositions": {
-    "message": "Không tìm thấy điều bạn đang tìm kiếm?"
-  },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noNetworksAvailable": {
     "message": "Không có mạng nào khả dụng"
@@ -3773,9 +3761,6 @@
   },
   "noThanks": {
     "message": "Không, cảm ơn"
-  },
-  "noTransactions": {
-    "message": "Bạn không có giao dịch nào"
   },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
@@ -4224,13 +4209,6 @@
   "passwordNotLongEnough": {
     "message": "Mật khẩu phải có ít nhất 8 ký tự"
   },
-  "passwordStrength": {
-    "message": "Độ mạnh của mật khẩu: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Một mật khẩu mạnh có thể giúp tăng cường bảo mật cho ví nếu thiết bị của bạn bị đánh cắp hoặc xâm phạm."
-  },
   "passwordTermsWarning": {
     "message": "Nếu tôi quên mật khẩu này, MetaMask không thể đặt lại mật khẩu cho tôi."
   },
@@ -4649,9 +4627,6 @@
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
   },
-  "protocolNotSupported": {
-    "message": "Chúng tôi có thể chưa hỗ trợ giao thức của bạn."
-  },
   "provide": {
     "message": "Cung cấp"
   },
@@ -4768,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
-  },
-  "recommendedGasLabel": {
-    "message": "Được đề xuất"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sao lưu ngay"
@@ -7180,9 +7152,6 @@
   "watchOutMessage": {
     "message": "Hãy cẩn thận với $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Yếu"
   },
   "web3": {
     "message": "Web3"

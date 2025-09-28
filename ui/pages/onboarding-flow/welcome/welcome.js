@@ -20,7 +20,11 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  startOAuthLogin,
+  setParticipateInMetaMetrics,
+} from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
@@ -54,6 +58,8 @@ export default function OnboardingWelcome() {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
+
+  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
@@ -63,18 +69,19 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        navigate(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-          { replace: true },
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (getBrowserName() === PLATFORM_FIREFOX) {
-          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+        if (isFireFox || firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+          navigate(
+            isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+            { replace: true },
+          );
         } else {
-          navigate(ONBOARDING_METAMETRICS, { replace: true });
+          // we don't display the metametrics screen for social login flows if the user is not on firefox
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
         navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }
@@ -92,6 +99,7 @@ export default function OnboardingWelcome() {
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
     isUserAuthenticatedWithSocialLogin,
+    isFireFox,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -325,30 +333,48 @@ export default function OnboardingWelcome() {
   const handleLogin = useCallback(
     async (loginType, loginOption) => {
       try {
-        if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
-          await onCreateClick();
-        } else if (
-          loginOption === LOGIN_OPTION.EXISTING &&
-          loginType === LOGIN_TYPE.SRP
-        ) {
-          await onImportClick();
-        } else if (isSeedlessOnboardingFeatureEnabled) {
+        if (!isFireFox) {
+          // reset the participate in meta metrics in case it was set to true from previous login attempts
+          // to prevent the queued events from being sent
+          dispatch(setParticipateInMetaMetrics(null));
+        }
+
+        if (loginType === LOGIN_TYPE.SRP) {
           if (loginOption === LOGIN_OPTION.NEW) {
-            await onSocialLoginCreateClick(loginType);
+            await onCreateClick();
           } else if (loginOption === LOGIN_OPTION.EXISTING) {
-            await onSocialLoginImportClick(loginType);
+            await onImportClick();
           }
+          // return here to prevent the social login flow from being enabled
+          return;
+        }
+
+        if (!isSeedlessOnboardingFeatureEnabled) {
+          return;
+        }
+
+        if (loginOption === LOGIN_OPTION.NEW) {
+          await onSocialLoginCreateClick(loginType);
+        } else if (loginOption === LOGIN_OPTION.EXISTING) {
+          await onSocialLoginImportClick(loginType);
+        }
+
+        if (!isFireFox) {
+          // automatically set participate in meta metrics to true for social login users in chrome
+          dispatch(setParticipateInMetaMetrics(true));
         }
       } catch (error) {
         handleLoginError(error);
       }
     },
     [
+      isSeedlessOnboardingFeatureEnabled,
+      dispatch,
       onCreateClick,
       onImportClick,
       onSocialLoginCreateClick,
+      isFireFox,
       onSocialLoginImportClick,
-      isSeedlessOnboardingFeatureEnabled,
       handleLoginError,
     ],
   );

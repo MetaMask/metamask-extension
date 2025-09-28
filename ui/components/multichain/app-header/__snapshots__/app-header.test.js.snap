@@ -94,7 +94,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
     class="mm-box multichain-app-header mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-alternative"
   >
     <div
-      class="mm-box multichain-app-header__contents flex mm-box--padding-2 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+      class="mm-box multichain-app-header__contents flex mm-box--padding-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box min-w-0 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
@@ -103,7 +103,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           class="flex"
         >
           <div
-            class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -120,7 +120,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                   <rect
                     fill="#18CDF2"
                     height="32"
-                    transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                    transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -128,7 +128,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                   <rect
                     fill="#035E56"
                     height="32"
-                    transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                    transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"
@@ -136,7 +136,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                   <rect
                     fill="#F26602"
                     height="32"
-                    transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                    transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                     width="32"
                     x="0"
                     y="0"

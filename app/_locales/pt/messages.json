@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Esta é uma versão beta. Pedimos que relatem os bugs $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versão Beta da MetaMask"
   },
@@ -3702,9 +3699,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noActivity": {
-    "message": "Nenhuma atividade ainda"
-  },
   "noConnectedAccountTitle": {
     "message": "A MetaMask não está conectada a este site"
   },
@@ -3714,17 +3708,11 @@
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
-  "noDeFiPositions": {
-    "message": "Não consegue encontrar o que procura?"
-  },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
-  },
-  "noNFTs": {
-    "message": "Nenhum NFT até agora"
   },
   "noNetworksAvailable": {
     "message": "Nenhuma rede disponível"
@@ -3743,9 +3731,6 @@
   },
   "noThanks": {
     "message": "Não, obrigado"
-  },
-  "noTransactions": {
-    "message": "Você não tem transações"
   },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
@@ -4194,13 +4179,6 @@
   "passwordNotLongEnough": {
     "message": "A senha deve ter pelo menos 8 caracteres"
   },
-  "passwordStrength": {
-    "message": "Segurança da senha: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Uma senha forte pode aumentar a segurança da sua carteira caso seu dispositivo seja roubado ou comprometido."
-  },
   "passwordTermsWarning": {
     "message": "Se eu esquecer essa senha, a MetaMask não conseguirá redefini-la para mim."
   },
@@ -4615,9 +4593,6 @@
   "proposedApprovalLimit": {
     "message": "Limite de aprovação proposto"
   },
-  "protocolNotSupported": {
-    "message": "Talvez ainda não tenhamos suporte ao seu protocolo."
-  },
   "provide": {
     "message": "Fornecer"
   },
@@ -4734,9 +4709,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Insira o endereço público (0x) ou nome de domínio"
-  },
-  "recommendedGasLabel": {
-    "message": "Recomendado"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Fazer backup agora"
@@ -7133,9 +7105,6 @@
   "watchOutMessage": {
     "message": "Tome cuidado com $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Fraca"
   },
   "web3": {
     "message": "Web3"

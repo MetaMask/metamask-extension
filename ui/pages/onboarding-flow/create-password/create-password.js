@@ -12,6 +12,8 @@ import {
   IconColor,
   Display,
   FlexDirection,
+  BackgroundColor,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -54,8 +56,9 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
+  setDataCollectionForMarketing,
+  setMarketingConsent,
 } from '../../../store/actions';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -77,8 +80,6 @@ export default function CreatePassword({
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     trackEvent;
   const currentKeyring = useSelector(getCurrentKeyring);
-  const isSeedlessOnboardingFeatureEnabled =
-    getIsSeedlessOnboardingFeatureEnabled();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
 
@@ -107,18 +108,22 @@ export default function CreatePassword({
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
-        navigate(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-          { replace: true },
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (isFirefox) {
+        if (
+          !isFirefox &&
+          firstTimeFlowType === FirstTimeFlowType.socialImport
+        ) {
+          // we don't display the metametrics screen for social login flows if the user is not on firefox
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
-          navigate(ONBOARDING_METAMETRICS, { replace: true });
+          navigate(
+            isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+            { replace: true },
+          );
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
         navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
       }
@@ -191,7 +196,7 @@ export default function CreatePassword({
       },
     });
 
-    if (isFirefox) {
+    if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -244,13 +249,12 @@ export default function CreatePassword({
         ),
       },
     });
-
-    if (isSeedlessOnboardingFeatureEnabled && isSocialLoginFlow) {
-      if (isFirefox) {
-        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
-      } else {
-        navigate(ONBOARDING_METAMETRICS, { replace: true });
+    if (isSocialLoginFlow) {
+      if (termsChecked) {
+        dispatch(setMarketingConsent(true));
+        dispatch(setDataCollectionForMarketing(true));
       }
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
     }
@@ -334,6 +338,10 @@ export default function CreatePassword({
     </a>
   );
 
+  const checkboxLabel = isSocialLoginFlow
+    ? t('createPasswordMarketing')
+    : t('passwordTermsWarning');
+
   return (
     <Box
       display={Display.Flex}
@@ -381,22 +389,46 @@ export default function CreatePassword({
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            as="h2"
-          >
-            {isSocialLoginFlow
-              ? t('createPasswordDetailsSocial')
-              : t('createPasswordDetails')}
-          </Text>
+          {isSocialLoginFlow ? (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              as="h2"
+            >
+              {t('createPasswordDetailsSocial')}
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.warningDefault}
+                as="span"
+              >
+                {t('createPasswordDetailsSocialReset')}
+              </Text>
+            </Text>
+          ) : (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              as="h2"
+            >
+              {t('createPasswordDetails')}
+            </Text>
+          )}
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
         <Box
           className="create-password__terms-container"
-          alignItems={AlignItems.center}
+          alignItems={
+            isSocialLoginFlow ? AlignItems.center : AlignItems.flexStart
+          }
           justifyContent={JustifyContent.spaceBetween}
           marginTop={6}
+          backgroundColor={
+            isSocialLoginFlow
+              ? BackgroundColor.backgroundMuted
+              : BackgroundColor.backgroundDefault
+          }
+          padding={isSocialLoginFlow ? 3 : 0}
+          borderRadius={BorderRadius.LG}
         >
           <Checkbox
             inputProps={{ 'data-testid': 'create-password-terms' }}
@@ -406,13 +438,10 @@ export default function CreatePassword({
               setTermsChecked(!termsChecked);
             }}
             label={
-              <>
-                {isSocialLoginFlow
-                  ? t('passwordTermsWarningSocial')
-                  : t('passwordTermsWarning')}
-                &nbsp;
-                {createPasswordLink}
-              </>
+              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
+                {checkboxLabel} &nbsp;
+                {!isSocialLoginFlow && createPasswordLink}
+              </Text>
             }
           />
         </Box>
@@ -424,7 +453,7 @@ export default function CreatePassword({
           width={BlockSize.Full}
           size={ButtonSize.Lg}
           className="create-password__form--submit-button"
-          disabled={!password || !termsChecked}
+          disabled={!password || (!isSocialLoginFlow && !termsChecked)}
         >
           {t('createPasswordCreate')}
         </Button>

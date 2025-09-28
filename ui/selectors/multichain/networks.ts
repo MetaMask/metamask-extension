@@ -20,8 +20,9 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
   getEnabledNetworks,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
@@ -103,11 +104,13 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
     (state: MultichainNetworkConfigurationsByChainIdState) =>
       state.metamask.multichainNetworkConfigurationsByChainId,
     getIsNonEvmNetworksEnabled,
-    (state) => getIsSolanaTestnetSupportEnabled(state),
+    getIsSolanaTestnetSupportEnabled,
+    getIsBitcoinTestnetSupportEnabled,
     (
       multichainNetworkConfigurationsByChainId,
       isNonEvmNetworksEnabled,
       isSolanaTestnetSupportEnabled,
+      isBitcoinTestnetSupportEnabled,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
@@ -120,6 +123,9 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           multichainNetworkConfigurationsByChainId[BtcScope.Mainnet];
+      }
+
+      if (bitcoinEnabled && isBitcoinTestnetSupportEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
           multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
@@ -132,9 +138,6 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       }
 
       if (solanaEnabled && isSolanaTestnetSupportEnabled) {
-        // TODO: Uncomment this when we want to support testnet
-        // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
-        //   multichainNetworkConfigurationsByChainId[SolScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Devnet];
       }
@@ -222,17 +225,22 @@ export const getEnabledNetworksByNamespace = createDeepEqualSelector(
   getSelectedMultichainNetworkChainId,
   (enabledNetworkMap, currentMultichainChainId) => {
     const { namespace } = parseCaipChainId(currentMultichainChainId);
-    return enabledNetworkMap[namespace] ?? {};
+    const namespaceMap = enabledNetworkMap[namespace] ?? {};
+
+    return Object.fromEntries(
+      Object.entries(namespaceMap).filter(([, enabled]) => enabled === true),
+    );
   },
 );
 
 export const getAllEnabledNetworksForAllNamespaces = createDeepEqualSelector(
   getEnabledNetworks,
-  (enabledNetworkMap) => {
-    return Object.values(enabledNetworkMap)
-      .flatMap((namespaceNetworks) => Object.keys(namespaceNetworks))
-      .filter((chainId) => chainId); // Filter out any empty strings
-  },
+  (enabledNetworkMap) =>
+    Object.values(enabledNetworkMap).flatMap((namespaceNetworks) =>
+      Object.entries(namespaceNetworks)
+        .filter(([, enabled]) => enabled)
+        .map(([chainId]) => chainId),
+    ),
 );
 
 export const getEnabledChainIds = createDeepEqualSelector(

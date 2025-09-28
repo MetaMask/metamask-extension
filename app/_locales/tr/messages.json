@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Bu bir beta sürümdür. Lütfen hataları bildirin $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
   },
@@ -3702,9 +3699,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noActivity": {
-    "message": "Henüz herhangi bir aktivite yok"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask bu siteye bağlı değil"
   },
@@ -3714,17 +3708,11 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
-  "noDeFiPositions": {
-    "message": "Aradığınızı bulamıyor musunuz?"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
-  },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
   },
   "noNetworksAvailable": {
     "message": "Mevcut ağ yok"
@@ -3743,9 +3731,6 @@
   },
   "noThanks": {
     "message": "Hayır, istemiyorum"
-  },
-  "noTransactions": {
-    "message": "Herhangi bir işleminiz yok"
   },
   "noWebcamFound": {
     "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
@@ -4194,13 +4179,6 @@
   "passwordNotLongEnough": {
     "message": "Şifre en az 8 karakterden oluşmalıdır"
   },
-  "passwordStrength": {
-    "message": "Şifre güvenlik düzeyi: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
-  },
   "passwordTermsWarning": {
     "message": "Bu şifreyi unutursam MetaMask bunu benim için sıfırlayamaz."
   },
@@ -4615,9 +4593,6 @@
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
   },
-  "protocolNotSupported": {
-    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
-  },
   "provide": {
     "message": "Sun"
   },
@@ -4734,9 +4709,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Genel adres (0x) veya alan adı gir"
-  },
-  "recommendedGasLabel": {
-    "message": "Önerilen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Şimdi yedekle"
@@ -7133,9 +7105,6 @@
   "watchOutMessage": {
     "message": "Şuraya dikkat edin: $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Zayıf"
   },
   "web3": {
     "message": "Web3"

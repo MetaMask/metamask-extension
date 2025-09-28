@@ -6,6 +6,8 @@
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
+    "isAccountTreeSyncingInProgress": "boolean",
+    "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object"
   },
@@ -41,6 +43,7 @@
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
+    "productTour": "accountIcon",
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
@@ -48,6 +51,7 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "hasShownMultichainAccountsIntroModal": "boolean",
     "surveyLinkLastClickedOrClosed": "object",
     "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
@@ -65,8 +69,7 @@
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true,
-    "productTour": "accountIcon"
+    "snapsInstallPrivacyWarningShown": true
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -183,9 +186,11 @@
     },
     "networkConfigurationsByChainId": "object"
   },
-  "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+  "NetworkEnablementController": {
     "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -273,7 +278,8 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean"
+    "manageInstitutionalWallets": "boolean",
+    "referrals": "object"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
@@ -315,6 +321,7 @@
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
+  "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
       "quotes": "object",
@@ -369,9 +376,6 @@
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean",
-    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean",
-    "isAccountSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean"
   }
 }

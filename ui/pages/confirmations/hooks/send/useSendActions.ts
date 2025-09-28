@@ -18,8 +18,16 @@ import { useSendType } from './useSendType';
 export const useSendActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { asset, chainId, from, fromAccount, maxValueMode, to, value } =
-    useSendContext();
+  const {
+    asset,
+    chainId,
+    from,
+    fromAccount,
+    hexData,
+    maxValueMode,
+    toResolved: to,
+    value,
+  } = useSendContext();
   const { isEvmSendType } = useSendType();
 
   const handleSubmit = useCallback(async () => {
@@ -33,6 +41,7 @@ export const useSendActions = () => {
           asset,
           chainId: chainId as Hex,
           from: from as Hex,
+          hexData: hexData as Hex,
           to: toAddress as Hex,
           value: value as string,
         }),
@@ -56,6 +65,7 @@ export const useSendActions = () => {
     dispatch,
     from,
     fromAccount,
+    hexData,
     history,
     isEvmSendType,
     maxValueMode,

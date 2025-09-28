@@ -1,13 +1,15 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
-import { Box, Icon, IconName, Text } from '../../component-library';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { Box, Text } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
   AlignItems,
+  BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -18,6 +20,7 @@ export type MultichainAccountCellProps = {
   accountName: string;
   onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
+  startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
   walletName?: string;
@@ -29,12 +32,16 @@ export const MultichainAccountCell = ({
   accountName,
   onClick,
   balance,
+  startAccessory,
   endAccessory,
   selected = false,
   walletName,
   disableHoverEffect = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
+  const seedAddressIcon = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(state, accountId),
+  );
 
   return (
     <Box
@@ -43,32 +50,51 @@ export const MultichainAccountCell = ({
       justifyContent={JustifyContent.spaceBetween}
       style={{
         cursor: onClick ? 'pointer' : 'default',
+        position: 'relative',
       }}
       padding={4}
       onClick={handleClick}
-      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}`}
+      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected ? ' is-selected' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
+      backgroundColor={
+        selected ? BackgroundColor.infoMuted : BackgroundColor.transparent
+      }
     >
+      {selected && !startAccessory && (
+        <Box
+          className="multichain-account-cell__selected-indicator"
+          style={{
+            width: '4px',
+            position: 'absolute',
+            left: '4px',
+            top: '4px',
+            bottom: '4px',
+          }}
+          borderRadius={BorderRadius.pill}
+          backgroundColor={BackgroundColor.primaryDefault}
+          data-testid={`multichain-account-cell-${accountId}-selected-indicator`}
+        />
+      )}
+      {startAccessory}
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexStart}
-        style={{ minWidth: 0, flex: 1, overflow: 'hidden' }}
+        style={{ minWidth: 0, flex: 1 }}
       >
         <Box
           className="multichain-account-cell__account-avatar"
           display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          borderColor={
-            selected ? BorderColor.primaryDefault : BorderColor.transparent
-          }
+          borderColor={BorderColor.transparent}
           borderRadius={BorderRadius.XL}
         >
-          <PreferredAvatar address={accountId} />
+          <PreferredAvatar address={seedAddressIcon} />
         </Box>
-        <Box>
+        <Box style={{ overflow: 'hidden' }}>
+          {/* Prevent overflow of account name by long account names */}
           <Text
             className="multichain-account-cell__account-name"
             variant={TextVariant.bodyMdMedium}
@@ -89,17 +115,6 @@ export const MultichainAccountCell = ({
             </Text>
           )}
         </Box>
-
-        {selected && (
-          <Icon
-            name={IconName.CheckBold}
-            color={IconColor.primaryDefault}
-            marginLeft={1}
-            marginRight={1}
-            data-testid={`multichain-account-cell-${accountId}-selected-icon`}
-            style={{ flexShrink: 0 }}
-          />
-        )}
       </Box>
       <Box
         display={Display.Flex}
@@ -120,6 +135,8 @@ export const MultichainAccountCell = ({
           display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.flexEnd}
+          data-testid="multichain-account-cell-end-accessory"
+          aria-label={`${accountName} options`}
         >
           {endAccessory}
         </Box>

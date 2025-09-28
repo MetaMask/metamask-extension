@@ -19,7 +19,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
-  GenericQuoteRequest,
+  type BridgeController,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -55,6 +55,8 @@ import {
   BridgeAppState,
   getTxAlerts,
   getFromAccount,
+  getIsStxEnabled,
+  getIsGasIncluded,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -101,6 +103,7 @@ import {
   getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
+import { setEnabledAllPopularNetworks } from '../../../store/actions';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
@@ -109,12 +112,12 @@ import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
-import { enableAllPopularNetworks } from '../../../store/controller-actions/network-order-controller';
+import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
+import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -143,7 +146,7 @@ export const useEnableMissingNetwork = () => {
           if (!isNetworkEnabled) {
             // Bridging between popular networks indicates we want the 'select all' enabled
             // This way users can see their full bridging tx activity
-            dispatch(enableAllPopularNetworks());
+            dispatch(setEnabledAllPopularNetworks());
           }
         }
       }
@@ -175,6 +178,10 @@ const PrepareBridgePage = ({
 
   // Use the appropriate value based on unified UI setting
   const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
+  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
+  const gasIncluded = useSelector((state) =>
+    getIsGasIncluded(state, isSendBundleSupportedForChain),
+  );
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -200,9 +207,7 @@ const PrepareBridgePage = ({
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const smartTransactionsEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as never, fromChain?.chainId),
-  );
+  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -210,9 +215,8 @@ const PrepareBridgePage = ({
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    activeQuote: activeQuote_,
+    // This quote may be older than the refresh rate, but we keep it for display purposes
+    activeQuote: unvalidatedQuote,
     quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
 
@@ -225,7 +229,7 @@ const PrepareBridgePage = ({
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-    activeQuote: activeQuote_,
+    activeQuote: unvalidatedQuote,
     toToken,
     toChain,
     fromChain,
@@ -233,9 +237,21 @@ const PrepareBridgePage = ({
     insufficientBal: quoteRequest.insufficientBal,
   });
 
-  const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
+  const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
   const selectedAccount = useSelector(getFromAccount);
+
+  const gasIncluded7702 = useGasIncluded7702({
+    isSwap,
+    isSendBundleSupportedForChain,
+    selectedAccount,
+    fromChain,
+  });
+
+  const shouldShowMaxButton =
+    fromToken && isNativeAddress(fromToken.address)
+      ? gasIncluded || gasIncluded7702
+      : true;
 
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -290,9 +306,7 @@ const PrepareBridgePage = ({
           };
         })()
       : null,
-    selectedDestinationAccount && 'id' in selectedDestinationAccount
-      ? selectedDestinationAccount.id
-      : undefined,
+    selectedDestinationAccount?.address,
   );
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
@@ -353,34 +367,40 @@ const PrepareBridgePage = ({
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
-  const quoteParams: Partial<GenericQuoteRequest> = useMemo(
-    () => ({
-      srcTokenAddress: fromToken?.address,
-      destTokenAddress: toToken?.address,
-      srcTokenAmount:
-        fromAmount && fromToken?.decimals
-          ? calcTokenValue(
-              // Treat empty or incomplete amount as 0 to reject NaN
-              ['', '.'].includes(fromAmount) ? '0' : fromAmount,
-              fromToken.decimals,
-            )
-              .toFixed()
-              // Length of decimal part cannot exceed token.decimals
-              .split('.')[0]
-          : undefined,
-      srcChainId: fromChain?.chainId,
-      destChainId: toChain?.chainId,
-      // This override allows quotes to be returned when the rpcUrl is a forked network
-      // Otherwise quotes get filtered out by the bridge-api when the wallet's real
-      // balance is less than the tenderly balance
-      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
-        ? true
+  const quoteParams:
+    | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
+    | undefined = useMemo(
+    () =>
+      selectedAccount?.address
+        ? {
+            srcTokenAddress: fromToken?.address,
+            destTokenAddress: toToken?.address,
+            srcTokenAmount:
+              fromAmount && fromToken?.decimals
+                ? calcTokenValue(
+                    // Treat empty or incomplete amount as 0 to reject NaN
+                    ['', '.'].includes(fromAmount) ? '0' : fromAmount,
+                    fromToken.decimals,
+                  )
+                    .toFixed()
+                    // Length of decimal part cannot exceed token.decimals
+                    .split('.')[0]
+                : undefined,
+            srcChainId: fromChain?.chainId,
+            destChainId: toChain?.chainId,
+            // This override allows quotes to be returned when the rpcUrl is a forked network
+            // Otherwise quotes get filtered out by the bridge-api when the wallet's real
+            // balance is less than the tenderly balance
+            insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+              ? true
+              : undefined,
+            slippage,
+            walletAddress: selectedAccount.address,
+            destWalletAddress: selectedDestinationAccount?.address,
+            gasIncluded: gasIncluded || gasIncluded7702,
+            gasIncluded7702,
+          }
         : undefined,
-      slippage,
-      walletAddress: selectedAccount?.address ?? '',
-      destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: smartTransactionsEnabled && isSwap,
-    }),
     [
       fromToken?.address,
       fromToken?.decimals,
@@ -392,8 +412,8 @@ const PrepareBridgePage = ({
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
-      smartTransactionsEnabled,
-      isSwap,
+      gasIncluded,
+      gasIncluded7702,
     ],
   );
 
@@ -412,6 +432,9 @@ const PrepareBridgePage = ({
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
+    if (!quoteParams) {
+      return;
+    }
     const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -448,29 +471,8 @@ const PrepareBridgePage = ({
       timestamp: Date.now(),
     });
 
-    // If there's an active quote, assume that the user is returning to the page
-    if (activeQuote) {
-      // Get input data from active quote
-      const { srcAsset, destAsset, destChainId, srcChainId } =
-        activeQuote.quote;
-
-      if (srcAsset && destAsset && destChainId) {
-        dispatch(
-          setFromToken({
-            ...srcAsset,
-            chainId: srcChainId,
-          }),
-        );
-        // Set inputs to values from active quote
-        dispatch(
-          setToToken({
-            ...destAsset,
-            chainId: destChainId,
-          }),
-        );
-      }
-    } else {
-      // Reset controller and inputs on load
+    if (!activeQuote) {
+      // Reset controller and inputs on load if there's no restored active quote
       dispatch(resetBridgeState());
     }
   }, []);
@@ -555,11 +557,11 @@ const PrepareBridgePage = ({
           }}
           isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={
-            isNativeAddress(fromToken?.address ?? '')
-              ? undefined
-              : (value: string) => {
+            shouldShowMaxButton
+              ? (value: string) => {
                   dispatch(setFromTokenInputValue(value));
                 }
+              : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
           amountInFiat={
@@ -754,11 +756,12 @@ const PrepareBridgePage = ({
               setShowBlockExplorerToast(true);
               setToastTriggerCounter((prev) => prev + 1);
             }}
+            isDestinationToken
           />
 
           <Column
             justifyContent={
-              isLoading && !activeQuote_
+              isLoading && !unvalidatedQuote
                 ? JustifyContent.center
                 : JustifyContent.flexEnd
             }
@@ -766,7 +769,7 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             gap={3}
           >
-            {!wasTxDeclined && activeQuote_ && (
+            {!wasTxDeclined && unvalidatedQuote && (
               <MultichainBridgeQuoteCard
                 onOpenRecipientModal={() =>
                   setIsDestinationAccountPickerOpen(true)
@@ -775,7 +778,14 @@ const PrepareBridgePage = ({
                 selectedDestinationAccount={selectedDestinationAccount}
               />
             )}
-            {isLoading && !activeQuote_ ? (
+            {isNoQuotesAvailable && !isQuoteExpired && (
+              <BannerAlert
+                severity={BannerAlertSeverity.Danger}
+                description={t('noOptionsAvailableMessage')}
+                textAlign={TextAlign.Left}
+              />
+            )}
+            {isLoading && !unvalidatedQuote ? (
               <>
                 <Text
                   textAlign={TextAlign.Center}
@@ -788,6 +798,9 @@ const PrepareBridgePage = ({
             ) : (
               <PrepareBridgePageFooter
                 onFetchNewQuotes={() => {
+                  if (!quoteParams) {
+                    return;
+                  }
                   debouncedUpdateQuoteRequestInController(quoteParams, {
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -852,17 +865,10 @@ const PrepareBridgePage = ({
             textAlign={TextAlign.Left}
           />
         )}
-        {isNoQuotesAvailable && !isQuoteExpired && (
-          <BannerAlert
-            severity={BannerAlertSeverity.Danger}
-            description={t('noOptionsAvailableMessage')}
-            textAlign={TextAlign.Left}
-          />
-        )}
         {isCannotVerifyTokenBannerOpen &&
           toToken &&
           toTokenIsNotNative &&
-          occurrences &&
+          Boolean(occurrences) &&
           Number(occurrences) < 2 && (
             <BannerAlert
               severity={BannerAlertSeverity.Warning}
@@ -896,9 +902,12 @@ const PrepareBridgePage = ({
             <BannerAlert
               title={t('bridgeValidationInsufficientGasTitle', [ticker])}
               severity={BannerAlertSeverity.Danger}
-              description={t('bridgeValidationInsufficientGasMessage', [
-                ticker,
-              ])}
+              description={t(
+                isSwap
+                  ? 'swapValidationInsufficientGasMessage'
+                  : 'bridgeValidationInsufficientGasMessage',
+                [ticker],
+              )}
               textAlign={TextAlign.Left}
               actionButtonLabel={t('buyMoreAsset', [ticker])}
               actionButtonOnClick={() => openBuyCryptoInPdapp()}

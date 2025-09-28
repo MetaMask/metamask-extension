@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Dies ist eine BETA-Version. Bitte melden Sie Fehler $1."
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask-Version"
   },
@@ -3732,9 +3729,6 @@
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
   },
-  "noActivity": {
-    "message": "Noch keine Aktivität"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
   },
@@ -3744,17 +3738,11 @@
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
-  "noDeFiPositions": {
-    "message": "Sie finden nicht, wonach Sie suchen?"
-  },
   "noDomainResolution": {
     "message": "Keine Auflösung für die Domain angegeben."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps und die meisten Hardware-Wallets funktionieren nicht mit Ihrer aktuellen Browserversion."
-  },
-  "noNFTs": {
-    "message": "Noch keine NFTs"
   },
   "noNetworksAvailable": {
     "message": "Keine Netzwerke verfügbar"
@@ -3773,9 +3761,6 @@
   },
   "noThanks": {
     "message": "Nein, danke!"
-  },
-  "noTransactions": {
-    "message": "Sie haben keine Transaktionen"
   },
   "noWebcamFound": {
     "message": "Die Webcam Ihres Computers wurde nicht gefunden. Bitte versuchen Sie es erneut."
@@ -4224,13 +4209,6 @@
   "passwordNotLongEnough": {
     "message": "Passwort muss mindestens 8 Zeichen lang sein"
   },
-  "passwordStrength": {
-    "message": "Passwortstärke: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Ein starkes Passwort kann die Sicherheit Ihrer Wallet erhöhen, falls Ihr Gerät gestohlen oder kompromittiert wird."
-  },
   "passwordTermsWarning": {
     "message": "Wenn ich dieses Passwort vergesse, kann MetaMask es nicht für mich zurücksetzen."
   },
@@ -4649,9 +4627,6 @@
   "proposedApprovalLimit": {
     "message": "Vorgeschlagenes Genehmigungslimit"
   },
-  "protocolNotSupported": {
-    "message": "Möglicherweise unterstützen wir Ihr Protokoll noch nicht."
-  },
   "provide": {
     "message": "Bereitstellen"
   },
@@ -4768,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Öffentliche Adresse (0x) oder Domainname eingeben"
-  },
-  "recommendedGasLabel": {
-    "message": "Empfohlen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Jetzt sichern"
@@ -7180,9 +7152,6 @@
   "watchOutMessage": {
     "message": "Vorsicht vor $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
-  },
-  "weak": {
-    "message": "Schwach"
   },
   "web3": {
     "message": "Web3"

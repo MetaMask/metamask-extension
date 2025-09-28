@@ -42,6 +42,8 @@ const createMockAccountGroup = (
   name?: string,
 ): AccountGroupWithInternalAccounts => ({
   id: `entropy:01JKAF3DSGM3AB87EM9N0K41AJ/${index}` as AccountGroupId,
+  walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+  walletName: 'Test Wallet 1',
   type: AccountGroupType.MultichainAccount,
   metadata: {
     name: name || `Account ${index + 1}`,

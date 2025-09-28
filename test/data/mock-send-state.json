@@ -1394,7 +1394,7 @@
       {
         "active": true,
         "chainId": 1,
-        "chainName": "Ethereum Mainnet",
+        "chainName": "Ethereum",
         "shortName": "Ethereum",
         "nativeTokenSupported": true
       },
@@ -1429,7 +1429,7 @@
       {
         "active": true,
         "chainId": 137,
-        "chainName": "Polygon Mainnet",
+        "chainName": "Polygon",
         "shortName": "Polygon",
         "nativeTokenSupported": true
       },
@@ -1443,7 +1443,7 @@
       {
         "active": true,
         "chainId": 324,
-        "chainName": "zkSync Era Mainnet",
+        "chainName": "zkSync Era",
         "shortName": "zkSync Era",
         "nativeTokenSupported": true
       },
@@ -1471,7 +1471,7 @@
       {
         "active": true,
         "chainId": 8453,
-        "chainName": "Base Mainnet",
+        "chainName": "Base",
         "shortName": "Base",
         "nativeTokenSupported": true
       },
