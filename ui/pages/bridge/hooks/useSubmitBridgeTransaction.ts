@@ -81,7 +81,9 @@ export default function useSubmitBridgeTransaction() {
 
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
-        await dispatch(submitBridgeTx(fromAccount.address, quoteResponse, false));
+        await dispatch(
+          submitBridgeTx(fromAccount.address, quoteResponse, false),
+        );
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push({
           pathname: DEFAULT_ROUTE,
