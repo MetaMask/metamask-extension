@@ -9838,6 +9838,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rive-app/canvas-lite@npm:2.31.6":
+  version: 2.31.6
+  resolution: "@rive-app/canvas-lite@npm:2.31.6"
+  checksum: 10/0e20bcd1c61e7e5c8b5f63d4cb71377806a283544c88066906f87c146b2c79c80565af4ce849fd47d3e2f9475cbbb0b2130aa89adbe9397182e2918081622547
+  languageName: node
+  linkType: hard
+
 "@rive-app/canvas@npm:2.31.5":
   version: 2.31.5
   resolution: "@rive-app/canvas@npm:2.31.5"
@@ -9877,10 +9884,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rive-app/webgl2@npm:2.31.6":
+  version: 2.31.6
+  resolution: "@rive-app/webgl2@npm:2.31.6"
+  checksum: 10/500d0cc9d7356bf75792648710e3c6c05b9741a25c7513939695a1815b26c6760f4a29b6aeab5b21ce1f339c38c89f7cad591d14aec7a399473d7afd73cf7813
+  languageName: node
+  linkType: hard
+
 "@rive-app/webgl@npm:2.31.5":
   version: 2.31.5
   resolution: "@rive-app/webgl@npm:2.31.5"
   checksum: 10/8d70c045f0a3a4d498cdba78e82189503da13df7525688ba1a976bdf2022cfc8f952adf5840817d3b34efe27279dafc9552e68da934fcba5c6db1053cf1359e4
+  languageName: node
+  linkType: hard
+
+"@rive-app/webgl@npm:2.31.6":
+  version: 2.31.6
+  resolution: "@rive-app/webgl@npm:2.31.6"
+  checksum: 10/8bf41003ac05403dfc24b001779a6ae48e5535184f33535ebdcd0fc4b7d49b2e661aadf7bc0131fa7d1f257871b0312f1a9951259f5c7c91024b38d099d1474b
   languageName: node
   linkType: hard
 
@@ -37505,6 +37526,20 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
   checksum: 10/603e5cc1d62081cf6299151ef711e101085a5258dad965444a1b4b2794b33e3ebdda3c22c2aed21f7d4540d9df15031b9fc979b4226d8b14570ec384c31d0138
+  languageName: node
+  linkType: hard
+
+"rive-react@npm:^4.23.4":
+  version: 4.23.4
+  resolution: "rive-react@npm:4.23.4"
+  dependencies:
+    "@rive-app/canvas": "npm:2.31.6"
+    "@rive-app/canvas-lite": "npm:2.31.6"
+    "@rive-app/webgl": "npm:2.31.6"
+    "@rive-app/webgl2": "npm:2.31.6"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
+  checksum: 10/3fe6b82ac63afb98d137fd31e27bdaa90cdf341a0f17303cc1ad1e3776e1d686dab9854b830608fc7fbb3fcaeb8dda43756f6ea6a25f4bd7d16dbdafb2b6c6fb
   languageName: node
   linkType: hard
 
