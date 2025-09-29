@@ -25,11 +25,8 @@ function getTrustState(
     case 'Malicious':
       return TrustSignalDisplayState.Malicious;
     case 'Warning':
-    case 'Suspicious':
       return TrustSignalDisplayState.Warning;
     case 'Benign':
-    case 'Verified':
-      return TrustSignalDisplayState.Verified;
     default:
       return TrustSignalDisplayState.Unknown;
   }
