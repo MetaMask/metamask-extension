@@ -30,7 +30,7 @@ export type NetworkInfo = {
  * @returns BlockExplorerInfo or null if no explorer available
  */
 export const getBlockExplorerInfo = (
-  t: (key: string, ...args: string[]) => string,
+  t: (key: string, args: string[]) => string,
   address: string,
   networkInfo: NetworkInfo,
 ): BlockExplorerInfo | null => {
@@ -55,7 +55,7 @@ export const getBlockExplorerInfo = (
         return {
           addressUrl,
           name: explorerName,
-          buttonText: t('viewAddressOnExplorer', explorerName),
+          buttonText: t('viewAddressOnExplorer', [explorerName]),
         };
       }
     }
@@ -77,7 +77,7 @@ export const getBlockExplorerInfo = (
         return {
           addressUrl,
           name: explorerName,
-          buttonText: t('viewAddressOnExplorer', explorerName),
+          buttonText: t('viewAddressOnExplorer', [explorerName]),
         };
       }
     }
@@ -98,7 +98,7 @@ export const getBlockExplorerInfo = (
       return {
         addressUrl,
         name: explorerName,
-        buttonText: t('viewAddressOnExplorer', explorerName),
+        buttonText: t('viewAddressOnExplorer', [explorerName]),
       };
     }
 
@@ -114,7 +114,7 @@ export const getBlockExplorerInfo = (
         return {
           addressUrl: `${baseUrl}/address/${address}`,
           name: explorerName,
-          buttonText: t('viewAddressOnExplorer', explorerName),
+          buttonText: t('viewAddressOnExplorer', [explorerName]),
         };
       }
     }

@@ -601,7 +601,7 @@ export const MultichainAccountsConnectPage: React.FC<
                     justifyContent={JustifyContent.center}
                     backgroundColor={BackgroundColor.infoMuted}
                     borderRadius={BorderRadius.MD}
-                    padding={4}
+                    padding={2}
                   >
                     <Icon
                       name={IconName.Edit}

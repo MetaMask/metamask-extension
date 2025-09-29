@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Bu bir beta sürümdür. Lütfen hataları bildirin $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
   },
@@ -3735,9 +3732,6 @@
   "noThanks": {
     "message": "Hayır, istemiyorum"
   },
-  "noTransactions": {
-    "message": "Herhangi bir işleminiz yok"
-  },
   "noWebcamFound": {
     "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
   },
@@ -4715,9 +4709,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Genel adres (0x) veya alan adı gir"
-  },
-  "recommendedGasLabel": {
-    "message": "Önerilen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Şimdi yedekle"
