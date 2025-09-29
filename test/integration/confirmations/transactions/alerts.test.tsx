@@ -42,30 +42,31 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (
     preferences: {
       ...mockMetaMaskState.preferences,
     },
+    tokenScanCache: {},
     urlScanCache: {
       'malicious-site.com': {
-        result: {
+        data: {
           domainName: 'malicious-site.com',
           recommendedAction: 'BLOCK',
         },
         timestamp: 1715136000000,
       },
       'suspicious-site.com': {
-        result: {
+        data: {
           domainName: 'suspicious-site.com',
           recommendedAction: 'WARN',
         },
         timestamp: 1715136000000,
       },
       'verified-site.com': {
-        result: {
+        data: {
           domainName: 'verified-site.com',
           recommendedAction: 'VERIFIED',
         },
         timestamp: 1715136000000,
       },
       'safe-site.com': {
-        result: {
+        data: {
           domainName: 'safe-site.com',
           recommendedAction: 'NONE',
         },
