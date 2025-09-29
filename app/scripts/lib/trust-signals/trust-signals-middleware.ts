@@ -3,7 +3,11 @@ import { NetworkController } from '@metamask/network-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import {
+  parseTypedDataMessage,
+  parseApprovalTransactionData,
+} from '../../../../shared/modules/transaction.utils';
+import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
@@ -15,6 +19,7 @@ import {
   isConnected,
   connectScreenHasBeenPrompted,
   getChainId,
+  isApprovalTransaction,
 } from './trust-signals-util';
 import { SupportedEVMChain } from './types';
 
@@ -77,7 +82,7 @@ function handleEthSendTransaction(
     return;
   }
 
-  const { to } = req.params[0];
+  const { to, data } = req.params[0];
   let chainId: SupportedEVMChain | undefined;
   try {
     chainId = getChainId(networkController);
@@ -93,6 +98,7 @@ function handleEthSendTransaction(
     return;
   }
 
+  // Scan the 'to' address (contract address)
   scanAddressAndAddToCache(
     to,
     appStateController.getAddressSecurityAlertResponse,
@@ -104,6 +110,25 @@ function handleEthSendTransaction(
       error,
     );
   });
+
+  // If this is an approval transaction, also scan the spender address
+  if (isApprovalTransaction(req) && data && typeof data === 'string') {
+    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
+    const spenderAddress = approvalData?.spender;
+    if (spenderAddress) {
+      scanAddressAndAddToCache(
+        spenderAddress,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        chainId,
+      ).catch((error) => {
+        console.error(
+          '[createTrustSignalsMiddleware] error scanning spender address for approval:',
+          error,
+        );
+      });
+    }
+  }
 }
 
 function handleEthSignTypedData(
@@ -140,6 +165,7 @@ function handleEthSignTypedData(
     return;
   }
 
+  // Scan the verifying contract address (token contract)
   scanAddressAndAddToCache(
     verifyingContract,
     appStateController.getAddressSecurityAlertResponse,
@@ -151,4 +177,29 @@ function handleEthSignTypedData(
       error,
     );
   });
+
+  const { primaryType }: { primaryType: string } = typedDataMessage;
+  if (!primaryType) {
+    return;
+  }
+
+  // If this is a permit signature, also scan the spender address
+  // Use the same logic as isPermitSignatureRequest but inline
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
+    const spenderAddress = typedDataMessage.message?.spender;
+    if (spenderAddress) {
+      scanAddressAndAddToCache(
+        spenderAddress,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        chainId,
+      ).catch((error) => {
+        console.error(
+          '[createTrustSignalsMiddleware] error scanning spender address for permit:',
+          error,
+        );
+      });
+    }
+  }
 }
