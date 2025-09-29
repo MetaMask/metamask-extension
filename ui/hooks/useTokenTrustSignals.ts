@@ -36,9 +36,8 @@ export function useTokenTrustSignalsForAddresses(
   chainId: string | undefined,
   tokenAddresses: string[] | undefined,
 ): TrustSignalResult[] {
-  const tokenScanResults = useSelector(
-    // @ts-ignore useSelector expects function with only state parameter
-    (state) => getTokenScanResultsForAddresses(state, chainId, tokenAddresses),
+  const tokenScanResults = useSelector((state) =>
+    getTokenScanResultsForAddresses(state, chainId, tokenAddresses),
   ) as Record<string, TokenScanCacheResult>;
 
   return useMemo(() => {

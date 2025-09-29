@@ -3057,13 +3057,10 @@ export function getTokenScanCache(state) {
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
  */
-
 export const getTokenScanResultsForAddresses = createDeepEqualSelector(
-  [
-    getTokenScanCache,
-    (_state, chainId) => chainId,
-    (_state, _chainId, tokenAddresses) => tokenAddresses,
-  ],
+  getTokenScanCache,
+  (_state, chainId) => chainId,
+  (_state, _chainId, tokenAddresses) => tokenAddresses,
   (tokenScanCache, chainId, tokenAddresses) => {
     if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
       return {};
