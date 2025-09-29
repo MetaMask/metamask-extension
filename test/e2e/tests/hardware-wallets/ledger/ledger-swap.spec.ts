@@ -81,10 +81,6 @@ describe('Ledger Swap', function () {
         await swapPage.submitSwap();
         await swapPage.waitForTransactionToComplete();
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
         await homePage.checkPageIsLoaded();
         // check activity list
         await homePage.goToActivityList();
