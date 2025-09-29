@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
@@ -12,7 +11,7 @@ import {
 } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const { strict: assert } = require('assert');
-const { withFixtures, getEventPayloads } = require('../helpers');
+const { getEventPayloads } = require('../helpers');
 
 type TestSuiteArguments = {
   driver: Driver;

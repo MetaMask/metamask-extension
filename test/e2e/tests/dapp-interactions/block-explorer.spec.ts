@@ -1,8 +1,6 @@
 import { mockNetworkStateOld } from '../../../stub/networks';
-import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';

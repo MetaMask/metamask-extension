@@ -5,8 +5,6 @@ import ContractDeploymentConfirmation from '../../../page-objects/pages/confirma
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
-import { withFixtures } from '../../../helpers';
 import { TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign Contract Deployment Component', function () {

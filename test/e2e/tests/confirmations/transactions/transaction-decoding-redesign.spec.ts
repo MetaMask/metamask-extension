@@ -9,8 +9,6 @@ import TransactionConfirmation from '../../../page-objects/pages/confirmations/r
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
-const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {

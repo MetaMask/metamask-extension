@@ -7,9 +7,7 @@ import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixture-builder';
 import {
-  withFixtures,
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,

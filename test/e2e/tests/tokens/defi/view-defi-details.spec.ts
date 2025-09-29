@@ -1,6 +1,3 @@
-import { withFixtures } from '../../../helpers';
-
-import FixtureBuilder from '../../../fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import DeFiDetailsPage from '../../../page-objects/pages/defi-details-page';
 import DeFiTab from '../../../page-objects/pages/defi-tab';

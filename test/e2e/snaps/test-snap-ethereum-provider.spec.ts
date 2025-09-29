@@ -1,7 +1,5 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
-import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockEthereumProviderSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import {

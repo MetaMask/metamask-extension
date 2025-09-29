@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { getEventPayloads } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
 import TestDapp from '../../page-objects/pages/test-dapp';

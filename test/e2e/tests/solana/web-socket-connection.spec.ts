@@ -1,12 +1,10 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import FixtureBuilder from '../../fixture-builder';
 import LocalWebSocketServer from '../../websocket-server';
 
 describe('Solana Web Socket', function (this: Suite) {

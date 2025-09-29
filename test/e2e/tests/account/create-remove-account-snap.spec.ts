@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapListPage from '../../page-objects/pages/snap-list-page';

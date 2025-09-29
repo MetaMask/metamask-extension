@@ -6,7 +6,6 @@ import yargs from 'yargs/yargs';
 import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import { Driver } from './webdriver/driver';
-import FixtureBuilder from './fixture-builder';
 import { loginWithBalanceValidation } from './page-objects/flows/login.flow';
 import HomePage from './page-objects/pages/home/homepage';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
@@ -14,7 +13,7 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
   MOCK_TOKENS_ETHEREUM,
 } from './tests/bridge/constants';
-import { unlockWallet, withFixtures } from './helpers';
+import { unlockWallet } from './helpers';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer

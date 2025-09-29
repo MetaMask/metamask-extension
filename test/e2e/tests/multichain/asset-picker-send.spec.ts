@@ -1,7 +1,6 @@
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { unlockWallet } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';

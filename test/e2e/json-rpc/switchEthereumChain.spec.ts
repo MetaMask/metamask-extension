@@ -1,11 +1,9 @@
 import { strict as assert } from 'assert';
 import {
-  withFixtures,
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
 } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';

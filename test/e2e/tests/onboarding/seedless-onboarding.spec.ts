@@ -1,7 +1,5 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {

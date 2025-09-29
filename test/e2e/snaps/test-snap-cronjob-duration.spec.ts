@@ -2,8 +2,7 @@ import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { unlockWallet, WINDOW_TITLES } from '../helpers';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockCronjobDurationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 

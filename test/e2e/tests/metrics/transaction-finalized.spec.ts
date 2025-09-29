@@ -1,12 +1,7 @@
 import { isEqual, omit } from 'lodash';
 import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import {
-  assertInAnyOrder,
-  getEventPayloads,
-  withFixtures,
-} from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { assertInAnyOrder, getEventPayloads } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';

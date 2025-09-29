@@ -3,8 +3,6 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import { expect } from '@playwright/test';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';

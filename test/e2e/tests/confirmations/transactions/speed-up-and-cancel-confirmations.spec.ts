@@ -9,8 +9,7 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
 
-const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const { WINDOW_TITLES } = require('../../../helpers');
 
 const ethInHexWei = (eth: number): Hex => decimalToPrefixedHex(eth * 10 ** 18);
 

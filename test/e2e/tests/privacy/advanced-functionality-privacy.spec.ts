@@ -1,7 +1,5 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';

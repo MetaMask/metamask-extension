@@ -1,12 +1,10 @@
 import { By } from 'selenium-webdriver';
 
-import FixtureBuilder from '../../../fixture-builder';
 import {
   DAPP_ONE_URL,
   DAPP_URL,
   unlockWallet,
   WINDOW_TITLES,
-  withFixtures,
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';

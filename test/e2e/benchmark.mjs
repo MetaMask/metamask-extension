@@ -6,8 +6,7 @@ import yargs from 'yargs/yargs';
 import { exitWithError } from '../../development/lib/exit-with-error';
 import { retry } from '../../development/lib/retry';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
-import FixtureBuilder from './fixture-builder';
-import { unlockWallet, withFixtures } from './helpers';
+import { unlockWallet } from './helpers';
 import { PAGES } from './webdriver/driver';
 
 const DEFAULT_NUM_BROWSER_LOADS = 10;

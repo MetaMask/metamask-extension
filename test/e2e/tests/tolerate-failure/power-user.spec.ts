@@ -1,5 +1,4 @@
 import { generateWalletState } from '../../../../app/scripts/fixtures/generate-wallet-state';
-import { withFixtures } from '../../helpers';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

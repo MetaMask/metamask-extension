@@ -1,9 +1,8 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
-import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { unlockWallet, withFixtures, WINDOW_TITLES } from '../helpers';
+import { unlockWallet, WINDOW_TITLES } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
