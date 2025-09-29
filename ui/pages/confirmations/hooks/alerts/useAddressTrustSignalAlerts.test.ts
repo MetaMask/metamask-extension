@@ -58,7 +58,7 @@ const expectedWarningAlert = {
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
   key: 'trustSignalWarning',
-  message: 'alertMessageAddressTrustSignalWarning',
+  message: 'alertMessageAddressTrustSignal',
   reason: 'nameModalTitleWarning',
   severity: Severity.Warning,
 };
