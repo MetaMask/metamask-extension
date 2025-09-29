@@ -83,7 +83,7 @@ describe('Segment User Traits', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            participateInMetaMetrics: false,
           })
           .build(),
         title: this.test?.fullTitle(),
