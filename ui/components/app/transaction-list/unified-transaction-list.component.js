@@ -104,7 +104,7 @@ import {
   stopIncomingTransactionPolling,
 } from '../../../store/controller-actions/transaction-controller';
 import {
-  selectBridgeHistoryForAccount,
+  selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
@@ -590,9 +590,7 @@ export default function UnifiedTransactionList({
     getSelectedMultichainNetworkConfiguration,
   );
 
-  const bridgeHistoryItems = useSelector((state) =>
-    selectBridgeHistoryForAccount(state, selectedAccount.address),
-  );
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const selectedBridgeHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, selectedTransaction?.id),
   );
@@ -734,7 +732,10 @@ export default function UnifiedTransactionList({
           <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
         ) : null}
         {processedUnifiedActivityItems.length === 0 ? (
-          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+          <TransactionActivityEmptyState
+            className="mx-auto mt-5 mb-6"
+            account={selectedAccount}
+          />
         ) : (
           <Box className="transaction-list__transactions">
             {processedUnifiedActivityItems
