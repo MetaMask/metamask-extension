@@ -184,7 +184,6 @@ function handleEthSignTypedData(
   }
 
   // If this is a permit signature, also scan the spender address
-  // Use the same logic as isPermitSignatureRequest but inline
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
     const spenderAddress = typedDataMessage.message?.spender;
