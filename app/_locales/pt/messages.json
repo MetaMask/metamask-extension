@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Esta é uma versão beta. Pedimos que relatem os bugs $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versão Beta da MetaMask"
   },
@@ -4712,9 +4709,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Insira o endereço público (0x) ou nome de domínio"
-  },
-  "recommendedGasLabel": {
-    "message": "Recomendado"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Fazer backup agora"
