@@ -44,10 +44,7 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
-  } else if (
-    firstTimeFlowType === FirstTimeFlowType.socialCreate ||
-    firstTimeFlowType === FirstTimeFlowType.socialImport
-  ) {
+  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
     return ONBOARDING_DOWNLOAD_APP_ROUTE;
   }
   return DEFAULT_ROUTE;
@@ -67,7 +64,10 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
  */
 export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   const { firstTimeFlowType } = state.metamask;
-
+  console.log(
+    'check: firstTimeFlowType after meta metrics opt in',
+    firstTimeFlowType,
+  );
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {

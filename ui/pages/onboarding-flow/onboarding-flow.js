@@ -41,6 +41,7 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
+  setCompletedOnboarding,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -213,6 +214,9 @@ export default function OnboardingFlow() {
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        await dispatch(setCompletedOnboarding());
+      }
       navigate(nextRoute, { replace: true });
     } finally {
       setIsLoading(false);
