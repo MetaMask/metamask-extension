@@ -21,9 +21,8 @@ export const useSendTokens = (): Asset[] => {
 
   const assetsWithBalance = useMemo(() => {
     return flatAssets.filter((asset) => {
-      const haveBalance = asset.fiat?.balance && asset.fiat?.balance > 0;
-      const isTestNetAsset =
-        isTestNet(asset.chainId) && asset.rawBalance !== '0x0';
+      const haveBalance = asset.rawBalance !== '0x0';
+      const isTestNetAsset = isTestNet(asset.chainId);
       return haveBalance || isTestNetAsset;
     });
   }, [flatAssets]);
