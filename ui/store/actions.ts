@@ -2701,7 +2701,9 @@ export function setShowSupportDataConsentModal(show: boolean) {
 }
 
 export function clearProductTour() {
-  return submitRequestToBackground('setProductTour', ['']);
+  return async () => {
+    return submitRequestToBackground('setProductTour', ['']);
+  };
 }
 export function addToken(
   {
