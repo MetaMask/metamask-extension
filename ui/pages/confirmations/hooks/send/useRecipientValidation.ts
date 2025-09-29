@@ -12,15 +12,18 @@ import {
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { useNameValidation } from './useNameValidation';
+import { useIsUnmounted } from '../useIsUnmounted';
 
+// Avoid creating multiple instance of this hook in send flow,
+// as ens validation is very expensive operation. And result in slow-down and bugs if multiple instances are created.
 export const useRecipientValidation = () => {
   const t = useI18nContext();
   const { chainId, to } = useSendContext();
   const { isEvmSendType, isSolanaSendType } = useSendType();
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
-  const [loading, setLoading] = useState(false);
   const prevAddressValidated = useRef<string>();
+  const isUnmounted = useIsUnmounted();
 
   const validateRecipient = useCallback(
     async (toAddress): Promise<RecipientValidationResult> => {
@@ -51,30 +54,25 @@ export const useRecipientValidation = () => {
     if (prevAddressValidated.current === to) {
       return undefined;
     }
-    let cancel = false;
 
     (async () => {
-      setLoading(true);
+      prevAddressValidated.current = to;
       const validationResult = await validateRecipient(to);
 
-      if (!cancel) {
-        prevAddressValidated.current = to;
-        setResult({ ...validationResult, toAddressValidated: to });
-        setLoading(false);
+      if (!isUnmounted() && prevAddressValidated.current === to) {
+        setResult({
+          ...validationResult,
+          toAddressValidated: to,
+        });
       }
     })();
-
-    return () => {
-      cancel = true;
-    };
-  }, [setLoading, to, validateRecipient]);
+  }, [isUnmounted, setResult, to, validateRecipient]);
 
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
     recipientError: result?.error ? t(result?.error) : undefined,
     recipientResolvedLookup: result?.resolvedLookup,
     toAddressValidated: result?.toAddressValidated,
-    recipientValidationLoading: loading,
     recipientWarning: result?.warning ? t(result?.warning) : undefined,
   };
 };
