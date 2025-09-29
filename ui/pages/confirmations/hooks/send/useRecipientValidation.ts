@@ -60,7 +60,7 @@ export const useRecipientValidation = () => {
       prevAddressValidated.current = to;
       const validationResult = await validateRecipient(to);
 
-      if (!isUnmounted() && prevAddressValidated.current === to) {
+      if (!isUnmounted && prevAddressValidated.current === to) {
         setResult({
           ...validationResult,
           toAddressValidated: to,
