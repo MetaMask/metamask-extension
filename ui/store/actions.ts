@@ -4183,8 +4183,6 @@ export function resetApp() {
       await dispatch(resetOnboarding());
       // reset redux state
       await dispatch(resetAppAction());
-      // reset background controller state
-      await submitRequestToBackground('resetStates');
       // set `isResettingWalletInProgress` to true
       await submitRequestToBackground('setIsWalletResetInProgress', [true]);
 

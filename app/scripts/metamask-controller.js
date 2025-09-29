@@ -1507,12 +1507,6 @@ export default class MetamaskController extends EventEmitter {
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
-      this.seedlessOnboardingController.clearState.bind(
-        this.seedlessOnboardingController,
-      ),
-      this.tokenListController.clearingTokenListData.bind(
-        this.tokenListController,
-      ),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -2514,10 +2508,6 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  resetState() {
-    // TODO: Implement this
-  }
-
   /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
@@ -2569,7 +2559,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
-      resetState: this.resetState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
@@ -3642,7 +3631,6 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
-      resetStates: this.resetStates.bind(this),
       setIsWalletResetInProgress:
         this.appStateController.setIsWalletResetInProgress.bind(
           this.appStateController,
@@ -3666,9 +3654,11 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async resetWallet() {
-    console.log('resetting wallet ...');
     this.appStateController.setIsWalletResetInProgress(true);
     this.resetStates();
+
+    // clear SeedlessOnboardingController state
+    this.seedlessOnboardingController.clearState();
 
     // clear permissions
     this.permissionController.clearState();
@@ -4082,9 +4072,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    console.log('isSocialLoginFlow', isSocialLoginFlow);
-    console.log('isPasswordOutdated', isPasswordOutdated);
-
     // if the flow is not social login or the password is not outdated,
     // we will proceed with the normal flow and use the password to unlock the vault
     if (!isSocialLoginFlow || !isPasswordOutdated) {
@@ -4160,8 +4147,6 @@ export default class MetamaskController extends EventEmitter {
             throw err;
           }
         });
-
-      console.log('isPasswordSynced', isPasswordSynced);
 
       // we are unable to recover the old pwd enc key as user is on a very old device.
       // create a new vault and encrypt the new vault with the latest global password.
