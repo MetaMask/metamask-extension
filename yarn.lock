@@ -6799,9 +6799,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/multichain-api-middleware@npm:1.1.0"
+"@metamask/multichain-api-middleware@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/multichain-api-middleware@npm:1.2.0"
   dependencies:
     "@metamask/api-specs": "npm:^0.14.0"
     "@metamask/chain-agnostic-permission": "npm:^1.1.1"
@@ -6810,11 +6810,11 @@ __metadata:
     "@metamask/network-controller": "npm:^24.2.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.8.0"
+    "@metamask/utils": "npm:^11.8.1"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/b9079aa1a59e397e5991bbbe5acaa826a7bba1c7ed2f090be71568d63e9e06cb6fefe7dea6d87d7eac008b80b7e6aee5c29c454155e2e0791ba31bcd41c43c27
+  checksum: 10/049888e9e1abf8c0b2352de0c29d1d1e2f7baf2d8701666a2927ba5f70349b7979e8c9f0a98c601efdaf0168779552015fbdad04373519024f2848a930fed61a
   languageName: node
   linkType: hard
 
@@ -32164,7 +32164,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^1.2.0"
     "@metamask/multichain-api-client": "npm:^0.7.0"
-    "@metamask/multichain-api-middleware": "npm:1.1.0"
+    "@metamask/multichain-api-middleware": "npm:1.2.0"
     "@metamask/multichain-network-controller": "npm:^1.0.0"
     "@metamask/multichain-transactions-controller": "npm:^5.0.0"
     "@metamask/name-controller": "npm:^8.0.3"
