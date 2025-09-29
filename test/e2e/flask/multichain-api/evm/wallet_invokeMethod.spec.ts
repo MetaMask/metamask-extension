@@ -24,7 +24,6 @@ import {
   type FixtureCallbackArgs,
   addAccountInWalletAndAuthorize,
 } from '../testHelpers';
-import LoginPage from '../../../page-objects/pages/login-page';
 
 describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
