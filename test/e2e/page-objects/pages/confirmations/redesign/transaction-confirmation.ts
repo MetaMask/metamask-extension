@@ -75,7 +75,7 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="confirmation__token-details-section"]';
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
-    css: 'h3',
+    css: 'h4',
     text: tEn('review') as string,
   };
 
