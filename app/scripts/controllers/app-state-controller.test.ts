@@ -724,6 +724,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -881,6 +882,7 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
