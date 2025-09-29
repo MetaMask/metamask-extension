@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { screen, act, waitFor } from '@testing-library/react';
 import { DeFiPositionsControllerState } from '@metamask/assets-controllers';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import DeFiList from './defi-list';
 
 const lidoPosition: DeFiPositionsControllerState['allDeFiPositions'] = {

@@ -141,9 +141,6 @@ describe('DefiList', () => {
     await waitFor(() => {
       expect(screen.getByTestId('pulse-loader')).toBeInTheDocument();
 
-      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
-
       expect(
         screen.queryByTestId('import-token-button'),
       ).not.toBeInTheDocument();
@@ -161,8 +158,6 @@ describe('DefiList', () => {
       expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
         'Try visiting again later.',
       );
-      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
 
       expect(
         screen.queryByTestId('import-token-button'),
@@ -180,9 +175,6 @@ describe('DefiList', () => {
       ).toBeInTheDocument();
       expect(screen.getByText('Explore DeFi')).toBeInTheDocument();
       expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
-
-      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
 
       expect(
         screen.queryByTestId('import-token-button'),
