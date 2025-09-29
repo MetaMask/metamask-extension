@@ -765,6 +765,8 @@ export enum MetaMetricsEventName {
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
   ForgotPasswordClicked = 'Forgot Password Clicked',
+  ReferralViewed = 'Referral Viewed',
+  ReferralConfirmButtonClicked = 'Referral Confirm Button Clicked',
   ResetWallet = 'Reset Wallet',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
@@ -994,6 +996,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
+  Referrals = 'Referrals',
   BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
