@@ -1,9 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-} from '../helpers';
+import { DAPP_URL, DAPP_ONE_URL, WINDOW_TITLES } from '../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';

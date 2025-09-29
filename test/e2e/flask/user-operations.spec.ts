@@ -1,8 +1,4 @@
-import {
-  unlockWallet,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-} from '../helpers';
+import { unlockWallet, WINDOW_TITLES, convertETHToHexGwei } from '../helpers';
 import {
   BUNDLER_URL,
   DAPP_URL,
