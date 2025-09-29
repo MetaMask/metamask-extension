@@ -68,7 +68,7 @@ const TOOLTIP_ICONS = {
 };
 
 const TOOLTIP_ICON_COLORS = {
-  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
+  [ConfirmInfoRowVariant.Default]: Color.iconAlternative,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
@@ -112,8 +112,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         alignItems={AlignItems.flexStart}
         backgroundColor={BACKGROUND_COLORS[variant]}
         borderRadius={BorderRadius.LG}
-        marginTop={2}
-        marginBottom={2}
+        marginTop={1}
+        marginBottom={1}
         paddingLeft={2}
         paddingRight={2}
         color={TEXT_COLORS[variant] as TextColor}
