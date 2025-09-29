@@ -725,9 +725,6 @@
   "beta": {
     "message": "ベータ版"
   },
-  "betaHeaderText": {
-    "message": "これはベータ版です。バグは報告してください $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMaskベータ版"
   },
@@ -4057,14 +4054,8 @@
   "onboardingSrpInputClearAll": {
     "message": "すべて消去"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "すべて非表示"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "各単語の間に半角スペースを追加して、誰にも見られていないことを確認してください。"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "すべて表示"
   },
   "onekey": {
     "message": "OneKey"
@@ -4675,9 +4666,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "パブリックアドレス (0x) またはドメイン名を入力してください"
-  },
-  "recommendedGasLabel": {
-    "message": "推奨"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "今すぐバックアップ"

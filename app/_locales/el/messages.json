@@ -737,9 +737,6 @@
   "beta": {
     "message": "Δοκιμαστική έκδοση"
   },
-  "betaHeaderText": {
-    "message": "Αυτή είναι μια δοκιμαστική έκδοση. Παρακαλώ αναφέρετε σφάλματα $1"
-  },
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
   },
@@ -4087,14 +4084,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Εκκαθάριση όλων"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Απόκρυψη όλων"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Προσθέστε ένα κενό μεταξύ κάθε λέξης και βεβαιωθείτε ότι κανείς δεν παρακολουθεί."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Εμφάνιση όλων"
   },
   "onekey": {
     "message": "OneKey"
@@ -4709,9 +4700,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Εισαγάγετε τη δημόσια διεύθυνση (0x) ή το όνομα τομέα"
-  },
-  "recommendedGasLabel": {
-    "message": "Προτεινόμενο"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"

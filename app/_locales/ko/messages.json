@@ -737,9 +737,6 @@
   "beta": {
     "message": "베타"
   },
-  "betaHeaderText": {
-    "message": "베타 버전입니다. 버그는 $1로 보고하세요"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 베타 버전"
   },
@@ -4087,14 +4084,8 @@
   "onboardingSrpInputClearAll": {
     "message": "모두 지우기"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "모두 숨기기"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "각 단어 사이에 공백을 추가하고, 아무도 화면을 보고 있지 않은지 확인하세요."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "모두 보기"
   },
   "onekey": {
     "message": "OneKey"
@@ -4709,9 +4700,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "공개 주소(0x) 또는 도메인 이름 입력"
-  },
-  "recommendedGasLabel": {
-    "message": "권장됨"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "지금 백업"

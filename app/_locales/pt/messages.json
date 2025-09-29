@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Esta é uma versão beta. Pedimos que relatem os bugs $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versão Beta da MetaMask"
   },
@@ -4057,14 +4054,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Limpar tudo"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Ocultar tudo"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Adicione um espaço entre cada palavra e certifique-se de que ninguém esteja olhando."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Mostrar tudo"
   },
   "onekey": {
     "message": "OneKey"
@@ -4675,9 +4666,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Insira o endereço público (0x) ou nome de domínio"
-  },
-  "recommendedGasLabel": {
-    "message": "Recomendado"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Fazer backup agora"
