@@ -789,9 +789,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
   },
@@ -3981,6 +3978,9 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
   },
+  "noMMFeeSwapping": {
+    "message": "No MM fee swapping into $1."
+  },
   "noNetworksAvailable": {
     "message": "No networks available"
   },
@@ -5056,9 +5056,6 @@
   },
   "recipientPlaceholder": {
     "message": "Enter or paste a valid address"
-  },
-  "recommendedGasLabel": {
-    "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Back up now"
