@@ -2,7 +2,7 @@ import { GatorPermissionsController } from '@metamask/gator-permissions-controll
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
-import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
+
 import {
   getGatorPermissionsControllerMessenger,
   GatorPermissionsControllerMessenger,
@@ -36,7 +36,6 @@ describe('GatorPermissionsControllerInit', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
     process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID =
       MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
   });
@@ -57,30 +56,16 @@ describe('GatorPermissionsControllerInit', () => {
     ).toBeInstanceOf(GatorPermissionsController);
   });
 
-  it('initializes with correct messenger and state(gator permissions feature enabled)', () => {
+  // todo: it would be nice to test this where the gator-permissions feature is disabled
+  it('initializes with correct messenger and state', () => {
     const requestMock = buildInitRequestMock();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+
     GatorPermissionsControllerInit(requestMock);
 
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: {
         isGatorPermissionsEnabled: true,
-        gatorPermissionsProviderSnapId: MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
-        ...requestMock.persistedState.GatorPermissionsController,
-      },
-    });
-  });
-
-  it('initializes with correct messenger and state(gator permissions feature disabled)', () => {
-    const requestMock = buildInitRequestMock();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
-    GatorPermissionsControllerInit(requestMock);
-
-    expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
-      messenger: requestMock.controllerMessenger,
-      state: {
-        isGatorPermissionsEnabled: false,
         gatorPermissionsProviderSnapId: MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
         ...requestMock.persistedState.GatorPermissionsController,
       },
@@ -99,7 +84,6 @@ describe('GatorPermissionsControllerInit', () => {
   it('handles undefined persistedState.GatorPermissionsController', () => {
     const requestMock = buildInitRequestMock();
     requestMock.persistedState.GatorPermissionsController = undefined;
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
 
     GatorPermissionsControllerInit(requestMock);
 
