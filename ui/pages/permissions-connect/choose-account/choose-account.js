@@ -99,9 +99,7 @@ const ChooseAccount = ({
           paddingTop={4}
           paddingBottom={4}
         >
-          <Text variant={TextVariant.headingMd}>
-            {t('connectWithMetaMask')}
-          </Text>
+          <Text variant={TextVariant.headingMd}>{t('editAccounts')}</Text>
           <Text variant={TextVariant.bodyMd}>{headerText}</Text>
         </Box>
         <AccountList

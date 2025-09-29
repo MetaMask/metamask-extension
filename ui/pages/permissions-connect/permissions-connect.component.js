@@ -352,7 +352,7 @@ export default class PermissionConnect extends Component {
 
     return (
       <MultichainEditAccountsPageWrapper
-        title={t('connectWithMetaMask')}
+        title={t('editAccounts')}
         permissions={permissionsRequest?.permissions}
         onSubmit={(accountGroupIds) => {
           const filteredAccountGroups = accountGroups.filter(
