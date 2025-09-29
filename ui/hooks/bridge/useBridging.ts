@@ -110,8 +110,9 @@ const useBridging = () => {
       );
       dispatch(resetInputFields());
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+      url += '?';
       if (srcAssetIdToUse) {
-        url += `?${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
+        url += `${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
       }
       if (isSwap) {
         url += `&${BridgeQueryParams.SWAPS}=true`;
