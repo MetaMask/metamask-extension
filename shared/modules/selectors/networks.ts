@@ -38,12 +38,6 @@ export type NetworkConfigurationsByChainIdState = {
   metamask: Pick<InternalNetworkState, 'networkConfigurationsByChainId'>;
 };
 
-export type NetworkEnablementControllerState = {
-  metamask: {
-    enabledNetworkMap: Record<string, boolean>;
-  };
-};
-
 export type NetworksMetadataState = {
   metamask: Pick<InternalNetworkState, 'networksMetadata'>;
 };
@@ -75,11 +69,6 @@ export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state: NetworkConfigurationsByChainIdState) =>
     state.metamask.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
-);
-
-export const getEnabledNetworks = createDeepEqualSelector(
-  (state: NetworkEnablementControllerState) => state.metamask.enabledNetworkMap,
-  (enabledNetworks) => enabledNetworks,
 );
 
 export function getSelectedNetworkClientId(
@@ -289,26 +278,10 @@ export function getInfuraBlocked(
   );
 }
 
-export const getCurrentChainId = createDeepEqualSelector(
-  getEnabledNetworks,
-  getProviderConfig,
-  (enabledNetworks, providerConfig) => {
-    const eip155 = enabledNetworks?.eip155 ?? {};
-
-    // Collect IDs that are enabled (truthy)
-    const enabledIds = Object.entries(eip155)
-      .filter(([, enabled]) => Boolean(enabled))
-      .map(([id]) => id);
-
-    if (enabledIds.length === 1) {
-      // Return the single enabled chain id (e.g., "0x1")
-      return enabledIds[0];
-    }
-
-    // Fallback to current provider chainId
-    return providerConfig.chainId;
-  },
-);
+export function getCurrentChainId(state: ProviderConfigState) {
+  const { chainId } = getProviderConfig(state);
+  return chainId;
+}
 
 export const getIsAllNetworksFilterEnabled = createSelector(
   getNetworkConfigurationsByChainId,
