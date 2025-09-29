@@ -65,9 +65,6 @@ describe('Metamask onboarding (with social login)', function () {
           driver,
         });
 
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.displayDownloadAppPageAndContinue();
-
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const displayedWalletAddress = await homePage.getAccountAddress();
