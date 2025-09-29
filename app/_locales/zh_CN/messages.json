@@ -737,9 +737,6 @@
   "beta": {
     "message": "测试版"
   },
-  "betaHeaderText": {
-    "message": "此为测试版。请$1报告错误"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 测试版本"
   },
@@ -4746,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "输入公钥 (0x) 或域名"
-  },
-  "recommendedGasLabel": {
-    "message": "建议"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "立即备份"

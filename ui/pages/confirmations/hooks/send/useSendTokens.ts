@@ -5,7 +5,6 @@ import { Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
 } from '../../../../../shared/constants/network';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
@@ -21,10 +20,8 @@ export const useSendTokens = (): Asset[] => {
 
   const assetsWithBalance = useMemo(() => {
     return flatAssets.filter((asset) => {
-      const haveBalance = asset.fiat?.balance && asset.fiat?.balance > 0;
-      const isTestNetAsset =
-        isTestNet(asset.chainId) && asset.rawBalance !== '0x0';
-      return haveBalance || isTestNetAsset;
+      const haveBalance = asset.rawBalance !== '0x0';
+      return haveBalance;
     });
   }, [flatAssets]);
 
@@ -73,7 +70,3 @@ export const useSendTokens = (): Asset[] => {
     );
   }, [processedAssets]);
 };
-
-function isTestNet(chainId: string) {
-  return TEST_CHAINS.includes(chainId as Hex);
-}

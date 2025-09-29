@@ -737,9 +737,6 @@
   "beta": {
     "message": "베타"
   },
-  "betaHeaderText": {
-    "message": "베타 버전입니다. 버그는 $1로 보고하세요"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 베타 버전"
   },
@@ -4746,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "공개 주소(0x) 또는 도메인 이름 입력"
-  },
-  "recommendedGasLabel": {
-    "message": "권장됨"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "지금 백업"

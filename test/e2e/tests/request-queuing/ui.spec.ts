@@ -151,11 +151,6 @@ async function switchToDialogPopoverValidateDetailsRedesign(
   );
 }
 
-async function rejectTransactionRedesign(driver: Driver): Promise<void> {
-  const confirmation = new Confirmation(driver);
-  await confirmation.clickFooterCancelButton();
-}
-
 async function confirmTransaction(driver: Driver): Promise<void> {
   const confirmation = new Confirmation(driver);
   await confirmation.clickFooterConfirmButton();
@@ -242,7 +237,8 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
-        await rejectTransactionRedesign(driver);
+        const confirmation = new Confirmation(driver);
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         // Go to the second dapp, ensure it uses Ethereum
         await selectDappClickSend(driver, DAPP_ONE_URL);
@@ -251,7 +247,7 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
-        await rejectTransactionRedesign(driver);
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
       },
     );
   });
@@ -347,7 +343,8 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        const confirmation = new Confirmation(driver);
+        await confirmation.clickFooterCancelButton();
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
