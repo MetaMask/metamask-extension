@@ -12,40 +12,38 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  describe(`migration #${version}`, () => {
-    it('deletes AppStateController.qrHardware from the state', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          AppStateController: {
-            qrHardware: { foo: 'bar' },
-            other: 'data',
-          },
+  it('deletes AppStateController.qrHardware from the state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        AppStateController: {
+          qrHardware: { foo: 'bar' },
+          other: 'data',
         },
-      };
+      },
+    };
 
-      const newStorage = await migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
-      expect(newStorage.data).toStrictEqual({
+    expect(newStorage.data).toStrictEqual({
+      AppStateController: {
+        other: 'data',
+      },
+    });
+  });
+
+  it('does nothing if AppStateController.qrHardware is not present', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
         AppStateController: {
           other: 'data',
         },
-      });
-    });
+      },
+    };
 
-    it('does nothing if AppStateController.qrHardware is not present', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          AppStateController: {
-            other: 'data',
-          },
-        },
-      };
+    const newStorage = await migrate(oldStorage);
 
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 });
