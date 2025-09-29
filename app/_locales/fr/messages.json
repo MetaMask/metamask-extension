@@ -5006,18 +5006,8 @@
   "secureWallet": {
     "message": "Portefeuille sécurisé"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Commencer"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Me le rappeler plus tard"
-  },
-  "secureWalletWalletRecover": {
-    "message": "C’est le seul moyen de récupérer votre portefeuille si vous n’arrivez plus à vous connecter à l’application ou changez d’appareil."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Ne prenez pas le risque de perdre vos fonds. Protégez votre portefeuille en conservant votre $1 en lieu sûr.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Sécurité"
@@ -5096,9 +5086,6 @@
   },
   "seeDetails": {
     "message": "Voir les détails"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Sécuriser votre portefeuille"
   },
   "seedPhraseReq": {
     "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
@@ -5404,18 +5391,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Sauter le réglage des paramètres de sécurité du compte ?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Si vous perdez cette phrase secrète de récupération, vous ne pourrez plus accéder à ce portefeuille."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Sécuriser maintenant"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Ignorer"
   },
   "skipDeepLinkInterstitial": {
     "message": "Ne pas afficher d’écran interstitiel lors de l’ouverture de liens profonds"
@@ -5773,9 +5748,6 @@
   },
   "spendingCaps": {
     "message": "Plafonds de dépenses"
-  },
-  "srpDesignImageAlt": {
-    "message": "Image du coffre-fort contenant la phrase secrète de récupération"
   },
   "srpDetailsDescription": {
     "message": "Une phrase secrète de récupération, également appelée phrase secrète ou phrase mnémonique, est une série de mots qui vous permet d’accéder à votre portefeuille crypto et de le gérer. Vous en aurez besoin pour transférer votre portefeuille vers MetaMask."

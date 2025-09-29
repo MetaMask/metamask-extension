@@ -25,30 +25,8 @@ class SecureWalletPage {
   private readonly revealSecretRecoveryPhraseButton =
     '[data-testid="recovery-phrase-reveal"]';
 
-  private readonly secureWalletButton =
-    '[data-testid="secure-wallet-recommended"]';
-
   private readonly secureWalletRecommendedButton =
     '[data-testid="recovery-phrase-remind-later"]';
-
-  private readonly secureWalletLaterButton =
-    '[data-testid="secure-wallet-later"]';
-
-  private readonly secureWalletMessage = {
-    text: 'Secure your wallet',
-    tag: 'h2',
-  };
-
-  private readonly skipAccountSecurityMessage = {
-    text: 'Skip account security?',
-    tag: 'h3',
-  };
-
-  private readonly skipSRPBackupCheckbox =
-    '[data-testid="skip-srp-backup-checkbox"]';
-
-  private readonly skipSRPBackupConfirmButton =
-    '[data-testid="skip-srp-backup-button"]';
 
   private readonly writeDownSecretRecoveryPhraseMessage = {
     text: 'Save your Secret Recovery Phrase',
@@ -69,9 +47,7 @@ class SecureWalletPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.secureWalletRecommendedButton,
-      ]);
+      await this.driver.waitForSelector(this.secureWalletRecommendedButton);
     } catch (e) {
       console.log(
         'Timeout while waiting for secure wallet page to be loaded',

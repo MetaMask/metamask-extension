@@ -5006,18 +5006,8 @@
   "secureWallet": {
     "message": "Güvenli cüzdan"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Başlarken"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Daha sonra hatırlat"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Uygulamanın dışında kalmanız veya yeni bir cihaz edinmeniz durumunda cüzdanınızı kurtarmanızın tek yoludur."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Paranızı kaybetme riskini almayın. $1 güvendiğiniz bir yere kaydederek cüzdanınızı koruyun.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Güvenlik"
@@ -5096,9 +5086,6 @@
   },
   "seeDetails": {
     "message": "Ayrıntılara bakın"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Cüzdanınızı koruyun"
   },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
@@ -5404,18 +5391,6 @@
   },
   "siweURI": {
     "message": "URL adresi"
-  },
-  "skipAccountSecurity": {
-    "message": "Hesap güvenliğini atla?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Bu Gizli Kurtarma İfadesini kaybederseniz bu cüzdana erişim sağlayamayacaksınız."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Şimdi güvence altına al"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Atla"
   },
   "skipDeepLinkInterstitial": {
     "message": "Derin bağlantıları açarken geçiş ekranını gösterme"
@@ -5773,9 +5748,6 @@
   },
   "spendingCaps": {
     "message": "Harcama üst limitleri"
-  },
-  "srpDesignImageAlt": {
-    "message": "GKİ vault görüntüsü"
   },
   "srpDetailsDescription": {
     "message": "Gizli Kurtarma İfadesi, anahtar cümle veya kurtarma ifadesi olarak da anılan, kripto cüzdanınıza erişiminizi ve kontrolü sağlayan bir sözcük dizisidir. Cüzdanınızı MetaMask'e taşımak için bu ifadeye ihtiyacınız var."
