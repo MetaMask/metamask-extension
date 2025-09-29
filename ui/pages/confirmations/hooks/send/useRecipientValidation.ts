@@ -12,7 +12,6 @@ import {
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { useNameValidation } from './useNameValidation';
-import { useIsUnmounted } from '../useIsUnmounted';
 
 // Avoid creating multiple instance of this hook in send flow,
 // as ens validation is very expensive operation. And result can slow-down
@@ -24,7 +23,13 @@ export const useRecipientValidation = () => {
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
   const prevAddressValidated = useRef<string>();
-  const isUnmounted = useIsUnmounted();
+  const unmountedRef = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      unmountedRef.current = true;
+    };
+  }, []);
 
   const validateRecipient = useCallback(
     async (toAddress): Promise<RecipientValidationResult> => {
@@ -60,14 +65,14 @@ export const useRecipientValidation = () => {
       prevAddressValidated.current = to;
       const validationResult = await validateRecipient(to);
 
-      if (!isUnmounted && prevAddressValidated.current === to) {
+      if (!unmountedRef.current && prevAddressValidated.current === to) {
         setResult({
           ...validationResult,
           toAddressValidated: to,
         });
       }
     })();
-  }, [isUnmounted, setResult, to, validateRecipient]);
+  }, [setResult, to, validateRecipient]);
 
   return {
     recipientConfusableCharacters: result?.confusableCharacters,
