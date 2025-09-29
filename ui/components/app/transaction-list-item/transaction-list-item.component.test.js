@@ -19,7 +19,7 @@ import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-t
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProviderAndHistory } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
@@ -36,6 +36,7 @@ import {
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -128,8 +129,10 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.shouldShowFiat ?? false;
   } else if (selector === getTokens) {
     return opts.tokens ?? [];
-  } else if (selector === selectBridgeHistoryForAccount) {
+  } else if (selector === selectBridgeHistoryForAccountGroup) {
     return opts.bridgeHistory ?? {};
+  } else if (selector === getAccountTree) {
+    return opts.accountTree ?? { wallets: {} };
   } else if (selector === getSelectedInternalAccount) {
     return opts.selectedInternalAccount ?? { address: '0xDefaultAddress' };
   } else if (selector === getNames) {

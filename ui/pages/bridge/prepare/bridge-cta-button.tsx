@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isCrossChain } from '@metamask/bridge-controller';
 import {
   Button,
   ButtonLink,
@@ -100,13 +99,7 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
-      return activeQuote &&
-        isCrossChain(
-          activeQuote.quote.srcChainId,
-          activeQuote.quote.destChainId,
-        )
-        ? 'bridge'
-        : 'swap';
+      return 'swap';
     }
 
     return 'swapSelectToken';

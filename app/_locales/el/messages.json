@@ -737,9 +737,6 @@
   "beta": {
     "message": "Δοκιμαστική έκδοση"
   },
-  "betaHeaderText": {
-    "message": "Αυτή είναι μια δοκιμαστική έκδοση. Παρακαλώ αναφέρετε σφάλματα $1"
-  },
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
   },
@@ -3732,9 +3729,6 @@
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
   },
-  "noActivity": {
-    "message": "Δεν υπάρχει δραστηριότητα ακόμα"
-  },
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
   },
@@ -3744,17 +3738,11 @@
   "noConversionRateAvailable": {
     "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
   },
-  "noDeFiPositions": {
-    "message": "Δεν μπορείτε να βρείτε αυτό που ψάχνετε;"
-  },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Τα Snaps και τα περισσότερα πορτοφόλια υλικού δεν θα λειτουργούν με την τρέχουσα έκδοση του προγράμματος περιήγησής σας."
-  },
-  "noNFTs": {
-    "message": "Δεν υπάρχουν NFT ακόμα"
   },
   "noNetworksAvailable": {
     "message": "Δεν υπάρχουν διαθέσιμα δίκτυα"
@@ -3773,9 +3761,6 @@
   },
   "noThanks": {
     "message": "Όχι, ευχαριστώ"
-  },
-  "noTransactions": {
-    "message": "Δεν έχετε συναλλαγές"
   },
   "noWebcamFound": {
     "message": "Η κάμερα του υπολογιστή σας δεν βρέθηκε. Προσπαθήστε ξανά."
@@ -4636,9 +4621,6 @@
   "proposedApprovalLimit": {
     "message": "Προτεινόμενο όριο έγκρισης"
   },
-  "protocolNotSupported": {
-    "message": "Ενδέχεται να μην υποστηρίζουμε ακόμη το πρωτόκολλό σας."
-  },
   "provide": {
     "message": "Παροχή"
   },
@@ -4755,9 +4737,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Εισαγάγετε τη δημόσια διεύθυνση (0x) ή το όνομα τομέα"
-  },
-  "recommendedGasLabel": {
-    "message": "Προτεινόμενο"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"

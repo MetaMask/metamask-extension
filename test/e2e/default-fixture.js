@@ -90,6 +90,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
+      },
+      NetworkEnablementController: {
         enabledNetworkMap: {
           eip155: {
             [inputChainId]: true,
@@ -122,6 +124,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
+        hasShownMultichainAccountsIntroModal: true,
       },
       BridgeController: {},
       CurrencyController: {
@@ -230,6 +233,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         isMultiAccountBalancesEnabled: true,
+        referrals: {
+          hyperliquid: {},
+        },
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
