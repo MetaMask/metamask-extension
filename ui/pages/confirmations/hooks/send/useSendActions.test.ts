@@ -3,12 +3,8 @@ import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
-<<<<<<< HEAD
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-=======
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { setDefaultHomeActiveTabName } from '../../../../store/actions';
->>>>>>> origin/main
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
@@ -19,7 +15,6 @@ const MOCK_ADDRESS_2 = '0xd12662965960f3855a09f85396459429a595d741';
 const MOCK_ADDRESS_3 = '4Nd1m5PztHZbA1FtdYzWxTjLdQdHZr4sqoZKxK3x3hJv';
 const MOCK_ADDRESS_4 = '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin';
 
-<<<<<<< HEAD
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
@@ -27,22 +22,11 @@ jest.mock('react-router-dom-v5-compat', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
-=======
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   setDefaultHomeActiveTabName: jest.fn(),
 }));
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
->>>>>>> origin/main
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -134,7 +118,7 @@ describe('useSendQueryParams', () => {
     await waitFor(() => {
       expect(mockSetDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockHistory.push).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/');
     });
   });
 });

@@ -84,12 +84,12 @@ export const useSendActions = () => {
   ]);
 
   const handleBack = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    navigate(-1);
+  }, [navigate]);
 
   const handleCancel = useCallback(() => {
-    history.push(DEFAULT_ROUTE);
-  }, [history]);
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   return { handleSubmit, handleCancel, handleBack };
 };

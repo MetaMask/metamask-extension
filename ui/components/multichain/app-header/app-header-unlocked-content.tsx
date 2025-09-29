@@ -208,7 +208,7 @@ export const AppHeaderUnlockedContent = ({
     ),
     [copied, handleCopyClick, shortenedAddress],
   );
-  
+
   const multichainAccountAppContent = useMemo(() => {
     const networksLabel =
       numberOfAccountsInGroup === 1
