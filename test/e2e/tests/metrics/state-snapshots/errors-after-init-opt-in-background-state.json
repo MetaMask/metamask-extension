@@ -58,6 +58,7 @@
     "throttledOrigins": "object",
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
+    "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": "object",
