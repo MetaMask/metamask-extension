@@ -31,9 +31,9 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.showFiat
  * @param props.balanceChange
  * @param props.labelColor
- * @param props.isFirstRow - Whether this is the first row
- * @param props.hasIncomingTokens - Whether this section contains incoming tokens
- * @param props.confirmationId - Confirmation ID for alert lookup
+ * @param props.isFirstRow
+ * @param props.hasIncomingTokens
+ * @param props.confirmationId
  */
 export const BalanceChangeRow: React.FC<{
   label?: string;
@@ -64,16 +64,6 @@ export const BalanceChangeRow: React.FC<{
     onEdit,
   } = balanceChange;
 
-  const defaultTextComponent = (
-    <Text
-      style={{ whiteSpace: 'nowrap' }}
-      color={labelColor}
-      variant={TextVariant.bodyMd}
-    >
-      {label}
-    </Text>
-  );
-
   const renderLabel = () => {
     if (!label) {
       return null;
@@ -93,7 +83,15 @@ export const BalanceChangeRow: React.FC<{
       );
     }
 
-    return defaultTextComponent;
+    return (
+      <Text
+        style={{ whiteSpace: 'nowrap' }}
+        color={labelColor}
+        variant={TextVariant.bodyMd}
+      >
+        {label}
+      </Text>
+    );
   };
 
   return (

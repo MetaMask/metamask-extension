@@ -3057,12 +3057,11 @@ export function getTokenScanCache(state) {
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
  */
+
 export const getTokenScanResultsForAddresses = createDeepEqualSelector(
   [
     getTokenScanCache,
-    // eslint-disable-next-line jsdoc/check-param-names
     (_state, chainId) => chainId,
-    // eslint-disable-next-line jsdoc/check-param-names
     (_state, _chainId, tokenAddresses) => tokenAddresses,
   ],
   (tokenScanCache, chainId, tokenAddresses) => {
