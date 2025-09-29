@@ -34,6 +34,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const caipChainId = isCaipChainId(chainId)
     ? chainId
     : formatChainIdToCaip(chainId);
+  // TODO BIP44: The new selector returns the accountId, when BIP44 is fully enabled we can fetch the asset higher up and ensure it's passed here
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   ) as InternalAccount;
