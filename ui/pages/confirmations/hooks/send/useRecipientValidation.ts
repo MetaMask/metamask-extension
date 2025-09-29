@@ -15,7 +15,8 @@ import { useNameValidation } from './useNameValidation';
 import { useIsUnmounted } from '../useIsUnmounted';
 
 // Avoid creating multiple instance of this hook in send flow,
-// as ens validation is very expensive operation. And result can slow-down and result in bugs if multiple instances are created.
+// as ens validation is very expensive operation. And result can slow-down
+// and result in bugs if multiple instances are created.
 export const useRecipientValidation = () => {
   const t = useI18nContext();
   const { chainId, to } = useSendContext();
