@@ -149,6 +149,7 @@ import {
   getNetworkControllerInitMessenger,
   getNetworkControllerMessenger,
 } from './network-controller-messenger';
+import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -461,6 +462,10 @@ export const CONTROLLER_MESSENGERS = {
   SubscriptionController: {
     getMessenger: getSubscriptionControllerMessenger,
     getInitMessenger: getSubscriptionControllerInitMessenger,
+  },
+  SubscriptionService: {
+    getMessenger: getSubscriptionServiceMessenger,
+    getInitMessenger: noop,
   },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,

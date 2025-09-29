@@ -74,6 +74,7 @@ import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
+import { SubscriptionService } from '../services/subscription/subscription-service';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -129,6 +130,7 @@ export type Controller =
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController
+  | SubscriptionService
   | SwapsController
   | TokenBalancesController
   | TokenDetectionController
