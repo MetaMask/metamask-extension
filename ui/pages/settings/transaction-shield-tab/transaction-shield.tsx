@@ -13,9 +13,7 @@ import {
   BannerAlertSeverity,
   Box,
   BoxProps,
-  Button,
   ButtonLink,
-  ButtonSize,
   Icon,
   IconName,
   IconSize,
@@ -49,7 +47,8 @@ import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { useFormatters } from '../../../helpers/formatters';
+import { useFormatters } from '../../../hooks/useFormatters';
+import LoadingScreen from '../../../components/ui/loading-screen';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -66,6 +65,7 @@ const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { formatCurrency } = useFormatters();
+
   const {
     customerId,
     subscriptions,
@@ -107,17 +107,18 @@ const TransactionShield = () => {
   ] = useOpenGetSubscriptionBillingPortal();
 
   const loading =
-    subscriptionsLoading ||
     cancelSubscriptionResult.pending ||
     unCancelSubscriptionResult.pending ||
     openGetSubscriptionBillingPortalResult.pending;
 
+  const showSkeletonLoader = subscriptionsLoading;
+
   useEffect(() => {
-    if (!loading && !shieldSubscription) {
+    if (!shieldSubscription) {
       // redirect to shield plan page if user doesn't have a subscription
       navigate(SHIELD_PLAN_ROUTE);
     }
-  }, [navigate, loading, shieldSubscription]);
+  }, [navigate, shieldSubscription]);
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
@@ -154,12 +155,12 @@ const TransactionShield = () => {
         width={BlockSize.Full}
         onClick={onClick}
       >
-        {loading ? (
+        {showSkeletonLoader ? (
           <Skeleton width="50%" height={20} />
         ) : (
           <Text variant={TextVariant.bodyMdMedium}>{label}</Text>
         )}
-        {loading ? (
+        {showSkeletonLoader ? (
           <Skeleton width={24} height={24} borderRadius={BorderRadius.full} />
         ) : (
           <Icon
@@ -180,12 +181,12 @@ const TransactionShield = () => {
         gap={2}
         justifyContent={JustifyContent.spaceBetween}
       >
-        {loading ? (
+        {showSkeletonLoader ? (
           <Skeleton width="40%" height={24} />
         ) : (
           <Text variant={TextVariant.bodyMdMedium}>{key}</Text>
         )}
-        {loading ? (
+        {showSkeletonLoader ? (
           <Skeleton width="30%" height={24} />
         ) : (
           <Text variant={TextVariant.bodyMdMedium}>{value}</Text>
@@ -320,11 +321,12 @@ const TransactionShield = () => {
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
-              'transaction-shield-page__membership--loading': loading,
+              'transaction-shield-page__membership--loading':
+                showSkeletonLoader,
               'transaction-shield-page__membership--inactive':
-                isCancelled && !loading,
+                isCancelled && !showSkeletonLoader,
               'transaction-shield-page__membership--active':
-                !isCancelled && !loading,
+                !isCancelled && !showSkeletonLoader,
             },
           )}
           {...rowsStyleProps}
@@ -333,12 +335,12 @@ const TransactionShield = () => {
         >
           <Box
             width={BlockSize.Full}
-            gap={loading ? 2 : 0}
+            gap={showSkeletonLoader ? 2 : 0}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             data-theme={ThemeType.dark}
           >
-            {loading ? (
+            {showSkeletonLoader ? (
               <Skeleton width="60%" height={20} />
             ) : (
               <Box
@@ -382,7 +384,7 @@ const TransactionShield = () => {
                 )}
               </Box>
             )}
-            {loading ? (
+            {showSkeletonLoader ? (
               <Skeleton width="60%" height={16} />
             ) : (
               <Text
@@ -393,20 +395,6 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
-          {(isCancelled || shieldSubscription?.cancelAtPeriodEnd) &&
-            !loading && (
-              <Box>
-                <Button
-                  data-testid="shield-tx-membership-resubscribe-button"
-                  size={ButtonSize.Sm}
-                  onClick={() => {
-                    executeUnCancelSubscription();
-                  }}
-                >
-                  {t('shieldTxMembershipResubscribe')}
-                </Button>
-              </Box>
-            )}
         </Box>
 
         <Box
@@ -425,7 +413,7 @@ const TransactionShield = () => {
               paddingTop={2}
               paddingBottom={2}
             >
-              {loading ? (
+              {showSkeletonLoader ? (
                 <Skeleton
                   width={32}
                   height={32}
@@ -439,14 +427,14 @@ const TransactionShield = () => {
                 width={BlockSize.Full}
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
-                gap={loading ? 2 : 0}
+                gap={showSkeletonLoader ? 2 : 0}
               >
-                {loading ? (
+                {showSkeletonLoader ? (
                   <Skeleton width="100%" height={18} />
                 ) : (
                   <Text variant={TextVariant.bodySmBold}>{detail.title}</Text>
                 )}
-                {loading ? (
+                {showSkeletonLoader ? (
                   <Skeleton width="100%" height={18} />
                 ) : (
                   <Text
@@ -468,6 +456,10 @@ const TransactionShield = () => {
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
             // todo: link to submit claim page
           })}
+        {(isCancelled || shieldSubscription?.cancelAtPeriodEnd) &&
+          buttonRow(t('shieldTxMembershipResubscribe'), () => {
+            executeUnCancelSubscription();
+          })}
         {canCancel &&
           buttonRow(
             t('shieldTxMembershipCancel'),
@@ -485,7 +477,7 @@ const TransactionShield = () => {
           flexDirection={FlexDirection.Column}
           gap={2}
         >
-          {loading ? (
+          {showSkeletonLoader ? (
             <Skeleton width="60%" height={24} />
           ) : (
             <Text variant={TextVariant.headingSm}>
@@ -505,14 +497,14 @@ const TransactionShield = () => {
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
                 isCryptoPayment
-                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanYearly') : t('shieldPlanMonthly')})`
+                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),
                       {
                         maximumFractionDigits: 0,
                       },
-                    )} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanYearly') : t('shieldPlanMonthly')})`,
+                    )} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
               )}
               {isCryptoPayment &&
                 billingDetails(
@@ -545,6 +537,7 @@ const TransactionShield = () => {
           subscription={shieldSubscription}
         />
       )}
+      {loading && <LoadingScreen />}
     </Box>
   );
 };

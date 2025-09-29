@@ -151,6 +151,8 @@ class TestDapp {
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
 
+  private readonly piggyBankContract = '#deployButton';
+
   private readonly provider = '#provider';
 
   private readonly revokePermissionButton = '#revokeAccountsPermission';
@@ -890,6 +892,11 @@ class TestDapp {
     await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
+  async clickPiggyBankContract() {
+    await this.driver.clickElement(this.piggyBankContract);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
   async clickSendCalls() {
     await this.driver.clickElement(this.sendCallsButton);
     await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
@@ -1015,10 +1022,6 @@ class TestDapp {
     console.log('Create a deposit transaction on test dapp page');
     await this.driver.clickElement(this.depositPiggyBankContractButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.transactionRequestMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmDepositButton,
-    );
   }
 
   /**

@@ -62,6 +62,7 @@ import { SelectedNetworkController } from '@metamask/selected-network-controller
 import { BridgeController } from '@metamask/bridge-controller';
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { ApprovalController } from '@metamask/approval-controller';
+import { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -143,7 +144,8 @@ export type Controller =
   | AssetsContractController
   | AccountTreeController
   | WebSocketService
-  | MultichainAccountService;
+  | MultichainAccountService
+  | NetworkEnablementController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -201,4 +203,5 @@ export type ControllerFlatState = AccountsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'];
+  NftDetectionController['state'] &
+  NetworkEnablementController['state'];

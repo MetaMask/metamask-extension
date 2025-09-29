@@ -113,7 +113,7 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
         badge={
           chainId ? (
             <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
+              size={AvatarNetworkSize.Sm}
               name={networkName || chainNetworkNameAndImage?.networkName || ''}
               src={networkImage || chainNetworkNameAndImage?.networkImage}
             />

@@ -725,9 +725,6 @@
   "beta": {
     "message": "Bêta"
   },
-  "betaHeaderText": {
-    "message": "Il s’agit d’une version bêta. Veuillez signaler les bogues $1"
-  },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
   },
@@ -3735,9 +3732,6 @@
   "noThanks": {
     "message": "Non merci"
   },
-  "noTransactions": {
-    "message": "Vous n’avez aucune transaction"
-  },
   "noWebcamFound": {
     "message": "La caméra de votre ordinateur n’a pas été trouvée. Veuillez réessayer."
   },
@@ -4715,9 +4709,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Saisissez l’adresse publique (0x) ou le nom de domaine"
-  },
-  "recommendedGasLabel": {
-    "message": "Recommandé"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sauvegarder maintenant"

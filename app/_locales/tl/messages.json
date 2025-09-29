@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Ito ay isang beta version. I-ulat ang mga bug $1"
-  },
   "betaMetamaskVersion": {
     "message": "Bersyon ng MetaMask Beta"
   },
@@ -3735,9 +3732,6 @@
   "noThanks": {
     "message": "Salamat na lang"
   },
-  "noTransactions": {
-    "message": "Wala kang transaksyon"
-  },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
   },
@@ -4715,9 +4709,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Ilagay ang pampublikong address (0x) o pangalan ng domain"
-  },
-  "recommendedGasLabel": {
-    "message": "Nirekomenda"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "I-back up ngayon"
