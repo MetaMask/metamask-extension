@@ -5785,6 +5785,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
+export async function updateBalancesFoAccounts(
+  chainIds: string[],
+  queryAllAccounts: boolean,
+): Promise<void> {
+  await submitRequestToBackground('updateBalances', [
+    { chainIds, queryAllAccounts },
+  ]);
+}
+
 /**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
