@@ -505,7 +505,7 @@ describe('Bridge selectors', () => {
         address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
         assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
-        chainId: '0x1',
+        chainId: 'eip155:1',
         decimals: 18,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
@@ -1095,6 +1095,22 @@ describe('Bridge selectors', () => {
           },
         },
         metamaskStateOverrides: {
+          accountTree: {
+            selectedAccountGroup: 'entropy-test-account-group-id/0',
+            wallets: {
+              'entropy-test-account-group-id': {
+                id: 'entropy-test-account-group-id',
+                type: 'entropy',
+              },
+              groups: {
+                'entropy-test-account-group-id/0': {
+                  id: 'entropy-test-account-group-id/0',
+                  type: 'multichain-account',
+                  accounts: ['test-account-id'],
+                },
+              },
+            },
+          },
           internalAccounts: {
             selectedAccount: 'test-account-id',
             accounts: {

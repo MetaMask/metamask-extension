@@ -24,6 +24,7 @@ import type { EnsControllerState } from '@metamask/ens-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { NetworkState } from '@metamask/network-controller';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
+import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type {
   PermissionConstraint,
   PermissionControllerState,
@@ -200,7 +201,7 @@ export type ControllerStatePropertiesEnumerated = {
   networksMetadata: NetworkState['networksMetadata'];
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
-  enabledNetworkMap: NetworkOrderControllerState['enabledNetworkMap'];
+  enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];
@@ -256,6 +257,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentLocale: PreferencesControllerState['currentLocale'];
   forgottenPassword: PreferencesControllerState['forgottenPassword'];
   preferences: PreferencesControllerState['preferences'];
+  referrals: PreferencesControllerState['referrals'];
   useAddressBarEnsResolution: PreferencesControllerState['useAddressBarEnsResolution'];
   ledgerTransportType: PreferencesControllerState['ledgerTransportType'];
   snapRegistryList: PreferencesControllerState['snapRegistryList'];
@@ -340,6 +342,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   NameControllerState &
   NetworkState &
   NetworkOrderControllerState &
+  NetworkEnablementControllerState &
   NftControllerState &
   NotificationServicesController.NotificationServicesControllerState &
   NotificationServicesPushController.NotificationServicesPushControllerState &

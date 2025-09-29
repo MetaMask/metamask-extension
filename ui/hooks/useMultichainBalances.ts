@@ -5,7 +5,10 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
+import { SolScope } from '@metamask/keyring-api';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
+import { AssetType } from '../../shared/constants/transaction';
 import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
@@ -13,18 +16,15 @@ import {
   getAssetsRates,
   getTokenBalancesEvm,
 } from '../selectors/assets';
+import { getMultichainBalances } from '../selectors/multichain';
 import {
-  getLastSelectedNonEvmAccount,
-  getMultichainBalances,
-} from '../selectors/multichain';
-import { AssetType } from '../../shared/constants/transaction';
-import {
-  getInternalAccount,
-  getSelectedEvmInternalAccount,
-} from '../selectors/selectors';
+  getAccountGroupsByAddress,
+  getInternalAccountByGroupAndCaip,
+  getSelectedAccountGroup,
+} from '../selectors/multichain-accounts/account-tree';
+import { type MultichainAccountsState } from '../selectors/multichain-accounts/account-tree.types';
 import { useMultichainSelector } from './useMultichainSelector';
 
-// TODO replace this with getMultichainAssets
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
 ): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
@@ -97,23 +97,39 @@ const useNonEvmAssetsWithBalances = (
  * This hook is used to get the balances of all tokens and native tokens across all chains
  * This also returns the total fiat balances by chainId/caipChainId
  *
- * @param accountId - the accountId to use for the token list, if not provided, the selected account will be used
+ * @param accountAddress - the accountAddress to use for the token list, if not provided, the selected account will be used
  */
-export const useMultichainBalances = (accountId?: string) => {
-  // EVM data
-  const selectedAccount = useSelector(getSelectedEvmInternalAccount);
-  const requestedAccount = useSelector((state) =>
-    getInternalAccount(state, accountId ?? ''),
+export const useMultichainBalances = (
+  accountAddress?: InternalAccount['address'],
+) => {
+  // Use accountAddress's account group if it exists, otherwise use the selected account group
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const [requestedAccountGroup] = useSelector((state) =>
+    getAccountGroupsByAddress(state as MultichainAccountsState, [
+      accountAddress ?? '',
+    ]),
   );
-  const evmAccount = accountId ? requestedAccount : selectedAccount;
+  const accountGroupIdToUse = requestedAccountGroup?.id ?? selectedAccountGroup;
 
+  // Get internal account to use for each supported scope
+  const evmAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(state, accountGroupIdToUse, 'eip155:1'),
+  );
+  const solanaAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(
+      state,
+      accountGroupIdToUse,
+      SolScope.Mainnet,
+    ),
+  );
+
+  // EVM balances
   const evmBalancesWithFiatByChainId = useSelector((state) =>
     getTokenBalancesEvm(state, evmAccount?.address),
   );
-  // Non-EVM data
-  const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+  // Non-EVM balances
   const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances(
-    accountId ?? nonEvmAccount?.id,
+    solanaAccount?.id,
   );
 
   // return TokenWithFiat sorted by fiat balance amount

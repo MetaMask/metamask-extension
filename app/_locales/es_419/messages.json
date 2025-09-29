@@ -1350,9 +1350,6 @@
   "receive": {
     "message": "Recibir"
   },
-  "recommendedGasLabel": {
-    "message": "Recomendado"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Iniciar aquí"
   },
