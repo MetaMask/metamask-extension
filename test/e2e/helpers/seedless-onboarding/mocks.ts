@@ -456,12 +456,14 @@ export class OAuthMockttpService {
    * @param options - The options for the mock responses.
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
    * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
+   * @param options.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
    */
   async #handleToprfMockResponses(
     request: CompletedRequest,
     options?: {
       userEmail?: string;
       passwordOutdated?: boolean;
+      throwAuthenticationErrorAtUnlock?: boolean;
     },
   ) {
     const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
@@ -505,15 +507,20 @@ export class OAuthMockttpService {
         },
       };
     } else if (method === 'TOPRFGetPubKeyRequest') {
+      let pubKey = this.#latestAuthPubKey;
+      if (options?.throwAuthenticationErrorAtUnlock) {
+        // To throw the authentication error at unlock, we need to enforce the password outdated with different pub key
+        pubKey = MockAuthPubKey2;
+      } else if (options?.passwordOutdated) {
+        pubKey = MockAuthPubKey;
+      }
       return {
         statusCode: 200,
         json: {
           id: 1,
           jsonrpc: '2.0',
           result: {
-            pub_key: options?.passwordOutdated
-              ? MockAuthPubKey2
-              : this.#latestAuthPubKey,
+            pub_key: pubKey,
             key_index: 1,
             node_index: nodeIndex,
           },

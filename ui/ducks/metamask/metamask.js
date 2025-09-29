@@ -68,7 +68,7 @@ const initialState = {
   },
   throttledOrigins: {},
   isSeedlessOnboardingUserAuthenticated: false,
-  isResettingWalletInProgress: false,
+  isWalletResetInProgress: false,
 };
 
 /**
@@ -199,7 +199,7 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         ...initialState,
-        isResettingWalletInProgress: true,
+        isWalletResetInProgress: true,
         isSeedlessOnboardingUserAuthenticated: false,
       };
     }
@@ -546,8 +546,8 @@ export function getIsInitialized(state) {
  * @param {object} state
  * @returns {boolean}
  */
-export function getIsResettingWalletInProgress(state) {
-  return state.metamask.isResettingWalletInProgress;
+export function getIsWalletResetInProgress(state) {
+  return state.metamask.isWalletResetInProgress;
 }
 
 export function getIsUnlocked(state) {

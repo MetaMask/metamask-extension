@@ -36,7 +36,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { getIsResettingWalletInProgress } from '../../../ducks/metamask/metamask';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
@@ -48,9 +48,7 @@ export default function OnboardingWelcome() {
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isResettingWalletInProgress = useSelector(
-    getIsResettingWalletInProgress,
-  );
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isUserAuthenticatedWithSocialLogin = useSelector(
     getIsSocialLoginUserAuthenticated,
   );
@@ -70,7 +68,7 @@ export default function OnboardingWelcome() {
     if (
       currentKeyring &&
       !newAccountCreationInProgress &&
-      !isResettingWalletInProgress
+      !isWalletResetInProgress
     ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
@@ -108,7 +106,7 @@ export default function OnboardingWelcome() {
     isParticipateInMetaMetricsSet,
     isUserAuthenticatedWithSocialLogin,
     isFireFox,
-    isResettingWalletInProgress,
+    isWalletResetInProgress,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);

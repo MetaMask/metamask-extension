@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
@@ -58,6 +59,14 @@ describe('Reset Wallet - ', function () {
 
         // reset the wallet
         await loginPage.resetWallet();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // In Firefox, we need to go to the metametrics page first
+          await onboardingMetricsFlow(driver, {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: true,
+          });
+        }
 
         // should be on the welcome page after resetting the wallet
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -118,6 +127,14 @@ describe('Reset Wallet - ', function () {
         // reset the wallet
         await loginPage.resetWallet();
 
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // In Firefox, we need to go to the metametrics page first
+          await onboardingMetricsFlow(driver, {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: true,
+          });
+        }
+
         // should be on the welcome page after resetting the wallet
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
@@ -134,10 +151,12 @@ describe('Reset Wallet - ', function () {
 
         await secureWalletPage.skipSRPBackup();
 
-        await onboardingMetricsFlow(driver, {
-          participateInMetaMetrics: false,
-          dataCollectionForMarketing: false,
-        });
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          await onboardingMetricsFlow(driver, {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: true,
+          });
+        }
 
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
