@@ -36,7 +36,7 @@ export function isConfirmTransactionRoute(pathname) {
     matchPath(
       {
         path: CONFIRM_TRANSACTION_ROUTE,
-        exact: false,
+        end: false,
       },
       pathname,
     ),
@@ -66,7 +66,7 @@ function onConfirmPage(props) {
     matchPath(
       {
         path: CONFIRM_TRANSACTION_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -105,7 +105,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: `${NOTIFICATIONS_ROUTE}`,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -119,7 +119,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: DEEP_LINK_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -133,7 +133,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: ONBOARDING_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -153,7 +153,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: PERMISSIONS,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -167,7 +167,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: CONNECTIONS,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -181,7 +181,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: REVIEW_PERMISSIONS,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -199,7 +199,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: CONNECT_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -209,7 +209,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: SEND_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -222,7 +222,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -235,7 +235,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -248,7 +248,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: WALLET_DETAILS_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -261,7 +261,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: SNAPS_VIEW_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -286,7 +286,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: ASSET_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -300,7 +300,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: ACCOUNT_DETAILS_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -314,7 +314,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -328,7 +328,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: CONFIRMATION_V_NEXT_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -338,7 +338,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: IMPORT_SRP_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -348,7 +348,7 @@ export function hideAppHeader(props) {
     matchPath(
       {
         path: SHIELD_PLAN_ROUTE,
-        exact: false,
+        end: false,
       },
       location.pathname,
     ),
@@ -372,7 +372,7 @@ export function showAppHeader(props) {
     matchPath(
       {
         path: DEFAULT_ROUTE,
-        exact: true,
+        end: true,
       },
       location.pathname,
     ),

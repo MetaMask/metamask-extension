@@ -123,13 +123,12 @@ describe('MultichainAccountMenu', () => {
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
-    const { history } = renderComponent({
+    renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: true,
       onToggle: jest.fn(),
     });
-    const mockHistoryPush = jest.spyOn(history, 'push');
 
     const accountDetailsOption = document.querySelector(menuItemSelector);
     expect(accountDetailsOption).not.toBeNull();
@@ -140,7 +139,7 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
     );
   });

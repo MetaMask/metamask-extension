@@ -5,7 +5,27 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { Connections } from './connections';
 
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+  };
+});
+
 describe('Connections Content', () => {
+  beforeEach(() => {
+    mockUseParams.mockReturnValue({
+      origin: 'https%3A%2F%2Fmetamask.github.io', // URL encoded version
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const connectedStore = configureStore({
     ...mockState,
     activeTab: {

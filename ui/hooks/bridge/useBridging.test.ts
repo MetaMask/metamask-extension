@@ -26,6 +26,17 @@ jest.mock('../../ducks/bridge/actions', () => ({
   setFromChain: () => mockSetFromChain(),
 }));
 
+jest.mock('../../ducks/bridge/selectors', () => ({
+  ...jest.requireActual('../../ducks/bridge/selectors'),
+  getDefaultTokenPair: jest.fn(),
+}));
+
+jest.mock('../../ducks/bridge/utils', () => ({
+  ...jest.requireActual('../../ducks/bridge/utils'),
+  getDefaultToToken: jest.fn(),
+  toBridgeToken: jest.fn(),
+}));
+
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
 
 const renderUseBridging = (mockStoreState: object) =>
@@ -44,6 +55,13 @@ describe('useBridging', () => {
   describe('extensionConfig.support=true, chain=1', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      // Mock bridge selectors and utils to return null/undefined by default
+      const { getDefaultTokenPair } = jest.requireMock('../../ducks/bridge/selectors');
+      const { getDefaultToToken, toBridgeToken } = jest.requireMock('../../ducks/bridge/utils');
+
+      getDefaultTokenPair.mockReturnValue(null);
+      getDefaultToToken.mockReturnValue(null);
+      toBridgeToken.mockReturnValue(null);
     });
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([

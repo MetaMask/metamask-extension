@@ -14,6 +14,16 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   SETTINGS_PATHS,
+  CONTACT_LIST_ROUTE,
+  NETWORKS_ROUTE,
+  SNAP_SETTINGS_ROUTE,
+  ADVANCED_ROUTE,
+  BACKUPANDSYNC_ROUTE,
+  SECURITY_ROUTE,
+  EXPERIMENTAL_ROUTE,
+  ABOUT_US_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -379,7 +389,7 @@ class SettingsPage extends PureComponent {
       {
         content: t('general'),
         icon: <Icon name={IconName.Setting} />,
-        key: GENERAL_ROUTE,
+        key: SETTINGS_PATHS.GENERAL,
       },
       ...snapsSettings,
       {
@@ -442,7 +452,7 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={tabs}
         isActive={(key) => {
-          if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
+          if (key === SETTINGS_PATHS.GENERAL && currentPath === SETTINGS_ROUTE) {
             return true;
           }
           if (
