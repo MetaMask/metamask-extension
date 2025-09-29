@@ -543,7 +543,7 @@ const controllerMetadata = {
   isWalletResetInProgress: {
     persist: true,
     anonymous: true,
-    usedInUi: false,
+    usedInUi: true,
     includeInStateLogs: false,
   },
 };
