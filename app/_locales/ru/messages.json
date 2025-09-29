@@ -737,9 +737,6 @@
   "beta": {
     "message": "Бета-версия"
   },
-  "betaHeaderText": {
-    "message": "Это бета-версия. Пожалуйста, сообщайте об ошибках $1"
-  },
   "betaMetamaskVersion": {
     "message": "Бета-версия MetaMask"
   },
@@ -3755,9 +3752,6 @@
   "noThanks": {
     "message": "Нет, спасибо"
   },
-  "noTransactions": {
-    "message": "У вас нет транзакций"
-  },
   "noWebcamFound": {
     "message": "Веб-камера вашего компьютера не найдена. Попробуйте еще раз."
   },
@@ -4117,14 +4111,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Очистить все"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Скрыть все"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Добавьте пробелы между всеми словами и убедитесь, что никто не видит."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Показать все"
   },
   "onekey": {
     "message": "OneKey"
@@ -4739,9 +4727,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Введите публичный адрес (0x) или имя домена"
-  },
-  "recommendedGasLabel": {
-    "message": "Рекомендовано"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Создать резервную копию сейчас"

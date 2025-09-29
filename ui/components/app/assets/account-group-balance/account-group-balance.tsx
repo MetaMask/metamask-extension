@@ -22,7 +22,7 @@ import {
   getPreferences,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
-import { useFormatters } from '../../../../helpers/formatters';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../component-library/skeleton';

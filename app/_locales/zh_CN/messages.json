@@ -737,9 +737,6 @@
   "beta": {
     "message": "测试版"
   },
-  "betaHeaderText": {
-    "message": "此为测试版。请$1报告错误"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 测试版本"
   },
@@ -3755,9 +3752,6 @@
   "noThanks": {
     "message": "不，谢谢"
   },
-  "noTransactions": {
-    "message": "您没有任何交易"
-  },
   "noWebcamFound": {
     "message": "未找到您电脑的网络摄像头。请重试。"
   },
@@ -4117,14 +4111,8 @@
   "onboardingSrpInputClearAll": {
     "message": "清除全部"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "隐藏全部"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "在每个单词之间添加一个空格，确保无人看到。"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "显示全部"
   },
   "onekey": {
     "message": "OneKey"
@@ -4739,9 +4727,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "输入公钥 (0x) 或域名"
-  },
-  "recommendedGasLabel": {
-    "message": "建议"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "立即备份"

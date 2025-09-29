@@ -26,7 +26,7 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
-import { useFormatters } from '../../../helpers/formatters';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { Skeleton } from '../../component-library/skeleton';
 

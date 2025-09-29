@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1"
-  },
   "betaMetamaskVersion": {
     "message": "Phiên bản MetaMask Beta"
   },
@@ -3755,9 +3752,6 @@
   "noThanks": {
     "message": "Không, cảm ơn"
   },
-  "noTransactions": {
-    "message": "Bạn không có giao dịch nào"
-  },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
   },
@@ -4117,14 +4111,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Xóa tất cả"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Ẩn tất cả"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Thêm dấu cách giữa mỗi từ và đảm bảo không có ai đang nhìn."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Hiển thị tất cả"
   },
   "onekey": {
     "message": "OneKey"
@@ -4739,9 +4727,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
-  },
-  "recommendedGasLabel": {
-    "message": "Được đề xuất"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sao lưu ngay"

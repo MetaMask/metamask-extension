@@ -30,3 +30,6 @@ export type {
 
 export { getNetworkOrderControllerMessenger } from './network-order-controller-messenger';
 export type { NetworkOrderControllerMessenger } from './network-order-controller-messenger';
+
+export { getNetworkEnablementControllerMessenger } from './network-enablement-controller-messenger';
+export type { NetworkEnablementControllerMessenger } from './network-enablement-controller-messenger';

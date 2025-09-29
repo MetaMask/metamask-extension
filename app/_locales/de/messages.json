@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Dies ist eine BETA-Version. Bitte melden Sie Fehler $1."
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask-Version"
   },
@@ -3755,9 +3752,6 @@
   "noThanks": {
     "message": "Nein, danke!"
   },
-  "noTransactions": {
-    "message": "Sie haben keine Transaktionen"
-  },
   "noWebcamFound": {
     "message": "Die Webcam Ihres Computers wurde nicht gefunden. Bitte versuchen Sie es erneut."
   },
@@ -4117,14 +4111,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Alle löschen"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Alle verbergen"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Fügen Sie zwischen jedem Wort ein Leerzeichen ein und stellen Sie sicher, dass niemand zusieht."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Alle anzeigen"
   },
   "onekey": {
     "message": "OneKey"
@@ -4739,9 +4727,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Öffentliche Adresse (0x) oder Domainname eingeben"
-  },
-  "recommendedGasLabel": {
-    "message": "Empfohlen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Jetzt sichern"

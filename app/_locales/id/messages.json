@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Ini merupakan versi beta. Harap laporkan bug $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versi MetaMask Beta"
   },
@@ -3755,9 +3752,6 @@
   "noThanks": {
     "message": "Tidak, terima kasih"
   },
-  "noTransactions": {
-    "message": "Anda tidak memiliki transaksi"
-  },
   "noWebcamFound": {
     "message": "Webcam komputer Anda tidak ditemukan. Harap coba lagi."
   },
@@ -4117,14 +4111,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Hapus semua"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Sembunyikan semua"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Tambahkan spasi di antara setiap kata dan pastikan tidak ada yang melihat."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tampilkan semua"
   },
   "onekey": {
     "message": "OneKey"
@@ -4739,9 +4727,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Masukkan alamat publik (0x) atau nama domain"
-  },
-  "recommendedGasLabel": {
-    "message": "Direkomendasikan"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cadangkan sekarang"
