@@ -64,10 +64,6 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
  */
 export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   const { firstTimeFlowType } = state.metamask;
-  console.log(
-    'check: firstTimeFlowType after meta metrics opt in',
-    firstTimeFlowType,
-  );
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
