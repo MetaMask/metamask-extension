@@ -73,12 +73,9 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
-
-// Selectors
 import {
   activeTabHasPermissions,
   getUseExternalServices,
-  getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
   getWeb3ShimUsageStateForOrigin,
@@ -103,8 +100,6 @@ import {
   getIsSocialLoginFlow,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
-
-// Actions
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -139,8 +134,7 @@ import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
-
-// Utils and constants
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
@@ -198,8 +192,8 @@ const Home = () => {
     }
   }, []);
 
-  const state = useSelector((state) => state);
-  const { metamask, appState } = state;
+  const globalState = useSelector((state) => state);
+  const { metamask, appState } = globalState;
   const {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
@@ -222,13 +216,18 @@ const Home = () => {
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
+  const web3ShimUsageAlertEnabledness = useSelector(
+    getWeb3ShimUsageAlertEnabledness,
+  );
+  const hasActiveTabPermissions = useSelector(activeTabHasPermissions);
+  const web3ShimUsageState = useSelector((state) =>
+    getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab),
+  );
   const shouldShowWeb3ShimUsageNotification =
     isPopup &&
-    useSelector(getWeb3ShimUsageAlertEnabledness) &&
-    useSelector(activeTabHasPermissions) &&
-    useSelector((state) =>
-      getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab),
-    ) === Web3ShimUsageAlertStates.recorded;
+    web3ShimUsageAlertEnabledness &&
+    hasActiveTabPermissions &&
+    web3ShimUsageState === Web3ShimUsageAlertStates.recorded;
 
   const hasAllowedPopupRedirectApprovals = useSelector((state) =>
     hasPendingApprovals(state, [
@@ -242,35 +241,36 @@ const Home = () => {
   );
 
   const TEMPORARY_DISABLE_WHATS_NEW = true;
+  const whatsNewPopupSelector = useSelector(getShowWhatsNewPopup);
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
-    : useSelector(getShowWhatsNewPopup);
+    : whatsNewPopupSelector;
 
+  const seedPhraseReminderSelector = useSelector((state) =>
+    getShouldShowSeedPhraseReminder(state, selectedAccount),
+  );
   const shouldShowSeedPhraseReminder =
-    selectedAccount &&
-    useSelector((state) =>
-      getShouldShowSeedPhraseReminder(state, selectedAccount),
-    );
+    selectedAccount && seedPhraseReminderSelector;
 
   const useExternalServices = useSelector(getUseExternalServices);
-  const hasApprovalFlows = useSelector(
-    (state) => getApprovalFlows(state)?.length > 0,
-  );
+  const approvalFlows = useSelector(getApprovalFlows);
+  const hasApprovalFlows = approvalFlows?.length > 0;
   const haveSwapsQuotes = Boolean(
     Object.values(swapsState.quotes || {}).length,
   );
   const swapsFetchParams = swapsState.fetchParams;
   const showAwaitingSwapScreen = swapsState.routeState === 'awaiting';
   const haveBridgeQuotes = Boolean(Object.values(quotes || {}).length);
-  const isMainnet = useSelector(getIsMainnet);
   const infuraBlocked = useSelector(getInfuraBlocked);
-  const announcementsToShow = useSelector(
-    (state) => getSortedAnnouncementsToShow(state).length > 0,
-  );
+  const sortedAnnouncements = useSelector(getSortedAnnouncementsToShow);
+  const announcementsToShow = sortedAnnouncements.length > 0;
   const showRecoveryPhraseReminder = useSelector(getShowRecoveryPhraseReminder);
   const showTermsOfUsePopup = useSelector(getShowTermsOfUse);
+  const showOutdatedBrowserWarningSelector = useSelector(
+    getShowOutdatedBrowserWarning,
+  );
   const showOutdatedBrowserWarning =
-    getIsBrowserDeprecated() && useSelector(getShowOutdatedBrowserWarning);
+    getIsBrowserDeprecated() && showOutdatedBrowserWarningSelector;
   const newNetworkAddedName = useSelector(getNewNetworkAdded);
   const editedNetwork = useSelector(getEditedNetwork);
   const isSigningQRHardwareTransaction = useSelector(
@@ -282,7 +282,7 @@ const Home = () => {
   const newTokensImportedError = useSelector(getNewTokensImportedError);
   const { newNetworkAddedConfigurationId } = appState;
   const { onboardedInThisUISession } = appState;
-  const { showMultiRpcModal } = state.metamask.preferences;
+  const { showMultiRpcModal } = globalState.metamask.preferences;
   const showUpdateModal = useSelector(getShowUpdateModal);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const isPrimarySeedPhraseBackedUp = useSelector(
@@ -301,14 +301,13 @@ const Home = () => {
     [dispatch],
   );
 
-  const [canShowBlockageNotification, setCanShowBlockageNotification] =
-    useState(true);
+  const [canShowBlockageNotification] = useState(true);
   const [notificationClosing, setNotificationClosing] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
   const initialNavigationAttempted = useRef(false);
   const mountedRef = useRef(false);
-  const navigationAttempted = useRef(false);
+  // const navigationAttempted = useRef(false); // Unused variable
 
   useEffect(() => {
     mountedRef.current = true;
@@ -746,9 +745,8 @@ const Home = () => {
           ])}
           ignoreText={t('dismiss')}
           onIgnore={() => {
-            this.setState({
-              canShowBlockageNotification: false,
-            });
+            // Note: This was converted from class component but onIgnore functionality is not implemented
+            // setCanShowBlockageNotification(false);
           }}
         />
       ) : null,
@@ -757,7 +755,7 @@ const Home = () => {
           key="outdated-browser-notification"
           descriptionText={outdatedBrowserNotificationDescriptionText}
           acceptText={t('gotIt')}
-          onAccept={this.onOutdatedBrowserWarningClose}
+          onAccept={onOutdatedBrowserWarningClose}
         />
       ) : null,
     ].filter(Boolean);

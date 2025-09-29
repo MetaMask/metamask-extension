@@ -13,7 +13,6 @@ import TransactionListItem from '.';
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
-// Mock both react-router-dom and react-router-dom-v5-compat to ensure consistency
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),

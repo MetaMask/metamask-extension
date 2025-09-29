@@ -8,6 +8,14 @@ import { mockNetworkState } from '../../../test/stub/networks';
 
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
   renderHookWithProvider(() => useBridgeQueryParams(), mockStoreState, path);
 
@@ -192,7 +200,10 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    // expect(history.location.search).toBe('swaps=true');
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: 'swaps=true' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -245,7 +256,10 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    // expect(history.location.search).toBe('');
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -298,7 +312,10 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    // expect(history.location.search).toBe('');
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -322,7 +339,7 @@ describe('useBridgeQueryParams', () => {
 
     const { store } = renderUseBridgeQueryParams(mockStoreState);
 
-    // expect(history.location.search).toBe('');
+    // expect(mockUseNavigate).toHaveBeenCalledWith('');
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -377,7 +394,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    // expect(history.location.search).toBe('');
+    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -432,7 +449,7 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    // expect(history.location.search).toBe('');
+    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -474,7 +491,7 @@ describe('useBridgeQueryParams', () => {
       '/?' + searchParams.toString(),
     );
 
-    // expect(history.location.search).toBe('');
+    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};

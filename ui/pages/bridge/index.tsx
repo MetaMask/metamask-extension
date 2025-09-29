@@ -11,10 +11,7 @@ import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_PATHS,
-  SWAPS_PATHS,
 } from '../../helpers/constants/routes';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import {

@@ -60,9 +60,7 @@ import {
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   DEFAULT_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
-  SWAPS_NOTIFICATION_ROUTE,
   SWAPS_PATHS,
 } from '../../helpers/constants/routes';
 import {
@@ -424,10 +422,7 @@ export default function Swap() {
                     shuffledTokensList={shuffledTokensList}
                   />
                 ) : (
-                  <Navigate
-                    to={SWAPS_PATHS.MAINTENANCE}
-                    replace
-                  />
+                  <Navigate to={SWAPS_PATHS.MAINTENANCE} replace />
                 )
               }
             />
@@ -461,17 +456,10 @@ export default function Swap() {
               path={SWAPS_PATHS.LOADING_QUOTES}
               element={(() => {
                 if (!swapsEnabled) {
-                  return (
-                    <Navigate
-                      to={SWAPS_PATHS.MAINTENANCE}
-                      replace
-                    />
-                  );
+                  return <Navigate to={SWAPS_PATHS.MAINTENANCE} replace />;
                 }
                 if (!aggregatorMetadata) {
-                  return (
-                    <Navigate to={SWAPS_PATHS.PREPARE} replace />
-                  );
+                  return <Navigate to={SWAPS_PATHS.PREPARE} replace />;
                 }
                 return (
                   <LoadingQuote

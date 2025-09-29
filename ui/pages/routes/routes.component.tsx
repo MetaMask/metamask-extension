@@ -554,6 +554,7 @@ export default function RoutesComponent() {
             path={SMART_ACCOUNT_UPDATE}
             element={<Authenticated component={SmartAccountUpdate} />}
           />
+          {/* `:keyringId` is optional here, if not provided, this will fallback to the main seed phrase.*/}
           <Route
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
             element={<Authenticated component={RevealSeedConfirmation} />}

@@ -91,13 +91,11 @@ export default function NftFullImage() {
   }, []);
 
   const onClose = useCallback(() => {
-    // In React Router v6/v5-compat, we can use navigate(-1) to go back
-    // or navigate to a specific route if we need more control
     if (location.key && location.key !== 'default') {
       // There's history to go back to
       navigate(-1);
     } else {
-      // No history or direct navigation, go to asset details
+      // Previous action was a POP or something else, safer to navigate back to asset details
       navigate(`${ASSET_ROUTE}/${hexChainId}/${asset}/${id}`);
     }
   }, [asset, hexChainId, location.key, navigate, id]);

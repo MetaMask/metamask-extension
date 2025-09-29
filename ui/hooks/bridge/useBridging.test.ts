@@ -56,8 +56,12 @@ describe('useBridging', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       // Mock bridge selectors and utils to return null/undefined by default
-      const { getDefaultTokenPair } = jest.requireMock('../../ducks/bridge/selectors');
-      const { getDefaultToToken, toBridgeToken } = jest.requireMock('../../ducks/bridge/utils');
+      const { getDefaultTokenPair } = jest.requireMock(
+        '../../ducks/bridge/selectors',
+      );
+      const { getDefaultToToken, toBridgeToken } = jest.requireMock(
+        '../../ducks/bridge/utils',
+      );
 
       getDefaultTokenPair.mockReturnValue(null);
       getDefaultToToken.mockReturnValue(null);
