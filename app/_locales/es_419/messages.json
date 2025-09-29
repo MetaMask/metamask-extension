@@ -172,11 +172,20 @@
   "activity": {
     "message": "Actividad"
   },
+  "activityEmptyDescription": {
+    "message": "Aún no hay nada que ver. Revisa el explorador para actividad más reciente."
+  },
   "activityLog": {
     "message": "Registro de actividad"
   },
   "add": {
     "message": "Añadir"
+  },
+  "addACustomNetwork": {
+    "message": "Agregar una red personalizada"
+  },
+  "addAHardwareWallet": {
+    "message": "Agregar una cartera de hardware"
   },
   "addANetwork": {
     "message": "Agregar una red"
@@ -184,11 +193,36 @@
   "addANickname": {
     "message": "Añadir un apodo"
   },
+  "addAUrl": {
+    "message": "Agregar una URL"
+  },
+  "addAccount": {
+    "message": "Agregar cuenta"
+  },
+  "addAccountFromNetwork": {
+    "message": "Agregar cuenta de $1",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
+  "addAccountOrWallet": {
+    "message": "Agregar cuenta o cartera"
+  },
+  "addAccountToMetaMask": {
+    "message": "Agregar cuenta a MetaMask"
+  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
   "addAlias": {
     "message": "Agregar alias"
+  },
+  "addBitcoinAccountLabel": {
+    "message": "Cuenta de Bitcoin"
+  },
+  "addBlockExplorer": {
+    "message": "Agregar un explorador de bloques"
+  },
+  "addBlockExplorerUrl": {
+    "message": "Agregar URL del explorador de bloques"
   },
   "addContact": {
     "message": "Agregar contacto"
