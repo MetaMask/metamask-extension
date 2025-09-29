@@ -116,10 +116,6 @@ export default function NftsTab() {
 
   return (
     <>
-      <Box>
-        <AssetListControlBar />
-      </Box>
-
       <Box className="nfts-tab">
         {isMainnet && !useNftDetection ? (
           <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
@@ -127,13 +123,14 @@ export default function NftsTab() {
           </Box>
         ) : null}
         {hasAnyNfts || previouslyOwnedNfts.length > 0 ? (
-          <Box>
+          <>
+            <AssetListControlBar />
             <NftGrid
               nfts={sortedNfts}
               handleNftClick={handleNftClick}
               privacyMode={privacyMode}
             />
-          </Box>
+          </>
         ) : (
           <NftEmptyState className="mx-auto mt-5 mb-6" />
         )}

@@ -24,6 +24,7 @@ import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
 import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
+import AssetListControlBar from '../asset-list/asset-list-control-bar';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
@@ -135,15 +136,16 @@ export default function DefiList({ onClick }: DefiListProps) {
   return (
     <>
       {sortedFilteredDefi && sortedFilteredDefi.length > 0 ? (
-        sortedFilteredDefi.map((position: DeFiProtocolPosition) => {
-          return (
+        <>
+          <AssetListControlBar showImportTokenButton={false} />
+          {sortedFilteredDefi.map((position: DeFiProtocolPosition) => (
             <DefiProtocolCell
               key={`${position.protocolId}#${position.chainId}`}
               position={position}
               onClick={onClick}
             />
-          );
-        })
+          ))}
+        </>
       ) : (
         <DeFiEmptyStateMessage />
       )}

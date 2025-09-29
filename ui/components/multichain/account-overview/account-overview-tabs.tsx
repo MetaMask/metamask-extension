@@ -128,13 +128,11 @@ export const AccountOverviewTabs = ({
           tabKey={AccountOverviewTabKey.DeFi}
           data-testid="account-overview__defi-tab"
         >
-          <Box>
-            <DeFiTab
-              showTokensLinks={showTokensLinks ?? true}
-              onClickAsset={onClickDeFi}
-              safeChains={safeChains}
-            />
-          </Box>
+          <DeFiTab
+            showTokensLinks={showTokensLinks ?? true}
+            onClickAsset={onClickDeFi}
+            safeChains={safeChains}
+          />
         </Tab>
       )}
 

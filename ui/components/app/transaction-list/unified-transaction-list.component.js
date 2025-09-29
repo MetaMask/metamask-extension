@@ -727,7 +727,6 @@ export default function UnifiedTransactionList({
         ))}
 
       <Box className="transaction-list" {...boxProps}>
-        {renderFilterButton()}
         {showRampsCard ? (
           <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
         ) : null}
@@ -737,43 +736,46 @@ export default function UnifiedTransactionList({
             account={selectedAccount}
           />
         ) : (
-          <Box className="transaction-list__transactions">
-            {processedUnifiedActivityItems
-              .slice(0, daysLimit)
-              .map((dateGroup) => (
-                <Fragment key={dateGroup.date}>
-                  <Text
-                    paddingTop={4}
-                    paddingInline={4}
-                    variant={TextVariant.bodyMd}
-                    color={TextColor.textDefault}
-                  >
-                    {dateGroup.date}
-                  </Text>
-                  {dateGroup.transactionGroups.map((item, index) => (
-                    <Fragment key={item.id ?? index}>
-                      {renderTransaction(item, index)}
-                    </Fragment>
-                  ))}
-                </Fragment>
-              ))}
-            {processedUnifiedActivityItems.length > daysLimit && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                padding={4}
-              >
-                <Button
-                  className="transaction-list__view-more"
-                  type="secondary"
-                  onClick={viewMore}
+          <>
+            {renderFilterButton()}
+            <Box className="transaction-list__transactions">
+              {processedUnifiedActivityItems
+                .slice(0, daysLimit)
+                .map((dateGroup) => (
+                  <Fragment key={dateGroup.date}>
+                    <Text
+                      paddingTop={4}
+                      paddingInline={4}
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textDefault}
+                    >
+                      {dateGroup.date}
+                    </Text>
+                    {dateGroup.transactionGroups.map((item, index) => (
+                      <Fragment key={item.id ?? index}>
+                        {renderTransaction(item, index)}
+                      </Fragment>
+                    ))}
+                  </Fragment>
+                ))}
+              {processedUnifiedActivityItems.length > daysLimit && (
+                <Box
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  padding={4}
                 >
-                  {t('viewMore')}
-                </Button>
-              </Box>
-            )}
-          </Box>
+                  <Button
+                    className="transaction-list__view-more"
+                    type="secondary"
+                    onClick={viewMore}
+                  >
+                    {t('viewMore')}
+                  </Button>
+                </Box>
+              )}
+            </Box>
+          </>
         )}
       </Box>
     </>
