@@ -246,6 +246,7 @@ class UnlockPage extends Component {
   handleLoginError = async (error, isRehydrationFlow = false) => {
     const { t } = this.context;
     const { message, data } = error;
+    const { isOnboardingCompleted } = this.props;
 
     // Sync failed_attempts with numberOfAttempts from error data
     if (data?.numberOfAttempts !== undefined) {
@@ -297,6 +298,12 @@ class UnlockPage extends Component {
       case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
         finalErrorMessage = t('passwordChangedRecently');
         errorReason = 'outdated_password';
+        break;
+      case SeedlessOnboardingControllerErrorMessage.AuthenticationError:
+        if (isOnboardingCompleted) {
+          finalErrorMessage = message;
+          this.setState({ showLoginErrorModal: true });
+        }
         break;
       case SeedlessOnboardingControllerErrorMessage.InvalidRevokeToken:
       case SeedlessOnboardingControllerErrorMessage.InvalidRefreshToken:

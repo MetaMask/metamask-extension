@@ -3647,6 +3647,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.setIsWalletResetInProgress.bind(
           this.appStateController,
         ),
+      resetWallet: this.resetWallet.bind(this),
     };
   }
 
@@ -3662,6 +3663,33 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
+  }
+
+  async resetWallet() {
+    console.log('resetting wallet ...');
+    this.appStateController.setIsWalletResetInProgress(true);
+    this.resetStates();
+
+    // clear permissions
+    this.permissionController.clearState();
+
+    // Clear snap state
+    await this.snapController.clearState();
+
+    // Clear account tree state
+    this.accountTreeController.clearState();
+
+    // Currently, the account-order-controller is not in sync with
+    // the accounts-controller. To properly persist the hidden state
+    // of accounts, we should add a new flag to the account struct
+    // to indicate if it is hidden or not.
+    // TODO: Update @metamask/accounts-controller to support this.
+    this.accountOrderController.updateHiddenAccountsList([]);
+
+    // clear accounts in AccountTrackerController
+    this.accountTrackerController.clearAccounts();
+
+    this.txController.clearUnapprovedTransactions();
   }
 
   async exportAccount(address, password) {
@@ -4054,6 +4082,9 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
+    console.log('isSocialLoginFlow', isSocialLoginFlow);
+    console.log('isPasswordOutdated', isPasswordOutdated);
+
     // if the flow is not social login or the password is not outdated,
     // we will proceed with the normal flow and use the password to unlock the vault
     if (!isSocialLoginFlow || !isPasswordOutdated) {
@@ -4129,6 +4160,8 @@ export default class MetamaskController extends EventEmitter {
             throw err;
           }
         });
+
+      console.log('isPasswordSynced', isPasswordSynced);
 
       // we are unable to recover the old pwd enc key as user is on a very old device.
       // create a new vault and encrypt the new vault with the latest global password.

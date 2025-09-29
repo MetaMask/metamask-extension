@@ -4179,6 +4179,10 @@ export function resetApp() {
       await submitRequestToBackground('resetStates');
       // set `isResettingWalletInProgress` to true
       await submitRequestToBackground('setIsWalletResetInProgress', [true]);
+
+      await submitRequestToBackground('resetWallet');
+
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       console.error(error);
       throw error;
