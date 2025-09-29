@@ -7,6 +7,12 @@
   flex: 0 0 auto;
 
   &__banner-tip {
+    &-container {
+      @include design-system.screen-lg-max {
+        display: none;
+      }
+    }
+
     border-radius: 20px;
     position: absolute;
     top: 24px;

@@ -73,7 +73,10 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
         />
 
         {pathname === ONBOARDING_COMPLETION_ROUTE ? (
-          <Box paddingTop={12}>
+          <Box
+            paddingTop={12}
+            className="onboarding-app-header__banner-tip-container"
+          >
             <BannerTip
               borderColor={BorderColor.borderMuted}
               backgroundColor={BackgroundColor.backgroundMuted}
