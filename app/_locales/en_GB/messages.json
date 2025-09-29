@@ -1616,7 +1616,7 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
+    "message": "Losing this password means losing wallet access on all devices, "
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
@@ -4370,14 +4370,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Hide all"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
@@ -4459,7 +4453,7 @@
     "message": "Must be at least 8 characters"
   },
   "passwordTermsWarning": {
-    "message": "If I forget this password, MetaMask can’t reset it for me."
+    "message": "If I lose this password, MetaMask can’t reset it."
   },
   "passwordTermsWarningSocial": {
     "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
