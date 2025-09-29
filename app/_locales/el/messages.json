@@ -737,9 +737,6 @@
   "beta": {
     "message": "Δοκιμαστική έκδοση"
   },
-  "betaHeaderText": {
-    "message": "Αυτή είναι μια δοκιμαστική έκδοση. Παρακαλώ αναφέρετε σφάλματα $1"
-  },
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
   },
@@ -4746,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Εισαγάγετε τη δημόσια διεύθυνση (0x) ή το όνομα τομέα"
-  },
-  "recommendedGasLabel": {
-    "message": "Προτεινόμενο"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"

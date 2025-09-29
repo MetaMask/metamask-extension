@@ -104,7 +104,7 @@ import {
   stopIncomingTransactionPolling,
 } from '../../../store/controller-actions/transaction-controller';
 import {
-  selectBridgeHistoryForAccount,
+  selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
@@ -590,9 +590,7 @@ export default function UnifiedTransactionList({
     getSelectedMultichainNetworkConfiguration,
   );
 
-  const bridgeHistoryItems = useSelector((state) =>
-    selectBridgeHistoryForAccount(state, selectedAccount.address),
-  );
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const selectedBridgeHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, selectedTransaction?.id),
   );

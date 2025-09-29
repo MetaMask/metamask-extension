@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1"
-  },
   "betaMetamaskVersion": {
     "message": "Phiên bản MetaMask Beta"
   },
@@ -4746,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
-  },
-  "recommendedGasLabel": {
-    "message": "Được đề xuất"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sao lưu ngay"
