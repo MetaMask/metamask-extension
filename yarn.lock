@@ -18301,13 +18301,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"blo@npm:1.2.0":
-  version: 1.2.0
-  resolution: "blo@npm:1.2.0"
-  checksum: 10/17ec61e41b201bbba8ab3c874cad94696604b6ac4029de5050c92ea5817dff6814d8642b9b2948e0d6804194437b751fa2755652201f26fa5d606913c489b757
-  languageName: node
-  linkType: hard
-
 "blo@npm:^2.0.0":
   version: 2.0.0
   resolution: "blo@npm:2.0.0"
@@ -32334,7 +32327,6 @@ __metadata:
     bify-module-groups: "npm:^2.0.0"
     bignumber.js: "npm:^4.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
-    blo: "npm:1.2.0"
     bn.js: "npm:^5.2.1"
     bowser: "npm:^2.11.0"
     browserify: "npm:^17.0.0"

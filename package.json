@@ -381,7 +381,6 @@
     "base64-js": "^1.5.1",
     "bignumber.js": "^4.1.0",
     "bitcoin-address-validation": "^2.2.3",
-    "blo": "1.2.0",
     "bn.js": "^5.2.1",
     "bowser": "^2.11.0",
     "chart.js": "^4.4.1",
