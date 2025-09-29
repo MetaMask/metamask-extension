@@ -1,4 +1,12 @@
 {
+  "CSS_loadingTakingTooLongActionText": {
+    "message": "Reinicia MetaMask si el problema persiste.",
+    "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
+  "CSS_loadingTakingTooLongMessageText": {
+    "message": "La carga está tardando más de lo habitual.",
+    "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -44,8 +52,25 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
+  "SrpListHideAccounts": {
+    "message": "Ocultar $1 cuentas",
+    "description": "$1 es el número de cuentas"
+  },
+  "SrpListHideSingleAccount": {
+    "message": "Ocultar 1 cuenta"
+  },
+  "SrpListShowAccounts": {
+    "message": "Mostrar $1 cuentas",
+    "description": "$1 es el número de cuentas"
+  },
+  "SrpListShowSingleAccount": {
+    "message": "Mostrar 1 cuenta"
+  },
   "about": {
     "message": "Acerca de"
+  },
+  "accept": {
+    "message": "Aceptar"
   },
   "acceptTermsOfUse": {
     "message": "Leí y estoy de acuerdo con $1",
@@ -57,21 +82,89 @@
   "account": {
     "message": "Cuenta"
   },
+  "accountActivity": {
+    "message": "Actividad de la cuenta"
+  },
+  "accountActivityText": {
+    "message": "Selecciona las cuentas sobre las que deseas recibir notificaciones:"
+  },
+  "accountAlreadyExistsLogin": {
+    "message": "Iniciar sesión"
+  },
+  "accountAlreadyExistsLoginDescription": {
+    "message": "Ya existe una cartera con “$1”. ¿Deseas intentar iniciar sesión en su lugar?",
+    "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsTitle": {
+    "message": "La cartera ya existe"
+  },
   "accountDetails": {
     "message": "Detalles de la cuenta"
   },
+  "accountDetailsSrpBackUpMessage": {
+    "message": "Respaldar",
+    "description": "Text used to describe action for SRP backup. Used on multichain account details."
+  },
+  "accountIdenticon": {
+    "message": "Icono de la cuenta"
+  },
+  "accountIdenticonDescription": {
+    "message": "Elige entre tres estilos diferentes de íconos únicos que te ayudarán a identificar las cuentas de un vistazo."
+  },
+  "accountIsntConnectedToastText": {
+    "message": "$1 no está conectado a $2"
+  },
   "accountName": {
     "message": "Nombre de la cuenta"
+  },
+  "accountNameAlreadyInUse": {
+    "message": "Este nombre ya está en uso.",
+    "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
   },
   "accountNameDuplicate": {
     "message": "Este nombre de cuenta ya existe",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
+  "accountNameReserved": {
+    "message": "Este nombre de cuenta está reservado",
+    "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
+  "accountNotFoundCreateOne": {
+    "message": "Sí, crear una nueva cartera"
+  },
+  "accountNotFoundDescription": {
+    "message": "No pudimos encontrar una cartera para “$1”. ¿Deseas crear una nueva con este inicio de sesión?",
+    "description": "$1 is the account email"
+  },
+  "accountNotFoundTitle": {
+    "message": "Cartera no encontrada"
+  },
   "accountOptions": {
     "message": "Opciones de la cuenta"
   },
+  "accountPermissionToast": {
+    "message": "Permisos de la cuenta actualizados"
+  },
   "accountSelectionRequired": {
     "message": "¡Debe seleccionar una cuenta!"
+  },
+  "accountSmallCase": {
+    "message": "cuenta"
+  },
+  "accountTypeNotSupported": {
+    "message": "Tipo de cuenta no soportado"
+  },
+  "accounts": {
+    "message": "Cuentas"
+  },
+  "accountsConnected": {
+    "message": "Cuentas conectadas"
+  },
+  "accountsPermissionsTitle": {
+    "message": "Ver tus cuentas y sugerir transacciones"
+  },
+  "accountsSmallCase": {
+    "message": "cuentas"
   },
   "active": {
     "message": "Activo"
