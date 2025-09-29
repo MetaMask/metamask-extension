@@ -51,6 +51,8 @@ export function SelectedGasFeeToken() {
     chainId
   ];
 
+  const [isHover, setIsHover] = useState(false);
+
   const handleClick = useCallback(() => {
     if (!hasGasFeeTokens) {
       return;
@@ -73,18 +75,24 @@ export function SelectedGasFeeToken() {
         onClick={handleClick}
         backgroundColor={
           hasGasFeeTokens
-            ? BackgroundColor.backgroundAlternative
+            ? BackgroundColor.backgroundMuted
             : BackgroundColor.transparent
         }
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
         paddingInlineStart={1}
+        marginLeft={1}
         gap={1}
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
           paddingInlineEnd: '6px',
           padding: hasGasFeeTokens ? '4px 8px' : '0px',
+          background: isHover
+            ? 'var(--color-background-muted-hover)'
+            : 'var(--color-background-muted)',
         }}
       >
         <GasFeeTokenIcon
