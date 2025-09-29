@@ -16,8 +16,6 @@ jest.mock('./useTrustSignals', () => ({
     Unknown: 'unknown',
     Malicious: 'malicious',
     Warning: 'warning',
-    Verified: 'verified',
-    Loading: 'loading',
   },
 }));
 
@@ -167,7 +165,7 @@ describe('useTokenTrustSignals', () => {
           label: null,
         },
         {
-          state: TrustSignalDisplayState.Verified,
+          state: TrustSignalDisplayState.Unknown,
           label: null,
         },
       ]);
@@ -197,7 +195,7 @@ describe('useTokenTrustSignals', () => {
 
       expect(result.current).toEqual([
         {
-          state: TrustSignalDisplayState.Verified,
+          state: TrustSignalDisplayState.Unknown,
           label: null,
         },
       ]);
