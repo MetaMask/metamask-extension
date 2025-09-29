@@ -61,7 +61,7 @@ export function useSnapNameResolution() {
       const availableSnaps = getAvailableSnaps(chainId, domain);
 
       if (availableSnaps.length === 0) {
-        return undefined;
+        return [];
       }
 
       const responses = await Promise.allSettled(
@@ -94,7 +94,7 @@ export function useSnapNameResolution() {
               .resolvedAddresses,
         );
 
-      return resolutions.length === 0 ? undefined : resolutions;
+      return resolutions;
     },
     [getAvailableSnaps],
   );

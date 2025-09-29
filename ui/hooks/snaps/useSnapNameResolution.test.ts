@@ -231,6 +231,6 @@ describe('useSnapNameResolution', () => {
 
     expect(
       await result.current.fetchResolutions('dummy_chain_id', 'dummy.test'),
-    ).toStrictEqual(undefined);
+    ).toStrictEqual([]);
   });
 });
