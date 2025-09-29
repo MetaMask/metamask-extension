@@ -71,7 +71,7 @@ exports[`NameDetails renders proposed names 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -328,7 +328,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -548,7 +548,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                 class="name name__missing"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -770,7 +770,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="name name__recognized_unsaved"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
@@ -992,7 +992,7 @@ exports[`NameDetails renders with saved name 1`] = `
                 class="name name__saved"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
                   <div
                     class="flex [&>div]:!rounded-none"
