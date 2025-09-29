@@ -23,7 +23,9 @@ export const ConfirmInfoSection = ({
       data-testid={dataTestId}
       backgroundColor={BackgroundColor.backgroundSection}
       borderRadius={BorderRadius.LG}
-      padding={noPadding ? 0 : 2}
+      paddingInline={noPadding ? 0 : 2}
+      paddingTop={noPadding ? 0 : 1}
+      paddingBottom={noPadding ? 0 : 1}
       marginBottom={4}
       style={style}
     >

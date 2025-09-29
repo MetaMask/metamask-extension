@@ -112,8 +112,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         alignItems={AlignItems.flexStart}
         backgroundColor={BACKGROUND_COLORS[variant]}
         borderRadius={BorderRadius.LG}
-        marginTop={1}
-        marginBottom={1}
+        marginTop={2}
+        marginBottom={2}
         paddingLeft={2}
         paddingRight={2}
         color={TEXT_COLORS[variant] as TextColor}
@@ -128,12 +128,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           <CopyIcon
             copyText={copyText ?? ''}
             style={{ right: isCollapsible ? 32 : 4 }}
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
           />
         )}
         {isCollapsible && (
           <ButtonIcon
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
             iconName={expanded ? IconName.Collapse : IconName.Expand}
             size={ButtonIconSize.Sm}
             style={{
