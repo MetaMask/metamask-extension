@@ -5,8 +5,8 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
-import { NftEmptyState } from './nft-empty-state';
 import * as actions from '../../../../../store/actions';
+import { NftEmptyState } from './nft-empty-state';
 
 describe('NftEmptyState', () => {
   const mockStore = configureMockStore([thunk]);
