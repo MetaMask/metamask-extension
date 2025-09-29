@@ -271,8 +271,6 @@ describe('Wallet Created Events', function () {
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        console.log('mockedEndpoints', mockedEndpoints);
-
         const onboardingOptions: {
           driver: Driver;
           participateInMetaMetrics?: boolean;
