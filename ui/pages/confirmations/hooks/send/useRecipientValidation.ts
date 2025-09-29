@@ -1,4 +1,5 @@
 import { AddressResolution } from '@metamask/snaps-sdk';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { useCallback, useRef } from 'react';
 
@@ -16,11 +17,12 @@ import {
 } from '../../utils/sendValidations';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
+import { validateMultichainAddress } from '../../utils/multichain-snaps';
 
 export const useRecipientValidation = () => {
   const t = useI18nContext();
-  const { chainId, to } = useSendContext();
-  const { isEvmSendType, isSolanaSendType } = useSendType();
+  const { chainId, fromAccount, to } = useSendContext();
+  const { isEvmSendType, isNonEvmSendType, isSolanaSendType } = useSendType();
   const { results, loading } = useSnapNameResolution({
     chainId: chainId ? formatChainIdToCaip(chainId) : '',
     domain: to ?? '',
@@ -38,6 +40,17 @@ export const useRecipientValidation = () => {
           ...(await validateEvmHexAddress(to, chainId)),
           toAddressValidated: to,
         };
+      }
+
+      if (isNonEvmSendType) {
+        const result = await validateMultichainAddress(
+          fromAccount as InternalAccount,
+          {
+            value: to,
+            accountId: fromAccount?.id ?? '',
+          },
+        );
+        console.log('------', result);
       }
 
       if (isSolanaSendType && isSolanaAddress(to)) {
@@ -74,7 +87,16 @@ export const useRecipientValidation = () => {
         error: 'invalidAddress',
         toAddressValidated: to,
       };
-    }, [chainId, isEvmSendType, isSolanaSendType, loading, results, to]);
+    }, [
+      chainId,
+      fromAccount,
+      isEvmSendType,
+      isNonEvmSendType,
+      isSolanaSendType,
+      loading,
+      results,
+      to,
+    ]);
 
   const { value: result, pending } = useAsyncResult<RecipientValidationResult>(
     async () => validateRecipient(),
