@@ -28,20 +28,6 @@
     flex: 1;
   }
 
-  &__empty {
-    flex: 1;
-    display: grid;
-    grid-template-rows: auto;
-    padding-top: 24px;
-  }
-
-  &__empty-text {
-    grid-row-start: 2;
-    display: flex;
-    justify-content: center;
-    color: var(--color-text-muted);
-  }
-
   &__view-more {
     margin: 16px auto;
     max-width: 200px;

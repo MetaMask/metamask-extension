@@ -392,6 +392,17 @@ export class OAuthMockttpService {
           },
         };
       });
+    server
+      .forPost(AuthServer.GetMarketingOptInStatus)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            is_opt_in: true,
+          },
+        };
+      });
 
     server
       .forPost(AuthServer.RenewRefreshToken)

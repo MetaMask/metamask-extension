@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Ini merupakan versi beta. Harap laporkan bug $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versi MetaMask Beta"
   },
@@ -3765,9 +3762,6 @@
   "noThanks": {
     "message": "Tidak, terima kasih"
   },
-  "noTransactions": {
-    "message": "Anda tidak memiliki transaksi"
-  },
   "noWebcamFound": {
     "message": "Webcam komputer Anda tidak ditemukan. Harap coba lagi."
   },
@@ -4749,9 +4743,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Masukkan alamat publik (0x) atau nama domain"
-  },
-  "recommendedGasLabel": {
-    "message": "Direkomendasikan"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cadangkan sekarang"
