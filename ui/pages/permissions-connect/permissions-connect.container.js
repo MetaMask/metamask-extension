@@ -36,6 +36,7 @@ import {
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
+  CONNECT_PATHS,
 } from '../../helpers/constants/routes';
 import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import PermissionApproval from './permissions-connect.component';
@@ -105,13 +106,13 @@ const mapStateToProps = (state, ownProps) => {
     );
   });
 
-  // For nested routing in React Router v6/v5-compat, use relative paths
+  // For nested routing in React Router v6/v5-compat, use relative paths from CONNECT_PATHS
   const connectPath = '';
-  const confirmPermissionPath = CONNECT_CONFIRM_PERMISSIONS_ROUTE.slice(1); // Remove leading slash
-  const snapsConnectPath = CONNECT_SNAPS_CONNECT_ROUTE.slice(1); // Remove leading slash
-  const snapInstallPath = CONNECT_SNAP_INSTALL_ROUTE.slice(1); // Remove leading slash
-  const snapUpdatePath = CONNECT_SNAP_UPDATE_ROUTE.slice(1); // Remove leading slash
-  const snapResultPath = CONNECT_SNAP_RESULT_ROUTE.slice(1); // Remove leading slash
+  const confirmPermissionPath = CONNECT_PATHS.CONFIRM_PERMISSIONS;
+  const snapsConnectPath = CONNECT_PATHS.SNAPS_CONNECT;
+  const snapInstallPath = CONNECT_PATHS.SNAP_INSTALL;
+  const snapUpdatePath = CONNECT_PATHS.SNAP_UPDATE;
+  const snapResultPath = CONNECT_PATHS.SNAP_RESULT;
   // For checking pathname, we need to construct the full absolute paths
   const fullSnapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const fullSnapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;

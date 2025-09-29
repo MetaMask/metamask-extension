@@ -533,7 +533,7 @@ export default function RoutesComponent() {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Routes>
-          <Route path={ONBOARDING_ROUTE} element={<OnboardingFlow />} />
+          <Route path={`${ONBOARDING_ROUTE}/*`} element={<OnboardingFlow />} />
           <Route path={LOCK_ROUTE} element={<Lock />} />
           <Route
             path={UNLOCK_ROUTE}
@@ -561,10 +561,6 @@ export default function RoutesComponent() {
           <Route
             path={IMPORT_SRP_ROUTE}
             element={<Authenticated component={ImportSrpPage} />}
-          />
-          <Route
-            path={SETTINGS_ROUTE}
-            element={<Authenticated component={Settings} />}
           />
           <Route
             path={`${SETTINGS_ROUTE}/*`}
@@ -609,10 +605,6 @@ export default function RoutesComponent() {
           <Route
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
             element={<Authenticated component={CrossChainSwapTxDetails} />}
-          />
-          <Route
-            path={CROSS_CHAIN_SWAP_ROUTE}
-            element={<Authenticated component={CrossChainSwap} />}
           />
           <Route
             path={`${CROSS_CHAIN_SWAP_ROUTE}/*`}

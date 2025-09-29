@@ -29,6 +29,7 @@ import {
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_PATHS,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -267,13 +268,16 @@ export default function OnboardingFlow() {
         borderColor={BorderColor.borderMuted}
       >
         <Routes>
-          <Route path={ONBOARDING_ACCOUNT_EXIST} element={<AccountExist />} />
           <Route
-            path={ONBOARDING_ACCOUNT_NOT_FOUND}
+            path={ONBOARDING_PATHS.ACCOUNT_EXIST}
+            element={<AccountExist />}
+          />
+          <Route
+            path={ONBOARDING_PATHS.ACCOUNT_NOT_FOUND}
             element={<AccountNotFound />}
           />
           <Route
-            path={ONBOARDING_CREATE_PASSWORD_ROUTE}
+            path={ONBOARDING_PATHS.CREATE_PASSWORD}
             element={
               <CreatePassword
                 createNewAccount={handleCreateNewAccount}
@@ -283,11 +287,11 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
+            path={ONBOARDING_PATHS.SECURE_YOUR_WALLET}
             element={<SecureYourWallet />}
           />
           <Route
-            path={ONBOARDING_REVEAL_SRP_ROUTE}
+            path={ONBOARDING_PATHS.REVEAL_SRP}
             element={
               <RevealRecoveryPhrase
                 setSecretRecoveryPhrase={setSecretRecoveryPhrase}
@@ -295,7 +299,7 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_REVIEW_SRP_ROUTE}
+            path={ONBOARDING_PATHS.REVIEW_SRP}
             element={
               <ReviewRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
@@ -303,7 +307,7 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_CONFIRM_SRP_ROUTE}
+            path={ONBOARDING_PATHS.CONFIRM_SRP}
             element={
               <ConfirmRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
@@ -311,44 +315,44 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_IMPORT_WITH_SRP_ROUTE}
+            path={ONBOARDING_PATHS.IMPORT_WITH_SRP}
             element={
               <ImportSRP submitSecretRecoveryPhrase={setSecretRecoveryPhrase} />
             }
           />
           <Route
-            path={ONBOARDING_UNLOCK_ROUTE}
+            path={ONBOARDING_PATHS.UNLOCK}
             element={<Unlock onSubmit={handleUnlock} />}
           />
           <Route
-            path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
+            path={ONBOARDING_PATHS.PRIVACY_SETTINGS}
             element={<PrivacySettings />}
           />
           <Route
-            path={ONBOARDING_COMPLETION_ROUTE}
+            path={ONBOARDING_PATHS.COMPLETION}
             element={<CreationSuccessful />}
           />
           <Route
-            path={ONBOARDING_WELCOME_ROUTE}
+            path={ONBOARDING_PATHS.WELCOME}
             element={<OnboardingWelcome />}
           />
           <Route
-            path={ONBOARDING_PIN_EXTENSION_ROUTE}
+            path={ONBOARDING_PATHS.PIN_EXTENSION}
             element={<OnboardingPinExtension />}
           />
           <Route
-            path={ONBOARDING_METAMETRICS}
+            path={ONBOARDING_PATHS.METAMETRICS}
             element={<MetaMetricsComponent />}
           />
           <Route
-            path={ONBOARDING_DOWNLOAD_APP_ROUTE}
+            path={ONBOARDING_PATHS.DOWNLOAD_APP}
             element={<OnboardingDownloadApp />}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           }
           <Route
-            path={ONBOARDING_EXPERIMENTAL_AREA}
+            path={ONBOARDING_PATHS.EXPERIMENTAL_AREA}
             element={<ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />}
           />
           {

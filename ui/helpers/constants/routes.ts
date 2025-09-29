@@ -12,29 +12,48 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
-export const GENERAL_ROUTE = '/settings/general';
-export const ADVANCED_ROUTE = '/settings/advanced';
-export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
-export const EXPERIMENTAL_ROUTE = '/settings/experimental';
-export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
-export const SECURITY_ROUTE = '/settings/security';
-export const ABOUT_US_ROUTE = '/settings/about-us';
-export const NETWORKS_ROUTE = '/settings/networks';
-export const NETWORKS_FORM_ROUTE = '/settings/networks/form';
-export const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
-export const ADD_POPULAR_CUSTOM_NETWORK =
-  '/settings/networks/add-popular-custom-network';
-export const CONTACT_LIST_ROUTE = '/settings/contact-list';
-export const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
-export const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
-export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
-export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const REVEAL_SRP_LIST_ROUTE =
-  '/settings/security-and-privacy/reveal-srp-list';
-export const SECURITY_PASSWORD_CHANGE_ROUTE =
-  '/settings/security-and-privacy/password-change';
-export const BACKUPANDSYNC_ROUTE =
-  '/settings/security-and-privacy/backup-and-sync';
+
+const SETTINGS_PATHS = {
+  GENERAL: 'general',
+  ADVANCED: 'advanced',
+  DEVELOPER_OPTIONS: 'developer-options',
+  EXPERIMENTAL: 'experimental',
+  TRANSACTION_SHIELD: 'transaction-shield',
+  SECURITY: 'security',
+  ABOUT_US: 'about-us',
+  NETWORKS: 'networks',
+  NETWORKS_FORM: 'networks/form',
+  ADD_NETWORK: 'networks/add-network',
+  ADD_POPULAR_CUSTOM_NETWORK: 'networks/add-popular-custom-network',
+  CONTACT_LIST: 'contact-list',
+  CONTACT_EDIT: 'contact-list/edit-contact',
+  CONTACT_ADD: 'contact-list/add-contact',
+  CONTACT_VIEW: 'contact-list/view-contact',
+  SNAP: 'snap',
+  REVEAL_SRP_LIST: 'security-and-privacy/reveal-srp-list',
+  SECURITY_PASSWORD_CHANGE: 'security-and-privacy/password-change',
+  BACKUP_AND_SYNC: 'security-and-privacy/backup-and-sync',
+} as const;
+
+export const GENERAL_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.GENERAL}`;
+export const ADVANCED_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.ADVANCED}`;
+export const DEVELOPER_OPTIONS_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.DEVELOPER_OPTIONS}`;
+export const EXPERIMENTAL_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.EXPERIMENTAL}`;
+export const TRANSACTION_SHIELD_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.TRANSACTION_SHIELD}`;
+export const SECURITY_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.SECURITY}`;
+export const ABOUT_US_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.ABOUT_US}`;
+export const NETWORKS_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.NETWORKS}`;
+export const NETWORKS_FORM_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.NETWORKS_FORM}`;
+export const ADD_NETWORK_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.ADD_NETWORK}`;
+export const ADD_POPULAR_CUSTOM_NETWORK = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.ADD_POPULAR_CUSTOM_NETWORK}`;
+export const CONTACT_LIST_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.CONTACT_LIST}`;
+export const CONTACT_EDIT_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.CONTACT_EDIT}`;
+export const CONTACT_ADD_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.CONTACT_ADD}`;
+export const CONTACT_VIEW_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.CONTACT_VIEW}`;
+export const SNAP_SETTINGS_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.SNAP}`;
+export const REVEAL_SRP_LIST_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.REVEAL_SRP_LIST}`;
+export const SECURITY_PASSWORD_CHANGE_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.SECURITY_PASSWORD_CHANGE}`;
+export const BACKUPANDSYNC_ROUTE = `${SETTINGS_ROUTE}/${SETTINGS_PATHS.BACKUP_AND_SYNC}`;
 export const REVEAL_SEED_ROUTE = '/seed';
 export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
 export const IMPORT_SRP_ROUTE = '/import-srp';
@@ -68,68 +87,134 @@ export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const CONNECT_ROUTE = '/connect';
-export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
-export const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
-export const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
-export const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
-export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
+
+const CONNECT_PATHS = {
+  CONFIRM_PERMISSIONS: 'confirm-permissions',
+  SNAPS_CONNECT: 'snaps-connect',
+  SNAP_INSTALL: 'snap-install',
+  SNAP_UPDATE: 'snap-update',
+  SNAP_RESULT: 'snap-install-result',
+} as const;
+
+export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = `/${CONNECT_PATHS.CONFIRM_PERMISSIONS}`;
+export const CONNECT_SNAPS_CONNECT_ROUTE = `/${CONNECT_PATHS.SNAPS_CONNECT}`;
+export const CONNECT_SNAP_INSTALL_ROUTE = `/${CONNECT_PATHS.SNAP_INSTALL}`;
+export const CONNECT_SNAP_UPDATE_ROUTE = `/${CONNECT_PATHS.SNAP_UPDATE}`;
+export const CONNECT_SNAP_RESULT_ROUTE = `/${CONNECT_PATHS.SNAP_RESULT}`;
 export const SNAPS_ROUTE = '/snaps';
-export const SNAPS_VIEW_ROUTE = '/snaps/view';
+
+const SNAPS_PATHS = {
+  VIEW: 'view',
+} as const;
+
+export const SNAPS_VIEW_ROUTE = `${SNAPS_ROUTE}/${SNAPS_PATHS.VIEW}`;
 export const NOTIFICATIONS_ROUTE = '/notifications';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
-export const CONFIRM_SEND_ETHER_PATH = '/send-ether';
-export const CONFIRM_SEND_TOKEN_PATH = '/send-token';
-export const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
-export const CONFIRM_APPROVE_PATH = '/approve';
-export const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
-export const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
-export const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
-export const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
-export const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
-export const SIGNATURE_REQUEST_PATH = '/signature-request';
-export const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
-export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
-  '/encryption-public-key-request';
+
+const CONFIRM_TRANSACTION_PATHS = {
+  SEND_ETHER: 'send-ether',
+  SEND_TOKEN: 'send-token',
+  DEPLOY_CONTRACT: 'deploy-contract',
+  APPROVE: 'approve',
+  SET_APPROVAL_FOR_ALL: 'set-approval-for-all',
+  TRANSFER_FROM: 'transfer-from',
+  SAFE_TRANSFER_FROM: 'safe-transfer-from',
+  TOKEN_METHOD: 'token-method',
+  INCREASE_ALLOWANCE: 'increase-allowance',
+  SIGNATURE_REQUEST: 'signature-request',
+  DECRYPT_MESSAGE_REQUEST: 'decrypt-message-request',
+  ENCRYPTION_PUBLIC_KEY_REQUEST: 'encryption-public-key-request',
+} as const;
+
+export const CONFIRM_SEND_ETHER_PATH = `/${CONFIRM_TRANSACTION_PATHS.SEND_ETHER}`;
+export const CONFIRM_SEND_TOKEN_PATH = `/${CONFIRM_TRANSACTION_PATHS.SEND_TOKEN}`;
+export const CONFIRM_DEPLOY_CONTRACT_PATH = `/${CONFIRM_TRANSACTION_PATHS.DEPLOY_CONTRACT}`;
+export const CONFIRM_APPROVE_PATH = `/${CONFIRM_TRANSACTION_PATHS.APPROVE}`;
+export const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = `/${CONFIRM_TRANSACTION_PATHS.SET_APPROVAL_FOR_ALL}`;
+export const CONFIRM_TRANSFER_FROM_PATH = `/${CONFIRM_TRANSACTION_PATHS.TRANSFER_FROM}`;
+export const CONFIRM_SAFE_TRANSFER_FROM_PATH = `/${CONFIRM_TRANSACTION_PATHS.SAFE_TRANSFER_FROM}`;
+export const CONFIRM_TOKEN_METHOD_PATH = `/${CONFIRM_TRANSACTION_PATHS.TOKEN_METHOD}`;
+export const CONFIRM_INCREASE_ALLOWANCE_PATH = `/${CONFIRM_TRANSACTION_PATHS.INCREASE_ALLOWANCE}`;
+export const SIGNATURE_REQUEST_PATH = `/${CONFIRM_TRANSACTION_PATHS.SIGNATURE_REQUEST}`;
+export const DECRYPT_MESSAGE_REQUEST_PATH = `/${CONFIRM_TRANSACTION_PATHS.DECRYPT_MESSAGE_REQUEST}`;
+export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = `/${CONFIRM_TRANSACTION_PATHS.ENCRYPTION_PUBLIC_KEY_REQUEST}`;
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
-export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
+
+const CROSS_CHAIN_PATHS = {
+  SWAPS_PREPARE: 'swaps/prepare-swap-page',
+  AWAITING_SIGNATURES: 'awaiting-signatures',
+  TX_DETAILS: 'tx-details',
+} as const;
+
+export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}/${CROSS_CHAIN_PATHS.TX_DETAILS}`;
 export const SWAPS_ROUTE = '/swaps';
-export const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
-export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
-export const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
-export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
-export const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
-export const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
-export const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
-export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
+
+const SWAPS_PATHS = {
+  PREPARE: 'prepare-swap-page',
+  NOTIFICATION: 'notification-page',
+  LOADING_QUOTES: 'loading-quotes',
+  AWAITING_SIGNATURES: 'awaiting-signatures',
+  SMART_TRANSACTION_STATUS: 'smart-transaction-status',
+  AWAITING_SWAP: 'awaiting-swap',
+  ERROR: 'swaps-error',
+  MAINTENANCE: 'maintenance',
+} as const;
+
+export const PREPARE_SWAP_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.PREPARE}`;
+export const SWAPS_NOTIFICATION_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.NOTIFICATION}`;
+export const LOADING_QUOTES_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.LOADING_QUOTES}`;
+export const AWAITING_SIGNATURES_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.AWAITING_SIGNATURES}`;
+export const SMART_TRANSACTION_STATUS_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.SMART_TRANSACTION_STATUS}`;
+export const AWAITING_SWAP_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.AWAITING_SWAP}`;
+export const SWAPS_ERROR_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.ERROR}`;
+export const SWAPS_MAINTENANCE_ROUTE = `${SWAPS_ROUTE}/${SWAPS_PATHS.MAINTENANCE}`;
 export const ONBOARDING_ROUTE = '/onboarding';
-export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
-export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
-export const ONBOARDING_CONFIRM_SRP_ROUTE =
-  '/onboarding/confirm-recovery-phrase';
-export const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
-export const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
-export const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
-export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
-export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
-  '/onboarding/import-with-recovery-phrase';
-export const ONBOARDING_SECURE_YOUR_WALLET_ROUTE =
-  '/onboarding/secure-your-wallet';
-export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
-export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
-export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
-export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
-export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
-export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
-export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
+
+const ONBOARDING_PATHS = {
+  WELCOME: 'welcome',
+  CREATE_PASSWORD: 'create-password',
+  SECURE_YOUR_WALLET: 'secure-your-wallet',
+  REVEAL_SRP: 'reveal-recovery-phrase',
+  REVIEW_SRP: 'review-recovery-phrase',
+  CONFIRM_SRP: 'confirm-recovery-phrase',
+  IMPORT_WITH_SRP: 'import-with-recovery-phrase',
+  UNLOCK: 'unlock',
+  HELP_US_IMPROVE: 'help-us-improve',
+  PRIVACY_SETTINGS: 'privacy-settings',
+  COMPLETION: 'completion',
+  PIN_EXTENSION: 'pin-extension',
+  METAMETRICS: 'metametrics',
+  ACCOUNT_EXIST: 'account-exist',
+  ACCOUNT_NOT_FOUND: 'account-not-found',
+  DOWNLOAD_APP: 'download-app',
+  EXPERIMENTAL_AREA: 'experimental-area',
+} as const;
+
+export const ONBOARDING_WELCOME_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.WELCOME}`;
+export const ONBOARDING_CREATE_PASSWORD_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.CREATE_PASSWORD}`;
+export const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.SECURE_YOUR_WALLET}`;
+export const ONBOARDING_REVEAL_SRP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.REVEAL_SRP}`;
+export const ONBOARDING_REVIEW_SRP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.REVIEW_SRP}`;
+export const ONBOARDING_CONFIRM_SRP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.CONFIRM_SRP}`;
+export const ONBOARDING_IMPORT_WITH_SRP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.IMPORT_WITH_SRP}`;
+export const ONBOARDING_UNLOCK_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.UNLOCK}`;
+export const ONBOARDING_HELP_US_IMPROVE_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.HELP_US_IMPROVE}`;
+export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.PRIVACY_SETTINGS}`;
+export const ONBOARDING_COMPLETION_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.COMPLETION}`;
+export const ONBOARDING_PIN_EXTENSION_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.PIN_EXTENSION}`;
+export const ONBOARDING_METAMETRICS = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.METAMETRICS}`;
+export const ONBOARDING_ACCOUNT_EXIST = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.ACCOUNT_EXIST}`;
+export const ONBOARDING_ACCOUNT_NOT_FOUND = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.ACCOUNT_NOT_FOUND}`;
+export const ONBOARDING_DOWNLOAD_APP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.DOWNLOAD_APP}`;
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
-export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const ONBOARDING_EXPERIMENTAL_AREA = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.EXPERIMENTAL_AREA}`;
 ///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
@@ -138,39 +223,15 @@ export const DEFI_ROUTE = '/defi';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 
-// Route base names for use with getRelativeRoutePath
-export const SETTINGS_BASE = 'settings';
-export const CROSS_CHAIN_BASE = 'cross-chain';
-
-/**
- * Helper function to convert absolute routes to relative paths for nested routing.
- *
- * @param absolutePath - The absolute path (e.g., '/settings/general')
- * @param parentRoute - The parent route to remove (e.g., 'settings')
- * @returns The relative path (e.g., 'general')
- */
-export function getRelativeRoutePath(
-  absolutePath: string,
-  parentRoute: string,
-): string {
-  const parentPath = `/${parentRoute}`;
-  return absolutePath
-    .replace(`${parentPath}/`, '') // Remove '/parentRoute/'
-    .replace(parentPath, ''); // Remove '/parentRoute' (for exact match)
-}
-
-/**
- * Helper function to convert an absolute route to a relative path by removing the leading slash.
- * Useful for nested routing where you want to use route constants as relative paths.
- *
- * @param absolutePath - The absolute path (e.g., '/swaps/prepare-swap-page')
- * @returns The relative path (e.g., 'swaps/prepare-swap-page')
- */
-export function toRelativePath(absolutePath: string): string {
-  return absolutePath.startsWith('/')
-    ? absolutePath.substring(1)
-    : absolutePath;
-}
+export {
+  ONBOARDING_PATHS,
+  SETTINGS_PATHS,
+  SWAPS_PATHS,
+  CROSS_CHAIN_PATHS,
+  CONNECT_PATHS,
+  CONFIRM_TRANSACTION_PATHS,
+  SNAPS_PATHS
+};
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
@@ -694,10 +755,8 @@ export const getPaths = memoize(() =>
   ROUTES.filter((r) => r.trackInAnalytics).map((r) => r.path),
 );
 
-// PATH_NAME_MAP for backward compatibility - only includes analytics-tracked routes
 export const PATH_NAME_MAP = new Map<AppRoutes['path'], AppRoutes['label']>();
 
-// Populate the map only with routes that have trackInAnalytics: true
 ROUTES.forEach((route) => {
   if (route.trackInAnalytics) {
     PATH_NAME_MAP.set(route.path, route.label);
