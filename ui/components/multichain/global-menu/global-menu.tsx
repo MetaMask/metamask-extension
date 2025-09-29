@@ -238,8 +238,8 @@ export const GlobalMenu = ({
         overflow: 'hidden',
         minWidth: 225,
       }}
-      borderStyle={BorderStyle.none}
-      position={PopoverPosition.Auto}
+      offset={[0, 8]}
+      position={PopoverPosition.BottomEnd}
     >
       {basicFunctionality && (
         <>
