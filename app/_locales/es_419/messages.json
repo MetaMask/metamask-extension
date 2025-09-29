@@ -228,44 +228,44 @@
     "message": "Agregar contacto"
   },
   "addCustomNetwork": {
-    "message": "Add custom network"
+    "message": "Agregar red personalizada"
   },
   "addEthereumChainWarningModalHeader": {
-    "message": "Only add this RPC provider if you’re sure you can trust it. $1",
+    "message": "Solo agrega este proveedor RPC si estás seguro de que puedes confiar en él. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
   },
   "addEthereumChainWarningModalHeaderPartTwo": {
-    "message": "Malicious providers may lie about the state of the blockchain and record your network activity."
+    "message": "Los proveedores maliciosos pueden mentir sobre el estado de la blockchain y registrar tu actividad en la red."
   },
   "addEthereumChainWarningModalListHeader": {
-    "message": "It's important that your provider is reliable, as it has the power to:"
+    "message": "Es importante que tu proveedor sea confiable, ya que tiene el poder de:"
   },
   "addEthereumChainWarningModalListPointOne": {
-    "message": "See your accounts and IP address, and associate them together"
+    "message": "Ver tus cuentas y dirección IP, y asociarlas entre sí"
   },
   "addEthereumChainWarningModalListPointThree": {
-    "message": "Show account balances and other on-chain states"
+    "message": "Mostrar saldos de cuentas y otros estados en cadena"
   },
   "addEthereumChainWarningModalListPointTwo": {
-    "message": "Broadcast your transactions"
+    "message": "Transmitir tus transacciones"
   },
   "addEthereumChainWarningModalTitle": {
-    "message": "You are adding a new RPC provider for Ethereum Mainnet"
+    "message": "Estás agregando un nuevo proveedor RPC para Ethereum Mainnet"
   },
   "addEthereumWatchOnlyAccount": {
-    "message": "Watch an Ethereum account (Beta)"
+    "message": "Ver una cuenta de Ethereum (Beta)"
   },
   "addFriendsAndAddresses": {
     "message": "Agregue amigos y direcciones de confianza"
   },
   "addHardwareWalletLabel": {
-    "message": "Hardware wallet"
+    "message": "Billetera de hardware"
   },
   "addIPFSGateway": {
-    "message": "Add your preferred IPFS gateway"
+    "message": "Agregar tu puerta de enlace IPFS preferida"
   },
   "addImportAccount": {
-    "message": "Add account or hardware wallet"
+    "message": "Agregar cuenta o billetera de hardware"
   },
   "addMemo": {
     "message": "Añadir memo"
@@ -274,43 +274,43 @@
     "message": "Agregar red"
   },
   "addNetworkConfirmationTitle": {
-    "message": "Add $1",
+    "message": "Agregar $1",
     "description": "$1 represents network name"
   },
   "addNewAccount": {
-    "message": "Add a new Ethereum account"
+    "message": "Agregar una nueva cuenta de Ethereum"
   },
   "addNewEthereumAccountLabel": {
-    "message": "Ethereum account"
+    "message": "Cuenta de Ethereum"
   },
   "addNewSolanaAccountLabel": {
-    "message": "Solana account"
+    "message": "Cuenta de Solana"
   },
   "addNft": {
-    "message": "Add NFT"
+    "message": "Agregar NFT"
   },
   "addNfts": {
-    "message": "Add NFTs"
+    "message": "Agregar NFTs"
   },
   "addNonEvmAccount": {
-    "message": "Add $1 account",
+    "message": "Agregar cuenta de $1",
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "To enable the $1 network, you need to create a $2 account.",
+    "message": "Para habilitar la red $1, necesitas crear una cuenta de $2.",
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
-    "message": "Add RPC URL"
+    "message": "Agregar URL RPC"
   },
   "addSnapAccountToggle": {
-    "message": "Enable \"Add account Snap (Beta)\""
+    "message": "Habilitar \"Agregar cuenta Snap (Beta)\""
   },
   "addSnapAccountsDescription": {
-    "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
+    "message": "Al activar esta función tendrás la opción de agregar las nuevas cuentas Beta Snap directamente desde tu lista de cuentas. Si instalas una cuenta Snap, recuerda que es un servicio de terceros."
   },
   "addSuggestedNFTs": {
-    "message": "Add suggested NFTs"
+    "message": "Agregar NFTs sugeridos"
   },
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
@@ -323,47 +323,47 @@
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addUrl": {
-    "message": "Add URL"
+    "message": "Agregar URL"
   },
   "addWallet": {
-    "message": "Add wallet"
+    "message": "Agregar billetera"
   },
   "addingAccount": {
-    "message": "Adding account"
+    "message": "Agregando cuenta"
   },
   "addingCustomNetwork": {
-    "message": "Adding Network"
+    "message": "Agregando red"
   },
   "additionalNetworks": {
-    "message": "Additional networks"
+    "message": "Redes adicionales"
   },
   "address": {
     "message": "Dirección"
   },
   "addressCopied": {
-    "message": "Address copied"
+    "message": "Dirección copiada"
   },
   "addressLabel": {
-    "message": "address",
+    "message": "dirección",
     "description": "Label for address count (single address). Used on multichain account details page."
   },
   "addressMismatch": {
-    "message": "Site address mismatch"
+    "message": "Dirección del sitio no coincide"
   },
   "addressMismatchOriginal": {
-    "message": "Current URL: $1",
+    "message": "URL actual: $1",
     "description": "$1 replaced by origin URL in confirmation request"
   },
   "addressMismatchPunycode": {
-    "message": "Punycode version: $1",
+    "message": "Versión Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
   "addressQrCodeModalDescription": {
-    "message": "Use this address to receive tokens and collectibles on $1",
+    "message": "Usa esta dirección para recibir tokens y coleccionables en $1",
     "description": "$1 is the network name"
   },
   "addressQrCodeModalHeading": {
-    "message": "$1 Address",
+    "message": "Dirección $1",
     "description": "$1 is the network name"
   },
   "addressQrCodeModalTitle": {
@@ -371,11 +371,11 @@
     "description": "$1 is account name, $2 is network name"
   },
   "addresses": {
-    "message": "Addresses",
+    "message": "Direcciones",
     "description": "Multichain account menu item for linking to addresses page"
   },
   "addressesLabel": {
-    "message": "addresses",
+    "message": "direcciones",
     "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
@@ -385,7 +385,7 @@
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
   },
   "advancedDetailsDataDesc": {
-    "message": "Data"
+    "message": "Datos"
   },
   "advancedDetailsHexDesc": {
     "message": "Hex"
@@ -394,10 +394,10 @@
     "message": "Nonce"
   },
   "advancedDetailsNonceTooltip": {
-    "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
+    "message": "Este es el número de transacción de una cuenta. El nonce para la primera transacción es 0 y aumenta en orden secuencial."
   },
   "advancedGasFeeDefaultOptIn": {
-    "message": "Save these values as my default for the $1 network.",
+    "message": "Guardar estos valores como predeterminados para la red $1.",
     "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
@@ -410,37 +410,37 @@
     "message": "La tarifa de prioridad (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción."
   },
   "airDropPatternDescription": {
-    "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
+    "message": "El historial en cadena del token revela instancias previas de actividades sospechosas de airdrop."
   },
   "airDropPatternTitle": {
-    "message": "Airdrop Pattern"
+    "message": "Patrón de airdrop"
   },
   "airgapVault": {
     "message": "AirGap Vault"
   },
   "alert": {
-    "message": "Alert"
+    "message": "Alerta"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+    "message": "Estás actualizando tu cuenta a una cuenta inteligente. Mantendrás la misma dirección de cuenta mientras desbloqueas transacciones más rápidas y tarifas de red más bajas. $1."
   },
   "alertAccountTypeUpgradeTitle": {
-    "message": "Account type"
+    "message": "Tipo de cuenta"
   },
   "alertActionBuyWithNativeCurrency": {
-    "message": "Buy $1"
+    "message": "Comprar $1"
   },
   "alertActionUpdateGas": {
-    "message": "Update gas limit"
+    "message": "Actualizar límite de gas"
   },
   "alertActionUpdateGasFee": {
-    "message": "Update fee"
+    "message": "Actualizar tarifa"
   },
   "alertActionUpdateGasFeeLevel": {
-    "message": "Update gas options"
+    "message": "Actualizar opciones de gas"
   },
   "alertContentMultipleApprovals": {
-    "message": "You're giving someone else permission to withdraw your tokens, even though it's not necessary for this transaction."
+    "message": "Estás dando permiso a otra persona para retirar tus tokens, aunque no es necesario para esta transacción."
   },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
