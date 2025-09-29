@@ -2,7 +2,12 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
-import { isCaipChainId, CaipChainId } from '@metamask/utils';
+import {
+  isCaipChainId,
+  CaipChainId,
+  isCaipAssetType,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -329,12 +334,20 @@ const CoinButtons = ({
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
       // Handle clicking from the wallet overview page
+
+      // Url could be solana assetId or the hex chainId
+      const lastPartOfUrl = location.pathname.split('/').filter(Boolean).at(-1);
+      const hexChainOrAssetId = lastPartOfUrl
+        ? decodeURIComponent(lastPartOfUrl)
+        : CHAIN_IDS.MAINNET;
+
+      const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
+        ? parseCaipAssetType(hexChainOrAssetId).chainId
+        : hexChainOrAssetId;
+
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        getNativeAssetForChainId(
-          location.pathname.split('/').filter(Boolean).at(-1) ??
-            CHAIN_IDS.MAINNET,
-        ),
+        getNativeAssetForChainId(chainIdToUse),
         isSwap,
       );
     },
