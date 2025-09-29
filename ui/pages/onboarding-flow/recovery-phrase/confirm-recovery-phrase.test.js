@@ -7,6 +7,7 @@ import { setSeedPhraseBackedUp } from '../../../store/actions';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
+  REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
@@ -18,12 +19,13 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
-    useLocation: () => ({ search: '' }),
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -49,6 +51,13 @@ const clickAndAnswerSrpQuiz = (quizUnansweredChips) => {
 };
 
 describe('Confirm Recovery Phrase Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      search: '',
+    });
+  });
+
   const TEST_SEED =
     'debris dizzy just just just float just just just just speak just';
 
@@ -230,6 +239,40 @@ describe('Confirm Recovery Phrase Component', () => {
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
+      replace: true,
+    });
+  });
+
+  it('renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromReminder=true&isFromSettingsSecurity=true',
+    });
+
+    const { container } = renderWithProvider(
+      <ConfirmRecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('onClose should navigate to reveal srp list route', () => {
+    mockUseLocation.mockReturnValue({
+      search: '?isFromReminder=true&isFromSettingsSecurity=true',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmRecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    const closeButton = getByTestId(
+      'reveal-recovery-phrase-confirm-close-button',
+    );
+
+    fireEvent.click(closeButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
       replace: true,
     });
   });

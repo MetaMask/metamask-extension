@@ -1,0 +1,323 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm Recovery Phrase Component renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params 1`] = `
+<div>
+  <div
+    class="mm-box recovery-phrase recovery-phrase__confirm mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
+    data-testid="confirm-recovery-phrase"
+  >
+    <div
+      class="mm-box"
+    >
+      <div
+        class="mm-box recovery-phrase__header mm-box--margin-bottom-4 mm-box--display-grid mm-box--gap-1 mm-box--align-items-center mm-box--width-full"
+      >
+        <button
+          aria-label="Back"
+          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="reveal-recovery-phrase-confirm-back-button"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-left.svg');"
+          />
+        </button>
+        <h4
+          class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+        >
+          Confirm your Secret Recovery Phrase
+        </h4>
+        <button
+          aria-label="Close"
+          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="reveal-recovery-phrase-confirm-close-button"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+        </button>
+      </div>
+      <div
+        class="mm-box mm-box--margin-bottom-6"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Select the missing words in the correct order.
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+        >
+          <div
+            class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+            data-quiz-words="[{"index":7,"word":"just"},{"index":10,"word":"speak"},{"index":1,"word":"dizzy"}]"
+            data-recovery-phrase="debris:dizzy:just:just:just:float:just:just:just:just:speak:just"
+            data-testid="recovery-phrase-chips"
+          >
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                1
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-0"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="debris"
+              />
+            </div>
+            <button
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
+              data-testid="recovery-phrase-chip-1"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                2
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
+            </button>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                3
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-2"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="just"
+              />
+            </div>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                4
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-3"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="just"
+              />
+            </div>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                5
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-4"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="just"
+              />
+            </div>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                6
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-5"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="float"
+              />
+            </div>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                7
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-6"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="just"
+              />
+            </div>
+            <button
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-7"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                8
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
+            </button>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                9
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-8"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="just"
+              />
+            </div>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                10
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-9"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="just"
+              />
+            </div>
+            <button
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-10"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                11
+                .
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
+            </button>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <p
+                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              >
+                12
+                .
+              </p>
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-11"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="just"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--width-full"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+            data-testid="recovery-phrase-quiz-unanswered-7"
+          >
+            just
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+            data-testid="recovery-phrase-quiz-unanswered-10"
+          >
+            speak
+          </button>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+            data-testid="recovery-phrase-quiz-unanswered-1"
+          >
+            dizzy
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--width-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer__confirm--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        data-testid="recovery-phrase-confirm"
+        disabled=""
+      >
+        Continue
+      </button>
+    </div>
+  </div>
+</div>
+`;
