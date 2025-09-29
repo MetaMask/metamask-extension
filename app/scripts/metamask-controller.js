@@ -5838,6 +5838,16 @@ export default class MetamaskController extends EventEmitter {
 
     if (shouldShowApproval) {
       try {
+        // Track referral viewed event
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.ReferralViewed,
+          category: MetaMetricsEventCategory.Referrals,
+          properties: {
+            url: HYPERLIQUID_ORIGIN,
+            trigger_type: triggerType,
+          },
+        });
+
         const approvalResponse = await this.approvalController.add({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
@@ -5861,6 +5871,15 @@ export default class MetamaskController extends EventEmitter {
             activePermittedAccount,
           );
         }
+
+        // Track referral confirm button clicked event
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.ReferralConfirmButtonClicked,
+          category: MetaMetricsEventCategory.Referrals,
+          properties: {
+            opt_in: Boolean(approvalResponse?.approved),
+          },
+        });
       } catch (error) {
         // Do nothing if the user rejects the request
         if (error.code === errorCodes.provider.userRejectedRequest) {

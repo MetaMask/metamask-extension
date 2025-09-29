@@ -7242,13 +7242,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^25.0.0":
-  version: 25.0.0
-  resolution: "@metamask/profile-sync-controller@npm:25.0.0"
+"@metamask/profile-sync-controller@npm:^25.1.0":
+  version: 25.1.0
+  resolution: "@metamask/profile-sync-controller@npm:25.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/base-controller": "npm:^8.4.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
+    "@metamask/utils": "npm:^11.8.1"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/hashes": "npm:^1.8.0"
     immer: "npm:^9.0.6"
@@ -7260,7 +7261,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/e142a290cda9b5ce96bcbe54adb9a690fe608bcb2e6c9ecef3eecd5764f437c48015dd64e9413e0188535b98f46eed366abefb721d1fa3d1b953e7d2287cd1bb
+  checksum: 10/eb39da03198c21a161fa588a7e693592bee72df6f41b4320ec9f95406790ad05ddcd7d6a3fcd589b5f6854b7d351014a6fa39821bfe338dd23d106974bcd9ae7
   languageName: node
   linkType: hard
 
@@ -32181,7 +32182,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.38.0"
     "@metamask/preferences-controller": "npm:^19.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.1"
-    "@metamask/profile-sync-controller": "npm:^25.0.0"
+    "@metamask/profile-sync-controller": "npm:^25.1.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
