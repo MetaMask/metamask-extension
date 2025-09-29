@@ -310,7 +310,6 @@ const config = {
         use: [
           {
             loader: reactCompilerLoader,
-            // @ts-expect-error TODO: define shared config for react compiler loader
             options: defineReactCompilerLoaderOption({
               target: '17',
               // environment: EnvironmentConfig,
@@ -339,7 +338,6 @@ const config = {
         use: [
           {
             loader: reactCompilerLoader,
-            // @ts-expect-error TODO: define shared config for react compiler loader
             options: defineReactCompilerLoaderOption({
               target: '17',
               // environment: EnvironmentConfig,
