@@ -1027,7 +1027,7 @@
       },
       "packages": {
         "@metamask/design-system-react>@metamask/design-system-shared": true,
-        "@metamask/jazzicon": true,
+        "@metamask/design-system-react>@metamask/jazzicon": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
@@ -1352,14 +1352,14 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/jazzicon": {
+    "@metamask/design-system-react>@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
         "document.createElementNS": true
       },
       "packages": {
-        "@metamask/jazzicon>color": true,
-        "@metamask/jazzicon>mersenne-twister": true
+        "@metamask/design-system-react>@metamask/jazzicon>color": true,
+        "@metamask/design-system-react>@metamask/jazzicon>mersenne-twister": true
       }
     },
     "@metamask/json-rpc-engine": {
@@ -3065,7 +3065,7 @@
         "define": true
       }
     },
-    "@metamask/jazzicon>color>clone": {
+    "gulp-watch>vinyl-file>vinyl>clone": {
       "packages": {
         "browserify>buffer": true
       }
@@ -3088,21 +3088,21 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/jazzicon>color>color-convert": {
+    "@metamask/design-system-react>@metamask/jazzicon>color>color-convert": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
+        "@metamask/design-system-react>@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@metamask/jazzicon>color>color-string": {
+    "@metamask/design-system-react>@metamask/jazzicon>color>color-string": {
       "packages": {
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/jazzicon>color": {
+    "@metamask/design-system-react>@metamask/jazzicon>color": {
       "packages": {
-        "@metamask/jazzicon>color>clone": true,
-        "@metamask/jazzicon>color>color-convert": true,
-        "@metamask/jazzicon>color>color-string": true
+        "gulp-watch>vinyl-file>vinyl>clone": true,
+        "@metamask/design-system-react>@metamask/jazzicon>color>color-convert": true,
+        "@metamask/design-system-react>@metamask/jazzicon>color>color-string": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {

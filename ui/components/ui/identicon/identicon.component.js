@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
-import Jazzicon from '../jazzicon';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import BlockieIdenticon from './blockieIdenticon';
@@ -14,6 +17,20 @@ const getStyles = (diameter) => ({
 });
 const getImage = async (image, ipfsGateway) => {
   return await getAssetImageURL(image, ipfsGateway);
+};
+
+const mapDiameterToSize = (diameter) => {
+  if (diameter <= 24) {
+    return AvatarAccountSize.Sm;
+  } else if (diameter <= 32) {
+    return AvatarAccountSize.Md;
+  } else if (diameter <= 40) {
+    return AvatarAccountSize.Lg;
+  } else if (diameter <= 48) {
+    return AvatarAccountSize.Xl;
+  }
+
+  return AvatarAccountSize.Md;
 };
 
 /**
@@ -134,16 +151,14 @@ export default class Identicon extends Component {
 
   renderJazzicon() {
     const { address, className, diameter, alt } = this.props;
-    const tokenList = this.getTokenList();
 
     return (
-      <Jazzicon
+      <AvatarAccount
         address={address}
-        diameter={diameter}
+        size={mapDiameterToSize(diameter)}
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
         alt={alt}
-        tokenList={tokenList}
       />
     );
   }
