@@ -93,13 +93,6 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   await onboardingPasswordPage.checkPageIsLoaded();
 
   await onboardingPasswordPage.createWalletPassword(password);
-
-  // if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-  //   await onboardingMetricsFlow(driver, {
-  //     participateInMetaMetrics: true,
-  //     dataCollectionForMarketing: true,
-  //   });
-  // }
 };
 
 /**
