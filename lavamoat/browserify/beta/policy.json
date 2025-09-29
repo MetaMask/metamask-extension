@@ -2283,7 +2283,7 @@
         "document.defaultView": true
       }
     },
-    "rive-react>@rive-app/canvas": {
+    "@rive-app/react-canvas>@rive-app/canvas": {
       "globals": {
         "AudioContext": true,
         "Blob": true,
@@ -2291,7 +2291,6 @@
         "FinalizationRegistry": true,
         "HTMLCanvasElement": true,
         "Image": true,
-        "Iterator": true,
         "MouseEvent": true,
         "Path2D": true,
         "Request": true,
@@ -2339,7 +2338,7 @@
         "setTimeout": true
       },
       "packages": {
-        "rive-react>@rive-app/canvas": true,
+        "@rive-app/react-canvas>@rive-app/canvas": true,
         "react": true
       }
     },
