@@ -2018,9 +2018,7 @@
   "discover": {
     "message": "Discover"
   },
-  "discoverNFTs": {
-    "message": "Discover NFTs"
-  },
+
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
