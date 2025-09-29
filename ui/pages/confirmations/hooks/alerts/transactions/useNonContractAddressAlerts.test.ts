@@ -55,8 +55,8 @@ const TRANSACTION_META_MOCK = {
 } as TransactionMeta;
 
 function runHook({
-                   currentConfirmation,
-                 }: {
+  currentConfirmation,
+}: {
   currentConfirmation?: TransactionMeta;
 } = {}) {
   const state = currentConfirmation

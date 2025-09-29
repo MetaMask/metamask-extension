@@ -123,7 +123,7 @@ export function hideAppHeader(props) {
         path: DEEP_LINK_ROUTE,
         end: false,
       },
-      location.pathname,
+      location?.pathname,
     ),
   );
 
@@ -361,10 +361,13 @@ export function hideAppHeader(props) {
   }
 
   const isGatorPermissionsPage = Boolean(
-    matchPath(location.pathname, {
-      path: GATOR_PERMISSIONS,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: GATOR_PERMISSIONS,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isGatorPermissionsPage) {
@@ -372,10 +375,13 @@ export function hideAppHeader(props) {
   }
 
   const isGatorPermissionsTokenTransferPage = Boolean(
-    matchPath(location.pathname, {
-      path: TOKEN_TRANSFER_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: TOKEN_TRANSFER_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isGatorPermissionsTokenTransferPage) {

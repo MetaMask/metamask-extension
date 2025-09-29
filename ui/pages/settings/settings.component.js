@@ -452,7 +452,10 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={tabs}
         isActive={(key) => {
-          if (key === SETTINGS_PATHS.GENERAL && currentPath === SETTINGS_ROUTE) {
+          if (
+            key === SETTINGS_PATHS.GENERAL &&
+            currentPath === SETTINGS_ROUTE
+          ) {
             return true;
           }
           if (
@@ -491,18 +494,12 @@ class SettingsPage extends PureComponent {
             />
           }
         />
-        <Route
-          path={SETTINGS_PATHS.ABOUT_US}
-          element={<InfoTab />}
-        />
+        <Route path={SETTINGS_PATHS.ABOUT_US} element={<InfoTab />} />
         <Route
           path={`${SETTINGS_PATHS.SNAP}/:snapId`}
           element={<SnapSettingsRenderer />}
         />
-        <Route
-          path={SETTINGS_PATHS.ADVANCED}
-          element={<AdvancedTab />}
-        />
+        <Route path={SETTINGS_PATHS.ADVANCED} element={<AdvancedTab />} />
         <Route
           path={SETTINGS_PATHS.BACKUP_AND_SYNC}
           element={<BackupAndSyncTab />}
@@ -553,10 +550,7 @@ class SettingsPage extends PureComponent {
           path={SETTINGS_PATHS.CONTACT_LIST}
           element={<ContactListTab />}
         />
-        <Route
-          path={SETTINGS_PATHS.CONTACT_ADD}
-          element={<ContactListTab />}
-        />
+        <Route path={SETTINGS_PATHS.CONTACT_ADD} element={<ContactListTab />} />
         <Route
           path={`${SETTINGS_PATHS.CONTACT_EDIT}/:id`}
           element={<ContactListTab />}

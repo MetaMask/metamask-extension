@@ -153,9 +153,7 @@ export default class PermissionConnect extends Component {
   };
 
   componentDidMount() {
-    const {
-      getRequestAccountTabIds,
-    } = this.props;
+    const { getRequestAccountTabIds } = this.props;
     getRequestAccountTabIds();
   }
 

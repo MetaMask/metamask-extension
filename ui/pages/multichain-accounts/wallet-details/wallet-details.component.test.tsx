@@ -97,7 +97,9 @@ jest.mock('../../../selectors', () => ({
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getWalletsWithAccounts: jest.fn(),
   getAllAccountGroups: jest.fn(() => []),
-  getSelectedAccountGroup: jest.fn(() => 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'),
+  getSelectedAccountGroup: jest.fn(
+    () => 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  ),
 }));
 
 jest.mock('../../../ducks/metamask/metamask', () => ({

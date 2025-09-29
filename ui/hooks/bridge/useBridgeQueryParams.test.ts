@@ -394,7 +394,10 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -449,7 +452,10 @@ describe('useBridgeQueryParams', () => {
 
     await waitForNextUpdate();
 
-    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};
@@ -491,7 +497,10 @@ describe('useBridgeQueryParams', () => {
       '/?' + searchParams.toString(),
     );
 
-    expect(mockUseNavigate).toHaveBeenCalledWith({"search": ""}, {"replace": true});
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      { search: '' },
+      { replace: true },
+    );
     expect(store).toBeDefined();
     const { fromToken, toToken, toChainId, fromTokenInputValue } =
       store?.getState().bridge ?? {};

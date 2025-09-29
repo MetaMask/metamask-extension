@@ -3,13 +3,7 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-
 import CrossChainSwap from '../index';
-import { MemoryRouter } from 'react-router-dom-v5-compat';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import {
   formatChainIdToCaip,
@@ -25,11 +19,7 @@ const storybook = {
 
 const Wrapper = ({ children }) => (
   <div style={{ width: '400px', height: '600px' }}>
-    <MemoryRouter
-      initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-    >
-      {children}
-    </MemoryRouter>
+    {children}
   </div>
 );
 
