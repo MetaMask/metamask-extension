@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Bu bir beta sürümdür. Lütfen hataları bildirin $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
   },
@@ -4094,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Tümünü temizle"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Tümünü gizle"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Her bir sözcüğün arasına boşluk ekleyin ve hiç kimsenin izlemediğinden emin olun."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tümünü göster"
   },
   "onekey": {
     "message": "OneKey"
@@ -4712,9 +4703,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Genel adres (0x) veya alan adı gir"
-  },
-  "recommendedGasLabel": {
-    "message": "Önerilen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Şimdi yedekle"

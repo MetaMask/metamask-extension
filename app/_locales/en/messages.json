@@ -173,7 +173,7 @@
     "message": "Activity"
   },
   "activityEmptyDescription": {
-    "message": "Nothing to see yet. Check the explorer for more recent activity."
+    "message": "Nothing to see yet. Swap your first token today."
   },
   "activityLog": {
     "message": "Activity log"
@@ -803,9 +803,6 @@
   },
   "beta": {
     "message": "Beta"
-  },
-  "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -1634,7 +1631,7 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
+    "message": "Losing this password means losing wallet access on all devices, "
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
@@ -3996,6 +3993,9 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
   },
+  "noMMFeeSwapping": {
+    "message": "No MM fee swapping into $1."
+  },
   "noNetworksAvailable": {
     "message": "No networks available"
   },
@@ -4385,14 +4385,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Hide all"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
@@ -4474,7 +4468,7 @@
     "message": "Must be at least 8 characters"
   },
   "passwordTermsWarning": {
-    "message": "If I forget this password, MetaMask can’t reset it for me."
+    "message": "If I lose this password, MetaMask can’t reset it."
   },
   "passwordTermsWarningSocial": {
     "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
@@ -5071,9 +5065,6 @@
   },
   "recipientPlaceholder": {
     "message": "Enter or paste a valid address"
-  },
-  "recommendedGasLabel": {
-    "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Back up now"
@@ -5975,6 +5966,9 @@
   },
   "singleNetwork": {
     "message": "1 network"
+  },
+  "sites": {
+    "message": "Sites"
   },
   "siweIssued": {
     "message": "Issued"
@@ -7053,6 +7047,9 @@
     "message": "Confirmed by $1 sources. Verify on $2.",
     "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
   },
+  "swapTokens": {
+    "message": "Swap tokens"
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -7225,6 +7222,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokenTransfer": {
+    "message": "Token transfer"
   },
   "tokens": {
     "message": "Tokens"

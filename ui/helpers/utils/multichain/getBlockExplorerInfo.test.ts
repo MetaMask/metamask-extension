@@ -2,7 +2,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { getBlockExplorerInfo } from './getBlockExplorerInfo';
 
 describe('getBlockExplorerInfo utility functions', () => {
-  const mockT = (key: string, ...args: string[]) =>
+  const mockT = (key: string, args: string[]) =>
     `translated_${key}_${args.join('_')}`;
   const testAddress = '0x1234567890abcdef';
 
@@ -114,18 +114,18 @@ describe('getBlockExplorerInfo utility functions', () => {
 
   describe('Translation function integration', () => {
     it('formats translation keys correctly', () => {
-      const mockT2 = (key: string, ...args: string[]) =>
+      const mockT2 = (key: string, args: string[]) =>
         `translated_${key}_${args.join('_')}`;
 
-      const result = mockT2('viewAddressOnExplorer', 'Etherscan');
+      const result = mockT2('viewAddressOnExplorer', ['Etherscan']);
       expect(result).toBe('translated_viewAddressOnExplorer_Etherscan');
     });
 
     it('handles multiple translation arguments', () => {
-      const mockT3 = (key: string, ...args: string[]) =>
+      const mockT3 = (key: string, args: string[]) =>
         `translated_${key}_${args.join('_')}`;
 
-      const result = mockT3('viewAddressOnExplorer', 'PolygonScan');
+      const result = mockT3('viewAddressOnExplorer', ['PolygonScan']);
       expect(result).toBe('translated_viewAddressOnExplorer_PolygonScan');
     });
   });
