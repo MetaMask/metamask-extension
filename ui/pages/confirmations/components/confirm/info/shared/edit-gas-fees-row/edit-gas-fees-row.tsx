@@ -110,6 +110,7 @@ export const EditGasFeesRow = ({
           data-testid="gas-fee-token-fee"
           variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
+          marginBottom={1}
         >
           {gasFeeToken
             ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
