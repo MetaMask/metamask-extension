@@ -36,13 +36,23 @@ describe('useConfirmActions', () => {
     expect(result.resetTransactionState).toBeDefined();
   });
 
-  it('call navigateBackIfSend when onCancel is called', () => {
+  it('call navigateBackIfSend when onCancel is called, if navigateBackForSend is true', () => {
+    const mockNavigateBackIfSend = jest.fn();
+    jest
+      .spyOn(ConfirmSendNavigation, 'useConfirmSendNavigation')
+      .mockReturnValue({ navigateBackIfSend: mockNavigateBackIfSend });
+    const result = renderHook();
+    result.onCancel({ location: 'dummy', navigateBackForSend: true });
+    expect(mockNavigateBackIfSend).toHaveBeenCalled();
+  });
+
+  it('does not call navigateBackIfSend when onCancel is called by default', () => {
     const mockNavigateBackIfSend = jest.fn();
     jest
       .spyOn(ConfirmSendNavigation, 'useConfirmSendNavigation')
       .mockReturnValue({ navigateBackIfSend: mockNavigateBackIfSend });
     const result = renderHook();
     result.onCancel({ location: 'dummy' });
-    expect(mockNavigateBackIfSend).toHaveBeenCalled();
+    expect(mockNavigateBackIfSend).not.toHaveBeenCalled();
   });
 });

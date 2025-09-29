@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import {
+  formatChainIdToHex,
+  isSolanaChainId,
+} from '@metamask/bridge-controller';
 import { isSendBundleSupported } from '../../../store/actions';
 
 type Chain = {
@@ -29,9 +32,14 @@ export function useIsSendBundleSupported(
         return;
       }
 
+      if (isSolanaChainId(fromChain.chainId)) {
+        setIsSendBundleSupportedForChain(false);
+        return;
+      }
+
       try {
         const isSupported = await isSendBundleSupported(
-          fromChain.chainId as Hex,
+          formatChainIdToHex(fromChain.chainId),
         );
 
         if (!isCancelled) {

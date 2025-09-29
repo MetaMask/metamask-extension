@@ -223,4 +223,23 @@ describe('useSendQueryParams', () => {
     renderHook();
     expect(mockUpdateTo).not.toHaveBeenCalled();
   });
+
+  it('update hex data if it is present in the params', () => {
+    const mockUpdateHexData = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      updateHexData: mockUpdateHexData,
+      updateCurrentPage: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
+    const mockUseSearchParams = jest.mocked(useSearchParams);
+    mockUseSearchParams.mockReturnValue([
+      {
+        get: (param: string) => {
+          return param === 'hexData' ? '0x1' : undefined;
+        },
+      },
+    ] as unknown as [URLSearchParams, SetURLSearchParams]);
+    renderHook();
+    expect(mockUpdateHexData).toHaveBeenCalledWith('0x1');
+  });
 });

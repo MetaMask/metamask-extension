@@ -35,6 +35,7 @@ export type MultichainAddressRowsListProps = {
   onQrClick: (
     address: string,
     networkName: string,
+    chainId: CaipChainId,
     networkImageSrc?: string,
   ) => void;
 };
@@ -127,6 +128,7 @@ export const MultichainAddressRowsList = ({
         clearButtonOnClick={handleClearSearch}
         width={BlockSize.Full}
         borderWidth={0}
+        marginBottom={2}
         backgroundColor={BackgroundColor.backgroundMuted}
         borderRadius={BorderRadius.LG}
         data-testid="multichain-address-rows-list-search"

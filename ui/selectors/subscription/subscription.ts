@@ -1,5 +1,6 @@
 import {
   PricingResponse,
+  ProductType,
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
@@ -14,6 +15,14 @@ export function getSubscriptionPricing(
   return state.metamask.pricing;
 }
 
-export function getUserSubscriptions(state: BackupState): Subscription[] {
-  return state.metamask.subscriptions;
+export function getUserSubscriptions(state: BackupState): {
+  customerId?: string;
+  subscriptions: Subscription[];
+  trialedProducts: ProductType[];
+} {
+  return {
+    customerId: state.metamask.customerId,
+    subscriptions: state.metamask.subscriptions,
+    trialedProducts: state.metamask.trialedProducts,
+  };
 }

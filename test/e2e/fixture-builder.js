@@ -47,6 +47,7 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        hasShownMultichainAccountsIntroModal: true,
       },
       NetworkController: {
         ...mockNetworkStateOld({
@@ -59,7 +60,8 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
-      NetworkOrderController: {
+      NetworkOrderController: {},
+      NetworkEnablementController: {
         enabledNetworkMap: {
           eip155: {
             [CHAIN_IDS.LOCALHOST]: true,
@@ -214,7 +216,7 @@ class FixtureBuilder {
       networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
     });
     // Replace instead of merge for enabledNetworkMap
-    this.fixture.data.NetworkOrderController.enabledNetworkMap = data;
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap = data;
     return this;
   }
 
@@ -2088,17 +2090,15 @@ class FixtureBuilder {
 
   withBackupAndSyncSettings(options = {}) {
     const {
-      isProfileSyncingEnabled = true,
+      isBackupAndSyncEnabled = true,
       isAccountSyncingEnabled = true,
-      isProfileSyncingUpdateLoading = false,
-      isAccountSyncingUpdateLoading = false,
+      isBackupAndSyncUpdateLoading = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
-      isProfileSyncingEnabled,
+      isBackupAndSyncEnabled,
       isAccountSyncingEnabled,
-      isProfileSyncingUpdateLoading,
-      isAccountSyncingUpdateLoading,
+      isBackupAndSyncUpdateLoading,
     });
     return this;
   }
