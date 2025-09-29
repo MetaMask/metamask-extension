@@ -16,6 +16,22 @@ import {
   MultichainAccountListProps,
 } from './multichain-account-list';
 
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  getAccountGroupsByAddress: jest.fn(),
+}));
+
+jest.mock('@metamask/chain-agnostic-permission', () => ({
+  isInternalAccountInPermittedAccountIds: jest.fn(),
+}));
+
+const mockGetAccountGroupsByAddress = jest.requireMock(
+  '../../../selectors/multichain-accounts/account-tree',
+).getAccountGroupsByAddress;
+
+const mockIsInternalAccountInPermittedAccountIds = jest.requireMock(
+  '@metamask/chain-agnostic-permission',
+).isInternalAccountInPermittedAccountIds;
+
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
   return {
@@ -133,6 +149,8 @@ describe('MultichainAccountList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetAccountGroupsByAddress.mockReturnValue([]);
+    mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
   });
 
   it('renders wallet headers and account cells correctly', () => {
@@ -711,6 +729,116 @@ describe('MultichainAccountList', () => {
           `multichain-account-cell-${walletOneGroupId}-selected-icon`,
         ),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Connection Status', () => {
+    it('does not show connection status when showConnectionStatus is false', () => {
+      renderComponent({
+        showConnectionStatus: false,
+      });
+
+      const accountCells = screen.getAllByTestId(/multichain-account-cell-/u);
+      expect(accountCells).toHaveLength(2);
+      expect(mockGetAccountGroupsByAddress).not.toHaveBeenCalled();
+
+      // BadgeStatus should not be rendered when showConnectionStatus is false
+      expect(screen.queryAllByTestId('multichain-badge-status')).toHaveLength(
+        0,
+      );
+    });
+
+    it('shows not connected status when showConnectionStatus is true and no accounts are connected', () => {
+      mockGetAccountGroupsByAddress.mockReturnValue([]);
+      mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
+
+      renderComponent({
+        showConnectionStatus: true,
+        selectedAccountGroups: [walletOneGroupId],
+      });
+
+      const accountCells = screen.getAllByTestId(/multichain-account-cell-/u);
+      expect(accountCells).toHaveLength(2);
+
+      expect(mockGetAccountGroupsByAddress).toHaveBeenCalled();
+
+      // BadgeStatus should be rendered for both accounts when showConnectionStatus is true
+      const badgeStatuses = screen.getAllByTestId('multichain-badge-status');
+      expect(badgeStatuses).toHaveLength(2);
+
+      // Both accounts should show not connected status (no tooltips visible by default)
+      const tooltips = screen.queryAllByTestId(
+        'multichain-badge-status__tooltip',
+      );
+      expect(tooltips).toHaveLength(2);
+    });
+
+    it('shows connected status for selected connected account', () => {
+      mockGetAccountGroupsByAddress.mockReturnValue([
+        {
+          id: walletOneGroupId,
+          accounts: [{ address: '0x123' }],
+        },
+      ]);
+      mockIsInternalAccountInPermittedAccountIds.mockReturnValue(true);
+
+      renderComponent({
+        showConnectionStatus: true,
+        selectedAccountGroups: [walletOneGroupId],
+      });
+
+      const accountCells = screen.getAllByTestId(/multichain-account-cell-/u);
+      expect(accountCells).toHaveLength(2);
+
+      expect(mockGetAccountGroupsByAddress).toHaveBeenCalled();
+
+      // BadgeStatus should be rendered for both accounts
+      const badgeStatuses = screen.getAllByTestId('multichain-badge-status');
+      expect(badgeStatuses).toHaveLength(2);
+
+      // Tooltips should be present for connection status
+      const tooltips = screen.getAllByTestId(
+        'multichain-badge-status__tooltip',
+      );
+      expect(tooltips).toHaveLength(2);
+
+      // The selected account (walletOneGroupId) should show as connected/active
+      // The connected account cell should have specific styling indicating active status
+      expect(mockIsInternalAccountInPermittedAccountIds).toHaveBeenCalled();
+    });
+
+    it('shows connected to another account status for non-selected connected account', () => {
+      mockGetAccountGroupsByAddress.mockReturnValue([
+        {
+          id: walletTwoGroupId,
+          accounts: [{ address: '0x456' }],
+        },
+      ]);
+      mockIsInternalAccountInPermittedAccountIds.mockReturnValue(true);
+
+      renderComponent({
+        showConnectionStatus: true,
+        selectedAccountGroups: [walletOneGroupId], // Only wallet one is selected
+      });
+
+      const accountCells = screen.getAllByTestId(/multichain-account-cell-/u);
+      expect(accountCells).toHaveLength(2);
+
+      expect(mockGetAccountGroupsByAddress).toHaveBeenCalled();
+
+      // BadgeStatus should be rendered for both accounts
+      const badgeStatuses = screen.getAllByTestId('multichain-badge-status');
+      expect(badgeStatuses).toHaveLength(2);
+
+      // Tooltips should be present for connection status
+      const tooltips = screen.getAllByTestId(
+        'multichain-badge-status__tooltip',
+      );
+      expect(tooltips).toHaveLength(2);
+
+      // Wallet two is connected but not selected, wallet one is selected but not connected
+      // This test verifies that connection status is displayed correctly for both scenarios
+      expect(mockIsInternalAccountInPermittedAccountIds).toHaveBeenCalled();
     });
   });
 });

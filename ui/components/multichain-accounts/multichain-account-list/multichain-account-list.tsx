@@ -7,6 +7,7 @@ import {
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { parseCaipAccountId } from '@metamask/utils';
 import { Box, Checkbox, Text } from '../../component-library';
 
 import {
@@ -17,7 +18,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MultichainAccountCell } from '../multichain-account-cell';
-import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
+import {
+  AccountTreeWallets,
+  MultichainAccountsState,
+} from '../../../selectors/multichain-accounts/account-tree.types';
 import { setSelectedMultichainAccount } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -30,6 +34,7 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import {
+  getAllPermittedAccountsForCurrentTab,
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
 } from '../../../selectors';
@@ -37,6 +42,12 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  STATUS_CONNECTED,
+  STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+  STATUS_NOT_CONNECTED,
+} from '../../../helpers/constants/connected-sites';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -50,6 +61,7 @@ export type MultichainAccountListProps = {
   isInSearchMode?: boolean;
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
+  showConnectionStatus?: boolean;
 };
 
 export const MultichainAccountList = ({
@@ -60,6 +72,7 @@ export const MultichainAccountList = ({
   isInSearchMode = false,
   displayWalletHeader = true,
   showAccountCheckbox = false,
+  showConnectionStatus = false,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -76,6 +89,16 @@ export const MultichainAccountList = ({
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
+
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const connectedAccountGroups = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(
+      state,
+      permittedAccounts.map(
+        (caipAccoundId) => parseCaipAccountId(caipAccoundId).address,
+      ),
+    ),
+  );
 
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
@@ -170,6 +193,19 @@ export const MultichainAccountList = ({
             // TODO: Implement logic for removable accounts
             const isRemovable = false;
 
+            const isConnectedAccount = connectedAccountGroups.find(
+              (accountGroup) => accountGroup.id === groupId,
+            );
+
+            let connectedStatus = STATUS_NOT_CONNECTED;
+            if (showConnectionStatus && isConnectedAccount) {
+              connectedStatus = selectedAccountGroupsSet.has(
+                groupId as AccountGroupId,
+              )
+                ? STATUS_CONNECTED
+                : STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
+            }
+
             return [
               <Box
                 className="multichain-account-menu-popover__list--menu-item"
@@ -183,6 +219,13 @@ export const MultichainAccountList = ({
                     groupId as AccountGroupId,
                   )}
                   onClick={handleAccountClickToUse}
+                  connectionStatus={
+                    connectedStatus as
+                      | typeof STATUS_NOT_CONNECTED
+                      | typeof STATUS_CONNECTED
+                      | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
+                      | undefined
+                  }
                   startAccessory={
                     showAccountCheckbox ? (
                       <Box marginRight={4}>
@@ -247,6 +290,8 @@ export const MultichainAccountList = ({
     handleAccountRenameAction,
     handleMenuToggle,
     openMenuAccountId,
+    showConnectionStatus,
+    connectedAccountGroups,
   ]);
 
   return (
