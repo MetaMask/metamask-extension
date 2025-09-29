@@ -4422,7 +4422,7 @@ export default class MetamaskController extends EventEmitter {
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
-      this.accountsController.updateAccounts();
+      await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
       this.accountTreeController.init();
 
