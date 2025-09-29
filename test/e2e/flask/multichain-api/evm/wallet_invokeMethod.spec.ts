@@ -24,6 +24,7 @@ import {
   type FixtureCallbackArgs,
   addAccountInWalletAndAuthorize,
 } from '../testHelpers';
+import LoginPage from '../../../page-objects/pages/login-page';
 
 describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
@@ -31,6 +32,55 @@ describe('Multichain API', function () {
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
     DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
+
+  describe('Calling `wallet_invokeMethod` with permissions granted from EIP-1193 provider', function () {
+    it('should allow the request to be made', async function () {
+      await withFixtures(
+        {
+          title: this.test?.fullTitle(),
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerTripleNode()
+            .build(),
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        },
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
+          await loginWithBalanceValidation(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+
+          const requestAccountRequest: string = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_requestAccounts',
+          });
+
+          driver.executeScript(
+            `return window.ethereum.request(${requestAccountRequest})`,
+          );
+
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
+
+          await testDapp.connectExternallyConnectable(extensionId);
+          await testDapp.invokeMethodAndCheckResult({
+            scope: 'eip155:1337',
+            method: 'eth_getBalance',
+            expectedResult: DEFAULT_INITIAL_BALANCE_HEX,
+          });
+        },
+      );
+    });
+  });
 
   describe('Calling `wallet_invokeMethod` on the same dapp across three different connected chains', function () {
     describe('Read operations: calling different methods on each connected scope', function () {
