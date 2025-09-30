@@ -446,6 +446,9 @@
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
   "alertMessageAddressTrustSignal": {
+    "message": "We can't verify this address. It may be new or unverified. Continue only if you trust the source."
+  },
+  "alertMessageAddressTrustSignalMalicious": {
     "message": "If you confirm this request, you will probably lose your assets to a scammer."
   },
   "alertMessageChangeInSimulationResults": {
@@ -480,6 +483,12 @@
   },
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
+  },
+  "alertMessageTokenTrustSignalMalicious": {
+    "message": "This token has been identified as malicious. We recommend not interacting with this token."
+  },
+  "alertMessageTokenTrustSignalWarning": {
+    "message": "This token has been identified as suspicious. Proceed with caution."
   },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
@@ -528,6 +537,12 @@
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
+  },
+  "alertReasonTokenTrustSignalMalicious": {
+    "message": "Malicious token"
+  },
+  "alertReasonTokenTrustSignalWarning": {
+    "message": "Suspicious token"
   },
   "alertReasonWrongAccount": {
     "message": "Wrong account"
