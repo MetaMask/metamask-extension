@@ -1,12 +1,6 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import {
-  WINDOW_TITLES,
-  withFixtures,
-  ACCOUNT_1,
-  ACCOUNT_2,
-} from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { WINDOW_TITLES, ACCOUNT_1, ACCOUNT_2 } from '../../../helpers';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';

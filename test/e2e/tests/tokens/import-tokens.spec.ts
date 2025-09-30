@@ -1,8 +1,5 @@
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
-
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';

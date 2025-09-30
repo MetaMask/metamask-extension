@@ -4,11 +4,9 @@ import {
   convertToHexValue,
   TEST_SEED_PHRASE,
   WALLET_PASSWORD,
-  withFixtures,
   unlockWallet,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';

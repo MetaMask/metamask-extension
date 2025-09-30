@@ -1,13 +1,7 @@
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import {
-  DAPP_URL,
-  withFixtures,
-  WINDOW_TITLES,
-  veryLargeDelayMs,
-} from '../helpers';
+import { DAPP_URL, WINDOW_TITLES, veryLargeDelayMs } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import ContractAddressRegistry from '../seeder/contract-address-registry';

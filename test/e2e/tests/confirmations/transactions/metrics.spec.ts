@@ -15,8 +15,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { assertAdvancedGasDetails } from './shared';
 
-const { withFixtures, getEventPayloads } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const { getEventPayloads } = require('../../../helpers');
 
 describe('Metrics', function () {
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {

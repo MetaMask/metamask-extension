@@ -1,12 +1,6 @@
 import { strict as assert } from 'assert';
-import {
-  ACCOUNT_1,
-  ACCOUNT_2,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
+import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import FixtureBuilder from '../../../fixture-builder';
 import { DAPP_HOST_ADDRESS } from '../../../constants';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';

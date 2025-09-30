@@ -1,8 +1,7 @@
 import { strict as assert } from 'assert';
 import { promises as fs } from 'fs';
-import { createDownloadFolder, withFixtures } from '../../helpers';
+import { createDownloadFolder } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';

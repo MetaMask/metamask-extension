@@ -1,8 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures, getCleanAppState, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { getCleanAppState, unlockWallet } from '../../../helpers';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,

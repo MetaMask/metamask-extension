@@ -1,6 +1,5 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { unlockWallet } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';

@@ -4,9 +4,7 @@ import {
   getGlobalProperties,
   testIntrinsic,
 } from '../../../helpers/protect-intrinsics-helpers';
-import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;

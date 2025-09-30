@@ -1,7 +1,5 @@
 import { MockttpServer } from 'mockttp';
-import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
-import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

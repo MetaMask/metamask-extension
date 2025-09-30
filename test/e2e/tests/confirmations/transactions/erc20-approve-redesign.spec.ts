@@ -11,8 +11,6 @@ import {
   toggleAdvancedDetails,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Approve Component', function () {

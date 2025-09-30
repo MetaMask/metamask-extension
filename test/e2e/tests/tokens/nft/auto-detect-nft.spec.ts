@@ -1,5 +1,3 @@
-import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';

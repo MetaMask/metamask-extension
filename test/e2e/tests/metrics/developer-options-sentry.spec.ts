@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { withFixtures, sentryRegEx } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { sentryRegEx } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';

@@ -2,8 +2,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../helpers';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 describe('Request Queuing - Extension and Dapp on different networks.', function () {

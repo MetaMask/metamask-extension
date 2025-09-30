@@ -1,10 +1,9 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
-import { PRIVATE_KEY_TWO, withFixtures, WINDOW_TITLES } from '../../helpers';
+import { PRIVATE_KEY_TWO, WINDOW_TITLES } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

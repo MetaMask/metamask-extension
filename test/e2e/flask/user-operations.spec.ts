@@ -1,10 +1,4 @@
-import {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-} from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { unlockWallet, WINDOW_TITLES, convertETHToHexGwei } from '../helpers';
 import {
   BUNDLER_URL,
   DAPP_URL,

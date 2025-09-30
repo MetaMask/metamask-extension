@@ -1,5 +1,4 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../helpers';
 import {
   ACCOUNT_TYPE,
   DEFAULT_FIXTURE_ACCOUNT,

@@ -1,8 +1,7 @@
 import { expect } from '@playwright/test';
-import { getEventPayloads, withFixtures } from '../../helpers';
+import { getEventPayloads } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

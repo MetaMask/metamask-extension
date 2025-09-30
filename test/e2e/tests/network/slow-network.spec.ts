@@ -1,8 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { NetworkStatus } from '@metamask/network-controller';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import LoginPage from '../../page-objects/pages/login-page';
 
 describe('Slow network', function (this: Suite) {

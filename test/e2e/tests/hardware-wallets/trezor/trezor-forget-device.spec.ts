@@ -1,6 +1,4 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../../fixture-builder';
-import { withFixtures } from '../../../helpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 

@@ -4,12 +4,7 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../../fixture-builder');
-const {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../../../helpers');
+const { unlockWallet, WINDOW_TITLES } = require('../../../helpers');
 
 describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas (lower than 21000)', async function () {
