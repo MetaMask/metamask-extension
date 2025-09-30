@@ -35,6 +35,7 @@ import {
   addNetwork,
   setActiveNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -76,7 +77,6 @@ import {
   getTokenNetworkFilter,
 } from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -309,7 +309,7 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
-            await dispatch(enableSingleNetwork(existingNetwork.chainId));
+            await dispatch(setEnabledNetworks(existingNetwork.chainId));
           }
         } else {
           const addedNetworkConfiguration = (await dispatch(
@@ -322,7 +322,7 @@ export const NetworksForm = ({
             ]?.networkClientId;
 
           await dispatch(setActiveNetwork(networkClientId));
-          await dispatch(enableSingleNetwork(networkPayload.chainId));
+          await dispatch(setEnabledNetworks(networkPayload.chainId));
         }
 
         trackEvent({

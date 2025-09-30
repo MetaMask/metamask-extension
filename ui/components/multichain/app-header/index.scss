@@ -109,4 +109,9 @@
 
 .networks-subtitle {
   cursor: pointer;
+  border-radius: 6px;
+}
+
+.networks-subtitle:hover {
+  background-color: var(--color-background-default-hover);
 }

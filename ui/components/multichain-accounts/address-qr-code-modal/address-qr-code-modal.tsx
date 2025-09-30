@@ -94,7 +94,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
 
   // Get block explorer info from network configuration
   const explorerInfo = getBlockExplorerInfo(
-    t as (key: string, ...args: string[]) => string,
+    t as (key: string, args: string[]) => string,
     address,
     { networkName, chainId },
   );

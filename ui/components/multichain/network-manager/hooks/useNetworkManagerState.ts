@@ -110,8 +110,8 @@ export const useNetworkManagerState = ({
       return 'networks';
     }
 
-    const isCustomNetworkEnabled = FEATURED_NETWORK_CHAIN_IDS.some((chainId) =>
-      Object.keys(enabledNetworksByNamespace).includes(chainId),
+    const isCustomNetworkEnabled = FEATURED_NETWORK_CHAIN_IDS.some(
+      (networkChainId) => enabledNetworksByNamespace[networkChainId] === true,
     );
 
     return isCustomNetworkEnabled ? 'networks' : 'custom-networks';

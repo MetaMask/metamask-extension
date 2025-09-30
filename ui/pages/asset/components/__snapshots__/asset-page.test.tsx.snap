@@ -437,7 +437,7 @@ exports[`AssetPage should render a native asset 1`] = `
               </button>
             </div>
             <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-64 mx-auto mt-5 mb-6"
+              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
               data-testid="activity-tab-empty-state"
             >
               <img
@@ -449,8 +449,21 @@ exports[`AssetPage should render a native asset 1`] = `
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
               >
-                Nothing to see yet. Check the explorer for more recent activity.
+                Nothing to see yet. Swap your first token today.
               </p>
+              <button
+                aria-disabled="true"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 bg-muted text-default focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
+                disabled=""
+                role="button"
+                tabindex="-1"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Swap tokens
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -923,7 +936,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               </button>
             </div>
             <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-64 mx-auto mt-5 mb-6"
+              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
               data-testid="activity-tab-empty-state"
             >
               <img
@@ -935,8 +948,21 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
               >
-                Nothing to see yet. Check the explorer for more recent activity.
+                Nothing to see yet. Swap your first token today.
               </p>
+              <button
+                aria-disabled="true"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 bg-muted text-default focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
+                disabled=""
+                role="button"
+                tabindex="-1"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Swap tokens
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -1438,7 +1464,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               </button>
             </div>
             <div
-              class="flex flex-col gap-3 items-center justify-center bg-default max-w-64 mx-auto mt-5 mb-6"
+              class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
               data-testid="activity-tab-empty-state"
             >
               <img
@@ -1450,8 +1476,21 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
               >
-                Nothing to see yet. Check the explorer for more recent activity.
+                Nothing to see yet. Swap your first token today.
               </p>
+              <button
+                aria-disabled="true"
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 bg-muted text-default focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
+                disabled=""
+                role="button"
+                tabindex="-1"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Swap tokens
+                </span>
+              </button>
             </div>
           </div>
         </div>

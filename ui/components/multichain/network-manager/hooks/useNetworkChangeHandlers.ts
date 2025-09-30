@@ -12,6 +12,7 @@ import {
 import {
   detectNfts,
   setActiveNetwork,
+  setEnabledNetworks,
   setNextNonce,
   updateCustomNonce,
 } from '../../../../store/actions';
@@ -22,7 +23,6 @@ import {
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -93,7 +93,7 @@ export const useNetworkChangeHandlers = () => {
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      dispatch(enableSingleNetwork(hexChainId));
+      dispatch(setEnabledNetworks(hexChainId));
 
       // deferring execution to keep select all unblocked
       setTimeout(() => {
@@ -106,7 +106,7 @@ export const useNetworkChangeHandlers = () => {
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
       dispatch(setActiveNetwork(chainId));
-      dispatch(enableSingleNetwork(chainId));
+      dispatch(setEnabledNetworks(chainId));
     },
     [dispatch],
   );

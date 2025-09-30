@@ -173,6 +173,11 @@ describe('MultichainReviewPermissions', () => {
         existingConnectedCaipAccountIds: [
           expectedCaipAccountIds[0] as CaipAccountId, // First account from first group
         ],
+        connectedAccountGroupWithRequested: [mockAccountGroups[0]],
+        caipAccountIdsOfConnectedAndRequestedAccountGroups: [
+          expectedCaipAccountIds[0] as CaipAccountId,
+        ],
+        selectedAndRequestedAccountGroups: mockAccountGroups,
       });
     });
 

@@ -90,6 +90,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
+      },
+      NetworkEnablementController: {
         enabledNetworkMap: {
           eip155: {
             [inputChainId]: true,

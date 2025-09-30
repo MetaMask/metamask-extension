@@ -725,9 +725,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Ito ay isang beta version. I-ulat ang mga bug $1"
-  },
   "betaMetamaskVersion": {
     "message": "Bersyon ng MetaMask Beta"
   },
@@ -4094,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "I-clear lahat"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Itago lahat"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Magdagdag ng espasyo sa bawat salita at tiyakin na walang nanonood."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Ipakita lahat"
   },
   "onekey": {
     "message": "OneKey"
@@ -4712,9 +4703,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Ilagay ang pampublikong address (0x) o pangalan ng domain"
-  },
-  "recommendedGasLabel": {
-    "message": "Nirekomenda"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "I-back up ngayon"

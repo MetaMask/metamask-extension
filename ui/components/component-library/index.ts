@@ -1,10 +1,3 @@
-export {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  AvatarAccountDiameter,
-} from './avatar-account';
-export type { AvatarAccountProps } from './avatar-account';
 export { AvatarFavicon, AvatarFaviconSize } from './avatar-favicon';
 export type { AvatarFaviconProps } from './avatar-favicon';
 export { AvatarIcon, AvatarIconSize } from './avatar-icon';

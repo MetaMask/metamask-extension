@@ -156,6 +156,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
+          .withEnabledNetworks({
+            eip155: {
+              '0x53a': true,
+            },
+          })
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },

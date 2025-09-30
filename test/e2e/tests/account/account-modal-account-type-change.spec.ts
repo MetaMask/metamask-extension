@@ -12,20 +12,6 @@ import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockEip7702FeatureFlag } from '../confirmations/helpers';
 
-// Function is needed to increase the gas limit for upgrade account confirmation
-// There is apparently an issue with Anvil network that prevents correct estimation of gas limit for upgrade.
-const increaseGasLimit = async (driver: Driver) => {
-  await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-  await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
-
-  await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
-  await driver.fill('[data-testid="gas-limit-input"]', '50000');
-
-  // Submit gas fee changes
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-  await driver.clickElement({ text: 'Advanced' });
-};
-
 describe('Switch Modal - Switch Account', function (this: Suite) {
   it('Account modal should have options to upgrade / downgrade the account', async function () {
     await withFixtures(
@@ -62,7 +48,9 @@ describe('Switch Modal - Switch Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',
         );
-        await increaseGasLimit(driver);
+
+        // There is apparently an issue with Anvil network that prevents correct estimation of gas limit for upgrade.
+        await upgradeAndBatchTxConfirmation.editGasLimitLondon('50000');
         await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(

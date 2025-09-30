@@ -1,8 +1,11 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { UpdateNetworkFields } from '@metamask/network-controller';
-import { hideModal, addNetwork } from '../../../../store/actions';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
+import {
+  hideModal,
+  setEnabledNetworks,
+  addNetwork,
+} from '../../../../store/actions';
 
 export const useAdditionalNetworkHandlers = () => {
   const dispatch = useDispatch();
@@ -16,7 +19,7 @@ export const useAdditionalNetworkHandlers = () => {
       await dispatch(addNetwork(network));
 
       // Then enable it in the network list
-      await dispatch(enableSingleNetwork(network.chainId));
+      await dispatch(setEnabledNetworks(network.chainId));
     },
     [dispatch],
   );

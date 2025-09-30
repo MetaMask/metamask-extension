@@ -725,9 +725,6 @@
   "beta": {
     "message": "Bêta"
   },
-  "betaHeaderText": {
-    "message": "Il s’agit d’une version bêta. Veuillez signaler les bogues $1"
-  },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
   },
@@ -4094,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Tout effacer"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Tout masquer"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Ajoutez un espace entre chaque mot et assurez-vous que personne ne regarde."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Afficher tout"
   },
   "onekey": {
     "message": "OneKey"
@@ -4712,9 +4703,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Saisissez l’adresse publique (0x) ou le nom de domaine"
-  },
-  "recommendedGasLabel": {
-    "message": "Recommandé"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sauvegarder maintenant"

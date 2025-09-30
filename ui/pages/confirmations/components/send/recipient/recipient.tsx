@@ -159,7 +159,7 @@ export const Recipient = () => {
             <Box alignItems={AlignItems.center} display={Display.Flex}>
               <PreferredAvatar
                 address={matchingRecipient.address}
-                size={AvatarAccountSize.Sm}
+                size={AvatarAccountSize.Xs}
               />
             </Box>
           ) : null
@@ -172,6 +172,7 @@ export const Recipient = () => {
         value={localValue}
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
+        paddingRight={3}
       />
       {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
@@ -213,7 +214,7 @@ export const Recipient = () => {
           >
             {t('selectRecipient')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody paddingRight={0} paddingLeft={0}>
             <RecipientList
               hideModal={closeRecipientModal}
               onToChange={onRecipientSelectedFromModal}

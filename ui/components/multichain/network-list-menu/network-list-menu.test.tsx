@@ -25,11 +25,9 @@ const mockUpdateCustomNonce = jest.fn();
 const mockSetNextNonce = jest.fn();
 const mockSetTokenNetworkFilter = jest.fn();
 const mockDetectNfts = jest.fn();
-const mockEnableAllPopularNetworks = jest.fn();
-const mockEnableSingleNetwork = jest.fn();
-const mockSetEnabledNetworksMultichain = jest.fn();
 const mockAddPermittedChain = jest.fn();
 const mockShowPermittedNetworkToast = jest.fn();
+const mockSetEnabledNetworks = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => {
@@ -72,20 +70,9 @@ jest.mock('../../../store/actions.ts', () => ({
     mockShowPermittedNetworkToast();
     return { type: 'MOCK_SHOW_PERMITTED_NETWORK_TOAST' };
   },
-}));
-
-jest.mock('../../../store/controller-actions/network-order-controller', () => ({
-  enableAllPopularNetworks: () => {
-    mockEnableAllPopularNetworks();
-    return { type: 'ENABLE_ALL_POPULAR_NETWORKS' };
-  },
-  enableSingleNetwork: () => {
-    mockEnableSingleNetwork();
-    return { type: 'ENABLE_SINGLE_NETWORKS' };
-  },
-  setEnabledNetworksMultichain: () => {
-    mockSetEnabledNetworksMultichain();
-    return { type: 'SET_ENABLED_NETWORKS_MULTICHAIN' };
+  setEnabledNetworks: () => {
+    mockSetEnabledNetworks();
+    return { type: 'SET_ENABLED_NETWORKS' };
   },
 }));
 

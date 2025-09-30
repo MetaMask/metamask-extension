@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -38,12 +39,7 @@ import {
   addPermittedAccount,
   hidePermittedNetworkToast,
 } from '../../../store/actions';
-import {
-  AvatarAccountSize,
-  AvatarNetwork,
-  Icon,
-  IconName,
-} from '../../component-library';
+import { AvatarNetwork, Icon, IconName } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';

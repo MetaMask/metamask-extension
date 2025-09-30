@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
-import type { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
+import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type {
   GetCurrencyRateState,
   MultichainAssetsRatesControllerGetStateAction,
@@ -15,7 +15,7 @@ import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 
 type AllowedActions =
-  | AccountsControllerGetSelectedMultichainAccountAction
+  | AccountsControllerGetAccountByAddressAction
   | GetCurrencyRateState
   | TokenRatesControllerGetStateAction
   | MultichainAssetsRatesControllerGetStateAction
@@ -42,7 +42,7 @@ export function getBridgeControllerMessenger(
   return messenger.getRestricted({
     name: 'BridgeController',
     allowedActions: [
-      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:getAccountByAddress',
       'SnapController:handleRequest',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',

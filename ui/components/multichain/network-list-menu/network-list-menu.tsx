@@ -71,7 +71,6 @@ import {
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
-  getEnabledNetworksByNamespace,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -114,10 +113,6 @@ import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import {
-  enableAllPopularNetworks,
-  enableSingleNetwork,
-} from '../../../store/controller-actions/network-order-controller';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -163,7 +158,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -388,11 +382,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         dispatch(setTokenNetworkFilter(allOpts));
       }
 
-      if (Object.keys(enabledNetworksByNamespace).length === 1) {
-        dispatch(enableSingleNetwork(hexChainId));
-      } else {
-        dispatch(enableAllPopularNetworks());
-      }
+      dispatch(setEnabledNetworks(hexChainId));
     } finally {
       dispatch(toggleNetworkMenu());
     }
@@ -403,10 +393,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       dispatch(toggleNetworkMenu());
       dispatch(setActiveNetwork(chainId));
 
-      const { namespace } = parseCaipChainId(chainId);
-      const current = Object.keys(enabledNetworksByNamespace);
-      const next = Array.from(new Set([...current, chainId]));
-      dispatch(setEnabledNetworks(next, namespace as KnownCaipNamespace));
+      dispatch(setEnabledNetworks(chainId));
 
       return;
     }

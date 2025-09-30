@@ -3,7 +3,7 @@
 exports[`SmartContractAccountToggle Basic Rendering shows toggle as OFF for unsupported networks 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+    class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
   >
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -58,7 +58,7 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as OFF for unsu
 exports[`SmartContractAccountToggle Basic Rendering shows toggle as enabled for supported networks 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+    class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
   >
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -113,7 +113,7 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as enabled for 
 exports[`SmartContractAccountToggle Disabled State disables toggle during pending requests 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--justify-content-space-between"
+    class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--justify-content-space-between"
   >
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"

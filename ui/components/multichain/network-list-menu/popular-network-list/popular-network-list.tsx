@@ -18,7 +18,11 @@ import {
   PopoverPosition,
 } from '../../../component-library';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
-import { toggleNetworkMenu, addNetwork } from '../../../../store/actions';
+import {
+  setEnabledNetworks,
+  toggleNetworkMenu,
+  addNetwork,
+} from '../../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -34,7 +38,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -188,7 +191,7 @@ const PopularNetworkList = ({
                   await dispatch(addNetwork(network));
 
                   // Then enable it in the network list
-                  await dispatch(enableSingleNetwork(network.chainId));
+                  await dispatch(setEnabledNetworks(network.chainId));
                 }}
               >
                 {t('add')}

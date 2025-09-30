@@ -83,7 +83,7 @@ export const MultichainAccountAddressListPage = () => {
     <Page className="max-w-[600px]">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -97,7 +97,7 @@ export const MultichainAccountAddressListPage = () => {
       >
         {pageTitle}
       </Header>
-      <Content>
+      <Content padding={0}>
         <Box flexDirection={BoxFlexDirection.Column}>
           {decodedAccountGroupId ? (
             <MultichainAddressRowsList

@@ -14,7 +14,7 @@ import { Text } from '../text';
 
 import { PopoverHeader } from './popover-header';
 import README from './README.mdx';
-import { AvatarAccount } from '../avatar-account';
+import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
 
 export default {

@@ -143,6 +143,13 @@ const ShieldPlan = () => {
     return availableTokenBalances[0];
   });
 
+  // set selected token to the first available token if no token is selected
+  useEffect(() => {
+    if (!selectedToken) {
+      setSelectedToken(availableTokenBalances[0]);
+    }
+  }, [availableTokenBalances, selectedToken, setSelectedToken]);
+
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -416,7 +423,7 @@ const ShieldPlan = () => {
             <ShieldPaymentModal
               isOpen={showPaymentModal}
               onClose={() => setShowPaymentModal(false)}
-              selectedToken={selectedToken ?? undefined}
+              selectedToken={selectedToken}
               selectedPaymentMethod={selectedPaymentMethod}
               hasStableTokenWithBalance={hasAvailableToken}
               setSelectedPaymentMethod={setSelectedPaymentMethod}

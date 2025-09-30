@@ -35,6 +35,7 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
@@ -149,6 +150,7 @@ import {
   getNetworkControllerInitMessenger,
   getNetworkControllerMessenger,
 } from './network-controller-messenger';
+import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -462,6 +464,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSubscriptionControllerMessenger,
     getInitMessenger: getSubscriptionControllerInitMessenger,
   },
+  SubscriptionService: {
+    getMessenger: getSubscriptionServiceMessenger,
+    getInitMessenger: noop,
+  },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,
     getInitMessenger: getSwapsControllerInitMessenger,
@@ -532,6 +538,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkEnablementController: {
+    getMessenger: getNetworkEnablementControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

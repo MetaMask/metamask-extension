@@ -31,7 +31,7 @@ describe('MultichainAccountCell', () => {
 
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
   });
@@ -44,19 +44,9 @@ describe('MultichainAccountCell', () => {
 
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
-
-    const selectedAvatarContainer = document.querySelector(
-      '.multichain-account-cell__account-avatar',
-    );
-    expect(selectedAvatarContainer).toHaveClass(
-      'mm-box--border-color-primary-default',
-    );
-    expect(selectedAvatarContainer).not.toHaveClass(
-      'mm-box--border-color-transparent',
-    );
   });
 
   it('handles click events and applies pointer cursor when onClick is provided', () => {
@@ -120,14 +110,9 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
-
-    const avatarContainer = document.querySelector(
-      '.multichain-account-cell__account-avatar',
-    );
-    expect(avatarContainer).toHaveClass('mm-box--border-color-primary-default');
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
@@ -155,7 +140,7 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByText('Start')).toBeInTheDocument();
   });
 
-  it('hides selected icon when startAccessory is present', () => {
+  it('hides selected bar when startAccessory is present', () => {
     // Arrange
     const startAccessoryElement = (
       <span data-testid="start-accessory">Start</span>
@@ -173,7 +158,7 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
   });
