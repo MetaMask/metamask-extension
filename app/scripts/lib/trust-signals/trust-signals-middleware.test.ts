@@ -403,8 +403,9 @@ describe('createTrustSignalsMiddleware', () => {
 
     describe('approval transactions', () => {
       const createApprovalTransactionData = () =>
-        '0x095ea7b3000000000000000000000000' + TEST_ADDRESSES.SPENDER.slice(2).toLowerCase() +
-        '0000000000000000000000000000000000000000000000000000000000000064';
+        `0x095ea7b3000000000000000000000000${TEST_ADDRESSES.SPENDER.slice(
+          2,
+        ).toLowerCase()}0000000000000000000000000000000000000000000000000000000000000064`;
 
       beforeEach(() => {
         parseApprovalTransactionDataMock.mockReturnValue({
@@ -460,8 +461,7 @@ describe('createTrustSignalsMiddleware', () => {
           .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
           .mockRejectedValueOnce(new Error('Spender scan failed')); // Spender scan fails
 
-        const { middleware, networkController, phishingController } =
-          createMiddleware();
+        const { middleware, phishingController } = createMiddleware();
 
         const approvalData = createApprovalTransactionData();
         const req = createMockRequest('eth_sendTransaction', [

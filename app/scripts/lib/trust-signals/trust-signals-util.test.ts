@@ -2,6 +2,7 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import * as networksModule from '../../../../shared/modules/selectors/networks';
+import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import {
   isEthSendTransaction,
   hasValidTransactionParams,
@@ -13,14 +14,15 @@ import {
   mapChainIdToSupportedEVMChain,
   isApprovalTransaction,
 } from './trust-signals-util';
-import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { SupportedEVMChain } from './types';
 
 jest.mock('../../../../shared/modules/selectors/networks');
 jest.mock('../../../../shared/modules/transaction.utils');
 
 describe('trust-signals-util', () => {
-  const parseApprovalTransactionDataMock = jest.mocked(parseApprovalTransactionData);
+  const parseApprovalTransactionDataMock = jest.mocked(
+    parseApprovalTransactionData,
+  );
   describe('isEthSendTransaction', () => {
     it('should return true for eth_sendTransaction method', () => {
       const req: JsonRpcRequest = {
@@ -853,7 +855,7 @@ describe('trust-signals-util', () => {
         params: [
           {
             to: '0x1234567890123456789012345678901234567890',
-            data: 123 as any, // Invalid data type
+            data: 123, // Invalid data type
           },
         ],
         id: 1,
