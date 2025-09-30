@@ -4091,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Tümünü temizle"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Tümünü gizle"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Her bir sözcüğün arasına boşluk ekleyin ve hiç kimsenin izlemediğinden emin olun."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tümünü göster"
   },
   "onekey": {
     "message": "OneKey"
@@ -5965,10 +5959,6 @@
   "step2LedgerWalletMsg": {
     "message": "Ledger'ınızı doğrudan bilgisayara bağlayın, ardından kilidini açın ve Ethereum uygulamasını açın.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Adım $1 / $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Bu mesajı almaya devam mı ediyorsun?"

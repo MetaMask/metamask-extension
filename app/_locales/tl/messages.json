@@ -4091,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "I-clear lahat"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Itago lahat"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Magdagdag ng espasyo sa bawat salita at tiyakin na walang nanonood."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Ipakita lahat"
   },
   "onekey": {
     "message": "OneKey"
@@ -5965,10 +5959,6 @@
   "step2LedgerWalletMsg": {
     "message": "Direktang ikonekta ang iyong Ledger sa iyong computer, pagkatapos ay i-unlock ito at buksan ang Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Hakbang $1 ng $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Nakukuha pa rin ang mensaheng ito?"

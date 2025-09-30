@@ -4091,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Tout effacer"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Tout masquer"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Ajoutez un espace entre chaque mot et assurez-vous que personne ne regarde."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Afficher tout"
   },
   "onekey": {
     "message": "OneKey"
@@ -5965,10 +5959,6 @@
   "step2LedgerWalletMsg": {
     "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’application Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Étape $1 sur $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Vous recevez toujours ce message ?"

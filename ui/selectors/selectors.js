@@ -652,6 +652,23 @@ export function getMetaMaskAccountBalances(state) {
 }
 
 export function getMetaMaskCachedBalances(state, networkChainId) {
+  const enabledNetworks = getEnabledNetworks(state);
+  const eip155 = enabledNetworks?.eip155 ?? {};
+  const enabledIds = Object.keys(eip155).filter((id) => Boolean(eip155[id]));
+  if (enabledIds.length === 1) {
+    const chainId = enabledIds[0];
+    if (state.metamask.accountsByChainId?.[chainId]) {
+      return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
+        (accumulator, [key, value]) => {
+          accumulator[key] = value.balance;
+          return accumulator;
+        },
+        {},
+      );
+    }
+    return {};
+  }
+
   const chainId = networkChainId ?? getCurrentChainId(state);
 
   if (state.metamask.accountsByChainId?.[chainId]) {

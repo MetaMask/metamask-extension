@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Xóa tất cả"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Ẩn tất cả"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Thêm dấu cách giữa mỗi từ và đảm bảo không có ai đang nhìn."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Hiển thị tất cả"
   },
   "onekey": {
     "message": "OneKey"
@@ -6012,10 +6006,6 @@
   "step2LedgerWalletMsg": {
     "message": "Cắm trực tiếp Ledger vào máy tính của bạn, sau đó mở khóa và mở ứng dụng Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Bước $1/$2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Vẫn nhận được thông báo này?"

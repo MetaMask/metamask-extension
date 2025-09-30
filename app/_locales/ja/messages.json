@@ -4091,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "すべて消去"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "すべて非表示"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "各単語の間に半角スペースを追加して、誰にも見られていないことを確認してください。"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "すべて表示"
   },
   "onekey": {
     "message": "OneKey"
@@ -5965,10 +5959,6 @@
   "step2LedgerWalletMsg": {
     "message": "コンピューターにLedgerを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "ステップ$1/$2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "まだこのメッセージが表示されますか？"
