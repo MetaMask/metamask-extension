@@ -27,7 +27,7 @@ jest.mock('../asset-filter-input', () => ({
     />
   ),
 }));
-jest.mock('../network-filter', () => ({
+jest.mock('../../network-filter', () => ({
   NetworkFilter: ({
     selectedChainId,
     onChainIdChange,
