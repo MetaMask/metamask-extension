@@ -24,6 +24,7 @@ import {
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
+  setUseSidePanelAsDefault,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -62,6 +63,7 @@ import {
   getAnySnapUpdateAvailable,
   getThirdPartyNotifySnaps,
   getUseExternalServices,
+  getPreferences,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -153,6 +155,24 @@ export const GlobalMenu = ({
   let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
+
+  // Check if side panel is currently the default (vs popup)
+  const preferences = useSelector(getPreferences);
+  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+
+  /**
+   * Toggles between side panel and popup as the default extension behavior
+   */
+  const toggleDefaultView = async () => {
+    try {
+      const newValue = !isSidePanelDefault;
+
+      // Toggle the preference in background - the background script will handle browser API updates
+      await dispatch(setUseSidePanelAsDefault(newValue));
+    } catch (error) {
+      console.error('Error toggling default view:', error);
+    }
+  };
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK || '';
@@ -303,8 +323,8 @@ export const GlobalMenu = ({
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}
-          onClick={() => {
-            global?.platform?.openExtensionInBrowser?.();
+          onClick={async () => {
+            await toggleDefaultView();
             trackEvent({
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
@@ -314,9 +334,9 @@ export const GlobalMenu = ({
             });
             closeMenu();
           }}
-          data-testid="global-menu-expand"
+          data-testid="global-menu-toggle-view"
         >
-          {t('expandView')}
+          {isSidePanelDefault ? t('popupView') : t('sidePanelView')}
         </MenuItem>
       )}
       <MenuItem

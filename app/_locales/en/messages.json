@@ -4814,6 +4814,9 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
+  "popupView": {
+    "message": "Popup view"
+  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -5854,6 +5857,9 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
+  },
+  "sidePanelView": {
+    "message": "Side panel view"
   },
   "sign": {
     "message": "Sign"

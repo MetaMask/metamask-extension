@@ -118,6 +118,7 @@ export type Preferences = {
     sortCallback: string;
   };
   useNativeCurrencyAsPrimaryCurrency: boolean;
+  useSidePanelAsDefault: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -222,6 +223,7 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
+      useSidePanelAsDefault: true,
     },
     securityAlertsEnabled: true,
     selectedAddress: '',
@@ -518,6 +520,12 @@ const controllerMetadata = {
     includeInStateLogs: true,
     persist: true,
     anonymous: false,
+    usedInUi: true,
+  },
+  'preferences.useSidePanelAsDefault': {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
     usedInUi: true,
   },
 };
