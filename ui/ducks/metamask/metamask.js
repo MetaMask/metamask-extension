@@ -48,12 +48,6 @@ const initialState = {
     featureNotificationsEnabled: false,
     privacyMode: false,
     showMultiRpcModal: false,
-    tokenSortConfig: {
-      key: 'tokenFiatAmount',
-      order: 'dsc',
-      sortCallback: 'stringNumeric',
-    },
-    tokenNetworkFilter: {},
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -195,7 +189,7 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    case actionConstants.RESET_APP: {
+    case actionConstants.RESET_WALLET: {
       return {
         ...metamaskState,
         ...initialState,

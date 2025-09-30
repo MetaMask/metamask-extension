@@ -4174,7 +4174,7 @@ export function resetOnboardingAction() {
  *
  * @returns void
  */
-export function resetApp() {
+export function resetWallet() {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // Sign out from Profile-sync
@@ -4182,7 +4182,7 @@ export function resetApp() {
       // reset onboarding
       await dispatch(resetOnboarding());
       // reset redux state
-      await dispatch(resetAppAction());
+      await dispatch(resetWalletAction());
       // set `isResettingWalletInProgress` to true
       await submitRequestToBackground('setIsWalletResetInProgress', [true]);
 
@@ -4196,9 +4196,9 @@ export function resetApp() {
   };
 }
 
-export function resetAppAction() {
+export function resetWalletAction() {
   return {
-    type: actionConstants.RESET_APP,
+    type: actionConstants.RESET_WALLET,
   };
 }
 

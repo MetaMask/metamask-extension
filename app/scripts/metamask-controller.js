@@ -3655,7 +3655,13 @@ export default class MetamaskController extends EventEmitter {
 
   async resetWallet() {
     this.appStateController.setIsWalletResetInProgress(true);
+
     this.resetStates();
+
+    // reset preferences state
+    this.preferencesController.resetState();
+
+    this.currencyRateController.setCurrentCurrency('usd');
 
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();

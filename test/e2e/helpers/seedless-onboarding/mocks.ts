@@ -170,16 +170,20 @@ export class OAuthMockttpService {
     statusCode?: number;
     json?: Record<string, unknown>;
     userEmail?: string;
+    passwordOutdated?: boolean;
     throwAuthenticationErrorAtUnlock?: boolean;
   }) {
     const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
     const idToken = generateMockJwtToken(userEmail);
 
+    // keep track of the number of request tokens calls
     this.#numbOfRequestTokensCalls += 1;
 
     if (
+      // on the second call, (assuming it's for unlock) we throw an authentication error when passwordOutdated & throwAuthenticationErrorAtUnlock are true
       this.#numbOfRequestTokensCalls === 2 &&
-      overrides?.throwAuthenticationErrorAtUnlock
+      overrides?.throwAuthenticationErrorAtUnlock &&
+      overrides?.passwordOutdated
     ) {
       return {
         statusCode: 500,
@@ -220,12 +224,14 @@ export class OAuthMockttpService {
    * @param overrides - The overrides for the mock response.
    * @param overrides.statusCode - The status code for the mock response.
    * @param overrides.userEmail - The email of the user to mock. If not provided, random generated email will be used.
+   * @param overrides.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
    * @param overrides.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
    * @returns The mock response for the Request Token endpoint.
    */
   onPostToken(overrides?: {
     statusCode?: number;
     userEmail?: string;
+    passwordOutdated?: boolean;
     throwAuthenticationErrorAtUnlock?: boolean;
   }) {
     return this.mockAuthServerToken(overrides);
