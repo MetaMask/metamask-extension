@@ -8898,7 +8898,7 @@ export default class MetamaskController extends EventEmitter {
       toHex(chainId),
     );
 
-    // Use shared EIP-7702 utility with controller's addTransaction method
+    // Use shared EIP-7702 utility with transaction controller's addTransaction method
     return createEIP7702UpgradeTransaction(
       {
         address,
@@ -8906,7 +8906,7 @@ export default class MetamaskController extends EventEmitter {
         networkClientId,
       },
       async (transactionParams, options) => {
-        const transactionMeta = await this.addTransaction(transactionParams, {
+        const transactionMeta = await this.txController.addTransaction(transactionParams, {
           ...options,
           origin: 'metamask',
           requireApproval: true,
