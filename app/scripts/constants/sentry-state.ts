@@ -92,6 +92,7 @@ export const SENTRY_BACKGROUND_STATE = {
     isUpdateAvailable: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
+    isWalletResetInProgress: false,
   },
   MultichainBalancesController: {
     balances: false,

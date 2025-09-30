@@ -60,6 +60,7 @@ import {
   setMarketingConsent,
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -82,6 +83,7 @@ export default function CreatePassword({
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const isParticipateInMetaMetricsSet = useSelector(
@@ -103,7 +105,11 @@ export default function CreatePassword({
   )}`;
 
   useEffect(() => {
-    if (currentKeyring && !newAccountCreationInProgress) {
+    if (
+      currentKeyring &&
+      !newAccountCreationInProgress &&
+      !isWalletResetInProgress
+    ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
@@ -140,6 +146,7 @@ export default function CreatePassword({
     newAccountCreationInProgress,
     secretRecoveryPhrase,
     isParticipateInMetaMetricsSet,
+    isWalletResetInProgress,
   ]);
 
   const handleLearnMoreClick = (event) => {

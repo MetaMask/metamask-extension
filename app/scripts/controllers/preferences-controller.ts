@@ -1112,4 +1112,10 @@ export class PreferencesController extends BaseController<
       });
     });
   }
+
+  resetState() {
+    this.update((state) => {
+      Object.assign(state, getDefaultPreferencesControllerState());
+    });
+  }
 }

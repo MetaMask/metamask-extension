@@ -105,6 +105,11 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+
+  /**
+   * Whether the wallet reset is in progress.
+   */
+  isWalletResetInProgress: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -241,6 +246,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
+  isWalletResetInProgress: false,
 
   ...getInitialStateOverrides(),
 });
@@ -533,6 +539,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  isWalletResetInProgress: {
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+    includeInStateLogs: false,
   },
 };
 
@@ -1376,5 +1388,15 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
     });
+  }
+
+  setIsWalletResetInProgress(isResetting: boolean): void {
+    this.update((state) => {
+      state.isWalletResetInProgress = isResetting;
+    });
+  }
+
+  getIsWalletResetInProgress(): boolean {
+    return this.state.isWalletResetInProgress;
   }
 }

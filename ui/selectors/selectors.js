@@ -319,7 +319,6 @@ export function getCurrentKeyring(state) {
 
   return internalAccount.metadata?.keyring;
 }
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.

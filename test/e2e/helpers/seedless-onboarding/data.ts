@@ -6,6 +6,9 @@ export const MockJwtPrivateKey = `-----BEGIN PRIVATE KEY-----\nMEECAQAwEwYHKoZIz
 export const MockAuthPubKey =
   '04b02bd479380f5deee3963aee4af81d422b934975f1b7ec59f56c3afc97c440773b0a79edd1987f26d9a8b2f7479c095b1e6941c7bf11af70a910e0ad4295010f';
 
+export const MockAuthPubKey2 =
+  '0447edd078db62ed5bf79652646ba30534375f05f1fbbb4b258924f65e251ac2302b718f64052b8b7a026d6cd0156e56c2522757aa07fa579384f97d097524b142';
+
 // Mock data for TOPRF Key shares
 export const MockKeyShareData = {
   verifier: 'torus-test-health-aggregate',

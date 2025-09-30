@@ -2422,7 +2422,13 @@ export default class MetamaskController extends EventEmitter {
    */
   getState() {
     const { vault } = this.keyringController.state;
-    const isInitialized = Boolean(vault);
+
+    // check if the wallet reset is in progress
+    const isWalletResetInProgress =
+      this.appStateController.getIsWalletResetInProgress();
+
+    // if the keyring vault is present but the wallet reset is in progress, we can assume the wallet has not initialized yet
+    const isInitialized = Boolean(vault) && !isWalletResetInProgress;
     const flatState = this.memStore.getFlatState();
 
     return {
@@ -3052,6 +3058,8 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.completeOnboarding.bind(onboardingController),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
+      resetOnboarding:
+        onboardingController.resetOnboarding.bind(onboardingController),
 
       // alert controller
       setAlertEnabledness:
@@ -3559,6 +3567,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
+      resetWallet: this.resetWallet.bind(this),
     };
   }
 
@@ -3574,6 +3583,21 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
+  }
+
+  async resetWallet() {
+    // clear SeedlessOnboardingController state
+    this.seedlessOnboardingController.clearState();
+
+    // clear metametrics state
+    this.metaMetricsController.resetState();
+
+    this.appStateController.setIsWalletResetInProgress(true);
+
+    // reset preferences state
+    this.preferencesController.resetState();
+
+    this.currencyRateController.setCurrentCurrency('usd');
   }
 
   async exportAccount(address, password) {
@@ -4352,7 +4376,41 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      const isResettingWallet =
+        this.appStateController.getIsWalletResetInProgress();
+
+      if (isResettingWallet) {
+        // try reset the state first if it's resetting wallet
+
+        // clear permissions
+        this.permissionController.clearState();
+
+        // Clear snap state
+        await this.snapController.clearState();
+
+        // Clear account tree state
+        this.accountTreeController.clearState();
+
+        // Currently, the account-order-controller is not in sync with
+        // the accounts-controller. To properly persist the hidden state
+        // of accounts, we should add a new flag to the account struct
+        // to indicate if it is hidden or not.
+        // TODO: Update @metamask/accounts-controller to support this.
+        this.accountOrderController.updateHiddenAccountsList([]);
+
+        // clear accounts in AccountTrackerController
+        this.accountTrackerController.clearAccounts();
+
+        this.txController.clearUnapprovedTransactions();
+
+        this.tokenDetectionController.enable();
+
+        // set is resetting wallet in progress to false, in case of createNewVaultAndKeychain being called from resetWallet
+        this.appStateController.setIsWalletResetInProgress(false);
+      }
+
       await this.keyringController.createNewVaultAndKeychain(password);
+
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
       // Once we have our first HD keyring available, we re-create the internal list of
@@ -4773,6 +4831,9 @@ export default class MetamaskController extends EventEmitter {
           await this.syncKeyringEncryptionKey();
         }
       }
+
+      // set is resetting wallet in progress to false, in case of createNewVaultAndRestore being called from resetWallet
+      this.appStateController.setIsWalletResetInProgress(false);
     } finally {
       releaseLock();
     }

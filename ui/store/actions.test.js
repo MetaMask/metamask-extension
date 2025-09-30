@@ -242,7 +242,13 @@ describe('Actions', () => {
     });
 
     it('should return true if the password is outdated', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.resolves(true);
@@ -257,7 +263,13 @@ describe('Actions', () => {
     });
 
     it('should return false if the password is not outdated', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.resolves(false);
@@ -272,7 +284,13 @@ describe('Actions', () => {
     });
 
     it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
-      const store = mockStore();
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
 
       const checkIsSeedlessPasswordOutdated =
         background.checkIsSeedlessPasswordOutdated.rejects(new Error('error'));
