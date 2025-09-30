@@ -53,7 +53,7 @@ describe('RecipientInput', () => {
             recipientResolvedLookup: undefined,
           } as unknown as ReturnType<typeof useRecipientValidation>
         }
-        openRecipientModal={() => {}}
+        openRecipientModal={() => undefined}
         recipientInputRef={null as unknown as React.RefObject<HTMLInputElement>}
         {...args}
       />,

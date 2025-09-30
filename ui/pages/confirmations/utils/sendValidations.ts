@@ -63,7 +63,7 @@ export const validateEvmHexAddress = async (
     };
   }
 
-  if (address === assetAddress) {
+  if (address?.toLowerCase() === assetAddress?.toLowerCase()) {
     return {
       error: 'contractAddressError',
     };

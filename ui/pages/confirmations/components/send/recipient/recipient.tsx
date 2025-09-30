@@ -14,7 +14,10 @@ import {
   HelpText,
   HelpTextSeverity,
 } from '../../../../../components/component-library';
-import { TextVariant } from '../../../../../helpers/constants/design-system';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
@@ -111,9 +114,13 @@ export const Recipient = ({
         </HelpText>
       )}
       {to === toAddressValidated && recipientResolvedLookup && (
-        <HelpText severity={HelpTextSeverity.Info} marginTop={1}>
-          {`${t('resolutionProtocol')} ${resolutionProtocol}`}
-        </HelpText>
+        <Text
+          color={TextColor.textAlternative}
+          marginTop={1}
+          variant={TextVariant.bodyXs}
+        >
+          {`${t('resolutionProtocol')} ${resolutionProtocol ?? ''}`}
+        </Text>
       )}
       <Modal
         isClosedOnEscapeKey={true}
