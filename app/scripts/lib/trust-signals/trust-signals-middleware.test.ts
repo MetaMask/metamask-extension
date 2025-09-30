@@ -2,12 +2,14 @@ import { Hex, JsonRpcResponse, Json, JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  parseApprovalTransactionData,
+  parseTypedDataMessage,
+} from '../../../../shared/modules/transaction.utils';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import { ResultType } from './types';
 import { getChainId } from './trust-signals-util';
-import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
-import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 
 jest.mock('./security-alerts-api');
 jest.mock('../../../../shared/modules/transaction.utils');
@@ -118,7 +120,10 @@ const createMiddleware = (
 
 describe('createTrustSignalsMiddleware', () => {
   const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
-  const parseApprovalTransactionDataMock = jest.mocked(parseApprovalTransactionData);
+  const parseApprovalTransactionDataMock = jest.mocked(
+    parseApprovalTransactionData,
+  );
+  const parseTypedDataMessageMock = jest.mocked(parseTypedDataMessage);
   let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -413,7 +418,9 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('scans both contract and spender addresses for approval transactions', async () => {
-        scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
         const {
           middleware,
           appStateController,
@@ -449,14 +456,12 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('handles approval spender scanning errors gracefully', async () => {
-        const contractScanSuccess = Promise.resolve(MOCK_SCAN_RESPONSES.BENIGN);
-        const spenderScanError = Promise.reject(new Error('Spender scan failed'));
-
         scanAddressMockAndAddToCache
-          .mockReturnValueOnce(contractScanSuccess)
-          .mockReturnValueOnce(spenderScanError);
+          .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
+          .mockRejectedValueOnce(new Error('Spender scan failed')); // Spender scan fails
 
-        const { middleware, networkController, phishingController } = createMiddleware();
+        const { middleware, networkController, phishingController } =
+          createMiddleware();
 
         const approvalData = createApprovalTransactionData();
         const req = createMockRequest('eth_sendTransaction', [
@@ -472,7 +477,7 @@ describe('createTrustSignalsMiddleware', () => {
         expect(next).toHaveBeenCalled();
 
         // Wait for async error handling
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           '[createTrustSignalsMiddleware] error scanning spender address for approval:',
@@ -482,9 +487,12 @@ describe('createTrustSignalsMiddleware', () => {
 
       it('does not scan spender when approval parsing fails', async () => {
         parseApprovalTransactionDataMock.mockReturnValue(undefined);
-        scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
 
-        const { middleware, appStateController, networkController } = createMiddleware();
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
 
         const req = createMockRequest('eth_sendTransaction', [
           createTransactionParams({ data: '0xinvaliddata' }),
@@ -514,9 +522,12 @@ describe('createTrustSignalsMiddleware', () => {
           isRevokeAll: false,
           tokenAddress: undefined,
         });
-        scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
 
-        const { middleware, appStateController, networkController } = createMiddleware();
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
 
         const approvalData = createApprovalTransactionData();
         const req = createMockRequest('eth_sendTransaction', [
@@ -555,6 +566,19 @@ describe('createTrustSignalsMiddleware', () => {
         },
       },
     ];
+
+    beforeEach(() => {
+      // Mock parseTypedDataMessage to return expected structure
+      parseTypedDataMessageMock.mockImplementation((data) => {
+        const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+        return {
+          domain: parsedData.domain || {},
+          message: parsedData.message || {},
+          primaryType: parsedData.primaryType || 'Test',
+          types: parsedData.types || {},
+        };
+      });
+    });
 
     it('scans verifying contract address', async () => {
       scanAddressMockAndAddToCache.mockResolvedValue(
@@ -743,7 +767,9 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('scans both verifying contract and spender addresses for permit signatures', async () => {
-        scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
         const {
           middleware,
           appStateController,
@@ -780,12 +806,9 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('handles permit spender scanning errors gracefully', async () => {
-        const contractScanSuccess = Promise.resolve(MOCK_SCAN_RESPONSES.BENIGN);
-        const spenderScanError = Promise.reject(new Error('Spender scan failed'));
-
         scanAddressMockAndAddToCache
-          .mockReturnValueOnce(contractScanSuccess)
-          .mockReturnValueOnce(spenderScanError);
+          .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
+          .mockRejectedValueOnce(new Error('Spender scan failed')); // Spender scan fails
 
         const { middleware, phishingController } = createMiddleware();
 
@@ -804,7 +827,7 @@ describe('createTrustSignalsMiddleware', () => {
         expect(next).toHaveBeenCalled();
 
         // Wait for async error handling
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           '[createTrustSignalsMiddleware] error scanning spender address for permit:',
@@ -813,8 +836,11 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('does not scan spender for non-permit typed data signatures', async () => {
-        scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
-        const { middleware, appStateController, networkController } = createMiddleware();
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
 
         const nonPermitData = {
           domain: {
@@ -852,8 +878,11 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('does not scan spender when spender address is not present in permit', async () => {
-        scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
-        const { middleware, appStateController, networkController } = createMiddleware();
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
 
         const permitDataWithoutSpender = createPermitTypedData();
         delete permitDataWithoutSpender.message.spender;
@@ -883,9 +912,12 @@ describe('createTrustSignalsMiddleware', () => {
 
         for (const permitType of permitTypes) {
           scanAddressMockAndAddToCache.mockClear();
-          scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
+          scanAddressMockAndAddToCache.mockResolvedValue(
+            MOCK_SCAN_RESPONSES.BENIGN,
+          );
 
-          const { middleware, appStateController, networkController } = createMiddleware();
+          const { middleware, appStateController, networkController } =
+            createMiddleware();
 
           const permitData = createPermitTypedData();
           permitData.primaryType = permitType;
@@ -917,8 +949,11 @@ describe('createTrustSignalsMiddleware', () => {
       });
 
       it('does not scan spender when primaryType is missing', async () => {
-        scanAddressMockAndAddToCache.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
-        const { middleware, appStateController, networkController } = createMiddleware();
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
 
         const permitDataWithoutPrimaryType = createPermitTypedData();
         delete permitDataWithoutPrimaryType.primaryType;
