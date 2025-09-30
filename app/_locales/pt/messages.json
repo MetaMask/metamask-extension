@@ -5000,18 +5000,8 @@
   "secureWallet": {
     "message": "Carteira segura"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Começar"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Lembrar-me mais tarde"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Essa é a única maneira de recuperar sua carteira se não conseguir entrar no app ou se passar a usar um novo dispositivo."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Não corra o risco de perder seus valores. Proteja sua carteira guardando sua $1 em um lugar em que você confia.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Segurança"
@@ -5090,9 +5080,6 @@
   },
   "seeDetails": {
     "message": "Ver detalhes"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Proteja sua carteira"
   },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
@@ -5398,18 +5385,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Pular a segurança da conta?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Se você perder esta Frase de Recuperação Secreta, não poderá acessar esta carteira."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Proteger agora"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Ignorar"
   },
   "skipDeepLinkInterstitial": {
     "message": "Não mostrar tela intersticial ao abrir links profundos"
@@ -5768,9 +5743,6 @@
   "spendingCaps": {
     "message": "Limites de gastos"
   },
-  "srpDesignImageAlt": {
-    "message": "Imagem do cofre da FRS"
-  },
   "srpDetailsDescription": {
     "message": "Uma Frase de Recuperação Secreta, também chamada de frase-semente ou mnemônica, é um conjunto de palavras que permite acessar e controlar sua carteira de criptoativos. Para transferir sua carteira para a MetaMask, você precisará desta frase."
   },
@@ -5987,10 +5959,6 @@
   "step2LedgerWalletMsg": {
     "message": "Conecte sua Ledger diretamente ao seu computador, depois a desbloqueie e abra o app do Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Etapa $1 de $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Ainda está recebendo essa mensagem?"
