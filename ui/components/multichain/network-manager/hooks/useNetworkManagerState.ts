@@ -115,10 +115,9 @@ export const useNetworkManagerInitialTab = () => {
   );
 
   const initialTab = useMemo(() => {
-    const intersects = (a: string[], b: string[]) => {
-      const aSet = new Set(a);
-      const bSet = new Set(b);
-      return [...aSet].some((x) => bSet.has(x));
+    const isSubset = (subset: string[], superset: string[]) => {
+      const supersetSet = new Set(superset);
+      return subset.every((x) => supersetSet.has(x));
     };
 
     const enabledNetworksCaipIds = allEnabledNetworksForAllNamespaces.map(
@@ -130,7 +129,7 @@ export const useNetworkManagerInitialTab = () => {
     );
 
     // Check against known list of popular chainIds
-    return intersects(featuredNetworksCaipIds, enabledNetworksCaipIds)
+    return isSubset(enabledNetworksCaipIds, featuredNetworksCaipIds)
       ? 'networks'
       : 'custom-networks';
   }, [allEnabledNetworksForAllNamespaces]);
