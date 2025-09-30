@@ -14,11 +14,15 @@ export default {
     acceptText: {
       control: 'text',
     },
+    multiple: {
+      control: 'boolean',
+    },
   },
   args: {
     label: 'Upload files',
     helpText: 'Upload files description',
     acceptText: 'List of accepted file types',
+    multiple: true,
   },
 };
 

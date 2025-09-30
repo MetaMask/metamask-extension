@@ -53,9 +53,10 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
     const [error, setError] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
 
-    const addFiles = (newFiles: FileList) => {
+    const addFiles = (newFiles: FileList | File) => {
       setError(null);
-      if (!newFiles?.length) {
+      const isFileList = newFiles instanceof FileList;
+      if (!newFiles || (isFileList && !newFiles?.length)) {
         return;
       }
 
@@ -66,23 +67,31 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
       // Filter out duplicates and validate file size
       const validFiles: File[] = [];
 
-      Array.from(newFiles).forEach((file) => {
-        // Skip if duplicate
-        if (existingFileNames.has(file.name)) {
+      if (isFileList) {
+        Array.from(newFiles).forEach((file) => {
+          // Skip if duplicate
+          if (existingFileNames.has(file.name)) {
+            return;
+          }
+
+          // Check file size if maxFileSize(in bytes) is specified
+          if (maxFileSize && file.size > maxFileSize) {
+            const fileSizeInMB = parseFloat(
+              (maxFileSize / 1024 / 1024).toFixed(2),
+            );
+            setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
+            return;
+          }
+
+          validFiles.push(file);
+        });
+      } else {
+        if (existingFileNames.has(newFiles.name)) {
           return;
         }
 
-        // Check file size if maxFileSize(in bytes) is specified
-        if (maxFileSize && file.size > maxFileSize) {
-          const fileSizeInMB = parseFloat(
-            (maxFileSize / 1024 / 1024).toFixed(2),
-          );
-          setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
-          return;
-        }
-
-        validFiles.push(file);
-      });
+        validFiles.push(newFiles);
+      }
 
       if (!validFiles.length) {
         return;
