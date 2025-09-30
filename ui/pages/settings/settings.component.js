@@ -195,7 +195,7 @@ class SettingsPage extends PureComponent {
                     color={Color.iconDefault}
                     onClick={() => navigate(backRoute)}
                     display={[Display.Flex, Display.None]}
-                    size={ButtonIconSize.Sm}
+                    size={ButtonIconSize.Md}
                   />
                 )}
               </>
@@ -213,7 +213,7 @@ class SettingsPage extends PureComponent {
                   navigate(mostRecentOverviewPage);
                 }
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               marginLeft="auto"
             />
           </div>

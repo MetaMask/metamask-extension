@@ -179,7 +179,6 @@ export const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_PATHS = {
   WELCOME: 'welcome',
   CREATE_PASSWORD: 'create-password',
-  SECURE_YOUR_WALLET: 'secure-your-wallet',
   REVEAL_SRP: 'reveal-recovery-phrase',
   REVIEW_SRP: 'review-recovery-phrase',
   CONFIRM_SRP: 'confirm-recovery-phrase',
@@ -198,7 +197,6 @@ const ONBOARDING_PATHS = {
 
 export const ONBOARDING_WELCOME_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.WELCOME}`;
 export const ONBOARDING_CREATE_PASSWORD_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.CREATE_PASSWORD}`;
-export const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.SECURE_YOUR_WALLET}`;
 export const ONBOARDING_REVEAL_SRP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.REVEAL_SRP}`;
 export const ONBOARDING_REVIEW_SRP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.REVIEW_SRP}`;
 export const ONBOARDING_CONFIRM_SRP_ROUTE = `${ONBOARDING_ROUTE}/${ONBOARDING_PATHS.CONFIRM_SRP}`;
@@ -641,11 +639,6 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-    label: 'Onboarding Secure Your Wallet',
-    trackInAnalytics: false,
-  },
-  {
     path: ONBOARDING_REVIEW_SRP_ROUTE,
     label: 'Onboarding Review Recovery Phrase',
     trackInAnalytics: false,
@@ -703,6 +696,11 @@ export const ROUTES = [
   {
     path: ONBOARDING_ACCOUNT_NOT_FOUND,
     label: 'Onboarding Account Not Found',
+    trackInAnalytics: false,
+  },
+  {
+    path: ONBOARDING_DOWNLOAD_APP_ROUTE,
+    label: 'Onboarding Download App',
     trackInAnalytics: false,
   },
   // Additional routes

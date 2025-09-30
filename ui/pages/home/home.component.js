@@ -62,7 +62,7 @@ import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
@@ -719,7 +719,7 @@ const Home = () => {
           descriptionText={t('backupApprovalNotice')}
           acceptText={t('backupNow')}
           onAccept={() => {
-            const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+            const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {

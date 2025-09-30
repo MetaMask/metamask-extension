@@ -13,7 +13,6 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -186,17 +185,6 @@ describe('Onboarding Flow', () => {
         expect(createNewVaultAndGetSeedPhrase).toHaveBeenCalled(),
       );
     });
-  });
-
-  it('should render secure your wallet component', () => {
-    const { queryByTestId } = renderWithProvider(
-      <OnboardingFlowWithRoutes />,
-      store,
-      ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-    );
-
-    const secureYourWallet = queryByTestId('secure-your-wallet');
-    expect(secureYourWallet).toBeInTheDocument();
   });
 
   it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {

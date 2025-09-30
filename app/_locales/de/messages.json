@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "Konto hinzufügen"
   },
-  "addingCustomNetwork": {
-    "message": "Netzwerk wird hinzugefügt"
-  },
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
   },
@@ -742,10 +739,6 @@
   },
   "betaTerms": {
     "message": "Beta-Nutzungsbedingungen"
-  },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Konto",
@@ -3319,10 +3312,6 @@
   "metrics": {
     "message": "Metriken"
   },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "verifizieren Sie die Netzwerkdetails",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3759,9 +3748,6 @@
   "noSnaps": {
     "message": "Keine Snaps installiert"
   },
-  "noThanks": {
-    "message": "Nein, danke!"
-  },
   "noWebcamFound": {
     "message": "Die Webcam Ihres Computers wurde nicht gefunden. Bitte versuchen Sie es erneut."
   },
@@ -4039,45 +4025,11 @@
   "onboardingImportWallet": {
     "message": "Ich habe eine bestehende Wallet"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Ich stimme zu"
-  },
   "onboardingMetametricsDescription": {
     "message": "Wir möchten grundlegende Nutzungs- und Diagnosedaten sammeln, um MetaMask zu verbessern. Dabei gilt immer:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Wir informieren Sie, wenn wir diese Daten für andere Zwecke verwenden möchten. Sie können unsere $1 jederzeit einsehen (wir verkaufen die von Ihnen hier bereitgestellten Daten niemals).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Datenschutzrichtlinie"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Klicks und Aufrufe in der App werden gespeichert, andere Details (wie Ihre öffentliche Adresse) jedoch nicht.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privat:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Wir verwenden Ihre IP-Adresse vorübergehend, um einen allgemeinen Standort zu ermitteln (z. B. Ihr Land oder Ihre Region), aber er wird niemals gespeichert.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Allgemein:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Sie können jederzeit über die Einstellungen entscheiden, ob Sie Ihre Nutzungsdaten freigeben oder löschen möchten.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Optional:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Helfen Sie uns, MetaMask zu verbessern."
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
   },
   "onboardingOptionIcon": {
     "message": "$1-Symbol",
@@ -5038,18 +4990,8 @@
   "secureWallet": {
     "message": "Sichere Wallet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Erste Schritte"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Später erneut erinnern"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Dies ist die einzige Möglichkeit, Ihre Wallet wiederherzustellen, wenn Sie aus der App ausgesperrt werden oder ein neues Gerät erhalten."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Riskieren Sie nicht, Ihr Geld zu verlieren. Schützen Sie Ihre Wallet, indem Sie Ihre $1 an einem Ort Ihres Vertrauens aufbewahren.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Sicherheit"
@@ -5128,9 +5070,6 @@
   },
   "seeDetails": {
     "message": "Details anzeigen"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Sichern Sie Ihre Wallet"
   },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
@@ -5436,18 +5375,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Kontosicherheit überspringen?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Wenn Sie diese geheime Wiederherstellungsphrase verlieren, können Sie nicht mehr auf diese Wallet zugreifen."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Jetzt sichern"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Überspringen"
   },
   "skipDeepLinkInterstitial": {
     "message": "Beim Öffnen von Deeplinks keinen Zwischenbildschirm anzeigen"
@@ -5815,9 +5742,6 @@
   "spendingCaps": {
     "message": "Ausgabenobergrenzen"
   },
-  "srpDesignImageAlt": {
-    "message": "Bild einer Aufbewahrung für die geheime Wiederherstellungsphrase"
-  },
   "srpDetailsDescription": {
     "message": "Eine geheime Wiederherstellungsphrase, auch Seed-Phrase oder Mnemonik genannt, ist eine Reihe von Wörtern, die Ihnen den Zugriff auf Ihre Krypto-Wallet und deren Kontrolle ermöglichen. Um Ihre Wallet zu MetaMask zu verschieben, benötigen Sie diese Phrase."
   },
@@ -6034,10 +5958,6 @@
   "step2LedgerWalletMsg": {
     "message": "Schließen Sie Ihre Ledger-Wallet direkt an Ihren Computer an, entsperren Sie sie und öffnen Sie die Ethereum-App.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Schritt $1 von $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Erhalten Sie diese Meldung immer noch?"
@@ -6785,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "Überweisungsanfrage"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Wir haben Probleme mit der Verbindung zu Ihrem Ledger. $1",
