@@ -10,7 +10,6 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -79,8 +78,6 @@ export default function OnboardingWelcome() {
         } else {
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         }
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
