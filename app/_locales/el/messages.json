@@ -3759,9 +3759,6 @@
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
   },
-  "noThanks": {
-    "message": "Όχι, ευχαριστώ"
-  },
   "noWebcamFound": {
     "message": "Η κάμερα του υπολογιστή σας δεν βρέθηκε. Προσπαθήστε ξανά."
   },
@@ -4039,45 +4036,11 @@
   "onboardingImportWallet": {
     "message": "Έχω ήδη ένα πορτοφόλι"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Συμφωνώ"
-  },
   "onboardingMetametricsDescription": {
     "message": "Θα θέλαμε να συλλέξουμε βασικά δεδομένα χρήσης και διαγνωστικά στοιχεία για να βελτιώσουμε το MetaMask. Αυτά θα είναι πάντα:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Θα σας ενημερώσουμε εάν σκοπεύουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Μπορείτε να ελέγξετε την $1 ανά πάσα στιγμή (ποτέ δεν πουλάμε τα δεδομένα που παρέχετε εδώ).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Πολιτική Απορρήτου"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Κλικ και προβολές στην εφαρμογή αποθηκεύονται, αλλά άλλες λεπτομέρειες (όπως η δημόσια διεύθυνσή σας) δεν αποθηκεύονται.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Ιδιωτικές:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Χρησιμοποιούμε προσωρινά τη διεύθυνση IP σας για να εντοπίσουμε μια γενική τοποθεσία (όπως τη χώρα ή την περιοχή σας), αλλά δεν την αποθηκεύουμε ποτέ.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Γενικές:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Εσείς αποφασίζετε αν θέλετε να κοινοποιήσετε ή να διαγράψετε τα δεδομένα χρήσης σας μέσω των ρυθμίσεων, οποιαδήποτε στιγμή.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Προαιρετικές:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Θα χρησιμοποιήσουμε αυτά τα δεδομένα για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιήσουμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων)."
   },
   "onboardingOptionIcon": {
     "message": "εικονίδιο $1",
@@ -5038,18 +5001,8 @@
   "secureWallet": {
     "message": "Ασφαλές πορτοφόλι"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Ξεκινήστε"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Υπενθυμίστε μου αργότερα"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Είναι ο μόνος τρόπος να ανακτήσετε το πορτοφόλι σας αν δεν μπορείτε να εισέλθετε στην εφαρμογή ή αποκτήσετε νέα συσκευή."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Μην ρισκάρετε να χάσετε τα κεφάλαιά σας. Προστατέψτε το πορτοφόλι σας αποθηκεύοντας την $1 σε ασφαλές μέρος.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Ασφάλεια"
@@ -5128,9 +5081,6 @@
   },
   "seeDetails": {
     "message": "Δείτε λεπτομέρειες"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Προστατεύστε το πορτοφόλι σας"
   },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"
@@ -5436,18 +5386,6 @@
   },
   "siweURI": {
     "message": "Διεύθυνση URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Παράλειψη ασφάλειας λογαριασμού;"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Εάν χάσετε αυτή τη Μυστική Φράση Ανάκτησης, δεν θα μπορείτε να έχετε ξανά πρόσβαση σε αυτό το πορτοφόλι."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Φροντίστε για την ασφάλεια τώρα"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Παράλειψη"
   },
   "skipDeepLinkInterstitial": {
     "message": "Μην εμφανίζετε το παράθυρο προειδοποίησης κατά το άνοιγμα ειδικών συνδέσμων"
@@ -5815,9 +5753,6 @@
   "spendingCaps": {
     "message": "Ανώτατα όριο δαπανών"
   },
-  "srpDesignImageAlt": {
-    "message": "Εικόνα θησαυροφυλακίου της Μυστικής Φράσης Ανάκτησης"
-  },
   "srpDetailsDescription": {
     "message": "Η Μυστική Φράση Ανάκτησης, που ονομάζεται επίσης \"seed phrase\" ή μνημονική φράση, είναι ένα σύνολο λέξεων που σας επιτρέπει να έχετε πρόσβαση και να ελέγχετε το πορτοφόλι κρυπτονομισμάτων σας. Για να μεταφέρετε το πορτοφόλι σας στο MetaMask, χρειάζεστε αυτή τη φράση."
   },
@@ -6034,10 +5969,6 @@
   "step2LedgerWalletMsg": {
     "message": "Συνδέστε το Ledger απευθείας στον υπολογιστή σας, στη συνέχεια ξεκλειδώστε το και ανοίξτε την εφαρμογή Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Βήμα $1 από $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Ακόμα λαμβάνετε αυτό το μήνυμα;"

@@ -3993,9 +3993,6 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
-  "noThanks": {
-    "message": "No thanks"
-  },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
   },
@@ -4285,45 +4282,26 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
   },
-  "onboardingMetametricsAgree": {
-    "message": "I agree"
+  "onboardingMetametricCheckboxDescriptionOne": {
+    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
+  },
+  "onboardingMetametricCheckboxDescriptionTwo": {
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "onboardingMetametricCheckboxTitleOne": {
+    "message": "Gather basic usage data"
+  },
+  "onboardingMetametricCheckboxTitleTwo": {
+    "message": "Product updates"
+  },
+  "onboardingMetametricsContinue": {
+    "message": "Continue"
   },
   "onboardingMetametricsDescription": {
-    "message": "We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:"
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "We’ll let you know if we plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Privacy Policy"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Clicks and views on the app are stored, but other details (like your public address) are not.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Private:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "General:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 You decide if you want to share or delete your usage data via settings any time.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Optional:"
+    "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
   "onboardingOptionIcon": {
     "message": "$1 icon",
@@ -5372,18 +5350,8 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Get started"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Remind me later"
-  },
-  "secureWalletWalletRecover": {
-    "message": "It’s the only way to recover your wallet if you get locked out of the app or get a new device."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Don’t risk losing your funds. Protect your wallet by saving your $1 in a place you trust.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Security"
@@ -5468,9 +5436,6 @@
   },
   "seeDetails": {
     "message": "See details"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Secure your wallet"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
@@ -5973,18 +5938,6 @@
   "siweURI": {
     "message": "URL"
   },
-  "skipAccountSecurity": {
-    "message": "Skip account security?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Secure now"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Skip"
-  },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
   },
@@ -6357,9 +6310,6 @@
   "spendingCaps": {
     "message": "Spending caps"
   },
-  "srpDesignImageAlt": {
-    "message": "SRP vault image"
-  },
   "srpDetailsDescription": {
     "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
   },
@@ -6576,10 +6526,6 @@
   "step2LedgerWalletMsg": {
     "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Step $1 of $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"

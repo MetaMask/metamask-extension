@@ -3759,9 +3759,6 @@
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
   },
-  "noThanks": {
-    "message": "जी नहीं, धन्यवाद"
-  },
   "noWebcamFound": {
     "message": "आपके कंप्यूटर का वेबकैम नहीं मिला। कृपया फिर से कोशिश करें।"
   },
@@ -4039,45 +4036,11 @@
   "onboardingImportWallet": {
     "message": "मेरे पास एक मौजूदा वॉलेट है"
   },
-  "onboardingMetametricsAgree": {
-    "message": "मैं सहमत हूं"
-  },
   "onboardingMetametricsDescription": {
     "message": "हम MetaMask को बेहतर बनाने के लिए बुनियादी उपयोग और डायग्नोसिस डेटा एकत्र करना चाहते हैं। यह हमेशा ऐसा होगा:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "अगर हम इस डेटा का इस्तेमाल दूसरे उद्देश्यों के लिए करने की योजना बनाते हैं, तो हम आपको बता देंगे। आप किसी भी समय हमारे $1 की समीक्षा कर सकते हैं (हम आपके द्वारा यहाँ दिए गए डेटा को कभी नहीं बेचते हैं)।",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "गोपनीयता नीति"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "ऐप पर $1 क्लिक और व्यूज़ स्टोर किए जाते हैं, लेकिन अन्य विवरण (जैसे आपका पब्लिक एड्रेस) स्टोर नहीं होते।",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "निजी:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 हम किसी सामान्य स्थान (जैसे आपका देश या क्षेत्र) का पता लगाने के लिए अस्थायी रूप से आपके आईपी ​​एड्रेस का उपयोग करते हैं, लेकिन इसे कभी स्टोर नहीं किया जाता है।",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "सामान्य:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 आप तय करते हैं कि आप किसी भी समय सेटिंग्स के माध्यम से अपना यूसेज डेटा शेयर करना चाहते हैं या हटाना चाहते हैं।",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "वैकल्पिक:"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "हम इस डेटा का उपयोग यह जानने के लिए करेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स) साझा कर सकते हैं।"
   },
   "onboardingOptionIcon": {
     "message": "$1 आइकन",
@@ -5038,18 +5001,8 @@
   "secureWallet": {
     "message": "सुरक्षित वॉलेट"
   },
-  "secureWalletGetStartedButton": {
-    "message": "शुरू करें"
-  },
   "secureWalletRemindLaterButton": {
     "message": "मुझे बाद में याद दिलाएं"
-  },
-  "secureWalletWalletRecover": {
-    "message": "अगर आप ऐप से लॉक हो जाते हैं या कोई नया डिवाइस लेते हैं, तो यह आपका वॉलेट रिकवर करने का एकमात्र तरीका है।"
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "अपने फंड्स खोने का जोखिम न लें। अपने $1 को किसी भरोसेमंद जगह पर सेव करके अपने वॉलेट की सुरक्षा करें।",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "सुरक्षा"
@@ -5128,9 +5081,6 @@
   },
   "seeDetails": {
     "message": "ब्यौरा देखें"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "अपने वॉलेट को सुरक्षित करें"
   },
   "seedPhraseReq": {
     "message": "सीक्रेट रिकवरी फ्रेज में 12, 15, 18, 21 या 24 शब्द होते हैं"
@@ -5436,18 +5386,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "अकाउंट सुरक्षा छोड़ें?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "यदि आप यह सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो आप इस वॉलेट तक नहीं पहुंच पाएंगे।"
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "अभी सुरक्षित करें"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "स्किप करें"
   },
   "skipDeepLinkInterstitial": {
     "message": "डीप लिंक खोलते समय इंटरस्टिशियल स्क्रीन न दिखाएं"
@@ -5815,9 +5753,6 @@
   "spendingCaps": {
     "message": "खर्च करने की लिमिट"
   },
-  "srpDesignImageAlt": {
-    "message": "SRP वॉल्ट इमेज"
-  },
   "srpDetailsDescription": {
     "message": "एक सीक्रेट रिकवरी फ्रेज़, जिसे सीड फ्रेज़ या निमोनिक भी कहा जाता है, शब्दों का एक समूह है जो आपको अपने क्रिप्टो वॉलेट तक पहुँचने और उसे नियंत्रित करने देता है। अपने वॉलेट को MetaMask में ले जाने के लिए, आपको इस फ्रेज़ की आवश्यकता है।"
   },
@@ -6034,10 +5969,6 @@
   "step2LedgerWalletMsg": {
     "message": "अपने Ledger को सीधे अपने कंप्यूटर में प्लग करें, फिर इसे अनलॉक करें और Ethereum ऐप खोलें।",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "$2 में से चरण $1",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "अभी भी यह मैसेज मिल रहा है?"
