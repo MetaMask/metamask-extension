@@ -236,9 +236,21 @@ export const MultichainAccountsConnectPage: React.FC<
       ...testNetworkConfigurations,
     ].map(({ caipChainId }) => caipChainId);
 
-    const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-      (requestedCaipChainId) =>
-        allNetworksList.includes(requestedCaipChainId as CaipChainId),
+    const namespacesToCaipChainIds = nonTestNetworkConfigurations
+      .map(({ caipChainId }) => caipChainId)
+      .filter((caipChainId) =>
+        requestedNamespacesWithoutWallet.includes(
+          parseCaipChainId(caipChainId).namespace,
+        ),
+      );
+
+    const supportedRequestedCaipChainIds = Array.from(
+      new Set([
+        ...requestedCaipChainIds.filter((requestedCaipChainId) =>
+          allNetworksList.includes(requestedCaipChainId as CaipChainId),
+        ),
+        ...namespacesToCaipChainIds,
+      ]),
     );
 
     // If globally selected network is a test network, include that in the default selected networks for connection request
