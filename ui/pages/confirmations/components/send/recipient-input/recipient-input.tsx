@@ -41,8 +41,11 @@ export const RecipientInput = ({
   recipientInputRef: React.RefObject<HTMLInputElement>;
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
 }) => {
-  const { captureRecipientSelected, setRecipientInputMethodManual } =
-    useRecipientSelectionMetrics();
+  const {
+    captureRecipientSelected,
+    setRecipientInputMethodManual,
+    setRecipientInputMethodPasted,
+  } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
   const t = useI18nContext();
   const { to, updateTo } = useSendContext();
@@ -57,14 +60,18 @@ export const RecipientInput = ({
     [updateTo, setRecipientInputMethodManual],
   );
 
+  const captureRecipientSelectedEvent = useCallback(() => {
+    if (to) {
+      captureRecipientSelected();
+    }
+  }, [captureRecipientSelected, to]);
+
   const clearRecipient = useCallback(() => {
     updateTo('');
   }, [updateTo]);
 
   const addressIsValid =
-    Boolean(to?.length) &&
-    to === toAddressValidated &&
-    !Boolean(recipientError);
+    to?.length && to === toAddressValidated && recipientError === undefined;
 
   const resolvedAddress = addressIsValid
     ? shortenAddress(recipientResolvedLookup ?? to)
@@ -137,7 +144,8 @@ export const RecipientInput = ({
             ) : null
           }
           onChange={(e) => onToChange(e.target.value)}
-          onBlur={captureRecipientSelected}
+          onBlur={captureRecipientSelectedEvent}
+          onPaste={setRecipientInputMethodPasted}
           placeholder={t('recipientPlaceholder')}
           ref={recipientInputRef}
           value={to}
