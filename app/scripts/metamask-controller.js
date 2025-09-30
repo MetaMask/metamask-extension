@@ -53,6 +53,7 @@ import {
   ERC1155,
   ERC20,
   ERC721,
+  toHex,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -8890,8 +8891,9 @@ export default class MetamaskController extends EventEmitter {
    */
   async upgradeAccount(address, upgradeContractAddress, chainId) {
     // Get the network client for the specified chain
-    const networkClientId =
-      this.networkController.getNetworkClientIdForChainId(chainId);
+    const networkClientId = this.networkController.findNetworkClientIdByChainId(
+      toHex(chainId),
+    );
 
     // Use shared EIP-7702 utility
     return createEIP7702UpgradeTransaction(

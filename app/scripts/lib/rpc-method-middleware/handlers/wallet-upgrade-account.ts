@@ -14,6 +14,7 @@ import { isAccountUpgraded } from '../../../../../shared/lib/eip7702-utils';
 import { isSnapPreinstalled } from '../../../../../shared/lib/snaps/snaps';
 // eslint-disable-next-line import/no-restricted-paths
 import { isFlask } from '../../../../../ui/helpers/utils/build-types';
+import { toHex } from '../../../../../shared/lib/delegation/utils';
 
 export type UpgradeAccountParams = {
   account: string; // Address of the EOA to upgrade
@@ -114,8 +115,7 @@ async function upgradeAccountImplementation(
 
   try {
     // Get the network configuration for the target chain
-    // Convert number to hex string format (e.g., 1 -> "0x1")
-    const hexChainId = `0x${targetChainId.toString(16)}`;
+    const hexChainId = toHex(targetChainId);
     const networkConfig = getNetworkConfigurationByChainId(hexChainId);
 
     if (!networkConfig?.upgradeContractAddress) {
@@ -208,8 +208,7 @@ async function getAccountUpgradeStatusImplementation(
 
   try {
     // Get the network configuration for the target chain
-    // Convert number to hex string format (e.g., 1 -> "0x1")
-    const hexChainId = `0x${targetChainId.toString(16)}`;
+    const hexChainId = toHex(targetChainId);
     const networkConfiguration = getNetworkConfigurationByChainId(hexChainId);
 
     if (!networkConfiguration) {
