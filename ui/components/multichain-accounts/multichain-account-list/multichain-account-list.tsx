@@ -238,7 +238,7 @@ export const MultichainAccountList = ({
     history,
     isInSearchMode,
     displayWalletHeader,
-    allBalances?.wallets,
+    allBalances,
     formatCurrency,
     selectedAccountGroupsSet,
     showAccountCheckbox,
