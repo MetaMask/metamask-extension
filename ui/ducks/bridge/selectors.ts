@@ -237,9 +237,7 @@ export const getToChain = createSelector(
 export const getDefaultTokenPair = createDeepEqualSelector(
   [
     (state) => getFromChain(state)?.chainId,
-    (state) =>
-      // @ts-expect-error will be fixed when controller is updated
-      getBridgeFeatureFlags(state).bip44DefaultPairs,
+    (state) => getBridgeFeatureFlags(state).bip44DefaultPairs,
   ],
   (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
     if (!fromChainId) {
@@ -623,11 +621,13 @@ export const getBridgeQuotes = createSelector(
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) =>
-    selectBridgeQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote) => {
+    const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-    }),
+    });
+    return quotes;
+  },
 );
 
 export const getIsBridgeTx = createDeepEqualSelector(
