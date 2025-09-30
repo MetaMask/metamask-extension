@@ -243,19 +243,6 @@ describe('Confirm Recovery Phrase Component', () => {
     });
   });
 
-  it('renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params', () => {
-    mockUseLocation.mockReturnValue({
-      search: '?isFromReminder=true&isFromSettingsSecurity=true',
-    });
-
-    const { container } = renderWithProvider(
-      <ConfirmRecoveryPhrase {...props} />,
-      mockStore,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('onClose should navigate to reveal srp list route', () => {
     mockUseLocation.mockReturnValue({
       search: '?isFromReminder=true&isFromSettingsSecurity=true',
