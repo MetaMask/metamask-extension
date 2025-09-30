@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "모두 지우기"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "모두 숨기기"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "각 단어 사이에 공백을 추가하고, 아무도 화면을 보고 있지 않은지 확인하세요."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "모두 보기"
   },
   "onekey": {
     "message": "OneKey"
@@ -5044,18 +5038,8 @@
   "secureWallet": {
     "message": "보안 지갑"
   },
-  "secureWalletGetStartedButton": {
-    "message": "시작하기"
-  },
   "secureWalletRemindLaterButton": {
     "message": "나중에 알림"
-  },
-  "secureWalletWalletRecover": {
-    "message": "앱이 잠기거나 새 기기를 사용할 때 지갑을 복구할 수 있는 유일한 방법입니다."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "자산을 잃지 않으려면 $1을 신뢰할 수 있는 장소에 저장해 지갑을 보호하세요.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "보안"
@@ -5134,9 +5118,6 @@
   },
   "seeDetails": {
     "message": "세부 정보 보기"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "지갑 보호하기"
   },
   "seedPhraseReq": {
     "message": "비밀복구구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
@@ -5442,18 +5423,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "계정 보안을 건너뛸까요?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "이 비밀복구구문을 잃어버리면 이 지갑에 액세스할 수 없습니다."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "지금 보안 강화"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "건너뛰기"
   },
   "skipDeepLinkInterstitial": {
     "message": "딥링크를 열 때 중간 화면을 표시하지 않기"
@@ -5821,9 +5790,6 @@
   "spendingCaps": {
     "message": "지출 한도"
   },
-  "srpDesignImageAlt": {
-    "message": "SRP 금고 이미지"
-  },
   "srpDetailsDescription": {
     "message": "비밀복구구문(시드 구문, 니모닉)은 암호화폐 지갑에 접근하고 제어할 수 있게 해주는 단어 조합입니다. 지갑을 MetaMask로 옮기려면 이 구문이 필요합니다."
   },
@@ -6040,10 +6006,6 @@
   "step2LedgerWalletMsg": {
     "message": "지갑을 컴퓨터에 바로 연결하고 잠금 해제한 후 이더리움 앱을 여세요..",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "$1단계/$2단계",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "아직 이 메시지가 표시되시나요?"

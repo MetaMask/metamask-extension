@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Εκκαθάριση όλων"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Απόκρυψη όλων"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Προσθέστε ένα κενό μεταξύ κάθε λέξης και βεβαιωθείτε ότι κανείς δεν παρακολουθεί."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Εμφάνιση όλων"
   },
   "onekey": {
     "message": "OneKey"
@@ -5044,18 +5038,8 @@
   "secureWallet": {
     "message": "Ασφαλές πορτοφόλι"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Ξεκινήστε"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Υπενθυμίστε μου αργότερα"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Είναι ο μόνος τρόπος να ανακτήσετε το πορτοφόλι σας αν δεν μπορείτε να εισέλθετε στην εφαρμογή ή αποκτήσετε νέα συσκευή."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Μην ρισκάρετε να χάσετε τα κεφάλαιά σας. Προστατέψτε το πορτοφόλι σας αποθηκεύοντας την $1 σε ασφαλές μέρος.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Ασφάλεια"
@@ -5134,9 +5118,6 @@
   },
   "seeDetails": {
     "message": "Δείτε λεπτομέρειες"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Προστατεύστε το πορτοφόλι σας"
   },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"
@@ -5442,18 +5423,6 @@
   },
   "siweURI": {
     "message": "Διεύθυνση URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Παράλειψη ασφάλειας λογαριασμού;"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Εάν χάσετε αυτή τη Μυστική Φράση Ανάκτησης, δεν θα μπορείτε να έχετε ξανά πρόσβαση σε αυτό το πορτοφόλι."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Φροντίστε για την ασφάλεια τώρα"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Παράλειψη"
   },
   "skipDeepLinkInterstitial": {
     "message": "Μην εμφανίζετε το παράθυρο προειδοποίησης κατά το άνοιγμα ειδικών συνδέσμων"
@@ -5821,9 +5790,6 @@
   "spendingCaps": {
     "message": "Ανώτατα όριο δαπανών"
   },
-  "srpDesignImageAlt": {
-    "message": "Εικόνα θησαυροφυλακίου της Μυστικής Φράσης Ανάκτησης"
-  },
   "srpDetailsDescription": {
     "message": "Η Μυστική Φράση Ανάκτησης, που ονομάζεται επίσης \"seed phrase\" ή μνημονική φράση, είναι ένα σύνολο λέξεων που σας επιτρέπει να έχετε πρόσβαση και να ελέγχετε το πορτοφόλι κρυπτονομισμάτων σας. Για να μεταφέρετε το πορτοφόλι σας στο MetaMask, χρειάζεστε αυτή τη φράση."
   },
@@ -6040,10 +6006,6 @@
   "step2LedgerWalletMsg": {
     "message": "Συνδέστε το Ledger απευθείας στον υπολογιστή σας, στη συνέχεια ξεκλειδώστε το και ανοίξτε την εφαρμογή Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Βήμα $1 από $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Ακόμα λαμβάνετε αυτό το μήνυμα;"
