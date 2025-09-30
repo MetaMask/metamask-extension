@@ -90,6 +90,13 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           return;
         }
 
+        if (maxFileSize && newFiles.size > maxFileSize) {
+          const fileSizeInMB = parseFloat(
+            (maxFileSize / 1024 / 1024).toFixed(2),
+          );
+          setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
+          return;
+        }
         validFiles.push(newFiles);
       }
 
@@ -196,13 +203,13 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           <FileInput
             id="file-uploader-input"
             data-testid="file-uploader-input"
-            onChange={onFileChange}
-            // don't save the value to the input field to allow reuploading the same file
-            value={''}
             accept={accept ?? undefined}
             multiple={multiple ?? undefined}
             {...fileInputProps}
             className={classnames('hidden', fileInputProps?.className ?? '')}
+            onChange={onFileChange}
+            // don't save the value to the input field to allow reuploading the same file
+            value={''}
           />
         </Label>
         {(error || helpText) && (
