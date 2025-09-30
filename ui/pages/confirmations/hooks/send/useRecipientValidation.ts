@@ -18,7 +18,7 @@ import { useNameValidation } from './useNameValidation';
 // and result in bugs if multiple instances are created.
 export const useRecipientValidation = () => {
   const t = useI18nContext();
-  const { chainId, to } = useSendContext();
+  const { asset, chainId, to } = useSendContext();
   const { isEvmSendType, isSolanaSendType } = useSendType();
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
@@ -38,7 +38,7 @@ export const useRecipientValidation = () => {
       }
 
       if (isEvmSendType && isValidHexAddress(toAddress)) {
-        return await validateEvmHexAddress(toAddress, chainId);
+        return await validateEvmHexAddress(toAddress, chainId, asset?.address);
       }
 
       if (isSolanaSendType && isSolanaAddress(toAddress)) {
@@ -53,7 +53,7 @@ export const useRecipientValidation = () => {
         error: 'invalidAddress',
       };
     },
-    [chainId, isEvmSendType, isSolanaSendType, validateName],
+    [asset, chainId, isEvmSendType, isSolanaSendType, validateName],
   );
 
   useEffect(() => {
@@ -78,7 +78,8 @@ export const useRecipientValidation = () => {
     recipientConfusableCharacters: result?.confusableCharacters,
     recipientError: result?.error ? t(result?.error) : undefined,
     recipientResolvedLookup: result?.resolvedLookup,
-    toAddressValidated: result?.toAddressValidated,
     recipientWarning: result?.warning ? t(result?.warning) : undefined,
+    resolutionProtocol: result?.protocol,
+    toAddressValidated: result?.toAddressValidated,
   };
 };

@@ -5210,8 +5210,8 @@
   "resetWalletWarningSocial": {
     "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
-  "resolvedLookup": {
-    "message": "Resolved address of the domain: $1"
+  "resolutionProtocol": {
+    "message": "Address resolved via"
   },
   "restartMetamask": {
     "message": "Restart MetaMask"

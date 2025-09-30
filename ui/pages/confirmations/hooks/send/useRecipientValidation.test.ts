@@ -98,6 +98,7 @@ describe('useRecipientValidation', () => {
             { point: 'а', similarTo: 'a' },
             { point: 'е', similarTo: 'e' },
           ],
+          protocol: 'ens',
           warning: 'confusingDomain',
         }),
     });
@@ -118,7 +119,8 @@ describe('useRecipientValidation', () => {
     } as unknown as ReturnType<typeof useSendContext>);
 
     jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
-      validateName: () => Promise.resolve({ resolvedLookup: '0x123' }),
+      validateName: () =>
+        Promise.resolve({ resolvedLookup: '0x123', protocol: 'ens' }),
     });
 
     const { result } = renderHook();
@@ -144,6 +146,7 @@ describe('useRecipientValidation', () => {
             { point: 'е', similarTo: 'e' },
           ],
           warning: 'confusingDomain',
+          protocol: 'ens',
         }),
     });
 

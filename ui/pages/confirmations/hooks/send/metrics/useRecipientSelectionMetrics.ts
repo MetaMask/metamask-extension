@@ -14,7 +14,7 @@ import { useSendType } from '../useSendType';
 
 export const useRecipientSelectionMetrics = () => {
   const trackEvent = useContext(MetaMetricsContext);
-  const { chainId } = useSendContext();
+  const { chainId, to } = useSendContext();
   const { isEvmSendType } = useSendType();
   const { accountType, recipientInputMethod, setRecipientInputMethod } =
     useSendMetricsContext();
@@ -36,6 +36,9 @@ export const useRecipientSelectionMetrics = () => {
   }, [setRecipientInputMethod]);
 
   const captureRecipientSelected = useCallback(async () => {
+    if (!to) {
+      return;
+    }
     trackEvent({
       event: MetaMetricsEventName.SendRecipientSelected,
       category: MetaMetricsEventCategory.Send,
@@ -50,7 +53,14 @@ export const useRecipientSelectionMetrics = () => {
         chain_id_caip: isEvmSendType ? undefined : chainId,
       },
     });
-  }, [accountType, chainId, isEvmSendType, recipientInputMethod, trackEvent]);
+  }, [
+    accountType,
+    chainId,
+    isEvmSendType,
+    recipientInputMethod,
+    trackEvent,
+    to,
+  ]);
 
   return {
     captureRecipientSelected,
