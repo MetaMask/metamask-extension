@@ -3656,33 +3656,12 @@ export default class MetamaskController extends EventEmitter {
     // clear metametrics state
     this.metaMetricsController.resetState();
 
-    // clear permissions
-    this.permissionController.clearState();
-
-    // Clear snap state
-    await this.snapController.clearState();
-
     this.appStateController.setIsWalletResetInProgress(true);
 
     // reset preferences state
     this.preferencesController.resetState();
 
     this.currencyRateController.setCurrentCurrency('usd');
-
-    // Clear account tree state
-    this.accountTreeController.clearState();
-
-    // Currently, the account-order-controller is not in sync with
-    // the accounts-controller. To properly persist the hidden state
-    // of accounts, we should add a new flag to the account struct
-    // to indicate if it is hidden or not.
-    // TODO: Update @metamask/accounts-controller to support this.
-    this.accountOrderController.updateHiddenAccountsList([]);
-
-    // clear accounts in AccountTrackerController
-    this.accountTrackerController.clearAccounts();
-
-    this.txController.clearUnapprovedTransactions();
   }
 
   async exportAccount(address, password) {
@@ -4461,10 +4440,40 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      await this.keyringController.createNewVaultAndKeychain(password);
+      const isResettingWallet =
+        this.appStateController.getIsWalletResetInProgress();
 
-      // set is resetting wallet in progress to false, in case of createNewVaultAndKeychain being called from resetWallet
-      this.appStateController.setIsWalletResetInProgress(false);
+      if (isResettingWallet) {
+        // try reset the state first if it's resetting wallet
+
+        // clear permissions
+        this.permissionController.clearState();
+
+        // Clear snap state
+        await this.snapController.clearState();
+
+        // Clear account tree state
+        this.accountTreeController.clearState();
+
+        // Currently, the account-order-controller is not in sync with
+        // the accounts-controller. To properly persist the hidden state
+        // of accounts, we should add a new flag to the account struct
+        // to indicate if it is hidden or not.
+        // TODO: Update @metamask/accounts-controller to support this.
+        this.accountOrderController.updateHiddenAccountsList([]);
+
+        // clear accounts in AccountTrackerController
+        this.accountTrackerController.clearAccounts();
+
+        this.txController.clearUnapprovedTransactions();
+
+        this.tokenDetectionController.enable();
+
+        // set is resetting wallet in progress to false, in case of createNewVaultAndKeychain being called from resetWallet
+        this.appStateController.setIsWalletResetInProgress(false);
+      }
+
+      await this.keyringController.createNewVaultAndKeychain(password);
 
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
