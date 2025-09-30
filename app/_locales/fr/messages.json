@@ -725,9 +725,6 @@
   "beta": {
     "message": "Bêta"
   },
-  "betaHeaderText": {
-    "message": "Il s’agit d’une version bêta. Veuillez signaler les bogues $1"
-  },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
   },
@@ -3732,9 +3729,6 @@
   "noSnaps": {
     "message": "Aucun Snap installé"
   },
-  "noThanks": {
-    "message": "Non merci"
-  },
   "noWebcamFound": {
     "message": "La caméra de votre ordinateur n’a pas été trouvée. Veuillez réessayer."
   },
@@ -4012,45 +4006,11 @@
   "onboardingImportWallet": {
     "message": "J’ai déjà un portefeuille"
   },
-  "onboardingMetametricsAgree": {
-    "message": "J’accepte"
-  },
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Ce sera toujours :"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Si nous envisageons d’utiliser ces données à d’autres fins, nous vous en informerons. Vous pouvez consulter notre $1 à tout moment (nous ne vendons jamais les données que vous nous confiez).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Politique de confidentialité"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Les clics et les contenus visualisés sur l’application sont enregistrés, mais d’autres renseignements (comme votre adresse publique) ne le sont pas.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privé :"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Nous utilisons votre adresse IP de temps en temps pour détecter votre emplacement général (comme votre pays ou votre région), mais nous ne l’enregistrons pas.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Général :"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Vous pouvez décider à tout moment de partager ou de supprimer vos données d’utilisation dans les paramètres.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Facultatif :"
-  },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Nous utiliserons ces données pour savoir comment vous interagissez avec nos communications commerciales et pour partager avec vous des informations pertinentes (comme les caractéristiques des produits)."
   },
   "onboardingOptionIcon": {
     "message": "Icône $1",
@@ -4094,14 +4054,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Tout effacer"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Tout masquer"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Ajoutez un espace entre chaque mot et assurez-vous que personne ne regarde."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Afficher tout"
   },
   "onekey": {
     "message": "OneKey"
@@ -4713,9 +4667,6 @@
   "recipientAddressPlaceholderNew": {
     "message": "Saisissez l’adresse publique (0x) ou le nom de domaine"
   },
-  "recommendedGasLabel": {
-    "message": "Recommandé"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sauvegarder maintenant"
   },
@@ -5012,18 +4963,8 @@
   "secureWallet": {
     "message": "Portefeuille sécurisé"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Commencer"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Me le rappeler plus tard"
-  },
-  "secureWalletWalletRecover": {
-    "message": "C’est le seul moyen de récupérer votre portefeuille si vous n’arrivez plus à vous connecter à l’application ou changez d’appareil."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Ne prenez pas le risque de perdre vos fonds. Protégez votre portefeuille en conservant votre $1 en lieu sûr.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Sécurité"
@@ -5102,9 +5043,6 @@
   },
   "seeDetails": {
     "message": "Voir les détails"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Sécuriser votre portefeuille"
   },
   "seedPhraseReq": {
     "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
@@ -5410,18 +5348,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Sauter le réglage des paramètres de sécurité du compte ?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Si vous perdez cette phrase secrète de récupération, vous ne pourrez plus accéder à ce portefeuille."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Sécuriser maintenant"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Ignorer"
   },
   "skipDeepLinkInterstitial": {
     "message": "Ne pas afficher d’écran interstitiel lors de l’ouverture de liens profonds"
@@ -5780,9 +5706,6 @@
   "spendingCaps": {
     "message": "Plafonds de dépenses"
   },
-  "srpDesignImageAlt": {
-    "message": "Image du coffre-fort contenant la phrase secrète de récupération"
-  },
   "srpDetailsDescription": {
     "message": "Une phrase secrète de récupération, également appelée phrase secrète ou phrase mnémonique, est une série de mots qui vous permet d’accéder à votre portefeuille crypto et de le gérer. Vous en aurez besoin pour transférer votre portefeuille vers MetaMask."
   },
@@ -5999,10 +5922,6 @@
   "step2LedgerWalletMsg": {
     "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’application Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Étape $1 sur $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Vous recevez toujours ce message ?"

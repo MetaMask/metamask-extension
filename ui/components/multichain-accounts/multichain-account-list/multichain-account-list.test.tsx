@@ -201,12 +201,12 @@ describe('MultichainAccountList', () => {
     // Selected icon should be present for the selected account
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-icon`,
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
 
@@ -233,12 +233,12 @@ describe('MultichainAccountList', () => {
     // Selected icon should be present for the selected account
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-icon`,
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
 
@@ -257,12 +257,12 @@ describe('MultichainAccountList', () => {
     // Now wallet two should have the selected icon
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-icon`,
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
   });
@@ -276,12 +276,12 @@ describe('MultichainAccountList', () => {
     // No selected icons should be present since no accounts are marked as selected
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-icon`,
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
   });
@@ -709,7 +709,7 @@ describe('MultichainAccountList', () => {
       expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
       expect(
         screen.getByTestId(
-          `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
         ),
       ).toBeInTheDocument();
 
@@ -726,7 +726,7 @@ describe('MultichainAccountList', () => {
       expect(screen.getAllByRole('checkbox')).toHaveLength(2);
       expect(
         screen.queryByTestId(
-          `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
         ),
       ).not.toBeInTheDocument();
     });
