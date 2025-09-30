@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import classnames from 'classnames';
+import browser from 'webextension-polyfill';
 import {
   setCompletedOnboarding,
   toggleExternalServices,
@@ -19,10 +20,7 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import {
   Box,
   Button,
@@ -63,7 +61,6 @@ export default function OnboardingPinExtension() {
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
-    await dispatch(setCompletedOnboarding());
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -74,7 +71,35 @@ export default function OnboardingPinExtension() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
-    navigate(DEFAULT_ROUTE);
+
+    // Open MetaMask in side panel with homepage while keeping pin-extension page in fullscreen view
+    // Side panel API is only available in Chrome 114+ with Manifest V3
+    try {
+      if (browser?.sidePanel?.open) {
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        if (tabs && tabs.length > 0) {
+          // Open side panel with homepage - this will NOT affect the expanded/fullscreen view
+          // The expanded view will stay on pin-extension page while side panel shows homepage
+          await browser.sidePanel.open({ windowId: tabs[0].windowId });
+          console.log('Successfully opened side panel with homepage. Pin-extension page remains in expanded view.');
+
+          // Complete onboarding AFTER side panel opens successfully
+          // This prevents automatic navigation while keeping the pin-extension page visible
+          await dispatch(setCompletedOnboarding());
+        }
+      } else {
+        // Fallback: If side panel not available, complete onboarding and navigate to home as before
+        console.log('Side panel API not supported - completing onboarding and navigating to home');
+        await dispatch(setCompletedOnboarding());
+      }
+    } catch (error) {
+      console.error('Error opening side panel:', error);
+      // If side panel fails, complete onboarding and navigate to home as fallback
+      await dispatch(setCompletedOnboarding());
+    }
   };
 
   useEffect(() => {

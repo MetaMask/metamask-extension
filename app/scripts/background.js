@@ -1670,9 +1670,59 @@ function onNavigateToTab() {
   });
 }
 
-browser.sidePanel
-  .setPanelBehavior({ openPanelOnActionClick: true })
-  .catch((error) => console.error(error));
+// Set initial side panel behavior based on user preference
+const initSidePanelBehavior = async () => {
+  try {
+    // Wait for controller to be initialized
+    await isInitialized;
+
+    // Get user preference (default to true for side panel)
+    const useSidePanelAsDefault =
+      controller?.preferencesController?.state?.preferences
+        ?.useSidePanelAsDefault ?? true;
+
+
+    // Set panel behavior based on preference
+    if (browser?.sidePanel?.setPanelBehavior) {
+      await browser.sidePanel.setPanelBehavior({
+        openPanelOnActionClick: useSidePanelAsDefault,
+      });
+    }
+  } catch (error) {
+    console.error('Error setting side panel behavior:', error);
+  }
+};
+
+initSidePanelBehavior();
+
+// Listen for preference changes to update side panel behavior dynamically
+const setupPreferenceListener = async () => {
+  try {
+    await isInitialized;
+
+    // Listen for preference changes using the controller messenger
+    controller?.controllerMessenger?.subscribe(
+      'PreferencesController:stateChange',
+      (state) => {
+        const useSidePanelAsDefault =
+          state?.preferences?.useSidePanelAsDefault ?? true;
+        if (browser?.sidePanel?.setPanelBehavior) {
+          browser.sidePanel
+            .setPanelBehavior({
+              openPanelOnActionClick: useSidePanelAsDefault,
+            })
+            .catch((error) =>
+              console.error('Error updating panel behavior:', error),
+            );
+        }
+      }
+    );
+  } catch (error) {
+    console.error('Error setting up preference listener:', error);
+  }
+};
+
+setupPreferenceListener();
 
 browser.tabs.onActivated.addListener(async ({ tabId }) => {
   const activeTab = await browser.tabs.get(tabId);

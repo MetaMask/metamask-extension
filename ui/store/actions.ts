@@ -4148,6 +4148,10 @@ export function setShowMultiRpcModal(value: boolean) {
   return setPreference('showMultiRpcModal', value);
 }
 
+export function setUseSidePanelAsDefault(value: boolean) {
+  return setPreference('useSidePanelAsDefault', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
