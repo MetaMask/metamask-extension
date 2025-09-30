@@ -151,7 +151,6 @@ export const AggregatedPercentageOverview = () => {
 export const AggregatedMultichainPercentageOverview = ({
   privacyMode = false,
 }: {
-  portfolioButton: () => JSX.Element | null;
   privacyMode?: boolean;
 }) => {
   const locale = useSelector(getIntlLocale);
