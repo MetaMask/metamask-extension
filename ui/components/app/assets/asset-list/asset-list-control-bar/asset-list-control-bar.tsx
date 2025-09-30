@@ -26,6 +26,7 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
@@ -107,6 +108,11 @@ const AssetListControlBar = ({
   const popoverRef = useRef<HTMLDivElement>(null);
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
+  const multichainNetwork = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  console.log('multichainNetwork ...........', multichainNetwork);
+  console.log('currentMultichainNetwork ...........', currentMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -365,6 +371,11 @@ const AssetListControlBar = ({
       isGlobalNetworkSelectorRemoved &&
       Object.keys(allEnabledNetworksForAllNamespaces).length === 1
     ) {
+      console.log(
+        'allEnabledNetworksForAllNamespaces ...........',
+        allEnabledNetworksForAllNamespaces,
+        currentMultichainNetwork,
+      );
       const chainId = allEnabledNetworksForAllNamespaces[0];
       return isStrictHexString(chainId)
         ? (allNetworks[chainId]?.name ?? t('currentNetwork'))

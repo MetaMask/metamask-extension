@@ -17,9 +17,6 @@ export const useAdditionalNetworkHandlers = () => {
 
       // First add the network to user's configuration
       await dispatch(addNetwork(network));
-
-      // Then enable it in the network list
-      await dispatch(setEnabledNetworks(network.chainId));
     },
     [dispatch],
   );
