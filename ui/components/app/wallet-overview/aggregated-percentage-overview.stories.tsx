@@ -23,16 +23,15 @@ const Story = {
 export default Story;
 
 export const Default = () => (
-  <AggregatedPercentageOverview portfolioButton={() => null} />
+  <AggregatedPercentageOverview />
 );
 
 export const Multichain = () => (
-  <AggregatedMultichainPercentageOverview portfolioButton={() => null} />
+  <AggregatedMultichainPercentageOverview />
 );
 
 export const MultichainPrivacyMode = () => (
   <AggregatedMultichainPercentageOverview
     privacyMode={true}
-    portfolioButton={() => null}
   />
 );
