@@ -28,7 +28,7 @@ import {
   GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
@@ -76,7 +76,7 @@ export const PermissionsPage = () => {
             color={Color.iconDefault}
             onClick={() =>
               history.push(
-                isGatorPermissionsFeatureEnabled()
+                isGatorPermissionsRevocationFeatureEnabled()
                   ? GATOR_PERMISSIONS
                   : DEFAULT_ROUTE,
               )
@@ -92,7 +92,9 @@ export const PermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="permissions-page-title"
         >
-          {isGatorPermissionsFeatureEnabled() ? t('sites') : t('permissions')}
+          {isGatorPermissionsRevocationFeatureEnabled()
+            ? t('sites')
+            : t('permissions')}
         </Text>
       </Header>
       <Content padding={0}>

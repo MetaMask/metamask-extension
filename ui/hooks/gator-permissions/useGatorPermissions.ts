@@ -20,7 +20,7 @@ export function useGatorPermissions() {
         const newData = await fetchAndUpdateGatorPermissions();
         if (!cancelled) {
           setData(newData);
-          forceUpdateMetamaskState(dispatch);
+          await forceUpdateMetamaskState(dispatch);
         }
       } catch (err) {
         if (!cancelled) {

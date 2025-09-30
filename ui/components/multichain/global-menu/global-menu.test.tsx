@@ -6,7 +6,7 @@ import {
   GATOR_PERMISSIONS,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { GlobalMenu } from '.';
 
 const render = (metamaskStateChanges = {}) => {
@@ -52,7 +52,9 @@ jest.mock('../../../../shared/modules/environment');
 describe('Global Menu', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(false);
   });
 
   it('locks MetaMask when item is clicked', async () => {
@@ -112,8 +114,10 @@ describe('Global Menu', () => {
     });
   });
 
-  it('connected sites has correct href to /gator-permissions route when Gator Permissions feature is enabled', async () => {
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+  it('connected sites has correct href to /gator-permissions route when Gator Permissions Revocation feature is enabled', async () => {
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(true);
     const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-connected-sites')).toHaveAttribute(
@@ -123,8 +127,10 @@ describe('Global Menu', () => {
     });
   });
 
-  it('connected sites has correct href to /permissions route when Gator Permissions feature is disabled', async () => {
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+  it('connected sites has correct href to /permissions route when Gator Permissions Revocation feature is disabled', async () => {
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(false);
     const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-connected-sites')).toHaveAttribute(

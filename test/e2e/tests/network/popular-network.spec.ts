@@ -8,7 +8,6 @@ import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-networ
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
-import NetworkSwitchModalConfirmation from '../../page-objects/pages/dialog/network-switch-modal-confirmation';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -79,20 +78,6 @@ describe('Popular Networks', function (this: Suite) {
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa4b1');
-
-        const networkSwitchModalConfirmation =
-          new NetworkSwitchModalConfirmation(driver);
-        await networkSwitchModalConfirmation.checkPageIsLoaded();
-        await networkSwitchModalConfirmation.checkNetworkInformationIsDisplayed(
-          {
-            networkURL: 'https://arbitrum-mainnet.infura.io',
-            currencySymbol: 'ETH',
-            chainId: '42161',
-            networkName: 'Arbitrum',
-            blockExplorerURL: 'https://explorer.arbitrum.io',
-          },
-        );
-        await networkSwitchModalConfirmation.clickApproveButton();
 
         // verify network is switched
         await new Homepage(driver).checkPageIsLoaded();

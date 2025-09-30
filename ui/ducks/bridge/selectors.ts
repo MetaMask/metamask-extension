@@ -15,6 +15,7 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -24,7 +25,12 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import {
+  parseCaipChainId,
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import type {
   CurrencyRateState,
   MultichainAssetsControllerState,
@@ -66,6 +72,7 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { getIsSmartTransaction } from '../../../shared/modules/selectors';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -182,8 +189,7 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getMultichainProviderConfig,
-  getFromChains,
+  [getMultichainProviderConfig, getFromChains],
   (providerConfig, fromChains) => {
     return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
   },
@@ -228,6 +234,29 @@ export const getToChain = createSelector(
       : fromChain,
 );
 
+export const getDefaultTokenPair = createDeepEqualSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) =>
+      // @ts-expect-error will be fixed when controller is updated
+      getBridgeFeatureFlags(state).bip44DefaultPairs,
+  ],
+  (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
+    if (!fromChainId) {
+      return null;
+    }
+    const { namespace } = parseCaipChainId(formatChainIdToCaip(fromChainId));
+    const defaultTokenPair = bip44DefaultPairs?.[namespace]?.standard;
+    if (defaultTokenPair) {
+      return Object.entries(defaultTokenPair).flat() as [
+        CaipAssetType,
+        CaipAssetType,
+      ];
+    }
+    return null;
+  },
+);
+
 export const getFromToken = createSelector(
   [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
   (fromToken, fromChain) => {
@@ -261,7 +290,10 @@ export const getToToken = createSelector(
       return toToken;
     }
     // Otherwise, determine the default token to use based on fromToken and toChain
-    const defaultToken = getDefaultToToken(toChain, fromToken);
+    const defaultToken = getDefaultToToken(
+      formatChainIdToCaip(toChain.chainId),
+      fromToken,
+    );
     return defaultToken ? toBridgeToken(defaultToken) : null;
   },
 );
@@ -324,12 +356,14 @@ export const getToAccounts = createSelector(
 );
 
 const _getFromNativeBalance = createSelector(
-  getFromChain,
-  (state: BridgeAppState) => state.bridge.fromNativeBalance,
-  getMultichainBalances,
-  getSelectedInternalAccount,
-  (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, { id }) => {
-    if (!fromChain) {
+  [
+    getFromChain,
+    (state: BridgeAppState) => state.bridge.fromNativeBalance,
+    getMultichainBalances,
+    (state) => getFromAccount(state)?.id,
+  ],
+  (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, id) => {
+    if (!fromChain || !id) {
       return null;
     }
 
@@ -851,5 +885,53 @@ export const getIsUnifiedUIEnabled = createSelector(
             : false,
         )
       : false;
+  },
+);
+
+export const selectNoFeeAssets = createSelector(
+  [
+    getBridgeFeatureFlags,
+    (_state: BridgeAppState, chainId?: string) => chainId,
+  ],
+  (bridgeFeatureFlags, chainId): string[] => {
+    if (!chainId) {
+      return [];
+    }
+    const caipChainId = formatChainIdToCaip(chainId);
+    return (
+      (
+        bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
+          noFeeAssets?: string[];
+        }
+      )?.noFeeAssets ?? []
+    );
+  },
+);
+
+const getIsGasIncludedSwapSupported = createSelector(
+  [
+    (state) => getFromChain(state)?.chainId,
+    (state) => getToChain(state)?.chainId,
+    (_, isSendBundleSupportedForChain: boolean) =>
+      isSendBundleSupportedForChain,
+  ],
+  (fromChainId, toChainId, isSendBundleSupportedForChain) => {
+    if (!fromChainId) {
+      return false;
+    }
+    const isSwap = !isCrossChain(fromChainId, toChainId);
+    return isSwap && isSendBundleSupportedForChain;
+  },
+);
+
+export const getIsStxEnabled = createSelector(
+  [(state) => getFromChain(state)?.chainId, (state) => state],
+  (fromChainId, state) => getIsSmartTransaction(state, fromChainId),
+);
+
+export const getIsGasIncluded = createSelector(
+  [getIsStxEnabled, getIsGasIncludedSwapSupported],
+  (isStxEnabled, isGasIncludedSwapSupported) => {
+    return isStxEnabled && isGasIncludedSwapSupported;
   },
 );

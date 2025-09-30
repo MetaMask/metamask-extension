@@ -374,13 +374,13 @@ const AssetListControlBar = ({
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length > 1
+      allEnabledNetworksForAllNamespaces.length > 1
     ) {
       return t('allPopularNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length === 0
+      allEnabledNetworksForAllNamespaces.length === 0
     ) {
       return t('noNetworksSelected');
     }
@@ -409,7 +409,7 @@ const AssetListControlBar = ({
       return undefined;
     }
 
-    const chainIds = Object.keys(enabledNetworksByNamespace);
+    const chainIds = allEnabledNetworksForAllNamespaces;
 
     if (chainIds.length !== 1) {
       return undefined;
@@ -417,7 +417,7 @@ const AssetListControlBar = ({
 
     const singleEnabledChainId = chainIds[0];
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [enabledNetworksByNamespace]);
+  }, [allEnabledNetworksForAllNamespaces]);
 
   return (
     <Box
@@ -454,7 +454,7 @@ const AssetListControlBar = ({
               <AvatarNetwork
                 name={currentMultichainNetwork.nickname}
                 src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Sm}
+                size={AvatarNetworkSize.Xs}
                 borderWidth={0}
               />
             )}

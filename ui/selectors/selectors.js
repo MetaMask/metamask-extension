@@ -33,6 +33,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -652,6 +653,23 @@ export function getMetaMaskAccountBalances(state) {
 }
 
 export function getMetaMaskCachedBalances(state, networkChainId) {
+  const enabledNetworks = getEnabledNetworks(state);
+  const eip155 = enabledNetworks?.eip155 ?? {};
+  const enabledIds = Object.keys(eip155).filter((id) => Boolean(eip155[id]));
+  if (enabledIds.length === 1) {
+    const chainId = enabledIds[0];
+    if (state.metamask.accountsByChainId?.[chainId]) {
+      return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
+        (accumulator, [key, value]) => {
+          accumulator[key] = value.balance;
+          return accumulator;
+        },
+        {},
+      );
+    }
+    return {};
+  }
+
   const chainId = networkChainId ?? getCurrentChainId(state);
 
   if (state.metamask.accountsByChainId?.[chainId]) {
@@ -3037,6 +3055,47 @@ export function getUrlScanCacheResult(state, hostname) {
 
   return state.metamask.urlScanCache?.[hostname];
 }
+
+/**
+ * Gets the token scan cache from state
+ *
+ * @param {*} state
+ * @returns The token scan cache object
+ */
+export function getTokenScanCache(state) {
+  return state.metamask.tokenScanCache;
+}
+
+/**
+ * Gets specific token scan results for given addresses.
+ *
+ * @param {*} state
+ * @param {string} chainId
+ * @param {string[]} tokenAddresses
+ * @returns {Record<string, TokenScanCacheResult>}
+ */
+export const getTokenScanResultsForAddresses = createDeepEqualSelector(
+  getTokenScanCache,
+  (_state, chainId) => chainId,
+  (_state, _chainId, tokenAddresses) => tokenAddresses,
+  (tokenScanCache, chainId, tokenAddresses) => {
+    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+      return {};
+    }
+
+    const results = {};
+    tokenAddresses.forEach((tokenAddress) => {
+      if (tokenAddress) {
+        const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
+        if (tokenScanCache?.[cacheKey]) {
+          results[cacheKey] = tokenScanCache[cacheKey];
+        }
+      }
+    });
+
+    return results;
+  },
+);
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**

@@ -225,17 +225,22 @@ export const getEnabledNetworksByNamespace = createDeepEqualSelector(
   getSelectedMultichainNetworkChainId,
   (enabledNetworkMap, currentMultichainChainId) => {
     const { namespace } = parseCaipChainId(currentMultichainChainId);
-    return enabledNetworkMap[namespace] ?? {};
+    const namespaceMap = enabledNetworkMap[namespace] ?? {};
+
+    return Object.fromEntries(
+      Object.entries(namespaceMap).filter(([, enabled]) => enabled === true),
+    );
   },
 );
 
 export const getAllEnabledNetworksForAllNamespaces = createDeepEqualSelector(
   getEnabledNetworks,
-  (enabledNetworkMap) => {
-    return Object.values(enabledNetworkMap)
-      .flatMap((namespaceNetworks) => Object.keys(namespaceNetworks))
-      .filter((chainId) => chainId); // Filter out any empty strings
-  },
+  (enabledNetworkMap) =>
+    Object.values(enabledNetworkMap).flatMap((namespaceNetworks) =>
+      Object.entries(namespaceNetworks)
+        .filter(([, enabled]) => enabled)
+        .map(([chainId]) => chainId),
+    ),
 );
 
 export const getEnabledChainIds = createDeepEqualSelector(
