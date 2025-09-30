@@ -270,23 +270,27 @@ export const CoinOverview = ({
 
     const renderNativeTokenView = () => (
       <Box className="wallet-overview__currency-wrapper">
-        <PercentageAndAmountChange
-          value={
-            tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
-              ?.pricePercentChange1d
-          }
-        />
+        {!isTestnet && (
+          <PercentageAndAmountChange
+            value={
+              tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
+                ?.pricePercentChange1d
+            }
+          />
+        )}
         {renderPortfolioButton()}
       </Box>
     );
 
     const renderAggregatedView = () => (
       <Box className="wallet-overview__currency-wrapper">
-        {isTokenNetworkFilterEqualCurrentNetwork ? (
-          <AggregatedPercentageOverview />
-        ) : (
-          <AggregatedPercentageOverviewCrossChains />
-        )}
+        {!isTestnet &&
+          (isTokenNetworkFilterEqualCurrentNetwork ||
+          !process.env.PORTFOLIO_VIEW ? (
+            <AggregatedPercentageOverview />
+          ) : (
+            <AggregatedPercentageOverviewCrossChains />
+          ))}
         {renderPortfolioButton()}
       </Box>
     );
