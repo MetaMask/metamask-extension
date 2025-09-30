@@ -6463,6 +6463,16 @@ export async function getNetworkConfigurationByNetworkClientId(
   return networkConfiguration;
 }
 
+/**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export function lookupSelectedNetworks() {
+  return async () => {
+    await submitRequestToBackground('lookupSelectedNetworks');
+  };
+}
+
 export function updateProposedNames(
   request: UpdateProposedNamesRequest,
 ): ThunkAction<

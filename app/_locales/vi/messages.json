@@ -1418,9 +1418,6 @@
   "connectingTo": {
     "message": "Đang kết nối với $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "\"$1\" đang được loại bỏ dần và có thể không hoạt động. Vui lòng thử một mạng khác."
-  },
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
   },
@@ -1583,9 +1580,6 @@
   "currentNetwork": {
     "message": "Mạng hiện tại",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "Đường dẫn URL RPC hiện tại cho mạng này không còn được dùng nữa."
   },
   "currentTitle": {
     "message": "Hiện tại:"
@@ -3586,10 +3580,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Phí gas tương đối $1 so với 72 giờ qua.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Chúng tôi không thể kết nối với $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL mạng"
@@ -6452,9 +6442,6 @@
     "message": "Chuyển đổi loại tiền tệ đầu vào"
   },
   "switchNetwork": {
-    "message": "Chuyển mạng"
-  },
-  "switchNetworks": {
     "message": "Chuyển mạng"
   },
   "switchToNetwork": {

@@ -196,6 +196,7 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import { selectAllEnabledNetworkClientIds } from '../../shared/modules/selectors/multichain';
 import {
   trace,
   endTrace,
@@ -1602,11 +1603,26 @@ export default class MetamaskController extends EventEmitter {
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.state;
 
-    this.networkController.lookupNetwork();
-
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
     }
+  }
+
+  /**
+   * Gathers metadata (primarily connectivity status) about the globally selected
+   * network as well as each enabled network and persists it to state.
+   */
+  async lookupSelectedNetworks() {
+    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
+      this._getMetaMaskState(),
+    );
+
+    await Promise.allSettled([
+      this.networkController.lookupNetwork(),
+      ...enabledNetworkClientIds.map(async (networkClientId) => {
+        return await this.networkController.lookupNetwork(networkClientId);
+      }),
+    ]);
   }
 
   triggerNetworkrequests() {
@@ -3559,6 +3575,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
+      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
     };
   }
 
@@ -8238,22 +8255,26 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setEnabledNetworks = (chainId) => {
+  setEnabledNetworks = async (chainId) => {
     try {
       this.networkEnablementController.enableNetwork(chainId);
     } catch (err) {
       log.error(err.message);
       throw err;
     }
+
+    await this.lookupSelectedNetworks();
   };
 
-  setEnabledAllPopularNetworks = () => {
+  setEnabledAllPopularNetworks = async () => {
     try {
       this.networkEnablementController.enableAllPopularNetworks();
     } catch (err) {
       log.error(err.message);
       throw err;
     }
+
+    await this.lookupSelectedNetworks();
   };
 
   updateHiddenAccountsList = (hiddenAccountList) => {

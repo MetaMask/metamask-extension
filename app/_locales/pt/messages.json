@@ -1394,9 +1394,6 @@
   "connectingTo": {
     "message": "Conectando a $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' está sendo descontinuada e poderá não funcionar. Tente outra rede."
-  },
   "connectingToGoerli": {
     "message": "Conectando à rede de teste Goerli"
   },
@@ -1559,9 +1556,6 @@
   "currentNetwork": {
     "message": "Rede atual",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "O atual URL da RPC para essa rede foi descontinuado."
   },
   "currentTitle": {
     "message": "Atual:"
@@ -3556,10 +3550,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "As taxas de gás estão $1 em relação às últimas 72 horas.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Não podemos conectar a $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL da rede"
@@ -6406,9 +6396,6 @@
   },
   "switchNetwork": {
     "message": "Alternar rede"
-  },
-  "switchNetworks": {
-    "message": "Alternar redes"
   },
   "switchToNetwork": {
     "message": "Alternar para $1",
