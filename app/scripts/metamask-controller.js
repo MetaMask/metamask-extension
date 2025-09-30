@@ -3382,6 +3382,11 @@ export default class MetamaskController extends EventEmitter {
         tokenBalancesController.stopPollingByPollingToken.bind(
           tokenBalancesController,
         ),
+
+      updateBalances: tokenBalancesController.updateBalances.bind(
+        tokenBalancesController,
+      ),
+
       deFiStartPolling: deFiPositionsController.startPolling.bind(
         deFiPositionsController,
       ),
