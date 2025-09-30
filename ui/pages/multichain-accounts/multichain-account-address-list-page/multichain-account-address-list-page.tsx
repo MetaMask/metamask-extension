@@ -97,7 +97,7 @@ export const MultichainAccountAddressListPage = () => {
       >
         {pageTitle}
       </Header>
-      <Content>
+      <Content padding={0}>
         <Box flexDirection={BoxFlexDirection.Column}>
           {decodedAccountGroupId ? (
             <MultichainAddressRowsList

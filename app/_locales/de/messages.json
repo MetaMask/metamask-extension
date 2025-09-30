@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Alle löschen"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Alle verbergen"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Fügen Sie zwischen jedem Wort ein Leerzeichen ein und stellen Sie sicher, dass niemand zusieht."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Alle anzeigen"
   },
   "onekey": {
     "message": "OneKey"

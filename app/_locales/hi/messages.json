@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "सभी हटाएं"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "सभी छिपाएं"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "प्रत्येक शब्द के बीच में एक स्पेस जोड़ें और सुनिश्चित करें कि कोई देख न रहा हो।"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "सभी दिखाएं"
   },
   "onekey": {
     "message": "OneKey"

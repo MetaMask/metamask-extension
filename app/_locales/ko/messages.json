@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "모두 지우기"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "모두 숨기기"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "각 단어 사이에 공백을 추가하고, 아무도 화면을 보고 있지 않은지 확인하세요."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "모두 보기"
   },
   "onekey": {
     "message": "OneKey"
