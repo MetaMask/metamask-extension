@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "添加账户"
   },
-  "addingCustomNetwork": {
-    "message": "正在添加网络"
-  },
   "additionalNetworks": {
     "message": "其他网络"
   },
@@ -742,10 +739,6 @@
   },
   "betaTerms": {
     "message": "测试版使用条款"
-  },
-  "billionAbbreviation": {
-    "message": "十亿",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "账户",
@@ -3318,10 +3311,6 @@
   },
   "metrics": {
     "message": "指标"
-  },
-  "millionAbbreviation": {
-    "message": "百万",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
@@ -6716,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "转账请求"
-  },
-  "trillionAbbreviation": {
-    "message": "万亿",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "我们在连接您的 Ledger 时遇到问题。$1",

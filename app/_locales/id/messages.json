@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "Menambahkan akun"
   },
-  "addingCustomNetwork": {
-    "message": "Menambahkan Jaringan"
-  },
   "additionalNetworks": {
     "message": "Jaringan tambahan"
   },
@@ -742,10 +739,6 @@
   },
   "betaTerms": {
     "message": "Ketentuan penggunaan Beta"
-  },
-  "billionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Akun",
@@ -3318,10 +3311,6 @@
   },
   "metrics": {
     "message": "Metrik"
-  },
-  "millionAbbreviation": {
-    "message": "Jt",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "verifikasi detail jaringan",
@@ -6716,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "Permintaan transfer"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Kami mengalami masalah saat menghubungkan Ledger Anda. $1",
