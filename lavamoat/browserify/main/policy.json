@@ -2845,11 +2845,6 @@
         "browserify>buffer": true
       }
     },
-    "blo": {
-      "globals": {
-        "btoa": true
-      }
-    },
     "@metamask/design-system-react>blo": {
       "globals": {
         "btoa": true

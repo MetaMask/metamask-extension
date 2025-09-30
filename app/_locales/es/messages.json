@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "Añadiendo cuenta"
   },
-  "addingCustomNetwork": {
-    "message": "Agregando red"
-  },
   "additionalNetworks": {
     "message": "Redes adicionales"
   },
@@ -742,10 +739,6 @@
   },
   "betaTerms": {
     "message": "Términos de uso de beta"
-  },
-  "billionAbbreviation": {
-    "message": "mm",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Cuenta",
@@ -3319,10 +3312,6 @@
   "metrics": {
     "message": "Indicadores"
   },
-  "millionAbbreviation": {
-    "message": "m",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "verifique los detalles de la red",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3759,9 +3748,6 @@
   "noSnaps": {
     "message": "No tiene ningún snap instalado."
   },
-  "noThanks": {
-    "message": "No, gracias"
-  },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
   },
@@ -4039,45 +4025,11 @@
   "onboardingImportWallet": {
     "message": "Tengo una billetera existente"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Acepto"
-  },
   "onboardingMetametricsDescription": {
     "message": "Nos gustaría recopilar datos básicos de uso y diagnóstico para mejorar MetaMask. Siempre será:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Te informaremos si planeamos usar estos datos para otros fines. Puedes revisar nuestros $1 en cualquier momento (nunca vendemos los datos que nos proporcionas aquí).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Política de privacidad"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "Los clics y las visualizaciones de $1 en la aplicación se almacenan, pero otros detalles (como tu dirección pública) no.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privadas:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Usamos temporalmente tu dirección IP para detectar una ubicación general (como tu país o región), pero nunca se almacena.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Generales:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Tú decides si deseas compartir o eliminar tus datos de uso a través de la configuración en cualquier momento.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Opcionales:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Ayúdenos a mejorar MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Utilizaremos estos datos para saber cómo interactúa con nuestras comunicaciones de marketing. Es posible que compartamos noticias relevantes (como características del producto)."
   },
   "onboardingOptionIcon": {
     "message": "Ícono $1",
@@ -5038,18 +4990,8 @@
   "secureWallet": {
     "message": "Proteger monedero"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Comenzar"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Recordarme más adelante"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Es la única forma de recuperar tu billetera si te quedas fuera de la aplicación o cambias de dispositivo."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "No te arriesgues a perder tus fondos. Protege tu bolsillo guardando tu $1 en un lugar de confianza.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Seguridad"
@@ -5128,9 +5070,6 @@
   },
   "seeDetails": {
     "message": "Ver detalles"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Proteger su cartera"
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
@@ -5436,18 +5375,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "¿Omitir la seguridad de la cuenta?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Si pierdes esta frase secreta de recuperación, no podrás acceder a esta billetera."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Asegurar ahora"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Omitir"
   },
   "skipDeepLinkInterstitial": {
     "message": "No mostrar pantalla intersticial al abrir enlaces profundos"
@@ -5815,9 +5742,6 @@
   "spendingCaps": {
     "message": "Límites de gasto"
   },
-  "srpDesignImageAlt": {
-    "message": "Imagen de bóveda de la FSR"
-  },
   "srpDetailsDescription": {
     "message": "Una frase secreta de recuperación, también llamada frase semilla o mnemotécnica, es un conjunto de palabras que te permite acceder y controlar tu billetera de criptomonedas. Para transferir tu billetera a MetaMask, necesitas esta frase."
   },
@@ -6034,10 +5958,6 @@
   "step2LedgerWalletMsg": {
     "message": "Conecte su Ledger directamente a su equipo, desbloquéelo y abra la aplicación Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Paso $1 de $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "¿Sigue recibiendo este mensaje?"
@@ -6785,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "Solicitud de transferencia"
-  },
-  "trillionAbbreviation": {
-    "message": "b",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Tenemos problemas para conectarnos con su Ledger. $1",

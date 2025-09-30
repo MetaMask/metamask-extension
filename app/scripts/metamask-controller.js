@@ -381,8 +381,10 @@ import { EnsControllerInit } from './controller-init/confirmations/ens-controlle
 import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
 import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
-import { SubscriptionControllerInit } from './controller-init/subscription';
-import { getIdentityAPI } from './services/oauth/web-authenticator-factory';
+import {
+  SubscriptionControllerInit,
+  SubscriptionServiceInit,
+} from './controller-init/subscription';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
@@ -909,6 +911,7 @@ export default class MetamaskController extends EventEmitter {
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
+      SubscriptionService: SubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
@@ -997,6 +1000,7 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
     this.oauthService = controllersByName.OAuthService;
+    this.SubscriptionService = controllersByName.SubscriptionService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.subscriptionController = controllersByName.SubscriptionController;
@@ -2308,82 +2312,6 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
-  async startSubscriptionWithCard(
-    params,
-    /* current tab can be undefined if open from non tab context (e.g. popup, background) */
-    currentTabId,
-  ) {
-    const identityAPI = getIdentityAPI();
-    const redirectUrl = identityAPI.getRedirectURL();
-
-    const { checkoutSessionUrl } =
-      await this.subscriptionController.startShieldSubscriptionWithCard({
-        ...params,
-        successUrl: redirectUrl,
-      });
-
-    const checkoutTab = await this.platform.openTab({
-      url: checkoutSessionUrl,
-    });
-
-    // --- We will define our listeners here so we can reference them for cleanup ---
-    // eslint-disable-next-line prefer-const
-    let onTabUpdatedListener;
-    // eslint-disable-next-line prefer-const
-    let onTabRemovedListener;
-
-    await new Promise((resolve, reject) => {
-      let checkoutSucceeded = false;
-      const cleanupListeners = () => {
-        // Important: Remove both listeners to prevent memory leaks
-        if (onTabUpdatedListener) {
-          this.platform.removeTabUpdatedListener(onTabUpdatedListener);
-        }
-        if (onTabRemovedListener) {
-          this.platform.removeTabRemovedListener(onTabRemovedListener);
-        }
-      };
-
-      // Set up a listener to watch for navigation on that specific tab
-      onTabUpdatedListener = (tabId, changeInfo, _tab) => {
-        // We only care about updates to our specific checkout tab
-        if (tabId === checkoutTab.id && changeInfo.url) {
-          if (changeInfo.url.startsWith(redirectUrl)) {
-            // Payment was successful!
-            checkoutSucceeded = true;
-
-            // Clean up: close the tab
-            this.platform.closeTab(tabId);
-          }
-          // TODO: handle cancel url ?
-        }
-      };
-      this.platform.addTabUpdatedListener(onTabUpdatedListener);
-
-      // Set up a listener to watch for tab removal
-      onTabRemovedListener = (tabId) => {
-        if (tabId === checkoutTab.id) {
-          cleanupListeners();
-          if (checkoutSucceeded) {
-            resolve();
-          } else {
-            reject(new Error('Checkout failed'));
-          }
-        }
-      };
-      this.platform.addTabRemovedListener(onTabRemovedListener);
-    });
-
-    if (!currentTabId) {
-      // open extension browser shield settings if open from pop up (no current tab)
-      this.platform.openExtensionInBrowser('/settings/transaction-shield');
-    }
-
-    // fetch latest user subscriptions after checkout
-    const subscriptions = await this.subscriptionController.getSubscriptions();
-    return subscriptions;
-  }
-
   /**
    * Gets relevant state for the provider of an external origin.
    *
@@ -2701,7 +2629,14 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getBillingPortalUrl.bind(
           this.subscriptionController,
         ),
-      startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
+      startSubscriptionWithCard:
+        this.SubscriptionService.startSubscriptionWithCard.bind(
+          this.SubscriptionService,
+        ),
+      updateSubscriptionCardPaymentMethod:
+        this.SubscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.SubscriptionService,
+        ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -8903,6 +8838,7 @@ export default class MetamaskController extends EventEmitter {
     const initRequest = {
       encryptor: this.opts.encryptor,
       extension: this.extension,
+      platform: this.platform,
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),

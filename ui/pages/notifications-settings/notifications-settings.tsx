@@ -96,7 +96,7 @@ export default function NotificationsSettings() {
           <ButtonIcon
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={() =>
               previousPage
                 ? navigate(previousPage)
