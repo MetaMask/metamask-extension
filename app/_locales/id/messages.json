@@ -3759,9 +3759,6 @@
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
   },
-  "noThanks": {
-    "message": "Tidak, terima kasih"
-  },
   "noWebcamFound": {
     "message": "Webcam komputer Anda tidak ditemukan. Harap coba lagi."
   },
@@ -4039,45 +4036,11 @@
   "onboardingImportWallet": {
     "message": "Saya sudah memiliki dompet"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Saya setuju"
-  },
   "onboardingMetametricsDescription": {
     "message": "Kami ingin mengumpulkan data penggunaan dan diagnostik dasar untuk meningkatkan MetaMask. Data tersebut akan selalu:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Kami akan memberi tahu Anda jika kami berencana menggunakan data ini untuk keperluan lain. Anda dapat meninjau $1 kami setiap saat (kami tidak akan pernah menjual data yang Anda berikan di sini).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Kebijakan Privasi"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Klik dan view pada aplikasi disimpan, tetapi detail lainnya (seperti alamat publik Anda) tidak.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Pribadi:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Kami menggunakan alamat IP Anda untuk sementara guna mendeteksi lokasi umum (seperti negara atau wilayah Anda), tetapi alamat tersebut tidak pernah disimpan.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Umum:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Anda memutuskan jika Anda ingin membagikan atau menghapus data penggunaan melalui pengaturan setiap saat.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Opsional:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
   },
   "onboardingOptionIcon": {
     "message": "Ikon $1",
