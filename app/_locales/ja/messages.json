@@ -300,9 +300,6 @@
   "addingAccount": {
     "message": "アカウントの追加"
   },
-  "addingCustomNetwork": {
-    "message": "ネットワークを追加中"
-  },
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
