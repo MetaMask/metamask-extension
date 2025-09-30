@@ -4,10 +4,26 @@ import { FileUploader } from './file-uploader';
 export default {
   title: 'Components/App/FileUploader',
   component: FileUploader,
+  argTypes: {
+    label: {
+      control: 'text',
+    },
+    helpText: {
+      control: 'text',
+    },
+    acceptText: {
+      control: 'text',
+    },
+  },
+  args: {
+    label: 'Upload files',
+    helpText: 'Upload files description',
+    acceptText: 'List of accepted file types',
+  },
 };
 
-export const DefaultStory = () => {
-  return <FileUploader />;
+export const DefaultStory = (args) => {
+  return <FileUploader {...args} />;
 };
 
 DefaultStory.storyName = 'Default';

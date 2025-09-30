@@ -51,7 +51,11 @@ describe('FileUploader', () => {
   it('should upload file', async () => {
     const mockOnChange = jest.fn();
     const { getByTestId } = renderWithUserEvent(
-      <FileUploader data-testid="file-uploader" onChange={mockOnChange} />,
+      <FileUploader
+        data-testid="file-uploader"
+        multiple
+        onChange={mockOnChange}
+      />,
     );
 
     const file = new File(['foo'], 'foo.svg', { type: 'image/svg+xml' });
@@ -79,6 +83,7 @@ describe('FileUploader', () => {
     const { getByTestId } = renderWithUserEvent(
       <FileUploader
         data-testid="file-uploader"
+        multiple
         maxFileSize={1 * 1024 * 1024} // 1MB limit
         onChange={mockOnChange}
       />,

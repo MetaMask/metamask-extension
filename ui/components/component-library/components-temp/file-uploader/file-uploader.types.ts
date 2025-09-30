@@ -1,4 +1,5 @@
 import React from 'react';
+import { FileInputProps } from 'react-simple-file-input';
 import { HelpTextProps } from '../../help-text';
 import { LabelProps } from '../../label';
 import {
@@ -6,7 +7,6 @@ import {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../../box';
-import { FileInputProps } from 'react-simple-file-input';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
