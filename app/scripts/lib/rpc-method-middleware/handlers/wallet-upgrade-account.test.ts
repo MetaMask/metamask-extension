@@ -1,808 +1,524 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-
+import type { JsonRpcRequest, Json } from '@metamask/utils';
 import { isSnapPreinstalled } from '../../../../../shared/lib/snaps/snaps';
 import {
   upgradeAccountHandler,
   getAccountUpgradeStatusHandler,
 } from './wallet-upgrade-account';
 
-// Mock the isSnapPreinstalled function
 jest.mock('../../../../../shared/lib/snaps/snaps', () => ({
-  isSnapPreinstalled: jest.fn(),
+  isSnapPreinstalled: jest.fn().mockReturnValue(true),
 }));
 
-describe('upgradeAccountHandler', () => {
-  let mockEnd: jest.Mock;
-  let mockNext: jest.Mock;
-  let mockUpgradeAccount: jest.Mock;
-  let mockGetCurrentChainId: jest.Mock;
-  let mockGetNetworkConfigurationByChainId: jest.Mock;
+const TEST_ACCOUNT = '0x1234567890123456789012345678901234567890';
+const UPGRADE_CONTRACT = '0x0000000000000000000000000000000000000000';
 
+const createUpgradeHandler = () => {
+  const end = jest.fn();
+  const next = jest.fn();
+  const upgradeAccount = jest.fn();
+  const getCurrentChainId = jest.fn().mockReturnValue(1);
+  const getNetworkConfigurationByChainId = jest
+    .fn()
+    .mockImplementation((chainId) => {
+      if (chainId === '0x1' || chainId === '0xaa36a7') {
+        return { upgradeContractAddress: UPGRADE_CONTRACT };
+      }
+      return null;
+    });
+
+  const response = { result: null, id: 1, jsonrpc: '2.0' as const };
+  const handler = (request: JsonRpcRequest<Json[]> & { origin: string }) =>
+    upgradeAccountHandler.implementation(request, response, next, end, {
+      upgradeAccount,
+      getCurrentChainId,
+      getNetworkConfigurationByChainId,
+    });
+
+  return {
+    end,
+    next,
+    upgradeAccount,
+    getCurrentChainId,
+    getNetworkConfigurationByChainId,
+    response,
+    handler,
+  };
+};
+
+const createStatusHandler = () => {
+  const end = jest.fn();
+  const next = jest.fn();
+  const getCurrentChainId = jest.fn().mockReturnValue(1);
+  const getCode = jest.fn();
+  const getNetworkConfigurationByChainId = jest
+    .fn()
+    .mockImplementation((chainId) => {
+      if (chainId === '0x1' || chainId === '0xaa36a7') {
+        return {
+          rpcEndpoints: [{ networkClientId: 'mainnet-1' }],
+          defaultRpcEndpointIndex: 0,
+        };
+      }
+      return null;
+    });
+
+  const response = { result: null, id: 1, jsonrpc: '2.0' as const };
+  const handler = (request: JsonRpcRequest<Json[]> & { origin: string }) =>
+    getAccountUpgradeStatusHandler.implementation(
+      request,
+      response,
+      next,
+      end,
+      {
+        getCurrentChainId,
+        getCode,
+        getNetworkConfigurationByChainId,
+      },
+    );
+
+  return {
+    end,
+    next,
+    getCurrentChainId,
+    getCode,
+    getNetworkConfigurationByChainId,
+    response,
+    handler,
+  };
+};
+
+describe('upgradeAccountHandler', () => {
   beforeEach(() => {
-    mockEnd = jest.fn();
-    mockNext = jest.fn();
-    mockUpgradeAccount = jest.fn();
-    mockGetCurrentChainId = jest.fn().mockReturnValue(1);
-    mockGetNetworkConfigurationByChainId = jest
-      .fn()
-      .mockImplementation((chainId) => {
-        if (chainId === '0x1' || chainId === '0xaa36a7') {
-          return {
-            upgradeContractAddress:
-              '0x0000000000000000000000000000000000000000',
-          };
-        }
-        return null;
-      });
-    // Mock isSnapPreinstalled to return true by default
     jest.mocked(isSnapPreinstalled).mockReturnValue(true);
     jest.clearAllMocks();
   });
 
-  describe('preinstalled snap restriction', () => {
-    it('should reject non-preinstalled snap', async () => {
-      jest.mocked(isSnapPreinstalled).mockReturnValue(false);
+  it('rejects non-preinstalled snap', async () => {
+    const { end, handler } = createUpgradeHandler();
+    jest.mocked(isSnapPreinstalled).mockReturnValue(false);
 
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@some-other-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.methodNotFound({
-          message:
-            'wallet_upgradeAccount is only available to preinstalled snaps',
-        }),
-      );
-      expect(mockUpgradeAccount).not.toHaveBeenCalled();
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@some-other-snap',
+      params: [{ account: TEST_ACCOUNT }],
     });
 
-    it('should allow preinstalled snap', async () => {
-      jest.mocked(isSnapPreinstalled).mockReturnValue(true);
-      mockUpgradeAccount.mockResolvedValue({
-        transactionHash: '0xabc123',
-        delegatedTo: '0x0000000000000000000000000000000000000000',
-      });
-
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockUpgradeAccount).toHaveBeenCalled();
-      expect(mockEnd).toHaveBeenCalledWith();
-    });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.methodNotFound({
+        message:
+          'wallet_upgradeAccount is only available to preinstalled snaps',
+      }),
+    );
   });
 
-  describe('parameter validation', () => {
-    it('should reject empty params', async () => {
-      const req = {
-        params: [],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
+  it('rejects empty params', async () => {
+    const { end, handler } = createUpgradeHandler();
 
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'Expected non-empty array parameter',
-        }),
-      );
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [],
     });
 
-    it('should reject missing account', async () => {
-      const req = {
-        params: [{}],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'account address is required',
-        }),
-      );
-    });
-
-    it('should reject empty account', async () => {
-      const req = {
-        params: [{ account: '' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'account address is required',
-        }),
-      );
-    });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Expected non-empty array parameter',
+      }),
+    );
   });
 
-  describe('successful upgrade', () => {
-    it('should upgrade account with current chain ID', async () => {
-      mockUpgradeAccount.mockResolvedValue({
-        transactionHash: '0xabc123',
-        delegatedTo: '0x0000000000000000000000000000000000000000',
-      });
+  it('rejects missing account', async () => {
+    const { end, handler } = createUpgradeHandler();
 
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockGetCurrentChainId).toHaveBeenCalled();
-      expect(mockUpgradeAccount).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
-        '0x0000000000000000000000000000000000000000',
-        1,
-      );
-      expect(res.result).toEqual({
-        transactionHash: '0xabc123',
-        upgradedAccount: '0x1234567890123456789012345678901234567890',
-        delegatedTo: '0x0000000000000000000000000000000000000000',
-      });
-      expect(mockEnd).toHaveBeenCalledWith();
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{}],
     });
 
-    it('should upgrade account with specified chain ID', async () => {
-      mockUpgradeAccount.mockResolvedValue({
-        transactionHash: '0xdef456',
-        delegatedTo: '0x0000000000000000000000000000000000000000',
-      });
-
-      const req = {
-        params: [
-          {
-            account: '0x1234567890123456789012345678901234567890',
-            chainId: 11155111,
-          },
-        ],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockGetCurrentChainId).not.toHaveBeenCalled();
-      expect(mockUpgradeAccount).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
-        '0x0000000000000000000000000000000000000000',
-        11155111,
-      );
-      expect(res.result).toEqual({
-        transactionHash: '0xdef456',
-        upgradedAccount: '0x1234567890123456789012345678901234567890',
-        delegatedTo: '0x0000000000000000000000000000000000000000',
-      });
-      expect(mockEnd).toHaveBeenCalledWith();
-    });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({ message: 'account address is required' }),
+    );
   });
 
-  describe('error handling', () => {
-    it('should handle unsupported chain ID', async () => {
-      mockGetNetworkConfigurationByChainId.mockReturnValue(null);
+  it('rejects empty account', async () => {
+    const { end, handler } = createUpgradeHandler();
 
-      const req = {
-        params: [
-          {
-            account: '0x1234567890123456789012345678901234567890',
-            chainId: 999999,
-          },
-        ],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'Account upgrade not supported on chain ID 999999',
-        }),
-      );
-      expect(mockUpgradeAccount).not.toHaveBeenCalled();
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: '' }],
     });
 
-    it('should handle network config without upgrade contract address', async () => {
-      mockGetNetworkConfigurationByChainId.mockReturnValue({
-        // No upgradeContractAddress property
-      });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'account address is required',
+      }),
+    );
+  });
 
-      const req = {
-        params: [
-          {
-            account: '0x1234567890123456789012345678901234567890',
-            chainId: 1,
-          },
-        ],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'Account upgrade not supported on chain ID 1',
-        }),
-      );
-      expect(mockUpgradeAccount).not.toHaveBeenCalled();
+  it('upgrades account with current chain ID', async () => {
+    const { end, upgradeAccount, getCurrentChainId, response, handler } =
+      createUpgradeHandler();
+    upgradeAccount.mockResolvedValue({
+      transactionHash: '0xabc123',
+      delegatedTo: UPGRADE_CONTRACT,
     });
 
-    it('should handle upgrade failure', async () => {
-      mockUpgradeAccount.mockRejectedValue(new Error('Upgrade failed'));
-
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.internal({
-          message: 'Failed to upgrade account: Upgrade failed',
-        }),
-      );
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT }],
     });
 
-    it('should handle non-Error exceptions', async () => {
-      mockUpgradeAccount.mockRejectedValue('String error');
-
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_upgradeAccount',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await upgradeAccountHandler.implementation(req, res, mockNext, mockEnd, {
-        upgradeAccount: mockUpgradeAccount,
-        getCurrentChainId: mockGetCurrentChainId,
-        getNetworkConfigurationByChainId: mockGetNetworkConfigurationByChainId,
-      });
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.internal({
-          message: 'Failed to upgrade account: String error',
-        }),
-      );
+    expect(getCurrentChainId).toHaveBeenCalled();
+    expect(upgradeAccount).toHaveBeenCalledWith(
+      TEST_ACCOUNT,
+      UPGRADE_CONTRACT,
+      1,
+    );
+    expect(response.result).toEqual({
+      transactionHash: '0xabc123',
+      upgradedAccount: TEST_ACCOUNT,
+      delegatedTo: UPGRADE_CONTRACT,
     });
+    expect(end).toHaveBeenCalledWith();
+  });
+
+  it('upgrades account with specified chain ID', async () => {
+    const { end, upgradeAccount, getCurrentChainId, response, handler } =
+      createUpgradeHandler();
+    upgradeAccount.mockResolvedValue({
+      transactionHash: '0xdef456',
+      delegatedTo: UPGRADE_CONTRACT,
+    });
+
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 11155111 }],
+    });
+
+    expect(getCurrentChainId).not.toHaveBeenCalled();
+    expect(upgradeAccount).toHaveBeenCalledWith(
+      TEST_ACCOUNT,
+      UPGRADE_CONTRACT,
+      11155111,
+    );
+    expect(response.result).toEqual({
+      transactionHash: '0xdef456',
+      upgradedAccount: TEST_ACCOUNT,
+      delegatedTo: UPGRADE_CONTRACT,
+    });
+    expect(end).toHaveBeenCalledWith();
+  });
+
+  it('rejects unsupported chain ID', async () => {
+    const { end, upgradeAccount, getNetworkConfigurationByChainId, handler } =
+      createUpgradeHandler();
+    getNetworkConfigurationByChainId.mockReturnValue(null);
+
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 999999 }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Account upgrade not supported on chain ID 999999',
+      }),
+    );
+    expect(upgradeAccount).not.toHaveBeenCalled();
+  });
+
+  it('rejects network config without upgrade contract', async () => {
+    const { end, upgradeAccount, getNetworkConfigurationByChainId, handler } =
+      createUpgradeHandler();
+    getNetworkConfigurationByChainId.mockReturnValue({});
+
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 1 }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Account upgrade not supported on chain ID 1',
+      }),
+    );
+    expect(upgradeAccount).not.toHaveBeenCalled();
+  });
+
+  it('handles upgrade failure', async () => {
+    const { end, upgradeAccount, handler } = createUpgradeHandler();
+    upgradeAccount.mockRejectedValue(new Error('Upgrade failed'));
+
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.internal({
+        message: 'Failed to upgrade account: Upgrade failed',
+      }),
+    );
+  });
+
+  it('handles non-Error exceptions', async () => {
+    const { end, upgradeAccount, handler } = createUpgradeHandler();
+    upgradeAccount.mockRejectedValue('String error');
+
+    await handler({
+      id: 1,
+      method: 'wallet_upgradeAccount',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.internal({
+        message: 'Failed to upgrade account: String error',
+      }),
+    );
   });
 });
 
 describe('getAccountUpgradeStatusHandler', () => {
-  let mockEnd: jest.Mock;
-  let mockNext: jest.Mock;
-  let mockGetCurrentChainId: jest.Mock;
-  let mockGetCode: jest.Mock;
-  let mockGetNetworkConfigurationByChainId: jest.Mock;
-
   beforeEach(() => {
-    mockEnd = jest.fn();
-    mockNext = jest.fn();
-    mockGetCurrentChainId = jest.fn().mockReturnValue(1);
-    mockGetCode = jest.fn();
-    mockGetNetworkConfigurationByChainId = jest
-      .fn()
-      .mockImplementation((chainId) => {
-        if (chainId === '0x1' || chainId === '0xaa36a7') {
-          return {
-            rpcEndpoints: [
-              {
-                networkClientId: 'mainnet-1',
-              },
-            ],
-            defaultRpcEndpointIndex: 0,
-          };
-        }
-        return null;
-      });
-    // Mock isSnapPreinstalled to return true by default
     jest.mocked(isSnapPreinstalled).mockReturnValue(true);
     jest.clearAllMocks();
   });
 
-  describe('preinstalled snap restriction', () => {
-    it('should reject non-preinstalled snap', async () => {
-      jest.mocked(isSnapPreinstalled).mockReturnValue(false);
+  it('rejects non-preinstalled snap', async () => {
+    const { end, getCode, handler } = createStatusHandler();
+    jest.mocked(isSnapPreinstalled).mockReturnValue(false);
 
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@some-other-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.methodNotFound({
-          message:
-            'wallet_getAccountUpgradeStatus is only available to preinstalled snaps',
-        }),
-      );
-      expect(mockGetCode).not.toHaveBeenCalled();
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@some-other-snap',
+      params: [{ account: TEST_ACCOUNT }],
     });
 
-    it('should allow preinstalled snap', async () => {
-      jest.mocked(isSnapPreinstalled).mockReturnValue(true);
-      mockGetCode.mockResolvedValue('0x1234567890abcdef');
-
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockGetCode).toHaveBeenCalled();
-      expect(mockEnd).toHaveBeenCalledWith();
-    });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.methodNotFound({
+        message:
+          'wallet_getAccountUpgradeStatus is only available to preinstalled snaps',
+      }),
+    );
+    expect(getCode).not.toHaveBeenCalled();
   });
 
-  describe('parameter validation', () => {
-    it('should reject empty params', async () => {
-      const req = {
-        params: [],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
+  it('rejects empty params', async () => {
+    const { end, handler } = createStatusHandler();
 
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'Expected non-empty array parameter',
-        }),
-      );
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [],
     });
 
-    it('should reject missing account', async () => {
-      const req = {
-        params: [{}],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'account address is required',
-        }),
-      );
-    });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Expected non-empty array parameter',
+      }),
+    );
   });
 
-  describe('network validation', () => {
-    it('should reject unknown chain ID', async () => {
-      const req = {
-        params: [
-          {
-            account: '0x1234567890123456789012345678901234567890',
-            chainId: 999,
-          },
-        ],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
+  it('rejects missing account', async () => {
+    const { end, handler } = createStatusHandler();
 
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      mockGetNetworkConfigurationByChainId.mockReturnValue(null);
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'Network not found for chain ID 999',
-        }),
-      );
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{}],
     });
 
-    it('should reject missing network client ID', async () => {
-      const req = {
-        params: [
-          { account: '0x1234567890123456789012345678901234567890', chainId: 1 },
-        ],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      mockGetNetworkConfigurationByChainId.mockReturnValue({
-        rpcEndpoints: [{ networkClientId: null }],
-        defaultRpcEndpointIndex: 0,
-      });
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.invalidParams({
-          message: 'Network client ID not found for chain ID 1',
-        }),
-      );
-    });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({ message: 'account address is required' }),
+    );
   });
 
-  describe('successful status check', () => {
-    it('should return upgrade status for upgraded account', async () => {
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
+  it('rejects unknown chain ID', async () => {
+    const { end, getNetworkConfigurationByChainId, handler } =
+      createStatusHandler();
+    getNetworkConfigurationByChainId.mockReturnValue(null);
 
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      mockGetCode.mockResolvedValue('0x1234567890abcdef');
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockGetCode).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
-        'mainnet-1',
-      );
-      expect(res.result).toEqual({
-        account: '0x1234567890123456789012345678901234567890',
-        isUpgraded: true,
-        chainId: 1,
-      });
-      expect(mockEnd).toHaveBeenCalledWith();
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 999 }],
     });
 
-    it('should return upgrade status for non-upgraded account', async () => {
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      mockGetCode.mockResolvedValue('0x');
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockGetCode).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
-        'mainnet-1',
-      );
-      expect(res.result).toEqual({
-        account: '0x1234567890123456789012345678901234567890',
-        isUpgraded: false,
-        chainId: 1,
-      });
-      expect(mockEnd).toHaveBeenCalledWith();
-    });
-
-    it('should use custom chain ID when provided', async () => {
-      const req = {
-        params: [
-          { account: '0x1234567890123456789012345678901234567890', chainId: 5 },
-        ],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      mockGetNetworkConfigurationByChainId.mockReturnValue({
-        rpcEndpoints: [
-          {
-            networkClientId: 'goerli-5',
-          },
-        ],
-        defaultRpcEndpointIndex: 0,
-      });
-      mockGetCode.mockResolvedValue('0x1234567890abcdef');
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockGetCode).toHaveBeenCalledWith(
-        '0x1234567890123456789012345678901234567890',
-        'goerli-5',
-      );
-      expect(res.result).toEqual({
-        account: '0x1234567890123456789012345678901234567890',
-        isUpgraded: true,
-        chainId: 5,
-      });
-      expect(mockEnd).toHaveBeenCalledWith();
-    });
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Network not found for chain ID 999',
+      }),
+    );
   });
 
-  describe('error handling', () => {
-    it('should handle getCode errors', async () => {
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      mockGetCode.mockRejectedValue(new Error('Network error'));
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.internal({
-          message: 'Failed to get account upgrade status: Network error',
-        }),
-      );
+  it('rejects missing network client ID', async () => {
+    const { end, getNetworkConfigurationByChainId, handler } =
+      createStatusHandler();
+    getNetworkConfigurationByChainId.mockReturnValue({
+      rpcEndpoints: [{ networkClientId: null }],
+      defaultRpcEndpointIndex: 0,
     });
 
-    it('should handle non-Error exceptions', async () => {
-      const req = {
-        params: [{ account: '0x1234567890123456789012345678901234567890' }],
-        origin: 'npm:@metamask/gator-permissions-snap',
-        id: 1,
-        method: 'wallet_getAccountUpgradeStatus',
-        jsonrpc: '2.0' as const,
-      };
-
-      const res = { result: null, id: 1, jsonrpc: '2.0' as const };
-
-      mockGetCode.mockRejectedValue('String error');
-
-      await getAccountUpgradeStatusHandler.implementation(
-        req,
-        res,
-        mockNext,
-        mockEnd,
-        {
-          getCurrentChainId: mockGetCurrentChainId,
-          getCode: mockGetCode,
-          getNetworkConfigurationByChainId:
-            mockGetNetworkConfigurationByChainId,
-        },
-      );
-
-      expect(mockEnd).toHaveBeenCalledWith(
-        rpcErrors.internal({
-          message: 'Failed to get account upgrade status: String error',
-        }),
-      );
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 1 }],
     });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Network client ID not found for chain ID 1',
+      }),
+    );
+  });
+
+  it('returns upgrade status for upgraded account', async () => {
+    const { end, getCode, response, handler } = createStatusHandler();
+    getCode.mockResolvedValue('0x1234567890abcdef');
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT }],
+    });
+
+    expect(getCode).toHaveBeenCalledWith(TEST_ACCOUNT, 'mainnet-1');
+    expect(response.result).toEqual({
+      account: TEST_ACCOUNT,
+      isUpgraded: true,
+      chainId: 1,
+    });
+    expect(end).toHaveBeenCalledWith();
+  });
+
+  it('returns upgrade status for non-upgraded account', async () => {
+    const { end, getCode, response, handler } = createStatusHandler();
+    getCode.mockResolvedValue('0x');
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT }],
+    });
+
+    expect(getCode).toHaveBeenCalledWith(TEST_ACCOUNT, 'mainnet-1');
+    expect(response.result).toEqual({
+      account: TEST_ACCOUNT,
+      isUpgraded: false,
+      chainId: 1,
+    });
+    expect(end).toHaveBeenCalledWith();
+  });
+
+  it('uses custom chain ID when provided', async () => {
+    const {
+      end,
+      getCode,
+      getNetworkConfigurationByChainId,
+      response,
+      handler,
+    } = createStatusHandler();
+    getNetworkConfigurationByChainId.mockReturnValue({
+      rpcEndpoints: [{ networkClientId: 'goerli-5' }],
+      defaultRpcEndpointIndex: 0,
+    });
+    getCode.mockResolvedValue('0x1234567890abcdef');
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 5 }],
+    });
+
+    expect(getCode).toHaveBeenCalledWith(TEST_ACCOUNT, 'goerli-5');
+    expect(response.result).toEqual({
+      account: TEST_ACCOUNT,
+      isUpgraded: true,
+      chainId: 5,
+    });
+    expect(end).toHaveBeenCalledWith();
+  });
+
+  it('handles getCode errors', async () => {
+    const { end, getCode, handler } = createStatusHandler();
+    getCode.mockRejectedValue(new Error('Network error'));
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.internal({
+        message: 'Failed to get account upgrade status: Network error',
+      }),
+    );
+  });
+
+  it('handles non-Error exceptions', async () => {
+    const { end, getCode, handler } = createStatusHandler();
+    getCode.mockRejectedValue('String error');
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.internal({
+        message: 'Failed to get account upgrade status: String error',
+      }),
+    );
   });
 });
