@@ -67,6 +67,13 @@ describe('Token Details', function () {
       marketCap: 12,
     };
 
+    const expectedPrice = formatCurrency(
+      `${marketData.price * ethConversionInUsd}`,
+      'USD',
+    );
+
+    const expectedMarketCap = '$120.00K';
+
     await withFixtures(
       {
         ...fixtures,
@@ -104,14 +111,6 @@ describe('Token Details', function () {
           symbol,
           tokenAddress,
         );
-
-        const expectedPrice = formatCurrency(
-          `${marketData.price * ethConversionInUsd}`,
-          'USD',
-        );
-        const expectedMarketCap = `${
-          marketData.marketCap * ethConversionInUsd
-        }.00`;
 
         await assetListPage.checkTokenPriceAndMarketCap(
           expectedPrice,

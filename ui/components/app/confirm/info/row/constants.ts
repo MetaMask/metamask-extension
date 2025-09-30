@@ -11,6 +11,7 @@ export enum RowAlertKey {
   InteractingWith = 'interactingWith',
   EstimatedChangesStatic = 'estimatedChangesStatic',
   Spender = 'spender',
+  IncomingTokens = 'incomingTokens',
 }
 
 export enum AlertActionKey {
