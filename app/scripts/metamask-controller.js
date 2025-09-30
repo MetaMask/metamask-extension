@@ -1492,7 +1492,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // if this is the first time, clear the state of by calling these methods
-    this.resetMethods = [
+    const resetMethods = [
       this.accountTrackerController.resetState.bind(
         this.accountTrackerController,
       ),
@@ -1512,14 +1512,14 @@ export default class MetamaskController extends EventEmitter {
 
     if (isManifestV3) {
       if (isFirstMetaMaskControllerSetup === true) {
-        this.resetStates();
+        this.resetStates(resetMethods);
         this.extension.storage.session.set({
           isFirstMetaMaskControllerSetup: false,
         });
       }
     } else {
       // it's always the first time in MV2
-      this.resetStates();
+      this.resetStates(resetMethods);
     }
 
     // Automatic login via config password
@@ -1622,8 +1622,8 @@ export default class MetamaskController extends EventEmitter {
     this.multichainRatesController.stop();
   }
 
-  resetStates() {
-    this.resetMethods.forEach((resetMethod) => {
+  resetStates(resetMethods) {
+    resetMethods.forEach((resetMethod) => {
       try {
         resetMethod();
       } catch (err) {
@@ -3631,10 +3631,6 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
-      setIsWalletResetInProgress:
-        this.appStateController.setIsWalletResetInProgress.bind(
-          this.appStateController,
-        ),
       resetWallet: this.resetWallet.bind(this),
     };
   }
@@ -3654,23 +3650,24 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async resetWallet() {
-    this.appStateController.setIsWalletResetInProgress(true);
-
-    this.resetStates();
-
-    // reset preferences state
-    this.preferencesController.resetState();
-
-    this.currencyRateController.setCurrentCurrency('usd');
-
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
+
+    // clear metametrics state
+    this.metaMetricsController.resetState();
 
     // clear permissions
     this.permissionController.clearState();
 
     // Clear snap state
     await this.snapController.clearState();
+
+    this.appStateController.setIsWalletResetInProgress(true);
+
+    // reset preferences state
+    this.preferencesController.resetState();
+
+    this.currencyRateController.setCurrentCurrency('usd');
 
     // Clear account tree state
     this.accountTreeController.clearState();

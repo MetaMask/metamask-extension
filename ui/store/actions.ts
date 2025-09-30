@@ -572,7 +572,15 @@ export function tryUnlockMetamask(
 export function checkIsSeedlessPasswordOutdated(
   skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    if (!isSocialLoginFlow) {
+      return false;
+    }
+
     let isPasswordOutdated = false;
     try {
       isPasswordOutdated = await submitRequestToBackground<boolean>(
@@ -4183,14 +4191,12 @@ export function resetWallet() {
       await dispatch(resetOnboarding());
       // reset redux state
       await dispatch(resetWalletAction());
-      // set `isResettingWalletInProgress` to true
-      await submitRequestToBackground('setIsWalletResetInProgress', [true]);
 
       await submitRequestToBackground('resetWallet');
 
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
-      console.error(error);
+      log.error('resetWallet error', error);
       throw error;
     }
   };

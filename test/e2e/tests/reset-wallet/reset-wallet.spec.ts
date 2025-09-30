@@ -81,7 +81,7 @@ describe('Reset Wallet - ', function () {
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
         await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
-        await homePage.checkPageIsLoaded();
+        await homePage.headerNavbar.checkPageIsLoaded();
       },
     );
   });
@@ -161,7 +161,7 @@ describe('Reset Wallet - ', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
-        await homePage.checkPageIsLoaded();
+        await homePage.headerNavbar.checkPageIsLoaded();
       },
     );
   });

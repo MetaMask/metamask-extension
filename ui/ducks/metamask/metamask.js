@@ -195,6 +195,7 @@ export default function reduceMetamask(state = initialState, action) {
         ...initialState,
         isWalletResetInProgress: true,
         isSeedlessOnboardingUserAuthenticated: false,
+        passwordOutdatedCache: undefined,
       };
     }
 
