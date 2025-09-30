@@ -1,0 +1,133 @@
+import {
+  TransactionEnvelopeType,
+  TransactionType,
+  TransactionParams,
+} from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+
+export const EIP_7702_REVOKE_ADDRESS =
+  '0x0000000000000000000000000000000000000000';
+
+export type EIP7702TransactionParams = {
+  address: Hex;
+  upgradeContractAddress?: Hex;
+  networkClientId: string;
+};
+
+export type EIP7702TransactionResult = {
+  transactionHash: string;
+  delegatedTo?: string;
+  transactionId?: string;
+};
+
+/**
+ * Creates an EIP-7702 upgrade transaction.
+ *
+ * @param params - The transaction parameters
+ * @param addTransactionAndRouteToConfirmationPage - Function to add transaction
+ * @returns Promise with transaction result
+ */
+export async function createEIP7702UpgradeTransaction(
+  params: EIP7702TransactionParams,
+  addTransactionAndRouteToConfirmationPage: (
+    transactionParams: TransactionParams,
+    options?: {
+      networkClientId: string;
+      sendFlowHistory?: { event: string; timestamp: number }[];
+      type?: TransactionType;
+    },
+  ) => Promise<Record<string, unknown>>,
+): Promise<EIP7702TransactionResult> {
+  const { address, upgradeContractAddress, networkClientId } = params;
+
+  if (!upgradeContractAddress) {
+    throw new Error('Upgrade contract address is required');
+  }
+
+  const transactionParams: TransactionParams = {
+    authorizationList: [
+      {
+        address: upgradeContractAddress,
+      },
+    ],
+    from: address,
+    to: address,
+    type: TransactionEnvelopeType.setCode,
+  };
+
+  const transactionMeta = await addTransactionAndRouteToConfirmationPage(
+    transactionParams,
+    {
+      networkClientId,
+      type: TransactionType.batch,
+    },
+  );
+
+  return {
+    transactionHash: transactionMeta.hash as string,
+    delegatedTo: upgradeContractAddress,
+    transactionId: transactionMeta.id as string,
+  };
+}
+
+/**
+ * Creates an EIP-7702 downgrade transaction.
+ *
+ * @param params - The transaction parameters
+ * @param addTransactionAndRouteToConfirmationPage - Function to add transaction
+ * @returns Promise with transaction result
+ */
+export async function createEIP7702DowngradeTransaction(
+  params: EIP7702TransactionParams,
+  addTransactionAndRouteToConfirmationPage: (
+    transactionParams: TransactionParams,
+    options?: {
+      networkClientId: string;
+      sendFlowHistory?: { event: string; timestamp: number }[];
+      type?: TransactionType;
+    },
+  ) => Promise<Record<string, unknown>>,
+): Promise<EIP7702TransactionResult> {
+  const { address, networkClientId } = params;
+
+  const transactionParams: TransactionParams = {
+    authorizationList: [
+      {
+        address: EIP_7702_REVOKE_ADDRESS,
+      },
+    ],
+    from: address,
+    to: address,
+    type: TransactionEnvelopeType.setCode,
+  };
+
+  const transactionMeta = await addTransactionAndRouteToConfirmationPage(
+    transactionParams,
+    {
+      networkClientId,
+      type: TransactionType.revokeDelegation,
+    },
+  );
+
+  return {
+    transactionHash: transactionMeta.hash as string,
+    transactionId: transactionMeta.id as string,
+  };
+}
+
+/**
+ * Checks if an account is upgraded by checking if it has code.
+ *
+ * @param address - The account address to check
+ * @param networkClientId - The network client ID
+ * @param getCode - Function to get account code
+ * @returns Promise with boolean indicating if account is upgraded
+ */
+export async function isAccountUpgraded(
+  address: Hex,
+  networkClientId: string,
+  getCode: (address: Hex, networkClientId: string) => Promise<string | null>,
+): Promise<boolean> {
+  const code = await getCode(address, networkClientId);
+  return Boolean(code && code.length > 2);
+}

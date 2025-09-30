@@ -8,12 +8,10 @@ import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../shared/lib/eip7702-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
-import {
-  EIP_7702_REVOKE_ADDRESS,
-  useEIP7702Account,
-} from './useEIP7702Account';
+import { useEIP7702Account } from './useEIP7702Account';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -69,18 +67,17 @@ describe('useEIP7702Account', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    addTransactionAndRouteToConfirmationPageMock.mockReturnValue({
+    const mockDispatch = jest.fn().mockResolvedValue({
+      hash: TRANSACTION_ID_MOCK,
+      id: TRANSACTION_ID_MOCK,
       type: 'MockAction',
-    } as unknown as ReturnType<
-      typeof addTransactionAndRouteToConfirmationPageMock
-    >);
+    });
+    useDispatchMock.mockReturnValue(mockDispatch);
 
     useConfirmationNavigationMock.mockReturnValue({
       confirmations: [],
       navigateToId: jest.fn(),
     } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
-
-    useDispatchMock.mockReturnValue(jest.fn());
   });
 
   describe('isUpgraded', () => {

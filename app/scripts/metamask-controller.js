@@ -70,7 +70,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
@@ -138,6 +137,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -6919,6 +6919,11 @@ export default class MetamaskController extends EventEmitter {
         ),
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
+
+      // Account upgrade-related
+      upgradeAccount: this.upgradeAccount.bind(this),
+      getCurrentChainId: this.getCurrentChainId.bind(this),
+      getCode: this.getCode.bind(this),
     };
   }
 
@@ -8935,5 +8940,44 @@ export default class MetamaskController extends EventEmitter {
       initFunctions,
       initRequest,
     });
+  }
+
+  /**
+   * Upgrades an account to support EIP-7702 delegation.
+   * Uses shared EIP-7702 utility to avoid code duplication.
+   *
+   * @param {string} address - The account address to upgrade
+   * @param {string} upgradeContractAddress - The contract address to delegate to
+   * @param {number} chainId - The chain ID for the upgrade
+   * @returns {Promise<{transactionHash: string, delegatedTo: string}>}
+   */
+  async upgradeAccount(address, upgradeContractAddress, chainId) {
+    // Get the network client for the specified chain
+    const networkClientId =
+      this.networkController.getNetworkClientIdForChainId(chainId);
+
+    // Use shared EIP-7702 utility
+    return createEIP7702UpgradeTransaction(
+      {
+        address,
+        upgradeContractAddress,
+        networkClientId,
+      },
+      this.addTransactionAndRouteToConfirmationPage.bind(this),
+    );
+  }
+
+  /**
+   * Gets the current chain ID.
+   *
+   * @returns {number}
+   */
+  getCurrentChainId() {
+    const { selectedNetworkClientId } = this.networkController.state;
+    const networkConfig =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        selectedNetworkClientId,
+      );
+    return parseInt(networkConfig.chainId, 16);
   }
 }

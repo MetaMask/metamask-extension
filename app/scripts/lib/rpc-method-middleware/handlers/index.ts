@@ -6,6 +6,10 @@ import requestAccounts from './request-accounts';
 import sendMetadata from './send-metadata';
 import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset from './watch-asset';
+import {
+  upgradeAccountHandler,
+  getAccountUpgradeStatusHandler,
+} from './wallet-upgrade-account';
 
 export const handlers = [
   addEthereumChain,
@@ -13,6 +17,8 @@ export const handlers = [
   logWeb3ShimUsage,
   sendMetadata,
   watchAsset,
+  upgradeAccountHandler,
+  getAccountUpgradeStatusHandler,
 ];
 
 export const eip1193OnlyHandlers = [
