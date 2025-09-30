@@ -55,7 +55,7 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
         >
           <div
             class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
-            data-quiz-words="[{"index":7,"word":"just"},{"index":10,"word":"speak"},{"index":1,"word":"dizzy"}]"
+            data-quiz-words="[{"index":8,"word":"just"},{"index":11,"word":"just"},{"index":7,"word":"just"}]"
             data-recovery-phrase="debris:dizzy:just:just:just:float:just:just:just:just:speak:just"
             data-testid="recovery-phrase-chips"
           >
@@ -79,9 +79,8 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
                 value="debris"
               />
             </div>
-            <button
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
-              data-testid="recovery-phrase-chip-1"
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             >
               <p
                 class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
@@ -89,10 +88,17 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
                 2
                 .
               </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-1"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="dizzy"
               />
-            </button>
+            </div>
             <div
               class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             >
@@ -194,7 +200,7 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
               />
             </div>
             <button
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
               <p
@@ -207,8 +213,9 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               />
             </button>
-            <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            <button
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-8"
             >
               <p
                 class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
@@ -216,17 +223,10 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
                 9
                 .
               </p>
-              <input
-                autocomplete="off"
-                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                data-testid="recovery-phrase-chip-8"
-                disabled=""
-                focused="false"
-                readonly=""
-                type="password"
-                value="just"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               />
-            </div>
+            </button>
             <div
               class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             >
@@ -247,9 +247,8 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
                 value="just"
               />
             </div>
-            <button
-              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
-              data-testid="recovery-phrase-chip-10"
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
             >
               <p
                 class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
@@ -257,12 +256,20 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
                 11
                 .
               </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="recovery-phrase-chip-10"
+                disabled=""
+                focused="false"
+                readonly=""
+                type="password"
+                value="speak"
               />
-            </button>
-            <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            </div>
+            <button
+              class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              data-testid="recovery-phrase-chip-11"
             >
               <p
                 class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
@@ -270,17 +277,10 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
                 12
                 .
               </p>
-              <input
-                autocomplete="off"
-                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-                data-testid="recovery-phrase-chip-11"
-                disabled=""
-                focused="false"
-                readonly=""
-                type="password"
-                value="just"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               />
-            </div>
+            </button>
           </div>
         </div>
         <div
@@ -288,21 +288,21 @@ exports[`Confirm Recovery Phrase Component renders match snapshot when isFromRem
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
-            data-testid="recovery-phrase-quiz-unanswered-7"
+            data-testid="recovery-phrase-quiz-unanswered-8"
           >
             just
           </button>
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
-            data-testid="recovery-phrase-quiz-unanswered-10"
+            data-testid="recovery-phrase-quiz-unanswered-11"
           >
-            speak
+            just
           </button>
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-background-muted mm-box--rounded-lg mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
-            data-testid="recovery-phrase-quiz-unanswered-1"
+            data-testid="recovery-phrase-quiz-unanswered-7"
           >
-            dizzy
+            just
           </button>
         </div>
       </div>
