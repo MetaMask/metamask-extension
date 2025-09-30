@@ -66,7 +66,7 @@ describe('Ledger Swap', function () {
 
         await swapPage.checkSwapButtonIsEnabled();
         await swapPage.submitSwap();
-        await swapPage.waitForTransactionToComplete();
+        await swapPage.clickViewInActivity();
 
         await homePage.checkPageIsLoaded();
         // check activity list

@@ -96,6 +96,11 @@ class SwapPage {
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
+  private readonly viewInActivityButton = {
+    tag: 'button',
+    text: 'View in activity',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -138,6 +143,10 @@ class SwapPage {
 
   async closeQuotes(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.closeQuotesButton);
+  }
+
+  async clickViewInActivity(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.viewInActivityButton);
   }
 
   async enterSwapAmount(amount: string): Promise<void> {
