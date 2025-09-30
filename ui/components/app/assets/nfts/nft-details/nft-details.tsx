@@ -402,7 +402,7 @@ export function NftDetailsComponent({
 
   return (
     <Page>
-      <Content className="nft-details__content">
+      <Content marginTop={4} className="nft-details__content">
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}

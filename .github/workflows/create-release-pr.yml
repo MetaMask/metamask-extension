@@ -74,14 +74,14 @@ jobs:
   create-release-pr:
     needs: [resolve-bases, resolve-previous-ref]
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@8144a84f14b3ecf704846ef3569937df85ad9291
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@6c47e935b9de693c70db009fc2e4e1dd0df4e71e
     with:
       platform: extension
       checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
       release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-ref: ${{ needs.resolve-previous-ref.outputs.previous_ref }}
-      github-tools-version: 8144a84f14b3ecf704846ef3569937df85ad9291
+      github-tools-version: 6c47e935b9de693c70db009fc2e4e1dd0df4e71e
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values

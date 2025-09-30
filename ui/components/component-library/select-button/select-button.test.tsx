@@ -1,6 +1,9 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { AvatarAccount, AvatarAccountSize } from '../avatar-account';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { SelectWrapper } from '../select-wrapper';
 import { SelectButton } from './select-button';
 import { SelectButtonSize } from './select-button.types';

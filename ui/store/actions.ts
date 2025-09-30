@@ -312,7 +312,11 @@ export function createNewVaultAndSyncWithSocial(
         seedPhrase,
         primaryKeyring.metadata.id,
       );
+
       dispatch(hideWarning());
+      // force update the state after creating the vault
+      await forceUpdateMetamaskState(dispatch);
+
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -734,6 +738,10 @@ export function createNewVaultAndGetSeedPhrase(
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
+
+      // force update the state after creating the vault
+      await forceUpdateMetamaskState(dispatch);
+
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -2708,7 +2716,9 @@ export function setShowSupportDataConsentModal(show: boolean) {
 }
 
 export function clearProductTour() {
-  return submitRequestToBackground('setProductTour', ['']);
+  return async () => {
+    return submitRequestToBackground('setProductTour', ['']);
+  };
 }
 export function addToken(
   {
@@ -5080,44 +5090,33 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
- * @deprecated - this unsafely sets the EnabledNetworkMap,
- * - we want to have better control on how we enable networks (either single network or all, not in between)
- * Please use controller-actions/network-order-controller.ts actions
- * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
- * to be enabled. All other networks will be implicitly disabled.
- * @param networkId - The CAIP-2 chain ID of the currently selected network
+ * Sets the enabled networks in the controller state.
+ * Only a single network or all networks can be enabled at once, not an arbitrary subset.
+ * Uses actions from controller-actions/network-order-controller.ts for better control.
+ *
+ * @param chainId - A single chainId (e.g. 'eip155:1') to be enabled. All other networks will be implicitly disabled.
  */
 export function setEnabledNetworks(
-  chainIds: string[],
-  networkId: CaipNamespace,
+  chainId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworks', [
-      chainIds,
-      networkId,
-    ]);
+    await submitRequestToBackground('setEnabledNetworks', [chainId]);
   };
 }
 
 /**
- * Sets the enabled networks in the controller state with multichain account behavior.
- * This method updates the enabledNetworkMap to mark specified networks as enabled
- * and disables all networks in other namespaces (multichain account exclusive behavior).
- * It can handle both a single chain ID or an array of chain IDs.
+ * Enables all popular networks in the controller state.
  *
- * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
- * to be enabled. All other networks will be implicitly disabled.
- * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
+ * @returns callback to enable all popular networks.
  */
-export function setEnabledNetworksMultichain(
-  chainIds: string[],
-  namespace: CaipNamespace,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setEnabledAllPopularNetworks(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworksMultichain', [
-      chainIds,
-      namespace,
-    ]);
+    await submitRequestToBackground('setEnabledAllPopularNetworks');
   };
 }
 
