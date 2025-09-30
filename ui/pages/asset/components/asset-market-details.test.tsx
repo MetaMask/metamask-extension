@@ -24,7 +24,6 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 
 jest.mock('../util', () => ({
   getPricePrecision: jest.fn(() => 2),
-  localizeLargeNumber: jest.fn((_t, value) => value.toLocaleString()),
 }));
 
 jest.mock('../../../helpers/utils/confirm-tx.util', () => ({
